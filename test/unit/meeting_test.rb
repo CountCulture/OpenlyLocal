@@ -55,8 +55,8 @@ class MeetingTest < ActiveSupport::TestCase
         assert !@meeting.minutes.new_record?
       end
       
-      should "store passed value in document body" do
-        assert_equal "some document text", @meeting.minutes.body
+      should "store passed value in document raw_body" do
+        assert_equal "some document text", @meeting.minutes.raw_body
       end
       
       should "save meeting url as document url" do
@@ -80,8 +80,8 @@ class MeetingTest < ActiveSupport::TestCase
         assert_equal @existing_minutes.id, @meeting.minutes.id
       end
       
-      should "update existing minutes body" do
-        assert_equal "some document text", @existing_minutes.reload.body
+      should "update existing minutes raw_body" do
+        assert_equal "some document text", @existing_minutes.reload.raw_body
       end
       
       should "set document_type to be 'Minutes'" do

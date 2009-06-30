@@ -3,11 +3,7 @@ class Document < ActiveRecord::Base
   validates_presence_of :url
   validates_uniqueness_of :url
   belongs_to :document_owner, :polymorphic => true
-    
-  def body=(raw_text)
-    self[:raw_body] = raw_text # save orig raw text
-    write_attribute(:body, sanitize_body(raw_text))#self[:body] = sanitize_body(raw_text)
-  end
+  before_validation :sanitize_body
   
   def document_type
     self[:document_type] || "Document"
@@ -18,9 +14,9 @@ class Document < ActiveRecord::Base
   end
   
   protected
-  def sanitize_body(raw_text)
-    return if raw_text.blank?
-    sanitized_body = ActionController::Base.helpers.sanitize(raw_text)
+  def sanitize_body
+    return if raw_body.blank?
+    sanitized_body = ActionController::Base.helpers.sanitize(raw_body)
     base_url = url&&url.sub(/\/[^\/]+$/,'/')
     doc = Hpricot(sanitized_body)
     doc.search("a[@href]").each do |link|
@@ -28,6 +24,6 @@ class Document < ActiveRecord::Base
       link.set_attribute(:class, 'external')
     end
     doc.search('img').remove
-    doc.to_html
+    self.body = doc.to_html
   end
 end

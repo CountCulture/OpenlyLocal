@@ -16,7 +16,8 @@ every 1.hours do
   command "rm -rf ~/sites/twfy_local/tmp/views"
 end
 every 2.hours do
-  runner "ScraperRunner.new(:limit => 5, :email_results => true).refresh_stale"
+  # runner "ScraperRunner.new(:limit => 5, :email_results => true).refresh_stale"
+  command "cd ~/sites/twfy_local/current && RAILS_ENV=production EMAIL_RESULTS=true rake run_stale_scrapers"
 end
 every 7.days do
   runner "Dataset.stale.each(&:process)"
