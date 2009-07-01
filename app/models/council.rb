@@ -1,4 +1,4 @@
-# attributes: url wikipedia_url location website_generator
+# attributes: url wikipedia_url location
 
 class Council < ActiveRecord::Base
   has_many :members
