@@ -2,7 +2,7 @@
 module ApplicationHelper
   
   def council_page_for(obj)
-    link_to("council page", obj.url, :class => "council_page_link external")
+    link_to("official page", obj.url, :class => "official_page external")
   end
   
   def link_for(obj=nil, options={})

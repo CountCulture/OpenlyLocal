@@ -43,7 +43,7 @@ class ApplicationHelperTest < ActionView::TestCase
 
     should "return link based on url" do
       obj = stub(:url => "http://somecouncil/meeting")
-      assert_dom_equal link_to("council page", "http://somecouncil/meeting", :class => "council_page_link external"), council_page_for(obj)
+      assert_dom_equal link_to("official page", "http://somecouncil/meeting", :class => "official_page external"), council_page_for(obj)
     end
   end
   

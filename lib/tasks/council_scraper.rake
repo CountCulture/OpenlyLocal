@@ -37,7 +37,7 @@ task :scrape_egr_for_councils => :environment do
   
 end
 
-desc "Scraper WhatDoTheyKnow.com to get WDTK name" 
+desc "Scrape WhatDoTheyKnow.com to get WDTK name" 
 task :scrape_wdtk_for_names => :environment do
   require 'hpricot'
   require 'open-uri'
@@ -53,6 +53,26 @@ task :scrape_wdtk_for_names => :environment do
     else
       puts "Failed to find entry for #{council.name}"
     end
+  end
+  
+end
+
+desc "Scraper council urls to get feed_url from auto discovery tag" 
+task :scrape_councils_for_feeds => :environment do
+  require 'hpricot'
+  require 'open-uri'  
+  Council.find(:all, :conditions => 'feed_url IS NULL').each do |council|
+    next if council.url.blank?
+    puts "=======================\nChecking #{council.title} (#{council.url})"
+    begin
+      doc = Hpricot(open(council.url))
+    rescue Exception, Timeout::Error => e
+      puts "****** Exception raised: #{e.inspect}"
+      next
+    end
+    feed_urls = doc.search("link[@type*='rss']").collect{|l| l[:href].match(/^http:/) ? l[:href] : (council.url + l[:href])}
+    council.update_attribute(:feed_url, feed_urls.first) # just save first one for the moment
+    puts "#{council.title} feeds: #{feed_urls.inspect}"
   end
   
 end
