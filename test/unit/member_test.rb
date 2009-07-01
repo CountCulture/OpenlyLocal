@@ -6,6 +6,7 @@ class MemberTest < ActiveSupport::TestCase
   should_have_many :memberships
   should_have_many :committees, :through => :memberships
   should_have_named_scope :current, :conditions => "date_left IS NULL"
+  should_have_db_column :address
   
   context "The Member class" do
     setup do

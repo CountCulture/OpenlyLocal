@@ -2,6 +2,7 @@
 <p>Council <strong><%= link_to h(@council.name), @council %></strong></p>
 <p>Party <strong><%= @member.party %></strong></p>
 <p>Email <strong><%= @member.email ? mail_to(@member.email, @member.email, :encode => "javascript") : 'not known' %></strong></p>
+<p>Address <strong><%= @member.address || 'not known' %></strong></p>
 <p>Date elected <strong><%= @member.date_elected ? @member.date_elected.to_s(:custom_short) : 'not known' %></strong></p>
 <p>Declaration of Interests <strong><%= @member.declaration_of_interests ? link_to(@member.declaration_of_interests, @member.declaration_of_interests, :class => "external") : 'not known' %></strong></p>
 
