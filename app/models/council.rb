@@ -23,6 +23,6 @@ class Council < ActiveRecord::Base
   end
   
   def short_name
-    name.gsub(/Borough|City|Royal|London|of/, '').strip
+    name.gsub(/Borough|City|Royal|London|of|Council/, '').strip
   end
 end

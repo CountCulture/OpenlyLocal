@@ -69,6 +69,7 @@ class CouncilTest < ActiveSupport::TestCase
     should "return name without Borough etc as short_name" do
       assert_equal "Brent", Council.new(:name => "London Borough of Brent").short_name
       assert_equal "Westminster", Council.new(:name => "City of Westminster").short_name
+      assert_equal "Leeds", Council.new(:name => "Leeds City Council").short_name
       assert_equal "Kingston upon Thames", Council.new(:name => "Royal Borough of Kingston upon Thames").short_name
     end
     
