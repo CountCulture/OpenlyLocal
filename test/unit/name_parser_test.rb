@@ -11,6 +11,7 @@ class NameParserTest < Test::Unit::TestCase
     "Mr Fred Flintstone" => {:name_title => "Mr", :first_name => "Fred", :last_name => "Flintstone"},
     "Mr Fred McFlintstone" => {:name_title => "Mr", :first_name => "Fred", :last_name => "McFlintstone"},
     "Prof Dr Fred Flintstone" => {:name_title => "Prof Dr", :first_name => "Fred", :last_name => "Flintstone"},
+    "Councillor R.S.Dixon" => {:first_name => "R S", :last_name => "Dixon"},
     "Dr Fred Flintstone" => {:name_title => "Dr", :first_name => "Fred", :last_name => "Flintstone"},
     "Dr. Fred Flintstone" => {:name_title => "Dr", :first_name => "Fred", :last_name => "Flintstone"},
     "Councillor Mrs Wilma Flintstone" => {:name_title => "Mrs", :first_name => "Wilma", :last_name => "Flintstone"},
