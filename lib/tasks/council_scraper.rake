@@ -43,7 +43,7 @@ task :scrape_wdtk_for_names => :environment do
   require 'open-uri'
   url = "http://www.whatdotheyknow.com/body/list/local_council"
   doc = Hpricot(open(url))
-  wdtk_councils = doc.search("#body_list .body_listing span.head")
+  wdtk_councils = doc.search("#content .body_listing span.head")
   Council.find(:all, :conditions => 'wdtk_name IS NULL').each do |council|
     wdtk_council = wdtk_councils.at("a[text()*='#{council.short_name}']")
     if wdtk_council
