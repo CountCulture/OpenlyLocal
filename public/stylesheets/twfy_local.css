@@ -169,6 +169,7 @@ div.item_attribute p {
 div.parser {
 	border: 1px solid #ddd;
 	background-color: #f3f3f3;
+	clear:left;
 	padding: 1.48em;
 	margin-bottom: 1.5em; }
 div.parser h4 {
