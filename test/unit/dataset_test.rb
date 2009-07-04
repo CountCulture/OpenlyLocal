@@ -100,7 +100,7 @@ class DatasetTest < ActiveSupport::TestCase
       
       should "update last_checked timestamp" do
         @dataset.process
-        assert_in_delta Time.now, @dataset.last_checked, 2
+        assert_in_delta Time.now, @dataset.reload.last_checked, 2
       end
       
       should "not update updated_at timestamp" do

@@ -46,6 +46,6 @@ class Dataset < ActiveRecord::Base
   end
   
   def update_last_scraped
-    self.class.update_all({:last_checked => Time.now}, "id = #{id}")
+    self.class.update_all({:last_checked => Time.zone.now}, "id = #{id}")
   end
 end
