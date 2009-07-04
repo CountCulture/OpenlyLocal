@@ -11,8 +11,8 @@ class Dataset < ActiveRecord::Base
   
   def process
     raw_response = _http_get(query_url)
-    update_attribute(:last_checked, Time.now)
     return if raw_response.blank?
+    update_last_scraped
     rows = FasterCSV.parse(raw_response, :headers => true).to_a
     header_row = rows.shift
     all_councils = Council.find(:all)
@@ -43,5 +43,9 @@ class Dataset < ActiveRecord::Base
   def _http_get(url)
     return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
     open(url)
+  end
+  
+  def update_last_scraped
+    self.class.update_all({:last_checked => Time.now}, "id = #{id}")
   end
 end

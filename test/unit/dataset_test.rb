@@ -103,6 +103,16 @@ class DatasetTest < ActiveSupport::TestCase
         assert_in_delta Time.now, @dataset.last_checked, 2
       end
       
+      should "not update updated_at timestamp" do
+        Dataset.record_timestamps = false # update timestamp without triggering callbacks
+        @dataset.update_attribute(:updated_at, 2.hours.ago)
+        Dataset.record_timestamps = true 
+        
+        @dataset.process
+        assert_in_delta 2.hours.ago, @dataset.updated_at, 2
+        
+      end
+      
       context "and datapoint already exists for council and dataset" do
         setup do
           @old_datapoint = Factory(:datapoint, :council => @council, :dataset => @dataset)
