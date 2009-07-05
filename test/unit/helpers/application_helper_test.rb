@@ -54,11 +54,11 @@ class ApplicationHelperTest < ActionView::TestCase
     end
 
     should "should return xml link when xml requested" do
-      assert_equal link_to("xml", { :controller => "councils", :action => "index", :format => "xml" }, :class => "api_link"), link_to_api_url("xml")
+      assert_equal link_to("xml", { :controller => "councils", :action => "index", :format => "xml" }, :class => "api_link xml"), link_to_api_url("xml")
     end
     
     should "should return js link when json requested" do
-      assert_equal link_to("json", { :controller => "councils", :action => "index", :format => "json" }, :class => "api_link"), link_to_api_url("json")
+      assert_equal link_to("json", { :controller => "councils", :action => "index", :format => "json" }, :class => "api_link json"), link_to_api_url("json")
     end
     
   end

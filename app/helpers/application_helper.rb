@@ -13,7 +13,7 @@ module ApplicationHelper
   end
   
   def link_to_api_url(response_type)
-    link_to(response_type, params.merge(:format => response_type), :class => "api_link")
+    link_to(response_type, params.merge(:format => response_type), :class => "api_link #{response_type}")
   end
   
   def list_all(coll=nil)

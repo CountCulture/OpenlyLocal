@@ -254,3 +254,8 @@ div#dataset_data table {
 	float:right;
 	font-weight:bold;
 }
+/*Misc formatting*/
+#api_info {
+	background-color: #f3f3f3;
+	border-top: 1px solid #ddd;
+}
