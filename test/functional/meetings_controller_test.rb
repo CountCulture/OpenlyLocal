@@ -57,6 +57,25 @@ class MeetingsControllerTest < ActionController::TestCase
       should_render_without_layout
       should_respond_with_content_type 'application/json'
     end
+    
+    context "with ics requested" do
+      setup do
+        get :index, :council_id => @council.id, :format => "ics"
+      end
+  
+      should_assign_to(:council) { @council } 
+      should_assign_to(:meetings) { [@another_meeting, @meeting]} # most recent first
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'text/calendar'
+      # assert_equal "text/calendar", @response.content_type
+      # assert_match /BEGIN\:VCALENDAR/, @response.body
+      # assert_match /X-WR-CALNAME\:Autopendium \:\: Classic Car Events/, @response.body
+      # assert_match %r(#{events(:approved_auction).title}), @response.body
+      # assert_no_match %r(#{events(:unapproved_auction).title}), @response.body
+      
+    end
+    
   end
 
   # show tests
@@ -93,7 +112,6 @@ class MeetingsControllerTest < ActionController::TestCase
       setup do
         @document = Factory(:document, :document_owner => @meeting)
         get :show, :id => @meeting.id
-        # p @meeting.minutes
       end
 
       should "show link to minutes" do

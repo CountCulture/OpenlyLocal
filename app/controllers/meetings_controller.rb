@@ -8,6 +8,10 @@ class MeetingsController < ApplicationController
       format.html
       format.xml { render :xml => @meetings.to_xml }
       format.json { render :xml => @meetings.to_json }
+      format.ics do
+        @meetings.extend(IcalUtilities::ArrayExtensions)
+        render :text => @meetings.to_ical(:name => "TheyWorkForYou Local :: #{@title}", :url => "http://theyworkforyoulocal.com/meetings", :attribute_aliases => {:event_uid => :uid})
+      end 
     end
   end
   

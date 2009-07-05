@@ -24,7 +24,7 @@ class MeetingTest < ActiveSupport::TestCase
 
   context "A Meeting instance" do
     setup do
-      @committee = Committee.create!(:title => "Audit Group", :url => "some.url", :uid => 33, :council_id => 1)
+      @committee = Committee.create!(:title => "Audit Group", :url => "some.url", :uid => 33, :council => Factory(:council))
       @meeting = Meeting.create!(:date_held => "6 November 2008 7:30pm", :committee => @committee, :uid => 22, :council_id => @committee.council_id, :url => "http//council.gov.uk/meeting/22")
     end
 
@@ -41,6 +41,23 @@ class MeetingTest < ActiveSupport::TestCase
       @meeting.minutes = doc
       assert_equal @meeting.id, doc.document_owner_id
       assert_equal "Meeting", doc.document_owner_type
+    end
+    
+    should "alias attributes for Ical::Utilities" do
+      assert_equal @meeting.title, @meeting.summary
+      assert_equal @meeting.date_held, @meeting.dtstart
+      assert_equal @meeting.venue, @meeting.location
+      assert_equal @meeting.created_at, @meeting.created
+      assert_equal @meeting.updated_at, @meeting.last_modified
+    end
+    
+    should "alias committee details as organizer" do
+      expected_result = {:cn => "Audit Group", :uri => "some.url"}
+      assert_equal expected_result, @meeting.organizer
+    end
+    
+    should "constuct event_uid from meeting id and created_at" do
+      assert_equal "#{@meeting.created_at}-meeting-#{@meeting.id}@twfylocal", @meeting.event_uid
     end
     
     context "when calling minutes_body setter" do
