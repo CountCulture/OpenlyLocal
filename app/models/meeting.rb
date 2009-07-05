@@ -5,6 +5,8 @@ class Meeting < ActiveRecord::Base
   has_one :minutes, :class_name => "Document", :as => "document_owner"
   validates_presence_of :date_held, :committee_id, :uid, :council_id
   validates_uniqueness_of :uid, :scope => :council_id
+  named_scope :forthcoming, lambda { { :conditions => ["date_held >= ?", Time.now], :order => "date_held" } }
+  
   # alias attributes with names IcalUtilities wants to encode Vevents
   alias_attribute :summary, :title
   alias_attribute :dtstart, :date_held

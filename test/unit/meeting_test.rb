@@ -19,6 +19,14 @@ class MeetingTest < ActiveSupport::TestCase
     should "include ScraperModel mixin" do
       assert Meeting.respond_to?(:find_existing)
     end
+    
+    should "have forthcoming named scope" do
+      expected_options = {:conditions => ["date_held >= ?", Time.now], :order => "date_held" }
+      assert_equal expected_options[:order], Meeting.forthcoming.proxy_options[:order]
+      assert_equal expected_options[:conditions].first, Meeting.forthcoming.proxy_options[:conditions].first
+      assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
+    end
+
   end
   
 

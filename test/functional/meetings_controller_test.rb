@@ -68,12 +68,6 @@ class MeetingsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'text/calendar'
-      # assert_equal "text/calendar", @response.content_type
-      # assert_match /BEGIN\:VCALENDAR/, @response.body
-      # assert_match /X-WR-CALNAME\:Autopendium \:\: Classic Car Events/, @response.body
-      # assert_match %r(#{events(:approved_auction).title}), @response.body
-      # assert_no_match %r(#{events(:unapproved_auction).title}), @response.body
-      
     end
     
   end
