@@ -14,6 +14,8 @@ class CouncilsController < ApplicationController
   def show
     @council = Council.find(params[:id])
     @members = @council.members.current
+    @committees = @council.committees
+    @meetings = @council.meetings.forthcoming.all(:limit => 16)
     @datapoints = @council.datapoints.select{ |d| d.summary }
     respond_to do |format|
       format.html
