@@ -7,7 +7,7 @@ class MeetingsControllerTest < ActionController::TestCase
     @council = @committee.council
     @member = Factory(:member, :council => @council)
     @meeting = Factory(:meeting, :council => @council, :committee => @committee)
-    @another_meeting = Factory(:meeting, :date_held => 3.days.from_now.to_date, :council => @council, :committee => @committee, :uid => @meeting.uid+1)
+    @future_meeting = Factory(:meeting, :date_held => 3.days.from_now.to_date, :council => @council, :committee => @committee, :uid => @meeting.uid+1)
     @committee.members << @member
   end
   
@@ -20,27 +20,47 @@ class MeetingsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:council) { @council } 
-      should_assign_to(:meetings) { [@another_meeting, @meeting] } # most recent first
+      should_assign_to(:meetings) { [@future_meeting] }
       should_respond_with :success
       should_render_template :index
       should_respond_with_content_type 'text/html'
       
-      should "list meetings" do
-        assert_select "#meetings ul a", @meeting.title
+      should "list forthcoming meetings" do
+        assert_select "#meetings ul a", @future_meeting.title
       end
       
       should "have title" do
-        assert_select "title", /Committee meetings :: #{@council.title}/
+        assert_select "title", /Forthcoming Committee Meetings/
       end
     end
         
+    context "with basic request and include_past meetings requested" do
+      setup do
+        get :index, :council_id => @council.id, :include_past => true
+      end
+  
+      should_assign_to(:council) { @council } 
+      should_assign_to(:meetings) { [@meeting, @future_meeting] }
+      should_respond_with :success
+      should_render_template :index
+      should_respond_with_content_type 'text/html'
+      
+      should "list all meetings" do
+        assert_select "#meetings ul a", @meeting.title
+        assert_select "#meetings ul a", @future_meeting.title
+      end
+      
+      should "have title" do
+        assert_select "title", /All Committee Meetings/
+      end
+    end
     context "with xml requested" do
       setup do
         get :index, :council_id => @council.id, :format => "xml"
       end
   
       should_assign_to(:council) { @council } 
-      should_assign_to(:meetings) { [@another_meeting, @meeting]} # most recent first
+      should_assign_to(:meetings) { [@future_meeting]}
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/xml'
@@ -52,7 +72,7 @@ class MeetingsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:council) { @council } 
-      should_assign_to(:meetings) { [@another_meeting, @meeting]} # most recent first
+      should_assign_to(:meetings) { [@future_meeting]}
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/json'
@@ -64,7 +84,7 @@ class MeetingsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:council) { @council } 
-      should_assign_to(:meetings) { [@another_meeting, @meeting]} # most recent first
+      should_assign_to(:meetings) { [@future_meeting]} # most recent first
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'text/calendar'
@@ -97,7 +117,7 @@ class MeetingsControllerTest < ActionController::TestCase
       end
     
       should "list other meetings" do
-        assert_select "#meetings ul a", @another_meeting.title
+        assert_select "#meetings ul a", @future_meeting.title
         assert_select "#meetings ul a", :text => @meeting.title, :count => 0
       end
     end

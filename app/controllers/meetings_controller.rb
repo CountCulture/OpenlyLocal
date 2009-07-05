@@ -1,9 +1,9 @@
 class MeetingsController < ApplicationController
   
   def index
-    @council = Council.find(params[:council_id])
-    @title = "Committee meetings"
-    @meetings = @council.meetings.find(:all, :order => "date_held DESC")
+    @council = Council.find(params[:council_id]) 
+    build_title
+    @meetings = params[:include_past] ? @council.meetings : @council.meetings.forthcoming
     respond_to do |format|
       format.html
       format.xml { render :xml => @meetings.to_xml }
@@ -26,5 +26,9 @@ class MeetingsController < ApplicationController
       format.xml { render :xml => @meeting.to_xml }
       format.json { render :json => @meeting.to_json }
     end
+  end
+  
+  def build_title
+    @title = params[:include_past] ? "All Committee Meetings" : "Forthcoming Committee Meetings"
   end
 end
