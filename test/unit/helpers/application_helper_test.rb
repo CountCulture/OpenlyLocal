@@ -78,13 +78,13 @@ class ApplicationHelperTest < ActionView::TestCase
     
     should "not add new class if it has recently been created" do
       obj = Factory(:committee) 
-      assert_dom_equal link_to(obj.title, obj, :class => "committee_link new"), basic_link_for(obj)
+      assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), basic_link_for(obj)
     end
     
     should "not add updated class if it is not new but has recently been updated" do
       obj = Factory(:committee) 
       obj.stubs(:created_at => 8.days.ago)
-      assert_dom_equal link_to(obj.title, obj, :class => "committee_link updated"), basic_link_for(obj)
+      assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), basic_link_for(obj)
     end
   end
   
