@@ -6,8 +6,11 @@
    Other <%= link_to "meetings", meetings_path(:council_id => @council.id) %>/<%= link_to "committees", committees_path(:council_id => @council.id) %> for <%= link_for @council %>
 </p>
 <%- if @meeting.minutes -%>
-  <div id="minutes">
-    <%= simple_format truncate(strip_tags(@meeting.minutes.body), 500) %>
+  <div id="minutes_extract">
+    <h3>Minutes</h3>
+    <div class="document_body">
+      <%= simple_format truncate(strip_tags(@meeting.minutes.body), 500) %>
+    </div>
     <p class='more_info'><%= link_to("Complete Minutes", @meeting.minutes) %></p>
   </div>
 <%- end -%>

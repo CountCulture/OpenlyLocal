@@ -118,18 +118,18 @@ body {
 	text-align:right;}
 	
 /*Council document formatting*/
-#document_body {
+.document_body {
 	border: 1px solid #ddd;
 	padding: 12px;
 	background-color: #eeefff;
 	font-family: Times New Roman;}
-#document_body h1 {
+.document_body h1 {
 	font-size: 1.8em;}
-#document_body h2 {
+.document_body h2 {
 	font-size: 1.6em;}
-#document_body h3 {
+.document_body h3 {
 	font-size: 1.4em;}
-#document_body p {
+.document_body p {
 	margin: 0;}
 /*Council formatting*/
 .extra_info {

@@ -135,7 +135,7 @@ class MeetingsControllerTest < ActionController::TestCase
       end
       
       should "not show minutes" do
-        assert_select "#minutes", false
+        assert_select "#minutes_extract", false
       end
     end
     
@@ -150,7 +150,7 @@ class MeetingsControllerTest < ActionController::TestCase
       end
       
       should "show minutes" do
-        assert_select "#minutes"
+        assert_select "#minutes_extract"
       end
     end
     
