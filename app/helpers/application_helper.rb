@@ -7,9 +7,13 @@ module ApplicationHelper
   
   def link_for(obj=nil, options={})
     return if obj.blank?
-    freshness = obj.created_at > 7.days.ago ? "new" : (obj.updated_at > 7.days.ago ? "updated" : nil)
+    freshness = options.delete(:basic) ? nil : (obj.created_at > 7.days.ago ? "new" : (obj.updated_at > 7.days.ago ? "updated" : nil) )
     css_class = ["#{obj.class.to_s.downcase}_link", options.delete(:class), freshness].compact.join(" ")
     link_to(h(obj.title), obj, { :class => css_class }.merge(options))
+  end
+  
+  def basic_link_for(obj=nil, options={})
+    link_for(obj, options.merge(:basic => true))
   end
   
   def link_to_api_url(response_type)

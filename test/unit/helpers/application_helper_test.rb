@@ -37,6 +37,55 @@ class ApplicationHelperTest < ActionView::TestCase
       obj.stubs(:created_at => 8.days.ago)
       assert_dom_equal link_to(obj.title, obj, :class => "committee_link updated"), link_for(obj)
     end
+    
+    should "not add new class if it has recently been created but basic is requested" do
+      obj = Factory(:committee) 
+      assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), link_for(obj, :basic => true)
+    end
+    
+    should "not add updated class if it is not new but has recently been updated but basic is requested" do
+      obj = Factory(:committee) 
+      obj.stubs(:created_at => 8.days.ago)
+      assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), link_for(obj, :basic => true)
+    end
+  end
+  
+  context "basic_link_for helper method" do
+
+    should "return nil by default" do
+      assert_nil basic_link_for
+    end
+    
+    should "return link for item with object title for link text" do
+      obj = stale_factory_object(:committee) # poss better way of testing this. obj can be any ActiveRecord obj 
+      assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), basic_link_for(obj)
+    end
+    
+    should "escape object's title" do
+      obj = stale_factory_object(:committee, :title => "something & nothing... which <needs> escaping" ) 
+      assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link"), basic_link_for(obj)
+    end
+    
+    should "pass on options" do
+      obj = stale_factory_object(:committee, :title => "something & nothing... which <needs> escaping" ) 
+      assert_dom_equal link_to(h(obj.title), obj, :foo => "bar", :class => "committee_link"), basic_link_for(obj, :foo => "bar")
+    end
+    
+    should "add given class to object class" do
+      obj = stale_factory_object(:committee, :title => "something & nothing... which <needs> escaping" )
+      assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link bar"), basic_link_for(obj, :class => "bar")
+    end
+    
+    should "not add new class if it has recently been created" do
+      obj = Factory(:committee) 
+      assert_dom_equal link_to(obj.title, obj, :class => "committee_link new"), basic_link_for(obj)
+    end
+    
+    should "not add updated class if it is not new but has recently been updated" do
+      obj = Factory(:committee) 
+      obj.stubs(:created_at => 8.days.ago)
+      assert_dom_equal link_to(obj.title, obj, :class => "committee_link updated"), basic_link_for(obj)
+    end
   end
   
   context "council_page_for helper method" do
