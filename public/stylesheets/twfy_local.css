@@ -164,7 +164,7 @@ div.item_grouping h3 {
 /*Meeting formatting*/
 .past {color:#515151;}
 .past a {color:#282828;}
-.future a {font-weight:bold;}
+/*.future a {font-weight:bold;}*/
 
 /*Parser-specific formatting*/
 div.item_attribute {

@@ -131,7 +131,7 @@ class ApplicationHelperTest < ActionView::TestCase
     end
     
     should "check to see if list_item partial exists for item" do
-      self.expects(:partial_exists?).with('committees/_list_item')
+      self.expects(:partial_exists?).with('committees/list_item')
       list_all(@obj1)
     end
     
