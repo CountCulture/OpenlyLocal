@@ -161,6 +161,10 @@ padding-right: 20px;}
 div.item_grouping h3 {
 	border-bottom: 1px solid #036;
 }
+/*Meeting formatting*/
+.past {color:#515151;}
+.past a {color:#69a;}
+
 /*Parser-specific formatting*/
 div.item_attribute {
 	clear:left; }

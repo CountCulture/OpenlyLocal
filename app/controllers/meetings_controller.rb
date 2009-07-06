@@ -20,7 +20,7 @@ class MeetingsController < ApplicationController
     @council = @meeting.council
     @committee = @meeting.committee
     @other_meetings = @committee.meetings - [@meeting]
-    @title = "#{@meeting.title}"
+    @title = "#{@meeting.title}, #{@meeting.date_held.to_s(:event_date).squish}"
     respond_to do |format|
       format.html
       format.xml { render :xml => @meeting.to_xml }

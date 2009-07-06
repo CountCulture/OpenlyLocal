@@ -3,17 +3,23 @@
 
 <p class="extra_info">
   <strong>Venue </strong><%= @meeting.venue || "Not known" %> :: 
-  <%= link_to("Minutes", @meeting.minutes)+" ::" if @meeting.minutes %>
    Other <%= link_to "meetings", meetings_path(:council_id => @council.id) %>/<%= link_to "committees", committees_path(:council_id => @council.id) %> for <%= link_for @council %>
 </p>
-
+<%- if @meeting.minutes -%>
+  <div id="minutes">
+    <%= simple_format truncate(strip_tags(@meeting.minutes.body), 500) %>
+    <p class='more_info'><%= link_to("Complete Minutes", @meeting.minutes) %></p>
+  </div>
+<%- end -%>
 <div id="members" class="item_grouping">
   <h3>Members of this committee</h3>
   <%= list_all @committee.members %>
 </div>
-<div id="meetings" class="item_grouping">
+<div id="other_meetings" class="item_grouping">
   <h3>Other meetings of this committee</h3>
-  <%= list_all @other_meetings %>
+  <ul>  
+    <%= render :partial => 'list_item', :collection => @other_meetings %>
+  </ul>
 </div>
 <%= render :partial => '/shared/api_info' %>
 <p class="attribution">Last updated <%= @meeting.updated_at.to_s(:short) %> (<%= time_ago_in_words(@meeting.updated_at) %> ago)</p>

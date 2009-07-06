@@ -79,7 +79,7 @@ end
 Factory.define :document do |f|
   f.url "http://www.council.gov.uk/document/33"
   f.raw_body "This is raw text"
-  f.body "This is a document"
+  f.body "This is a document. It goes " + "on and on and on"*10
 end
 
 Factory.define :dataset do |f|

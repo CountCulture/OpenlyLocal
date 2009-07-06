@@ -1,0 +1,3 @@
+<li class='<%= list_item.date_held > Time.now ? 'future' : 'past' %>'>
+  <span class="date"><%= list_item.date_held.to_s(:event_date) %></span> <%= link_for list_item %>
+</li>

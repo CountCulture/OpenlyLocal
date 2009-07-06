@@ -78,5 +78,5 @@ end
 require 'open-uri'
 
 # Add custom date/time formats
-Time::DATE_FORMATS[:event_date] = "%B %e %Y, %l.%M%p" 
+Time::DATE_FORMATS[:event_date] = "%b %e %Y, %l.%M%p" 
 Date::DATE_FORMATS[:custom_short] = "%B %e %Y" # add custom time format so we get some unity

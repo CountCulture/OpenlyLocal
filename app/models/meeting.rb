@@ -16,7 +16,7 @@ class Meeting < ActiveRecord::Base
   alias_attribute :last_modified, :updated_at
   
   def title
-    "#{committee.title} meeting, #{date_held.to_s(:event_date).squish}"
+    "#{committee.title} meeting"
   end
   
   def minutes_body=(doc_body=nil)
