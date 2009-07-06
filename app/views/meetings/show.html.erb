@@ -17,9 +17,7 @@
 </div>
 <div id="other_meetings" class="item_grouping">
   <h3>Other meetings of this committee</h3>
-  <ul>  
-    <%= render :partial => 'list_item', :collection => @other_meetings %>
-  </ul>
+  <%= list_all @other_meetings %>
 </div>
 <%= render :partial => '/shared/api_info' %>
 <p class="attribution">Last updated <%= @meeting.updated_at.to_s(:short) %> (<%= time_ago_in_words(@meeting.updated_at) %> ago)</p>

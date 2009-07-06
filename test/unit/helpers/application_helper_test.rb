@@ -130,12 +130,42 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal "<p class='no_results'>No results</p>", list_all(nil)
     end
     
-    should "return unordered list of objects using link_for helper method" do
-      assert_dom_equal "<ul><li>#{link_for(@obj1)}</li><li>#{link_for(@obj2)}</li></ul>", list_all([@obj1,@obj2])
+    should "check to see if list_item partial exists for item" do
+      self.expects(:partial_exists?).with('committees/_list_item')
+      list_all(@obj1)
     end
     
-    should "return unordered list of single object" do
-      assert_dom_equal "<ul><li>#{link_for(@obj1)}</li></ul>", list_all(@obj1)
+    context "when no list_item partial exists for given item" do
+      setup do
+        self.stubs(:partial_exists?)
+      end
+
+      should "return unordered list of objects using link_for helper method" do
+        assert_dom_equal "<ul><li>#{link_for(@obj1)}</li><li>#{link_for(@obj2)}</li></ul>", list_all([@obj1,@obj2])
+      end
+
+      should "return unordered list of single object" do
+        assert_dom_equal "<ul><li>#{link_for(@obj1)}</li></ul>", list_all(@obj1)
+      end
+
+    end
+        
+    context "when list_item partial exists for given item" do
+
+      should "render using partial" do
+        # need to figure out way of testing this
+      end
+    end
+    
+  end
+  
+  context "partial_exists helper method" do
+    should "return false by default" do
+      assert !partial_exists?("foo")
+    end
+    
+    should "return true if partial exists" do
+      assert partial_exists?("shared/footer")
     end
   end
   

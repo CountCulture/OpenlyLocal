@@ -25,7 +25,20 @@ module ApplicationHelper
       "<p class='no_results'>No results</p>"
     else
       coll = coll.is_a?(Array) ? coll : [coll]
-      content_tag(:ul, coll.collect{ |i| (content_tag(:li, link_for(i))) }.join)
+      partial_name = "#{coll.first.class.table_name}/list_item"
+      if partial_exists?(partial_name) 
+        content_tag :ul do
+          render :partial => partial_name, :collection => coll
+        end
+      else
+        content_tag(:ul, coll.collect{ |i| (content_tag(:li, link_for(i))) }.join)
+      end
     end
+  end
+  
+  # quick n dirty way of seeing if partial exists
+  def partial_exists?(partial_name)
+    partial_name, ctrler_name = partial_name.split('/', 2).reverse
+    File.exists? File.join(RAILS_ROOT, 'app/views/', ctrler_name || '' ,"_#{partial_name}.html.erb")
   end
 end
