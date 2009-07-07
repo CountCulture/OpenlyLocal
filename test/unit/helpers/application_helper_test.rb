@@ -169,6 +169,33 @@ class ApplicationHelperTest < ActionView::TestCase
     end
   end
   
+  context "link_to_calendar helper method" do
+    setup do
+      @controller = TestController.new
+      self.stubs(:params).returns(:controller => "meetings", :action => "index", :foo => "bar")
+    end
+    
+    should "return link to current page with calendar params added" do
+      assert_equal link_to("Subscribe to this calendar", { :controller => "meetings", 
+                                                           :action => "index", 
+                                                           :foo => "bar", 
+                                                           :protocol => "webcal", 
+                                                           :only_path => false, 
+                                                           :format => "ics" }, :class => "calendar feed"), 
+                      link_to_calendar
+    end
+    
+    should "return link to given page with calendar params added" do
+      assert_equal link_to("Subscribe to this calendar", { :controller => "committees", 
+                                                           :action => "show", 
+                                                           :id => 1,
+                                                           :protocol => "webcal", 
+                                                           :only_path => false, 
+                                                           :format => "ics" }, :class => "calendar feed"), 
+                      link_to_calendar({:controller => "committees", :action => "show", :id => 1})
+    end
+  end
+  
   private
   def stale_factory_object(name, options={})
     obj = Factory(name, options)

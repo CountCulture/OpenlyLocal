@@ -20,6 +20,11 @@ module ApplicationHelper
     link_to(response_type, params.merge(:format => response_type), :class => "api_link #{response_type}")
   end
   
+  def link_to_calendar(basic_url=nil)
+    basic_url ||= params
+    link_to "Subscribe to this calendar", url_for(basic_url.merge(:protocol => "webcal", :only_path => false, :format => "ics")), :class => "calendar feed"
+  end
+
   def list_all(coll=nil)
     if coll.blank?
       "<p class='no_results'>No results</p>"
