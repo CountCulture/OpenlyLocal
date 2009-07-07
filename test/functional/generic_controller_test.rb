@@ -29,7 +29,7 @@ class GenericControllerTest < ActionController::TestCase
     end
 
     should "show title" do
-      assert_select "title", "They Work For You Local"
+      assert_select "title", "Openly Local"
     end
   end
   
@@ -40,7 +40,7 @@ class GenericControllerTest < ActionController::TestCase
     end
     
     should "show given title in title" do
-      assert_select "title", "Foo Title :: They Work For You Local"
+      assert_select "title", "Foo Title :: Openly Local"
     end
   end
   
@@ -51,7 +51,7 @@ class GenericControllerTest < ActionController::TestCase
     end
     
     should "show council in title" do
-      assert_select "title", "Foo Title :: #{@council.title} :: They Work For You Local"
+      assert_select "title", "Foo Title :: #{@council.title} :: Openly Local"
     end
   end
 end

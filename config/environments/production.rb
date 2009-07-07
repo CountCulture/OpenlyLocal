@@ -19,7 +19,7 @@ config.action_controller.perform_caching             = true
 ActionController::Base.cache_store = :file_store, "tmp/cache"
 
 # Enable serving of images, stylesheets, and javascripts from an asset server
-config.action_controller.asset_host = "http://assets.theyworkforyoulocal.com"
+config.action_controller.asset_host = "http://assets.openlylocal.com"
 
 # Disable delivery errors, bad email addresses will be ignored
 # config.action_mailer.raise_delivery_errors = false

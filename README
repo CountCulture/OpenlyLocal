@@ -1,6 +1,6 @@
 == twfy_local_parser is a scraper/parser for local authorities.
 
-A live version can be seen at http://theyworkforyoulocal.com
+A live version can be seen at http://openlylocal.com
 
 At the moment it’s in the early stages, concentrating on developing a scraper/parser system where the scraper/parsers are stored in the db (via a web interface).
 
