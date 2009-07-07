@@ -16,7 +16,7 @@ class ItemScraperTest < ActiveSupport::TestCase
     end
 
     should "return what it is scraping for" do
-      assert_equal "Meetings from http://www.anytown.gov.uk/members", @scraper.scraping_for
+      assert_equal "Meetings from <a href='http://www.anytown.gov.uk/members'>http://www.anytown.gov.uk/members</a>", @scraper.scraping_for
     end
     
     context "with related model" do
@@ -126,7 +126,7 @@ class ItemScraperTest < ActiveSupport::TestCase
         context "and url" do
 
           should "get data from scraper url" do
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/members").twice #once for each related object
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/members").twice # once for each related object
             @scraper.process
           end
         end

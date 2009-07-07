@@ -24,7 +24,12 @@ class InfoScraperTest < ActiveSupport::TestCase
     end
     
     should "return what it is scraping for" do
-      assert_equal "info on Members", @scraper.scraping_for
+      assert_equal "info on Members from Member's url", @scraper.scraping_for
+    end
+    
+    should "return include url it is if set" do
+      @scraper.url = "http://foo.com/something"
+      assert_equal "info on Members from <a href='http://foo.com/something'>http://foo.com/something</a>", @scraper.scraping_for
     end
     
     should "search result model for related_objects when none exist" do
