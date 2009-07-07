@@ -1,5 +1,5 @@
 Factory.define :scraper, :class => :item_scraper do |s|
-  s.url 'http://www.anytown.gov.uk/members/bob'
+  # s.url 'http://www.anytown.gov.uk/members/bob'
   s.association :parser
   s.association :council
 end

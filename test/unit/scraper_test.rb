@@ -187,6 +187,10 @@ class ScraperTest < ActiveSupport::TestCase
     end
     
     context "if scraper has url attribute" do
+      setup do
+        @scraper.url = 'http://www.anytown.gov.uk/members/bob'
+      end
+      
       should "return url attribute as url" do
         assert_equal 'http://www.anytown.gov.uk/members/bob', @scraper.url
       end
@@ -304,6 +308,7 @@ class ScraperTest < ActiveSupport::TestCase
       end
       
       should "get data from url" do
+        @scraper.url = 'http://www.anytown.gov.uk/members/bob'
         @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob")
         @scraper.process
       end
@@ -435,6 +440,26 @@ class ScraperTest < ActiveSupport::TestCase
         end
       end
 
+    end
+
+    context "when evaluating target_url_for object" do
+      setup do
+        @obj = stub(:url => "http://foo.com", :uid => 42)
+      end
+
+      should "return object's url by default" do
+        assert_equal "http://foo.com", @scraper.send(:target_url_for, @obj)
+      end
+      
+      should "return scraper url if set" do
+        @scraper.url = "http://bar.com"
+        assert_equal "http://bar.com", @scraper.send(:target_url_for, @obj)
+      end
+      
+      should "return scraper url interpolated with object's uid" do
+        @scraper.url = 'http://bar.com/committee_id=#{uid}&foo=bar'
+        assert_equal "http://bar.com/committee_id=42&foo=bar", @scraper.send(:target_url_for, @obj)
+      end
     end
     
   end

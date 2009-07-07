@@ -138,5 +138,9 @@ class Scraper < ActiveRecord::Base
   
   def update_last_scraped
     self.class.update_all({ :last_scraped => Time.zone.now }, { :id => id })
-  end  
+  end
+  
+  def target_url_for(obj=nil)
+    url.blank? ? obj.url : obj.instance_eval("\"" + url + "\"") # if we have url evaluate it AS A STRING in context of related object (which allows us to interpolate uid etc), otherwise just use related object's url
+  end
 end
