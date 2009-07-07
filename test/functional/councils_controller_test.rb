@@ -86,6 +86,10 @@ class CouncilsControllerTest < ActionController::TestCase
       should "list forthcoming meetings" do
         assert_select "#meetings li", @council.meetings.size
       end
+      
+      should "show link to meeting calendar" do
+        assert_select "a.calendar[href*='meetings.ics?council_id=#{@council.id}']"
+      end
     end
     
     context "with xml requested" do
