@@ -98,18 +98,21 @@ body {
 	margin-top: 18px;}
 #content {
 	min-height: 600px; }
-#header { padding: 6px 0;
+#header { 
+	padding: 6px 6px;
 	border-bottom: #036 solid 3px;
+	background: #EFF7FF url(../images/header_bg.gif) repeat-y scroll 0 0;
 	margin-bottom: 9px;}	
 #header h2 { 
 	margin: 0;
+	color: #036;
 	line-height:50px; }	
 #header h2 a { 
 	text-decoration: none;
 	color: #69b; 
 	width:260px;
 	height:50px;
-	background:transparent url(../images/openlylocal_logo.gif) no-repeat 0 0;
+	background:transparent url(../images/openlylocal_logo.gif) no-repeat center left;
 	text-indent:-9000px;
 	display: block;
 	float:left;
