@@ -32,6 +32,9 @@ class MembersControllerTest < ActionController::TestCase
        should "list forthcoming meetings" do
          assert_select "#meetings ul a", @forthcoming_meeting.title
        end
+       should "show link to meeting calendar" do
+         assert_select "#meetings a.calendar[href*='#{@member.id}.ics']"
+       end
      end
      
      context "with xml requested" do
@@ -56,6 +59,16 @@ class MembersControllerTest < ActionController::TestCase
        should_respond_with_content_type 'application/json'
      end
 
+     context "with ics requested" do
+       setup do
+         get :show, :id => @member.id, :format => "ics"
+       end
+
+       should_assign_to(:member) { @member }
+       should_respond_with :success
+       should_render_without_layout
+       should_respond_with_content_type 'text/calendar'
+     end
    end  
 
 end
