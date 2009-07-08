@@ -9,6 +9,7 @@ class MembersControllerTest < ActionController::TestCase
        @council = @member.council
        @committee = Factory(:committee, :council => @council)
        @member.committees << @committee
+       @forthcoming_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 2.days.from_now)
      end
      context "with basic request" do
        setup do
@@ -18,14 +19,18 @@ class MembersControllerTest < ActionController::TestCase
        should_assign_to(:member) { @member }
        should_assign_to(:council) { @council }
        should_assign_to :committees
+       should_assign_to(:forthcoming_meetings) { [@forthcoming_meeting] }
        should_respond_with :success
        should_render_template :show
        should_respond_with_content_type 'text/html'
+       should "show member name in title" do
+         assert_select "title", /#{@member.full_name}/
+       end
        should "list committee memberships" do
          assert_select "#committees ul a", @committee.title
        end
-       should "show member name in title" do
-         assert_select "title", /#{@member.full_name}/
+       should "list forthcoming meetings" do
+         assert_select "#meetings ul a", @forthcoming_meeting.title
        end
      end
      

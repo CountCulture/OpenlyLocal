@@ -4,6 +4,7 @@ class MembersController < ApplicationController
     @member = Member.find(params[:id])
     @council = @member.council
     @committees = @member.committees
+    @forthcoming_meetings = @member.forthcoming_meetings
     @title = @member.full_name
     respond_to do |format|
       format.html

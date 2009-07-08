@@ -107,14 +107,24 @@ class MemberTest < ActiveSupport::TestCase
         assert_equal [], @member.committees
       end
       
-      should "have many potential_meetings" do
-        @member.committees << @new_committee # make sure member has two committees
-        @member_meeting = Factory(:meeting, :committee => @old_committee, :council => @council, :date_held => 2.days.from_now)
-        @another_member_meeting = Factory(:meeting, :uid => @member_meeting.id+1, :committee => @new_committee, :council => @council)
-        @non_member_meeting = Factory(:meeting, :uid => @member_meeting.id+2, :committee => @another_council_committee, :council => @council)
-        assert_equal [@another_member_meeting, @member_meeting], @member.potential_meetings
+      context "and meetings" do
+        setup do
+          @member.committees << @new_committee # make sure member has two committees
+          @member_meeting = Factory(:meeting, :committee => @old_committee, :council => @council, :date_held => 2.days.from_now)
+          @another_member_meeting = Factory(:meeting, :uid => @member_meeting.id+1, :committee => @new_committee, :council => @council)
+          @non_member_meeting = Factory(:meeting, :uid => @member_meeting.id+2, :committee => @another_council_committee, :council => @council)
+        end
+
+        should "have many potential_meetings" do
+          assert_equal [@another_member_meeting, @member_meeting], @member.potential_meetings
+        end
+
+        should "have many forthcoming_meetings" do
+          assert_equal [@member_meeting], @member.forthcoming_meetings
+        end
       end
-    end
+      
+   end
     
     context "with council" do
       setup do

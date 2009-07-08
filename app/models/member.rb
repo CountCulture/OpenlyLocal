@@ -11,6 +11,13 @@ class Member < ActiveRecord::Base
            :finder_sql => 'SELECT * from meetings, memberships WHERE 
                            meetings.committee_id=memberships.committee_id 
                            AND memberships.member_id=#{id} ORDER BY meetings.date_held'
+
+  has_many :forthcoming_meetings, 
+           :class_name => 'Meeting',
+           :finder_sql => 'SELECT * from meetings, memberships WHERE 
+                           meetings.committee_id=memberships.committee_id 
+                           AND memberships.member_id=#{id} AND meetings.date_held > \'#{Time.now.to_s(:db)}\' ORDER BY meetings.date_held'
+
   belongs_to :council
   named_scope :current, :conditions => "date_left IS NULL"
   alias_attribute :title, :full_name
