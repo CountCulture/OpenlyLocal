@@ -77,8 +77,12 @@ class MemberTest < ActiveSupport::TestCase
       assert_equal "Liberal Democrat", new_member(:party => "  Liberal Democrat Party ").party
     end
 
+    should "have no potential_meetings" do
+      assert_equal [], @member.potential_meetings
+    end
+    
     context "with committees" do
-      # this part is really just testing inclusion of uid_association extension in committees association
+      # this part is mostly just testing inclusion of uid_association extension in committees association
       setup do
         @member = Factory(:member)
         @council = @member.council
@@ -103,6 +107,13 @@ class MemberTest < ActiveSupport::TestCase
         assert_equal [], @member.committees
       end
       
+      should "have many potential_meetings" do
+        @member.committees << @new_committee # make sure member has two committees
+        @member_meeting = Factory(:meeting, :committee => @old_committee, :council => @council, :date_held => 2.days.from_now)
+        @another_member_meeting = Factory(:meeting, :uid => @member_meeting.id+1, :committee => @new_committee, :council => @council)
+        @non_member_meeting = Factory(:meeting, :uid => @member_meeting.id+2, :committee => @another_council_committee, :council => @council)
+        assert_equal [@another_member_meeting, @member_meeting], @member.potential_meetings
+      end
     end
     
     context "with council" do
