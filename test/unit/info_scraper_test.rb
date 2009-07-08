@@ -24,7 +24,12 @@ class InfoScraperTest < ActiveSupport::TestCase
     end
     
     should "return what it is scraping for" do
-      assert_equal "info on Members", @scraper.scraping_for
+      assert_equal "info on Members from Member's url", @scraper.scraping_for
+    end
+    
+    should "return include url it is if set" do
+      @scraper.url = "http://foo.com/something"
+      assert_equal "info on Members from <a href='http://foo.com/something'>http://foo.com/something</a>", @scraper.scraping_for
     end
     
     should "search result model for related_objects when none exist" do
@@ -48,8 +53,14 @@ class InfoScraperTest < ActiveSupport::TestCase
           @dummy_related_object = Member.new(:url => "http://www.anytown.gov.uk/members/fred")
         end
 
-        should "get data from object's url" do
+        should "by default get data from object's url" do
           @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/fred")
+          @scraper.process(:objects => @dummy_related_object)
+        end
+
+        should "get data from url if set" do
+          @scraper.update_attribute(:url, "http://some.other.url")
+          @scraper.expects(:_data).with("http://some.other.url")
           @scraper.process(:objects => @dummy_related_object)
         end
 

@@ -3,7 +3,7 @@ class InfoScraper < Scraper
   def process(options={})
     @related_objects = [options[:objects]].flatten if options[:objects]
     related_objects.each do |obj|
-      raw_results = parser.process(_data(obj.url), self).results
+      raw_results = parser.process(_data(target_url_for(obj)), self).results
       update_with_results(raw_results, obj, options)
     end
     update_last_scraped if options[:save_results]&&parser.errors.empty?
@@ -21,7 +21,7 @@ class InfoScraper < Scraper
   end
   
   def scraping_for
-    "info on #{result_model}s"
+    "info on #{result_model}s from " + (url.blank? ? "#{result_model}'s url" : "<a href='#{url}'>#{url}</a>")
   end
   
   protected

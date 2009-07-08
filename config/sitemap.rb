@@ -1,5 +1,5 @@
 # Set the host name for URL creation
-SitemapGenerator::Sitemap.default_host = "http://www.example.com"
+SitemapGenerator::Sitemap.default_host = "http://openlylocal.com"
 
 SitemapGenerator::Sitemap.add_links do |sitemap|
   # Put links creation logic here.
@@ -34,7 +34,7 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
     sitemap.add committee_path(c), :lastmod => c.updated_at
   end
 
-  # add meetins
+  # add meetings
   Meeting.all.each do |m|
     sitemap.add meeting_path(m), :lastmod => m.updated_at
   end

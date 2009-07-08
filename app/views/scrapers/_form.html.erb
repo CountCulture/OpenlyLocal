@@ -5,13 +5,15 @@
     <%= f.label :problematic, "Problematic <em>(this is set when there have been problems running this scraper)</em>" %>
     <%= f.check_box :problematic %>
   </p>
-  <%- unless @scraper.is_a?(InfoScraper) -%>
-    <p>
-      <%= f.label :url, "Url to be scraped" %>
-      <%= f.text_field :url, :size => 60 %>
-    </p>
-    <%= content_tag(:p, "Will use #{link_to(@scraper.computed_url, @scraper.computed_url, :class => 'external')} by default", :class => "faint", :id => "scraper_default_url") if @scraper.computed_url %>
-  <%- end -%>
+  <p>
+    <%= f.label :url, "Url to be scraped" %>
+    <%= f.text_field :url, :size => 60 %><br />
+    <%- if @scraper.is_a?(InfoScraper) -%>
+      <%= content_tag(:p, "NB: Will use object's url by default", :class => "faint", :id => "scraper_default_url") %>
+    <%- else -%>
+      <%= content_tag(:p, "Will use #{link_to(@scraper.computed_url, @scraper.computed_url, :class => 'external')} by default", :class => "faint", :id => "scraper_default_url") if @scraper.computed_url %>
+    <%- end -%>
+  </p>
   
   <%- if @scraper.portal_parser? && !params[:dedicated_parser] -%>
     <%= f.hidden_field :parser_id %>
