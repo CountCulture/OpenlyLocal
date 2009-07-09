@@ -7,7 +7,7 @@ class ParserTest < Test::Unit::TestCase
     should_belong_to :portal_system
     should_validate_presence_of :result_model
     should_validate_presence_of :scraper_type
-    should_allow_values_for :result_model, "Member", "Committee", "Meeting"
+    should_allow_values_for :result_model, "Member", "Committee", "Meeting", "Ward"
     should_not_allow_values_for :result_model, "foo", "User"
     should_allow_values_for :scraper_type, "InfoScraper", "ItemScraper"
     should_not_allow_values_for :scraper_type, "foo", "OtherScraper"

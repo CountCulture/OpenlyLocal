@@ -96,6 +96,5 @@ end
 
 Factory.define :ward do |f|
   f.name "Foo South"
-  # f.association :dataset
-  # f.data        "some data"
+  f.association :council
 end

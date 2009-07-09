@@ -1,7 +1,7 @@
 # attributes item_parser, title, attribute_parser
 
 class Parser < ActiveRecord::Base
-  ALLOWED_RESULT_CLASSES = %w(Member Committee Meeting)
+  ALLOWED_RESULT_CLASSES = %w(Member Committee Meeting Ward)
   AttribObject = Struct.new(:attrib_name, :parsing_code, :to_param)
   validates_presence_of :result_model
   validates_presence_of :scraper_type
