@@ -41,6 +41,10 @@ module ApplicationHelper
     end
   end
   
+  def timestamp_data_for(obj)
+    content_tag(:p, "Last updated #{obj.updated_at.to_s(:short)} (#{time_ago_in_words(obj.updated_at)} ago)", :class => "attribution")
+  end
+  
   # quick n dirty way of seeing if partial exists
   def partial_exists?(partial_name)
     partial_name, ctrler_name = partial_name.split('/', 2).reverse

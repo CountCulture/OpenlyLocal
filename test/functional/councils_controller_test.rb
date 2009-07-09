@@ -9,6 +9,7 @@ class CouncilsControllerTest < ActionController::TestCase
     @another_council = Factory(:another_council)
     @committee = Factory(:committee, :council => @council)
     @meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 2.days.from_now)
+    @ward = Factory(:ward, :council => @council)
   end
   
   # index test
@@ -81,6 +82,12 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       should "list all committees" do
         assert_select "#committees li", @council.committees.size
+      end
+      
+      should "list all wards" do
+        assert_select "#wards li", @council.wards.size do
+          assert_select "a", %r(#{@ward.name})
+        end
       end
       
       should "list forthcoming meetings" do

@@ -196,6 +196,16 @@ class ApplicationHelperTest < ActionView::TestCase
     end
   end
   
+  context "timestamp_data_for helper method" do
+    setup do
+      @last_updated = 2.hours.ago
+      @obj = stub(:updated_at => @last_updated)
+    end
+    should "return details of when updated" do
+      assert_dom_equal content_tag(:p, "Last updated #{@last_updated.to_s(:short)} (#{time_ago_in_words(@last_updated)} ago)", :class => "attribution"), timestamp_data_for(@obj)
+    end
+  end
+  
   private
   def stale_factory_object(name, options={})
     obj = Factory(name, options)

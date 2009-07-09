@@ -23,4 +23,4 @@
   <%= list_all @other_meetings %>
 </div>
 <%= render :partial => '/shared/api_info' %>
-<p class="attribution">Last updated <%= @meeting.updated_at.to_s(:short) %> (<%= time_ago_in_words(@meeting.updated_at) %> ago)</p>
+<%= timestamp_data_for @meeting %>

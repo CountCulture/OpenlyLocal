@@ -36,6 +36,10 @@
   <h3><%= link_to "Council Committees", committees_path(:council_id => @council.id) %></h3>
   <%= list_all @committees %>
 </div>
+<div id="wards" class="item_grouping">
+  <h3><%= "Wards" %></h3>
+  <%= list_all @wards %>
+</div>
 <div id="meetings" class="item_grouping">
   <h3><%= link_to "Forthcoming Committee Meetings", meetings_path(:council_id => @council.id) %></h3>
   <p><%= link_to_calendar(:controller => "meetings", :council_id => @council.id) %></p>
@@ -43,4 +47,4 @@
   <%= content_tag(:p, link_to("See more", meetings_path(:council_id => @council.id)), :class => "more_info") if @meetings.size > 15 %>
 </div>
 <%= render :partial => '/shared/api_info' %>
-<p class="attribution">Last updated <%= @council.updated_at.to_s(:short) %></p>
+<%= timestamp_data_for @council %>

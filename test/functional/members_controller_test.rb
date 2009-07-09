@@ -11,6 +11,7 @@ class MembersControllerTest < ActionController::TestCase
        @member.committees << @committee
        @forthcoming_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 2.days.from_now)
      end
+
      context "with basic request" do
        setup do
          get :show, :id => @member.id

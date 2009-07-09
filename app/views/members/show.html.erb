@@ -1,6 +1,7 @@
 <h1><%= @member.full_name %> <em><%= council_page_for @member %></em></h1>
 <p>Council <strong><%= link_to h(@council.name), @council %></strong></p>
 <p>Party <strong><%= @member.party %></strong></p>
+<p>Ward <strong><%= link_for(@member.ward) || 'not known' %></strong></p>
 <p>Email <strong><%= @member.email ? mail_to(@member.email, @member.email, :encode => "javascript") : 'not known' %></strong></p>
 <p>Address <strong><%= @member.address || 'not known' %></strong></p>
 <p>Date elected <strong><%= @member.date_elected ? @member.date_elected.to_s(:custom_short) : 'not known' %></strong></p>
@@ -19,5 +20,5 @@
 
 <%= render :partial => '/shared/api_info' %>
 
-<p class="attribution">Last updated <%= @member.updated_at.to_s(:short) %> (<%= time_ago_in_words(@member.updated_at) %> ago)</p>
+<%= timestamp_data_for @member %>
 
