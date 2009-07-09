@@ -19,6 +19,7 @@ class Member < ActiveRecord::Base
                            AND memberships.member_id=#{id} AND meetings.date_held > \'#{Time.now.to_s(:db)}\' ORDER BY meetings.date_held'
 
   belongs_to :council
+  belongs_to :ward
   named_scope :current, :conditions => "date_left IS NULL"
   alias_attribute :title, :full_name
   delegate :uids, :to => :committees, :prefix => "committee"

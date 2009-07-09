@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090701090043) do
+ActiveRecord::Schema.define(:version => 20090709095526) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(:version => 20090701090043) do
     t.string   "qualifications"
     t.string   "declaration_of_interests"
     t.text     "address"
+    t.integer  "ward_id"
   end
 
   create_table "memberships", :force => true do |t|
@@ -149,6 +150,13 @@ ActiveRecord::Schema.define(:version => 20090701090043) do
     t.datetime "last_scraped"
     t.boolean  "problematic",                :default => false
     t.text     "notes"
+  end
+
+  create_table "wards", :force => true do |t|
+    t.string   "name"
+    t.integer  "council_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

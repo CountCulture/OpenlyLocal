@@ -6,7 +6,7 @@ class ItemScraper < Scraper
       super
     else
       related_objects.each do |obj|
-        raw_results = parser.process(_data(target_url_for obj), self).results
+        raw_results = parser.process(_data(target_url_for(obj)), self).results
         logger.debug { "\n\n**************RESULTS from parsing #{target_url_for(obj)}:\n#{raw_results.inspect}" }
         update_with_results(raw_results.collect{ |r| r.merge("#{obj.class.to_s.downcase}_id".to_sym => obj.id) }, options) unless raw_results.blank?
       end
