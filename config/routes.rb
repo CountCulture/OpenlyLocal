@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :wards
+
   map.resources :datasets
   map.resources :datasets, :member => { :data => :get }
 
