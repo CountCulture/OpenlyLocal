@@ -29,6 +29,6 @@ class Meeting < ActiveRecord::Base
   end
   
   def event_uid
-    "#{created_at}-meeting-#{id}@twfylocal"
+    "#{created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{id}@twfylocal"
   end
 end

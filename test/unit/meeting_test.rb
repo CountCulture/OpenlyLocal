@@ -65,7 +65,7 @@ class MeetingTest < ActiveSupport::TestCase
     end
     
     should "constuct event_uid from meeting id and created_at" do
-      assert_equal "#{@meeting.created_at}-meeting-#{@meeting.id}@twfylocal", @meeting.event_uid
+      assert_equal "#{@meeting.created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{@meeting.id}@twfylocal", @meeting.event_uid
     end
     
     context "when calling minutes_body setter" do
