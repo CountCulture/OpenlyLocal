@@ -32,6 +32,7 @@ class Parser < ActiveRecord::Base
     now_parsing = "items"
     parsing_code = item_parser
     object_to_be_parsed = doc
+    logger.debug { "********About to use parsing code: #{parsing_code} to parse:\n#{object_to_be_parsed.inspect}" }
     
     items = item_parser.blank? ? doc : eval_parsing_code(item_parser, doc)
     now_parsing = "attributes"
@@ -41,6 +42,7 @@ class Parser < ActiveRecord::Base
       attribute_parser.each do |key, value|
         parsing_code = value
         object_to_be_parsed = item
+        logger.debug { "********About to use parsing code: #{parsing_code} to parse:\n#{object_to_be_parsed.inspect}" }
         result_hash[key] = eval_parsing_code(value, item)
       end
       result_hash

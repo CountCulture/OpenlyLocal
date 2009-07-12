@@ -54,7 +54,7 @@ class DocumentTest < ActiveSupport::TestCase
       context "before saving" do
 
         should "should sanitize raw_body" do
-          @document.expects(:sanitize_body)#.with("raw <font='Helvetica'>text</font>")
+          @document.expects(:sanitize_body)
           @document.save!
         end
       end
