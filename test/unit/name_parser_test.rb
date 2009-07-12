@@ -8,6 +8,8 @@ class NameParserTest < Test::Unit::TestCase
     "Fred Flintstone-May" => {:first_name => "Fred", :last_name => "Flintstone-May"},
     "Fred Bob William Flintstone" => {:first_name => "Fred Bob William", :last_name => "Flintstone"},
     "Councillor Fred Flintstone" => {:first_name => "Fred", :last_name => "Flintstone"},
+    "Councillor Fred Flintstone C.B.E." => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "C.B.E."},
+    "Councillor Fred Flintstone OBE" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "OBE"},
     "Councilllor Fred Flintstone" => {:first_name => "Fred", :last_name => "Flintstone"}, #lose typos too
     "Mr Fred Flintstone" => {:name_title => "Mr", :first_name => "Fred", :last_name => "Flintstone"},
     "Mr Fred McFlintstone" => {:name_title => "Mr", :first_name => "Fred", :last_name => "McFlintstone"},
@@ -22,6 +24,7 @@ class NameParserTest < Test::Unit::TestCase
     "Cllr Fred Flintstone" => {:first_name => "Fred", :last_name => "Flintstone"},
     "Professor Fred H. Flintstone" => {:name_title => "Professor", :first_name => "Fred H", :last_name => "Flintstone"},
     "Fred Flintstone BSc" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "BSc"},
+    "Fred Flintstone B.Sc." => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "B.Sc."},
     "Fred Flintstone BSc, PhD" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "BSc PhD"},  
     "Fred Flintstone BSc, MRTPI(Rtd)" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "BSc"},  
     "Jane Annabel Wilson (nee Allen)" => {:first_name => "Jane Annabel", :last_name => "Wilson"}    
@@ -31,7 +34,7 @@ class NameParserTest < Test::Unit::TestCase
 
     should "parse first name and last name from name" do
       OriginalNameAndParsedName.each do |orig_name, parsed_values|
-        assert_equal parsed_values, NameParser.parse(orig_name)
+        assert_equal( parsed_values, NameParser.parse(orig_name), "failed for #{orig_name}")
       end
     end
 
