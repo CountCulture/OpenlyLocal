@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090709102329) do
+ActiveRecord::Schema.define(:version => 20090713222304) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(:version => 20090709102329) do
     t.datetime "updated_at"
     t.string   "url"
     t.integer  "council_id"
-    t.integer  "uid"
+    t.integer  "uid",         :limit => 8
     t.text     "description"
   end
 
@@ -37,6 +37,8 @@ ActiveRecord::Schema.define(:version => 20090709102329) do
     t.integer  "egr_id"
     t.string   "wdtk_name"
     t.string   "feed_url"
+    t.string   "data_source_url"
+    t.string   "data_source_name"
   end
 
   create_table "datapoints", :force => true do |t|
@@ -78,7 +80,7 @@ ActiveRecord::Schema.define(:version => 20090709102329) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "committee_id"
-    t.integer  "uid"
+    t.integer  "uid",          :limit => 8
     t.integer  "council_id"
     t.string   "url"
     t.text     "venue"
@@ -97,7 +99,7 @@ ActiveRecord::Schema.define(:version => 20090709102329) do
     t.date     "date_elected"
     t.date     "date_left"
     t.integer  "council_id"
-    t.integer  "uid"
+    t.integer  "uid",                      :limit => 8
     t.string   "name_title"
     t.string   "qualifications"
     t.string   "declaration_of_interests"

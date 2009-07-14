@@ -10,6 +10,7 @@
 <div id="committees" class="item_grouping">
   <h3>Committee Memberships</h3>
   <%= list_all @committees %>
+  <%= content_tag(:p, "#{@committees.size} committees in total. Average for this council: " + ("%.1f" % @council.average_membership_count), :class => "notes") unless @committees.blank? %>
 </div>
 
 <div id="meetings" class="item_grouping">

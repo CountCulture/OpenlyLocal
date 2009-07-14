@@ -10,6 +10,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_validate_uniqueness_of :name
     should_have_many :members
     should_have_many :committees
+    should_have_many :memberships
     should_have_many :scrapers
     should_have_many :meetings
     should_have_many :datapoints
@@ -21,6 +22,8 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_db_column :egr_id
     should_have_db_column :wdtk_name
     should_have_db_column :feed_url
+    should_have_db_column :data_source_url
+    should_have_db_column :data_source_name
     
     should "have parser named_scope" do
       expected_options = { :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id" }
@@ -37,6 +40,12 @@ class CouncilTest < ActiveSupport::TestCase
     should "have many datasets through datapoints" do
       @datapoint = Factory(:datapoint, :council => @council)
       assert_equal [@datapoint.dataset], @council.datasets
+    end
+    
+    should "have many memberships through members" do
+      @member = Factory(:member, :council => @council)
+      Factory(:committee, :council => @council).members << @member
+      assert_equal @member.memberships, @council.memberships
     end
   end
   
@@ -72,6 +81,27 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal "Westminster", Council.new(:name => "City of Westminster").short_name
       assert_equal "Leeds", Council.new(:name => "Leeds City Council").short_name
       assert_equal "Kingston upon Thames", Council.new(:name => "Royal Borough of Kingston upon Thames").short_name
+    end
+    
+    context "when returning average committee memberships" do
+      setup do
+        3.times do |i|
+          instance_variable_set("@committee_#{i+1}", Factory(:committee, :council => @council))
+          instance_variable_set("@member_#{i+1}", Factory(:member, :council => @council))
+        end
+        @committee_1.members << [@member_1, @member_2, @member_3]
+        @committee_2.members << [@member_2, @member_3]
+        @committee_3.members << [@member_3]
+      end
+
+      should "calculate mean" do
+        assert_equal 2, @council.average_membership_count
+      end
+      
+      # should "exclude past members" do
+      #   @member_1.update_attribute(:date_left, 3.days.ago)
+      #   assert_in_delta 5.0/2, @council.average_membership_count, 2 ** -20
+      # end
     end
     
   end

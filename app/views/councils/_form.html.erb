@@ -53,8 +53,18 @@
   </p>
   
   <p>
-    <%= f.label :wdtk_name, "#{link_to 'WhatDoTheyKnow', 'http://whatdotheyknow.com/body/list/local_council', :class => 'external'} name" %>
+    <%= f.label :wdtk_name, "#{link_to 'WhatDoTheyKnow', 'http://www.whatdotheyknow.com/body/list/local_council', :class => 'external'} name" %>
     <%= f.text_field :wdtk_name %>
+  </p>
+  
+  <p>
+    <%= f.label :data_source_url %>
+    <%= f.text_field :data_source_url %>
+  </p>
+  
+  <p>
+    <%= f.label :data_source_name %>
+    <%= f.text_field :data_source_name %>
   </p>
   
   <p>
