@@ -117,7 +117,7 @@ class ItemScraperTest < ActiveSupport::TestCase
           @scraper.parser.update_attribute(:related_model, "Committee")
           
           @committee_1 = Factory(:committee, :council => @scraper.council)
-          @committee_2 = Factory(:committee, :council => @scraper.council, :title => "Another Committee", :url => "http://www.anytown.gov.uk/committee/78", :uid => 78)
+          @committee_2 = Factory(:committee, :council => @scraper.council)
           dummy_related_objects = [@committee_1, @committee_2]
           @scraper.stubs(:related_objects).returns(dummy_related_objects)
           @scraper.stubs(:_data).returns("something")
@@ -137,8 +137,8 @@ class ItemScraperTest < ActiveSupport::TestCase
           end
 
           should "get data from url interpolated with related object" do
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/meetings?ctte_id=77")
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/meetings?ctte_id=78")
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/meetings?ctte_id=#{@committee_1.uid}")
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/meetings?ctte_id=#{@committee_2.uid}")
             @scraper.process
           end
           
@@ -169,8 +169,8 @@ class ItemScraperTest < ActiveSupport::TestCase
           end
 
           should "get data from each related_object's url" do
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/77")
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/78")
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_1.uid}")
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_2.uid}")
             @scraper.process
           end
 

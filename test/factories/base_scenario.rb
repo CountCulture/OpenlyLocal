@@ -42,9 +42,9 @@ Factory.define :tricky_council, :class => :council do |f|
 end
 
 Factory.define :member do |f|
-  f.full_name "Bob Wilson"
-  f.uid 99
-  f.url "http://www.anytown.gov.uk/members/bob"
+  f.sequence(:full_name) { |n| "Bob Wilson#{n}" } 
+  f.sequence(:uid) { |n| 76 + n }
+  f.sequence(:url) { |n| "http://www.anytown.gov.uk/members/bob#{n}" }
   f.association :council
 end
 
@@ -57,10 +57,10 @@ Factory.define :old_member, :class => :member do |f|
 end
 
 Factory.define :committee do |f|
-  f.uid 77
+  f.sequence(:uid) {|n| 76 + n }
   f.association :council
-  f.title 'Ways and Means'
-  f.url "http://www.anytown.gov.uk/committee/77"
+  f.sequence(:title) { |n| "Committee Number #{n}" }
+  f.sequence(:url) { |n| "http://www.anytown.gov.uk/committee/#{76+n}" }
 end
 
 Factory.define :meeting do |f|
