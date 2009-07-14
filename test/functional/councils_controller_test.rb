@@ -5,7 +5,7 @@ class CouncilsControllerTest < ActionController::TestCase
   def setup
     @member = Factory(:member)
     @council = @member.council
-    @old_member = Factory(:old_member, :council => @council)
+    @old_member = Factory(:member, :council => @council)
     @another_council = Factory(:another_council)
     @committee = Factory(:committee, :council => @council)
     @meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 2.days.from_now)
