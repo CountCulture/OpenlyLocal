@@ -1,20 +1,20 @@
-<h1><%= @council.name %></h1>
+<h1 property="foaf:name rdfs:label"><%= @council.name %></h1>
 <div id="data">
-  <p class="attribute"><strong>website</strong> <%= link_to @council.url, @council.url, :class => :external %> <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %></p>
-  <p class="attribute"><strong>Authority type</strong> <%= @council.authority_type %></p>
-  <p class="attribute"><strong>Address</strong> <%= @council.address %></p>
+  <p class="attribute"><strong>website</strong> <%= link_to @council.url, @council.url, :class => :external, :rel => "foaf:homepage" %> <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %></p>
+  <p class="attribute" rel="rdf:type"><strong>Authority type</strong> <span about="[twfyl:<%= @council.authority_type.gsub(/\s+/,'') %>Authority]"><%= @council.authority_type %></span></p>
+  <p class="attribute"><strong>Address</strong> <span property="twfyl:full-address"><%= @council.address %></span></p>
   <p class="attribute"><strong>Telephone</strong> <%= @council.telephone %></p>
-  <p class="clear"><strong>Wikipedia page</strong> <%= link_to @council.wikipedia_url, @council.wikipedia_url, :class => 'external' %></p>
+  <p class="clear"><strong>Wikipedia page</strong> <%= link_to @council.wikipedia_url, @council.wikipedia_url, :class => 'external', :rel => "foaf:page" %></p>
   <div class="extra_info">
     <h3>Other info</h3>
     <div id="external_links" class="item_grouping">
       <h4>External links</h4>
       <ul>
         <%- unless @council.wdtk_name.blank? -%>
-          <li><%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/ #{@council.wdtk_name}", :class => 'external' %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@council.wdtk_name}", :class => "feed" %>)</li>
+          <li><%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@council.wdtk_name}", :class => 'external', :rel => "twfyl:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@council.wdtk_name}", :class => "feed" %>)</li>
         <%- end -%>
-        <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external' %></li>
-        <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external' %></li>
+        <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external', :rel => "foaf:page" %></li>
+        <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external', :rel => "foaf:page" %></li>
         <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= @council.snac_id %></li>
       </ul>
     </div>

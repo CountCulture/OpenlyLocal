@@ -50,4 +50,8 @@ module ApplicationHelper
     partial_name, ctrler_name = partial_name.split('/', 2).reverse
     File.exists? File.join(RAILS_ROOT, 'app/views/', ctrler_name || '' ,"_#{partial_name}.html.erb")
   end
+  
+  def rdfa_vocab_url
+    url_for(:controller => "info", :action => "vocab", :only_path => false)
+  end
 end

@@ -1,6 +1,6 @@
 class CouncilsController < ApplicationController
   before_filter :authenticate, :except => [:index, :show]
-
+  before_filter :add_rdfa_headers, :only => :show
   def index
     @councils = params[:include_unparsed] ? Council.find(:all, :order => "name") : Council.parsed
     @title = "All Councils"
@@ -18,6 +18,7 @@ class CouncilsController < ApplicationController
     @meetings = @council.meetings.forthcoming.all(:limit => 16)
     @wards = @council.wards
     @datapoints = @council.datapoints.select{ |d| d.summary }
+    @header_link = {:rel => "foaf:primaryTopic", :href => "foo"} # for rdfa stuff
     respond_to do |format|
       format.html
       format.xml { render :xml => @council.to_xml(:include => :datasets) }
