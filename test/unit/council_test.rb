@@ -21,6 +21,8 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_db_column :egr_id
     should_have_db_column :wdtk_name
     should_have_db_column :feed_url
+    should_have_db_column :data_source_url
+    should_have_db_column :data_source_name
     
     should "have parser named_scope" do
       expected_options = { :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id" }
