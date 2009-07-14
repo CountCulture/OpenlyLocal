@@ -4,8 +4,9 @@
     <meta name="verify-v1" content="FM6IJNZagubelMDP2u3Lp0i42aN/56JYl7jVbSR5X/k=" >
     <title><%= "#{@page_title || @title} :: " if @title %><%= "#{@council.title} :: " if @council %>Openly Local</title>
     <meta content="Opening up Local Government Data" name="description">
+    <%= tag(:link, @header_link) if @header_link %>
     <link rel="stylesheet" href="/stylesheets/blueprint/screen.css" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="/stylesheets/blueprint/print.css" type="text/css" media="print"> 
+    <link rel="stylesheet" href="/stylesheets/blueprint/print.css" type="text/css" media="print">
     <!--[if IE]>
       <link rel="stylesheet" href="/stylesheets/blueprint/ie.css" type="text/css" media="screen, projection">
     <![endif]-->

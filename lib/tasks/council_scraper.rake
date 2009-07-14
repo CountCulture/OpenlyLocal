@@ -27,6 +27,7 @@ task :scrape_egr_for_councils => :environment do
     council.ons_url ||= values.at("td[text()*='Nat Statistics']").next_sibling.at("a")[:href]
     council.wikipedia_url ||= values.at("td[text()*='Wikipedia']").next_sibling.inner_text.strip
     council.egr_id ||= values.at("td[text()*='eGR ID']").next_sibling.at("font").inner_text.strip
+    council.snac_id ||= values.at("td[text()*='SNAC']").next_sibling.at("font").inner_text.strip
     begin
       council.save!
       p council.attributes, "____________"

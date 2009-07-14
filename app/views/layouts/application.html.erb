@@ -1,6 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
   "http://www.w3.org/TR/html4/loose.dtd">
-  
+<html
+  <%= render :partial => 'layouts/rdfa_links' if @add_rdfa_headers %>
+	>
 <%= render :partial => 'shared/layout_head' %>
 <body class='<%= @controller.controller_name %>'>
   <div class="container">
@@ -13,3 +15,4 @@
   </div>
   <%= render :partial => 'shared/google_analytics' %>
 </body>
+</html> 

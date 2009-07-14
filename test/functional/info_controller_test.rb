@@ -11,4 +11,13 @@ class InfoControllerTest < ActionController::TestCase
     should_render_with_layout
     
   end
+  
+  context "on GET to :vocab" do
+    setup do
+      get :vocab
+    end
+    should_respond_with :success
+    should_render_template :vocab
+    should_render_without_layout
+  end
 end

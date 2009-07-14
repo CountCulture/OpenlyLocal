@@ -3,9 +3,9 @@ require 'test_helper'
 class CouncilsControllerTest < ActionController::TestCase
 
   def setup
-    @member = Factory(:member)
-    @council = @member.council
-    @old_member = Factory(:old_member, :council => @council)
+    @council = Factory(:council, :authority_type => "London Borough")
+    @member = Factory(:member, :council => @council)
+    @old_member = Factory(:member, :council => @council)
     @another_council = Factory(:another_council)
     @committee = Factory(:committee, :council => @council)
     @meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 2.days.from_now)
@@ -96,6 +96,30 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should "show link to meeting calendar" do
         assert_select "a.calendar[href*='meetings.ics?council_id=#{@council.id}']"
+      end
+      
+      should "show rdfa headers" do
+        assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
+      end
+
+      should "show rdfa stuff in head" do
+        assert_select "head link[rel*='foaf']"
+      end
+      
+      should "show rdfa local authority" do
+        assert_select "#data span[about='[twfyl:LondonBoroughAuthority]']"
+      end
+      
+      should "use council name as foaf:name" do
+        assert_select "h1[property*='foaf:name']", @council.title
+      end
+      
+      should "show foaf attributes for members" do
+        assert_select "#members li a[rel*='foaf:member']"
+      end
+      
+      should "show rdfa attributes for committees" do
+        assert_select "#committees li a[rel*='twfyl:committee']"
       end
     end
     
