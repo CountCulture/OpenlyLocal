@@ -89,8 +89,8 @@ class MemberTest < ActiveSupport::TestCase
         @council = @member.council
         @another_council = Factory(:another_council)
         @old_committee = Factory(:committee, :council => @council)
-        @new_committee = Factory(:committee, :council => @council, :uid => @old_committee.uid+1, :title => "new committee")
-        @another_council_committee = Factory(:committee, :council => @another_council, :uid => 999, :title => "another council committee")
+        @new_committee = Factory(:committee, :council => @council, :title => "new committee")
+        @another_council_committee = Factory(:committee, :council => @another_council, :title => "another council committee")
         @member.committees << @old_committee
       end
 
@@ -111,17 +111,18 @@ class MemberTest < ActiveSupport::TestCase
       context "and meetings" do
         setup do
           @member.committees << @new_committee # make sure member has two committees
-          @member_meeting = Factory(:meeting, :committee => @old_committee, :council => @council, :date_held => 2.days.from_now)
-          @another_member_meeting = Factory(:meeting, :uid => @member_meeting.id+1, :committee => @new_committee, :council => @council)
-          @non_member_meeting = Factory(:meeting, :uid => @member_meeting.id+2, :committee => @another_council_committee, :council => @council)
+          @member_meeting = Factory(:meeting, :committee => @old_committee, :council => @council, :date_held => 10.days.from_now)
+          @member_meeting_2 = Factory(:meeting, :committee => @old_committee, :council => @council, :date_held => 2.days.from_now)
+          @another_committee_meeting = Factory(:meeting, :committee => @new_committee, :council => @council)
+          @non_member_meeting = Factory(:meeting, :committee => @another_council_committee, :council => @council)
         end
 
         should "have many potential_meetings" do
-          assert_equal [@another_member_meeting, @member_meeting], @member.potential_meetings
+          assert_equal [@another_committee_meeting, @member_meeting_2, @member_meeting], @member.potential_meetings
         end
 
         should "have many forthcoming_meetings" do
-          assert_equal [@member_meeting], @member.forthcoming_meetings
+          assert_equal [@member_meeting_2, @member_meeting], @member.forthcoming_meetings
         end
       end
       

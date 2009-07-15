@@ -64,11 +64,11 @@ Factory.define :committee do |f|
 end
 
 Factory.define :meeting do |f|
-  f.uid 123
+  f.sequence(:uid) { |n| 122 + n }
   f.association :council
   f.association :committee
   f.date_held 2.weeks.ago
-  f.url "http://www.anytown.gov.uk/meeting/123"
+  f.sequence(:url) { |n| "http://www.anytown.gov.uk/meeting/#{122+n}" }
 end
 
 Factory.define :portal_system do |f|
