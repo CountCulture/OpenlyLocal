@@ -1,16 +1,18 @@
-<h1><%= link_for @committee.council %> committees: <%= @committee.title %> <em><%= council_page_for @committee %></em></h1>
-<p>
-  <em>(<%= link_to "see all #{h(@committee.council.name)} committees", committees_path(:council_id => @council.id) %> )</em>
-</p>
-<%= content_tag(:div, simple_format(@committee.description), :class => "description intro") unless @committee.description.blank? %>
-<div id="members" class="item_grouping">
-  <h3>Members</h3>
-  <%= list_all @committee.members %>
-</div>
+<%- div_for @committee, :resource => "this", :typeof => "twfyl:LocalAuthorityCommittee" do -%>
+  <h1><%= link_for @committee.council, :rev => "twfyl:committee" %> committees: <span property="foaf:name rdfs:label"><%= @committee.title %></span> <em><%= council_page_for @committee %></em></h1>
+  <p>
+    <em>(<%= link_to "see all #{h(@committee.council.name)} committees", committees_path(:council_id => @council.id) %> )</em>
+  </p>
+  <%= content_tag(:div, simple_format(@committee.description), :class => "description intro") unless @committee.description.blank? %>
+  <div id="members" class="item_grouping">
+    <h3>Members</h3>
+    <%= list_all @committee.members %>
+  </div>
 
-<div id="meetings" class="item_grouping">
-  <h3>Meetings</h3>
-  <%= list_all @committee.meetings %>
-</div>
-<%= render :partial => '/shared/api_info' %>
-<%= timestamp_data_for @committee %>
+  <div id="meetings" class="item_grouping">
+    <h3>Meetings</h3>
+    <%= list_all @committee.meetings, :rel => "twfyl:meeting" %>
+  </div>
+  <%= render :partial => '/shared/api_info' %>
+  <%= timestamp_data_for @committee %>
+<%- end -%>

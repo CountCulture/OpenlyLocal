@@ -45,6 +45,10 @@ class MembersControllerTest < ActionController::TestCase
          assert_select "head link[rel*='foaf']"
        end
 
+       should "show rdfa typeof" do
+         assert_select "div[typeof*='twfyl:LocalAuthorityMember']"
+       end
+
        should "use member name as foaf:name" do
          assert_select "h1 span[property*='foaf:name']", @member.full_name
        end

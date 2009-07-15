@@ -35,6 +35,30 @@ class CommitteesControllerTest < ActionController::TestCase
        should "list meetings" do
          assert_select "div#meetings li a", @meeting.title
        end
+       
+       should "show rdfa headers" do
+         assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
+       end
+
+       should "show rdfa stuff in head" do
+         assert_select "head link[rel*='foaf']"
+       end
+
+       should "show rdfa typeof" do
+         assert_select "div[typeof*='twfyl:LocalAuthorityCommittee']"
+       end
+
+       should "use member name as foaf:name" do
+         assert_select "h1 span[property*='foaf:name']", @committee.title
+       end
+
+       should "show rdfa attributes for members" do
+         assert_select "#members li a[rel*='foaf:member']"
+       end
+       
+       should "show foaf attributes for meetings" do
+         assert_select "#meetings li[rel*='twfyl:meeting']"
+       end
      end
      
      context "with xml request" do

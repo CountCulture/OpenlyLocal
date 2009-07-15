@@ -1,25 +1,26 @@
-<h1><span property="foaf:name rdfs:label"><%= @member.full_name %></span> <em><%= council_page_for @member, :rel => "foaf:page" %></em></h1>
-<p>Council <strong><%= link_to h(@council.name), @council %></strong></p>
-<p>Party <strong><%= @member.party %></strong></p>
-<p>Ward <strong><%= link_for(@member.ward) || 'not known' %></strong></p>
-<p>Email <strong><%= @member.email ? mail_to(@member.email, @member.email, :encode => "javascript", :rel => "foaf:mbox") : 'not known' %></strong></p>
-<p>Address <strong><%= @member.address || 'not known' %></strong></p>
-<p>Date elected <strong><%= @member.date_elected ? @member.date_elected.to_s(:custom_short) : 'not known' %></strong></p>
-<p>Declaration of Interests <strong><%= @member.declaration_of_interests ? link_to(@member.declaration_of_interests, @member.declaration_of_interests, :class => "external") : 'not known' %></strong></p>
+<%- div_for @member, :resource => "this", :typeof => "twfyl:LocalAuthorityMember" do -%>
+  <h1><span property="foaf:name rdfs:label"><%= @member.full_name %></span> <em><%= council_page_for @member, :rel => "foaf:page" %></em></h1>
+  <p>Council <strong><%= link_to h(@council.name), @council %></strong></p>
+  <p>Party <strong><%= @member.party %></strong></p>
+  <p>Ward <strong><%= link_for(@member.ward) || 'not known' %></strong></p>
+  <p>Email <strong><%= @member.email ? mail_to(@member.email, @member.email, :encode => "javascript", :rel => "foaf:mbox") : 'not known' %></strong></p>
+  <p>Address <strong><%= @member.address || 'not known' %></strong></p>
+  <p>Date elected <strong><%= @member.date_elected ? @member.date_elected.to_s(:custom_short) : 'not known' %></strong></p>
+  <p>Declaration of Interests <strong><%= @member.declaration_of_interests ? link_to(@member.declaration_of_interests, @member.declaration_of_interests, :class => "external") : 'not known' %></strong></p>
 
-<div id="committees" class="item_grouping">
-  <h3>Committee Memberships</h3>
-  <%= list_all @committees, :rev => "foaf:member" %>
-  <%= content_tag(:p, "#{@committees.size} committees in total. Average for this council: " + ("%.1f" % @council.average_membership_count), :class => "notes") unless @committees.blank? %>
-</div>
+  <div id="committees" class="item_grouping">
+    <h3>Committee Memberships</h3>
+    <%= list_all @committees, :rev => "foaf:member" %>
+    <%= content_tag(:p, "#{@committees.size} committees in total. Average for this council: " + ("%.1f" % @council.average_membership_count), :class => "notes") unless @committees.blank? %>
+  </div>
 
-<div id="meetings" class="item_grouping">
-  <h3>Forthcoming meetings</h3>
-  <p><%= link_to_calendar %></p>
-  <%= list_all @forthcoming_meetings, :rel => "twfyl:meeting" %>
-</div>
+  <div id="meetings" class="item_grouping">
+    <h3>Forthcoming meetings</h3>
+    <p><%= link_to_calendar %></p>
+    <%= list_all @forthcoming_meetings, :rel => "twfyl:meeting" %>
+  </div>
 
-<%= render :partial => '/shared/api_info' %>
+  <%= render :partial => '/shared/api_info' %>
 
-<%= timestamp_data_for @member %>
-
+  <%= timestamp_data_for @member %>
+<%- end -%>
