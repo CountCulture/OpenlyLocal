@@ -1,10 +1,11 @@
 class MeetingsController < ApplicationController
-  before_filter :add_rdfa_headers, :only => :show
+  before_filter :add_rdfa_headers
   
   def index
     @council = Council.find(params[:council_id]) 
     build_title
     @meetings = params[:include_past] ? @council.meetings : @council.meetings.forthcoming
+    @header_link = {:rel => "foaf:primaryTopic", :href => ""} # for rdfa stuff
     respond_to do |format|
       format.html
       format.xml { render :xml => @meetings.to_xml }
