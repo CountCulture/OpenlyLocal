@@ -1,4 +1,5 @@
 class MeetingsController < ApplicationController
+  before_filter :add_rdfa_headers, :only => :show
   
   def index
     @council = Council.find(params[:council_id]) 
@@ -21,6 +22,7 @@ class MeetingsController < ApplicationController
     @committee = @meeting.committee
     @other_meetings = @committee.meetings - [@meeting]
     @title = "#{@meeting.title}, #{@meeting.date_held.to_s(:event_date).squish}"
+    @header_link = {:rel => "foaf:primaryTopic", :href => ""} # for rdfa stuff
     respond_to do |format|
       format.html
       format.xml { render :xml => @meeting.to_xml }

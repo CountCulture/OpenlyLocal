@@ -126,8 +126,8 @@ class MeetingsControllerTest < ActionController::TestCase
         assert_select "title", /#{@meeting.date_held.to_s(:event_date).squish}/
       end
       
-      should "list members" do
-        assert_select "#members ul a", @member.title
+      should "list members of committee" do
+        assert_select "#committee_members ul a", @member.title
       end
     
       should "list other meetings" do
@@ -136,6 +136,39 @@ class MeetingsControllerTest < ActionController::TestCase
       
       should "not show minutes" do
         assert_select "#minutes_extract", false
+      end
+      should "show rdfa headers" do
+        assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
+      end
+
+      should "show rdfa stuff in head" do
+        assert_select "head link[rel*='foaf']"
+      end
+
+      should "show rdfa typeof" do
+        assert_select "div[typeof*='cal:Vevent']"
+      end
+
+      should "use committee name as cal:summary" do
+        assert_select "h1 span[property*='cal:summary']", /#{@committee.title}/
+      end
+
+      should "show meeting start time in machine format" do
+        assert_select "span[property='cal:dtstart'][content='#{@meeting.date_held.strftime("%Y%m%dT%H%M%S")}']"
+      end
+
+      should "show rdfa attributes for council" do
+        assert_select "span[about*='councils/#{@council.id}']"
+      end
+      
+      should "show foaf attributes for members" do
+        assert_select "div[about='/committees/#{@committee.id}']" do
+          assert_select "a[rel='foaf:member']", @member.title
+        end
+      end
+      
+      should "show rdfa attributes for other meetings" do
+        assert_select "#other_meetings li[rel='twfyl:meeting']"
       end
     end
     

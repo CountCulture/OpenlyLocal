@@ -1,26 +1,28 @@
-<h4 class="owner">Meeting of the <%= link_for @council %></h4>
-<h1><%= @title %> <em><%= council_page_for @meeting %></em></h1>
+<%- div_for @meeting, :resource => "this", :typeof => "cal:Vevent" do -%>
+  <h4 class="owner">Meeting of the <%= link_for @council %></h4>
+  <h1><span property="cal:summary rdfs:label"><%= @committee.title %></span>, <span datatype="xsd:dateTime" property="cal:dtstart" content="<%= @meeting.date_held.strftime("%Y%m%dT%H%M%S") %>"><%= @meeting.date_held.to_s(:event_date).squish %></span> <em><%= council_page_for @meeting %></em></h1>
 
-<p class="extra_info">
-  <strong>Venue </strong><%= @meeting.venue || "Not known" %> :: 
-   Other <%= link_to "meetings", meetings_path(:council_id => @council.id) %>/<%= link_to "committees", committees_path(:council_id => @council.id) %> for <%= link_for @council %>
-</p>
-<%- if @meeting.minutes -%>
-  <div id="minutes_extract">
-    <h3>Minutes</h3>
-    <div class="document_body">
-      <%= simple_format truncate(strip_tags(@meeting.minutes.body), 500) %>
+  <p class="extra_info">
+    <strong>Venue </strong><%= @meeting.venue.blank? ?  "Not known" : content_tag(:span, @meeting.venue, :property => "cal:location") %> :: 
+     <span about="<%= council_path(@council) %>">Other <%= link_to "meetings", meetings_path(:council_id => @council.id), :rel => "rdfs:seeAlso" %>/<%= link_to "committees", committees_path(:council_id => @council.id), :rel => "rdfs:seeAlso" %> for <%= link_for @council %></span>
+  </p>
+  <%- if @meeting.minutes -%>
+    <div id="minutes_extract">
+      <h3>Minutes</h3>
+      <div class="document_body">
+        <%= simple_format truncate(strip_tags(@meeting.minutes.body), 500) %>
+      </div>
+      <p class='more_info'><%= link_to("Complete Minutes", @meeting.minutes, :rel => "twfy:minutes") %></p>
     </div>
-    <p class='more_info'><%= link_to("Complete Minutes", @meeting.minutes) %></p>
+  <%- end -%>
+  <div id="committee_members" class="item_grouping" about="<%= committee_path(@committee) %>">
+    <h3>Members of this committee</h3>
+    <%= list_all @committee.members %>
   </div>
+  <div id="other_meetings" class="item_grouping">
+    <h3>Other meetings of this committee</h3>
+    <%= list_all @other_meetings, :rel => "twfyl:meeting" %>
+  </div>
+  <%= render :partial => '/shared/api_info' %>
+  <%= timestamp_data_for @meeting %>
 <%- end -%>
-<div id="members" class="item_grouping">
-  <h3>Members of this committee</h3>
-  <%= list_all @committee.members %>
-</div>
-<div id="other_meetings" class="item_grouping">
-  <h3>Other meetings of this committee</h3>
-  <%= list_all @other_meetings %>
-</div>
-<%= render :partial => '/shared/api_info' %>
-<%= timestamp_data_for @meeting %>
