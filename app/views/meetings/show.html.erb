@@ -1,6 +1,6 @@
 <%- div_for @meeting, :resource => "this", :typeof => "cal:Vevent" do -%>
   <h4 class="owner">Meeting of the <%= link_for @council %></h4>
-  <h1><span property="cal:summary rdfs:label"><%= @committee.title %></span>, <span datatype="xsd:dateTime" property="cal:dtstart" content="<%= @meeting.date_held.strftime("%Y%m%dT%H%M%S") %>"><%= @meeting.date_held.to_s(:event_date).squish %></span> <em><%= council_page_for @meeting %></em></h1>
+  <h1><span property="cal:summary rdfs:label"><%= @committee.title %></span>, <span datatype="xsd:dateTime" property="cal:dtstart" content="<%= @meeting.date_held.to_s(:vevent) %>"><%= @meeting.date_held.to_s(:event_date).squish %></span> <em><%= council_page_for @meeting %></em></h1>
 
   <p class="extra_info">
     <strong>Venue </strong><%= @meeting.venue.blank? ?  "Not known" : content_tag(:span, @meeting.venue, :property => "cal:location") %> :: 
@@ -10,7 +10,7 @@
     <div id="minutes_extract">
       <h3>Minutes</h3>
       <div class="document_body">
-        <%= simple_format truncate(strip_tags(@meeting.minutes.body), 500) %>
+        <%= simple_format @meeting.minutes.precis %>
       </div>
       <p class='more_info'><%= link_to("Complete Minutes", @meeting.minutes, :rel => "twfy:minutes") %></p>
     </div>

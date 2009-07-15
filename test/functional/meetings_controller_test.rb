@@ -172,7 +172,7 @@ class MeetingsControllerTest < ActionController::TestCase
       end
 
       should "show meeting start time in machine format" do
-        assert_select "span[property='cal:dtstart'][content='#{@meeting.date_held.strftime("%Y%m%dT%H%M%S")}']"
+        assert_select "span[property='cal:dtstart'][content='#{@meeting.date_held.to_s(:vevent)}']"
       end
 
       should "show rdfa attributes for council" do

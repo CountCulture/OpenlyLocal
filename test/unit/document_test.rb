@@ -83,7 +83,27 @@ class DocumentTest < ActiveSupport::TestCase
           assert_match /and  image/, @document.body
         end
       end
+      
+      context "when returning precis" do
+        setup do
+          raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a>. Also <script> something dodgy</script> here and <img src='http://council.gov.uk/image' /> image"
+          @document.attributes = {:url => "http://www.council.gov.uk/document/some_page.htm?q=something", :raw_body => raw_text*20}
+          @document.save!
+        end
 
+        should "remove all tags" do
+          assert_no_match %r(<.+>), @document.precis
+        end
+        
+        should "not remove text in tags" do
+          assert_match %r(some stylized text with relative link), @document.precis
+        end
+        
+        should "trim to 500 chars in length" do
+          assert_equal 500, @document.precis.length
+        end
+      end
+      
     end
     
     # context "when setting body" do

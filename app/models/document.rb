@@ -9,6 +9,10 @@ class Document < ActiveRecord::Base
     self[:document_type] || "Document"
   end
   
+  def precis
+    ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(body), :length => 500)
+  end
+  
   def title
     self[:title] || "#{document_type} for #{document_owner.title}"
   end
