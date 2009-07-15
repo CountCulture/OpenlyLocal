@@ -1,3 +1,9 @@
 <div id="footer">
-  <%= link_to "About Openly Local", "/info/about_us" %> :: Put together for sheer hell of it by <%= link_to "CountCulture", "http://countculture.wordpress.com", :class => "external" %>. Code at <a href="http://github.com/CountCulture/twfy_local_parser/" class="external">Github</a> (<a href="http://github.com/CountCulture/twfy_local_parser/issues" class="external">Report Bugs</a>). 
+  <%= link_to "About Openly Local", "/info/about_us" %> :: 
+  <span about="" rel="foaf:maker">
+    <span typeof="foaf:Person">
+      Put together for sheer hell of it by <%= link_to "CountCulture", "http://countculture.wordpress.com", :class => "external", :rel => "foaf:blog", :property => "foaf:nick" %>.
+    </span>
+  </span>
+  Code at <a href="http://github.com/CountCulture/twfy_local_parser/" class="external">Github</a> (<a href="http://github.com/CountCulture/twfy_local_parser/issues" class="external">Report Bugs</a>). 
 </div>

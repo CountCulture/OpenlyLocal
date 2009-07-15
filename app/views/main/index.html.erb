@@ -2,14 +2,14 @@
   <p><strong>Openly Local</strong> is a new project to develop an open and unified way of accessing Local Government information.</p>
   <p>So far we have opened up data for over 40 local authorities, and more are being added every week, with more information being opened up too.</p>
   <p>
-    <strong>We currently have:</strong>
-    <ul>
-      <li><%= link_to "#{Council.parsed.all.size} councils", councils_path %> parsed</li>
-      <li><%= Member.count %> councillors</li>
-      <li><%= Committee.count %> committees</li>
-      <li><%= Meeting.count %> committee meetings</li>
-    </ul>
+    <strong>We currently have information on:</strong>
   </p>
+  <ul>
+    <li><%= link_to "#{Council.parsed.all.size} councils", councils_path %></li>
+    <li><%= Member.count %> councillors</li>
+    <li><%= Committee.count %> committees</li>
+    <li><%= Meeting.count %> committee meetings</li>
+  </ul>
   <p>The open-source code behind the site is visible for anyone to see at <%= link_to 'Github', 'http://github.com/CountCulture/twfy_local_parser', :class => "external" %></p>
   <p>Most of the data is accessible as <%= link_to "XML", 'http://en.wikipedia.org/wiki/XML', :class => 'external' %> or <%= link_to "json", 'http://en.wikipedia.org/wiki/JSON', :class => 'external' %> data through a rough and ready API (basically add .xml or .json to the main part of the URL)</p>
 </div>
