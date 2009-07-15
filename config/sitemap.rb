@@ -39,6 +39,11 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
     sitemap.add meeting_path(m), :lastmod => m.updated_at
   end
 
+  # add wards
+  Ward.all.each do |m|
+    sitemap.add ward_path(m), :lastmod => m.updated_at
+  end
+
   sitemap.add '/info/about_us', :priority => 0.7
   
 end

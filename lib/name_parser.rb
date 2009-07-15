@@ -10,7 +10,7 @@ module NameParser
     titles, qualifications, result_hash = [], [], {}
     fn = fn.sub(/Councillor|Councilllor|Cllr/, '')
     qualifications = poss_quals.collect{ |q| fn.slice!(q)}.compact
-    names = fn.gsub(/([.,])/, ' ').gsub(/\([\w ]+\)/, '').gsub(/[A-Z]{3,}/, '').split(" ")
+    names = fn.gsub(/([.,])/, ' ').gsub(/\([\w ]+\)/, '').gsub(/[A-Z]{3,}$/, '').split(" ")
     names.delete_if{ |n| Titles.include?(n) ? titles << n : false}
 
     result_hash[:first_name] = names[0..-2].join(" ")
