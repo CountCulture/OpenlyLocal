@@ -36,6 +36,27 @@ class MembersControllerTest < ActionController::TestCase
        should "show link to meeting calendar" do
          assert_select "#meetings a.calendar[href*='#{@member.id}.ics']"
        end
+       
+       should "show rdfa headers" do
+         assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
+       end
+
+       should "show rdfa stuff in head" do
+         assert_select "head link[rel*='foaf']"
+       end
+
+       should "use member name as foaf:name" do
+         assert_select "h1 span[property*='foaf:name']", @member.full_name
+       end
+
+       should "show rdfa attributes for committees" do
+         assert_select "#committees li a[rev*='foaf:member']"
+       end
+       
+       should "show foaf attributes for meetings" do
+         assert_select "#meetings li[rel*='twfyl:meeting']"
+       end
+       
      end
      
      context "with xml requested" do

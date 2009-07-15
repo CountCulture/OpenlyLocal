@@ -94,6 +94,12 @@ class ApplicationHelperTest < ActionView::TestCase
       obj = stub(:url => "http://somecouncil/meeting")
       assert_dom_equal link_to("official page", "http://somecouncil/meeting", :class => "official_page external"), council_page_for(obj)
     end
+    
+    should "use options when constructing link" do
+      obj = stub(:url => "http://somecouncil/meeting")
+      assert_dom_equal link_to("official page", "http://somecouncil/meeting", :class => "official_page external", :foo => "bar"), council_page_for(obj, :foo => "bar")
+    end
+    
   end
   
   context "link_to_api_url" do
@@ -146,6 +152,10 @@ class ApplicationHelperTest < ActionView::TestCase
 
       should "return unordered list of single object" do
         assert_dom_equal "<ul><li>#{link_for(@obj1)}</li></ul>", list_all(@obj1)
+      end
+
+      should "pass on options to link if given" do
+        assert_dom_equal "<ul><li>#{link_for(@obj1, :foo => "bar")}</li></ul>", list_all(@obj1, :foo => "bar")
       end
 
     end

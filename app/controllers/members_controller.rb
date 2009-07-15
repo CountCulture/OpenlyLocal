@@ -1,11 +1,13 @@
 class MembersController < ApplicationController
-  
+  before_filter :add_rdfa_headers, :only => :show
+
   def show
     @member = Member.find(params[:id])
     @council = @member.council
     @committees = @member.committees
     @forthcoming_meetings = @member.forthcoming_meetings
     @title = @member.full_name
+    @header_link = {:rel => "foaf:primaryTopic", :href => ""} # for rdfa stuff
     respond_to do |format|
       format.html
       format.xml { render :xml => @member.to_xml }

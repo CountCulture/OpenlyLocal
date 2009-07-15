@@ -1,8 +1,8 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   
-  def council_page_for(obj)
-    link_to("official page", obj.url, :class => "official_page external")
+  def council_page_for(obj, options={})
+    link_to("official page", obj.url, {:class => "official_page external"}.merge(options))
   end
   
   def link_for(obj=nil, options={})
@@ -25,7 +25,7 @@ module ApplicationHelper
     link_to "Subscribe to this calendar", url_for(basic_url.merge(:protocol => "webcal", :only_path => false, :format => "ics")), :class => "calendar feed"
   end
 
-  def list_all(coll=nil)
+  def list_all(coll=nil, options={})
     if coll.blank?
       "<p class='no_results'>No results</p>"
     else
@@ -33,10 +33,10 @@ module ApplicationHelper
       partial_name = "#{coll.first.class.table_name}/list_item"
       if partial_exists?(partial_name) 
         content_tag :ul do
-          render :partial => partial_name, :collection => coll
+          render :partial => partial_name, :collection => coll, :locals => { :list_options => options }
         end
       else
-        content_tag(:ul, coll.collect{ |i| (content_tag(:li, link_for(i))) }.join)
+        content_tag(:ul, coll.collect{ |i| (content_tag(:li, link_for(i,options))) }.join)
       end
     end
   end

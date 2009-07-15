@@ -35,7 +35,7 @@
 
 <div id="committees" class="item_grouping">
   <h3><%= link_to "Council Committees", committees_path(:council_id => @council.id) %></h3>
-  <%= list_all @committees %>
+  <%= list_all @committees, :rel => "twfyl:committee" %>
 </div>
 <div id="wards" class="item_grouping">
   <h3><%= "Wards" %></h3>

@@ -18,7 +18,7 @@ class CouncilsController < ApplicationController
     @meetings = @council.meetings.forthcoming.all(:limit => 16)
     @wards = @council.wards
     @datapoints = @council.datapoints.select{ |d| d.summary }
-    @header_link = {:rel => "foaf:primaryTopic", :href => "foo"} # for rdfa stuff
+    @header_link = {:rel => "foaf:primaryTopic", :href => ""} # for rdfa stuff
     respond_to do |format|
       format.html
       format.xml { render :xml => @council.to_xml(:include => :datasets) }
