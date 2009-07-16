@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090716080832) do
+ActiveRecord::Schema.define(:version => 20090716082340) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(:version => 20090716080832) do
     t.integer  "uid",         :limit => 8
     t.text     "description"
   end
+
+  add_index "committees", ["council_id"], :name => "index_committees_on_council_id"
 
   create_table "councils", :force => true do |t|
     t.string   "name"
@@ -49,6 +51,9 @@ ActiveRecord::Schema.define(:version => 20090716080832) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "datapoints", ["council_id"], :name => "index_datapoints_on_council_id"
+  add_index "datapoints", ["dataset_id"], :name => "index_datapoints_on_dataset_id"
 
   create_table "datasets", :force => true do |t|
     t.string   "title"
@@ -87,11 +92,12 @@ ActiveRecord::Schema.define(:version => 20090716080832) do
     t.text     "venue"
   end
 
+  add_index "meetings", ["council_id"], :name => "index_meetings_on_council_id"
+
   create_table "members", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
     t.string   "party"
-    t.string   "constituency"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "url"
@@ -107,6 +113,9 @@ ActiveRecord::Schema.define(:version => 20090716080832) do
     t.text     "address"
     t.integer  "ward_id"
   end
+
+  add_index "members", ["council_id"], :name => "index_members_on_council_id"
+  add_index "members", ["ward_id"], :name => "index_members_on_ward_id"
 
   create_table "memberships", :force => true do |t|
     t.integer  "member_id"
@@ -162,5 +171,7 @@ ActiveRecord::Schema.define(:version => 20090716080832) do
     t.datetime "updated_at"
     t.integer  "uid"
   end
+
+  add_index "wards", ["council_id"], :name => "index_wards_on_council_id"
 
 end
