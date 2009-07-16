@@ -9,11 +9,16 @@ module ApplicationHelper
     return if obj.blank?
     freshness = options.delete(:basic) ? nil : (obj.created_at > 7.days.ago ? "new" : (obj.updated_at > 7.days.ago ? "updated" : nil) )
     css_class = ["#{obj.class.to_s.downcase}_link", options.delete(:class), freshness].compact.join(" ")
-    link_to(h(obj.title), obj, { :class => css_class }.merge(options))
+    text = options.delete(:text) || obj.title
+    link_to(h(text), obj, { :class => css_class }.merge(options))
   end
   
   def basic_link_for(obj=nil, options={})
     link_for(obj, options.merge(:basic => true))
+  end
+  
+  def extended_link_for(obj=nil, options={})
+    link_for(obj, { :text => (obj.respond_to?(:extended_title) ? obj.extended_title : nil) }.merge(options))
   end
   
   def link_to_api_url(response_type)

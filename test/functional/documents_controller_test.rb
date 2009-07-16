@@ -25,12 +25,6 @@ class DocumentsControllerTest < ActionController::TestCase
     should "show body of document" do
       assert_select "#document_body", @document.body
     end
-    
-    # should "list all parsers" do
-    #   assert_select "ul#parsers li" do
-    #     assert_select "a", @parser.title
-    #   end
-    # end
-    
+        
   end  
 end

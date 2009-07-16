@@ -48,6 +48,12 @@ class ApplicationHelperTest < ActionView::TestCase
       obj.stubs(:created_at => 8.days.ago)
       assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), link_for(obj, :basic => true)
     end
+    
+    should "use given text for link in preference to object title" do
+      obj = stale_factory_object(:committee)
+      assert_dom_equal link_to("Some other text", obj, :class => "committee_link"), link_for(obj, :text => "Some other text")
+    end
+    
   end
   
   context "basic_link_for helper method" do
@@ -85,6 +91,29 @@ class ApplicationHelperTest < ActionView::TestCase
       obj = Factory(:committee) 
       obj.stubs(:created_at => 8.days.ago)
       assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), basic_link_for(obj)
+    end
+  end
+  
+  context "extended_link_for helper method" do
+
+    should "return nil by default" do
+      assert_nil extended_link_for
+    end
+    
+    should "return link_for object by default" do
+      obj = stale_factory_object(:committee) # poss better way of testing this. obj can be any ActiveRecord obj 
+      assert_dom_equal link_for(obj), extended_link_for(obj)
+    end
+    
+    should "pass options to link_for" do
+      obj = stale_factory_object(:committee)
+      assert_dom_equal link_for(obj, :foo => "bar"), extended_link_for(obj, :foo => "bar")
+    end
+    
+    should "use object's extended title if it exists" do
+      obj = stale_factory_object(:committee)
+      obj.stubs(:extended_title => "some extended title")
+      assert_dom_equal link_for(obj, :text => "some extended title"), extended_link_for(obj)
     end
   end
   

@@ -40,8 +40,12 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal DateTime.new(2008, 11, 6, 19, 30), @meeting.date_held
     end
     
-    should "return committee namein title" do
+    should "return committee name in title" do
       assert_equal "Audit Group meeting", @meeting.title
+    end
+    
+    should "return committee name and date in extended title" do
+      assert_equal "Audit Group meeting, #{@meeting.date_held.to_s(:event_date)}", @meeting.extended_title
     end
     
     should "have polymorphic document as minutes" do

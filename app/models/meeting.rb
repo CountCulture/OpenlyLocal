@@ -19,6 +19,10 @@ class Meeting < ActiveRecord::Base
     "#{committee.title} meeting"
   end
   
+  def extended_title
+    "#{committee.title} meeting, #{date_held.to_s(:event_date)}"
+  end
+  
   def minutes_body=(doc_body=nil)
     minutes ? minutes.update_attributes(:raw_body => doc_body, :document_type => "Minutes") : create_minutes(:raw_body => doc_body, :url => url, :document_type => "Minutes")
   end
