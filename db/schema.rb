@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090714112359) do
+ActiveRecord::Schema.define(:version => 20090716080832) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -66,13 +66,13 @@ ActiveRecord::Schema.define(:version => 20090714112359) do
 
   create_table "documents", :force => true do |t|
     t.string   "title"
-    t.text     "body"
+    t.text     "body",                :limit => 16777215
     t.string   "url"
     t.integer  "document_owner_id"
     t.string   "document_owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "raw_body"
+    t.text     "raw_body",            :limit => 16777215
     t.string   "document_type"
   end
 
