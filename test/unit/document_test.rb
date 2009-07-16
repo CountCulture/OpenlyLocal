@@ -86,7 +86,7 @@ class DocumentTest < ActiveSupport::TestCase
       
       context "when returning precis" do
         setup do
-          raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a>. Also <script> something dodgy</script> here and <img src='http://council.gov.uk/image' /> image"
+          raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a>.\n\r\n\n\n   \r\n\tAlso <script> something dodgy</script> here \r\nand <img src='http://council.gov.uk/image' /> image"
           @document.attributes = {:url => "http://www.council.gov.uk/document/some_page.htm?q=something", :raw_body => raw_text*20}
           @document.save!
         end
@@ -97,6 +97,10 @@ class DocumentTest < ActiveSupport::TestCase
         
         should "not remove text in tags" do
           assert_match %r(some stylized text with relative link), @document.precis
+        end
+        
+        should "trim multiple line spaces to single space" do
+          assert_match %r(absolute link.\nAlso), @document.precis
         end
         
         should "trim to 500 chars in length" do

@@ -10,7 +10,8 @@ class Document < ActiveRecord::Base
   end
   
   def precis
-    ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(body), :length => 500)
+    stripped_text = ActionController::Base.helpers.strip_tags(body).gsub(/[\t\r\n]+ *[\t\r\n]+/,"\n")
+    ActionController::Base.helpers.truncate(stripped_text, :length => 500)
   end
   
   def title

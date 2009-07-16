@@ -8,11 +8,11 @@
   </p>
   <%- if @meeting.minutes -%>
     <div id="minutes_extract">
-      <h3>Minutes</h3>
+      <h3><%= link_to "Minutes", @meeting.minutes, :rel => "twfy:minutes" %></h3>
       <div class="document_body">
         <%= simple_format @meeting.minutes.precis %>
+        <p class='more_info'><%= link_to("Complete Minutes", @meeting.minutes, :rel => "twfy:minutes") %></p>
       </div>
-      <p class='more_info'><%= link_to("Complete Minutes", @meeting.minutes, :rel => "twfy:minutes") %></p>
     </div>
   <%- end -%>
   <div id="committee_members" class="item_grouping" about="<%= committee_path(@committee) %>">
