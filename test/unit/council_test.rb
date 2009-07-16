@@ -68,6 +68,18 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal "another.url", council.base_url
     end
     
+    context "when returning foaf version of telephone number" do
+
+      should "return nil if telephone blank" do
+        assert_nil @council.foaf_telephone
+      end
+      
+      should "return formatted number" do
+        @council.telephone = "0162 384 298"
+        assert_equal "tel:+44-162-384-298", @council.foaf_telephone
+      end
+    end
+    
     should "be considered parsed if it has members" do
       Factory(:member, :council => @council)
       assert @council.parsed?

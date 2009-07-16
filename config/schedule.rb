@@ -17,7 +17,7 @@ every 1.hours do
 end
 every 30.minutes do
   # runner "ScraperRunner.new(:limit => 5, :email_results => true).refresh_stale"
-  command "cd ~/sites/twfy_local/current && RAILS_ENV=production LIMIT=2 EMAIL_RESULTS=true rake run_stale_scrapers"
+  command "cd ~/sites/twfy_local/current && RAILS_ENV=production LIMIT=2 EMAIL_RESULTS=true rake run_stale_scrapers >> log/cron_log 2>&1"
 end
 every 7.days do
   runner "Dataset.stale.each(&:process)"
