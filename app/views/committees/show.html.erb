@@ -1,4 +1,4 @@
-<%- div_for @committee, :resource => "this", :typeof => "twfyl:LocalAuthorityCommittee" do -%>
+<%- div_for @committee, :resource => "#this", :typeof => "twfyl:LocalAuthorityCommittee" do -%>
   <h1><%= link_for @committee.council, :rev => "twfyl:committee" %> committees: <span property="foaf:name rdfs:label"><%= @committee.title %></span> <em><%= council_page_for @committee %></em></h1>
   <p>
     <em>(<%= link_to "see all #{h(@committee.council.name)} committees", committees_path(:council_id => @council.id) %> )</em>

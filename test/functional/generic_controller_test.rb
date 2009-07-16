@@ -11,7 +11,6 @@ class GenericController < ApplicationController
   def show
     @council = Council.find(params[:council_id]) if params[:council_id]
     @title = "Foo Title"
-    @header_link = {:rel => "foaf:primaryTopic", :href => "foo"}
     render :text => "show text", :layout => true
   end
 end
@@ -55,8 +54,7 @@ class GenericControllerTest < ActionController::TestCase
     end
     
     should "add link in head" do
-      # puts css_select("head link")
-      assert_select "link[rel='foaf:primaryTopic'][href='foo']"
+      assert_select "link[rel='foaf:primaryTopic'][href='#this']"
     end
     
   end

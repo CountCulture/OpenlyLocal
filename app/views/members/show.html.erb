@@ -1,4 +1,4 @@
-<%- div_for @member, :resource => "this", :typeof => "twfyl:LocalAuthorityMember" do -%>
+<%- div_for @member, :resource => "#this", :typeof => "twfyl:LocalAuthorityMember" do -%>
   <h1><span property="foaf:name rdfs:label"><%= @member.full_name %></span> <em><%= council_page_for @member, :rel => "foaf:page" %></em></h1>
   <p>Council <strong><%= link_to h(@council.name), @council %></strong></p>
   <p>Party <strong><%= @member.party %></strong></p>

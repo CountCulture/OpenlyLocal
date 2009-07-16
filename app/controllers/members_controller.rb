@@ -7,7 +7,6 @@ class MembersController < ApplicationController
     @committees = @member.committees
     @forthcoming_meetings = @member.forthcoming_meetings
     @title = @member.full_name
-    @header_link = {:rel => "foaf:primaryTopic", :href => ""} # for rdfa stuff
     respond_to do |format|
       format.html
       format.xml { render :xml => @member.to_xml }

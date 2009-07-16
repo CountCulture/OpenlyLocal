@@ -5,7 +5,6 @@ class MeetingsController < ApplicationController
     @council = Council.find(params[:council_id]) 
     build_title
     @meetings = params[:include_past] ? @council.meetings : @council.meetings.forthcoming
-    @header_link = {:rel => "foaf:primaryTopic", :href => ""} # for rdfa stuff
     respond_to do |format|
       format.html
       format.xml { render :xml => @meetings.to_xml }
@@ -23,7 +22,6 @@ class MeetingsController < ApplicationController
     @committee = @meeting.committee
     @other_meetings = @committee.meetings - [@meeting]
     @title = "#{@meeting.title}, #{@meeting.date_held.to_s(:event_date).squish}"
-    @header_link = {:rel => "foaf:primaryTopic", :href => ""} # for rdfa stuff
     respond_to do |format|
       format.html
       format.xml { render :xml => @meeting.to_xml }

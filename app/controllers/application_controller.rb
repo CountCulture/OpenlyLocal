@@ -29,5 +29,6 @@ class ApplicationController < ActionController::Base
   
   def add_rdfa_headers
     @add_rdfa_headers = true
+    @header_link = {:rel => "foaf:primaryTopic", :href => "#this"}
   end
 end

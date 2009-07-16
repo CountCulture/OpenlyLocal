@@ -1,4 +1,4 @@
-<%- div_for @meeting, :resource => "this", :typeof => "cal:Vevent" do -%>
+<%- div_for @meeting, :resource => "#this", :typeof => "cal:Vevent" do -%>
   <h4 class="owner">Meeting of the <%= link_for @council %></h4>
   <h1><span property="cal:summary rdfs:label"><%= @committee.title %></span>, <span datatype="xsd:dateTime" property="cal:dtstart" content="<%= @meeting.date_held.to_s(:vevent) %>"><%= @meeting.date_held.to_s(:event_date).squish %></span> <em><%= council_page_for @meeting %></em></h1>
 

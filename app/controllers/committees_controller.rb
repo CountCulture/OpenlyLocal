@@ -16,7 +16,6 @@ class CommitteesController < ApplicationController
     @committee = Committee.find(params[:id])
     @council = @committee.council
     @title = @committee.title
-    @header_link = {:rel => "foaf:primaryTopic", :href => ""} # for rdfa stuff
     respond_to do |format|
       format.html
       format.xml { render :xml => @committee.to_xml(:include => [:members, :meetings]) }
