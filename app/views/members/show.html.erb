@@ -1,12 +1,14 @@
 <%- div_for @member, :resource => "#this", :typeof => "twfyl:LocalAuthorityMember" do -%>
   <h1><span property="foaf:name rdfs:label"><%= @member.full_name %></span> <em><%= council_page_for @member, :rel => "foaf:page" %></em></h1>
-  <p>Council <strong><%= link_to h(@council.name), @council %></strong></p>
-  <p>Party <strong><%= @member.party %></strong></p>
-  <p>Ward <strong><%= link_for(@member.ward) || 'not known' %></strong></p>
-  <p>Email <strong><%= @member.email ? mail_to(@member.email, @member.email, :encode => "javascript", :rel => "foaf:mbox") : 'not known' %></strong></p>
-  <p>Address <strong><%= @member.address || 'not known' %></strong></p>
-  <p>Date elected <strong><%= @member.date_elected ? @member.date_elected.to_s(:custom_short) : 'not known' %></strong></p>
-  <p>Declaration of Interests <strong><%= @member.declaration_of_interests ? link_to(@member.declaration_of_interests, @member.declaration_of_interests, :class => "external") : 'not known' %></strong></p>
+  <div id="data">
+    <p class="attribute"><strong>Council</strong> <%= link_to h(@council.name), @council, :rev => "foaf:member" %></p>
+    <p class="attribute"><strong>Party </strong><%= @member.party %></p>
+    <p class="attribute"><strong>Ward </strong><%= link_for(@member.ward) || 'not known' %></p>
+    <p class="attribute"><strong>Email </strong><%= @member.email ? mail_to(@member.email, @member.email, :encode => "javascript", :rel => "foaf:mbox") : 'not known' %></p>
+    <p class="attribute"><strong>Address </strong><%= @member.address || 'not known' %></p>
+    <p class="attribute"><strong>Date elected </strong><%= @member.date_elected ? @member.date_elected.to_s(:custom_short) : 'not known' %></p>
+    <p class="attribute"><strong>Declaration of Interests </strong><%= @member.declaration_of_interests ? link_to(@member.declaration_of_interests, @member.declaration_of_interests, :class => "external") : 'not known' %></p>
+  </div>
 
   <div id="committees" class="item_grouping">
     <h3>Committee Memberships</h3>

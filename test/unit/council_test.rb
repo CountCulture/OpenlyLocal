@@ -80,6 +80,18 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning dbpedia_url" do
+
+      should "return nil if wikipedia_url blank" do
+        assert_nil @council.dbpedia_url
+      end
+      
+      should "return formatted number" do
+        @council.wikipedia_url = "http://en.wikipedia.org/wiki/Herefordshire"
+        assert_equal "http://dbpedia.org/page/Herefordshire", @council.dbpedia_url
+      end
+    end
+    
     should "be considered parsed if it has members" do
       Factory(:member, :council => @council)
       assert @council.parsed?

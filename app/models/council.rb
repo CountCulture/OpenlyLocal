@@ -25,6 +25,10 @@ class Council < ActiveRecord::Base
     read_attribute(:base_url) || url
   end
   
+  def dbpedia_url
+    wikipedia_url.gsub(/en\.wikipedia.org\/wiki/, "dbpedia.org/page") unless wikipedia_url.blank?
+  end
+  
   def foaf_telephone
     "tel:+44-#{telephone.gsub(/^0/, '').gsub(/\s/, '-')}" unless telephone.blank?
   end

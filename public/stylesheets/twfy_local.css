@@ -149,11 +149,13 @@ body {
 	background-color: #f3f3f3;
 	margin-bottom: 2em;
 	padding:4px;
-	width: 100%;
 	overflow: auto;
 }
 a.unparsed {
 	color:#9e9e9e; }
+#data {
+	overflow:auto;
+	}
 #data .attribute {
 	float:left;
 	width:50%; 
