@@ -13,6 +13,12 @@
       <link rel="stylesheet" href="/stylesheets/blueprint/ie.css" type="text/css" media="screen, projection" />
     <![endif]-->
     <link rel="stylesheet" href="/stylesheets/twfy_local.css" type="text/css" media="screen" charset="utf-8" />
+    <!-- Start iPhone stuff -->
+    <!--[if !IE]>-->
+      <link rel="stylesheet" type="text/css" media="only screen and (max-device-width: 480px)" href="/stylesheets/iphone.css" />
+      <meta id="viewport" name="viewport" content="width=320;"/>
+    <!--<![endif]-->
+    <!-- End iPhone stuff -->    
     <%= javascript_include_tag :defaults %>
     <%#= javascript_include_tag "jquery.min.js" %>
   </head>
