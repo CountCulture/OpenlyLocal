@@ -14,7 +14,10 @@
       <%= content_tag(:p, "Will use #{link_to(@scraper.computed_url, @scraper.computed_url, :class => 'external')} by default", :class => "faint", :id => "scraper_default_url") if @scraper.computed_url %>
     <%- end -%>
   </p>
-  
+  <p>
+    <%= f.label :referrer_url, "Referrer url <em>Can nearly always be left blank</em>" %>
+    <%= f.text_field :referrer_url %><br />
+  </p>
   <%- if @scraper.portal_parser? && !params[:dedicated_parser] -%>
     <%= f.hidden_field :parser_id %>
     <%= render :partial => '/parsers/parser', :object => @scraper.parser %>

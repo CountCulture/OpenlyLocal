@@ -3,6 +3,7 @@ class Scraper < ActiveRecord::Base
   class RequestError < ScraperError; end
   class ParsingError < ScraperError; end
   SCRAPER_TYPES = %w(InfoScraper ItemScraper)
+  USER_AGENT = "Mozilla/4.0 (OpenlyLocal.com)"
   belongs_to :parser
   belongs_to :council
   validates_presence_of :council_id
@@ -76,7 +77,9 @@ class Scraper < ActiveRecord::Base
   protected
   def _data(target_url=nil)
     begin
-      page_data = _http_get(target_url)
+      options = { "Referer" => referrer_url, "User-Agent" => USER_AGENT }
+      logger.debug { "Getting data from #{target_url} with options: #{options.inspect}" }
+      page_data = _http_get(target_url, options)
     rescue Exception => e
       error_message = "Problem getting data from #{target_url}: #{e.inspect}"
       logger.error { error_message }
@@ -91,7 +94,7 @@ class Scraper < ActiveRecord::Base
     end
   end
   
-  def _http_get(target_url)
+  def _http_get(target_url, options={})
     return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
     # response = nil 
     # target_url = URI.parse(target_url)
@@ -103,7 +106,7 @@ class Scraper < ActiveRecord::Base
     # rescue Timeout::Error
     #   raise RequestError, "Timeout::Error retrieving info from #{target_url}."
     # end
-    open(target_url).read
+    open(target_url, options).read
     # logger.debug "********Scraper response = #{response.body.inspect}"
     # response.body
   end

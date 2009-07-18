@@ -15,6 +15,9 @@
   <div class="notes">
     <h4>Notes</h4>
     <%= simple_format @scraper.notes %>
+    
+    <p><strong>Referrer url</strong> <%= @scraper.referrer_url || "none" %></p>
+    
   </div> 
   <p>
     <strong>Last scraped</strong> <%= @scraper.last_scraped %><br />

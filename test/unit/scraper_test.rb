@@ -280,7 +280,18 @@ class ScraperTest < ActiveSupport::TestCase
     context "when getting data" do
     
       should "get given url" do
-        @scraper.expects(:_http_get).with('http://another.url').returns("something")
+        @scraper.expects(:_http_get).with('http://another.url', anything).returns("something")
+        @scraper.send(:_data, 'http://another.url')
+      end
+      
+      should "pass scraper referrer if set" do
+        @scraper.referrer_url = "http://referrer.com"
+        @scraper.expects(:_http_get).with(anything, has_entry("Referer" => "http://referrer.com")).returns("something")
+        @scraper.send(:_data, 'http://another.url')
+      end
+      
+      should "pass dummy user agent" do
+        @scraper.expects(:_http_get).with(anything, has_entry("User-Agent" => "Mozilla/4.0 (OpenlyLocal.com)")).returns("something")
         @scraper.send(:_data, 'http://another.url')
       end
       

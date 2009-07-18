@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090716082340) do
+ActiveRecord::Schema.define(:version => 20090718124153) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(:version => 20090716082340) do
     t.datetime "last_scraped"
     t.boolean  "problematic",                :default => false
     t.text     "notes"
+    t.string   "referrer_url"
   end
 
   create_table "wards", :force => true do |t|
