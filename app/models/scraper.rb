@@ -77,11 +77,12 @@ class Scraper < ActiveRecord::Base
   protected
   def _data(target_url=nil)
     begin
-      options = { "Referer" => referrer_url, "User-Agent" => USER_AGENT }
+      options = { "User-Agent" => USER_AGENT }
+      options["Referer"] = referrer_url unless referrer_url.blank? 
       logger.debug { "Getting data from #{target_url} with options: #{options.inspect}" }
       page_data = _http_get(target_url, options)
     rescue Exception => e
-      error_message = "Problem getting data from #{target_url}: #{e.inspect}"
+      error_message = "**Problem getting data from #{target_url}: #{e.inspect}\n #{e.backtrace}"
       logger.error { error_message }
       raise RequestError, error_message
     end

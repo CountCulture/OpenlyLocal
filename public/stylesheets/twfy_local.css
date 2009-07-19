@@ -255,6 +255,7 @@ div#dataset_data table {
 	width:280px;
 	float:left;
 	margin-right:20px;
+	margin-bottom: 1em;
 }
 .datapoint a.more_info {
 	display:block;

@@ -6,14 +6,14 @@ class Dataset < ActiveRecord::Base
   
   def data_for(council)
     raw_response = _http_get(query_url(council))
-    FasterCSV.parse(raw_response, :headers => true).by_col.collect{|c| c.flatten} unless raw_response.blank?
+    _parse(raw_response).by_col.collect{|c| c.flatten} unless raw_response.blank?
   end
   
   def process
     raw_response = _http_get(query_url)
     return if raw_response.blank?
     update_last_scraped
-    rows = FasterCSV.parse(raw_response, :headers => true).to_a
+    rows = _parse(raw_response).to_a
     header_row = rows.shift
     all_councils = Council.find(:all)
     all_councils.each do |council|
@@ -43,6 +43,10 @@ class Dataset < ActiveRecord::Base
   def _http_get(url)
     return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
     open(url)
+  end
+  
+  def _parse(response)
+    FasterCSV.parse(response, :headers => true)
   end
   
   def update_last_scraped
