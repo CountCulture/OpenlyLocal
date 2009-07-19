@@ -78,7 +78,7 @@ class Scraper < ActiveRecord::Base
   def _data(target_url=nil)
     begin
       options = { "User-Agent" => USER_AGENT }
-      options["Referer"] = referrer_url unless referrer_url.blank? 
+      (options["Referer"] = (referrer_url =~ /^http/ ? referrer_url : target_url)) unless referrer_url.blank?
       logger.debug { "Getting data from #{target_url} with options: #{options.inspect}" }
       page_data = _http_get(target_url, options)
     rescue Exception => e

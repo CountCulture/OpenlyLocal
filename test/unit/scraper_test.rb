@@ -290,6 +290,12 @@ class ScraperTest < ActiveSupport::TestCase
         @scraper.send(:_data, 'http://another.url')
       end
       
+      should "pass target url as referrer if referrer is set but not url" do
+        @scraper.referrer_url = "foo"
+        @scraper.expects(:_http_get).with(anything, has_entry("Referer" => "http://another.url")).returns("something")
+        @scraper.send(:_data, 'http://another.url')
+      end
+      
       should "pass dummy user agent" do
         @scraper.expects(:_http_get).with(anything, has_entry("User-Agent" => "Mozilla/4.0 (OpenlyLocal.com)")).returns("something")
         @scraper.send(:_data, 'http://another.url')
