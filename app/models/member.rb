@@ -41,7 +41,7 @@ class Member < ActiveRecord::Base
   end
   
   def party=(party_name)
-    self[:party] = party_name.gsub(/party/i, '').strip
+    self[:party] = party_name.gsub(/party/i, '').strip unless party_name.blank?
   end
     
 end

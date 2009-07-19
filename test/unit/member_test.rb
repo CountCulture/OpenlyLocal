@@ -78,6 +78,10 @@ class MemberTest < ActiveSupport::TestCase
       assert_equal "Liberal Democrat", new_member(:party => "  Liberal Democrat Party ").party
     end
 
+    should "not raise exception when party is nil" do
+      assert_nothing_raised(Exception) { new_member(:party => nil) }
+    end
+
     should "have no potential_meetings" do
       assert_equal [], @member.potential_meetings
     end
