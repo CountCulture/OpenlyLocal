@@ -164,15 +164,15 @@ class MeetingsControllerTest < ActionController::TestCase
       end
 
       should "show rdfa typeof" do
-        assert_select "div[typeof*='cal:Vevent']"
+        assert_select "div[typeof*='vcal:Vevent']"
       end
 
       should "use committee name as cal:summary" do
-        assert_select "h1 span[property*='cal:summary']", /#{@committee.title}/
+        assert_select "h1 span[property*='vcal:summary']", /#{@committee.title}/
       end
 
       should "show meeting start time in machine format" do
-        assert_select "span[property='cal:dtstart'][content='#{@meeting.date_held.to_s(:vevent)}']"
+        assert_select "span[property='vcal:dtstart'][content='#{@meeting.date_held.to_s(:vevent)}']"
       end
 
       should "show rdfa attributes for council" do
