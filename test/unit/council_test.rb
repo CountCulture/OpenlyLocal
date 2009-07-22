@@ -92,6 +92,23 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning authority_type_help_url" do
+
+      should "return nil if authority_type blank" do
+        assert_nil @council.authority_type_help_url
+      end
+      
+      should "return appropriate wiki url for authority type" do
+        @council.authority_type = "Unitary"
+        assert_equal "http://en.wikipedia.org/wiki/Unitary_authority", @council.authority_type_help_url
+      end
+      
+      should "return nil if no known wiki url for authority_type" do
+        @council.authority_type = "foo"
+        assert_nil @council.authority_type_help_url
+      end
+    end
+    
     should "be considered parsed if it has members" do
       Factory(:member, :council => @council)
       assert @council.parsed?

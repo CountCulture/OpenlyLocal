@@ -59,4 +59,9 @@ module ApplicationHelper
   def rdfa_vocab_url
     url_for(:controller => "info", :action => "vocab", :only_path => false)
   end
+  
+  def wikipedia_help_link(wiki_url)
+    return if wiki_url.blank?
+    link_to(image_tag("help.png"), wiki_url, :class => "help", :alt => "help")
+  end
 end

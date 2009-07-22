@@ -1,6 +1,13 @@
 # attributes: url wikipedia_url location
 
 class Council < ActiveRecord::Base
+  AUTHORITY_TYPES = {
+    "London Borough" => "http://en.wikipedia.org/wiki/London_borough",
+    "Unitary" => "http://en.wikipedia.org/wiki/Unitary_authority",
+    "District" => "http://en.wikipedia.org/wiki/Districts_of_England",
+    "County" => "http://en.wikipedia.org/wiki/Non-metropolitan_county",
+    "Metropolitan Borough" => "http://en.wikipedia.org/wiki/Metropolitan_borough"
+  }
   has_many :members
   has_many :committees
   has_many :memberships, :through => :members
@@ -15,6 +22,10 @@ class Council < ActiveRecord::Base
   named_scope :parsed, :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id"
   default_scope :order => "name"
   alias_attribute :title, :name
+  
+  def authority_type_help_url
+    AUTHORITY_TYPES[authority_type]
+  end
   
   def average_membership_count
     # memberships.average(:group => "members.id")

@@ -245,6 +245,16 @@ class ApplicationHelperTest < ActionView::TestCase
     end
   end
   
+  context "wikipedia_help_link helper method" do
+    should "return nil by default" do
+      assert_nil wikipedia_help_link(nil)
+    end
+    
+    should "return link to wikipedia_page using help icon" do
+      assert_equal link_to(image_tag("help.png"), "http://en.wikipedia.org/wiki/London_borough", :class => "help", :alt => "help"), wikipedia_help_link("http://en.wikipedia.org/wiki/London_borough")
+    end
+  end
+  
   private
   def stale_factory_object(name, options={})
     obj = Factory(name, options)
