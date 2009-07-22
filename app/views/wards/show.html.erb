@@ -1,4 +1,7 @@
 <h1><%= basic_link_for @council %>: <%= @title %></h1>
+<div id="data">
+  <p class="attribute"><strong><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/lookups/index.html", :class => 'external' %></strong> <%= @ward.snac_id %></p>
+</div>
 
 <div id="members" class="item_grouping">
   <h3>Councillors for this ward</h3>

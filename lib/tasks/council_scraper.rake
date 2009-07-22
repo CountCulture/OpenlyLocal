@@ -77,3 +77,28 @@ task :scrape_councils_for_feeds => :environment do
   end
   
 end
+
+desc "Import ONS SNAC codes into Wards table" 
+task :import_ward_snac_ids => :environment do
+  csv_file = ENV['FILE']
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/ons_data/#{csv_file}"), :headers => true).to_a
+  rows[1..-1].group_by{|r| r[2]}.each do |council_snac_id, council_group| # group by council SNAC id
+    next unless council = Council.find_by_snac_id(council_snac_id)
+    if council.wards.empty?
+      council_group.each do |ward_data|
+        council.wards.create(:snac_id => ward_data[0], :name => ward_data[1])
+        puts "Successfully added #{ward_data[1]} ward (#{ward_data[0]}) for #{council.name}"
+      end
+    else
+      council_group.each do |ward_data|
+        if ward = council.wards.find_by_name(ward_data[1])
+          ward.snac_id.blank? ? ward.update_attribute(:snac_id, ward_data[0])&&puts("Successfully updated #{ward_data[1]} ward (#{ward_data[0]}) for #{council.name}") : 
+                                puts("SNAC id already set for #{ward_data[1]} ward (#{ward_data[0]}) for #{council.name}")
+        else
+          "ALERT: ward (#{ward_data[1]}) missing for #{council.name}"
+        end
+      end
+    end
+  end
+  
+end
