@@ -145,6 +145,12 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_equal link_to("json", { :controller => "councils", :action => "index", :format => "json" }, :class => "api_link json"), link_to_api_url("json")
     end
     
+    should "should use id rather than to_param in url js link when json requested" do
+      resource = Factory(:member)
+      self.stubs(:params).returns(:controller => "members", :action => "show", :id => resource)
+      assert_equal link_to("json", { :controller => "members", :action => "show", :format => "json", :id => resource.id }, :class => "api_link json"), link_to_api_url("json")
+    end
+    
   end
   
   context "list_all helper method" do

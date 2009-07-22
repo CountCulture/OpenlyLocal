@@ -17,9 +17,7 @@ module ApplicationHelper
     link_for(obj, options.merge(:basic => true))
   end
   
-  # Embed canonical link URL, if specified by controller.
   # http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.htm
-  #
   def canonical_link_tag
     return unless @canonical_url
     return tag(:link, :rel => :canonical, :href => @canonical_url) unless @canonical_url == true # then canonical_url has been set explicitly 
@@ -33,6 +31,7 @@ module ApplicationHelper
   end
   
   def link_to_api_url(response_type)
+    params[:id] = params[:id].to_i if params[:id] # if we've got an id, clean it up
     link_to(response_type, params.merge(:format => response_type), :class => "api_link #{response_type}")
   end
   
