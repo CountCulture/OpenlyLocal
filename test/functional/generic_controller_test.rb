@@ -11,6 +11,7 @@ class GenericController < ApplicationController
   def show
     @council = Council.find(params[:council_id]) if params[:council_id]
     @title = "Foo Title"
+    @canonical_url = "/foo/bar"
     render :text => "show text", :layout => true
   end
 end
@@ -57,6 +58,9 @@ class GenericControllerTest < ActionController::TestCase
       assert_select "link[rel='foaf:primaryTopic'][href='#this']"
     end
     
+    should "show canonical_url link" do
+      assert_select "link[rel='canonical'][href='/foo/bar']"
+    end
   end
   
   context "on GET to :show with council instantiated" do

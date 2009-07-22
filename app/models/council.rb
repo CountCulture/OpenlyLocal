@@ -51,4 +51,8 @@ class Council < ActiveRecord::Base
   def short_name
     name.gsub(/Borough|City|Royal|London|of|Council/, '').strip
   end
+  
+  def to_param
+    id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
+  end
 end

@@ -235,6 +235,34 @@ class ApplicationHelperTest < ActionView::TestCase
     end
   end
   
+  context "canonical_link_tag helper method" do
+    
+    should "return nil by default" do
+      assert_nil canonical_link_tag
+    end
+    
+    should "return link to canonical_url if set" do
+      self.instance_variable_set(:@canonical_url, "/foo/bar")
+      assert_dom_equal tag(:link, :rel => :canonical, :href => "/foo/bar"), canonical_link_tag
+    end
+    
+    should "return link to calculated canonical_url if canonical_url IS true" do
+      member = Factory(:member)
+      self.stubs(:controller).returns(stub(:controller_name => "members"))
+      self.instance_variable_set(:@canonical_url, true)
+      self.instance_variable_set(:@member, member)
+      assert_dom_equal tag(:link, :rel => :canonical, :href => "/members/#{member.to_param}"), canonical_link_tag
+    end
+    
+    should "return nil if canonical_url IS true but controller doesn't have instance variable for resource" do
+      member = Factory(:member)
+      self.stubs(:controller).returns(stub(:controller_name => "members"))
+      self.instance_variable_set(:@canonical_url, true)
+      assert_nil canonical_link_tag
+    end
+    
+  end
+
   context "timestamp_data_for helper method" do
     setup do
       @last_updated = 2.hours.ago

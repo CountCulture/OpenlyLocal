@@ -61,6 +61,9 @@ class MembersControllerTest < ActionController::TestCase
          assert_select "#meetings li[rel*='twfyl:meeting']"
        end
        
+       should "show canonical url" do
+         assert_select "link[rel='canonical'][href='/members/#{@member.to_param}']"
+       end
      end
      
      context "with xml requested" do
@@ -96,5 +99,5 @@ class MembersControllerTest < ActionController::TestCase
        should_respond_with_content_type 'text/calendar'
      end
    end  
-
+   
 end

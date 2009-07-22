@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   before_filter :share_this, :only => [:index, :show]
-  # before_filter :add_rdfa_headers
+  before_filter :set_canonical_url, :only => [:show]
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
@@ -30,5 +30,9 @@ class ApplicationController < ActionController::Base
   def add_rdfa_headers
     @add_rdfa_headers = true
     @header_link = {:rel => "foaf:primaryTopic", :href => "#this"}
+  end
+  
+  def set_canonical_url
+    @canonical_url = true
   end
 end

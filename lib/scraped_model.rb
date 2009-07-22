@@ -36,6 +36,10 @@ module ScrapedModel
     def new_record_before_save?
       instance_variable_get(:@new_record_before_save)
     end
+    
+    def to_param
+      id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
+    end
 
     protected
     # Updates timestamp of council when member details are updated, new member is added or deleted

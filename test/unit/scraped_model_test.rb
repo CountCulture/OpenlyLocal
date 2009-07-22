@@ -143,6 +143,17 @@ class ScrapedModelTest < ActiveSupport::TestCase
      assert @test_model.respond_to?(:save_without_losing_dirty)
    end
    
+   should "escape title in to_param_method" do
+     @test_model.save!
+     @test_model.stubs(:title => "some title-with/stuff")
+     assert_equal "#{@test_model.id}-some-title-with-stuff", @test_model.to_param
+   end
+   
+   should "return nil for to_param_method if id not set" do
+     @test_model.stubs(:title => "some title-with/stuff")
+     assert_nil @test_model.to_param
+   end
+   
    context "when saving_without_losing_dirty" do
      setup do
        @test_model.save_without_losing_dirty

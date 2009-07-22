@@ -17,6 +17,17 @@ module ApplicationHelper
     link_for(obj, options.merge(:basic => true))
   end
   
+  # Embed canonical link URL, if specified by controller.
+  # http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.htm
+  #
+  def canonical_link_tag
+    return unless @canonical_url
+    return tag(:link, :rel => :canonical, :href => @canonical_url) unless @canonical_url == true # then canonical_url has been set explicitly 
+    resource_name = controller.controller_name.gsub(/s/,'')
+    resource = instance_variable_get("@#{resource_name}")
+    @canonical_url = tag(:link, :rel => :canonical, :href => send("#{resource_name}_path", resource)) if resource
+  end
+
   def extended_link_for(obj=nil, options={})
     link_for(obj, { :text => (obj.respond_to?(:extended_title) ? obj.extended_title : nil) }.merge(options))
   end

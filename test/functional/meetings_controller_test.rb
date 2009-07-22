@@ -176,11 +176,11 @@ class MeetingsControllerTest < ActionController::TestCase
       end
 
       should "show rdfa attributes for council" do
-        assert_select "span[about*='councils/#{@council.id}']"
+        assert_select "span[about*='councils/#{@council.to_param}']"
       end
       
       should "show foaf attributes for members" do
-        assert_select "div[about='/committees/#{@committee.id}']" do
+        assert_select "div[about='/committees/#{@committee.to_param}']" do
           assert_select "a[rel='foaf:member']", @member.title
         end
       end

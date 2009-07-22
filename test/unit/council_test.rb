@@ -68,6 +68,11 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal "another.url", council.base_url
     end
     
+    should "include title in to_param method" do
+      @council.name = "some title-with/stuff"
+      assert_equal "#{@council.id}-some-title-with-stuff", @council.to_param
+    end
+    
     context "when returning foaf version of telephone number" do
 
       should "return nil if telephone blank" do
