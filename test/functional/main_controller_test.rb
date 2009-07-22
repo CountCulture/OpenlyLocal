@@ -6,6 +6,11 @@ class MainControllerTest < ActionController::TestCase
       @council1 = Factory(:council)
       @council2 = Factory(:another_council)
       @member = Factory(:member, :council => @council1)
+      @committee = Factory(:committee, :council => @council1)
+      
+      @meeting = Factory(:meeting, :council => @council1, :committee => @committee)
+      @future_meeting = Factory(:meeting, :date_held => 3.days.from_now.to_date, :council => @council1, :committee => @committee)
+
       get :index
     end
   
@@ -18,6 +23,22 @@ class MainControllerTest < ActionController::TestCase
       assert_select "#latest_councils" do
         assert_select "li", 1 do # only #council1 has members and therefore is considered parsed
           assert_select "a", @council1.title
+        end
+      end
+    end
+    
+    should "list latest forthoming meetings" do
+      assert_select "#forthcoming_meetings" do
+        assert_select "li", 1 do 
+          assert_select "a", /#{@meeting.title}/
+        end
+      end
+    end
+    
+    should "list latest latest councillors" do
+      assert_select "#latest_councillors" do
+        assert_select "li", 1 do 
+          assert_select "a", /#{@member.title}/
         end
       end
     end

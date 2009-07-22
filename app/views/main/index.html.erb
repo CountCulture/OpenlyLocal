@@ -13,8 +13,27 @@
   <p>The open-source code behind the site is visible for anyone to see at <%= link_to 'Github', 'http://github.com/CountCulture/twfy_local_parser', :class => "external" %></p>
   <p>Most of the data is accessible as <%= link_to "XML", 'http://en.wikipedia.org/wiki/XML', :class => 'external' %> or <%= link_to "json", 'http://en.wikipedia.org/wiki/JSON', :class => 'external' %> data through a rough and ready API (basically add .xml or .json to the main part of the URL)</p>
 </div>
+
 <div id="latest_councils"  class="item_grouping">
   <h3>Most recently updated councils</h3>
   <%= list_all @councils %>
   <p class="more_info"><%= link_to "See all councils", councils_path %></p>
+</div>
+
+<div id="latest_councillors"  class="item_grouping">
+  <h3>Latest councillors</h3>
+  <ul>
+    <% for councillor in @latest_councillors %>
+      <li><strong><%= basic_link_for councillor.council %></strong> <%= extended_link_for councillor %></li>
+    <% end %>
+  </ul>  
+</div>
+
+<div id="forthcoming_meetings"  class="item_grouping">
+  <h3>Forthcoming meetings</h3>
+  <ul>
+    <% for meeting in @forthcoming_meetings %>
+      <li><strong><%= basic_link_for meeting.council %></strong> <%= extended_link_for meeting %></li>
+    <% end %>
+  </ul>  
 </div>
