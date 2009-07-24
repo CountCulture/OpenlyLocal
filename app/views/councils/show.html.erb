@@ -1,11 +1,11 @@
-<h1 property="foaf:name rdfs:label"><%= @council.name %></h1>
 <div id="data">
+  <h1 property="foaf:name rdfs:label"><%= @council.name %></h1>
   <%= render :partial => 'party_breakdown' unless @party_breakdown.blank? %>
   <p class="attribute"><strong>website</strong> <%= link_to @council.url, @council.url, :class => :external, :rel => "foaf:homepage" %> <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %></p>
   <p class="attribute" rel="rdf:type"><strong>Authority type</strong> <span about="[twfyl:<%= @council.authority_type.gsub(/\s+/,'') %>Authority]"><%= @council.authority_type %></span> <%= wikipedia_help_link(@council.authority_type_help_url) %></p>
   <p class="attribute"><strong>Address</strong> <span property="twfyl:full-address"><%= @council.address %></span></p>
   <p class="attribute" rel="foaf:phone"><strong>Telephone</strong> <%= content_tag(:span, @council.telephone, :about => @council.foaf_telephone) unless @council.telephone.blank? %></p>
-  <p class="clear"><strong>Wikipedia page</strong> <%= link_to @council.wikipedia_url, @council.wikipedia_url, :class => 'external', :rel => "foaf:page" %></p>
+  <p class="attribute"><strong>Wikipedia page</strong> <%= link_to @council.wikipedia_url, @council.wikipedia_url, :class => 'external', :rel => "foaf:page" %></p>
   <div class="extra_info">
     <h3>Other info</h3>
     <div id="external_links" class="item_grouping">

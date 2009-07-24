@@ -156,13 +156,18 @@ a.unparsed {
 #data {
 	overflow:auto;
 	}
-#data .attribute {
+#data h1 {
 	float:left;
-	width:50%; 
+	}
+#data .attribute {
+	clear:left;
 	}
 #data .attribute strong {
 	float: left;
 	width: 10em;
+}
+.extra_info  {
+	clear: both;
 }
 .extra_info .notes h4 {
 	float: left;
@@ -177,7 +182,7 @@ div.item_grouping h3 {
 }
 #party_breakdown {
 	float:right;
-	width:400px;
+	width:450px;
 	height:200px;
 	position: relative;
 }
