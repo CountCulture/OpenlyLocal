@@ -48,6 +48,17 @@ class Council < ActiveRecord::Base
     !members.blank?
   end
   
+  def party_breakdown
+    party_groups = members.group_by(&:party)
+    return [] if party_groups.size==1 && (party_groups[nil]||party_groups[""]) # i.e. members but no parties
+    if party_groups[nil]||party_groups[""]
+      party_groups["Not known"] = party_groups[nil].to_a + party_groups[""].to_a
+      party_groups.delete(nil)
+      party_groups.delete("") # replace nil or blank keys with 'Not known'
+    end
+    breakdown = party_groups.collect{|k,v| [k, v.size]}.sort{ |x,y| y[1] <=> x[1]  }
+  end
+  
   def short_name
     name.gsub(/Borough|City|Royal|London|of|Council/, '').strip
   end

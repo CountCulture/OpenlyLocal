@@ -123,6 +123,43 @@ class CouncilTest < ActiveSupport::TestCase
       assert !@council.parsed?
     end
     
+    context "when returning party breakdown" do
+
+      should "return empty array if no members" do
+        assert_equal [], Council.new.party_breakdown
+      end
+      
+      should "calculate breakdown from members list" do
+        dummy_members = [stub(:party => "Conservative")]*3 + [stub(:party => "Labour")]*6 + [stub(:party => "Independent")]
+        @council.expects(:members).returns(dummy_members)
+        assert_equal [["Labour", 6], ["Conservative", 3],["Independent", 1]], @council.party_breakdown
+      end
+      
+      should "return empty array if no party details for any members" do
+        dummy_members = [stub(:party => nil)]*3
+        @council.expects(:members).returns(dummy_members)
+        assert_equal [], @council.party_breakdown
+      end
+      
+      should "return 'not known' for members with no party" do
+        dummy_members = [stub(:party => "Conservative")]*3 + [stub(:party => nil)]
+        @council.expects(:members).returns(dummy_members)
+        assert_equal [["Conservative", 3],["Not known", 1]], @council.party_breakdown
+      end
+      
+      should "return 'not known' for members with blank party" do
+        dummy_members = [stub(:party => "Conservative")]*3 + [stub(:party => "")]
+        @council.expects(:members).returns(dummy_members)
+        assert_equal [["Conservative", 3],["Not known", 1]], @council.party_breakdown
+      end
+      
+      should "return 'not known' for members with blank party" do
+        dummy_members = [stub(:party => "Conservative")]*3 + [stub(:party => "")] + [stub(:party => nil)]
+        @council.expects(:members).returns(dummy_members)
+        assert_equal [["Conservative", 3],["Not known", 2]], @council.party_breakdown
+      end
+    end
+    
     should "return name without Borough etc as short_name" do
       assert_equal "Brent", Council.new(:name => "London Borough of Brent").short_name
       assert_equal "Westminster", Council.new(:name => "City of Westminster").short_name

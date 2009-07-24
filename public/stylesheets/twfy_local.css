@@ -175,6 +175,20 @@ padding-right: 20px;}
 div.item_grouping h3 {
 	border-bottom: 1px solid #036;
 }
+#party_breakdown {
+	float:right;
+	width:400px;
+	height:200px;
+	position: relative;
+}
+#party_breakdown img {
+	position:absolute;
+}
+#party_breakdown table {
+	position:absolute;
+	left:-1000px;
+}
+
 /*Meeting formatting*/
 .past {color:#515151;}
 .past a {color:#282828;}

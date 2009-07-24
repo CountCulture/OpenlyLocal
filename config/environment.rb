@@ -27,6 +27,7 @@ Rails::Initializer.run do |config|
   config.gem "openrain-action_mailer_tls", :lib => "smtp_tls.rb", :source => "http://gems.github.com"
   config.gem 'javan-whenever', :lib => false, :source => 'http://gems.github.com'
   config.gem 'fastercsv'
+  config.gem 'mattetti-googlecharts', :lib => "gchart", :source => 'http://gems.github.com'
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 

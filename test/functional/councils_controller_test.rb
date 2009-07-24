@@ -122,7 +122,7 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "#committees li a[rel*='twfyl:committee']"
       end
     end
-    
+          
     context "with xml requested" do
       setup do
         get :show, :id => @council.id, :format => "xml"
@@ -210,6 +210,29 @@ class CouncilsControllerTest < ActionController::TestCase
         end
       end
     end
+    
+    context "and party_breakdown is available" do
+      setup do
+        Council.any_instance.stubs(:party_breakdown => [["Conservative", 4], ["Labour", 3]])
+        get :show, :id => @council.id
+      end
+      
+      should "show party breakdown" do
+        assert_select "#party_breakdown"
+      end
+    end
+    
+    context "and party_breakdown has no data" do
+      setup do
+        Council.any_instance.stubs(:party_breakdown => [])
+        get :show, :id => @council.id
+      end
+
+      should "not show party breakdown" do
+        assert_select "#party_breakdown", false
+      end
+    end
+    
     
   end  
 

@@ -1,0 +1,10 @@
+  <div id="party_breakdown">
+    <%= party_breakdown_graph(@party_breakdown) %>
+    <table>
+      <caption>Party Breakdown</caption>
+      <tr><th>Party</th><th>Members</th></tr>
+        <%- for party in @party_breakdown -%>
+          <tr><td><%= party.first %></td><td><%= party.last %></td></tr>
+        <%- end -%>
+    </table>
+  </div>
