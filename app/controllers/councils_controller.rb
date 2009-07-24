@@ -1,6 +1,7 @@
 class CouncilsController < ApplicationController
   before_filter :authenticate, :except => [:index, :show]
   before_filter :add_rdfa_headers, :only => :show
+  caches_action :index, :show
   def index
     @councils = params[:include_unparsed] ? Council.find(:all, :order => "name") : Council.parsed
     @title = "All Councils"
