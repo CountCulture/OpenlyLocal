@@ -1,0 +1,24 @@
+<h1>Editing Ward: <%= @ward.name %></h1>
+<%= error_messages_for :ward %>
+
+<% form_for @ward do |f| -%>
+  <p>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%#= f.label :url %>
+    <%#= f.text_field :url %>
+  </p>
+  <p>
+    <%= f.label :uid %>
+    <%= f.text_field :uid %>
+  </p>
+  <p>
+    <%= f.label :snac_id %>
+    <%= f.text_field :snac_id %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>

@@ -1,16 +1,17 @@
 require 'test_helper'
 
 class WardsControllerTest < ActionController::TestCase
+
+  def setup# do
+    @ward = Factory(:ward)
+    @council = @ward.council
+    @member = Factory(:member, :council => @council)
+    @ward.members << @member
+  end
+
   # show test
    context "on GET to :show" do
      
-     setup do
-       @ward = Factory(:ward)
-       @council = @ward.council
-       @member = Factory(:member, :council => @council)
-       @ward.members << @member
-     end
-
      context "with basic request" do
        setup do
          get :show, :id => @ward.id
@@ -66,4 +67,78 @@ class WardsControllerTest < ActionController::TestCase
      end
      
    end  
+   
+   # edit tests
+   context "on get to :edit a scraper without auth" do
+     setup do
+       get :edit, :id => @ward.id
+     end
+
+     should_respond_with 401
+   end
+
+   context "on get to :edit a scraper" do
+     setup do
+       stub_authentication
+       get :edit, :id => @ward.id
+     end
+
+     should_assign_to :ward
+     should_respond_with :success
+     should_render_template :edit
+     should_not_set_the_flash
+     should_render_a_form
+
+   end
+
+   # update tests
+   context "on PUT to :update without auth" do
+     setup do
+       put :update, { :id => @ward.id, 
+                      :ward => { :uid => 44, 
+                                 :name => "New name"}}
+     end
+
+     should_respond_with 401
+   end
+
+   context "on PUT to :update" do
+     setup do
+       stub_authentication
+       put :update, { :id => @ward.id, 
+                      :ward => { :uid => 44, 
+                                 :name => "New name"}}
+     end
+
+     should_assign_to :ward
+     should_redirect_to( "the show page for ward") { ward_path(@ward.reload) }
+     should_set_the_flash_to "Successfully updated ward"
+
+     should "update ward" do
+       assert_equal "New name", @ward.reload.name
+     end
+   end
+
+   # delete tests
+   context "on delete to :destroy a ward without auth" do
+     setup do
+       delete :destroy, :id => @ward.id
+     end
+
+     should_respond_with 401
+   end
+
+   context "on delete to :destroy a ward" do
+
+     setup do
+       stub_authentication
+       delete :destroy, :id => @ward.id
+     end
+
+     should "destroy ward" do
+       assert_nil Ward.find_by_id(@ward.id)
+     end
+     should_redirect_to ( "the council page") { council_url(@council) }
+     should_set_the_flash_to "Successfully destroyed ward"
+   end
 end
