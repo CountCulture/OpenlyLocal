@@ -87,8 +87,14 @@ class WardsControllerTest < ActionController::TestCase
      should_respond_with :success
      should_render_template :edit
      should_not_set_the_flash
-     should_render_a_form
+     should "display a form" do
+      assert_select "form#edit_ward_#{@ward.id}"
+     end
+     
 
+     should "show button to delete ward" do
+       assert_select "form.button-to[action='/wards/#{@ward.to_param}']"
+     end
    end
 
    # update tests

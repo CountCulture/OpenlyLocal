@@ -22,3 +22,5 @@
     <%= f.submit "Submit" %>
   </p>
 <% end -%>
+
+<%= button_to "Delete Ward", ward_path(@ward), :confirm => "Are you sure?", :method => :delete %>
