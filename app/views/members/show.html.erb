@@ -7,7 +7,7 @@
     <p class="attribute"><strong>Email </strong><%= @member.email ? mail_to(@member.email, @member.email, :encode => "javascript", :rel => "foaf:mbox") : 'not known' %></p>
     <p class="attribute"><strong>Address </strong><%= @member.address || 'not known' %></p>
     <p class="attribute"><strong>Date elected </strong><%= @member.date_elected ? @member.date_elected.to_s(:custom_short) : 'not known' %></p>
-    <p class="attribute"><strong>Declaration of Interests </strong><%= @member.declaration_of_interests ? link_to(@member.declaration_of_interests, @member.declaration_of_interests, :class => "external") : 'not known' %></p>
+    <p class="attribute"><strong>Register of Interests </strong><%= @member.register_of_interests ? link_to(@member.register_of_interests, @member.register_of_interests, :class => "external") : 'not known' %></p>
   </div>
 
   <div id="committees" class="item_grouping">
