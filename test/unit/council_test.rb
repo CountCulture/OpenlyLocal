@@ -153,7 +153,7 @@ class CouncilTest < ActiveSupport::TestCase
         assert_equal [["Conservative", 3],["Not known", 1]], @council.party_breakdown
       end
       
-      should "return 'not known' for members with blank party" do
+      should "return 'not known' for members with blank and nil parties" do
         dummy_members = [stub(:party => "Conservative")]*3 + [stub(:party => "")] + [stub(:party => nil)]
         @council.expects(:members).returns(dummy_members)
         assert_equal [["Conservative", 3],["Not known", 2]], @council.party_breakdown

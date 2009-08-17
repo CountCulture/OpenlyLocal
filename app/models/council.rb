@@ -13,7 +13,7 @@ class Council < ActiveRecord::Base
   has_many :memberships, :through => :members
   has_many :scrapers
   has_many :meetings
-  has_many :wards
+  has_many :wards, :order => "name"
   has_many :datapoints
   has_many :datasets, :through => :datapoints
   belongs_to :portal_system

@@ -80,8 +80,8 @@ class ScrapersHelperTest < ActionView::TestCase
      should "list only attributes that have changed" do
        @member.first_name = "Pete"
        @member.telephone = "0123 456 789"
-       assert_dom_equal content_tag(:div, content_tag(:ul, content_tag(:li, "first_name <strong>Pete</strong> (was Bob)") + 
-                                                           content_tag(:li, "telephone <strong>0123 456 789</strong> (was empty)")), 
+       assert_dom_equal content_tag(:div, content_tag(:ul, content_tag(:li, "telephone <strong>0123 456 789</strong> (was empty)") + 
+                                                           content_tag(:li, "first_name <strong>Pete</strong> (was Bob)")), 
                                           :class => "changed_attributes"), changed_attributes_list(@member)
      end
      
