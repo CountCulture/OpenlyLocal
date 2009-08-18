@@ -7,7 +7,7 @@ class DocumentsControllerTest < ActionController::TestCase
     @council = @committee.council
     @doc_owner = Factory(:meeting, :council => @committee.council, :committee => @committee)
     @document = Factory(:document, :document_owner => @doc_owner)
-    @another_document = Factory(:document, :document_owner => @doc_owner)
+    @another_document = Factory(:document, :document_owner => @doc_owner, :raw_body => "some different foobar text")
     @ac_committee = Factory(:committee, :council => Factory(:another_council))
     @ac_meeting = Factory(:meeting, :council => @ac_committee.council, :committee => @ac_committee)
     @ac_document = Factory(:document, :document_owner => @ac_meeting)
@@ -37,6 +37,19 @@ class DocumentsControllerTest < ActionController::TestCase
 
     end
         
+    context "and search term given" do
+      setup do
+        get :index, :council_id => @council.id, :term => "foobar"
+      end
+      
+      should_assign_to(:documents) { [@another_document] }
+      should_respond_with :success
+      
+      should "have title" do
+        assert_select "title", /Committee documents with 'foobar'/
+      end
+
+    end
     
     context "with xml requested" do
       setup do

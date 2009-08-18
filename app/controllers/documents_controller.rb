@@ -2,8 +2,8 @@ class DocumentsController < ApplicationController
   
   def index
     @council = Council.find(params[:council_id])
-    @documents = @council.documents
-    @title = "Committee documents"
+    @documents = params[:term] ? @council.documents.find(:all, :conditions => ["body LIKE ?", "%#{params[:term]}%"] ) : @council.documents
+    @title = params[:term] ? "Committee documents with '#{params[:term]}'" : "Committee documents"
     respond_to do |format|
       format.html
       format.xml { render :xml => @documents.to_xml }
