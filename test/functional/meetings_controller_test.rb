@@ -192,7 +192,7 @@ class MeetingsControllerTest < ActionController::TestCase
     
     context "when meeting has minutes" do
       setup do
-        @document = Factory(:document, :document_owner => @meeting)
+        @document = Factory(:document, :document_owner => @meeting, :document_type => "Minutes")
         get :show, :id => @meeting.id
       end
 

@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class DocumentTest < ActiveSupport::TestCase
-  
+  subject { @document }
   context "The Document class" do
     setup do
       @document = Factory(:document)

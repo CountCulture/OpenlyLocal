@@ -48,11 +48,22 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "Audit Group meeting, #{@meeting.date_held.to_s(:event_date)}", @meeting.extended_title
     end
     
-    should "have polymorphic document as minutes" do
-      doc = Factory(:document, :title => "minutes of some meeting")
-      @meeting.minutes = doc
-      assert_equal @meeting.id, doc.document_owner_id
-      assert_equal "Meeting", doc.document_owner_type
+    should "have polymorphic Meeting type document as minutes" do
+      another_doc = Factory(:document, :title => "some other document", :document_owner => @meeting)
+      minutes = Factory(:document, :title => "minutes of some meeting", :document_type => "Minutes", :document_owner => @meeting)
+      # @meeting.minutes = doc
+      assert_equal minutes, @meeting.minutes
+      assert_equal @meeting.id, minutes.document_owner_id
+      assert_equal "Meeting", minutes.document_owner_type
+    end
+    
+    should "have polymorphic documents as documents" do
+      another_doc = Factory(:document, :title => "some other document", :document_owner => @meeting)
+      minutes = Factory(:document, :title => "minutes of some meeting", :document_type => "Minutes", :document_owner => @meeting)
+      # @meeting.minutes = doc
+      assert_equal 2, @meeting.documents.size
+      assert @meeting.documents.include?(minutes)
+      assert @meeting.documents.include?(another_doc)
     end
     
     should "alias attributes for Ical::Utilities" do

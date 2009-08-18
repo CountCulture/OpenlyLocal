@@ -16,6 +16,7 @@ class Council < ActiveRecord::Base
   has_many :wards, :order => "name"
   has_many :datapoints
   has_many :datasets, :through => :datapoints
+  has_many :documents, :through => :meetings
   belongs_to :portal_system
   validates_presence_of :name
   validates_uniqueness_of :name
