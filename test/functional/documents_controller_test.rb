@@ -35,6 +35,13 @@ class DocumentsControllerTest < ActionController::TestCase
         assert_select "title", /Committee documents/
       end
 
+      should "have search box" do
+        assert_select "form#document_search" do
+          assert_select "input#term"
+          assert_select "input[type='hidden'][value=#{@council.id}]#council_id"
+        end
+      end
+
     end
         
     context "and search term given" do
