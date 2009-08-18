@@ -4,6 +4,11 @@ class DocumentsController < ApplicationController
     @council = Council.find(params[:council_id])
     @documents = @council.documents
     @title = "Committee documents"
+    respond_to do |format|
+      format.html
+      format.xml { render :xml => @documents.to_xml }
+      format.json { render :json => @documents.to_json }
+    end
   end
   
   def show
