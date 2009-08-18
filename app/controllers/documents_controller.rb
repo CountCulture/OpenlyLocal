@@ -8,6 +8,7 @@ class DocumentsController < ApplicationController
       format.html
       format.xml { render :xml => @documents.to_xml }
       format.json { render :json => @documents.to_json }
+      format.rss { render :layout => false }
     end
   end
   

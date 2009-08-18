@@ -82,17 +82,26 @@ class DocumentsControllerTest < ActionController::TestCase
       should_respond_with_content_type 'application/json'
     end
     
-    # context "with rss requested" do
-    #   setup do
-    #     get :index, :council_id => @council.id, :format => "rss"
-    #   end
-    #   
-    #   should_assign_to(:council) { @council } 
-    #   should_assign_to(:documents) { [@document, @another_document] }
-    #   should_respond_with :success
-    #   should_render_without_layout
-    #   should_respond_with_content_type 'text/calendar'
-    # end
+    context "with rss requested" do
+      setup do
+        get :index, :council_id => @council.id, :format => "rss"
+      end
+      
+      should_assign_to(:council) { @council } 
+      should_assign_to(:documents) { [@document, @another_document] }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/rss+xml'
+      should "have title " do
+        assert_select "title", "#{@council.title}: Committee documents"
+      end
+      should "list documents" do
+        assert_select "item", 2 do
+          assert_select "title", @document.title
+          assert_select "link", "http://test.host/documents/#{@document.id}"
+        end
+      end
+    end
     
   end
 
