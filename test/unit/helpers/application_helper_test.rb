@@ -22,6 +22,14 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal link_to(h(obj.title), obj, :foo => "bar", :class => "committee_link"), link_for(obj, :foo => "bar")
     end
     
+    should "leave options hash untouched" do
+      obj = stale_factory_object(:committee)
+      h = {:text => "bar", :class => "foo", :extended => true, :basic => true}
+      old_h = h.clone
+      link_for(obj, h)
+      assert_equal old_h, h
+    end
+    
     should "add given class to object class" do
       obj = stale_factory_object(:committee, :title => "something & nothing... which <needs> escaping" )
       assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link bar"), link_for(obj, :class => "bar")
@@ -38,15 +46,22 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal link_to(obj.title, obj, :class => "committee_link updated"), link_for(obj)
     end
     
-    should "not add new class if it has recently been created but basic is requested" do
+    should "add new class if it has recently been created as well as given class" do
       obj = Factory(:committee) 
-      assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), link_for(obj, :basic => true)
+      assert_dom_equal link_to(obj.title, obj, :class => "committee_link new foo"), link_for(obj, :class => "foo")
     end
     
-    should "not add updated class if it is not new but has recently been updated but basic is requested" do
+    should "return basic_link if it is requested" do
       obj = Factory(:committee) 
-      obj.stubs(:created_at => 8.days.ago)
-      assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), link_for(obj, :basic => true)
+      
+      assert_dom_equal basic_link_for(obj), link_for(obj, :basic => true)
+    end
+
+    should "return extended_link if it is requested" do
+      obj = Factory(:committee) 
+      obj.stubs(:extended_title => "some extended title")
+      
+      assert_dom_equal extended_link_for(obj), link_for(obj, :extended => true)
     end
     
     should "use given text for link in preference to object title" do
@@ -65,6 +80,14 @@ class ApplicationHelperTest < ActionView::TestCase
     should "return link for item with object title for link text" do
       obj = stale_factory_object(:committee) # poss better way of testing this. obj can be any ActiveRecord obj 
       assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), basic_link_for(obj)
+    end
+    
+    should "leave options hash untouched" do
+      obj = stale_factory_object(:committee)
+      h = { :text => "bar", :class => "foo" }
+      old_h = h.clone
+      basic_link_for(obj, h)
+      assert_equal old_h, h
     end
     
     should "escape object's title" do
@@ -110,10 +133,24 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal link_for(obj, :foo => "bar"), extended_link_for(obj, :foo => "bar")
     end
     
+    should "leave options hash untouched" do
+      obj = stale_factory_object(:committee)
+      h = {:text => "bar", :class => "foo"}
+      old_h = h.dup
+      extended_link_for(obj, h)
+      assert_equal old_h, h
+    end
+    
     should "use object's extended title if it exists" do
       obj = stale_factory_object(:committee)
       obj.stubs(:extended_title => "some extended title")
       assert_dom_equal link_for(obj, :text => "some extended title"), extended_link_for(obj)
+    end
+
+    should "use given text in preference to object's extended title" do
+      obj = stale_factory_object(:committee)
+      obj.stubs(:extended_title => "some extended title")
+      assert_dom_equal link_for(obj, :text => "some other text"), extended_link_for(obj, :text => "some other text")
     end
   end
   

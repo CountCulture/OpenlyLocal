@@ -42,6 +42,16 @@ class DocumentTest < ActiveSupport::TestCase
         assert_equal "new title", @document.title
       end
       
+      should "return document type, document owner extended title as extended title" do
+        @document.stubs(:document_type).returns("FooDocument")
+        assert_equal "FooDocument for #{@doc_owner.extended_title}", @document.extended_title
+      end
+      
+      should "return title attribute as extended title if set" do
+        @document.title = "new title"
+        assert_equal "new title", @document.extended_title
+      end
+      
       should "return 'Document' as document_type if not set" do
         assert_equal "Document", @document.document_type
       end

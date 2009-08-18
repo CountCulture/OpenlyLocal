@@ -18,6 +18,10 @@ class Document < ActiveRecord::Base
     self[:title] || "#{document_type} for #{document_owner.title}"
   end
   
+  def extended_title
+    self[:title] || "#{document_type} for #{document_owner.extended_title}"
+  end
+  
   protected
   def sanitize_body
     return if raw_body.blank?

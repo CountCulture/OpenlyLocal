@@ -7,14 +7,16 @@ module ApplicationHelper
   
   def link_for(obj=nil, options={})
     return if obj.blank?
-    freshness = options.delete(:basic) ? nil : (obj.created_at > 7.days.ago ? "new" : (obj.updated_at > 7.days.ago ? "updated" : nil) )
-    css_class = ["#{obj.class.to_s.downcase}_link", options.delete(:class), freshness].compact.join(" ")
-    text = options.delete(:text) || obj.title
-    link_to(h(text), obj, { :class => css_class }.merge(options))
+    freshness = options[:basic] ? nil : (obj.created_at > 7.days.ago ? "new" : (obj.updated_at > 7.days.ago ? "updated" : nil) )
+    text = options[:extended]&&obj.respond_to?(:extended_title)&&obj.extended_title
+    basic_link_for(obj, { :freshness => freshness, :text => text }.merge(options.except(:basic, :extended)))
   end
   
   def basic_link_for(obj=nil, options={})
-    link_for(obj, options.merge(:basic => true))
+    return if obj.blank?
+    css_class = ["#{obj.class.to_s.downcase}_link", options.delete(:freshness), options[:class]].compact.join(" ")
+    text = options[:text] || obj.title
+    link_to(h(text), obj, options.except(:text).merge({ :class => css_class }))
   end
   
   # http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.htm
@@ -27,7 +29,7 @@ module ApplicationHelper
   end
 
   def extended_link_for(obj=nil, options={})
-    link_for(obj, { :text => (obj.respond_to?(:extended_title) ? obj.extended_title : nil) }.merge(options))
+    link_for(obj, options.merge(:extended => true))
   end
   
   def link_to_api_url(response_type)

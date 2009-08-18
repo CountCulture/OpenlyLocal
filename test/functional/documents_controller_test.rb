@@ -25,7 +25,7 @@ class DocumentsControllerTest < ActionController::TestCase
       should_respond_with_content_type 'text/html'
       
       should "list council documents" do
-        assert_select "#documents ul a", @document.title
+        assert_select "#documents ul a", @document.extended_title
       end
       
       should "have title" do
