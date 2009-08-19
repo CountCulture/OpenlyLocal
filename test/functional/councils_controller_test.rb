@@ -10,6 +10,7 @@ class CouncilsControllerTest < ActionController::TestCase
     @committee = Factory(:committee, :council => @council)
     @meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 2.days.from_now)
     @ward = Factory(:ward, :council => @council)
+    @document = Factory(:document, :document_owner => @meeting)
   end
   
   # index test
@@ -96,6 +97,10 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should "show link to meeting calendar" do
         assert_select "a.calendar[href*='meetings.ics?council_id=#{@council.id}']"
+      end
+      
+      should "list documents" do
+        assert_select "#documents li", @document.extended_title
       end
       
       should "show rdfa headers" do

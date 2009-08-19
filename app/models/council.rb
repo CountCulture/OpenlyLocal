@@ -8,15 +8,15 @@ class Council < ActiveRecord::Base
     "County" => "http://en.wikipedia.org/wiki/Non-metropolitan_county",
     "Metropolitan Borough" => "http://en.wikipedia.org/wiki/Metropolitan_borough"
   }
-  has_many :members
-  has_many :committees
+  has_many :members, :order => "last_name"
+  has_many :committees, :order => "title"
   has_many :memberships, :through => :members
   has_many :scrapers
   has_many :meetings
   has_many :wards, :order => "name"
   has_many :datapoints
   has_many :datasets, :through => :datapoints
-  has_many :documents, :through => :meetings
+  has_many :documents, :through => :meetings, :order => "documents.created_at DESC"
   belongs_to :portal_system
   validates_presence_of :name
   validates_uniqueness_of :name
