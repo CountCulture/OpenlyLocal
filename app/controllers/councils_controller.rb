@@ -16,8 +16,8 @@ class CouncilsController < ApplicationController
     @council = Council.find(params[:id])
     @members = @council.members.current
     @committees = @council.committees
-    @meetings = @council.meetings.forthcoming.all(:limit => 16)
-    @documents = @council.documents.find(:all, :limit => 11)
+    @meetings = @council.meetings.forthcoming.all(:limit => 11)
+    @documents = @council.documents.all(:limit => 11)
     @wards = @council.wards
     @datapoints = @council.datapoints.select{ |d| d.summary }
     @party_breakdown = @council.party_breakdown

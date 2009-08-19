@@ -4,4 +4,17 @@
   <%= list_all @committees %>
 </div>
 
+<div id="meetings" class="item_grouping">
+  <h3><%= link_to "Forthcoming Committee Meetings", meetings_path(:council_id => @council.id) %></h3>
+  <p><%= link_to_calendar(:controller => "meetings", :council_id => @council.id) %></p>
+  <%= list_all @meetings[0..9] %>
+  <%= content_tag(:p, link_to("See more", meetings_path(:council_id => @council.id)), :class => "more_info") if @meetings.size > 10 %>
+</div>
+
+<div id="documents" class="item_grouping">
+  <h3><%= link_to "Committee Documents", documents_path(:council_id => @council.id) %></h3>
+  <%= list_all @documents[0..9], :extended => true %>
+  <%= content_tag(:p, link_to("See more", documents_path(:council_id => @council.id)), :class => "more_info") if @documents.size > 10 %>
+</div>
+
 <%= render :partial => '/shared/api_info' %>

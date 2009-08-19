@@ -1,16 +1,21 @@
 require 'test_helper'
 
 class CommitteesControllerTest < ActionController::TestCase
+  def setup
+    @committee = Factory(:committee)
+    @council = @committee.council
+    @member = Factory(:member, :council => @council)
+    @meeting = Factory(:meeting, :council => @council, :committee => @committee)
+    @forthcoming_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 1.week.from_now)
+    @committee.members << @member
+    @document = Factory(:document, :document_owner => @meeting)
+    Factory.create(:committee, :council_id => @council.id, :title => "another committee" )
+    Factory.create(:committee, :council_id => Factory(:another_council).id, :title => "another council's committee" )    
+  end
+  
   # show test
    context "on GET to :show" do
      
-     setup do
-       @committee = Factory(:committee)
-       @member = Factory(:member, :council => @committee.council)
-       @meeting = Factory(:meeting, :council => @committee.council, :committee => @committee)
-       @committee.members << @member
-     end
-
      context "with basic request" do
        setup do
          get :show, :id => @committee.id
@@ -36,6 +41,10 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "div#meetings li a", @meeting.title
        end
        
+       # should "list documents" do
+       #   assert_select "div#documents li a", @document.title
+       # end
+       # 
        should "show rdfa headers" do
          assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
        end
@@ -102,12 +111,6 @@ class CommitteesControllerTest < ActionController::TestCase
 
    # index test
    context "on GET to :index with council_id" do
-     setup do
-       @committee = Factory(:committee)
-       @council = @committee.council
-       Factory.create(:committee, :council_id => @council.id, :uid =>@committee.uid+1, :title => "another committee", :url => "http://foo.com" )
-       Factory.create(:committee, :council_id => Factory(:another_council).id, :uid => @committee.uid+1, :title => "another council's committee", :url => "http://foo.com" )
-     end
 
      context "with basic request" do
        setup do
@@ -128,6 +131,15 @@ class CommitteesControllerTest < ActionController::TestCase
            assert_select "a", @committee.title
          end
        end
+       
+       should "list committee meetings for council" do
+         assert_select "div#meetings li a", @forthcoming_meeting.title
+       end
+       
+       should "list committee documents for council" do
+         assert_select "div#documents li a", @document.extended_title
+       end
+       
      end
 
      context "with xml requested" do
@@ -157,9 +169,6 @@ class CommitteesControllerTest < ActionController::TestCase
    end
    
    context "on GET to :index without council_id" do
-     setup do
-       @committee = Factory(:committee)
-     end
 
      # should_respond_with :failure
      should "raise an exception" do

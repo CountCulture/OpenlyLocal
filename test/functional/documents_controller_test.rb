@@ -126,6 +126,9 @@ class DocumentsControllerTest < ActionController::TestCase
     should "show body of document" do
       assert_select "#document_body", @document.body
     end
-        
+    
+    should "show link to other documents" do
+      assert_select "p.extra_info a", /other committee documents/i
+    end 
   end  
 end

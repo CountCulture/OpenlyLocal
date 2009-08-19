@@ -1,5 +1,6 @@
 <h4 class="owner"><%= basic_link_for @council %>:</h4>
 <h1>Minutes for <%= extended_link_for @document.document_owner %> <em><%= council_page_for @document %></em></h1>
+<p class="extra_info"><%= link_to "Other committee documents" %> for <%= basic_link_for @council %> :: <%= link_for @document.document_owner.committee %> details</p>
 <div id="document_body" class="document_body">
   <%= @document.body %>
 </div>
