@@ -1,4 +1,5 @@
 class DocumentsController < ApplicationController
+  before_filter :show_rss_link, :only => :index
   
   def index
     @council = Council.find(params[:council_id])

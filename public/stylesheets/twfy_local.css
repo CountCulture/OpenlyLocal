@@ -295,6 +295,10 @@ div#dataset_data table {
 }
 /*Misc formatting*/
 #api_info {
+	clear: both;
 	background-color: #f3f3f3;
 	border-top: 1px solid #ddd;
+}
+#api_info a {
+	font-weight: bold;
 }

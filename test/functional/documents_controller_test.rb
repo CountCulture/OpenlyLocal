@@ -41,7 +41,10 @@ class DocumentsControllerTest < ActionController::TestCase
           assert_select "input[type='hidden'][value=#{@council.id}]#council_id"
         end
       end
-
+      
+      should "show_rss_feed" do
+        assert_select "link[rel='alternate'][type='application/rss+xml'][href='http://test.host/documents.rss?council_id=#{@council.id}']"
+      end
     end
         
     context "and search term given" do

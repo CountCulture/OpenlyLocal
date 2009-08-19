@@ -4,6 +4,7 @@ require 'test_helper'
 # tested in unit test) and application layout stuff
 class GenericController < ApplicationController
   before_filter :add_rdfa_headers, :only => :show
+  before_filter :show_rss_link, :only => :index
   def index
     render :text => "index text", :layout => true
   end
@@ -37,6 +38,10 @@ class GenericControllerTest < ActionController::TestCase
     should "not show rdfa headers" do
       assert_select "html[xmlns:foaf*='xmlns.com/foaf']", false
     end
+    
+    should "show rss auto discovery link" do
+      assert_select "link[rel='alternate'][type='application/rss+xml'][href='http://test.host/generic?format=rss']"
+    end
   end
   
   # get tests
@@ -60,6 +65,10 @@ class GenericControllerTest < ActionController::TestCase
     
     should "show canonical_url link" do
       assert_select "link[rel='canonical'][href='/foo/bar']"
+    end
+    
+    should "not show rss auto discovery link" do
+      assert_select "link[rel='alternate'][type='application/rss+xml']", false
     end
   end
   

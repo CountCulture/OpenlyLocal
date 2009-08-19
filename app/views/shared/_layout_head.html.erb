@@ -8,6 +8,7 @@
     <meta content="Opening up Local Government Data" name="description" />
     <%= tag(:link, @header_link) if @header_link %>
     <%= canonical_link_tag %>
+    <%= auto_discovery_link_tag(:rss, params.merge(:format => "rss")) if @show_rss_link %>
     <link rel="stylesheet" href="/stylesheets/blueprint/screen.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="/stylesheets/blueprint/print.css" type="text/css" media="print" />
     <!--[if IE]>
@@ -21,5 +22,4 @@
     <!--<![endif]-->
     <!-- End iPhone stuff -->    
     <%= javascript_include_tag :defaults %>
-    <%#= javascript_include_tag "jquery.min.js" %>
   </head>

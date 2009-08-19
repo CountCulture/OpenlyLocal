@@ -35,4 +35,8 @@ class ApplicationController < ActionController::Base
   def set_canonical_url
     @canonical_url = true
   end
+  
+  def show_rss_link
+    @show_rss_link = true
+  end
 end
