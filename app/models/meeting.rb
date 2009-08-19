@@ -3,6 +3,7 @@ class Meeting < ActiveRecord::Base
   belongs_to :committee
   belongs_to :council
   has_one :minutes, :class_name => "Document", :as => "document_owner", :conditions => "document_type = 'Minutes'"
+  has_one :agenda, :class_name => "Document", :as => "document_owner", :conditions => "document_type = 'Agenda'"
   has_many :documents, :as => "document_owner"
   validates_presence_of :date_held, :committee_id, :uid, :council_id
   validates_uniqueness_of :uid, :scope => :council_id

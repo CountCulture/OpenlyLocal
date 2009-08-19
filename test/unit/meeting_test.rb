@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class MeetingTest < ActiveSupport::TestCase
+  subject { @meeting }
   context "The Meeting Class" do
     setup do
       @committee = Committee.create!(:title => "Audit Group", :url => "some.url", :uid => 33, :council_id => 1)
@@ -14,6 +15,7 @@ class MeetingTest < ActiveSupport::TestCase
     should_validate_presence_of :uid
     should_validate_uniqueness_of :uid, :scoped_to => :council_id
     should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
+    should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
     should_have_db_columns :venue
 
     should "include ScraperModel mixin" do
@@ -51,16 +53,22 @@ class MeetingTest < ActiveSupport::TestCase
     should "have polymorphic Meeting type document as minutes" do
       another_doc = Factory(:document, :title => "some other document", :document_owner => @meeting)
       minutes = Factory(:document, :title => "minutes of some meeting", :document_type => "Minutes", :document_owner => @meeting)
-      # @meeting.minutes = doc
       assert_equal minutes, @meeting.minutes
       assert_equal @meeting.id, minutes.document_owner_id
       assert_equal "Meeting", minutes.document_owner_type
     end
     
+    should "have polymorphic Agenda type document as agenda" do
+      another_doc = Factory(:document, :title => "some other document", :document_owner => @meeting)
+      agenda = Factory(:document, :title => "agenda of some meeting", :document_type => "Agenda", :document_owner => @meeting)
+      assert_equal agenda, @meeting.agenda
+      assert_equal @meeting.id, agenda.document_owner_id
+      assert_equal "Meeting", agenda.document_owner_type
+    end
+    
     should "have polymorphic documents as documents" do
       another_doc = Factory(:document, :title => "some other document", :document_owner => @meeting)
       minutes = Factory(:document, :title => "minutes of some meeting", :document_type => "Minutes", :document_owner => @meeting)
-      # @meeting.minutes = doc
       assert_equal 2, @meeting.documents.size
       assert @meeting.documents.include?(minutes)
       assert @meeting.documents.include?(another_doc)
@@ -83,7 +91,7 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "#{@meeting.created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{@meeting.id}@twfylocal", @meeting.event_uid
     end
     
-    context "when calling minutes_body setter" do
+    context "when calling document_body setter" do
       setup do
         @meeting.minutes_body = "some document text"
       end
