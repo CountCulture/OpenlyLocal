@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class CouncilTest < ActiveSupport::TestCase
+  subject { @council }
   
   context "The Council class" do
     setup do
@@ -15,7 +16,8 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :meetings
     should_have_many :datapoints
     should_have_many :wards
-    should_have_many :documents, :through => :meetings
+    should_have_many :meeting_documents, :through => :meetings
+    should_have_many :past_meeting_documents, :through => :held_meetings
     should_belong_to :portal_system
     should_have_db_column :notes
     should_have_db_column :wikipedia_url
@@ -49,6 +51,27 @@ class CouncilTest < ActiveSupport::TestCase
       Factory(:committee, :council => @council).members << @member
       assert_equal @member.memberships, @council.memberships
     end
+    
+    should "have many held meetings" do
+      @committee = Factory(:committee, :council => @council)
+      @held_meeting = Factory(:meeting, :council => @council, :committee => @committee)
+      @forthcoming_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 2.weeks.from_now)
+      assert_equal [@held_meeting], @council.held_meetings
+    end
+    
+    context "when getting meeting_documents" do
+      setup do
+        @committee = Factory(:committee, :council => @council)
+        @forthcoming_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 2.weeks.from_now)
+        @document = Factory(:document, :document_owner => @forthcoming_meeting)
+      end
+
+      should "not return document body or raw_body" do
+        assert !@council.meeting_documents.first.attributes.include?("body")
+        assert !@council.meeting_documents.first.attributes.include?("raw_body")
+      end
+    end
+    
   end
   
   context "A Council instance" do

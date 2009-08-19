@@ -8,9 +8,11 @@ class CouncilsControllerTest < ActionController::TestCase
     @old_member = Factory(:member, :council => @council)
     @another_council = Factory(:another_council)
     @committee = Factory(:committee, :council => @council)
+    @past_meeting = Factory(:meeting, :committee => @committee, :council => @council)
     @meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 2.days.from_now)
     @ward = Factory(:ward, :council => @council)
     @document = Factory(:document, :document_owner => @meeting)
+    @past_document = Factory(:document, :document_owner => @past_meeting)
   end
   
   # index test
@@ -92,7 +94,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "list forthcoming meetings" do
-        assert_select "#meetings li", @council.meetings.size
+        assert_equal [@meeting], assigns(:meetings)
+        assert_select "#meetings li a", @meeting.title
       end
       
       should "show link to meeting calendar" do
@@ -100,7 +103,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "list documents" do
-        assert_select "#documents li", @document.extended_title
+        assert_equal [@past_document], assigns(:documents)
+        assert_select "#documents li", @past_document.extended_title
       end
       
       should "show rdfa headers" do

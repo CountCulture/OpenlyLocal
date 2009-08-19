@@ -4,7 +4,7 @@ class CommitteesController < ApplicationController
   def index
     @council = Council.find(params[:council_id])
     @committees = @council.committees
-    @documents = @council.documents.all(:limit => 11)
+    @documents = @council.meeting_documents.all(:limit => 11)
     @meetings = @council.meetings.forthcoming.all(:limit => 11)
     @title = "Committees"
     respond_to do |format|

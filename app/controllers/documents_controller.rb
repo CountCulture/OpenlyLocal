@@ -3,7 +3,7 @@ class DocumentsController < ApplicationController
   
   def index
     @council = Council.find(params[:council_id])
-    @documents = params[:term] ? @council.documents.find(:all, :conditions => ["body LIKE ?", "%#{params[:term]}%"] ) : @council.documents
+    @documents = params[:term] ? @council.meeting_documents.find(:all, :select => "documents.*", :conditions => ["body LIKE ?", "%#{params[:term]}%"] ) : @council.meeting_documents.all(:select => "documents.*")
     @title = params[:term] ? "Committee documents with '#{params[:term]}'" : "Committee documents"
     respond_to do |format|
       format.html

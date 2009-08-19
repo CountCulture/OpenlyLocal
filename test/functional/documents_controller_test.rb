@@ -42,7 +42,7 @@ class DocumentsControllerTest < ActionController::TestCase
         end
       end
       
-      should "show_rss_feed" do
+      should "show rss feed link" do
         assert_select "link[rel='alternate'][type='application/rss+xml'][href='http://test.host/documents.rss?council_id=#{@council.id}']"
       end
     end
