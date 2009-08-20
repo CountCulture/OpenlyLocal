@@ -25,8 +25,15 @@ class Meeting < ActiveRecord::Base
     "#{committee.title} meeting, #{date_held.to_s(:event_date)}"
   end
   
-  def minutes_body=(doc_body=nil)
-    minutes ? minutes.update_attributes(:raw_body => doc_body, :document_type => "Minutes") : create_minutes(:raw_body => doc_body, :url => url, :document_type => "Minutes")
+  def agenda_document_body=(doc_body=nil)
+    create_document_body(doc_body, :agenda)
+    
+    # agenda ? agenda.update_attributes(:raw_body => doc_body) : create_agenda(:raw_body => doc_body, :url => url, :document_type => "Agenda")
+  end
+  
+  def minutes_document_body=(doc_body=nil)
+    create_document_body(doc_body, :minutes)
+    # minutes ? minutes.update_attributes(:raw_body => doc_body) : create_minutes(:raw_body => doc_body, :url => url, :document_type => "Minutes")
   end
   
   # Formats the contact details in a way the IcalUtilities can use
@@ -36,5 +43,11 @@ class Meeting < ActiveRecord::Base
   
   def event_uid
     "#{created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{id}@twfylocal"
+  end
+  
+  private
+  def create_document_body(doc_body=nil, type=nil)
+    existing_record = send(type)
+    existing_record ? existing_record.update_attributes(:raw_body => doc_body) : send("create_#{type}", {:raw_body => doc_body, :url => url, :document_type => type.to_s.capitalize})
   end
 end

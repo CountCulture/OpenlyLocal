@@ -91,9 +91,9 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "#{@meeting.created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{@meeting.id}@twfylocal", @meeting.event_uid
     end
     
-    context "when calling minutes_body setter" do
+    context "when calling minutes_document_body setter" do
       setup do
-        @meeting.minutes_body = "some document text"
+        @meeting.minutes_document_body = "some document text"
       end
       
       should "create new minutes document" do
@@ -117,12 +117,38 @@ class MeetingTest < ActiveSupport::TestCase
       end
     end
     
-    context "when calling minutes_body setter and meeting has existing minutes" do
+    context "when calling agenda_document_body setter" do
       setup do
-        @existing_minutes = Factory(:document)
+        @meeting.agenda_document_body = "some document text"
+      end
+      
+      should "create new agenda document" do
+        assert_kind_of Document, @meeting.agenda
+      end
+      
+      should "save new agenda document" do
+        assert !@meeting.agenda.new_record?
+      end
+      
+      should "store passed value in document raw_body" do
+        assert_equal "some document text", @meeting.agenda.raw_body
+      end
+      
+      should "save meeting url as document url" do
+        assert_equal "http//council.gov.uk/meeting/22", @meeting.agenda.url
+      end
+      
+      should "set document type to be 'Agenda'" do
+        assert_equal "Agenda", @meeting.agenda.document_type
+      end
+    end
+    
+    context "when calling minutes_document_body setter and meeting has existing minutes" do
+      setup do
+        @existing_minutes = Factory(:document, :document_type => "Minutes")
         @meeting.minutes = @existing_minutes
         @existing_minutes.save!
-        @meeting.minutes_body = "some document text"
+        @meeting.minutes_document_body = "some document text"
       end
 
       should "not replace minutes" do
@@ -135,6 +161,27 @@ class MeetingTest < ActiveSupport::TestCase
       
       should "set document_type to be 'Minutes'" do
         assert_equal "Minutes", @meeting.minutes.document_type
+      end
+    end
+        
+    context "when calling agenda_document_body setter and meeting has existing agenda" do
+      setup do
+        @existing_agenda = Factory(:document, :document_type => "Agenda")
+        @meeting.agenda = @existing_agenda
+        @existing_agenda.save!
+        @meeting.agenda_document_body = "some document text"
+      end
+
+      should "not replace agenda" do
+        assert_equal @existing_agenda.id, @meeting.agenda.id
+      end
+      
+      should "update existing agenda raw_body" do
+        assert_equal "some document text", @existing_agenda.reload.raw_body
+      end
+      
+      should "set document_type to be 'Agenda'" do
+        assert_equal "Agenda", @meeting.agenda.document_type
       end
     end
         
