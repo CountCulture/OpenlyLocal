@@ -91,10 +91,11 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "#{@meeting.created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{@meeting.id}@twfylocal", @meeting.event_uid
     end
     
-    context "when calling document_body setter" do
+    context "when calling minutes_body setter" do
       setup do
         @meeting.minutes_body = "some document text"
       end
+      
       should "create new minutes document" do
         assert_kind_of Document, @meeting.minutes
       end
