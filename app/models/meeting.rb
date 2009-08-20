@@ -27,13 +27,10 @@ class Meeting < ActiveRecord::Base
   
   def agenda_document_body=(doc_body=nil)
     create_document_body(doc_body, :agenda)
-    
-    # agenda ? agenda.update_attributes(:raw_body => doc_body) : create_agenda(:raw_body => doc_body, :url => url, :document_type => "Agenda")
   end
   
   def minutes_document_body=(doc_body=nil)
     create_document_body(doc_body, :minutes)
-    # minutes ? minutes.update_attributes(:raw_body => doc_body) : create_minutes(:raw_body => doc_body, :url => url, :document_type => "Minutes")
   end
   
   # Formats the contact details in a way the IcalUtilities can use
