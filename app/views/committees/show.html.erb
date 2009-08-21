@@ -13,6 +13,10 @@
     <h3>Meetings</h3>
     <%= list_all @committee.meetings, :rel => "twfyl:meeting" %>
   </div>
+  <div id="documents" class="item_grouping">
+    <h3>Documents for this committee</h3>
+    <%= list_all @documents, :extended => true %>
+  </div>
   <%= render :partial => '/shared/api_info' %>
   <%= timestamp_data_for @committee %>
 <%- end -%>

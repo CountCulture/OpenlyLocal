@@ -18,6 +18,7 @@ class CommitteesController < ApplicationController
     @committee = Committee.find(params[:id])
     @council = @committee.council
     @title = @committee.title
+    @documents = @committee.meeting_documents
     respond_to do |format|
       format.html
       format.xml { render :xml => @committee.to_xml(:include => [:members, :meetings]) }

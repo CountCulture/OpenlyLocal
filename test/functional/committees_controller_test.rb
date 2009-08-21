@@ -41,10 +41,10 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "div#meetings li a", @meeting.title
        end
        
-       # should "list documents" do
-       #   assert_select "div#documents li a", @document.title
-       # end
-       # 
+       should "list meeting documents for committee" do
+         assert_select "div#documents li a", @document.extended_title
+       end
+       
        should "show rdfa headers" do
          assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
        end
