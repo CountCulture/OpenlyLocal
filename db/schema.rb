@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090817151937) do
+ActiveRecord::Schema.define(:version => 20090821185721) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(:version => 20090817151937) do
     t.text     "raw_body",            :limit => 16777215
     t.string   "document_type"
   end
+
+  add_index "documents", ["document_owner_type", "document_owner_id"], :name => "index_documents_on_document_owner_type_and_document_owner_id"
 
   create_table "meetings", :force => true do |t|
     t.datetime "date_held"
