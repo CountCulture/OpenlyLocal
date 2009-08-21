@@ -28,6 +28,7 @@ Rails::Initializer.run do |config|
   config.gem 'javan-whenever', :lib => false, :source => 'http://gems.github.com'
   config.gem 'fastercsv'
   config.gem 'mattetti-googlecharts', :lib => "gchart", :source => 'http://gems.github.com'
+  config.gem "newrelic_rpm"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 
