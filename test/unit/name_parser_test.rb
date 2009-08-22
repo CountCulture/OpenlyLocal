@@ -36,6 +36,7 @@ class NameParserTest < Test::Unit::TestCase
     "Fred Flintstone MInstTA" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "MInstTA"},
     "Fred Flintstone MBCS CITP" => {:first_name => "Fred", :last_name => "Flintstone"},  
     "Fred Flintstone B.Ed. Hons" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "B.Ed. Hons"},
+    "Fred Flintstone BA Hons" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "BA Hons"},
     "Jane Annabel Wilson (nee Allen)" => {:first_name => "Jane Annabel", :last_name => "Wilson"}    
   }
   

@@ -3,7 +3,7 @@ module NameParser
   extend self
 
   Titles = %w(Mr Dr Mrs Miss Professor Prof Doctor Ms)
-  Qualifications = %w(B.Sc. M.B.A. B.A. M.A. Ph.D. B.Ed. D.Phil. M.B.E. C.B.E. O.B.E. J.P. F.CMI F.R.C.S. Hons MInstTA)
+  Qualifications = %w(B.Sc. M.B.A. B.A. M.A. Ph.D. B.Ed. D.Phil. M.B.E. C.B.E. O.B.E. J.P. F.CMI F.R.C.S. Hons. MInstTA)
   
   def parse(fn)
     poss_quals = Qualifications + Qualifications.map{|e| e.gsub('.','')}
