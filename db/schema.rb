@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090821185721) do
+ActiveRecord::Schema.define(:version => 20090825100453) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(:version => 20090821185721) do
     t.text     "venue"
   end
 
+  add_index "meetings", ["committee_id"], :name => "index_meetings_on_committee_id"
   add_index "meetings", ["council_id"], :name => "index_meetings_on_council_id"
 
   create_table "members", :force => true do |t|
@@ -128,6 +129,8 @@ ActiveRecord::Schema.define(:version => 20090821185721) do
     t.datetime "updated_at"
     t.integer  "council_id"
   end
+
+  add_index "memberships", ["committee_id", "member_id"], :name => "index_memberships_on_committee_id_and_member_id"
 
   create_table "parsers", :force => true do |t|
     t.string   "description"
