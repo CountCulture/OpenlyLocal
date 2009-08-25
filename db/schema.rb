@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090825100453) do
+ActiveRecord::Schema.define(:version => 20090825155515) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -67,6 +67,19 @@ ActiveRecord::Schema.define(:version => 20090825100453) do
     t.string   "originator_url"
     t.integer  "summary_column"
     t.datetime "last_checked"
+  end
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "documents", :force => true do |t|
