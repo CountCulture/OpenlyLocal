@@ -59,16 +59,16 @@ class ScraperRunnerTest < ActiveSupport::TestCase
         @runner.result_output = "some output"
         @runner.refresh_stale
         assert_sent_email do |email|
-           email.subject =~ /Auto Scraping Report/ && email.body =~ /some output/
-         end
+          email.subject =~ /Auto Scraping Report/ && email.body =~ /some output/
+        end
       end
       
       should "use summary in email subject" do
         @scraper.stubs(:process).returns(stub(:results => stub_everything))
         @runner.refresh_stale
         assert_sent_email do |email|
-           email.subject =~ /1 scrapers processed/
-         end
+          email.subject =~ /1 scrapers processed/
+        end
       end
       
       should "not email results if email_results is not true" do

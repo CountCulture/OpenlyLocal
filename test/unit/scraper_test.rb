@@ -458,7 +458,25 @@ class ScraperTest < ActiveSupport::TestCase
       end
 
     end
+    
+    context "when running perform" do
+      setup do
+        @scraper.stubs(:process).returns(@scraper)
+      end
 
+      should "should process scraping, saving results" do
+        @scraper.expects(:process).with(:save_results => true)
+        @scraper.perform
+      end
+      
+      should "email results" do
+        @scraper.perform
+        assert_sent_email do |email|
+          email.subject =~ /Scraping Report/# && email.body =~ /some output/
+        end
+      end
+    end
+    
     context "when evaluating target_url_for object" do
       setup do
         @obj = stub(:url => "http://foo.com", :uid => 42)

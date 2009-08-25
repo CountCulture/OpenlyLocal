@@ -61,6 +61,11 @@ class Scraper < ActiveRecord::Base
     self
   end
   
+  def perform
+    process(:save_results => true)
+    ScraperMailer.deliver_auto_scraping_report!(:report => "result_output", :summary => "@summary")
+  end
+  
   def results
     @results ||=[]
   end
