@@ -5,6 +5,7 @@
   </style>
 </head>
 <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" bgcolor='#FFFFFF' >
+  <h1><%= @scraper.title %></h1>
     <%= error_messages_for :scraper %>
     <%= error_messages_for :parser, :header_message => "Problem parsing scraped page", :message => "The following problems occurred:" %>
 

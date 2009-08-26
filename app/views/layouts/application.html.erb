@@ -9,6 +9,9 @@
   <div class="container">
     <%= render :partial => 'shared/header' %>
     <div id="content">
+      <div id="message_area">
+        <p class="warning"><%= flash[:notice] %></p>  
+      </div>
       <%= yield %>
       <%= render :partial => 'shared/share_block' if @share_this %>
     </div>

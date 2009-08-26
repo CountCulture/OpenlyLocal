@@ -180,25 +180,43 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   end
   
-  context "on GET to :show with :process" do
+  context "on GET to :show when processing" do
+    setup do
+      @scraper = Factory(:scraper)
+      stub_authentication
+    end
+      
+    should "add to delayed job queue" do
+      Delayed::Job.expects(:enqueue).with(instance_of(ItemScraper))
+      get :show, :id => @scraper.id, :process => true
+    end
+    
+    should "set the flash to show success" do
+      get :show, :id => @scraper.id, :process => true
+      assert_match /being processed/, flash[:notice]
+    end
+     
+  end
+  
+  context "on GET to :show when processing immediately" do
     setup do
       @scraper = Factory(:scraper)
     end
       
-    should "run test on scraper" do
+    should "process scraper" do
       @scraper.class.any_instance.expects(:process).with(:save_results => true).returns(stub_everything)
       stub_authentication
-      get :show, :id => @scraper.id, :process => true
+      get :show, :id => @scraper.id, :process => "immediately"
     end
   end
   
-  context "on GET to :show with successful :process" do
+  context "on GET to :show with successful process immediately" do
     setup do
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
       @scraper.class.any_instance.stubs(:parsing_results).returns([{ :full_name => "Fred Flintstone", :uid => 1, :url => "http://www.anytown.gov.uk/members/fred" }] )
       stub_authentication
-      get :show, :id => @scraper.id, :process => true
+      get :show, :id => @scraper.id, :process => "immediately"
     end
   
     should_assign_to :scraper, :results
@@ -218,14 +236,14 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   end
   
-  context "on GET to :show with unsuccesful :process due to failed validation" do
+  context "on GET to :show with unsuccesful :process immediately due to failed validation" do
     setup do
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
       @scraper.class.any_instance.stubs(:parsing_results).returns([{ :full_name => "Fred Flintstone", :uid => 1, :url => "http://www.anytown.gov.uk/members/fred" },
                                                             { :full_name => "Bob Nourl"}] )
       stub_authentication
-      get :show, :id => @scraper.id, :process => true
+      get :show, :id => @scraper.id, :process => "immediately"
     end
     
     should_assign_to :scraper, :results

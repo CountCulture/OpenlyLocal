@@ -13,8 +13,11 @@ class ScrapersController < ApplicationController
     @title = @scraper.title
     if params[:dry_run]
       @results = @scraper.process.results
-    elsif params[:process]
+    elsif params[:process] == "immediately"
       @results = @scraper.process(:save_results => true).results
+    elsif params[:process]
+      Delayed::Job.enqueue @scraper
+      flash[:notice] = "Scraper is being processed and you will be emailed with the results"
     end
     @parser = @scraper.parser
   end
