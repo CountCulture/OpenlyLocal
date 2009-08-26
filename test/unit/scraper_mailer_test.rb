@@ -27,7 +27,7 @@ class ScraperMailerTest < ActionMailer::TestCase
   context "A ScraperMailer scraping_report email" do
     setup do
       @scraper = Factory(:scraper)
-      @scraper.stubs(:results => [ Member.new(:first_name => "Fred", :last_name => "Flintstone") ])
+      @scraper.stubs(:results => [ ScrapedObjectResult.new(Member.new(:first_name => "Fred", :last_name => "Flintstone")) ])
       @scraper.errors.add_to_base("There is a foo problem")
       @report = ScraperMailer.create_scraping_report(@scraper)
     end
@@ -50,7 +50,7 @@ class ScraperMailerTest < ActionMailer::TestCase
     end
     
     should "list scraped object in body" do
-      assert_match /<div.+class=\"member new/, @report.body
+      assert_match /<div.+class=\".+new member/, @report.body
     end
     
     should "list changed attributes in body" do

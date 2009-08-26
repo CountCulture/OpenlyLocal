@@ -30,7 +30,7 @@ class InfoScraper < Scraper
     unless res.blank?
       obj.attributes = res.first
       options[:save_results] ? obj.save : obj.valid?
-      results << obj
+      results << ScrapedObjectResult.new(obj)
     end
   end
 

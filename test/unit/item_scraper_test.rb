@@ -12,16 +12,16 @@ class ItemScraperTest < ActiveSupport::TestCase
   context "an ItemScraper instance" do
     setup do
       @scraper = Factory(:item_scraper)
-      @scraper.parser.update_attribute(:result_model, "Meeting")
+      @scraper.parser.update_attribute(:result_model, "Committee")
     end
 
     should "return what it is scraping for" do
-      assert_equal "Meetings from <a href='http://www.anytown.gov.uk/members'>http://www.anytown.gov.uk/members</a>", @scraper.scraping_for
+      assert_equal "Committees from <a href='http://www.anytown.gov.uk/members'>http://www.anytown.gov.uk/members</a>", @scraper.scraping_for
     end
     
     context "with related model" do
       setup do
-        @scraper.parser.update_attribute(:related_model, "Committee")
+        @scraper.parser.update_attributes(:result_model => "Meeting", :related_model => "Committee")
       end
 
       should "return related model" do
@@ -114,7 +114,8 @@ class ItemScraperTest < ActiveSupport::TestCase
 
       context "item_scraper with related_model" do
         setup do
-          @scraper.parser.update_attribute(:related_model, "Committee")
+          # @scraper.parser.update_attribute(:related_model, "Committee")
+          @scraper.parser.update_attributes(:result_model => "Meeting", :related_model => "Committee")
           
           @committee_1 = Factory(:committee, :council => @scraper.council)
           @committee_2 = Factory(:committee, :council => @scraper.council)

@@ -114,7 +114,7 @@ class ScrapersControllerTest < ActionController::TestCase
       @member.save # otherwise looks like new_before_save
       @new_member = Member.new(:full_name => "Fred Flintstone", :uid => 55)
       @scraper.class.any_instance.stubs(:process).returns(@scraper)
-      @scraper.stubs(:results).returns([@member, @new_member])
+      @scraper.stubs(:results).returns([ScrapedObjectResult.new(@member), ScrapedObjectResult.new(@new_member)])
       stub_authentication
       get :show, :id => @scraper.id, :dry_run => true
     end
@@ -256,7 +256,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
     should "highlight member with error" do
       assert_select "div.member", :count => 2 do
-        assert_select "div.error", :count => 1 do # only one of which hs error class
+        assert_select "div.errors", :count => 1 do # only one of which has error class
           assert_select "div.member div.errorExplanation" #...and that has error explanation in it
         end
      end

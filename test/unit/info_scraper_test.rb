@@ -108,8 +108,11 @@ class InfoScraperTest < ActiveSupport::TestCase
           @scraper.process(:save_results => true, :objects => @dummy_related_object)
         end
         
-        should "store updated existing instance in results" do
-          assert_equal [@dummy_related_object], @scraper.process(:objects => @dummy_related_object).results
+        should "store scraped_object_result in results" do
+          results = @scraper.process(:objects => @dummy_related_object).results
+          assert_kind_of ScrapedObjectResult, results.first
+          assert_equal "Member", results.first.base_object_klass
+          assert_equal @dummy_related_object.url, results.first.url
         end
         
         should "not update last_scraped attribute if not saving results" do
@@ -226,8 +229,12 @@ class InfoScraperTest < ActiveSupport::TestCase
           assert @dummy_object_1.errors[:uid]
         end
       
-        should "store updated existing instance in results" do
-          assert_equal @dummy_collection, @scraper.process(:objects => @dummy_collection).results
+        should "store scraped_object_result objects in results" do
+          results = @scraper.process(:objects => @dummy_collection).results
+          assert_equal 2, results.size
+          assert_kind_of ScrapedObjectResult, results.first
+          assert_equal "Member", results.last.base_object_klass
+          assert_equal [nil, "Barney"], results.last.changes["first_name"]
         end
       
         should "not mark scraper as problematic" do

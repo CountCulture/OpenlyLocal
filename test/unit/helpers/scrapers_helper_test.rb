@@ -39,31 +39,19 @@ class ScrapersHelperTest < ActionView::TestCase
   context "flash_for_result helper method" do
 
     should "return empty string by default" do
-      assert_nil flash_for_result(stub_everything(:errors => []))
+      assert_nil flash_for_result(nil)
     end
     
-    should "return new when record is new" do
-      assert_dom_equal "<span class='new flash'>new</span>", flash_for_result(stub_everything(:new_record? => true, :errors => []))
+    should "return empty string by default if result is unchanged" do
+      assert_nil flash_for_result(stub_everything(:status => "unchanged"))
     end
     
-    should "return new when record was new before saving" do
-      assert_dom_equal "<span class='new flash'>new</span>", flash_for_result(stub_everything(:new_record_before_save? => true, :errors => []))
+    should "return status of result" do
+      assert_dom_equal "<span class='foo flash'>foo</span>", flash_for_result(stub_everything(:status => "foo"))
     end
     
-    should "return error when record has errors" do
-      assert_dom_equal "<span class='unchanged error flash'>unchanged error</span>", flash_for_result(stub_everything(:errors => ["foo"]))
-    end
-    
-    should "return changed when record has changed" do
-      assert_dom_equal "<span class='changed flash'>changed</span>", flash_for_result(stub_everything(:changed? => true, :errors => []))
-    end
-    
-    should "return just new when record is new and has changed" do
-      assert_dom_equal "<span class='new flash'>new</span>", flash_for_result(stub_everything(:changed? => true, :new_record? => true, :errors => []))
-    end
-    
-    should "return mutiple class when record is new and has errors" do
-      assert_dom_equal "<span class='new error flash'>new error</span>", flash_for_result(stub_everything(:errors => ["foo"], :new_record? => true))
+    should "return mutiple class but error text when record is new and has errors" do
+      assert_dom_equal "<span class='foo errors flash'>errors</span>", flash_for_result(stub_everything(:status => "foo errors"))
     end
   end
   
@@ -74,7 +62,7 @@ class ScrapersHelperTest < ActionView::TestCase
     end
     
     should "show message if no changed attributes" do
-       assert_dom_equal content_tag(:div, "Record is unchanged"), changed_attributes_list(@member)      
+       assert_dom_equal content_tag(:div, "Record is unchanged"), changed_attributes_list(ScrapedObjectResult.new(@member))      
      end
      
      should "list only attributes that have changed" do
@@ -82,7 +70,7 @@ class ScrapersHelperTest < ActionView::TestCase
        @member.telephone = "0123 456 789"
        assert_dom_equal content_tag(:div, content_tag(:ul, content_tag(:li, "telephone <strong>0123 456 789</strong> (was empty)") + 
                                                            content_tag(:li, "first_name <strong>Pete</strong> (was Bob)")), 
-                                          :class => "changed_attributes"), changed_attributes_list(@member)
+                                          :class => "changed_attributes"), changed_attributes_list(ScrapedObjectResult.new(@member))
      end
      
   end

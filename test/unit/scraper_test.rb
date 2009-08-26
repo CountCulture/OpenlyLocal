@@ -356,10 +356,14 @@ class ScraperTest < ActiveSupport::TestCase
         @scraper.process
       end
       
-      should "store instances of result class in results" do
-        dummy_member = Member.new
+      should "store instances of scraped_object_result in results" do
+        dummy_member = Member.new(:full_name => "Fred Flintstone")
         Member.stubs(:build_or_update).returns(dummy_member)
-        assert_equal [dummy_member], @scraper.process.results
+        results = @scraper.process.results
+        assert_kind_of ScrapedObjectResult, results.first
+        assert_match /new/, results.first.status
+        assert_equal "Member", results.first.base_object_klass
+        assert_equal "Fred Flintstone", results.first.title
       end
       
       should "not update last_scraped attribute" do
@@ -434,9 +438,14 @@ class ScraperTest < ActiveSupport::TestCase
         end
 
         should "store instances of result class in results" do
-          dummy_member = Member.new
+          dummy_member = Member.new(:full_name => "Fred Flintstone")
           Member.stubs(:build_or_update).returns(dummy_member)
-          assert_equal [dummy_member], @scraper.process(:save_results => true).results
+          results = @scraper.process(:save_results => true).results
+          
+          assert_kind_of ScrapedObjectResult, results.first
+          assert_match /new/, results.first.status
+          assert_equal "Member", results.first.base_object_klass
+          assert_equal "Fred Flintstone", results.first.title
         end
         
         should "update last_scraped attribute" do

@@ -134,7 +134,7 @@ class Scraper < ActiveRecord::Base
       parsing_results.each do |result|
         item = result_model.constantize.build_or_update(result.merge(:council_id => council.id))
         options[:save_results] ? item.save_without_losing_dirty : item.valid? # we want to know what's changed and keep any errors, so run save_without_losing_dirty if we're saving, run validation to add errors to item otherwise
-        results << item
+        results << ScrapedObjectResult.new(item)
       end
     end
   end

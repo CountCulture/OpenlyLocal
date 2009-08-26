@@ -14,15 +14,13 @@ module ScrapersHelper
   end
   
   def changed_attributes_list(record)
-    return content_tag(:div, "Record is unchanged") unless record.changed? || record.new_record_before_save?
+    return content_tag(:div, "Record is unchanged") if record.status == "unchanged"
     attrib_list = record.changes.collect{ |attrib_name, changes| content_tag(:li, "#{attrib_name} <strong>#{changes.last}</strong> (was #{changes.first || 'empty'})") }
     content_tag(:div, content_tag(:ul, attrib_list), :class => "changed_attributes")
   end
   
   def flash_for_result(res)
-    css_classes = class_for_result(res)
-    return if css_classes.blank? || css_classes == "unchanged"
-    "<span class='#{css_classes} flash'>#{css_classes}</span>"
+    "<span class='#{res.status} flash'>#{res.status.split.last}</span>" unless res.blank? || res.status == "unchanged"
   end
   
   def scraper_links_for_council(council)
