@@ -1,7 +1,39 @@
 <html>
 <head>
   <style type="text/css">
-    body { color: #0d0d0d; font-family: "Helvetica Neue", "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;}
+  body { color: #0d0d0d; font-size: 75%; font-family: "Helvetica Neue", "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;}
+  p, ul, h4 {margin:0.25em 0 ;}
+  div.new, .changed {
+  	border:1px solid #DDDDDD;
+  	margin-bottom:1em;
+  	padding:0.6em;
+  	}
+  .changed {
+  	background:#FFF6BF;
+  	border-color:#FFD324;
+  	}
+  div.new {
+  	background:#E6EFC2;
+  	border-color:#C6D880;
+  	}
+  div.unchanged {
+  	margin-bottom: .5em; }
+  .unchanged, .unchanged a {
+  	color: #515151; }
+  .unchanged h4 { 
+  	color: #282828;
+  	margin-bottom: 0; }
+  span.flash {
+  	border:none;
+  	color:#fff;
+  	padding: 3px 6px;
+  	float:right; }	
+  span.new {
+  	background-color:#264409; }	
+  span.changed {
+  	background-color:#514721; }	
+  span.error {
+  	background-color:#8a1f11; }	
   </style>
 </head>
 <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" bgcolor='#FFFFFF' >
