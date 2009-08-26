@@ -472,7 +472,7 @@ class ScraperTest < ActiveSupport::TestCase
       should "email results" do
         @scraper.perform
         assert_sent_email do |email|
-          email.subject =~ /Scraping Report/# && email.body =~ /some output/
+          email.subject =~ /Scraping Report/ && email.body =~ /Scraping Results/
         end
       end
     end
