@@ -121,18 +121,6 @@ class Scraper < ActiveRecord::Base
     # response.body
   end
   
-  # def match_attribute(result, key, value)
-  #   case value 
-  #   when TrueClass
-  #     message = "weren't matched: :#{key} expected but was missing or nil" unless result[key]
-  #   when Class
-  #     message = "weren't matched: :#{key} expected to be #{value} but was #{result[key].class}" unless result[key].is_a?(value)
-  #   when Regexp
-  #     message = "weren't matched: :#{key} expected to match /#{value.source}/ but was '#{result[key]}'" unless result[key] =~ value
-  #   end
-  #   errors.add(:expected_result_attributes, message) if message
-  # end
-  
   def update_with_results(parsing_results, options={})
     unless parsing_results.blank?
       parsing_results.each do |result|
