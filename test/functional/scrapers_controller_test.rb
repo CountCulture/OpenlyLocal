@@ -151,7 +151,6 @@ class ScrapersControllerTest < ActionController::TestCase
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.stubs(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
       parser = @scraper.parser
-      Scraper.expects(:find).returns(@scraper)
       stub_authentication
       get :show, :id => @scraper.id, :dry_run => true
     end
@@ -170,10 +169,10 @@ class ScrapersControllerTest < ActionController::TestCase
     setup do
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
-      parser = @scraper.parser
-      parser.stubs(:results) # pretend there are no results
-      parser.errors.add_to_base("problems ahoy")
-      Scraper.expects(:find).returns(@scraper)
+      dummy_errors = @scraper.parser.errors
+      dummy_errors.add_to_base("problems ahoy")
+      Parser.any_instance.stubs(:results) # pretend there are no results
+      Parser.any_instance.stubs(:errors).returns(dummy_errors) # pretend there are no results
       stub_authentication
       get :show, :id => @scraper.id, :dry_run => true
     end
