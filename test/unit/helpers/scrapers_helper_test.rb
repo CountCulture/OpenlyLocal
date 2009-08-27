@@ -95,7 +95,7 @@ class ScrapersHelperTest < ActionView::TestCase
     
     should "class as problem if scraper is problematic" do
       @scraper.class.any_instance.stubs(:problematic?).returns(true)
-      assert_equal link_for(@scraper, :class => "problem"), scraper_links_for_council(@council).first
+      assert_equal link_for(@scraper, :class => "problematic"), scraper_links_for_council(@council).first
     end
     
     should "class as stale if scraper is stale" do
@@ -106,7 +106,7 @@ class ScrapersHelperTest < ActionView::TestCase
     should "class as problem and stale if scraper is problematic and stale" do
       @scraper.class.any_instance.stubs(:stale?).returns(true)
       @scraper.class.any_instance.stubs(:problematic?).returns(true)
-      assert_equal link_for(@scraper, :class => "problem stale"), scraper_links_for_council(@council).first
+      assert_equal link_for(@scraper, :class => "stale problematic"), scraper_links_for_council(@council).first
     end
     
     should "return links for not yet created scrapers" do

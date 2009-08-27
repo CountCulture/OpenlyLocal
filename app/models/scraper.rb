@@ -78,6 +78,13 @@ class Scraper < ActiveRecord::Base
     !last_scraped||(last_scraped < 7.days.ago)
   end
   
+  # Returns status as string (for use in css_class)
+  def status
+    return "stale problematic" if stale?&&problematic?
+    return "stale" if stale?
+    return "problematic" if problematic?
+  end
+  
   # build url from council's base_url and parsers path unless url is set
   def url
     read_attribute(:url).blank? ? computed_url : read_attribute(:url)

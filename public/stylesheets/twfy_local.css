@@ -47,10 +47,10 @@ a.updated {
 a.stale {
 	color: #740;
 }
-a.problem {
+a.problematic {
 	color: #a11;
 }
-a.problem:before, a.stale:before {
+a.problematic:before, a.stale:before {
 	text-transform: uppercase;
 	color:#fff;
 	font-size:.8em;
@@ -61,7 +61,7 @@ a.stale:before {
 	content: "Stale";
 	background-color:#740;
 }
-a.problem:before {
+a.problematic:before {
 	content: "Problem";
 	background-color:#a11;
 }

@@ -109,6 +109,25 @@ class ScraperTest < ActiveSupport::TestCase
       assert !@scraper.problematic?
     end
     
+    context "when returning status" do
+
+      should "return 'stale' if stale" do
+        p @scraper
+        assert_equal 'stale', @scraper.status
+      end
+
+      should "return 'problematic' if problematic" do
+        @scraper.problematic = true
+        @scraper.last_scraped = 6.days.ago
+        assert_equal 'problematic', @scraper.status
+      end
+      
+      should "return 'stale' and 'problematic' if stale and problematic" do
+        @scraper.problematic = true
+        assert_equal 'stale problematic', @scraper.status
+      end
+    end
+        
     should "return sibling_scrapers" do
       sibling1 = Factory(:info_scraper, :council => @scraper.council)
       sibling2 = Factory(:scraper, :council => @scraper.council, :parser => Factory(:parser, :result_model => "Committee"))
