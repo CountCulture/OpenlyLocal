@@ -1,7 +1,7 @@
 <html>
 <head>
   <style type="text/css">
-  body { color: #0d0d0d; font-size: 75%; font-family: "Helvetica Neue", "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;}
+  body { margin: 1em; color: #0d0d0d; font-size: 75%; font-family: "Helvetica Neue", "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;}
   p, ul, h4 {margin:0.25em 0 ;}
   div.new, .changed {
   	border:1px solid #DDDDDD;
@@ -36,7 +36,7 @@
   	background-color:#8a1f11; }	
   </style>
 </head>
-<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" bgcolor='#FFFFFF' >
+<body>
   <h1><%= @scraper.title %></h1>
     <%= error_messages_for :scraper %>
     <%= error_messages_for :parser, :header_message => "Problem parsing scraped page", :message => "The following problems occurred:" %>

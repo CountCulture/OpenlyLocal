@@ -109,6 +109,12 @@ class ScraperTest < ActiveSupport::TestCase
       assert !@scraper.problematic?
     end
     
+    should "return sibling_scrapers" do
+      sibling1 = Factory(:info_scraper, :council => @scraper.council)
+      sibling2 = Factory(:scraper, :council => @scraper.council, :parser => Factory(:parser, :result_model => "Committee"))
+      assert_equal [sibling1, sibling2], @scraper.sibling_scrapers
+    end
+    
     should "delegate result_model to parser" do
       @parser.expects(:result_model).returns("result_model")
       assert_equal "result_model", @scraper.result_model

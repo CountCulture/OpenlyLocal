@@ -70,6 +70,10 @@ class Scraper < ActiveRecord::Base
     @results ||=[]
   end
   
+  def sibling_scrapers
+    council.scrapers - [self]
+  end
+  
   def stale?
     !last_scraped||(last_scraped < 7.days.ago)
   end

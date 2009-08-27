@@ -69,7 +69,8 @@ class ScrapersControllerTest < ActionController::TestCase
   context "on GET to :show for first record" do
     setup do
       @scraper = Factory(:scraper)
-      @scraper.class.any_instance.expects(:test).never
+      @scraper.class.any_instance.expects(:process).never
+      @scraper1 = Factory(:info_scraper, :council => @scraper.council)
       stub_authentication
       get :show, :id => @scraper.id
     end
@@ -88,6 +89,13 @@ class ScrapersControllerTest < ActionController::TestCase
   
     should "show link to perform edit" do
       assert_select "#scraper a", /edit/
+    end
+    
+    should "show links to council's other scrapers" do
+      assert_select "#other_scrapers" do
+        assert_select "li a", :text => @scraper.title, :count => 0
+        assert_select "li a", :text => @scraper1.title
+      end
     end
     
     should "not show share block" do
