@@ -169,10 +169,11 @@ class ScrapersControllerTest < ActionController::TestCase
     setup do
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
-      dummy_errors = @scraper.parser.errors
-      dummy_errors.add_to_base("problems ahoy")
+      # dummy_errors = @scraper.parser.errors
+      # dummy_errors.add_to_base("problems ahoy")
+      @scraper.parser.update_attribute(:item_parser, "foo")
       Parser.any_instance.stubs(:results) # pretend there are no results
-      Parser.any_instance.stubs(:errors).returns(dummy_errors) # pretend there are no results
+      # Parser.any_instance.stubs(:errors).returns(dummy_errors) # pretend there are no results
       stub_authentication
       get :show, :id => @scraper.id, :dry_run => true
     end
@@ -182,7 +183,7 @@ class ScrapersControllerTest < ActionController::TestCase
     
     should "show summary of problems" do
       assert_select "div.errorExplanation" do
-        assert_select "li", "problems ahoy"
+        assert_select "li", /Exception raised parsing items/
       end
     end
   end

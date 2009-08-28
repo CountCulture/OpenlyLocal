@@ -2,17 +2,19 @@ class InfoScraper < Scraper
   
   def process(options={})
     @related_objects = [options[:objects]].flatten if options[:objects]
+    @objects_with_errors_count = 0
     related_objects.each do |obj|
-      raw_results = parser.process(_data(target_url_for(obj)), self).results
+      begin
+        raw_results = parser.process(_data(target_url_for(obj)), self).results
+      rescue ScraperError => e
+        logger.debug { "*******#{e.message} while processing #{self.inspect}" }
+        obj.errors.add_to_base(e.message)
+      end
       update_with_results(raw_results, obj, options)
     end
-    update_last_scraped if options[:save_results]&&parser.errors.empty?
-    mark_as_problematic unless parser.errors.empty?
-    self
-  rescue ScraperError => e
-    logger.debug { "*******#{e.message} while processing #{self.inspect}" }
-    errors.add_to_base(e.message)
-    mark_as_problematic
+    errors.add_to_base("Problem on all items (see below for details)") if @objects_with_errors_count == related_objects.size
+    update_last_scraped if options[:save_results]&&(@objects_with_errors_count != related_objects.size)
+    mark_as_problematic if options[:save_results]&&(@objects_with_errors_count == related_objects.size)
     self
   end
   
@@ -27,11 +29,20 @@ class InfoScraper < Scraper
   protected
   # overrides method in standard scraper
   def update_with_results(res, obj=nil, options={})
-    unless res.blank?
+    if !obj.errors.empty? 
+      @objects_with_errors_count +=1
+      results << ScrapedObjectResult.new(obj)
+    elsif !@parser.errors.empty?
+      @objects_with_errors_count +=1
+      sor = ScrapedObjectResult.new(obj)
+      sor.errors.add_to_base @parser.errors[:base]
+      results << sor
+    elsif !res.blank?
       obj.attributes = res.first
-      options[:save_results] ? obj.save : obj.valid?
+      options[:save_results] ? obj.save : obj.valid? # don't try if we've already got errors
       results << ScrapedObjectResult.new(obj)
     end
+    
   end
 
 end

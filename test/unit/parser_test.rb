@@ -174,6 +174,12 @@ class ParserTest < Test::Unit::TestCase
           no_item_parser_parser.expects(:eval_parsing_code).with(){ |code, item| (code =~ /bar/) && (item == dummy_hpricot) }
           no_item_parser_parser.process(dummy_hpricot)
         end
+        
+        should "wipe existing errors" do
+          @parser.errors.add_to_base("foo error")
+          @parser.process(@dummy_hpricot)
+          assert_nil @parser.errors[:base]
+        end
       end
       
       

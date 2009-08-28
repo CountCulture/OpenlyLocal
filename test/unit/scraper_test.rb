@@ -112,7 +112,6 @@ class ScraperTest < ActiveSupport::TestCase
     context "when returning status" do
 
       should "return 'stale' if stale" do
-        p @scraper
         assert_equal 'stale', @scraper.status
       end
 
@@ -403,8 +402,8 @@ class ScraperTest < ActiveSupport::TestCase
       
       context "and problem parsing" do
         setup do
-          @parser.stubs(:results) # => returns nil
-          @parser.stubs(:errors => stub(:empty? => false))
+          @parser.update_attribute(:item_parser, "foo")
+          # @parser.stubs(:errors => stub(:empty? => false))
         end
 
         should "not build or update instance of result_class if no results" do
@@ -485,7 +484,7 @@ class ScraperTest < ActiveSupport::TestCase
         end
         
         should "not update last_scraped result attribute when problem parsing" do
-          @parser.stubs(:errors => stub(:empty? => false))
+          @parser.update_attribute(:item_parser, "foo")
           @scraper.process(:save_results => true)
           assert_nil @scraper.reload.last_scraped
         end

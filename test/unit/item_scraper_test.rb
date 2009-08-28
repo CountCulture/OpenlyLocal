@@ -72,7 +72,7 @@ class ItemScraperTest < ActiveSupport::TestCase
         end
         
         should "not update last_scraped if problem parsing" do
-          @parser.stubs(:errors => stub(:empty? => false))
+          @parser.update_attribute(:item_parser, "foo")
           @scraper.process(:save_results => true)
           assert_nil @scraper.reload.last_scraped
         end
@@ -158,7 +158,7 @@ class ItemScraperTest < ActiveSupport::TestCase
           end
 
           should "not update last_scraped if problem parsing" do
-            @parser.stubs(:errors => stub(:empty? => false))
+            @parser.update_attribute(:item_parser, "foo")
             @scraper.process(:save_results => true)
             assert_nil @scraper.reload.last_scraped
           end
@@ -201,7 +201,7 @@ class ItemScraperTest < ActiveSupport::TestCase
           
           context "and problem parsing" do
             setup do
-              @parser.stubs(:errors => stub(:empty? => false))
+              @parser.update_attribute(:item_parser, "foo")
               @scraper.process(:save_results => true)
             end
             

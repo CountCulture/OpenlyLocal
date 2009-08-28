@@ -29,6 +29,7 @@ class Parser < ActiveRecord::Base
     @raw_response = doc
     @current_scraper = scraper
     @results = nil # wipe previous results if they exist (same parser instance may be called more than once by scraper)
+    errors.clear # wipe previous errors if they exist
     now_parsing = "items"
     parsing_code = item_parser
     object_to_be_parsed = doc
