@@ -65,6 +65,10 @@ class ScrapersHelperTest < ActionView::TestCase
        assert_dom_equal content_tag(:div, "Record is unchanged"), changed_attributes_list(ScrapedObjectResult.new(@member))      
      end
      
+     should "show message if changes blank?" do
+       assert_dom_equal content_tag(:div, "Record is unchanged"), changed_attributes_list(ScrapedObjectResult.new)      
+     end
+
      should "list only attributes that have changed" do
        @member.first_name = "Pete"
        @member.telephone = "0123 456 789"

@@ -112,6 +112,35 @@ class ItemScraperTest < ActiveSupport::TestCase
         end
       end
 
+      context "and non-ScraperError occurs" do
+        setup do
+          @parser.expects(:results).raises(ActiveRecord::UnknownAttributeError, "unknown attribute foo")
+        end
+
+        should "catch exception" do
+          assert_nothing_raised(Exception) { @scraper.process }
+        end
+        
+        should "add details to scraper errors" do
+          @scraper.process
+          assert_match /unknown attribute foo/, @scraper.errors[:base]
+        end
+        
+        should "return self" do
+          assert_equal @scraper, @scraper.process
+        end
+        
+        should "mark scraper as problematic if saving results" do
+          @scraper.process(:save_results => true)
+          assert @scraper.reload.problematic?
+        end
+        
+        should "not update last_scraped if saving results" do
+          @scraper.process
+          assert_nil @scraper.last_scraped
+        end
+      end
+      
       context "item_scraper with related_model" do
         setup do
           # @scraper.parser.update_attribute(:related_model, "Committee")

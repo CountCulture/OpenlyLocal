@@ -14,7 +14,7 @@ class ItemScraper < Scraper
       mark_as_problematic unless parser.errors.empty?
       self
     end
-  rescue ScraperError => e
+  rescue Exception => e
     logger.debug { "*******#{e.message} while processing #{self.inspect}" }
     errors.add_to_base(e.message)
     mark_as_problematic
