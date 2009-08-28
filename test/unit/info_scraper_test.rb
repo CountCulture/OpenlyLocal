@@ -208,6 +208,36 @@ class InfoScraperTest < ActiveSupport::TestCase
           assert_in_delta(Time.now, @scraper.reload.last_scraped, 2)
         end
         
+        context "and non-ScraperError occurs" do
+          setup do
+            @parser.expects(:results).twice.returns([{ :full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }]).then.raises(ActiveRecord::UnknownAttributeError, "unknown attribute foo")
+          end
+
+          should "catch exception" do
+            assert_nothing_raised(Exception) { @scraper.process }
+          end
+          
+          should "add details to scraper errors" do
+            @scraper.process
+            assert_match /unknown attribute foo/, @scraper.errors[:base]
+          end
+          
+          should "return self" do
+            assert_equal @scraper, @scraper.process
+          end
+          
+          should "mark scraper as problematic if saving results" do
+            @scraper.process(:save_results => true)
+            assert @scraper.reload.problematic?
+          end
+          
+          should "not update last_scraped if saving results" do
+            @scraper.process
+            assert_nil @scraper.last_scraped
+          end
+          
+        end
+        
         context "and problem getting data on one of the objects" do
           setup do
             @scraper.expects(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found").then.returns("something")

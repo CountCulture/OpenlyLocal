@@ -38,7 +38,7 @@
 </head>
 <body>
   <h1><%= @scraper.title %></h1>
-    <%= error_messages_for :scraper %>
+    <%= error_messages_for :scraper, :header_message => "Problems processing this scraper" %>
     <%= error_messages_for :parser, :header_message => "Problem parsing scraped page", :message => "The following problems occurred:" %>
 
     <div id="results">

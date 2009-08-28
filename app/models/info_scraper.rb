@@ -16,6 +16,10 @@ class InfoScraper < Scraper
     update_last_scraped if options[:save_results]&&(@objects_with_errors_count != related_objects.size)
     mark_as_problematic if options[:save_results]&&(@objects_with_errors_count == related_objects.size)
     self
+  rescue Exception => e # catch other exceptions and store them for display
+    mark_as_problematic if options[:save_results] # don't mark if we're just testing
+    errors.add_to_base("Exception while processing:\n#{e.message}")
+    self
   end
   
   def related_objects
