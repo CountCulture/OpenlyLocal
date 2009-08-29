@@ -19,7 +19,7 @@ class ScrapersController < ApplicationController
       @results_summary = @scraper.results_summary
     elsif params[:process]
       Delayed::Job.enqueue @scraper
-      flash[:now] = "Scraper is being processed and you will be emailed with the results"
+      flash.now[:notice] = "Scraper is being processed and you will be emailed with the results"
     end
     @parser = @scraper.parser
   end
@@ -36,7 +36,7 @@ class ScrapersController < ApplicationController
     raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type])
     @scraper = params[:type].constantize.new(params[:scraper])
     @scraper.save!
-    flash[:now] = "Successfully created scraper"
+    flash[:notice] = "Successfully created scraper"
     redirect_to scraper_url(@scraper)
   end
   

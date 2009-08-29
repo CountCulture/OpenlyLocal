@@ -32,7 +32,7 @@ class Scraper < ActiveRecord::Base
   
   def title
     getting = self.is_a?(InfoScraper) ? 'Info' : 'Items'
-    "#{result_model} #{getting} scraper for #{council.name}"
+    "#{result_model} #{getting} scraper for #{council.short_name}"
   end
   
   def parsing_errors

@@ -179,11 +179,13 @@ class ScraperTest < ActiveSupport::TestCase
       assert_equal "foo", @scraper.related_objects
     end
     
-    should "build title from council name result class and scraper type when ItemScraper" do
+    should "build title from council short_name result class and scraper type when ItemScraper" do
+      @scraper.council.name = "Anytown Council"
       assert_equal "Member Items scraper for Anytown", @scraper.title
     end
     
     should "build title from council name result class and scraper type when InfoScraper" do
+      @scraper.council.name = "Anothertown Council"
       assert_equal "Member Info scraper for Anothertown", Factory.build(:info_scraper).title
     end
     

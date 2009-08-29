@@ -47,6 +47,11 @@
 
     <div id="results">
       <h3>Scraping Results: <%= @scraper.results.size %> records found</h3>
+      <%- unless @scraper.results_summary.blank? -%>
+        <p id="results_summary" class="alert">
+          <%= @scraper.results_summary %>
+        </p>
+      <%- end -%>
       <%- for result in @scraper.results -%>
         <%= render :partial => 'scrapers/scraped_object', :object => result %>
       <%- end -%>

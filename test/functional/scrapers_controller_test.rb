@@ -201,7 +201,7 @@ class ScrapersControllerTest < ActionController::TestCase
     
     should "set the flash to show success" do
       get :show, :id => @scraper.id, :process => true
-      assert_match /being processed/, flash[:now]
+      assert_match /being processed/, flash[:notice]
     end
      
   end
