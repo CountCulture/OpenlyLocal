@@ -77,6 +77,26 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_nil basic_link_for
     end
     
+    should "return show as plain text if object is new" do
+      assert_equal "new committee", basic_link_for(Committee.new(:title => "new committee"))
+    end
+    
+    should "return empty string if new object's title is nil" do
+      assert_equal "", basic_link_for( Committee.new)
+    end
+    
+    should "escape new object's title" do
+      assert_equal h("something & nothing... which <needs> escaping"), basic_link_for(Committee.new(:title => "something & nothing... which <needs> escaping"))
+    end
+    
+    # should "return nil if object's title is nil" do
+    #   assert_nil basic_link_for Committee.new
+    # end
+    
+    # should "return nil if object's title is nil" do
+    #   assert_nil basic_link_for Committee.new
+    # end
+    
     should "return link for item with object title for link text" do
       obj = stale_factory_object(:committee) # poss better way of testing this. obj can be any ActiveRecord obj 
       assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), basic_link_for(obj)

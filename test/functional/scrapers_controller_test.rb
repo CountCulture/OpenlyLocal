@@ -240,7 +240,7 @@ class ScrapersControllerTest < ActionController::TestCase
     should "show results" do
       assert_select "#results" do
         assert_select "div.member" do
-          assert_select "h4", /Fred Flintstone/
+          assert_select "h4 a", /Fred Flintstone/
         end
       end
     end

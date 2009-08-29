@@ -16,7 +16,7 @@ module ApplicationHelper
     return if obj.blank?
     css_class = ["#{obj.class.to_s.downcase}_link", options.delete(:freshness), options[:class]].compact.join(" ")
     text = options[:text] || obj.title
-    link_to(h(text), obj, options.except(:text).merge({ :class => css_class }))
+    obj.new_record? ? h(text) : link_to(h(text), obj, options.except(:text).merge({ :class => css_class }))
   end
   
   # http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.htm
