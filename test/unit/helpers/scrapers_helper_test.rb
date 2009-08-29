@@ -118,25 +118,5 @@ class ScrapersHelperTest < ActionView::TestCase
       assert links.include?(link_to("Add Committee item scraper for #{@council.name} council", new_scraper_path(:council_id => @council.id, :result_model => "Committee", :type => "ItemScraper"), :class => "new_scraper_link")) 
     end
   end
-   
-  context "scraper_results_summary helper method" do
-    setup do
-      @scraper = Factory(:scraper)
-    end
-
-    should "return nil when result_summary nil" do
-      assert_nil scraper_results_summary(@scraper)
-    end
-    
-    should "return 'No changes' when result_summary empty" do
-      @scraper.stubs(:results_summary).returns({})
-      assert_equal 'No changes', scraper_results_summary(@scraper)
-    end
-    
-    should "return summary of results when not empty" do
-      @scraper.stubs(:results_summary).returns({:changed_count => 3, :error_count => 1})
-      assert_equal '1 errors, 3 changes', scraper_results_summary(@scraper)
-    end
-  end
-  
+     
 end

@@ -11,7 +11,7 @@ class ScraperMailer < ActionMailer::Base
   end
 
   def scraping_report(scraper)
-    subject    "OpenlyLocal :: Scraping Report :: #{scraper.title}"
+    subject    "Scraping Report :: #{scraper.title} :: #{scraper.results_summary}"
     recipients 'countculture@googlemail.com'
     from       'countculture@googlemail.com'
     sent_on    Time.now

@@ -83,7 +83,12 @@ class Scraper < ActiveRecord::Base
         changed_count +=1
       end
     end
-    {:changed_count => changed_count, :error_count => error_count, :new_count => new_count}.delete_if{ |k,v| v==0  }
+    return "No changes" if changed_count+error_count+new_count == 0
+    res = []
+    res << "#{new_count} new records" if new_count > 0
+    res << "#{error_count} errors" if error_count > 0
+    res << "#{changed_count} changes" if changed_count > 0
+    res.join(", ")
   end
   
   def sibling_scrapers

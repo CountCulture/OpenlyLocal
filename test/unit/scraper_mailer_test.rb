@@ -28,6 +28,7 @@ class ScraperMailerTest < ActionMailer::TestCase
     setup do
       @scraper = Factory(:scraper)
       @scraper.stubs(:results => [ ScrapedObjectResult.new(Member.new(:first_name => "Fred", :last_name => "Flintstone")) ])
+      @scraper.stubs(:results_summary).returns("2 new, 3 changes")
       @scraper.errors.add_to_base("There is a foo problem")
       @report = ScraperMailer.create_scraping_report(@scraper)
     end
@@ -42,6 +43,10 @@ class ScraperMailerTest < ActionMailer::TestCase
     
     should "include scraper info in subject" do
       assert_match /#{@scraper.title}/, @report.subject
+    end
+    
+    should "include scraper results summary in message in subject" do
+      assert_match /2 new, 3 changes/, @report.subject
     end
     
     should "send as html email" do

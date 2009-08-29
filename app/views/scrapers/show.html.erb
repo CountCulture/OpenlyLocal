@@ -42,7 +42,7 @@
     <h3>Completed <%= params[:process] ? "Processing" : "Test Scrape" %>: <%= @results.size %> records found</h3>
     <%- unless @scraper.results_summary.blank? -%>
       <p id="results_summary" class="alert">
-        <%= scraper_results_summary(@scraper) %>
+        <%= @scraper.results_summary %>
       </p>
     <%- end -%>
     <%- for result in @results -%>
