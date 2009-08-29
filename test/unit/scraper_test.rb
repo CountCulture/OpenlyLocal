@@ -210,6 +210,33 @@ class ScraperTest < ActiveSupport::TestCase
       assert @scraper.problematic?
     end
     
+    context "when calculating results_summary" do
+      setup do
+        @basic_sor = stub(:status => "unchanged")
+        @error_sor = stub(:status => "errors unchanged")
+        # @error_sor.instance_variable_set(:@errors, ["error"])
+        @changed_sor = stub(:status => "changed")
+        @new_sor = stub(:status => "new changed")
+        # @error_sor.instance_variable_set(:@changes, {"title" => ["foo", "bar"]})
+      end
+
+      should "return nil by default" do
+        assert_nil Scraper.new.results_summary
+      end
+      
+      should "hash of changes and error" do
+        @scraper.instance_variable_set :@results, [@error_sor]*3 + [@basic_sor]*5 + [@changed_sor]*2 + [@new_sor]
+        assert_equal( { :changed_count => 2, :error_count => 3, :new_count => 1 }, @scraper.results_summary)
+      end
+      
+      should "return ignore keys with zero values" do
+        @scraper.instance_variable_set :@results, [@basic_sor]*5 + [@changed_sor]*2 + [@new_sor]
+        assert_equal( { :changed_count => 2, :new_count => 1 }, @scraper.results_summary)
+      end
+      
+    end
+    
+    
     context "if scraper has url attribute" do
       setup do
         @scraper.url = 'http://www.anytown.gov.uk/members/bob'

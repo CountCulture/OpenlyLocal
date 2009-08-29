@@ -70,6 +70,22 @@ class Scraper < ActiveRecord::Base
     @results ||=[]
   end
   
+  def results_summary
+    return if results.blank?
+    changed_count, error_count, new_count = 0, 0, 0
+    results.each do |result|
+      case result.status
+      when /errors/
+        error_count+=1
+      when /new/
+        new_count+=1
+      when /\bchanged/
+        changed_count +=1
+      end
+    end
+    {:changed_count => changed_count, :error_count => error_count, :new_count => new_count}.delete_if{ |k,v| v==0  }
+  end
+  
   def sibling_scrapers
     council.scrapers - [self]
   end

@@ -38,4 +38,17 @@ module ScrapersHelper
     end
     existing_scraper_links + new_scraper_links
   end
+  
+  def scraper_results_summary(scraper)
+    return unless results_summary = @scraper.results_summary
+    return "No changes" if results_summary.empty?
+    res = []
+    res << "#{results_summary[:new_count]} new records" if results_summary[:new_count]
+    res << "#{results_summary[:error_count]} errors" if results_summary[:error_count]
+    res << "#{results_summary[:changed_count]} changes" if results_summary[:changed_count]
+    # <%= @results_summary[:new_count]&&"#{@results_summary[:new_count]} new records" %> 
+    # <%= @results_summary[:error_count]&&"#{@results_summary[:error_count]} errors" %> 
+    # <%= @results_summary[:changed_count]&&"#{@results_summary[:changed_count]} changes" %> 
+    res.join(", ")
+  end
 end

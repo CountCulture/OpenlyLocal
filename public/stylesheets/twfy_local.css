@@ -87,9 +87,13 @@ margin-left:2em;
 .citation a {
 	color: #9e9e9e;
 }
-.warning {
-	color: #8a1f11;
-}
+.warning, .alert {
+	border: 1pt solid #FBC2C4; 
+	background-color: #FBE3E4;
+	padding:.5em;
+	font-size: 120%;
+	font-weight:bold;
+	color: #8a1f11;}
 
 /*General template format*/
 body { 

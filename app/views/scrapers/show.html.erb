@@ -40,6 +40,11 @@
   
   <div id="results">
     <h3>Completed <%= params[:process] ? "Processing" : "Test Scrape" %>: <%= @results.size %> records found</h3>
+    <%- unless @scraper.results_summary.blank? -%>
+      <p id="results_summary" class="alert">
+        <%= scraper_results_summary(@scraper) %>
+      </p>
+    <%- end -%>
     <%- for result in @results -%>
       <%= render :partial => 'scraped_object', :object => result %>
     <%- end -%>

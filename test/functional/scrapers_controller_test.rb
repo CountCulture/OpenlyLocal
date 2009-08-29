@@ -201,7 +201,7 @@ class ScrapersControllerTest < ActionController::TestCase
     
     should "set the flash to show success" do
       get :show, :id => @scraper.id, :process => true
-      assert_match /being processed/, flash[:notice]
+      assert_match /being processed/, flash[:now]
     end
      
   end
@@ -227,11 +227,17 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id, :process => "immediately"
     end
   
-    should_assign_to :scraper, :results
+    should_assign_to :scraper, :results, :results_summary
     should_respond_with :success
     should_change "Member.count", :by => 1
     
     should "show summary of successful results" do
+      assert_select "#results_summary" do
+        assert_select "p", /1 new/
+      end
+    end
+    
+    should "show results" do
       assert_select "#results" do
         assert_select "div.member" do
           assert_select "h4", /Fred Flintstone/
