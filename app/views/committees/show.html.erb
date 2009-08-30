@@ -12,7 +12,8 @@
 
   <div id="meetings" class="item_grouping">
     <h3>Meetings</h3>
-    <%= list_all @committee.meetings, :rel => "twfyl:meeting" %>
+    <p><%= link_to_calendar %></p>
+    <%= list_all @meetings, :rel => "twfyl:meeting" %>
   </div>
   <div id="documents" class="item_grouping">
     <h3>Documents for this committee</h3>

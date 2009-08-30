@@ -107,6 +107,17 @@ class CommitteesControllerTest < ActionController::TestCase
        end
      end
      
+     context "with ics requested" do
+       setup do
+         get :show, :id => @committee.id, :format => "ics"
+       end
+
+       should_assign_to(:committee) { @committee }
+       should_respond_with :success
+       should_render_without_layout
+       should_respond_with_content_type 'text/calendar'
+     end
+     
    end  
 
    # index test
