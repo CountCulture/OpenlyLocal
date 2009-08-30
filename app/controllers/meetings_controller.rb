@@ -11,7 +11,7 @@ class MeetingsController < ApplicationController
       format.json { render :xml => @meetings.to_json }
       format.ics do
         @meetings.extend(IcalUtilities::ArrayExtensions)
-        render :text => @meetings.to_ical(:name => "OpenlyLocal :: #{@title}", :url => "http://openlylocal.com/meetings", :attribute_aliases => {:event_uid => :uid})
+        render :text => @meetings.to_ical(:name => "#{@council.title} :: Committee Meetings :: OpenlyLocal", :url => "http://openlylocal.com/meetings", :attribute_aliases => {:event_uid => :uid})
       end 
     end
   end
