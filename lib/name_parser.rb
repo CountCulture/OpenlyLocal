@@ -8,9 +8,9 @@ module NameParser
   def parse(fn)
     poss_quals = Qualifications + Qualifications.map{|e| e.gsub('.','')}
     titles, qualifications, result_hash = [], [], {}
-    fn = fn.sub(/(Councillor|Councilllor|Cllr|Councillior|CC)\b/, '').gsub(/\([\w ]+\)/, '')
+    fn = fn.sub(/(Councillor|Councilllor|Cllr|Councillior|CC)\b/, '').sub(/- [A-Za-z ]+$/,'').gsub(/\([\w ]+\)/, '')
     titles = Titles.select{ |t| fn.sub!(Regexp.new("#{t}\\.?\\s"),'')}
-    fn.strip! #sho initials should have no white space before them
+    fn.strip! # so initials should have no white space before them
     qualifications = poss_quals.select{ |q| fn.sub!(Regexp.new("\\s#{Regexp.escape(q)}"),'')}.compact
     names = fn.gsub(/([.,])/, ' ').gsub(/(\s[A-Z]{3,})+$/, '').split(" ")
 
