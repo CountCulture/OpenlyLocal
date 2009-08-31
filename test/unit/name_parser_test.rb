@@ -42,6 +42,7 @@ class NameParserTest < Test::Unit::TestCase
     "The Right Honourable the Lord Mayor Fred Flintstone" => {:first_name => "Fred", :last_name => "Flintstone", :name_title => "The Right Honourable the Lord Mayor"},
     "High Sheriff Fred Flintstone" => {:first_name => "Fred", :last_name => "Flintstone", :name_title => "High Sheriff"},
     "The Deputy Mayor Fred Flintstone" => {:first_name => "Fred", :last_name => "Flintstone", :name_title => "The Deputy Mayor"},
+    "Councillor Fred Flintstone (Leader of the Council)" => {:first_name => "Fred", :last_name => "Flintstone"},
     "Matthew Holmes" => {:first_name => "Matthew", :last_name => "Holmes"},
     "Jane Annabel Wilson (nee Allen)" => {:first_name => "Jane Annabel", :last_name => "Wilson"}    
   }
