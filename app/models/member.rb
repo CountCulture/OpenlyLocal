@@ -42,7 +42,7 @@ class Member < ActiveRecord::Base
   end
   
   def party=(party_name)
-    self[:party] = party_name.gsub(/party/i, '').strip unless party_name.blank?
+    self[:party] = party_name.gsub(/party/i, '').sub(/^(The|the)/,'').strip unless party_name.blank?
   end
   
   private
