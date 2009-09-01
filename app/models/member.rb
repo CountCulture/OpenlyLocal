@@ -47,7 +47,7 @@ class Member < ActiveRecord::Base
   
   private
   def tweet_about_it
-    Delayed::Job.enqueue Tweeter.new("Info from #{@council.title} has been added to OpenlyLocal.com") if council.members.count == 1
+    Delayed::Job.enqueue Tweeter.new("#{@council.title.length > 60 ? @council.short_name : @council.title} has been added to OpenlyLocal.com #localdemocracy", :url => "http://openlylocal.com/councils/#{@council.to_param}") if council.members.count == 1
     true
   end
 end
