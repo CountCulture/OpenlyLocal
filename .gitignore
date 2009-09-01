@@ -10,5 +10,8 @@ config/initializers/hoptoad.rb
 config/database.yml
 config/deploy.rb
 config/smtp_gmail.yml
+config/twitter.yml
+config/newrelic.yml
 config/nginx_production.conf
+config/deploy
 Capfile
