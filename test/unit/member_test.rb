@@ -86,6 +86,21 @@ class MemberTest < ActiveSupport::TestCase
       assert_equal [], @member.potential_meetings
     end
     
+    context "when creating first member for council" do
+      should "Tweet about council being added" do
+        Delayed::Job.expects(:enqueue).with(kind_of(Tweeter))
+        member = Factory(:member)
+      end
+    end
+    
+    context "when creating member for council with other members" do
+      should "Not Tweet about council being added" do
+        member = Factory(:member)
+        Delayed::Job.expects(:enqueue).with(kind_of(Tweeter)).never
+        Factory(:member, :council => member.council)
+      end
+    end
+    
     context "with committees" do
       # this part is mostly just testing inclusion of uid_association extension in committees association
       setup do

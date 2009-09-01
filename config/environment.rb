@@ -29,6 +29,7 @@ Rails::Initializer.run do |config|
   config.gem 'fastercsv'
   config.gem 'mattetti-googlecharts', :lib => "gchart", :source => 'http://gems.github.com'
   config.gem "newrelic_rpm"
+  config.gem "twitter4r", :lib => "twitter"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 
@@ -78,6 +79,7 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 end
 require 'open-uri'
+# require 'twitter/console'
 
 # Add custom date/time formats
 Time::DATE_FORMATS[:event_date] = "%b %e %Y, %l.%M%p" 

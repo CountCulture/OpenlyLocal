@@ -23,7 +23,8 @@ class Member < ActiveRecord::Base
   named_scope :current, :conditions => "date_left IS NULL"
   alias_attribute :title, :full_name
   delegate :uids, :to => :committees, :prefix => "committee"
-  delegate :uids=, :to => :committees, :prefix => "committee"      
+  delegate :uids=, :to => :committees, :prefix => "committee"
+  after_create :tweet_about_it   
   
   def full_name=(full_name)
     names_hash = NameParser.parse(full_name)
@@ -44,4 +45,9 @@ class Member < ActiveRecord::Base
     self[:party] = party_name.gsub(/party/i, '').strip unless party_name.blank?
   end
   
+  private
+  def tweet_about_it
+    Delayed::Job.enqueue Tweeter.new("Info from #{@council.title} has been added to OpenlyLocal.com") if council.members.count == 1
+    true
+  end
 end
