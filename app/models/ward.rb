@@ -14,6 +14,6 @@ class Ward < ActiveRecord::Base
   end
   
   def name=(raw_name)
-    self[:name] = raw_name.sub(/ward$/i, '').strip unless raw_name.blank?
+    self[:name] = raw_name.blank? ? raw_name : raw_name.sub(/ward$/i, '').strip
   end
 end
