@@ -169,11 +169,8 @@ class ScrapersControllerTest < ActionController::TestCase
     setup do
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
-      # dummy_errors = @scraper.parser.errors
-      # dummy_errors.add_to_base("problems ahoy")
       @scraper.parser.update_attribute(:item_parser, "foo")
       Parser.any_instance.stubs(:results) # pretend there are no results
-      # Parser.any_instance.stubs(:errors).returns(dummy_errors) # pretend there are no results
       stub_authentication
       get :show, :id => @scraper.id, :dry_run => true
     end
@@ -444,26 +441,6 @@ class ScrapersControllerTest < ActionController::TestCase
         assert_select "fieldset#parser_details", false
       end
       
-      # should "have hidden parser details form" do
-      #   assert_select "fieldset#parser_details[style='display:none']"
-      # end
-      # 
-      # should "not use parser in parser details form" do
-      #   assert_select "fieldset#parser_details input#scraper_parser_attributes_description[value='#{@parser.description}']", false
-      # end
-      # 
-      # should "show result_model in parser details form" do
-      #   assert_select "select#scraper_parser_attributes_result_model option[selected='selected'][value='#{@parser.result_model}']"
-      # end
-      # 
-      # should "not show parser attribute_parser details in parser form" do
-      #   assert_select "input#scraper_parser_attributes_attribute_parser_object__attrib_name[value='#{@parser.attribute_parser.keys.first}']", false
-      # end
-      # 
-      # should "show hidden field with parser scraper_type" do
-      #   assert_select "input#scraper_parser_attributes_scraper_type[type=hidden][value=ItemScraper]"
-      # end
-      
       should "show parser details" do
         assert_select "div#parser_#{@parser.id}"
       end
@@ -505,33 +482,9 @@ class ScrapersControllerTest < ActionController::TestCase
         assert_select "input#scraper_parser_id[type=hidden][value=#{@parser.id}]", false
       end
       
-      # should "have hidden parser details form" do
-      #   assert_select "fieldset#parser_details[style='display:none']"
-      # end
-      # 
-      # should "not use parser in parser details form" do
-      #   assert_select "fieldset#parser_details input#scraper_parser_attributes_description[value='#{@parser.description}']", false
-      # end
-      # 
-      # should "show result_model in parser details form" do
-      #   assert_select "select#scraper_parser_attributes_result_model option[selected='selected'][value='#{@parser.result_model}']"
-      # end
-      # 
-      # should "not show parser attribute_parser details in parser form" do
-      #   assert_select "input#scraper_parser_attributes_attribute_parser_object__attrib_name[value='#{@parser.attribute_parser.keys.first}']", false
-      # end
-      # 
-      # should "show hidden field with parser scraper_type" do
-      #   assert_select "input#scraper_parser_attributes_scraper_type[type=hidden][value=ItemScraper]"
-      # end
-      
-      # should "show parser details" do
-      #   assert_select "div#parser_#{@parser.id}"
-      # end
-      # 
-      # should "have link to show parser form" do
-      #   assert_select "form a", /use dedicated parser/i
-      # end
+      should "show link to user existing parser for portal_system" do
+        assert_select "form p.alert a", /use existing parser/i
+      end
     end
     
     context "when scraper council has portal system but parser does not exist" do

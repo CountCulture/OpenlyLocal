@@ -21,7 +21,11 @@
   <%- if @scraper.portal_parser? && !params[:dedicated_parser] -%>
     <%= f.hidden_field :parser_id %>
     <%= render :partial => '/parsers/parser', :object => @scraper.parser %>
-    <p><%= link_to_function "Use dedicated parser instead", "$('parser_details').show();$('parser_#{@scraper.parser_id}').remove();$('scraper_parser_id').remove();this.remove();$('scraper_default_url').remove();this.remove()", {:class => "alert"} %></p>
+    <p><%= link_to "Use dedicated parser instead", params.merge(:dedicated_parser => true), {:class => "alert"} %></p>
+  <%- elsif @scraper.portal_parser? && params[:dedicated_parser] -%>
+    <p class="alert">
+      <%= link_to "Use existing parser for #{@scraper.portal_system.name}", params.merge(:dedicated_parser => false) %>
+    </p>      
   <%- elsif @scraper.portal_system -%>
     <p class="alert">No parser written yet to parse this. 
     <%= link_to "Add new parser for #{@scraper.portal_system.name}", new_parser_path(:portal_system_id => @scraper.portal_system.id, :result_model => @scraper.result_model, :scraper_type => @scraper.class.to_s) %>
