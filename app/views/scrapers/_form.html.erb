@@ -26,7 +26,7 @@
     <p class="alert">
       <%= link_to "Use existing parser for #{@scraper.portal_system.name}", params.merge(:dedicated_parser => false) %>
     </p>      
-  <%- elsif @scraper.portal_system -%>
+  <%- elsif @scraper.portal_system && @scraper.parser.new_record? -%>
     <p class="alert">No parser written yet to parse this. 
     <%= link_to "Add new parser for #{@scraper.portal_system.name}", new_parser_path(:portal_system_id => @scraper.portal_system.id, :result_model => @scraper.result_model, :scraper_type => @scraper.class.to_s) %>
     or use dedicated parser for this council only:</p>      

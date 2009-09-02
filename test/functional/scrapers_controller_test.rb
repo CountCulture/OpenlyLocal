@@ -673,6 +673,25 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   end
   
+  context "on get to :edit a scraper for portal council" do
+    setup do
+      @scraper = Factory(:scraper)
+      @council = @scraper.council
+      @portal_system = Factory(:portal_system, :name => "Some Portal for Councils")
+      @council.update_attribute(:portal_system_id, @portal_system.id)# .. and associate portal_system to council
+      stub_authentication
+      get :edit, :id => @scraper.id
+    end
+    
+    should_assign_to :scraper
+    should_respond_with :success
+    should_render_template :edit
+    
+    should "not show link to write new parser" do
+      assert_select "form p.alert a", :text => /add new/i, :count => 0 
+    end
+  end
+  
   # update tests
   context "on PUT to :update without auth" do
     setup do
