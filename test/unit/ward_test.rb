@@ -47,6 +47,15 @@ class WardTest < ActiveSupport::TestCase
       assert_equal @ward.name, @ward.title
     end
     
+    should "store name" do
+      assert_equal "Footon", Ward.new(:name => "Footon").name
+    end
+    
+    should "discard 'Ward' from given ward name" do
+      assert_equal "Footon", Ward.new(:name => "Footon Ward").name
+      assert_equal "Footon", Ward.new(:name => "Footon ward").name
+    end
+    
     context "with members" do
       # this part is really just testing inclusion of uid_association extension in members association
       setup do

@@ -667,6 +667,10 @@ class ScrapersControllerTest < ActionController::TestCase
     should "show nested form for parser " do
       assert_select "input[type=hidden][value=?]#scraper_parser_attributes_id", @scraper.parser.id
     end
+    
+    should "not show link to write new parser" do
+      assert_select "form p.alert a", :text => /add new/i, :count => 0 
+    end
   end
   
   # update tests

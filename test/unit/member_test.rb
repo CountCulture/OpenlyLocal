@@ -71,8 +71,8 @@ class MemberTest < ActiveSupport::TestCase
     end
     
     should "strip extraneous spaces from given party name" do
-       assert_equal "Conservative", new_member(:party => "  Conservative ").party
-     end
+      assert_equal "Conservative", new_member(:party => "  Conservative ").party
+    end
      
     should "strip extraneous spaces and 'Party' from given party name" do
       assert_equal "Liberal Democrat", new_member(:party => "  Liberal Democrat Party ").party

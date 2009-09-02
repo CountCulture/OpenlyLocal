@@ -12,4 +12,8 @@ class Ward < ActiveRecord::Base
   def self.find_existing(params)
     find_by_council_id_and_name(params[:council_id], params[:name])
   end
+  
+  def name=(raw_name)
+    self[:name] = raw_name.sub(/ward$/i, '').strip unless raw_name.blank?
+  end
 end
