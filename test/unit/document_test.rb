@@ -81,7 +81,7 @@ class DocumentTest < ActiveSupport::TestCase
 
       context "when sanitizing body text" do
         setup do
-          raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a>. Also <script> something dodgy</script> here and <img src='http://council.gov.uk/image' /> image and some <!--[if !supportLists]-->cruft<!--[endif]--> <![if !supportLists]>here<![endif]>"
+          raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a> and a <a href='mailto:foo@test.com'>mailto link</a>. Also <script> something dodgy</script> here and <img src='http://council.gov.uk/image' /> image and some <!--[if !supportLists]-->cruft<!--[endif]--> <![if !supportLists]>here<![endif]>"
           @document.attributes = {:url => "http://www.council.gov.uk/document/some_page.htm?q=something", :raw_body => raw_text}
           @document.send(:sanitize_body)
         end
@@ -92,6 +92,10 @@ class DocumentTest < ActiveSupport::TestCase
 
         should "not change urls of absolute links" do
           assert_match /an <a href=\"http:\/\/external\.com\/dummy\"/, @document.body
+        end
+
+        should "not change urls of mailto links" do
+          assert_match /a <a href=\"mailto:foo@test\.com/, @document.body
         end
 
         should "add external class to all links" do

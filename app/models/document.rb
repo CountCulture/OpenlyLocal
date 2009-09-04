@@ -30,7 +30,7 @@ class Document < ActiveRecord::Base
     base_url = url&&url.sub(/\/[^\/]+$/,'/')
     doc = Hpricot(sanitized_body)
     doc.search("a[@href]").each do |link|
-      link[:href].match(/^http:/) ? link : link.set_attribute(:href, "#{base_url}#{link[:href]}")
+      link[:href].match(/^http:|^mailto:/) ? link : link.set_attribute(:href, "#{base_url}#{link[:href]}")
       link.set_attribute(:class, 'external')
     end
     doc.search('img').remove
