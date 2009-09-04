@@ -71,7 +71,7 @@ class DocumentTest < ActiveSupport::TestCase
 
       context "when sanitizing body text" do
         setup do
-          raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a>. Also <script> something dodgy</script> here and <img src='http://council.gov.uk/image' /> image"
+          raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a>. Also <script> something dodgy</script> here and <img src='http://council.gov.uk/image' /> image and some <!--[if !supportLists]-->cruft<!--[endif]--> <![if !supportLists]>here<![endif]>"
           @document.attributes = {:url => "http://www.council.gov.uk/document/some_page.htm?q=something", :raw_body => raw_text}
           @document.send(:sanitize_body)
         end
@@ -91,6 +91,11 @@ class DocumentTest < ActiveSupport::TestCase
 
         should "remove images" do
           assert_match /and  image/, @document.body
+        end
+        
+        should "remove comments" do
+          assert_match /some cruft/, @document.body
+          assert_match /cruft here/, @document.body
         end
       end
       

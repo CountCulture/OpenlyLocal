@@ -25,7 +25,8 @@ class Document < ActiveRecord::Base
   protected
   def sanitize_body
     return if raw_body.blank?
-    sanitized_body = ActionController::Base.helpers.sanitize(raw_body)
+    uncommented_body = raw_body.gsub(/<\!--.*?-->/mi, '').gsub(/<\!\[.*?\]>/mi, '') # remove comments otherwise they are escape by sanitizer and show in browser
+    sanitized_body = ActionController::Base.helpers.sanitize(uncommented_body)
     base_url = url&&url.sub(/\/[^\/]+$/,'/')
     doc = Hpricot(sanitized_body)
     doc.search("a[@href]").each do |link|
