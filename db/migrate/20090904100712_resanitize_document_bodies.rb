@@ -12,7 +12,6 @@ class ResanitizeDocumentBodies < ActiveRecord::Migration
         puts "#{e.message}: destroying this record"
         full_doc.destroy # don't bother trying to fix problem, just delete record
       end
-    rescue
     end
   end
 
