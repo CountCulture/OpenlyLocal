@@ -128,7 +128,7 @@ class DocumentsControllerTest < ActionController::TestCase
     end
     
     should "show link to other documents" do
-      assert_select "p.extra_info a", /other committee documents/i
+      assert_select "p.extra_info a[href='/documents?council_id=#{@council.id}']", /other committee documents/i
     end 
   end  
 end

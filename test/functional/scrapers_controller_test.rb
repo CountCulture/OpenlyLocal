@@ -15,22 +15,33 @@ class ScrapersControllerTest < ActionController::TestCase
   context "on GET to :index" do
     setup do
       stub_authentication
-      @scraper1 = Factory(:scraper)
+      @council1 = Factory(:council)
+      @scraper1 = Factory(:scraper, :council => @council1)
       @portal_system = Factory(:portal_system)
       @council2 = Factory(:another_council, :portal_system => @portal_system)
       @scraper2 = Factory(:info_scraper, :council => @council2)
+      @council3 = Factory(:council, :name => "NoScraper Council")
       get :index
     end
   
-    should_assign_to :councils
+    should_assign_to( :councils_with_scrapers) { [@council2, @council1 ] }
+    should_assign_to( :councils_without_scrapers) { [@council3] }
     should_respond_with :success
     should_render_template :index
     should_not_set_the_flash
     
-    should "list all councils" do
-      assert_select "#councils" do
+    should "list all councils with scrapers" do
+      assert_select "#councils #with_scrapers" do
         assert_select ".council", 2 do
           assert_select "h3 a", @scraper1.council.name
+        end
+      end
+    end
+    
+    should "list all councils without scrapers" do
+      assert_select "#councils #without_scrapers" do
+        assert_select ".council", 1 do
+          assert_select "h4 a", @council3.name
         end
       end
     end

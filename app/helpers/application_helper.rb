@@ -2,6 +2,7 @@
 module ApplicationHelper
   
   def council_page_for(obj, options={})
+    return if obj.url.blank?
     link_to("official page", obj.url, {:class => "official_page external"}.merge(options))
   end
   

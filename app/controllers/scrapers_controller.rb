@@ -4,7 +4,7 @@ class ScrapersController < ApplicationController
   newrelic_ignore
   
   def index
-    @councils = Council.find(:all, :include => :scrapers, :order => "name")
+    @councils_with_scrapers, @councils_without_scrapers = Council.find(:all, :include => :scrapers, :order => "name").partition{ |c| !c.scrapers.empty? }
     @title = "All scrapers"
   end
   

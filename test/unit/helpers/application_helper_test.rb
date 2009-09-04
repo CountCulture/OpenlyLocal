@@ -181,6 +181,11 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal link_to("official page", "http://somecouncil/meeting", :class => "official_page external"), council_page_for(obj)
     end
     
+    should "return nil if url nil" do
+      obj = stub(:url => nil)
+      assert_nil council_page_for(obj)
+    end
+    
     should "use options when constructing link" do
       obj = stub(:url => "http://somecouncil/meeting")
       assert_dom_equal link_to("official page", "http://somecouncil/meeting", :class => "official_page external", :foo => "bar"), council_page_for(obj, :foo => "bar")
