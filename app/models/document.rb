@@ -1,7 +1,7 @@
 class Document < ActiveRecord::Base
   validates_presence_of :body
   validates_presence_of :url
-  validates_uniqueness_of :url
+  validates_uniqueness_of :url, :scope => :document_type
   belongs_to :document_owner, :polymorphic => true
   before_validation :sanitize_body
   

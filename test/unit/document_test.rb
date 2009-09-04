@@ -8,7 +8,6 @@ class DocumentTest < ActiveSupport::TestCase
     end
     
     should_validate_presence_of :url
-    should_validate_uniqueness_of :url
     should_belong_to :document_owner
     should_have_db_column :raw_body
     
@@ -19,6 +18,17 @@ class DocumentTest < ActiveSupport::TestCase
       d = Document.new
       d.valid?
       assert_equal "can't be blank", d.errors[:body]
+    end
+    
+    should "validate uniqueness of document_type scoped to document_type" do
+      # can't do this with macro as it doesn't work when document_type is nil, which it can be
+      @document.update_attribute(:document_type, "Minutes")
+      d = Document.new(:url => @document.url, :document_type => "Minutes")
+      d.valid?
+      assert_equal "has already been taken", d.errors[:url]
+      d.document_type = "foo"
+      d.valid?
+      assert_nil d.errors[:url]
     end
   end
   
