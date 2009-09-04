@@ -31,6 +31,10 @@ class WardTest < ActiveSupport::TestCase
         assert_nil Ward.find_existing(:name => "Bar", :council_id => @council.id)
       end
       
+      should "should clean up ward name" do
+        assert_equal @ward, Ward.find_existing(:name => " #{@ward.name} Ward ", :council_id => @council.id)
+      end
+      
     end
     # should "override find_existing to find by council_id and name" do
     #   
@@ -54,6 +58,7 @@ class WardTest < ActiveSupport::TestCase
     should "discard 'Ward' from given ward name" do
       assert_equal "Footon", Ward.new(:name => "Footon Ward").name
       assert_equal "Footon", Ward.new(:name => "Footon ward").name
+      assert_equal "Footon", Ward.new(:name => "Footon ward  ").name
     end
     
     context "with members" do

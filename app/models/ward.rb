@@ -10,10 +10,15 @@ class Ward < ActiveRecord::Base
 
   # override standard find_existing from ScrapedModel to find by council and name, not UID
   def self.find_existing(params)
-    find_by_council_id_and_name(params[:council_id], params[:name])
+    find_by_council_id_and_name(params[:council_id], clean_name(params[:name]))
   end
   
   def name=(raw_name)
-    self[:name] = raw_name.blank? ? raw_name : raw_name.sub(/ward$/i, '').strip
+    self[:name] = self.class.clean_name(raw_name)
+  end
+  
+  private
+  def self.clean_name(raw_name)
+    raw_name.blank? ? raw_name : raw_name.sub(/ward\s*$/i, '').strip
   end
 end
