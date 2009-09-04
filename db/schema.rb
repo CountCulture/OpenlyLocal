@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090904100712) do
+ActiveRecord::Schema.define(:version => 20090904130322) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -190,6 +190,7 @@ ActiveRecord::Schema.define(:version => 20090904100712) do
     t.datetime "updated_at"
     t.integer  "uid"
     t.string   "snac_id"
+    t.string   "url"
   end
 
   add_index "wards", ["council_id"], :name => "index_wards_on_council_id"
