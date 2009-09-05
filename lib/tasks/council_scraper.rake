@@ -9,19 +9,28 @@ task :scrape_egr_for_councils => :environment do
   default_values = $stdin.gets.chomp
   default_hash = default_values.blank? ? {} : Hash[*default_values.split(",").collect{|ap| ap.split("=")}.flatten]
   doc = Hpricot(open(url))
+  error_urls = []
   council_data = doc.search("#viewZone tr")[1..-2]
   council_data.each do |council_datum|
-    council_link = council_datum.at("a[@href*='egr.nsf/LAs'")
+    council_link = council_datum.at("a[@href*='egr.nsf/LAs']")
     short_title = council_link.inner_text
     council = Council.find(:first, :conditions => ["name LIKE ?", "%#{short_title}%"]) || Council.new
     council.attributes = default_hash
     egr_url = BASE_URL + council_link[:href]
-    council.authority_type ||= council_datum.search("td")[2].at("font").inner_text.strip
-    puts "About to scrape eGR page for #{short_title} (#{egr_url})"
-    detailed_data = Hpricot(open(egr_url))
+    puts "About to scrape eGR page for #{council.new_record? ? 'NEW COUNCIL' : 'existing council'} #{short_title} (#{egr_url})"
+    begin
+      detailed_data = Hpricot(open(egr_url))
+    rescue Exception => e
+      puts "***** Problem getting data from #{egr_url}: #{e.inspect}"
+      error_urls << egr_url
+      next
+    end
+    
     values = detailed_data.search("#main tr")
+    council.authority_type ||= values.at("td[text()*='Type']").next_sibling.inner_text.strip
+    council.country ||= values.at("td[text()*='Country']").next_sibling.inner_text.strip
     council.name ||= values.at("td[text()*='Full Name']").next_sibling.inner_text.strip
-    council.telephone ||= values.at("td[text()*='Telephone']").next_sibling.inner_text.strip
+    council.telephone ||= values.at("td[text()*='Telephone']").next_sibling.inner_text.gsub(/\302\240/,'').strip
     council.url ||= values.at("td[text()*='Website']").next_sibling.inner_text.strip
     council.address ||= values.at("td[text()*='Address']").next_sibling.inner_text.strip
     council.ons_url ||= values.at("td[text()*='Nat Statistics']").next_sibling.at("a")[:href]
@@ -33,9 +42,12 @@ task :scrape_egr_for_councils => :environment do
       p council.attributes, "____________"
     rescue Exception => e
       puts "Problem saving #{council.name}: #{e.message}"
+      error_urls << egr_url
     end
   end
-  
+  puts "\n--------\nFinished processing #{council_data.size} authorities"
+  puts "Problems with #{error_urls.size}:"
+  error_urls.each { |e| puts e }
 end
 
 desc "Scrape WhatDoTheyKnow.com to get WDTK name" 
