@@ -10,14 +10,12 @@ task :scrape_egr_for_councils => :environment do
   default_hash = default_values.blank? ? {} : Hash[*default_values.split(",").collect{|ap| ap.split("=")}.flatten]
   doc = Hpricot(open(url))
   error_urls = []
-  council_data = doc.search("#viewZone tr")[1..-2]
+  council_data = doc.search("#viewZone tr")[1..-1]
   council_data.each do |council_datum|
     council_link = council_datum.at("a[@href*='egr.nsf/LAs']")
     short_title = council_link.inner_text
-    council = Council.find(:first, :conditions => ["name LIKE ?", "%#{short_title}%"]) || Council.new
-    council.attributes = default_hash
     egr_url = BASE_URL + council_link[:href]
-    puts "About to scrape eGR page for #{council.new_record? ? 'NEW COUNCIL' : 'existing council'} #{short_title} (#{egr_url})"
+    puts "About to scrape eGR page for #{short_title} (#{egr_url})"
     begin
       detailed_data = Hpricot(open(egr_url))
     rescue Exception => e
@@ -25,11 +23,14 @@ task :scrape_egr_for_councils => :environment do
       error_urls << egr_url
       next
     end
-    
     values = detailed_data.search("#main tr")
+    full_name = values.at("td[text()*='Full Name']").next_sibling.inner_text.strip
+    council = Council.find(:first, :conditions => ["BINARY name = ? OR BINARY name LIKE ?", full_name, "#{short_title} %"]) || Council.new
+    council.attributes = default_hash
+    puts (council.new_record? ? "CREATED NEW COUNCIL " : "Found EXISTING council " ) + full_name
     council.authority_type ||= values.at("td[text()*='Type']").next_sibling.inner_text.strip
     council.country ||= values.at("td[text()*='Country']").next_sibling.inner_text.strip
-    council.name ||= values.at("td[text()*='Full Name']").next_sibling.inner_text.strip
+    council.name ||= full_name
     council.telephone ||= values.at("td[text()*='Telephone']").next_sibling.inner_text.gsub(/\302\240/,'').strip
     council.url ||= values.at("td[text()*='Website']").next_sibling.inner_text.strip
     council.address ||= values.at("td[text()*='Address']").next_sibling.inner_text.strip
