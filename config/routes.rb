@@ -12,8 +12,8 @@ ActionController::Routing::Routes.draw do |map|
   # map.resources :councils, :collection => { :all => :get }
   
   map.connect 'councils/all', :controller => "councils", :action => "index", :include_unparsed => true
-  map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => :xml
-  map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => :json
+  map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"
+  map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
   map.resources :committees, :councils, :documents, :meetings, :members, :parsers, :portal_systems
 
 

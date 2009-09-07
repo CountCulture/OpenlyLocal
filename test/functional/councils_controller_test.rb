@@ -20,8 +20,8 @@ class CouncilsControllerTest < ActionController::TestCase
     
     should "route all_councils to index with include_unparsed true" do
       assert_routing("councils/all", {:controller => "councils", :action => "index", :include_unparsed => true})
-      assert_routing("councils/all.xml", {:controller => "councils", :action => "index", :include_unparsed => true , :format => :xml })
-      assert_routing("councils/all.json", {:controller => "councils", :action => "index", :include_unparsed => true , :format => :json })
+      assert_routing("councils/all.xml", {:controller => "councils", :action => "index", :include_unparsed => true , :format => "xml" })
+      assert_routing("councils/all.json", {:controller => "councils", :action => "index", :include_unparsed => true , :format => "json" })
     end
     
     context "with basic request" do
