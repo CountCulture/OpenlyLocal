@@ -1,5 +1,7 @@
 <h1>Councils list</h1>
-<%= content_tag(:p, link_to( "include unparsed councils", councils_path(:include_unparsed => true)), :class => "more_info") unless params[:include_unparsed] %>
+<%- content_tag(:p, :class => "more_info") do  -%>
+  <%= params[:include_unparsed] ? link_to("show only parsed councils", :include_unparsed => nil) : link_to("include unparsed councils", :include_unparsed => true) %>
+<%- end -%>
 <ul id="councils">
   <% for council in @councils %>
     <li><%= link_for council, :class => (council.parsed? ? "parsed" : "unparsed") %></li>
