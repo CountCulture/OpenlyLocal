@@ -114,3 +114,16 @@ task :import_ward_snac_ids => :environment do
   end
   
 end
+
+desc "Enter missing Ward SNAC ids"
+task :enter_missing_snac_ids => :environment do
+  Ward.find_all_by_snac_id(nil, :include => :council).each do |ward|
+    puts "\n#{ward.name} (#{ward.council.name})"
+    puts "Please enter SNAC id (type q to quit n to skip this ward): "
+    snac_id = $stdin.gets.chomp
+    next if snac_id == "n"
+    break if snac_id == "q"
+    ward.update_attribute(:snac_id, snac_id)
+  end
+  
+end
