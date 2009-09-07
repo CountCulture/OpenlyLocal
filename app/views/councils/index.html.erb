@@ -1,4 +1,4 @@
-<h1>Councils list</h1>
+<h1><%= @title %></h1>
 <%- content_tag(:p, :class => "more_info") do  -%>
   <%= params[:include_unparsed] ? link_to("show only parsed councils", :include_unparsed => nil) : link_to("include unparsed councils", :include_unparsed => true) %>
 <%- end -%>

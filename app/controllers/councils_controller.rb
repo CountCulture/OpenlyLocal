@@ -4,7 +4,7 @@ class CouncilsController < ApplicationController
   caches_action :index, :show
   def index
     @councils = params[:include_unparsed] ? Council.find(:all, :order => "name") : Council.parsed
-    @title = "All Councils"
+    @title = params[:include_unparsed] ? "All UK Local Authorities/Councils" : "UK Local Authorities/Councils With Opened Up Data"
     respond_to do |format|
       format.html
       format.xml { render :xml => @councils.to_xml(:include => nil) }
