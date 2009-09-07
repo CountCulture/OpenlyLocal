@@ -80,13 +80,12 @@ task :scrape_councils_for_feeds => :environment do
     puts "=======================\nChecking #{council.title} (#{council.url})"
     begin
       doc = Hpricot(open(council.url))
-    rescue Exception, Timeout::Error => e
-      puts "****** Exception raised: #{e.inspect}"
-      next
-    end
     feed_urls = doc.search("link[@type*='rss']").collect{|l| l[:href].match(/^http:/) ? l[:href] : (council.url + l[:href])}
     council.update_attribute(:feed_url, feed_urls.first) # just save first one for the moment
     puts "#{council.title} feeds: #{feed_urls.inspect}"
+    rescue Exception, Timeout::Error => e
+      puts "****** Exception raised: #{e.inspect}"
+    end
   end
   
 end

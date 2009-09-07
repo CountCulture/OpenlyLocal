@@ -7,7 +7,7 @@ class CouncilsController < ApplicationController
     @title = "All Councils"
     respond_to do |format|
       format.html
-      format.xml { render :xml => @councils.to_xml }
+      format.xml { render :xml => @councils.to_xml(:include => nil) }
       format.json { render :json =>  @councils.to_json }
     end
   end
@@ -23,7 +23,7 @@ class CouncilsController < ApplicationController
     @party_breakdown = @council.party_breakdown
     respond_to do |format|
       format.html
-      format.xml { render :xml => @council.to_xml(:include => :datasets) }
+      format.xml { render :xml => @council.to_detailed_xml }
       format.json { render :json =>  @council.to_json(:include => :datasets) }
     end
   end

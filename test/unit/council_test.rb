@@ -116,7 +116,7 @@ class CouncilTest < ActiveSupport::TestCase
         assert_nil @council.dbpedia_url
       end
       
-      should "return formatted number" do
+      should "return dbpedia url" do
         @council.wikipedia_url = "http://en.wikipedia.org/wiki/Herefordshire"
         assert_equal "http://dbpedia.org/page/Herefordshire", @council.dbpedia_url
       end
@@ -146,6 +146,71 @@ class CouncilTest < ActiveSupport::TestCase
     
     should "be considered unparsed if it has no members" do
       assert !@council.parsed?
+    end
+    
+    context "when returning openlylocal_url" do
+      should "build from council.to_param and default domain" do
+        assert_equal "http://#{DefaultDomain}/councils/#{@council.to_param}", @council.openlylocal_url
+      end
+    end
+    
+    context "when converting council to_xml" do
+      should "not include base_url" do
+        assert_no_match %r(<base-url), @council.to_xml
+      end
+      
+      should "include openlylocal_url" do
+        assert_match %r(<openlylocal-url), @council.to_xml
+      end
+      
+      should "not include portal_system_id" do
+        assert_no_match %r(<portal-system-id), @council.to_xml
+      end
+    end
+    
+    context "when converting council to_detailed_xml" do
+      setup do
+        member = Factory(:member, :council => @council)
+        datapoint = Factory(:datapoint, :council => @council)
+        Factory(:committee, :council => @council)
+        Factory(:ward, :council => @council)
+      end
+      
+      should "not include base_url" do
+        assert_no_match %r(<base-url), @council.to_detailed_xml
+      end
+      
+      should "include openlylocal_url" do
+        assert_match %r(<openlylocal-url), @council.to_detailed_xml
+      end
+      
+      should "not include portal_system_id" do
+        assert_no_match %r(<portal-system-id), @council.to_detailed_xml
+      end
+      
+      should "include member ids" do
+        assert_match %r(<member.+<id.+</member)m, @council.to_detailed_xml
+      end
+      
+      should "include member names" do
+        assert_match %r(<member.+<first-name.+</member)m, @council.to_detailed_xml
+      end
+      
+      should "not include member emails" do
+        assert_no_match %r(<member.+<email.+</member)m, @council.to_detailed_xml
+      end
+      
+      should "include dataset ids" do
+        assert_match %r(<dataset.+<id.+</dataset)m, @council.to_detailed_xml
+      end
+      
+      should "include committee ids" do
+        assert_match %r(<committee.+<id.+</committee)m, @council.to_detailed_xml
+      end
+      
+      should "include wards ids" do
+        assert_match %r(<ward.+<id.+</ward)m, @council.to_detailed_xml
+      end
     end
     
     context "when returning party breakdown" do

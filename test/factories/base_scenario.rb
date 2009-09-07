@@ -48,12 +48,10 @@ Factory.define :member do |f|
   f.association :council
 end
 
-Factory.define :old_member, :class => :member do |f|
+Factory.define :old_member, :class => :member, :parent => :member do |f|
   f.full_name "Old Yeller"
-  f.uid 88
   f.url "http://www.anytown.gov.uk/members/yeller"
   f.date_left 6.months.ago
-  f.association :council
 end
 
 Factory.define :committee do |f|

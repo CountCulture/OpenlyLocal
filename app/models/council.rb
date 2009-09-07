@@ -25,6 +25,7 @@ class Council < ActiveRecord::Base
   named_scope :parsed, :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id"
   default_scope :order => "name"
   alias_attribute :title, :name
+  alias_method :old_to_xml, :to_xml
   
   def authority_type_help_url
     AUTHORITY_TYPES[authority_type]
@@ -45,6 +46,10 @@ class Council < ActiveRecord::Base
   
   def foaf_telephone
     "tel:+44-#{telephone.gsub(/^0/, '').gsub(/\s/, '-')}" unless telephone.blank?
+  end
+  
+  def openlylocal_url
+    "http://#{DefaultDomain}/councils/#{to_param}"
   end
   
   def parsed?
@@ -69,4 +74,15 @@ class Council < ActiveRecord::Base
   def to_param
     id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
   end
+  
+  def to_xml(options={})
+    old_to_xml({:except => [:base_url, :portal_system_id], :methods => [:openlylocal_url]}.merge(options))
+  end
+  
+  def to_detailed_xml(options={})
+    includes = {:members => {:only => [:id,:first_name, :last_name]}}
+    [:committees, :datasets, :wards].each{ |a| includes[a] = { :only => [ :id, :title ] } }
+    to_xml({:include => includes}.merge(options))
+  end
+  
 end
