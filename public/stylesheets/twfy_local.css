@@ -34,7 +34,7 @@ a.external:hover {
 	background: transparent url(../images/ext_link_hover.gif) no-repeat scroll right center;
 	padding-right:10px; }
 	
-a.feed {
+a.feed, a.rss {
 	background: transparent url(../images/feed_icon.gif) no-repeat scroll left top;
 	margin-left:2px;
 	padding: 2px 0px 2px 18px;

@@ -13,7 +13,7 @@ class CouncilsHelperTest < ActionView::TestCase
     
     should "return image tag using graph url as as src" do
       Gchart.stubs(:pie).returns("http://foo.com//graph")
-      assert_dom_equal image_tag("http://foo.com//graph", :class => "chart"), party_breakdown_graph(@breakdown)
+      assert_dom_equal image_tag("http://foo.com//graph", :class => "chart", :alt => "Party Breakdown Chart"), party_breakdown_graph(@breakdown)
     end
   end
   
