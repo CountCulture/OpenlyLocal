@@ -26,6 +26,7 @@ module ScrapedModel
   end
   
   module InstanceMethods
+    # RAILS3 This will probably not be necessary when upgraded to RAILS 3.0
     def save_without_losing_dirty
       ch_attributes = changed_attributes.clone
       success = save # this clears changed attributes

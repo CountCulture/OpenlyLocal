@@ -35,9 +35,10 @@ a.external:hover {
 	padding-right:10px; }
 	
 a.feed {
-	background: transparent url(../images/feed_icon.gif) no-repeat scroll left center;
+	background: transparent url(../images/feed_icon.gif) no-repeat scroll left top;
 	margin-left:2px;
-	padding-left:18px; }
+	padding: 2px 0px 2px 18px;
+	 }
 a.new {
 	padding-left: 24px;
 	background: transparent url(../images/new_flash.gif) no-repeat left;}
