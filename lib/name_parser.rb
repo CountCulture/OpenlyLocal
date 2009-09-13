@@ -2,7 +2,7 @@ module NameParser
 
   extend self
 
-  Titles = %w(Mrs Mr Miss Professor Prof Dr Doctor Ms The Deputy Right Honourable the Lord Mayor High Sheriff) # NB order is important
+  Titles = %w(Professor Prof Mrs Mr Miss Dr Doctor Ms The Deputy Right Honourable the Lord Mayor High Sheriff) # NB order is important
   Qualifications = %w(B.Sc. M.B.A. B.A. M.A. Ph.D. B.Ed. D.Phil. M.B.E. C.B.E. O.B.E. J.P. F.CMI F.R.C.S. Hons. MInstTA)
   
   def parse(fn)

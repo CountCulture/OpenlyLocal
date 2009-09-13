@@ -1,5 +1,5 @@
 class ScraperMailer < ActionMailer::Base
-  helper :scrapers
+  helper :scrapers, :application
 
   def auto_scraping_report(report_hash)
     subject    "OpenlyLocal :: Auto Scraping Report :: #{report_hash[:summary]}"
