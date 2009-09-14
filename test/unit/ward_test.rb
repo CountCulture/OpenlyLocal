@@ -11,6 +11,7 @@ class WardTest < ActiveSupport::TestCase
     should_belong_to :council
     should_validate_presence_of :council_id
     should_have_many :members
+    should_have_many :committees
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url
@@ -84,6 +85,31 @@ class WardTest < ActiveSupport::TestCase
       should "not add members that don't exist for council" do
         @ward.member_uids = [@another_council_member.uid]
         assert_equal [], @ward.members
+      end
+    end
+    
+    context "with committees" do
+      # this part is really just testing inclusion of uid_association extension in members association
+      setup do
+        @committee = Factory(:committee, :council => @council)
+        @old_committee = Factory(:committee, :council => @council)
+        @another_council = Factory(:another_council)
+        @another_council_committee = Factory(:committee, :council => @another_council)
+        @ward.committees << @old_committee
+      end
+
+      should "return committee uids" do
+        assert_equal [@old_committee.uid], @ward.committee_uids
+      end
+      
+      should "replace existing committees with ones with given uids" do
+        @ward.committee_uids = [@committee.uid]
+        assert_equal [@committee], @ward.committees
+      end
+      
+      should "not add members that don't exist for council" do
+        @ward.committee_uids = [@another_council_committee.uid]
+        assert_equal [], @ward.committees
       end
     end
   end

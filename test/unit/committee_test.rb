@@ -15,6 +15,7 @@ class CommitteeTest < ActiveSupport::TestCase
     should_have_many :memberships
     should_have_many :members, :through => :memberships
     should_belong_to :council
+    should_belong_to :ward
     
     should "include ScraperModel mixin" do
       assert Committee.respond_to?(:find_existing)

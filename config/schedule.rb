@@ -22,7 +22,7 @@ end
 
 every 3.hours do
   # runner "Scraper.unproblematic.stale.find(:all, :limit => 30).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count == 0"
-  command "/opt/ruby-enterprise-1.8.6/bin/ruby ~/sites/twfy_local/current/script/runner -e production 'Scraper.unproblematic.stale.find(:all, :limit => 30).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count == 0' >> log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8.6/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Scraper.unproblematic.stale.find(:all, :limit => 30).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count == 0' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
 end
 
 every 7.days do

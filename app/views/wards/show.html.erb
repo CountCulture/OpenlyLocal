@@ -8,6 +8,12 @@
   <%= list_all @members %>
 </div>
 
+<%- unless @committees.blank? -%>
+  <div id="committees" class="item_grouping">
+    <h3>Committees for this ward</h3>
+    <%= list_all @committees %>
+  </div>
+<%- end -%>
 <%= render :partial => '/shared/api_info' %>
 
 <%= timestamp_data_for @ward %>

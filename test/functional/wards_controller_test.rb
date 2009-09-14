@@ -33,6 +33,23 @@ class WardsControllerTest < ActionController::TestCase
          assert_select "div#members li a", @member.title
        end
      
+       should "not show list of committees" do
+         assert_select "#committees", false
+       end
+     end
+     
+     context "with basic request when ward has committees" do
+       setup do
+         @ward.committees << @committee = Factory(:committee, :council => @council)
+         get :show, :id => @ward.id
+       end
+
+       should_respond_with :success
+      
+       should "show link to committee" do
+         assert_select "#committees a", /#{@committee.title}/
+       end
+            
      end
      
      context "with xml request" do

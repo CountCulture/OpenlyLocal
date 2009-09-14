@@ -5,6 +5,7 @@ class WardsController < ApplicationController
     @ward = Ward.find(params[:id])
     @council = @ward.council
     @members = @ward.members
+    @committees = @ward.committees
     @title = "#{@ward.name} ward"
     respond_to do |format|
       format.html

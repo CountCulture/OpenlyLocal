@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090905075845) do
+ActiveRecord::Schema.define(:version => 20090913084130) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20090905075845) do
     t.integer  "council_id"
     t.integer  "uid",         :limit => 8
     t.text     "description"
+    t.integer  "ward_id"
   end
 
   add_index "committees", ["council_id"], :name => "index_committees_on_council_id"

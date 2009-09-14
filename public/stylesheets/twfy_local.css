@@ -135,6 +135,9 @@ body {
 	text-align:right;
 	clear:both;
 }
+#footer #standards{
+	float:left;
+}
 #share_block {
 	text-align:right;}
 	

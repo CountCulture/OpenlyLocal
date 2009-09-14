@@ -2,8 +2,11 @@ class Ward < ActiveRecord::Base
   include ScrapedModel
   belongs_to :council
   has_many :members, :extend => UidAssociationExtension
+  has_many :committees, :extend => UidAssociationExtension
   delegate :uids, :to => :members, :prefix => "member"
   delegate :uids=, :to => :members, :prefix => "member"
+  delegate :uids, :to => :committees, :prefix => "committee"
+  delegate :uids=, :to => :committees, :prefix => "committee"
   validates_presence_of :name, :council_id
   validates_uniqueness_of :name, :scope => :council_id
   alias_attribute :title, :name
