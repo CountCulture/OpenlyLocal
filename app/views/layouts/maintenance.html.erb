@@ -18,7 +18,7 @@
 <body class="maintenance">
   <div class="container">
     <div id="header">
-      <h2><%= link_to "OpenlyLocal :: <em>freeing up information in your area</em>", root_path %></h2>
+      <h2><a href="/">"OpenlyLocal"</a> <span id="slogan">making local government more transparent</span></h2>
     </div>
       <div id="content">
         <div>
@@ -31,9 +31,25 @@
           </p>
         </div>
       </div>
-    <div id="footer">
-      Put together for sheer hell of it in spare time by <%= link_to "CountCulture", "http://countculture.wordpress.com", :class => "external" %>. Code at <a href="http://github.com/CountCulture/twfy_local_parser/" class="external">Github</a> (<a href="http://github.com/CountCulture/twfy_local_parser/issues" class="external">Report Bugs</a>). 
-    </div>
+      <div id="footer">
+        <div id="standards">
+          <a href="http://www.w3.org/WAI/WCAG1AA-Conformance"
+                title="Explanation of Level Double-A Conformance">
+            <img height="32" width="88" 
+                    src="http://www.w3.org/WAI/wcag1AA-blue"
+                    alt="Level Double-A conformance icon, 
+                    W3C-WAI Web Content Accessibility Guidelines 1.0"></a>
+
+        </div>
+        <a href="/info/about_us">About Openly Local</a> :: 
+        <span about="" rel="foaf:maker">
+          <span typeof="foaf:Person">
+            Put together for sheer hell of it by <a href="http://countculture.wordpress.com" class="external", rel="foaf:blog" property="foaf:nick">CountCulture</a>.
+          </span> :: <a href="http://twitter.com/CountCulture" title="">CountCulture on Twitter</a>
+        </span>
+        <br />
+        Code at <a href="http://github.com/CountCulture/twfy_local_parser/" class="external">Github</a> :: <a href="http://github.com/CountCulture/twfy_local_parser/issues" class="external">Report Bugs/Request new features</a> :: <a href="http://twitter.com/OpenlyLocal">OpenlyLocal Twitter notifications</a>
+      </div>
   </div>
 </body>
 </html>
