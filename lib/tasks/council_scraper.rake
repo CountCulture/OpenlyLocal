@@ -117,13 +117,32 @@ end
 
 desc "Enter missing Ward SNAC ids"
 task :enter_missing_snac_ids => :environment do
+  csv_file = ENV['FILE'] || "WD08_LAD08_EW_LU.csv"
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/ons_data/#{csv_file}"), :headers => true).to_a
+  snac_codes = rows[1..-1].group_by{|r| r[2]} # group by council SNAC id
+  
   Ward.find_all_by_snac_id(nil, :include => :council).each do |ward|
-    puts "\n#{ward.name} (#{ward.council.name})"
-    puts "Please enter SNAC id (type q to quit n to skip this ward): "
-    snac_id = $stdin.gets.chomp
-    next if snac_id == "n"
-    break if snac_id == "q"
-    ward.update_attribute(:snac_id, snac_id)
+    next unless poss_snac_codes = snac_codes[ward.council.snac_id]
+    puts "\n====================\n#{ward.name} (#{ward.council.name})\n"
+    puts "Choose from:"
+    poss_snac_codes.each_with_index do |sc, index|
+      puts "#{index}) #{sc[1]} (#{sc[0]})"
+    end
+    puts "Please enter number of ward, or SNAC id (type q to quit n to skip this ward): "
+    response = $stdin.gets.chomp
+    next if response == "n"
+    break if response == "q"
+    if response == response.to_i.to_s # if we've been pass an integer rather than alphanumeric snac_id treat as index
+      snac_id = poss_snac_codes[response.to_i].first
+      if existing_ward = Ward.find_by_snac_id(snac_id)
+        puts "There is already a Ward with that Snac code (id = #{existing_ward.id}). Do you want to update that record with the SNAC id and delete this one (y/n):"
+        answer = $stdin.gets.chomp
+        existing_ward.destroy if answer == "y"
+      end
+      ward.update_attribute(:snac_id, snac_id)
+    else
+      ward.update_attribute(:snac_id, response)
+    end
   end
   
 end
