@@ -54,7 +54,7 @@ class Parser < ActiveRecord::Base
                 "Problem occurred using parsing code:\n#{parsing_code}\n\n on following Hpricot object:\n#{object_to_be_parsed.inspect}"
     logger.debug { message }
     logger.debug { "Backtrace:\n#{e.backtrace}" }
-    errors.add_to_base(message)
+    errors.add_to_base(message.gsub(/(\.)(?=\.)/, '. ')) # NB split consecutive points because of error in Rails
     self
   end
   

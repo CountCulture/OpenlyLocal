@@ -267,14 +267,14 @@ class ParserTest < Test::Unit::TestCase
         should "wipe previous results variable" do
           assert_nil @problem_parser.process(@dummy_hpricot_for_problem_parser).results
         end
+        
       end
       
       context "and problems occur when parsing attributes" do
         setup do
           @dummy_item_1, @dummy_item_2 = "String_1", "String_2"
           @dummy_hpricot_for_attrib_prob = stub
-          @problem_parser = Parser.new(:item_parser => "#nothing here", :attribute_parser => {:full_name => "foobar"}) # => unknown local variable
-          @problem_parser.stubs(:eval_parsing_code).with("#nothing here", @dummy_hpricot_for_attrib_prob).returns([@dummy_item_1, @dummy_item_2])
+          @problem_parser = Parser.new(:item_parser => "'some string... here'", :attribute_parser => {:full_name => 'foobar + (1..2)'}) # => unknown local variable
         end
       
         should "not raise exception" do
@@ -289,9 +289,20 @@ class ParserTest < Test::Unit::TestCase
           errors = @problem_parser.process(@dummy_hpricot_for_attrib_prob).errors[:base]
           assert_match /Exception raised.+parsing attributes/, errors
           assert_match /Problem .+parsing code.+foobar/m, errors
-          assert_match /Hpricot.+#{@dummy_item_1.inspect}/m, errors
+          assert_match /undefined local variable or method.+foobar/m, errors
         end
         
+        should "separate consecutive points in parsing code when storing errors in parser" do
+          # This is because of bug in Rails when displaying errors with consecutive points
+          errors = @problem_parser.process(@dummy_hpricot_for_attrib_prob).errors[:base]
+          assert_match /Problem .+parsing code.+foobar \+ \(1\. \.2\)/m, errors
+        end
+        
+        should "separate consecutive points in item to be parsed when storing errors in parser" do
+          # This is because of bug in Rails when displaying errors with consecutive points
+          errors = @problem_parser.process(@dummy_hpricot_for_attrib_prob).errors[:base]
+          assert_match /Problem .+parsing.+on following.+some string\. \. \. here/m, errors
+        end
       end
     end 
   end
