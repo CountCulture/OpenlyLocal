@@ -36,7 +36,6 @@
 </div>
 <%- if @results -%>
   <%= error_messages_for :scraper, :header_message => "Problems processing this scraper" %>
-  <%#- debugger -%>
   <%= error_messages_for :parser, :header_message => "Problem parsing scraped page", :message => "The following problems occurred:" %>
   
   <div id="results">

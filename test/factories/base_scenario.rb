@@ -55,7 +55,7 @@ Factory.define :old_member, :class => :member, :parent => :member do |f|
 end
 
 Factory.define :committee do |f|
-  f.sequence(:uid) {|n| 76 + n }
+  f.sequence(:uid) {|n| (76 + n).to_s }
   f.association :council
   f.sequence(:title) { |n| "Committee Number #{n}" }
   f.sequence(:url) { |n| "http://www.anytown.gov.uk/committee/#{76+n}" }
