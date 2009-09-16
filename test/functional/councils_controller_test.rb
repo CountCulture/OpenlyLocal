@@ -228,7 +228,7 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "and party_breakdown is available" do
       setup do
-        Council.any_instance.stubs(:party_breakdown => [["Conservative", 4], ["Labour", 3]])
+        Council.any_instance.stubs(:party_breakdown => [[Party.new("Conservative"), 4], [Party.new("Labour"), 3]])
         get :show, :id => @council.id
       end
       
