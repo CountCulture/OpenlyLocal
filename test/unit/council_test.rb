@@ -31,6 +31,10 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_db_column :country
     should_have_db_column :population
     
+    should "mixin PartyBreakdownSummary module" do
+      assert Council.new.respond_to?(:party_breakdown)
+    end
+    
     should "have parser named_scope" do
       expected_options = { :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id" }
       assert_equal expected_options, Council.parsed.proxy_options
@@ -213,44 +217,7 @@ class CouncilTest < ActiveSupport::TestCase
         assert_match %r(<ward.+<id.+</ward)m, @council.to_detailed_xml
       end
     end
-    
-    context "when returning party breakdown" do
-
-      should "return empty array if no members" do
-        assert_equal [], Council.new.party_breakdown
-      end
-      
-      should "calculate breakdown from members list" do
-        dummy_members = party_breakdown_array("Conservative" => 3, "Labour" => 6, "Independent" => 1)
-        @council.expects(:members).returns(dummy_members)
-        assert_equal [[Party.new("Labour"), 6], [Party.new("Conservative"), 3],[Party.new("Independent"), 1]], @council.party_breakdown
-      end
-      
-      should "return empty array if no party details for any members" do
-        dummy_members = [stub(:party => nil)]*3
-        @council.expects(:members).returns(dummy_members)
-        assert_equal [], @council.party_breakdown
-      end
-      
-      should "return 'not known' for members with no party" do
-        dummy_members = party_breakdown_array("Conservative" => 3, nil => 1)
-        @council.expects(:members).returns(dummy_members)
-        assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 1]], @council.party_breakdown
-      end
-      
-      should "return 'not known' for members with blank party" do
-        dummy_members = party_breakdown_array("Conservative" => 3, "" => 1)
-        @council.expects(:members).returns(dummy_members)
-        assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 1]], @council.party_breakdown
-      end
-      
-      should "return 'not known' for members with blank and nil parties" do
-        dummy_members = party_breakdown_array("Conservative" => 3, nil => 1, "" => 1)
-        @council.expects(:members).returns(dummy_members)
-        assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 2]], @council.party_breakdown
-      end
-    end
-    
+        
     should "return name without Borough etc as short_name" do
       assert_equal "Brent", Council.new(:name => "London Borough of Brent").short_name
       assert_equal "Westminster", Council.new(:name => "City of Westminster").short_name
@@ -279,13 +246,5 @@ class CouncilTest < ActiveSupport::TestCase
       # end
     end
     
-  end
-  private
-  def party_breakdown_array(hsh={})
-    hsh.collect do |k,v|
-      (1..(v.to_i)).collect do |i|
-        Member.new(:party => k)
-      end
-    end.flatten.compact
   end
 end

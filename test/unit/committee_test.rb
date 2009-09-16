@@ -21,6 +21,9 @@ class CommitteeTest < ActiveSupport::TestCase
       assert Committee.respond_to?(:find_existing)
     end
     
+    should "mixin PartyBreakdownSummary module" do
+      assert Committee.new.respond_to?(:party_breakdown)
+    end
   end
     
   context "A Committee instance" do

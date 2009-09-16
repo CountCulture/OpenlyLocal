@@ -1,5 +1,6 @@
 class Committee < ActiveRecord::Base
   include ScrapedModel
+  include PartyBreakdown
   validates_presence_of :title, :url, :uid, :council_id
   validates_uniqueness_of :title, :scope => :council_id
   belongs_to :council
