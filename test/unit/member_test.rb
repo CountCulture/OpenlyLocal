@@ -61,32 +61,52 @@ class MemberTest < ActiveSupport::TestCase
       assert !new_member.ex_member?
     end
     
-    should "store party attribute" do
-      assert_equal "Conservative", new_member(:party => "Conservative").party
-    end
-    
-    should "discard 'Party' from given party name" do
-      assert_equal "Conservative", new_member(:party => "Conservative Party").party
-      assert_equal "Conservative", new_member(:party => "Conservative party").party
-    end
-    
-    should "strip extraneous spaces from given party name" do
-      assert_equal "Conservative", new_member(:party => "  Conservative ").party
-    end
-     
-    should "strip extraneous spaces and 'Party' from given party name" do
-      assert_equal "Liberal Democrat", new_member(:party => "  Liberal Democrat Party ").party
-    end
+    context "when assigning party" do
+      should "store party attribute" do
+        assert_equal "Conservative", new_member(:party => "Conservative")[:party]
+      end
 
-    should "strip leading 'the' from given party name" do
-      assert_equal "Conservative", new_member(:party => "the Conservative Party").party
-      assert_equal "Conservative", new_member(:party => "The Conservative party").party
+      should "discard 'Party' from given party name" do
+        assert_equal "Conservative", new_member(:party => "Conservative Party")[:party]
+        assert_equal "Conservative", new_member(:party => "Conservative party")[:party]
+      end
+
+      should "strip extraneous spaces from given party name" do
+        assert_equal "Conservative", new_member(:party => "  Conservative ")[:party]
+      end
+
+      should "strip extraneous spaces and 'Party' from given party name" do
+        assert_equal "Liberal Democrat", new_member(:party => "  Liberal Democrat Party ")[:party]
+      end
+      
+      should "strip UTF spaces from gievn party name" do
+        assert_equal "Labour", new_member(:party => "Labour\302\240")[:party]
+      end
+      
+      should "strip leading 'the' from given party name" do
+        assert_equal "Conservative", new_member(:party => "the Conservative Party")[:party]
+        assert_equal "Conservative", new_member(:party => "The Conservative party")[:party]
+      end
+
+      should "not raise exception when party is nil" do
+        assert_nothing_raised(Exception) { new_member(:party => nil) }
+      end
     end
     
-    should "not raise exception when party is nil" do
-      assert_nothing_raised(Exception) { new_member(:party => nil) }
-    end
+    context "when returning party" do
+      should "return party instance" do
+        assert_kind_of Party, new_member(:party => "Conservative").party
+      end
 
+      should "return party corresponding to party name" do
+        member = new_member(:party => "Conservative")
+        mock_party = stub
+        Party.expects(:new).with("Conservative").returns(mock_party)
+        assert_equal mock_party, new_member(:party => "Conservative").party
+      end
+
+    end
+    
     should "have no potential_meetings" do
       assert_equal [], @member.potential_meetings
     end
