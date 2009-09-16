@@ -62,7 +62,7 @@ Factory.define :committee do |f|
 end
 
 Factory.define :meeting do |f|
-  f.sequence(:uid) { |n| 122 + n }
+  # f.sequence(:uid) { |n| 122 + n }
   f.association :council
   f.association :committee
   f.date_held 2.weeks.ago

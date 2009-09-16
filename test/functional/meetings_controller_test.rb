@@ -8,8 +8,8 @@ class MeetingsControllerTest < ActionController::TestCase
     @other_committee = Factory(:committee, :title => "Another Committee", :council => @council)
     @member = Factory(:member, :council => @council)
     @meeting = Factory(:meeting, :council => @council, :committee => @committee)
-    @future_meeting = Factory(:meeting, :date_held => 3.days.from_now.to_date, :council => @council, :committee => @committee, :uid => @meeting.uid+1)
-    @other_committee_meeting = Factory(:meeting, :date_held => 4.days.from_now.to_date, :council => @council, :committee => @other_committee, :uid => @meeting.uid+2)
+    @future_meeting = Factory(:meeting, :date_held => 3.days.from_now.to_date, :council => @council, :committee => @committee)
+    @other_committee_meeting = Factory(:meeting, :date_held => 4.days.from_now.to_date, :council => @council, :committee => @other_committee)
     @committee.members << @member
   end
   

@@ -12,7 +12,6 @@ class MeetingTest < ActiveSupport::TestCase
     should_belong_to :council # think about meeting should belong to council through committee
     should_validate_presence_of :date_held
     should_validate_presence_of :committee_id
-    should_validate_presence_of :uid
     should_validate_uniqueness_of :uid, :scoped_to => :council_id
     should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
     should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
