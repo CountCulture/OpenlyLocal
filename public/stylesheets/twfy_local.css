@@ -71,6 +71,9 @@ a.button {
 	background-color:#ddd;
 	padding:1px 4px;
 }
+a.help img {
+	vertical-align:top;
+}
 p.more_info, a.more_info{
 	text-align:right;
 	font-style: italic; 
@@ -173,6 +176,7 @@ a.unparsed {
 	}
 #data .attribute {
 	clear:left;
+	margin-bottom: 0.75em;
 	}
 #data .attribute strong {
 	float: left;
@@ -197,6 +201,7 @@ div.item_grouping h3 {
 	width:450px;
 	height:200px;
 	position: relative;
+	margin-bottom: 0.75em;
 }
 #party_breakdown img {
 	position:absolute;

@@ -5,6 +5,9 @@
   <p class="attribute" rel="rdf:type"><strong>Authority type</strong> <span about="[twfyl:<%= @council.authority_type.gsub(/\s+/,'') %>Authority]"><%= @council.authority_type %></span> <%= help_link_to(@council.authority_type_help_url) %></p>
   <p class="attribute"><strong>Address</strong> <span property="twfyl:full-address"><%= @council.address %></span></p>
   <p class="attribute" rel="foaf:phone"><strong>Telephone</strong> <%= content_tag(:span, @council.telephone, :about => @council.foaf_telephone) unless @council.telephone.blank? %></p>
+  <p class="attribute">
+    <strong>Population</strong> <%= @council.population ? number_with_delimiter(@council.population) : "not known" %> <span class="source attribution">(Source: <%= link_to "ONS Crown Copyright", "http://www.statistics.gov.uk/downloads/theme_population/Mid_2008_UK_England_&_Wales_Scotland_and_Northern_Ireland_27_08_09.zip" %>)</span>
+  </p>
   <p class="attribute"><strong>Wikipedia page</strong> <%= link_to @council.wikipedia_url, @council.wikipedia_url, :class => 'external', :rel => "foaf:page" %></p>
   <div class="extra_info">
     <h3>Other info</h3>
