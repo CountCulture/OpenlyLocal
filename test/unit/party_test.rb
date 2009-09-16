@@ -31,6 +31,15 @@ class PartyTest < Test::Unit::TestCase
       # assert @party.respond_to?(:dbpedia_link)
     end
     
+    should "be equal to another party instance with the same name" do
+      assert Party.new("foo") == Party.new("foo")
+    end
+    
+    should "be equal to itself" do
+      p = Party.new("foo")
+      assert p == p
+    end
+    
     context "when initializing from given string" do
 
       context "and string is party name" do

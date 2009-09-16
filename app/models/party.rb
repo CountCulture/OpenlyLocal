@@ -20,4 +20,9 @@ class Party
     @name.to_s
   end
   
+  def ==(comparison_object)
+    comparison_object.equal?(self) ||
+      (comparison_object.instance_of?(self.class) &&
+        comparison_object.name == name)    
+  end
 end

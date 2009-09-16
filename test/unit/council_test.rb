@@ -221,9 +221,9 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "calculate breakdown from members list" do
-        dummy_members = [stub(:party => "Conservative")]*3 + [stub(:party => "Labour")]*6 + [stub(:party => "Independent")]
+        dummy_members = party_breakdown_array("Conservative" => 3, "Labour" => 6, "Independent" => 1)
         @council.expects(:members).returns(dummy_members)
-        assert_equal [["Labour", 6], ["Conservative", 3],["Independent", 1]], @council.party_breakdown
+        assert_equal [[Party.new("Labour"), 6], [Party.new("Conservative"), 3],[Party.new("Independent"), 1]], @council.party_breakdown
       end
       
       should "return empty array if no party details for any members" do
@@ -233,21 +233,21 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "return 'not known' for members with no party" do
-        dummy_members = [stub(:party => "Conservative")]*3 + [stub(:party => nil)]
+        dummy_members = party_breakdown_array("Conservative" => 3, nil => 1)
         @council.expects(:members).returns(dummy_members)
-        assert_equal [["Conservative", 3],["Not known", 1]], @council.party_breakdown
+        assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 1]], @council.party_breakdown
       end
       
       should "return 'not known' for members with blank party" do
-        dummy_members = [stub(:party => "Conservative")]*3 + [stub(:party => "")]
+        dummy_members = party_breakdown_array("Conservative" => 3, "" => 1)
         @council.expects(:members).returns(dummy_members)
-        assert_equal [["Conservative", 3],["Not known", 1]], @council.party_breakdown
+        assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 1]], @council.party_breakdown
       end
       
       should "return 'not known' for members with blank and nil parties" do
-        dummy_members = [stub(:party => "Conservative")]*3 + [stub(:party => "")] + [stub(:party => nil)]
+        dummy_members = party_breakdown_array("Conservative" => 3, nil => 1, "" => 1)
         @council.expects(:members).returns(dummy_members)
-        assert_equal [["Conservative", 3],["Not known", 2]], @council.party_breakdown
+        assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 2]], @council.party_breakdown
       end
     end
     
@@ -280,5 +280,12 @@ class CouncilTest < ActiveSupport::TestCase
     end
     
   end
-  
+  private
+  def party_breakdown_array(hsh={})
+    hsh.collect do |k,v|
+      (1..(v.to_i)).collect do |i|
+        Member.new(:party => k)
+      end
+    end.flatten.compact
+  end
 end
