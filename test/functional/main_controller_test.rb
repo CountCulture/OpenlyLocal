@@ -19,6 +19,10 @@ class MainControllerTest < ActionController::TestCase
     should_render_template :index
     should_not_set_the_flash
     
+    should "have basic title" do
+      assert_select "title", /Openly Local.+Local Government/
+    end
+    
     should "list latest parsed councils" do
       assert_select "#latest_councils" do
         assert_select "li", 1 do # only #council1 has members and therefore is considered parsed
