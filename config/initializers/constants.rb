@@ -3,10 +3,10 @@
 # # [[main_name, other, names], colour]
 
 PARTIES = [
-  [ [ "Conservative", "Con", "Cons" ], "0281AA" ],
+  [ [ "Conservative", "Conservatives", "Con", "Cons" ], "0281AA" ],
   [ [ "Labour", "Lab"], "AA0000" ],
-  [ [ "Liberal Democrat","LDem", "LibDem", "Lib Dem" ], "F3A63C" ],
-  [ [ "Green" ], "73A533" ]
+  [ [ "Liberal Democrat","Liberal Democrats", "LDem", "LibDem", "Lib Dem" ], "F3A63C" ],
+  [ [ "Green", "Greens" ], "73A533" ]
   ]
   
 DefaultDomain = "openlylocal.com"
