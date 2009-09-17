@@ -10,7 +10,7 @@ module ApplicationHelper
     return if obj.blank?
     freshness = options[:basic] ? nil : (obj.created_at > 7.days.ago ? "new" : (obj.updated_at > 7.days.ago ? "updated" : nil) )
     text = options[:extended]&&obj.respond_to?(:extended_title)&&obj.extended_title
-    basic_link_for(obj, { :freshness => freshness, :text => text }.merge(options.except(:basic, :extended)))
+    (freshness&&image_tag("#{freshness}_flash.gif", :alt => freshness, :class => "icon")).to_s + basic_link_for(obj, { :freshness => freshness, :text => text }.merge(options.except(:basic, :extended)))
   end
   
   def basic_link_for(obj=nil, options={})

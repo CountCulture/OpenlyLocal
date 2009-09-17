@@ -39,12 +39,14 @@ a.feed, a.rss {
 	margin-left:2px;
 	padding: 2px 0px 2px 18px;
 	 }
-a.new {
+/*a.new {
+	display: inline-block;
 	padding-left: 24px;
 	background: transparent url(../images/new_flash.gif) no-repeat left;}
 a.updated {
+	display: inline-block;
 	padding-left: 46px;
-	background: transparent url(../images/updated_flash.gif) no-repeat left;}
+	background: transparent url(../images/updated_flash.gif) no-repeat left;}*/
 a.stale {
 	color: #740;
 }
@@ -100,6 +102,9 @@ margin-left:2em;
 	background-color: #FBE3E4;
 	padding:.5em;
 }
+img.icon {
+	margin: 0 .25em;}
+	
 /*General template format*/
 body { 
 	background-color:#ddd; }

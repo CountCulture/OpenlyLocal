@@ -35,20 +35,20 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link bar"), link_for(obj, :class => "bar")
     end
     
-    should "add new class if it has recently been created" do
+    should "add 'new' class and flash if it has recently been created" do
       obj = Factory(:committee) 
-      assert_dom_equal link_to(obj.title, obj, :class => "committee_link new"), link_for(obj)
+      assert_dom_equal image_tag("new_flash.gif", :alt => "new", :class => "icon") + link_to(obj.title, obj, :class => "committee_link new"), link_for(obj)
     end
     
-    should "add updated class if it is not new but has recently been updated" do
+    should "add 'updated' class and flash if it is not new but has recently been updated" do
       obj = Factory(:committee) 
       obj.stubs(:created_at => 8.days.ago)
-      assert_dom_equal link_to(obj.title, obj, :class => "committee_link updated"), link_for(obj)
+      assert_dom_equal image_tag("updated_flash.gif", :alt => "updated", :class => "icon") + link_to(obj.title, obj, :class => "committee_link updated"), link_for(obj)
     end
     
-    should "add new class if it has recently been created as well as given class" do
+    should "add new class and flash if it has recently been created as well as given class" do
       obj = Factory(:committee) 
-      assert_dom_equal link_to(obj.title, obj, :class => "committee_link new foo"), link_for(obj, :class => "foo")
+      assert_dom_equal image_tag("new_flash.gif", :alt => "new", :class => "icon") + link_to(obj.title, obj, :class => "committee_link new foo"), link_for(obj, :class => "foo")
     end
     
     should "return basic_link if it is requested" do
