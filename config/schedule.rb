@@ -12,7 +12,7 @@
 #   runner "MyModel.some_method"
 #   rake "some:great:rake:task"
 # end
-every 1.hours do
+every 1.hours, :at => 30 do
   command "rm -rf ~/sites/twfy_local/shared/cache/views"
 end
 # every 30.minutes do

@@ -22,7 +22,7 @@ class CouncilsHelperTest < ActionView::TestCase
     end
     
     should "should use party colours in legend replacing nil colours with spare colours" do
-      Gchart.expects(:pie).with(has_entry( :bar_colors => [Party.new("Labour").colour, Party.new("Conservative").colour, "664422CC", "664422AA"])).returns("http://foo.com//graph")
+      Gchart.expects(:pie).with(has_entry( :bar_colors => [Party.new("Labour").colour, Party.new("Conservative").colour, "66442233", "66442244"])).returns("http://foo.com//graph")
       party_breakdown_graph(@breakdown)
     end
     
