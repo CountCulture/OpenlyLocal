@@ -1,12 +1,12 @@
 # List of parties we have info for
 # Each element in the array is an array of the form:
-# # [[main_name, other, names], colour]
+# # [[main_name, preferred abbreviation, other, names], colour]
 
 PARTIES = [
-  [ [ "Conservative", "Conservatives", "Con", "Cons" ], "0281AA" ],
+  [ [ "Conservative", "Con", "Conservatives", "Cons" ], "0281AA" ],
   [ [ "Labour", "Lab"], "AA0000" ],
-  [ [ "Liberal Democrat","Liberal Democrats", "LDem", "LibDem", "Lib Dem" ], "F3A63C" ],
-  [ [ "Green", "Greens" ], "73A533" ]
+  [ [ "Liberal Democrat", "LibDem", "Liberal Democrats", "LDem", "Lib Dem" ], "F3A63C" ],
+  [ [ "Green", "Green", "Greens" ], "73A533" ]
   ]
   
 DefaultDomain = "openlylocal.com"
