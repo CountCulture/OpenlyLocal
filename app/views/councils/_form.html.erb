@@ -63,6 +63,11 @@
   </p>
   
   <p>
+    <%= f.label :twitter_account, "#{link_to 'Twitter', 'http://twitter.com', :class => 'external'} account" %>
+    <%= f.text_field :twitter_account %>
+  </p>
+  
+  <p>
     <%= f.label :data_source_url %>
     <%= f.text_field :data_source_url %>
   </p>
