@@ -114,7 +114,7 @@ class Scraper < ActiveRecord::Base
   protected
   def _data(target_url=nil)
     begin
-      options = { "User-Agent" => USER_AGENT }
+      options = { "User-Agent" => USER_AGENT, :cookie_url => cookie_url }
       (options["Referer"] = (referrer_url =~ /^http/ ? referrer_url : target_url)) unless referrer_url.blank?
       logger.debug { "Getting data from #{target_url} with options: #{options.inspect}" }
       page_data = _http_get(target_url, options)
@@ -144,7 +144,11 @@ class Scraper < ActiveRecord::Base
     # rescue Timeout::Error
     #   raise RequestError, "Timeout::Error retrieving info from #{target_url}."
     # end
-    open(target_url, options).read
+    client = HTTPClient.new
+    cookie_url = options.delete(:cookie_url)
+    client.get_content(cookie_url) unless cookie_url.blank? # pick up cookie if we've been passed a url
+    client.get_content(target_url, nil, options)
+    # open(target_url, options).read
     # logger.debug "********Scraper response = #{response.body.inspect}"
     # response.body
   end

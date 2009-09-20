@@ -56,20 +56,6 @@ class ScraperTest < ActiveSupport::TestCase
       assert_equal expected_options, actual_options
     end
     
-    # context "when finding all by type" do
-    #   setup do
-    #     
-    #   end
-    # 
-    #   should "return all with given result model" do
-    #     find_by_result_model
-    #   end
-    #   
-    #   should "return all with given scraper type" do
-    # 
-    #   end
-    # end
-    
   end
   
   context "A Scraper instance" do
@@ -354,6 +340,12 @@ class ScraperTest < ActiveSupport::TestCase
       
       should "pass dummy user agent" do
         @scraper.expects(:_http_get).with(anything, has_entry("User-Agent" => "Mozilla/4.0 (OpenlyLocal.com)")).returns("something")
+        @scraper.send(:_data, 'http://another.url')
+      end
+      
+      should "get cookie from cookie_url if given" do
+        @scraper.cookie_url = "http://cookie.com"
+        @scraper.expects(:_http_get).with(anything, has_entry(:cookie_url => "http://cookie.com")).returns("something")
         @scraper.send(:_data, 'http://another.url')
       end
       

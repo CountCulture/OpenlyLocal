@@ -30,6 +30,7 @@ Rails::Initializer.run do |config|
   config.gem 'mattetti-googlecharts', :lib => "gchart", :source => 'http://gems.github.com'
   config.gem "newrelic_rpm"
   config.gem "twitter4r", :lib => "twitter"
+  config.gem "httpclient"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 
