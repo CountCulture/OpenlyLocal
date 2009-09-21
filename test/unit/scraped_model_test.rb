@@ -2,7 +2,7 @@ require "test_helper"
 
 class TestModel <ActiveRecord::Base
   attr_accessor :council
-  include ScrapedModel
+  include ScrapedModel::Base
   set_table_name "members"
 end
 

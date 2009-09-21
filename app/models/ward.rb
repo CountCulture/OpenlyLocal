@@ -1,8 +1,8 @@
 class Ward < ActiveRecord::Base
-  include ScrapedModel
+  include ScrapedModel::Base
   belongs_to :council
-  has_many :members, :extend => UidAssociationExtension
-  has_many :committees, :extend => UidAssociationExtension
+  has_many :members, :extend => ScrapedModel::UidAssociationExtension
+  has_many :committees, :extend => ScrapedModel::UidAssociationExtension
   delegate :uids, :to => :members, :prefix => "member"
   delegate :uids=, :to => :members, :prefix => "member"
   delegate :uids, :to => :committees, :prefix => "committee"

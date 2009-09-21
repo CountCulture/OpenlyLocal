@@ -1,11 +1,11 @@
 #atttributes url, constituency, party
 
 class Member < ActiveRecord::Base
-  include ScrapedModel
+  include ScrapedModel::Base
   validates_presence_of :last_name, :url, :uid, :council_id
   validates_uniqueness_of :uid, :scope => :council_id # uid is unique id number assigned by council. It's possible that some councils may not assign them (e.g. GLA), but cross that bridge...
   has_many :memberships, :primary_key => :id
-  has_many :committees, :through => :memberships, :extend => UidAssociationExtension
+  has_many :committees, :through => :memberships, :extend => ScrapedModel::UidAssociationExtension
   has_many :potential_meetings, 
            :class_name => 'Meeting',
            :finder_sql => 'SELECT meetings.* from meetings, memberships WHERE 

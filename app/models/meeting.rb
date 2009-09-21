@@ -1,5 +1,5 @@
 class Meeting < ActiveRecord::Base
-  include ScrapedModel
+  include ScrapedModel::Base
   belongs_to :committee
   belongs_to :council
   has_one :minutes, :class_name => "Document", :as => "document_owner", :conditions => "document_type = 'Minutes'"
