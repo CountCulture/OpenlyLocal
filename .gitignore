@@ -15,3 +15,4 @@ config/newrelic.yml
 config/nginx_production.conf
 config/deploy
 Capfile
+public/cache

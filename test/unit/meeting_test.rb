@@ -4,18 +4,31 @@ class MeetingTest < ActiveSupport::TestCase
   subject { @meeting }
   context "The Meeting Class" do
     setup do
-      @committee = Committee.create!(:title => "Audit Group", :url => "some.url", :uid => 33, :council_id => 1)
-      @meeting = Meeting.create!(:date_held => "6 November 2008 7:30pm", :committee => @committee, :uid => 22, :council_id => @committee.council_id)
-    end
+      @committee = Factory(:committee)
+      @meeting = Factory(:meeting, :committee => @committee, :council => @committee.council)
+   end
 
     should_belong_to :committee
     should_belong_to :council # think about meeting should belong to council through committee
     should_validate_presence_of :date_held
     should_validate_presence_of :committee_id
-    should_validate_uniqueness_of :uid, :scoped_to => :council_id
+    # should_validate_uniqueness_of :uid, :scoped_to => :council_id
     should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
     should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
     should_have_db_columns :venue
+    should "validate uniqueness of uid scoped to council_id" do
+      #shoulda macros can't allow for nil values
+      @meeting.update_attribute(:uid, 42)
+      new_meet = Meeting.new(:council_id => @meeting.council_id)
+      new_meet.valid? # uid is nil
+      assert_nil new_meet.errors[:uid]
+      new_meet.uid = 42 #uid is same as existing meeting
+      new_meet.valid?
+      assert_equal "has already been taken", new_meet.errors[:uid]
+      new_meet.council_id = @meeting.council_id+10 #change council so different to existing meeting
+      new_meet.valid?
+      assert_nil new_meet.errors[:uid]
+    end
 
     should "include ScraperModel mixin" do
       assert Meeting.respond_to?(:find_existing)
@@ -27,7 +40,17 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal expected_options[:conditions].first, Meeting.forthcoming.proxy_options[:conditions].first
       assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
     end
+    
+    should "find_existing from uid if uid exists" do
+      @meeting.update_attribute(:uid, 42)
+      assert_equal @meeting, Meeting.find_existing(:uid => 42, :council_id => @meeting.council_id)
+    end
 
+    should "find existing from council, committee and url if uid is blank" do
+      another_meeting = Factory(:meeting, :council => @meeting.council, :date_held => 3.days.from_now, :committee => @meeting.committee, :url => "bar.com/meeting")
+      @meeting.update_attribute(:url, "foo.com/meeting")
+      assert_equal another_meeting, Meeting.find_existing(:uid => nil, :council_id => @meeting.council_id, :committee_id => @meeting.committee_id, :url => another_meeting.url)
+    end
   end
   
 

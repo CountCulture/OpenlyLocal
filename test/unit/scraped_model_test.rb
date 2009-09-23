@@ -19,7 +19,6 @@ class TestJoinedModel <ActiveRecord::Base
   attr_accessor :council
   include ScrapedModel::Base
   set_table_name "members"
-  # has_many :test_models, :through => :test_join_model#, :source => :test_join_model_table_foreign_key_to_test_models_table
   has_many :test_join_models, :foreign_key => "member_id"#, :class_name => "TestJoinModel"
 end
 
