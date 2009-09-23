@@ -3,16 +3,41 @@ require "test_helper"
 class TestModel <ActiveRecord::Base
   attr_accessor :council
   include ScrapedModel::Base
+  set_table_name "committees"
+  has_many :test_child_models, :class_name => "TestChildModel", :foreign_key => "committee_id", :extend => ScrapedModel::UidAssociationExtension
+  has_many :test_join_models, :foreign_key => "committee_id"
+  has_many :test_joined_models, :through => :test_join_models, :extend => ScrapedModel::UidAssociationExtension
+end
+
+class TestChildModel <ActiveRecord::Base
+  attr_accessor :council
+  include ScrapedModel::Base
+  set_table_name "meetings"
+end
+
+class TestJoinedModel <ActiveRecord::Base
+  attr_accessor :council
+  include ScrapedModel::Base
   set_table_name "members"
+  # has_many :test_models, :through => :test_join_model#, :source => :test_join_model_table_foreign_key_to_test_models_table
+  has_many :test_join_models, :foreign_key => "member_id"#, :class_name => "TestJoinModel"
+end
+
+class TestJoinModel <ActiveRecord::Base
+  # attr_accessor :council
+  # include ScrapedModel::Base
+  set_table_name "memberships"
+  belongs_to :test_model, :class_name => "TestModel", :foreign_key => "committee_id"
+  belongs_to :test_joined_model, :foreign_key => "member_id"
 end
 
 class ScrapedModelTest < ActiveSupport::TestCase
   
-  context "A class that includes ScrapedModel mixin" do
+  context "A class that includes ScrapedModel Base mixin" do
     setup do
       TestModel.delete_all # doesn't seem to delete old records !?!
       @test_model = TestModel.create!(:uid => 33, :council_id => 99)
-      @params = {:uid => 2, :council_id => 2, :party => "Independent", :url => "http:/some.url"} # uid and council_id can be anything as we stub finding of existing member
+      @params = {:uid => 2, :council_id => 2, :url => "http:/some.url"} # uid and council_id can be anything as we stub finding of existing member
     end
 
     context "when finding existing member from params" do
@@ -47,7 +72,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
         TestModel.stubs(:find_existing).returns(@test_model)
         rekord = TestModel.build_or_update(@params)
         assert_equal 2, rekord.council_id
-        assert_equal "Independent", rekord.party
+        assert_equal "http:/some.url", rekord.url
       end
       
       should "should build with attributes for new member when existing not found" do
@@ -129,77 +154,131 @@ class ScrapedModelTest < ActiveSupport::TestCase
 
   end
  
- context "An instance of a class that includes ScrapedModel mixin" do
-   setup do
-     @test_model = TestModel.new(:uid => 42)
-   end
+  context "An instance of a class that includes ScrapedModel Base mixin" do
+    setup do
+      @test_model = TestModel.new(:uid => 42)
+    end
+    
+    should "provide access to new_record_before_save instance variable" do
+      @test_model.instance_variable_set(:@new_record_before_save, true)
+      assert @test_model.new_record_before_save?
+    end
+    
+    should "save_without_losing_dirty" do
+      assert @test_model.respond_to?(:save_without_losing_dirty)
+    end
+    
+    should "escape title in to_param_method" do
+      @test_model.save!
+      @test_model.stubs(:title => "some title-with/stuff")
+      assert_equal "#{@test_model.id}-some-title-with-stuff", @test_model.to_param
+    end
+    
+    should "return nil for to_param_method if id not set" do
+      @test_model.stubs(:title => "some title-with/stuff")
+      assert_nil @test_model.to_param
+    end
    
-   should "provide access to new_record_before_save instance variable" do
-     @test_model.instance_variable_set(:@new_record_before_save, true)
-     assert @test_model.new_record_before_save?
-   end
+    context "when saving_without_losing_dirty" do
+      setup do
+        @test_model.save_without_losing_dirty
+      end
+      
+      should_change "TestModel.count", :by => 1
+      should "save record" do
+        assert !@test_model.new_record?
+      end
+      
+      should "keep record of new attributes" do
+        assert_equal [nil, 42], @test_model.changes['uid']
+      end
+      
+      should "return true if successfully saves" do
+        @test_model.expects(:save).returns(true)
+        assert @test_model.save_without_losing_dirty
+      end
+      
+      should "return false if does not successfully save" do
+        @test_model.expects(:save).returns(false)
+        assert !@test_model.save_without_losing_dirty
+      end
+      
+    end
    
-   should "save_without_losing_dirty" do
-     assert @test_model.respond_to?(:save_without_losing_dirty)
-   end
-   
-   should "escape title in to_param_method" do
-     @test_model.save!
-     @test_model.stubs(:title => "some title-with/stuff")
-     assert_equal "#{@test_model.id}-some-title-with-stuff", @test_model.to_param
-   end
-   
-   should "return nil for to_param_method if id not set" do
-     @test_model.stubs(:title => "some title-with/stuff")
-     assert_nil @test_model.to_param
-   end
-   
-   context "when saving_without_losing_dirty" do
-     setup do
-       @test_model.save_without_losing_dirty
-     end
-     
-     should_change "TestModel.count", :by => 1
-     should "save record" do
-       assert !@test_model.new_record?
-     end
-     
-     should "keep record of new attributes" do
-       assert_equal [nil, 42], @test_model.changes['uid']
-     end
-     
-     should "return true if successfully saves" do
-       @test_model.expects(:save).returns(true)
-       assert @test_model.save_without_losing_dirty
-     end
-     
-     should "return false if does not successfully save" do
-       @test_model.expects(:save).returns(false)
-       assert !@test_model.save_without_losing_dirty
-     end
-     
-   end
-   
-   context "with an associated council" do
-     setup do
-       @council = Factory(:council)
-       @test_model.council = @council
-       Council.record_timestamps = false # update timestamp without triggering callbacks
-       @council.update_attributes(:updated_at => 2.days.ago) #... though thought from Rails 2.3 you could do this without turning off timestamps
-       Council.record_timestamps = true
-     end
-     
-       should "mark council as updated when member is updated" do
-         @test_model.update_attribute(:last_name, "Wilson")
-         assert_in_delta Time.now, @council.updated_at, 2
-       end
-       should "mark council as updated when member is deleted" do
-         @test_model.destroy
-         assert_in_delta Time.now, @council.updated_at, 2
-       end
-
-   end
-   
- end
+    context "with an associated council" do
+      setup do
+        @council = Factory(:council)
+        @test_model.council = @council
+        Council.record_timestamps = false # update timestamp without triggering callbacks
+        @council.update_attributes(:updated_at => 2.days.ago) #... though thought from Rails 2.3 you could do this without turning off timestamps
+        Council.record_timestamps = true
+      end
+    
+      should "mark council as updated when item is updated" do
+        @test_model.update_attribute(:title, "Foo")
+        assert_in_delta Time.now, @council.updated_at, 2
+      end
+      should "mark council as updated when item is deleted" do
+        @test_model.destroy
+        assert_in_delta Time.now, @council.updated_at, 2
+      end
+    end
+  end
+ 
+  context "An instance of a class extends has_many relationship with ScrapedModel UidAssociationExtension" do
+    context "with child objects" do
+      setup do
+        @parent = TestModel.create!(:uid => 33, :council_id => 9)
+        @parent.test_child_models << @child = TestChildModel.create!(:uid => 33, :council_id => 9)
+        @new_child = TestChildModel.create!(:uid => 34, :council_id => 9)
+        # Factory(:member, :council => @council)
+        # @old_member = Factory(:old_member, :council => @council)
+        @another_council_child = TestModel.create!(:uid => 44, :council_id => 10)
+        # @committee.members << @old_member
+      end
+ 
+      should "return child uids" do
+        assert_equal [@child.uid], @parent.test_child_models.uids
+      end
+      
+      should "replace existing children with ones with given uids" do
+        @parent.test_child_models.uids = [@new_child.uid]
+        assert_equal [@new_child], @parent.test_child_models
+      end
+      
+      should "not add children that don't exist for council" do
+        @parent.test_child_models.uids = [@another_council_child.uid]
+        assert_equal [], @parent.test_child_models
+      end
+    end
+  end
   
+  context "An instance of a class extends has_many through relationship with ScrapedModel UidAssociationExtension" do
+    
+    context "with joined objects" do
+      setup do
+        @parent = TestModel.create!(:uid => 33, :council_id => 9)
+        @parent.test_joined_models << @joined_model = TestJoinedModel.create!(:uid => 33, :council_id => 9)
+        @new_joined_model = TestJoinedModel.create!(:uid => 34, :council_id => 9)
+        # Factory(:member, :council => @council)
+        # @old_member = Factory(:old_member, :council => @council)
+        @another_council_joined_model = TestJoinedModel.create!(:uid => 44, :council_id => 10)
+        # @committee.members << @old_member
+      end
+   
+      should "return joined objects uids" do
+        assert_equal [@joined_model.uid], @parent.test_joined_models.uids
+      end
+   
+      should "replace existing joined objects with ones with given uids" do
+        @parent.test_joined_models.uids = [@new_joined_model.uid]
+        assert_equal [@new_joined_model], @parent.test_joined_models
+      end
+   
+      should "not add joined objects that don't exist for council" do
+        @parent.test_joined_models.uids = [@another_council_joined_model.uid]
+        assert_equal [], @parent.test_joined_models
+      end
+    end
+  end
 end
