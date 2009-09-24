@@ -29,6 +29,14 @@ class MeetingTest < ActiveSupport::TestCase
       new_meet.valid?
       assert_nil new_meet.errors[:uid]
     end
+    
+    should "validate presence either of uid or url" do
+      assert new_meeting(:uid => 42).valid?
+      assert new_meeting(:url => "foo.com").valid?
+      nm = new_meeting
+      assert !nm.valid?
+      assert_equal "either uid or url must be present", nm.errors[:base]
+    end
 
     should "include ScraperModel mixin" do
       assert Meeting.respond_to?(:find_existing)
@@ -211,6 +219,6 @@ class MeetingTest < ActiveSupport::TestCase
 
   private
   def new_meeting(options={})
-    Meeting.new({:date_held => 5.days.ago}.merge(options))
+    Meeting.new({:date_held => 5.days.ago, :committee_id => 22, :council_id => 11}.merge(options))
   end
 end

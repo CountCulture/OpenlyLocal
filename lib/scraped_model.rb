@@ -10,6 +10,7 @@ module ScrapedModel
     
       # default find_existing. Overwrite in models that include this mixin if necessary
       def find_existing(params)
+        return if params[:uid].blank? || params[:council_id].blank?
         find_by_council_id_and_uid(params[:council_id], params[:uid])
       end
 

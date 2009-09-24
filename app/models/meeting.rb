@@ -16,7 +16,11 @@ class Meeting < ActiveRecord::Base
   alias_attribute :location, :venue
   alias_attribute :created, :created_at
   alias_attribute :last_modified, :updated_at
- 
+
+  def validate
+    errors.add_to_base("either uid or url must be present") if uid.blank?&&url.blank?
+  end
+
   # overwrite base find_existing so we can find by committee and url if uid is blank?
   def self.find_existing(params)
     params[:uid].blank? ? find_by_council_id_and_committee_id_and_url(params[:council_id], params[:committee_id], params[:url]) : 

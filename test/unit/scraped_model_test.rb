@@ -44,6 +44,16 @@ class ScrapedModelTest < ActiveSupport::TestCase
       should "should return member which has given uid and council" do
         assert_equal @test_model, TestModel.find_existing(:uid => @test_model.uid, :council_id => @test_model.council_id)
       end
+        
+      should "should return nil when uid is blank" do
+        @test_model.update_attribute(:uid, nil) # make sure there's already a record with nil uid so we can check it WON'T be returned
+        assert_nil TestModel.find_existing(:uid => nil, :council_id => @test_model.council_id )
+      end
+      
+      should "should return nil when council_id is blank" do
+        @test_model.update_attribute(:council_id, nil)
+        assert_nil TestModel.find_existing(:uid => @test_model.uid, :council_id => nil)
+      end
       
       should "should return nil when no record with given uid and council" do
         assert_nil TestModel.find_existing(:uid => @test_model.uid, :council_id => 42)
