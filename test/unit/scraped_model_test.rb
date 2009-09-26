@@ -7,9 +7,11 @@ class TestModel <ActiveRecord::Base
   has_many :test_child_models, :class_name => "TestChildModel", :foreign_key => "committee_id", :extend => ScrapedModel::UidAssociationExtension
   has_many :test_join_models, :foreign_key => "committee_id"
   has_many :test_joined_models, :through => :test_join_models, :extend => ScrapedModel::UidAssociationExtension
+  allow_access_to :test_child_models, :via => [:url, :uid]
 end
 
 class TestChildModel <ActiveRecord::Base
+  AssociationAttributes = [:uid, :url]
   attr_accessor :council
   include ScrapedModel::Base
   set_table_name "meetings"
@@ -39,7 +41,53 @@ class ScrapedModelTest < ActiveSupport::TestCase
       @params = {:uid => 2, :council_id => 2, :url => "http:/some.url"} # uid and council_id can be anything as we stub finding of existing member
     end
 
-    context "when finding existing member from params" do
+    should "respond to association_extension_attributes" do
+      assert TestModel.respond_to?(:association_extension_attributes)
+    end
+    
+    should "return ;uid by default for association_extension_attributes" do
+      assert_equal [:uid], TestModel.association_extension_attributes
+    end
+
+    should "return array of association_extension_attributes if defined" do
+      assert_equal [:uid, :url], TestChildModel.association_extension_attributes
+    end
+    
+    should "have allow_access_to class method" do
+      assert TestModel.respond_to?(:allow_access_to)
+    end
+
+    context "when allowing access to given relationship" do
+      setup do
+        @test_model.test_child_models << @child = TestChildModel.create!(:uid => 33, :council_id => @test_model.council_id, :url => "foo.com")
+        @new_child = TestChildModel.create!(:uid => 34, :council_id => @test_model.council_id, :url => "bar.com")
+        @another_council_child = TestModel.create!(:uid => 44, :council_id => 10, :url => "bar.com")
+      end
+
+       should "add reader methods via relationship" do
+        assert @test_model.respond_to?(:test_child_model_urls)
+        assert @test_model.respond_to?(:test_child_model_uids)
+      end 
+      
+      should "return associated_objects identified by council and attribute" do
+        assert_equal ["foo.com"], @test_model.test_child_model_urls
+      end
+
+      should "add writer methods via relationship" do
+        assert @test_model.respond_to?(:test_child_model_urls=)
+        assert @test_model.respond_to?(:test_child_model_uids=)
+      end 
+
+      should "given replace existing child objects with ones identified by council id and attribute" do
+        @test_model.test_child_model_urls = ["bar.com"]
+        assert_equal [@new_child], @test_model.test_child_models
+        @test_model.test_child_model_uids = [@child.uid]
+        assert_equal [@child], @test_model.test_child_models.reload
+      end 
+ 
+    end
+
+   context "when finding existing member from params" do
 
       should "should return member which has given uid and council" do
         assert_equal @test_model, TestModel.find_existing(:uid => @test_model.uid, :council_id => @test_model.council_id)
@@ -239,11 +287,8 @@ class ScrapedModelTest < ActiveSupport::TestCase
       setup do
         @parent = TestModel.create!(:uid => 33, :council_id => 9)
         @parent.test_child_models << @child = TestChildModel.create!(:uid => 33, :council_id => 9)
-        @new_child = TestChildModel.create!(:uid => 34, :council_id => 9)
-        # Factory(:member, :council => @council)
-        # @old_member = Factory(:old_member, :council => @council)
+        @new_child = TestChildModel.create!(:uid => 34, :council_id => 9, :url => "foo.com/child")
         @another_council_child = TestModel.create!(:uid => 44, :council_id => 10)
-        # @committee.members << @old_member
       end
  
       should "return child uids" do
@@ -259,6 +304,15 @@ class ScrapedModelTest < ActiveSupport::TestCase
         @parent.test_child_models.uids = [@another_council_child.uid]
         assert_equal [], @parent.test_child_models
       end
+
+      # should "add reader methods relating to attributes in AssociationAttributes" do
+      #   assert_equal [@child.url], @parent.test_child_models.urls
+      # end
+
+     #  should "add writer methods relating to attributes in AssociationAttributes" do
+      #   @parent.test_child_models.urls = [@new_child.url]
+      #   assert_equal [@new_child], @parent.test_child_models
+      #  end
     end
   end
   
@@ -269,10 +323,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
         @parent = TestModel.create!(:uid => 33, :council_id => 9)
         @parent.test_joined_models << @joined_model = TestJoinedModel.create!(:uid => 33, :council_id => 9)
         @new_joined_model = TestJoinedModel.create!(:uid => 34, :council_id => 9)
-        # Factory(:member, :council => @council)
-        # @old_member = Factory(:old_member, :council => @council)
         @another_council_joined_model = TestJoinedModel.create!(:uid => 44, :council_id => 10)
-        # @committee.members << @old_member
       end
    
       should "return joined objects uids" do

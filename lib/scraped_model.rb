@@ -8,7 +8,36 @@ module ScrapedModel
   module Base
     module ClassMethods
     
-      # default find_existing. Overwrite in models that include this mixin if necessary
+      def association_extension_attributes
+        if const_defined?("AssociationAttributes")
+          self::AssociationAttributes
+        else
+          [:uid]
+        end
+      end
+
+      # class method to create bunch of useful methods to allow getting and setting of associated model attributes.
+      # Use as :allow_access_to :children, :via => some_attrib
+      # which gives Parent.child_some_attribs and the more useful
+      # Parent.child_some_attribs = [attrib1, attrib2,...] which creates
+      # parent-child relationships with Child instances identified
+      # by Parent.council_id and attrib1, attrib2, ...
+      def allow_access_to(relationship, options={})
+        [options[:via]].flatten.each do |attrib|
+          define_method "#{relationship.to_s.singularize}_#{attrib.to_s.pluralize}" do 
+            self.send(relationship).collect(&(attrib.to_sym))
+          end
+          define_method "#{relationship.to_s.singularize}_#{attrib.to_s.pluralize}=" do |attrib_array|
+            assoc_klass = relationship.to_s.classify.constantize
+            assoc_members = assoc_klass.send("find_all_by_council_id_and_#{attrib}", self.council_id, attrib_array)
+            # p assoc_members
+            self.send("#{relationship}=", assoc_members)
+          end
+        end
+      end
+
+
+     # default find_existing. Overwrite in models that include this mixin if necessary
       def find_existing(params)
         return if params[:uid].blank? || params[:council_id].blank?
         find_by_council_id_and_uid(params[:council_id], params[:uid])
@@ -76,7 +105,6 @@ module ScrapedModel
   # See http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html
   # for more details
 
-  # TODO Write unit tests for this instead of relying on ones in Committee, Ward etc
   module UidAssociationExtension
     def add_or_update(members)
       # not yet done
@@ -94,3 +122,4 @@ module ScrapedModel
 
   end
 end
+
