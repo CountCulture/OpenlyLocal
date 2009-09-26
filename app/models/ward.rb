@@ -1,15 +1,14 @@
 class Ward < ActiveRecord::Base
   include ScrapedModel::Base
   belongs_to :council
-  has_many :members, :extend => ScrapedModel::UidAssociationExtension
-  has_many :committees, :extend => ScrapedModel::UidAssociationExtension
-  delegate :uids, :to => :members, :prefix => "member"
-  delegate :uids=, :to => :members, :prefix => "member"
-  delegate :uids, :to => :committees, :prefix => "committee"
-  delegate :uids=, :to => :committees, :prefix => "committee"
+  has_many :members
+  has_many :committees
+  allow_access_to :members, :via => :uid
+  allow_access_to :committees, :via => :uid
   validates_presence_of :name, :council_id
   validates_uniqueness_of :name, :scope => :council_id
   alias_attribute :title, :name
+
 
   # override standard find_existing from ScrapedModel to find by council and name, not UID
   def self.find_existing(params)

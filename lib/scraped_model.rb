@@ -106,6 +106,7 @@ module ScrapedModel
   # for more details
 
   module UidAssociationExtension
+    # THis is now DEPRECATED in favour of allow_access_to class method
     def add_or_update(members)
       # not yet done
     end
