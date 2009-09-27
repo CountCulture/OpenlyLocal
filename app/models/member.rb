@@ -20,7 +20,7 @@ class Member < ActiveRecord::Base
 
   belongs_to :council
   belongs_to :ward
-  allow_access_to :committees, :via => :uid
+  allow_access_to :committees, :via => [:uid, :title]
   named_scope :current, :conditions => "date_left IS NULL"
   alias_attribute :title, :full_name
   after_create :tweet_about_it   

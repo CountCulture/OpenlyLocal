@@ -12,10 +12,10 @@ class MeetingTest < ActiveSupport::TestCase
     should_belong_to :council # think about meeting should belong to council through committee
     should_validate_presence_of :date_held
     should_validate_presence_of :committee_id
-    # should_validate_uniqueness_of :uid, :scoped_to => :council_id
     should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
     should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
     should_have_db_columns :venue
+    should_validate_uniqueness_of :date_held, :scoped_to => [:council_id, :committee_id]
     should "validate uniqueness of uid scoped to council_id" do
       #shoulda macros can't allow for nil values
       @meeting.update_attribute(:uid, 42)
@@ -37,6 +37,19 @@ class MeetingTest < ActiveSupport::TestCase
       assert !nm.valid?
       assert_equal "either uid or url must be present", nm.errors[:base]
     end
+
+    should "validate uniqueness of url if uid is blank?" do
+     @meeting.update_attribute(:url, "foo.com")
+      nm = new_meeting(:url => "foo.com", :council_id => @meeting.council_id)
+      assert !nm.valid?
+      assert_equal "must be unique", nm.errors[:url]
+    end
+    
+    should "not validate uniqueness of url if uid is blank?" do
+      nm = new_meeting(:url => "foo.com", :uid => 43, :council_id => @meeting.council_id)
+      assert nm.valid?
+    end
+
 
     should "include ScraperModel mixin" do
       assert Meeting.respond_to?(:find_existing)

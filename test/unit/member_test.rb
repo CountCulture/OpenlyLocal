@@ -127,8 +127,8 @@ class MemberTest < ActiveSupport::TestCase
     end
     
     context "with committees" do
-      # this part is mostly just testing inclusion of uid_association extension in committees association
-      setup do
+      # this part is mostly just regression test that allows_access_to works in same way to UidExtension
+     setup do
         @member = Factory(:member)
         @council = @member.council
         @another_council = Factory(:another_council)
@@ -150,6 +150,10 @@ class MemberTest < ActiveSupport::TestCase
       should "not add committees with that don't exist for council" do
         @member.committee_uids = [@another_council_committee.uid]
         assert_equal [], @member.committees
+      end
+
+      should "allow access to committees via titles" do
+        assert_equal [@old_committee.title], @member.committee_titles
       end
       
       context "and meetings" do
