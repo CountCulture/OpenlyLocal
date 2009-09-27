@@ -64,7 +64,7 @@ class WardTest < ActiveSupport::TestCase
     end
     
     context "with members" do
-      # this part is really just testing inclusion of uid_association extension in members association
+      # this part mainly regression test that old functionality of UidAssociation extension in continued with allows_access_to
       setup do
         @member = Factory(:member, :council => @council)
         @old_member = Factory(:old_member, :council => @council)
@@ -86,11 +86,12 @@ class WardTest < ActiveSupport::TestCase
         @ward.member_uids = [@another_council_member.uid]
         assert_equal [], @ward.members
       end
+
     end
     
     context "with committees" do
-      # this part is really just testing inclusion of uid_association extension in members association
-      setup do
+      # this part mainly regression test that old functionality of UidAssociation extension in continued with allows_access_to
+       setup do
         @committee = Factory(:committee, :council => @council)
         @old_committee = Factory(:committee, :council => @council)
         @another_council = Factory(:another_council)
@@ -110,6 +111,10 @@ class WardTest < ActiveSupport::TestCase
       should "not add members that don't exist for council" do
         @ward.committee_uids = [@another_council_committee.uid]
         assert_equal [], @ward.committees
+      end
+
+      should "allow_access_to committees via title" do
+        assert_equal [@old_committee.title], @ward.committee_titles
       end
     end
   end

@@ -4,7 +4,7 @@ class Ward < ActiveRecord::Base
   has_many :members
   has_many :committees
   allow_access_to :members, :via => :uid
-  allow_access_to :committees, :via => :uid
+  allow_access_to :committees, :via => [:uid, :title]
   validates_presence_of :name, :council_id
   validates_uniqueness_of :name, :scope => :council_id
   alias_attribute :title, :name

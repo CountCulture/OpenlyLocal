@@ -5,7 +5,7 @@
 PARTIES = [
   [ [ "Conservative", "Con", "Conservatives", "Cons" ], "0281AA" ],
   [ [ "Labour", "Lab"], "AA0000" ],
-  [ [ "Liberal Democrat", "LibDem", "Liberal Democrats", "LDem", "Lib Dem" ], "F3A63C" ],
+  [ [ "Liberal Democrat", "LibDem", "Liberal Democrats", "LDem", "Lib Dem", "Lib" ], "F3A63C" ],
   [ [ "Green", "Green", "Greens" ], "73A533" ]
   ]
   
