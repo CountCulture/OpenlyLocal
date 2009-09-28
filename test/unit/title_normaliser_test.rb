@@ -10,6 +10,7 @@ class TitleNormaliserTest < Test::Unit::TestCase
     "The Ways and Means committee" => "ways and means",
     "Ways & Means committee" => "ways and means",
     "Ways&Means committee" => "ways and means",
+    "Children's committee" => "childrens",
     "The Theatre committee" => "theatre"
   }
   
