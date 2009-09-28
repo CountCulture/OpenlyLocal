@@ -33,6 +33,19 @@ class CommitteeTest < ActiveSupport::TestCase
       @another_committee = Factory(:committee, :council => @council)
     end
     
+    context "when saving" do
+      should "normalise title" do
+        @committee.expects(:normalise_title)
+        @committee.save!
+      end
+
+      should "save normalised title" do
+        @committee.title = "foo committee"
+        @committee.save!
+        assert_equal "foo", @committee.reload.normalised_title
+      end
+
+    end
     context "with members" do
       # this part is really just testing inclusion of uid_association extension in members association
       setup do

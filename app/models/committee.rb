@@ -10,4 +10,10 @@ class Committee < ActiveRecord::Base
   has_many :memberships, :primary_key => :uid
   has_many :members, :through => :memberships
   allow_access_to :members, :via => :uid
+  before_save :normalise_title
+
+  private
+  def normalise_title
+    self.normalised_title = TitleNormaliser.normalise(title)
+  end
 end
