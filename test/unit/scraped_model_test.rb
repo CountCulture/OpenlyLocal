@@ -93,7 +93,6 @@ class ScrapedModelTest < ActiveSupport::TestCase
         end
 
         should "normalise attributes when finding_them" do
-          # p @joined_model.test_models
           @joined_model.test_model_normalised_titles = ["The Foo COmmittee"]
           assert_equal [@test_model], @joined_model.test_models
         end

@@ -152,8 +152,8 @@ class MemberTest < ActiveSupport::TestCase
         assert_equal [], @member.committees
       end
 
-      should "allow access to committees via titles" do
-        assert_equal [@old_committee.title], @member.committee_titles
+      should "allow access to committees via normalised_titles" do
+        assert_equal [@old_committee.normalised_title], @member.committee_normalised_titles
       end
       
       context "and meetings" do

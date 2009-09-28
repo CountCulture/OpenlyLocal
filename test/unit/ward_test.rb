@@ -113,8 +113,8 @@ class WardTest < ActiveSupport::TestCase
         assert_equal [], @ward.committees
       end
 
-      should "allow_access_to committees via title" do
-        assert_equal [@old_committee.title], @ward.committee_titles
+      should "allow_access_to committees via normalised_title" do
+        assert_equal [@old_committee.normalised_title], @ward.committee_normalised_titles
       end
     end
   end
