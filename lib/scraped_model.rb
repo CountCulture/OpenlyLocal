@@ -28,9 +28,10 @@ module ScrapedModel
             self.send(relationship).collect(&(attrib.to_sym))
           end
           define_method "#{relationship.to_s.singularize}_#{attrib.to_s.pluralize}=" do |attrib_array|
+            # extend normalising to other attributes in the future? 
+            attrib_array = attrib_array.collect{|i| TitleNormaliser.normalise_title(i)} if attrib.to_s.match(/^normalised_title/) 
             assoc_klass = relationship.to_s.classify.constantize
             assoc_members = assoc_klass.send("find_all_by_council_id_and_#{attrib}", self.council_id, attrib_array)
-            # p assoc_members
             self.send("#{relationship}=", assoc_members)
           end
         end

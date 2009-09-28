@@ -14,6 +14,6 @@ class Committee < ActiveRecord::Base
 
   private
   def normalise_title
-    self.normalised_title = TitleNormaliser.normalise(title)
+    self.normalised_title = TitleNormaliser.normalise_title(title)
   end
 end

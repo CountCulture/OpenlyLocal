@@ -17,19 +17,19 @@ class TestChildModel <ActiveRecord::Base
   set_table_name "meetings"
 end
 
+class TestJoinModel <ActiveRecord::Base
+  set_table_name "memberships"
+  belongs_to :test_model, :class_name => "TestModel", :foreign_key => "committee_id"
+  belongs_to :test_joined_model, :foreign_key => "member_id"
+end
+
 class TestJoinedModel <ActiveRecord::Base
   attr_accessor :council
   include ScrapedModel::Base
   set_table_name "members"
-  has_many :test_join_models, :foreign_key => "member_id"#, :class_name => "TestJoinModel"
-end
-
-class TestJoinModel <ActiveRecord::Base
-  # attr_accessor :council
-  # include ScrapedModel::Base
-  set_table_name "memberships"
-  belongs_to :test_model, :class_name => "TestModel", :foreign_key => "committee_id"
-  belongs_to :test_joined_model, :foreign_key => "member_id"
+  has_many :test_join_models, :foreign_key => "member_id"
+  has_many :test_models, :through => :test_join_models
+  allow_access_to :test_models, :via => [:uid, :normalised_title]
 end
 
 class ScrapedModelTest < ActiveSupport::TestCase
@@ -37,7 +37,8 @@ class ScrapedModelTest < ActiveSupport::TestCase
   context "A class that includes ScrapedModel Base mixin" do
     setup do
       TestModel.delete_all # doesn't seem to delete old records !?!
-      @test_model = TestModel.create!(:uid => 33, :council_id => 99)
+      @test_model = TestModel.create!(:uid => 33, :council_id => 99, :title => "Foo  Committee", :normalised_title => "foo")
+      @another_test_model = TestModel.create!(:uid => 34, :council_id => 99, :title => "Bar Committee")
       @params = {:uid => 2, :council_id => 2, :url => "http:/some.url"} # uid and council_id can be anything as we stub finding of existing member
     end
 
@@ -83,6 +84,19 @@ class ScrapedModelTest < ActiveSupport::TestCase
         assert_equal [@new_child], @test_model.test_child_models
         @test_model.test_child_model_uids = [@child.uid]
         assert_equal [@child], @test_model.test_child_models.reload
+      end
+
+      context "and using normalised_method to access it" do
+        # using HMT assoc to access TestModel#normalised_title attribute
+        setup do
+          @joined_model = TestJoinedModel.create!(:uid => 33, :council_id => 99 )
+        end
+
+        should "normalise attributes when finding_them" do
+          # p @joined_model.test_models
+          @joined_model.test_model_normalised_titles = ["The Foo COmmittee"]
+          assert_equal [@test_model], @joined_model.test_models
+        end
       end 
  
     end
