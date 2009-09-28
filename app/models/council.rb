@@ -32,6 +32,12 @@ class Council < ActiveRecord::Base
     AUTHORITY_TYPES[authority_type]
   end
   
+  def active_committees(include_inactive=nil)
+    return committees if include_inactive
+    ac = committees.active
+    ac.empty? ? committees : ac
+  end 
+
   def average_membership_count
     # memberships.average(:group => "members.id")
     memberships.count.to_f/members.current.count

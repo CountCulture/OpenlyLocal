@@ -5,7 +5,7 @@ class CommitteeTest < ActiveSupport::TestCase
   
   context "The Committee Class" do
     setup do
-      @committee = Committee.create!(:title => "Some Committee", :url => "some.url", :uid => 44, :council_id => 1)
+      @committee = Factory(:committee)
     end
 
     should_validate_presence_of :title, :url, :uid, :council_id
@@ -16,6 +16,7 @@ class CommitteeTest < ActiveSupport::TestCase
     should_have_many :members, :through => :memberships
     should_belong_to :council
     should_belong_to :ward
+    should_have_named_scope :active
     
     should "include ScraperModel mixin" do
       assert Committee.respond_to?(:find_existing)
@@ -23,6 +24,18 @@ class CommitteeTest < ActiveSupport::TestCase
     
     should "mixin PartyBreakdownSummary module" do
       assert Committee.new.respond_to?(:party_breakdown)
+    end
+
+    context "when finding committees that are active" do
+      setup do
+        @inactive_committee = Factory(:committee, :council => @committee.council)
+        @very_old_meeting = new_meeting_for(@inactive_committee, :date_held => 13.months.ago)
+        @less_old_meeting = new_meeting_for(@committee, :date_held => 10.months.ago)
+      end
+      
+      should "return only committees with meetings in past 12 months" do
+        assert_equal [@committee], Committee.active.all
+      end
     end
   end
     
@@ -102,5 +115,9 @@ class CommitteeTest < ActiveSupport::TestCase
   private
   def new_committee(options={})
     Committee.new({:title => "Some Title"}.merge(options))
+  end
+
+  def new_meeting_for(committee, options={})
+    Factory(:meeting, {:committee => committee, :council => committee.council}.merge(options))
   end
 end

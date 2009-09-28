@@ -1,4 +1,9 @@
-<h1><%= @council.title %> <%= @title %></h1>
+<h1><%= basic_link_for @council %> <%= @title %></h1>
+
+<%= params[:include_inactive] ? link_to("Restrict to active committees", params.except(:include_inactive)) : link_to("Include inactive commities", params.merge(:include_inactive => true)) %>
+<p class="extra_info">
+  <%= link_for @council %> 
+</p>
 
 <div id="committees">
   <%= list_all @committees %>

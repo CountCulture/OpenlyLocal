@@ -66,6 +66,27 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal [@held_meeting], @council.held_meetings
     end
     
+    context "when getting active_committees" do
+      setup do
+        @committee = Factory(:committee, :council => @council)
+        @another_committee = Factory(:committee, :council => @council)
+      end
+
+      should "return active committees if they exist" do
+        Factory(:meeting, :council => @council, :committee => @committee)
+        assert_equal [@committee], @council.active_committees
+      end
+
+      should "return all committees if no active committees" do
+        assert_equal [@committee, @another_committee], @council.active_committees
+      end
+
+      should "include inactive committees if requested to" do
+        Factory(:meeting, :council => @council, :committee => @committee)
+        assert_equal [@committee, @another_committee], @council.active_committees(true)
+      end
+    end
+
     context "when getting meeting_documents" do
       setup do
         @committee = Factory(:committee, :council => @council)

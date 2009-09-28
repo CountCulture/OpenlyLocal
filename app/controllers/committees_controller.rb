@@ -3,7 +3,7 @@ class CommitteesController < ApplicationController
   
   def index
     @council = Council.find(params[:council_id])
-    @committees = @council.committees
+    @committees = @council.active_committees(params[:include_inactive])
     @documents = @council.meeting_documents.all(:limit => 11)
     @meetings = @council.meetings.forthcoming.all(:limit => 11)
     @title = "Committees"

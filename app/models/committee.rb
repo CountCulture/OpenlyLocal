@@ -12,6 +12,13 @@ class Committee < ActiveRecord::Base
   allow_access_to :members, :via => :uid
   before_save :normalise_title
 
+  named_scope :active, lambda { {
+              :select => "committees.*, COUNT(meetings.id) AS meeting_count",
+              :conditions => ["meetings.date_held > ?", 1.year.ago],
+              :joins => "LEFT JOIN meetings ON meetings.committee_id = committees.id",
+              :group => "committees.id",
+              :order => "committees.title" } }
+
   private
   def normalise_title
     self.normalised_title = TitleNormaliser.normalise_title(title)

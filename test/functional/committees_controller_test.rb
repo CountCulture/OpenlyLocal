@@ -138,7 +138,7 @@ class CommitteesControllerTest < ActionController::TestCase
        end
 
        should "should list committees for council" do
-         assert_select "#committees li", 2 do
+         assert_select "#committees li", 1 do #active committees by default
            assert_select "a", @committee.title
          end
        end
@@ -149,6 +149,33 @@ class CommitteesControllerTest < ActionController::TestCase
        
        should "list committee documents for council" do
          assert_select "div#documents li a", @document.extended_title
+       end
+       
+       should "show link to inclue inactive committees" do
+         assert_select "a[href*=include_inactive]", /include inactive/i
+       end
+     end
+
+     context "when inactive included" do
+       setup do
+         get :index, :council_id => @council.id, :include_inactive => true
+       end
+
+       should_assign_to :committees
+       should_assign_to(:council) { @council }
+       should_respond_with :success
+       should_render_template :index
+
+       should "not show link to inclue inactive committees" do
+         assert_select "a[href*=include_inactive]", :text =>/include inactive/i, :count =>0
+
+       end
+ 
+ 
+       should "should list committees for council" do
+         assert_select "#committees li", 2 do #active committees by default
+           assert_select "a", @committee.title
+         end
        end
        
      end
