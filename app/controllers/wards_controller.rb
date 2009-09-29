@@ -9,8 +9,8 @@ class WardsController < ApplicationController
     @title = "#{@ward.name} ward"
     respond_to do |format|
       format.html
-      format.xml { render :xml => @ward.to_xml(:include => :members) }
-      format.json { render :json => @ward.to_json(:include => :members) }
+      format.xml { render :xml => @ward.to_xml(:include => [:members, :committees, :meetings]) }
+      format.json { render :json => @ward.to_json(:include => [:members, :committees, :meetings]) }
     end
   end
   

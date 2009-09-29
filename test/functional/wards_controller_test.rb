@@ -62,6 +62,8 @@ class WardsControllerTest < ActionController::TestCase
      
      context "with xml request" do
        setup do
+         @ward.committees << @committee = Factory(:committee, :council => @council)
+         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
          get :show, :id => @ward.id, :format => "xml"
        end
 
@@ -75,17 +77,20 @@ class WardsControllerTest < ActionController::TestCase
        end
 
        should "include committees in response" do
-         assert_select "ward committees>committee"
+         puts css_select("ward")
+         assert_select "ward>committees>committee"
        end
 
        should "include meetings in response" do
-         assert_select "ward meetings>meeting"
+         assert_select "ward meetings meeting"
        end
        
       end
      
      context "with json request" do
        setup do
+         @ward.committees << @committee = Factory(:committee, :council => @council)
+         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
          get :show, :id => @ward.id, :format => "json"
        end
 
@@ -99,15 +104,11 @@ class WardsControllerTest < ActionController::TestCase
        end
 
        should "include committees in response" do
-         assert_match /ward\":.+committees\":/, @response.body
+         assert_match /ward\":.+committees\":.+#{@committee.title}/, @response.body
        end
 
        should "include meetings in response" do
-         assert_match /ward\":.+meetings\":/, @response.body
-       end
-
-       should "include members in response" do
-         assert_match /ward\":.+members\":/, @response.body
+         assert_match /ward\":.+meetings\":.+#{@meeting.url}/, @response.body
        end
 
      end
