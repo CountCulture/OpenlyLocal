@@ -36,11 +36,15 @@ class WardsControllerTest < ActionController::TestCase
        should "not show list of committees" do
          assert_select "#committees", false
        end
+       should "not show list of meetings" do
+         assert_select "#meetings", false
+       end
      end
      
      context "with basic request when ward has committees" do
        setup do
          @ward.committees << @committee = Factory(:committee, :council => @council)
+         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
          get :show, :id => @ward.id
        end
 
@@ -49,7 +53,11 @@ class WardsControllerTest < ActionController::TestCase
        should "show link to committee" do
          assert_select "#committees a", /#{@committee.title}/
        end
-            
+       
+       should "show ward committee meetings" do
+         assert_select "#meetings li", /#{@meeting.title}/
+
+       end 
      end
      
      context "with xml request" do
@@ -65,8 +73,16 @@ class WardsControllerTest < ActionController::TestCase
        should "include members in response" do
          assert_select "ward member"
        end
+
+       should "include committees in response" do
+         assert_select "ward committees>committee"
+       end
+
+       should "include meetings in response" do
+         assert_select "ward meetings>meeting"
+       end
        
-     end
+      end
      
      context "with json request" do
        setup do
@@ -81,6 +97,19 @@ class WardsControllerTest < ActionController::TestCase
        should "include members in response" do
          assert_match /ward\":.+members\":/, @response.body
        end
+
+       should "include committees in response" do
+         assert_match /ward\":.+committees\":/, @response.body
+       end
+
+       should "include meetings in response" do
+         assert_match /ward\":.+meetings\":/, @response.body
+       end
+
+       should "include members in response" do
+         assert_match /ward\":.+members\":/, @response.body
+       end
+
      end
      
    end  

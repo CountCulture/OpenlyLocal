@@ -14,6 +14,13 @@
     <%= list_all @committees %>
   </div>
 <%- end -%>
+
+<%- unless @ward.meetings.blank? -%>
+  <div id="meetings" class="item_grouping">
+    <h3>Meeting for ward committees</h3>
+    <%= list_all @ward.meetings %>
+  </div>
+<%- end -%>
 <%= render :partial => '/shared/api_info' %>
 
 <%= timestamp_data_for @ward %>
