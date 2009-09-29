@@ -1,0 +1,30 @@
+<h1>OpenlyLocal API</h1>
+
+<dl id="api">
+  <dt>How does the OpenlyLocal API work?</dt>
+    <dd>
+      <p>Openly Local is a uses a <%= wikipedia_link_for "REST" %>-based <%= wikipedia_link_for "API" %>. Specifically, each item (or 'Resource') has its own unique URL and the information is returned in different formats depending on the format requested via the URL. Data can be be returned as <%= wikipedia_link_for "XML" %>, <%= wikipedia_link_for "JSON" %> or, experimentally, <%= wikipedia_link_for "RDFa" %>.</p>
+      <p>So, for example, to see the HTML information on <%= link_to @sample_council.title, @sample_council %> go to <%= link_to "#{council_url(@sample_council)}", @sample_council %><br />
+      To see the XML, go to the same URL with '.xml' added to the end of the URL, i.e. <%= link_to "#{council_url(@sample_council, :format => :xml)}", council_path(@sample_council, :format => :xml) %><br />
+      To see the JSON version, go to the same URL with '.json' added to the end of the URL, i.e. <%= link_to "#{council_url(@sample_council, :format => :json)}", council_path(@sample_council, :format => :json) %></p>
+      <p>Note that you can omit the title of the resource from the end of the URL and leave just the ID. The title is there just for readability and <%= wikipedia_link_for "SEO", :url => "http://en.wikipedia.org/wiki/Search_engine_optimization" %>. So <%= link_to "#{council_url(:id => @sample_council.id, :format => :xml)}", council_path(:id => @sample_council.id, :format => :xml) %> and <%= link_to "#{council_url(:id => @sample_council.id, :format => :json)}", council_path(:id => @sample_council.id, :format => :json) %> will work just as well.</p>
+      <p>The RDFa is embedded in the HTML so the URL is obviously the same. There is also a <%= link_to "vocabulary page", :action => "vocab" %> for the RDFa. Please contact us if you are likely to use the RDFa extensively and we can liaise on the information we are exposing in this way</p>
+      <p>Finally, there are links at the bottom of pretty much every page to the XML or JSON representation of the information.</p>
+    </dd>
+  <dt>Will the structure of the API change?</dt>
+    <dd>It's possible as we understand better how best to get the information out there, and respond to requests from people and sites using the data. If the data provided by the site is critical, please contact us, and we'll try to make sure we notify you prior to any changes.</dd>
+  <dt>Where's the documentation?</dt>
+  <dd>You're reading it. Seriously, at the moment we've been concentrating on extracting the data and making it available in a simple to use way. We've deliberately tried to use sensible naming conventions and structure to make it easy for anyone with any programming experience understand</dd>
+  <dt>What's the licence?</dt>
+    <dd>Some of the information is Crown Copyright, and you'll need a <%= link_to "Click-Use Licence", "http://www.opsi.gov.uk/click-use/index", :class => "external" %> for that. Other information is nominally copyright the Local Authority concerned -- we feel that no council in their right mind could reasonably object to wider distribution of its democratic data; whether you wish to take the same attitude is, however, up to you. Still other is copyright OpenlyLocal, and while we're still looking at the exact licence we should use, we strong believe in open data and the one we choose will <em>at the minumum</em> allow full non-commercial use with attribution.</dd>
+    
+  <dt>I need some data you're not exposing</dt>
+    <dd>Email us at <%= mail_to "countculture@googlemail.com", nil, :encode => "javascript" %> and we'll see what we can do</dd>
+</dl>
+
+<h3>Recent changes</h3>
+<ul id="api_changes">
+  <li>
+    Changed ward info returned with member to be all the base info for the ward (e.g. title, id, ONS Snac ID, Local AuthorityURL)
+  </li>
+</ul>

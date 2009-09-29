@@ -9,7 +9,9 @@ class InfoControllerTest < ActionController::TestCase
     should_respond_with :success
     should_render_template :about_us
     should_render_with_layout
-    
+    should "show pretty version of action name in title" do
+      assert_select "title", /About Us :: Info/
+    end
   end
   
   context "on GET to :vocab" do
@@ -20,4 +22,20 @@ class InfoControllerTest < ActionController::TestCase
     should_render_template :vocab
     should_render_without_layout
   end
+  
+  context "on GET to :api" do
+    setup do
+      Factory(:council)
+      get :api
+    end
+    should_respond_with :success
+    should_render_template :api
+    should_render_with_layout
+    should_assign_to :sample_council
+    
+    should "show pretty version of action name in title" do
+      assert_select "title", /Api :: Info/
+    end
+  end
+  
 end

@@ -346,8 +346,22 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_nil help_link_to(nil)
     end
     
-    should "return link to wikipedia_page using help icon" do
+    should "return link to url using help icon" do
       assert_equal link_to(image_tag("help.png"), "http://en.wikipedia.org/wiki/London_borough", :class => "help", :alt => "help"), help_link_to("http://en.wikipedia.org/wiki/London_borough")
+    end
+  end
+  
+  context "wikipedia_link_for helper method" do
+    should "return nil by default" do
+      assert_nil wikipedia_link_for(nil)
+    end
+    
+    should "return link to wikipedia_page" do
+      assert_equal link_to("Foo Bar", "http://en.wikipedia.org/wiki/Foo_Bar", :class => "wikipedia_link external", :title => "Wikipedia page for 'Foo Bar'"), wikipedia_link_for("Foo Bar")
+    end
+    
+    should "return link to wikipedia_page using URL given" do
+      assert_equal link_to("Foo Bar", "http://en.wikipedia.org/wiki/Bar_Foo_Baz", :class => "wikipedia_link external", :title => "Wikipedia page for 'Foo Bar'"), wikipedia_link_for("Foo Bar", :url => "http://en.wikipedia.org/wiki/Bar_Foo_Baz")
     end
   end
   

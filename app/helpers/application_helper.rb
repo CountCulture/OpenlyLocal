@@ -73,8 +73,13 @@ module ApplicationHelper
     url_for(:controller => "info", :action => "vocab", :only_path => false)
   end
   
-  def help_link_to(wiki_url)
-    return if wiki_url.blank?
-    link_to(image_tag("help.png"), wiki_url, :class => "help", :alt => "help")
+  def help_link_to(url)
+    return if url.blank?
+    link_to(image_tag("help.png"), url, :class => "help", :alt => "help")
+  end
+  
+  def wikipedia_link_for(subject, options={})
+    return if subject.blank?
+    link_to(subject, options[:url]||"http://en.wikipedia.org/wiki/#{subject.gsub(' ', '_')}", :class => "wikipedia_link external", :title => "Wikipedia page for '#{subject}'")
   end
 end
