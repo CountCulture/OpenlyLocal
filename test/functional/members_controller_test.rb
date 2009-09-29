@@ -7,6 +7,8 @@ class MembersControllerTest < ActionController::TestCase
      setup do
        @member = Factory(:member)
        @council = @member.council
+       @ward = Factory(:ward, :council => @council)
+       @ward.members << @member
        @committee = Factory(:committee, :council => @council)
        @member.committees << @committee
        @forthcoming_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 2.days.from_now)
@@ -75,6 +77,18 @@ class MembersControllerTest < ActionController::TestCase
        should_respond_with :success
        should_render_without_layout
        should_respond_with_content_type 'application/xml'
+
+       should "include committees" do
+         assert_select "member>committees>committee"
+       end
+
+       should "include meetings" do
+         assert_select "member>forthcoming-meetings>forthcoming-meeting"
+       end
+
+       should "include ward info" do
+         assert_select "member>ward>id"
+       end
      end
 
      context "with json requested" do
@@ -86,6 +100,15 @@ class MembersControllerTest < ActionController::TestCase
        should_respond_with :success
        should_render_without_layout
        should_respond_with_content_type 'application/json'
+       should "include committees" do
+         assert_match /committees.+committee/, @response.body
+       end
+       should "include meetings" do
+         assert_match /meetings.+meeting/, @response.body
+       end
+       should "include ward info" do
+         assert_match %r(ward.+name.+#{@ward.name}), @response.body
+       end
      end
 
      context "with ics requested" do

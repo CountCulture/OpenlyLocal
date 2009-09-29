@@ -22,10 +22,6 @@
         <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= @council.snac_id %> </li>
       </ul>
     </div>
-    <!-- <div class="notes">
-      <h4>Notes</h4>
-      <%#= simple_format @council.notes %>
-    </div>  -->
     <div id="statistics" class="item_grouping">
       <%= render :partial => 'datapoints' unless @datapoints.blank? %>
     </div>
@@ -39,6 +35,7 @@
 
 <div id="committees" class="item_grouping">
   <h3><%= link_to "Council Committees", committees_path(:council_id => @council.id) %></h3>
+  <p>Showing only currently active committees. <em><%= link_to "Include inactive committees", committees_path(:council_id => @council.id, :include_inactive => true) %></em></p>
   <%= list_all @committees, :rel => "twfyl:committee" %>
 </div>
 <div id="wards" class="item_grouping">
