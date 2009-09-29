@@ -44,7 +44,7 @@ class Council < ActiveRecord::Base
   end
   
   def base_url
-    read_attribute(:base_url) || url
+    read_attribute(:base_url).blank? ? url : read_attribute(:base_url)
   end
   
   def dbpedia_url

@@ -115,6 +115,11 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal @council.url, @council.base_url
     end
     
+    should "return url as base_url if base_url is empty_string" do
+      @council.base_url = ""
+      assert_equal @council.url, @council.base_url
+    end
+    
     should "return base_url as base_url if base_url is set" do
       council = Factory(:another_council, :base_url => "another.url")
       assert_equal "another.url", council.base_url

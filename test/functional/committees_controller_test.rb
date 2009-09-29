@@ -68,6 +68,26 @@ class CommitteesControllerTest < ActionController::TestCase
        should "show foaf attributes for meetings" do
          assert_select "#meetings li[rel*='twfyl:meeting']"
        end
+       
+       should "not show link to ward" do
+         assert_select ".extra_info a", :text => /ward committee/i, :count => 0
+       end
+     end
+     
+     context "with basic request when committee has associated ward" do
+       setup do
+         @ward = Factory(:ward, :council => @committee.council)
+         @ward.committees << @committee
+         get :show, :id => @committee.id
+       end
+
+       should_assign_to :committee
+       should_respond_with :success
+       should_render_template :show
+      
+       should "show link to ward" do
+         assert_select ".extra_info a", /#{@ward.name}/
+       end
      end
      
      context "with xml request" do

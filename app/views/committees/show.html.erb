@@ -3,6 +3,7 @@
   <h1><span property="foaf:name rdfs:label"><%= @committee.title %></span> <em><%= council_page_for @committee %></em></h1>
   <p class="extra_info">
     <%= link_to "See all #{h(@committee.council.name)} committees", committees_path(:council_id => @council.id) %>
+    <%= " :: This is a ward committee for #{link_for @committee.ward}" if @committee.ward %>
   </p>
   <%= content_tag(:div, simple_format(@committee.description), :class => "description intro") unless @committee.description.blank? %>
   <div id="members" class="item_grouping">

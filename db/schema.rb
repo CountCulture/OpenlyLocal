@@ -49,6 +49,27 @@ ActiveRecord::Schema.define(:version => 20090928101605) do
     t.string   "twitter_account"
   end
 
+  create_table "councils_copy", :force => true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "base_url"
+    t.string   "telephone"
+    t.text     "address"
+    t.string   "authority_type"
+    t.integer  "portal_system_id"
+    t.text     "notes"
+    t.string   "wikipedia_url"
+    t.string   "ons_url"
+    t.integer  "egr_id"
+    t.string   "wdtk_name"
+    t.string   "feed_url"
+    t.string   "data_source_url"
+    t.string   "data_source_name"
+    t.string   "snac_id"
+  end
+
   create_table "datapoints", :force => true do |t|
     t.text     "data"
     t.integer  "council_id"

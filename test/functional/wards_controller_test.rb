@@ -77,7 +77,6 @@ class WardsControllerTest < ActionController::TestCase
        end
 
        should "include committees in response" do
-         puts css_select("ward")
          assert_select "ward>committees>committee"
        end
 
