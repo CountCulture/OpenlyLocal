@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class ApplicationHelperTest < ActionView::TestCase
+  
   context "link_for helper method" do
 
     should "return nil by default" do
@@ -31,8 +32,14 @@ class ApplicationHelperTest < ActionView::TestCase
     end
     
     should "add given class to object class" do
-      obj = stale_factory_object(:committee, :title => "something & nothing... which <needs> escaping" )
+      obj = stale_factory_object(:committee, :title => "something & nothing" )
       assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link bar"), link_for(obj, :class => "bar")
+    end
+    
+    should "add object's status of object to class" do
+      obj = stale_factory_object(:committee, :title => "something & nothing" )
+      obj.stubs(:status).returns("foostatus")
+      assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link foostatus bar"), link_for(obj, :class => "bar")
     end
     
     should "add 'new' class and flash if it has recently been created" do
@@ -123,6 +130,12 @@ class ApplicationHelperTest < ActionView::TestCase
     should "add given class to object class" do
       obj = stale_factory_object(:committee, :title => "something & nothing... which <needs> escaping" )
       assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link bar"), basic_link_for(obj, :class => "bar")
+    end
+    
+    should "add object's status of object to class" do
+      obj = stale_factory_object(:committee, :title => "something & nothing" )
+      obj.stubs(:status).returns("foostatus")
+      assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link foostatus bar"), basic_link_for(obj, :class => "bar")
     end
     
     should "not add new class if it has recently been created" do

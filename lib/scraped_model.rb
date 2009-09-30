@@ -75,6 +75,10 @@ module ScrapedModel
       def new_record_before_save?
         instance_variable_get(:@new_record_before_save)
       end
+      
+      # override this in individual classes to return object's status (e.g. "active", "future", etc)
+      def status
+      end
     
       def to_param
         id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil

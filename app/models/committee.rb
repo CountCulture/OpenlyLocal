@@ -24,6 +24,12 @@ class Committee < ActiveRecord::Base
               :joins => "LEFT JOIN meetings ON meetings.committee_id = committees.id AND meetings.date_held > '#{1.year.ago.to_s(:db)}'",
               :group => "committees.id",
               :order => "committees.title" }}
+
+  def status
+    return unless respond_to?(:active?)
+    active? ? "active" : "inactive"
+  end
+
   private
   def normalise_title
     self.normalised_title = TitleNormaliser.normalise_title(title)

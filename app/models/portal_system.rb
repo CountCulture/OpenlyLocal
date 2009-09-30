@@ -4,4 +4,8 @@ class PortalSystem < ActiveRecord::Base
   has_many :councils
   has_many :parsers
   alias_attribute :title, :name
+  
+  # doesn't mixin scraped model so add status method manually
+  def status
+  end
 end

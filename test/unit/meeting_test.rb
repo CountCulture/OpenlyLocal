@@ -134,6 +134,11 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "#{@meeting.created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{@meeting.id}@twfylocal", @meeting.event_uid
     end
     
+    should "return status of meeting" do
+      assert_equal "past", new_meeting.status
+      assert_equal "future", new_meeting(:date_held => 1.hour.from_now).status
+    end
+    
     context "when calling minutes_document_body setter" do
       setup do
         @meeting.minutes_document_body = "some document text"

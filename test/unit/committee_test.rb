@@ -71,8 +71,16 @@ class CommitteeTest < ActiveSupport::TestCase
         @committee.save!
         assert_equal "foo", @committee.reload.normalised_title
       end
-
+      
+      should "return activity status as status" do
+        assert_nil @committee.status #doesn't have active? method by default
+        @committee.stubs(:active?).returns(true)
+        assert_equal "active", @committee.status
+        @committee.stubs(:active?).returns(false)
+        assert_equal "inactive", @committee.status
+      end
     end
+    
     context "with members" do
       # this part is really just testing inclusion of uid_association extension in members association
       setup do

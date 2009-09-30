@@ -36,7 +36,7 @@ class Council < ActiveRecord::Base
   # all committees if there are no active committess (prob because there are no meetings
   # yet in system). Can be made to return all committees by passing true as argument
   def active_committees(include_inactive=nil)
-    return committees if include_inactive
+    return committees.with_activity_status if include_inactive
     ac = committees.active
     ac.empty? ? committees : ac
   end 
@@ -47,11 +47,6 @@ class Council < ActiveRecord::Base
     meetings.count(:conditions => ["meetings.date_held > ?", 1.year.ago]) > 0
   end
   
-  # def all_committees
-  #   committees.find(:all, 
-  #                     )
-  # end
-  # 
   def average_membership_count
     # memberships.average(:group => "members.id")
     memberships.count.to_f/members.current.count
@@ -79,6 +74,10 @@ class Council < ActiveRecord::Base
     
   def short_name
     name.gsub(/Borough|City|Royal|London|of|Council/, '').strip
+  end
+  
+  def status
+    parsed? ? "parsed" : "unparsed"
   end
   
   def to_param

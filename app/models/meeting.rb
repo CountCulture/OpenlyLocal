@@ -54,6 +54,10 @@ class Meeting < ActiveRecord::Base
     "#{created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{id}@twfylocal"
   end
   
+  def status
+    date_held > Time.now ? "future" : "past"
+  end
+  
   private
   def create_document_body(doc_body=nil, type=nil)
     existing_record = send(type)

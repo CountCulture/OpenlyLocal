@@ -159,6 +159,12 @@ class CouncilTest < ActiveSupport::TestCase
       assert !@council.parsed?
     end
     
+    should "return parsed status as status" do
+      assert_equal "unparsed", @council.status
+      @council.stubs(:parsed?).returns(true)
+      assert_equal "parsed", @council.status
+    end
+    
     context "when returning openlylocal_url" do
       should "build from council.to_param and default domain" do
         assert_equal "http://#{DefaultDomain}/councils/#{@council.to_param}", @council.openlylocal_url
@@ -183,6 +189,11 @@ class CouncilTest < ActiveSupport::TestCase
       should "include inactive committees if requested" do
         Factory(:meeting, :council => @council, :committee => @committee)
         assert_equal [@committee, @another_committee], @council.active_committees(true)
+      end
+      
+      should "include activity status when including inactive committees" do
+        Factory(:meeting, :council => @council, :committee => @committee)
+        assert @council.active_committees(true).first.respond_to?(:active?)
       end
     end
 

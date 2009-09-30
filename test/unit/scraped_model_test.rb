@@ -249,6 +249,10 @@ class ScrapedModelTest < ActiveSupport::TestCase
       assert_nil @test_model.to_param
     end
    
+    should "return nil for status by default" do
+      assert_nil @test_model.status
+    end
+   
     context "when saving_without_losing_dirty" do
       setup do
         @test_model.save_without_losing_dirty

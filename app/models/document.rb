@@ -22,6 +22,10 @@ class Document < ActiveRecord::Base
     self[:title] || "#{document_type} for #{document_owner.extended_title}"
   end
   
+  # Doesn't currently mixin ScrapedModel module (perhaps it should?), so add manually
+  def status
+  end
+  
   protected
   def sanitize_body
     return if raw_body.blank?

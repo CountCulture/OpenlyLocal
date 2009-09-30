@@ -39,6 +39,10 @@ class Dataset < ActiveRecord::Base
     BASE_URL + 'tq?tqx=out:csv&tq=' + CGI.escape(query + (council ? " where A contains '#{council.short_name}'" : '')) + "&key=#{key}"
   end
   
+  # Doesn't currently mixin ScrapedModel module, so add manually
+  def status
+  end
+  
   protected
   def _http_get(url)
     return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead

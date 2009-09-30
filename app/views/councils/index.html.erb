@@ -2,10 +2,8 @@
 <%- content_tag(:p, :class => "more_info") do  -%>
   <%= params[:include_unparsed] ? link_to("show only parsed councils", :include_unparsed => nil) : link_to("include unparsed councils", :include_unparsed => true) %>
 <%- end -%>
-<ul id="councils">
-  <% for council in @councils %>
-    <li><%= link_for council, :class => (council.parsed? ? "parsed" : "unparsed") %></li>
-  <% end %>
-</ul>
+<div id="councils">
+  <%= list_all @councils %>
+</div>
 
 <%= render :partial => '/shared/api_info' %>

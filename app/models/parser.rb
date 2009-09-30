@@ -58,6 +58,10 @@ class Parser < ActiveRecord::Base
     self
   end
   
+  # Doesn't currently mixin ScrapedModel module, so add manually
+  def status
+  end
+  
   def title
     "#{result_model} #{scraper_type&&scraper_type.sub('Scraper','').downcase} parser for " +
     (portal_system ? portal_system.name : 'single scraper only')
