@@ -86,17 +86,23 @@ class CouncilsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_template :show
       should_assign_to(:members) { @council.members.current }
+      should_assign_to(:committees) { [@committee] }
 
       should "list all members" do
         assert_select "#members li", @council.members.current.size
       end
+      
       should "list all active committees" do
-        assert_select "#committees li", @council.active_committees.size
+        assert_select "#committees li" do
+          assert_select "a", /#{@committee.title}/
+          assert_select "a", :text => /#{@committee_without_meetings.title}/, :count => 0
+        end
       end
       
       should "have link to all committees for council including inactive" do
         assert_select "#committees a", /include inactive/i
       end
+      
       should "list all wards" do
         assert_select "#wards li", @council.wards.size do
           assert_select "a", %r(#{@ward.name})
