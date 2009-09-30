@@ -37,6 +37,20 @@ class CommitteeTest < ActiveSupport::TestCase
         assert_equal [@committee], Committee.active.all
       end
     end
+    context "when finding committees with activity status" do
+      setup do
+        @inactive_committee = Factory(:committee, :council => @committee.council)
+        @very_old_meeting = new_meeting_for(@inactive_committee, :date_held => 13.months.ago)
+        @less_old_meeting = new_meeting_for(@committee, :date_held => 10.months.ago)
+      end
+      
+      should "return activity status for committees" do
+        assert_equal [@committee, @inactive_committee], comms = Committee.with_activity_status.all
+        assert comms.first.active?
+        assert !comms.last.active?
+      end
+    end
+    
   end
     
   context "A Committee instance" do

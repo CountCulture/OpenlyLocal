@@ -32,12 +32,26 @@ class Council < ActiveRecord::Base
     AUTHORITY_TYPES[authority_type]
   end
   
+  # Returns only active committees if there are active and inactive commmittees, or
+  # all committees if there are no active committess (prob because there are no meetings
+  # yet in system). Can be made to return all committees by passing true as argument
   def active_committees(include_inactive=nil)
     return committees if include_inactive
     ac = committees.active
     ac.empty? ? committees : ac
   end 
 
+  # Returns true if council has any active committees, i.e. if council 
+  # has any meetings in past year (as meetings must be associated with committees)
+  def active_committees?
+    meetings.count(:conditions => ["meetings.date_held > ?", 1.year.ago]) > 0
+  end
+  
+  # def all_committees
+  #   committees.find(:all, 
+  #                     )
+  # end
+  # 
   def average_membership_count
     # memberships.average(:group => "members.id")
     memberships.count.to_f/members.current.count

@@ -2,6 +2,7 @@ log/*.log
 log/*.log.*
 tmp/**/*
 .DS_Store
+*.tmproj
 doc/api
 doc/app
 db/*.sqlite3

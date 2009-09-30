@@ -18,7 +18,12 @@ class Committee < ActiveRecord::Base
               :joins => "LEFT JOIN meetings ON meetings.committee_id = committees.id",
               :group => "committees.id",
               :order => "committees.title" } }
-
+  
+  named_scope :with_activity_status, lambda { {
+              :select => "committees.*, (COUNT(meetings.id) > 0) AS active",
+              :joins => "LEFT JOIN meetings ON meetings.committee_id = committees.id AND meetings.date_held > '#{1.year.ago.to_s(:db)}'",
+              :group => "committees.id",
+              :order => "committees.title" }}
   private
   def normalise_title
     self.normalised_title = TitleNormaliser.normalise_title(title)

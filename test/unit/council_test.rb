@@ -10,7 +10,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_validate_presence_of :name
     should_validate_uniqueness_of :name
     should_have_many :members
-    should_have_many :committees
+    should_have_many :committees 
     should_have_many :memberships
     should_have_many :scrapers
     should_have_many :meetings
@@ -47,7 +47,7 @@ class CouncilTest < ActiveSupport::TestCase
       @another_member = Factory(:old_member, :council => @another_council) # add two members to @another council, @council has none
       assert_equal [@another_council], Council.parsed
     end
-    
+        
     should "have many datasets through datapoints" do
       @datapoint = Factory(:datapoint, :council => @council)
       assert_equal [@datapoint.dataset], @council.datasets
@@ -66,27 +66,6 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal [@held_meeting], @council.held_meetings
     end
     
-    context "when getting active_committees" do
-      setup do
-        @committee = Factory(:committee, :council => @council)
-        @another_committee = Factory(:committee, :council => @council)
-      end
-
-      should "return active committees if they exist" do
-        Factory(:meeting, :council => @council, :committee => @committee)
-        assert_equal [@committee], @council.active_committees
-      end
-
-      should "return all committees if no active committees" do
-        assert_equal [@committee, @another_committee], @council.active_committees
-      end
-
-      should "include inactive committees if requested to" do
-        Factory(:meeting, :council => @council, :committee => @committee)
-        assert_equal [@committee, @another_committee], @council.active_committees(true)
-      end
-    end
-
     context "when getting meeting_documents" do
       setup do
         @committee = Factory(:committee, :council => @council)
@@ -183,6 +162,47 @@ class CouncilTest < ActiveSupport::TestCase
     context "when returning openlylocal_url" do
       should "build from council.to_param and default domain" do
         assert_equal "http://#{DefaultDomain}/councils/#{@council.to_param}", @council.openlylocal_url
+      end
+    end
+    
+    context "when getting active_committees" do
+      setup do
+        @committee = Factory(:committee, :council => @council)
+        @another_committee = Factory(:committee, :council => @council)
+      end
+
+      should "return active committees if they exist" do
+        Factory(:meeting, :council => @council, :committee => @committee)
+        assert_equal [@committee], @council.active_committees
+      end
+
+      should "return all committees if no active committees" do
+        assert_equal [@committee, @another_committee], @council.active_committees
+      end
+
+      should "include inactive committees if requested" do
+        Factory(:meeting, :council => @council, :committee => @committee)
+        assert_equal [@committee, @another_committee], @council.active_committees(true)
+      end
+    end
+
+    context "when caclulating whether council has active committees" do
+      setup do
+        @committee = Factory(:committee, :council => @council)
+        @another_committee = Factory(:committee, :council => @council)
+      end
+
+      should "return true if council has meetings" do
+        Factory(:meeting, :council => @council, :committee => @committee)
+        assert @council.active_committees?
+      end
+      should "return false if council has no meetings" do
+        assert !@council.active_committees?
+      end
+      
+      should "return false if council has only very old meetings" do
+        Factory(:meeting, :council => @council, :committee => @committee, :date_held => 13.months.ago)
+        assert !@council.active_committees?
       end
     end
     
