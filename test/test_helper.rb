@@ -35,9 +35,14 @@ class ActiveSupport::TestCase
   # fixtures :all
 
   # Add more helper methods to be used by all tests here...
-  # require 'factory_girl'
+
+  private
   def stub_authentication
     @controller.stubs(:authenticate).returns(true)
   end
-     
+  
+  def dummy_html_response(response_name)
+    IO.read(File.join([RAILS_ROOT + "/test/fixtures/dummy_responses/#{response_name}.html"]))
+  end
+  
 end

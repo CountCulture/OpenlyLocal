@@ -96,3 +96,9 @@ Factory.define :ward do |f|
   f.name "Foo South"
   f.association :council
 end
+
+Factory.define :wdtk_request do |f|
+  f.sequence(:title) { |n|  "FoI request Number #{n}" }
+  f.sequence(:url) { |n|  "wdtk_url/#{n}" }
+  f.association :council
+end
