@@ -35,6 +35,10 @@ class GenericControllerTest < ActionController::TestCase
       assert_select "title", "Openly Local"
     end
     
+    should "use default meta description if no title" do
+      assert_select "meta[name='description'][content*=?]", "Opening Up Local Government"
+    end
+    
     should "not show rdfa headers" do
       assert_select "html[xmlns:foaf*='xmlns.com/foaf']", false
     end
@@ -44,7 +48,7 @@ class GenericControllerTest < ActionController::TestCase
     end
   end
   
-  # get tests
+  # show tests
   context "on GET to :show" do
     setup do
       @council = Factory(:council)
@@ -53,6 +57,10 @@ class GenericControllerTest < ActionController::TestCase
     
     should "show given title in title" do
       assert_select "title", "Foo Title :: Openly Local"
+    end
+    
+    should "use title in meta description" do
+      assert_select "meta[name='description'][content*=?]", "Foo Title"
     end
     
     should "show rdfa headers" do
