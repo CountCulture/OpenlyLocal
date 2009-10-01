@@ -25,25 +25,34 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
   end
 
   # add members
-  Member.all.each do |m|
-    sitemap.add member_path(m), :lastmod => m.updated_at
+  Member.find_in_batches(:batch_size => 500) do |members|
+    members.each do |m|
+      sitemap.add member_path(m), :lastmod => m.updated_at
+    end
   end
 
   # add committees
-  Committee.all.each do |c|
-    sitemap.add committee_path(c), :lastmod => c.updated_at
+  Committee.find_in_batches(:batch_size => 500) do |committees|
+    committees.each do |c|
+      sitemap.add committee_path(c), :lastmod => c.updated_at
+    end
   end
 
   # add meetings
-  Meeting.all.each do |m|
-    sitemap.add meeting_path(m), :lastmod => m.updated_at
+  Meeting.find_in_batches(:batch_size => 500) do |meetings|
+    meetings.each do |m|
+      sitemap.add meeting_path(m), :lastmod => m.updated_at
+    end
   end
 
   # add wards
-  Ward.all.each do |m|
-    sitemap.add ward_path(m), :lastmod => m.updated_at
+  Ward.find_in_batches(:batch_size => 500) do |wards|
+    wards.each do |w|
+      sitemap.add ward_path(w), :lastmod => w.updated_at
+    end
   end
 
   sitemap.add '/info/about_us', :priority => 0.7
+  sitemap.add '/info/api', :priority => 0.7
   
 end
