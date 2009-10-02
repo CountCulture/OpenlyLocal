@@ -157,6 +157,22 @@ class CouncilsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/xml'
+      
+      should "show associated members" do
+        assert_select "council>members>member>first-name", @member.first_name
+      end
+      
+      should "show associated committees" do
+        assert_select "council>committees>committee>title", @committee.title
+      end
+      
+      # should "show associated meetings" do
+      #   assert_select "council>meetings>meeting>url", @meeting.url
+      # end
+      # 
+      should "show associated wards" do
+        assert_select "council>wards>ward>url", @ward.url
+      end
     end
     
     context "with json requested" do
@@ -168,6 +184,18 @@ class CouncilsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/json'
+
+      should "show associated members" do
+        assert_match /member.+#{@member.first_name}/, @response.body
+      end
+
+      should "show associated committees" do
+        assert_match /committee.+#{@committee.title}/, @response.body
+      end
+      
+      should "show associated wards" do
+        assert_match /ward.+#{@ward.name}/, @response.body
+      end
     end
     
     context "when council has datapoints" do

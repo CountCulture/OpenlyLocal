@@ -235,7 +235,8 @@ class CouncilTest < ActiveSupport::TestCase
       setup do
         member = Factory(:member, :council => @council)
         datapoint = Factory(:datapoint, :council => @council)
-        Factory(:committee, :council => @council)
+        committee = Factory(:committee, :council => @council)
+        Factory(:meeting, :council => @council, :committee => committee)
         Factory(:ward, :council => @council)
       end
       
@@ -271,6 +272,10 @@ class CouncilTest < ActiveSupport::TestCase
         assert_match %r(<committee.+<id.+</committee)m, @council.to_detailed_xml
       end
       
+      # should "include meeting ids" do
+      #   assert_match %r(<meeting.+<id.+</meeting)m, @council.to_detailed_xml
+      # end
+      # 
       should "include wards ids" do
         assert_match %r(<ward.+<id.+</ward)m, @council.to_detailed_xml
       end

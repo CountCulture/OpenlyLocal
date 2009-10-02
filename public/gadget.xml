@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="__UP_council__ :: OpenlyLocal"
+    directory_title="UK Council info :: OpenlyLocal"
+    description="Get info on what your council is doing from OpenlyLocal.com :: making Local Government more transparent"
+    author="CountCulture"
+    author_affiliation="OpenlyLocal.com"
+    author_email="countculture@gmail.com"
+    height="250"
+    scrolling="true"
+    singleton="false"
+    author_link="http://OpenlyLocal.com">
+  </ModulePrefs>
+  
+  <UserPref name="council"  
+    display_name="Council" datatype="enum" 
+     required="true">
+    <EnumValue value="1" 
+        display_value="Wandsworth"/>
+    <EnumValue value="2" 
+        display_value="Merton"/>
+    <EnumValue value="187" 
+        display_value="Birmingham"/>
+  </UserPref>
+
+
+  <Content type="html">
+    <![CDATA[ 
+
+              <script type="text/javascript">
+                var prefs = new gadgets.Prefs();
+                var councilId = prefs.getString("Council");
+                
+                
+                function getCouncilData() {    
+                  var params = {};
+                  params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+                  // This URL returns a JSON-encoded string that represents a JavaScript object
+                  var url = "http://openlylocal.com/councils/" + councilId + ".json";
+                  gadgets.io.makeRequest(url, insertCouncilData, params);
+                };
+
+                
+                function insertCouncilData(obj)
+                { 
+                  var council = obj.data.council;
+                  var html = "";
+                  html += "<h3>Info for " + council.name + "</h3>";
+                  
+                  for (var i = 0; i < council.members.length; i++) {
+                    var value = council.members[i];
+                    html += value["first_name"] + " " + value["last_name"] + "<br />";
+                  }    
+                             
+                  document.getElementById('council_info').innerHTML = html
+                }
+
+                // Call the init function on page load
+                gadgets.util.registerOnLoadHandler(getCouncilData);
+                
+              </script>
+              
+              <div id="council_info"></div>
+
+            ]]>
+  </Content>
+</Module>
