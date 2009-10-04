@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="Your Local Council"> 
+    <Require feature="opensocial-0.8" /> 
+  <UserPref name="showAllPokes" 
+            display_name="Show all pokes" 
+            datatype="bool" 
+            default_value="true" /> 
+  <UserPref name="numPokes" 
+            display_name="Number of pokes to display" 
+            datatype="enum" 
+            default_value="2"> 
+    <EnumValue value="1" display_value="3"/> 
+    <EnumValue value="2" display_value="5"/> 
+    <EnumValue value="3" display_value="10"/> 
+  </UserPref> 
+  </ModulePrefs> 
+  <Content type="html" view="ning.main"> 
+  <![CDATA[ 
+    <p>Hello, ning.main view!</p> 
+  ]]> 
+  </Content> 
+  <Content type="html" view="canvas,profile"> 
+  <![CDATA[ 
+    <p>Hello, world!</p> 
+  ]]> 
+  </Content> 
+  <Content type="html" view="profile"> 
+  <![CDATA[ 
+    <p>Hello, Profile View!</p> 
+  ]]> 
+  </Content> 
+  <Content type="html" view="canvas"> 
+  <![CDATA[ 
+    <p>Hello, Canvas View!</p> 
+  ]]> 
+  </Content> 
+</Module> 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-  <ModulePrefs title="__UP_council__ :: OpenlyLocal"
+  <ModulePrefs title="UK Council info :: OpenlyLocal"
     directory_title="UK Council info :: OpenlyLocal"
     description="Get info on what your council is doing from OpenlyLocal.com :: making Local Government more transparent"
     author="CountCulture"
@@ -10,6 +10,8 @@
     scrolling="true"
     singleton="false"
     author_link="http://OpenlyLocal.com">
+    <Require feature="settitle"/>
+    <Require feature="tabs"/>
   </ModulePrefs>
   
   <UserPref name="council"  
@@ -26,13 +28,18 @@
 
   <Content type="html">
     <![CDATA[ 
+              <style> 
+                .collection { font-size: 70%;  padding: 5px; background-color: #FFFFBF;} 
+              </style>
 
               <script type="text/javascript">
                 var prefs = new gadgets.Prefs();
-                var councilId = prefs.getString("Council");
                 
-                
-                function getCouncilData() {    
+                // Initialize tabs.
+                var tabs = new gadgets.TabSet(__MODULE_ID__);
+                                
+                function getCouncilData() {
+                  var councilId = prefs.getString("council");
                   var params = {};
                   params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
                   // This URL returns a JSON-encoded string that represents a JavaScript object
@@ -44,15 +51,31 @@
                 function insertCouncilData(obj)
                 { 
                   var council = obj.data.council;
-                  var html = "";
-                  html += "<h3>Info for " + council.name + "</h3>";
-                  
+                  gadgets.window.setTitle(council.name + " :: OpenlyLocal");
+                  var memberHtml = "";
+                  var committeeHtml = "";
                   for (var i = 0; i < council.members.length; i++) {
-                    var value = council.members[i];
-                    html += value["first_name"] + " " + value["last_name"] + "<br />";
+                    var m = council.members[i];
+                    memberHtml += "<a href='http://openlylocal.com/members/"+ m.id +"'>" + m.first_name + " " + m.last_name + "</a> ("+ m.party.name +")<br />";
                   }    
-                             
-                  document.getElementById('council_info').innerHTML = html
+                 
+                  for (var i = 0; i < council.committees.length; i++) {
+                    var c = council.committees[i];
+                    committeeHtml += "<a href='http://openlylocal.com/committees/"+ c.id +"'>" + c.title + "</a><br />";
+                  } 
+                  document.getElementById('members').innerHTML = memberHtml;
+                  document.getElementById('committees').innerHTML = committeeHtml;
+                  
+                  tabs.addTab("Members", {
+                     contentContainer: document.getElementById("members")
+                  });
+                  tabs.addTab("Committees", {
+                     contentContainer: document.getElementById("committees")
+                  });
+                  tabs.addTab("Meetings", {
+                     contentContainer: document.getElementById("meetings")
+                  });
+
                 }
 
                 // Call the init function on page load
@@ -60,8 +83,9 @@
                 
               </script>
               
-              <div id="council_info"></div>
-
+              <div id="members" class="collection"><h4>Councillors</h4></div>
+              <div id="committees"  class="collection" style="display:none"><h4>Committees</h4></div>
+              <div id="meetings"  class="collection" style="display:none"><h4>Meetings</h4></div>
             ]]>
   </Content>
 </Module>
