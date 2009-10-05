@@ -65,7 +65,7 @@ Factory.define :meeting do |f|
   # f.sequence(:uid) { |n| 122 + n }
   f.association :council
   f.association :committee
-  f.date_held 2.weeks.ago
+  f.sequence(:date_held){ |n| 2.weeks.ago - n.day}
   f.sequence(:url) { |n| "http://www.anytown.gov.uk/meeting/#{122+n}" }
 end
 

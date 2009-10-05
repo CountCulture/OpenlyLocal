@@ -72,6 +72,14 @@ class Council < ActiveRecord::Base
     !members.blank?
   end
     
+  def recent_activity
+    conditions = ["updated_at > ?", 7.days.ago]
+    { :members => members.all(:conditions => conditions),
+      :committees => committees.all(:conditions => conditions),
+      :meetings => meetings.all(:conditions => conditions),
+      :documents => meeting_documents.all(:conditions => ["documents.updated_at > ?", 7.days.ago])}
+  end
+  
   def short_name
     name.gsub(/Borough|City|Royal|London|of|Council/, '').strip
   end

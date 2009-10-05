@@ -217,6 +217,45 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
+    context "when getting recent activity" do
+      setup do
+        @member = Factory(:member, :council => @council)
+        @old_member = Factory(:member, :council => @council)
+        @committee = Factory(:committee, :council => @council)
+        @old_committee = Factory(:committee, :council => @council)
+        @meeting = Factory(:meeting, :council => @council, :committee => @committee)
+        @old_meeting = Factory(:meeting, :council => @council, :committee => @committee)
+        @document = Factory(:document, :document_owner => @meeting)
+        @old_document = Factory(:document, :document_owner => @meeting)
+        %w(member committee meeting document).each do |kind|
+          kind_klass = kind.classify.constantize
+          kind_klass.record_timestamps = false
+          instance_variable_get("@old_#{kind}").update_attribute(:updated_at, 8.days.ago)
+          kind_klass.record_timestamps = true
+        end
+      end
+      
+      should "return hash of activity" do
+        assert_kind_of Hash, @council.recent_activity
+      end
+      
+      should "return most recently updated members" do
+        assert_equal [@member], @council.recent_activity[:members]
+      end
+      
+      should "return most recently updated committees" do
+        assert_equal [@committee], @council.recent_activity[:committees]
+      end
+      
+      should "return most recently updated meetings" do
+        assert_equal [@meeting], @council.recent_activity[:meetings]
+      end
+      
+      should "return most recently updated documents" do
+        assert_equal [@document], @council.recent_activity[:documents]
+      end
+    end
+    
     context "when converting council to_xml" do
       should "not include base_url" do
         assert_no_match %r(<base-url), @council.to_xml
