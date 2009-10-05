@@ -24,15 +24,20 @@ module ScrapedModel
       # by Parent.council_id and attrib1, attrib2, ...
       def allow_access_to(relationship, options={})
         [options[:via]].flatten.each do |attrib|
-          define_method "#{relationship.to_s.singularize}_#{attrib.to_s.pluralize}" do 
-            self.send(relationship).collect(&(attrib.to_sym))
+          belong_to_rel = reflections[relationship.to_sym].macro == :belongs_to
+          # if relationship is belongs_to relationship don't pluralize attribname
+          attrib_meth_name = belong_to_rel ? attrib.to_s : attrib.to_s.pluralize 
+          define_method "#{relationship.to_s.singularize}_#{attrib_meth_name}" do 
+            belong_to_rel ? self.send(relationship).send(attrib.to_sym) : self.send(relationship).collect(&(attrib.to_sym))
           end
-          define_method "#{relationship.to_s.singularize}_#{attrib.to_s.pluralize}=" do |attrib_array|
+          define_method "#{relationship.to_s.singularize}_#{attrib_meth_name}=" do |attrib_array|
             # extend normalising to other attributes in the future? 
             attrib_array = attrib_array.collect{|i| TitleNormaliser.normalise_title(i)} if attrib.to_s.match(/^normalised_title/) 
             assoc_klass = relationship.to_s.classify.constantize
-            assoc_members = assoc_klass.send("find_all_by_council_id_and_#{attrib}", self.council_id, attrib_array)
+            assoc_members = belong_to_rel ? assoc_klass.send("find_by_council_id_and_#{attrib}", self.council_id, attrib_array) : 
+                                            assoc_klass.send("find_all_by_council_id_and_#{attrib}", self.council_id, attrib_array)
             self.send("#{relationship}=", assoc_members)
+            self.save
           end
         end
       end
@@ -99,33 +104,5 @@ module ScrapedModel
     end
   end
   
-  # This module should be included in associations to allow relationships to be 
-  # set given just a collection of uids. So if we have in the Committee model:
-  # # has_many :members, :through => :memberships, :extend => UidAssociationExtension
-  # this will add: members.uids and members.uids= methods. For convenience these can
-  # be rewritten as member_uids and member_uids= using :delegate e.g.
-  # # delegate :uids, :to => :members, :prefix => "member" 
-  # which delegates the member_uids method to the uids method of the members 
-  # association.
-  # See http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html
-  # for more details
-
-  module UidAssociationExtension
-    # THis is now DEPRECATED in favour of allow_access_to class method
-    def add_or_update(members)
-      # not yet done
-    end
-
-    def uids=(uid_array)
-      uid_klass = proxy_reflection.source_reflection.try(:klass) || proxy_reflection.klass # see if there's a source reflection (i.e. HM Through), otherwise assume we have straight HM relationship
-      uid_members = uid_klass.find_all_by_uid_and_council_id(uid_array, proxy_owner.council_id)
-      proxy_owner.send("#{proxy_reflection.name}=",uid_members)
-    end
-
-    def uids
-      collect(&:uid)
-    end
-
-  end
 end
 

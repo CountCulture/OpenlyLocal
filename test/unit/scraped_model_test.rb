@@ -4,17 +4,19 @@ class TestModel <ActiveRecord::Base
   attr_accessor :council
   include ScrapedModel::Base
   set_table_name "committees"
-  has_many :test_child_models, :class_name => "TestChildModel", :foreign_key => "committee_id", :extend => ScrapedModel::UidAssociationExtension
+  has_many :test_child_models, :class_name => "TestChildModel", :foreign_key => "committee_id"
   has_many :test_join_models, :foreign_key => "committee_id"
-  has_many :test_joined_models, :through => :test_join_models, :extend => ScrapedModel::UidAssociationExtension
+  has_many :test_joined_models, :through => :test_join_models
   allow_access_to :test_child_models, :via => [:url, :uid]
 end
 
 class TestChildModel <ActiveRecord::Base
+  belongs_to :test_model, :class_name => "TestModel", :foreign_key => "committee_id"
   AssociationAttributes = [:uid, :url]
   attr_accessor :council
   include ScrapedModel::Base
   set_table_name "meetings"
+  allow_access_to :test_model, :via => [:uid, :title]
 end
 
 class TestJoinModel <ActiveRecord::Base
@@ -46,7 +48,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
       assert TestModel.respond_to?(:association_extension_attributes)
     end
     
-    should "return ;uid by default for association_extension_attributes" do
+    should "return :uid by default for association_extension_attributes" do
       assert_equal [:uid], TestModel.association_extension_attributes
     end
 
@@ -79,12 +81,17 @@ class ScrapedModelTest < ActiveSupport::TestCase
         assert @test_model.respond_to?(:test_child_model_uids=)
       end 
 
-      should "given replace existing child objects with ones identified by council id and attribute" do
+      should "replace existing child objects with ones identified by council id and attribute" do
         @test_model.test_child_model_urls = ["bar.com"]
         assert_equal [@new_child], @test_model.test_child_models
         @test_model.test_child_model_uids = [@child.uid]
         assert_equal [@child], @test_model.test_child_models.reload
       end
+
+      # should "return new associated objects when replacing existing ones" do
+      #   # keeps same behaviour as usual AR
+      #   assert_equal [@new_child], (@test_model.test_child_model_urls = ["bar.com"])
+      # end
 
       context "and using normalised_method to access it" do
         # using HMT assoc to access TestModel#normalised_title attribute
@@ -97,6 +104,39 @@ class ScrapedModelTest < ActiveSupport::TestCase
           assert_equal [@test_model], @joined_model.test_models
         end
       end 
+      
+      context "and model has belongs_to relationship" do
+         should "add reader methods via relationship" do
+           assert @child.respond_to?(:test_model_uid)
+           assert @child.respond_to?(:test_model_title)
+        end 
+        
+        should "return associated_objects identified by council and attribute" do
+          assert_equal "Foo  Committee", @child.test_model_title
+        end
+
+        should "add writer methods via relationship" do
+          assert @child.respond_to?(:test_model_uid=)
+          assert @child.respond_to?(:test_model_title=)
+        end 
+
+        should "replace existing parent objects with one identified by council id and attribute" do
+          @child.test_model_uid = 34
+          assert_equal @another_test_model, @child.test_model
+        end
+        
+        should "replace existing parent objects in DB with one identified by council id and attribute" do
+          # NB THIS IS DIFFERENT FROM USUAL ActiveRecord BEHAVIOUR BUT MUCH FOR USEFUL GIVEN HOW IT IS USED
+          @child.test_model_uid = 34
+          assert_equal @another_test_model, @child.test_model.reload
+        end
+
+        # should "return new associated object when replacing existing one" do
+        #   # keeps same behaviour as usual AR
+        #   assert_equal @another_test_model, (@child.test_model_uid = 34)
+        # end
+
+      end
  
     end
 
@@ -299,63 +339,4 @@ class ScrapedModelTest < ActiveSupport::TestCase
     end
   end
  
-  context "An instance of a class extends has_many relationship with ScrapedModel UidAssociationExtension" do
-    context "with child objects" do
-      setup do
-        @parent = TestModel.create!(:uid => 33, :council_id => 9)
-        @parent.test_child_models << @child = TestChildModel.create!(:uid => 33, :council_id => 9)
-        @new_child = TestChildModel.create!(:uid => 34, :council_id => 9, :url => "foo.com/child")
-        @another_council_child = TestModel.create!(:uid => 44, :council_id => 10)
-      end
- 
-      should "return child uids" do
-        assert_equal [@child.uid], @parent.test_child_models.uids
-      end
-      
-      should "replace existing children with ones with given uids" do
-        @parent.test_child_models.uids = [@new_child.uid]
-        assert_equal [@new_child], @parent.test_child_models
-      end
-      
-      should "not add children that don't exist for council" do
-        @parent.test_child_models.uids = [@another_council_child.uid]
-        assert_equal [], @parent.test_child_models
-      end
-
-      # should "add reader methods relating to attributes in AssociationAttributes" do
-      #   assert_equal [@child.url], @parent.test_child_models.urls
-      # end
-
-     #  should "add writer methods relating to attributes in AssociationAttributes" do
-      #   @parent.test_child_models.urls = [@new_child.url]
-      #   assert_equal [@new_child], @parent.test_child_models
-      #  end
-    end
-  end
-  
-  context "An instance of a class extends has_many through relationship with ScrapedModel UidAssociationExtension" do
-    
-    context "with joined objects" do
-      setup do
-        @parent = TestModel.create!(:uid => 33, :council_id => 9)
-        @parent.test_joined_models << @joined_model = TestJoinedModel.create!(:uid => 33, :council_id => 9)
-        @new_joined_model = TestJoinedModel.create!(:uid => 34, :council_id => 9)
-        @another_council_joined_model = TestJoinedModel.create!(:uid => 44, :council_id => 10)
-      end
-   
-      should "return joined objects uids" do
-        assert_equal [@joined_model.uid], @parent.test_joined_models.uids
-      end
-   
-      should "replace existing joined objects with ones with given uids" do
-        @parent.test_joined_models.uids = [@new_joined_model.uid]
-        assert_equal [@new_joined_model], @parent.test_joined_models
-      end
-   
-      should "not add joined objects that don't exist for council" do
-        @parent.test_joined_models.uids = [@another_council_joined_model.uid]
-        assert_equal [], @parent.test_joined_models
-      end
-    end
-  end
 end

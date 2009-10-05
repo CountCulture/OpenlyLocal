@@ -107,6 +107,12 @@ class MemberTest < ActiveSupport::TestCase
 
     end
     
+    should "allow access to wards via name" do
+      ward = Factory(:ward)
+      ward.members << @member
+      assert_equal ward.name, @member.ward_name
+    end
+    
     should "have no potential_meetings" do
       assert_equal [], @member.potential_meetings
     end

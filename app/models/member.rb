@@ -5,7 +5,7 @@ class Member < ActiveRecord::Base
   validates_presence_of :last_name, :url, :uid, :council_id
   validates_uniqueness_of :uid, :scope => :council_id # uid is unique id number assigned by council. It's possible that some councils may not assign them (e.g. GLA), but cross that bridge...
   has_many :memberships, :primary_key => :id
-  has_many :committees, :through => :memberships#, :extend => ScrapedModel::UidAssociationExtension
+  has_many :committees, :through => :memberships
   has_many :potential_meetings, 
            :class_name => 'Meeting',
            :finder_sql => 'SELECT meetings.* from meetings, memberships WHERE 
@@ -21,6 +21,7 @@ class Member < ActiveRecord::Base
   belongs_to :council
   belongs_to :ward
   allow_access_to :committees, :via => [:uid, :normalised_title]
+  allow_access_to :ward, :via => [:uid, :name]
   named_scope :current, :conditions => "date_left IS NULL"
   alias_attribute :title, :full_name
   after_create :tweet_about_it   
