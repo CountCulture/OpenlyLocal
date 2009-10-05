@@ -8,7 +8,7 @@ module NameParser
   def parse(fn)
     poss_quals = Qualifications + Qualifications.map{|e| e.gsub('.','')}
     titles, qualifications, result_hash = [], [], {}
-    fn = fn.gsub('&nbsp;', ' ').sub(/(Councillor|Councilor|Councilllor|Cllr|Councillior|CC)\b/, '').sub(/- [A-Za-z ]+$/,'').gsub(/\([\w ]+\)/, '')
+    fn = fn.gsub(/&nbsp;|[\x7F-\xFF]/, ' ').strip.sub(/(Councillor|Councilor|Councilllor|Cllr|Councillior|CC)\b/, '').sub(/- [A-Za-z ]+$/,'').gsub(/\([\w ]+\)/, '')
     titles = Titles.select{ |t| fn.sub!(Regexp.new("#{t}\\.?\\s"),'')}
     fn.strip! # so initials should have no white space before them
     qualifications = poss_quals.select{ |q| fn.sub!(Regexp.new("\\s#{Regexp.escape(q)}"),'')}.compact
