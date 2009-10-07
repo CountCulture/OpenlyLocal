@@ -166,10 +166,14 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "council>committees>committee>title", @committee.title
       end
       
-      # should "show associated meetings" do
-      #   assert_select "council>meetings>meeting>url", @meeting.url
-      # end
-      # 
+      should "show recent activity" do
+        assert_select "recent-activity>members>member>first-name", @member.first_name
+      end
+    
+      should "show associated meetings" do
+        assert_select "council>meetings>meeting>url", @meeting.url
+      end
+      
       should "show associated wards" do
         assert_select "council>wards>ward>url", @ward.url
       end

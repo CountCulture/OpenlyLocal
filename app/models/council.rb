@@ -92,14 +92,17 @@ class Council < ActiveRecord::Base
     id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
   end
   
-  def to_xml(options={})
-    old_to_xml({:except => [:base_url, :portal_system_id], :methods => [:openlylocal_url]}.merge(options))
+  def to_xml(options={}, &block)
+    old_to_xml({:except => [:base_url, :portal_system_id], :methods => [:openlylocal_url]}.merge(options), &block)
   end
   
   def to_detailed_xml(options={})
     includes = {:members => {:only => [:id,:first_name, :last_name, :openlylocal_url]}, :wards => {}}
     [:committees, :datasets].each{ |a| includes[a] = { :only => [ :id, :title ] } }
-    to_xml({:include => includes}.merge(options))
+    to_xml({:include => includes}.merge(options)) do |builder|
+      builder<<meetings.forthcoming.to_xml(:skip_instruct => true, :root => "meetings", :methods => [:title])
+      builder<<recent_activity.to_xml(:skip_instruct => true, :root => "recent-activity")
+    end
   end
   
 end

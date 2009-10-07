@@ -275,7 +275,14 @@ class CouncilTest < ActiveSupport::TestCase
         member = Factory(:member, :council => @council)
         datapoint = Factory(:datapoint, :council => @council)
         committee = Factory(:committee, :council => @council)
-        Factory(:meeting, :council => @council, :committee => committee)
+        Member.record_timestamps = false
+        @old_member = Factory(:member, :council => @council, :email => "old_email@test.com", :created_at  => 1.month.ago, :updated_at  => 1.month.ago)
+        Member.record_timestamps = true
+        Meeting.record_timestamps = false
+        @past_meeting = Factory(:meeting, :council => @council, :committee => committee, :created_at  => 1.month.ago, :updated_at  => 1.month.ago)
+        Meeting.record_timestamps = true
+        @future_meeting = Factory(:meeting, :council => @council, :committee => committee, :date_held => 3.days.from_now, :created_at  => 1.month.ago, :updated_at  => 1.month.ago)
+        @updated_past_meeting = Factory(:meeting, :council => @council, :committee => committee)
         Factory(:ward, :council => @council)
       end
       
@@ -300,7 +307,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "not include member emails" do
-        assert_no_match %r(<member.+<email.+</member)m, @council.to_detailed_xml
+        assert_no_match %r(<member.+<email>#{@old_member.email}.+</member)m, @council.to_detailed_xml
       end
       
       should "include dataset ids" do
@@ -311,12 +318,20 @@ class CouncilTest < ActiveSupport::TestCase
         assert_match %r(<committee.+<id.+</committee)m, @council.to_detailed_xml
       end
       
-      # should "include meeting ids" do
-      #   assert_match %r(<meeting.+<id.+</meeting)m, @council.to_detailed_xml
-      # end
-      # 
+      should "include forthcoming meeting ids" do
+        assert_match %r(<meeting.+<id type=\"integer\">#{@future_meeting.id}.+</meeting)m, @council.to_detailed_xml
+      end
+      
+      should "exclude past meeting ids" do
+        assert_no_match %r(<meeting.+<id type=\"integer\">#{@past_meeting.id}.+</meeting)m, @council.to_detailed_xml
+      end
+      
       should "include wards ids" do
         assert_match %r(<ward.+<id.+</ward)m, @council.to_detailed_xml
+      end
+      
+      should "include recent activity" do
+        assert_match %r(<recent-activity.+<member.+</recent-activity)m, @council.to_detailed_xml
       end
     end
         

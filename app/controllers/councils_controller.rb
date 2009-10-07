@@ -24,7 +24,7 @@ class CouncilsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml { render :xml => @council.to_detailed_xml }
-      format.json { render :json =>  @council.to_json(:include => [:members, :committees, :datasets, :wards]) }
+      format.json { render :as_json => @council.to_detailed_xml }
     end
   end
   
