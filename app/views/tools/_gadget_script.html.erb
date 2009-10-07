@@ -26,9 +26,10 @@
     var memberHtml = "";
     var committeeHtml = "";
     var meetingHtml = "";
+    var summaryHtml = "<h4>Summary</h4><div class='contact_details'"> + council.address + "</div>";
     for (var i = 0; i < council.members.length; i++) {
       var m = council.members[i];
-      memberHtml += "<a href='http://openlylocal.com/members/"+ m.id +"'>" + m.first_name + " " + m.last_name + "</a> ("+ m.party.name +")<br />";
+      memberHtml += "<a href='http://openlylocal.com/members/"+ m.id +"'>" + m.first_name + " " + m.last_name + "</a> ("+ m.party +")<br />";
     }    
    
     for (var i = 0; i < council.committees.length; i++) {
@@ -43,6 +44,7 @@
     document.getElementById('members').innerHTML = memberHtml;
     document.getElementById('committees').innerHTML = committeeHtml;
     document.getElementById('meetings').innerHTML = meetingHtml;
+    document.getElementById('summary').innerHTML = summaryHtml;
     
     tabs.addTab("Summary", {
        contentContainer: document.getElementById("summary")
@@ -64,7 +66,7 @@
   
 </script>
 
-<div id="summary" class="collection"><h4>Summary</h4></div>
+<div id="summary" class="collection"></div>
 <div id="members" class="collection" style="display:none"><h4>Councillors</h4></div>
 <div id="committees" class="collection" style="display:none"><h4>Committees</h4></div>
 <div id="meetings" class="collection" style="display:none"><h4>Meetings</h4></div>
