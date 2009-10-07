@@ -97,7 +97,7 @@ class Council < ActiveRecord::Base
   end
   
   def to_detailed_xml(options={})
-    includes = {:members => {:only => [:id,:first_name, :last_name, :openlylocal_url]}, :wards => {}}
+    includes = {:members => {:only => [:id, :first_name, :last_name]}, :wards => {}}
     [:committees, :datasets].each{ |a| includes[a] = { :only => [ :id, :title ] } }
     to_xml({:include => includes}.merge(options)) do |builder|
       builder<<meetings.forthcoming.to_xml(:skip_instruct => true, :root => "meetings", :methods => [:title])

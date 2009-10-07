@@ -34,9 +34,18 @@
       var c = council.committees[i];
       committeeHtml += "<a href='http://openlylocal.com/committees/"+ c.id +"'>" + c.title + "</a><br />";
     } 
+
+    for (var i = 0; i < council.meetings.length; i++) {
+      var m = council.meetings[i];
+      meetingHtml += "<a href='http://openlylocal.com/meetings/"+ m.id +"'>" + m.title + "</a><br />";
+    } 
     document.getElementById('members').innerHTML = memberHtml;
     document.getElementById('committees').innerHTML = committeeHtml;
+    document.getElementById('committees').innerHTML = meetingHtml;
     
+    tabs.addTab("Summary", {
+       contentContainer: document.getElementById("summary")
+    });
     tabs.addTab("Members", {
        contentContainer: document.getElementById("members")
     });
@@ -54,6 +63,7 @@
   
 </script>
 
+<div id="summary" class="collection"><h4>Summary</h4></div>
 <div id="members" class="collection"><h4>Councillors</h4></div>
 <div id="committees"  class="collection" style="display:none"><h4>Committees</h4></div>
 <div id="meetings"  class="collection" style="display:none"><h4>Meetings</h4></div>
