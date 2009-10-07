@@ -37,6 +37,10 @@ class Meeting < ActiveRecord::Base
     "#{committee.title} meeting, #{date_held.to_s(:event_date)}"
   end
   
+  def formatted_date
+    date_held.to_s(:event_date).squish
+  end
+  
   def agenda_document_body=(doc_body=nil)
     create_document_body(doc_body, :agenda)
   end

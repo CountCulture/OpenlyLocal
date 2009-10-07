@@ -39,7 +39,7 @@
 
     for (var i = 0; i < council.meetings.length; i++) {
       var m = council.meetings[i];
-      meetingHtml += "<a href='http://openlylocal.com/meetings/"+ m.id +"'>" + m.title + "</a><br />";
+      meetingHtml += m.formatted_date + " <a href='http://openlylocal.com/meetings/"+ m.id +"'>" + m.title + "</a><br />";
     } 
     document.getElementById('members').innerHTML = memberHtml;
     document.getElementById('committees').innerHTML = committeeHtml;

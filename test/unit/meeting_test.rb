@@ -93,6 +93,10 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "Audit Group meeting, #{@meeting.date_held.to_s(:event_date)}", @meeting.extended_title
     end
     
+    should "return formatted date as formatted date with extra spaces removed" do
+      assert_equal "Nov 6 2008, 7.30PM", @meeting.formatted_date
+    end
+    
     should "have polymorphic Meeting type document as minutes" do
       another_doc = Factory(:document, :title => "some other document", :document_owner => @meeting)
       minutes = Factory(:document, :title => "minutes of some meeting", :document_type => "Minutes", :document_owner => @meeting)

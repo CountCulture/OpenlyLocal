@@ -323,11 +323,15 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "include forthcoming meeting ids" do
-        assert_match %r(<meeting.+<id type=\"integer\">#{@future_meeting.id}.+</meeting)m, @council.to_detailed_xml
+        assert_match %r(<meeting.+<id type=\"integer\">#{@future_meeting.id}</id.+</meeting)m, @council.to_detailed_xml
+      end
+      
+      should "include forthcoming meeting formatted_date" do
+        assert_match %r(<meeting.+<formatted-date>#{@future_meeting.formatted_date}.+</meeting)m, @council.to_detailed_xml
       end
       
       should "exclude past meeting ids" do
-        assert_no_match %r(<meeting.+<id type=\"integer\">#{@past_meeting.id}.+</meeting)m, @council.to_detailed_xml
+        assert_no_match %r(<meeting.+<id type=\"integer\">#{@past_meeting.id}</id.+</meeting)m, @council.to_detailed_xml
       end
       
       should "include wards ids" do
