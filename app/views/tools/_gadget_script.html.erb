@@ -26,7 +26,7 @@
     var memberHtml = "";
     var committeeHtml = "";
     var meetingHtml = "";
-    var summaryHtml = "<h4>Summary</h4><div class='contact_details'"> + council.address + "</div>";
+    var summaryHtml = "<h4>Summary</h4><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'>" + council.url + "</a></div>";
     for (var i = 0; i < council.members.length; i++) {
       var m = council.members[i];
       memberHtml += "<a href='http://openlylocal.com/members/"+ m.id +"'>" + m.first_name + " " + m.last_name + "</a> ("+ m.party +")<br />";
@@ -66,7 +66,7 @@
   
 </script>
 
-<div id="summary" class="collection"></div>
-<div id="members" class="collection" style="display:none"><h4>Councillors</h4></div>
-<div id="committees" class="collection" style="display:none"><h4>Committees</h4></div>
-<div id="meetings" class="collection" style="display:none"><h4>Meetings</h4></div>
+<div id="summary" class="collection">Loading...</div>
+<div id="members" class="collection" style="display:none">Loading...</div>
+<div id="committees" class="collection" style="display:none">Loading...</div>
+<div id="meetings" class="collection" style="display:none">Loading...</div>
