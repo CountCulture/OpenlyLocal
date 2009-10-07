@@ -17,12 +17,85 @@
   <UserPref name="council"  
     display_name="Council" datatype="enum" 
      required="true">
-    <EnumValue value="1" 
-        display_value="Wandsworth"/>
-    <EnumValue value="2" 
-        display_value="Merton"/>
-    <EnumValue value="187" 
-        display_value="Birmingham"/>
+     <EnumValue value="37" display_value="Aberdeen City Council"/>
+     <EnumValue value="38" display_value="Allerdale Borough Council"/>
+     <EnumValue value="40" display_value="Basildon District Council"/>
+     <EnumValue value="144" display_value="Bedford Borough Council"/>
+     <EnumValue value="41" display_value="Belfast City Council"/>
+     <EnumValue value="167" display_value="Birmingham City Council"/>
+     <EnumValue value="42" display_value="Blaby District Council"/>
+     <EnumValue value="112" display_value="Blackburn with Darwen Borough Council"/>
+     <EnumValue value="113" display_value="Bolton Metropolitan Borough Council"/>
+     <EnumValue value="43" display_value="Bracknell Forest Council"/>
+     <EnumValue value="44" display_value="Breckland District Council"/>
+     <EnumValue value="45" display_value="Brighton and Hove City Council"/>
+     <EnumValue value="149" display_value="Bristol City Council"/>
+     <EnumValue value="46" display_value="Bromsgrove District Council"/>
+     <EnumValue value="47" display_value="Buckinghamshire County Council"/>
+     <EnumValue value="48" display_value="Canterbury City Council"/>
+     <EnumValue value="145" display_value="Central Bedfordshire Council"/>
+     <EnumValue value="152" display_value="Cheltenham Borough Council"/>
+     <EnumValue value="146" display_value="Cheshire East"/>
+     <EnumValue value="147" display_value="Cheshire West and Chester"/>
+     <EnumValue value="36" display_value="City of Westminster"/>
+     <EnumValue value="111" display_value="City of York"/>
+     <EnumValue value="53" display_value="Cornwall Council"/>
+     <EnumValue value="54" display_value="Dartford Borough Council"/>
+     <EnumValue value="117" display_value="Derby City Council"/>
+     <EnumValue value="168" display_value="Durham County Council"/>
+     <EnumValue value="56" display_value="East Lindsey District Council"/>
+     <EnumValue value="55" display_value="Eastleigh Borough Council"/>
+     <EnumValue value="59" display_value="Exeter City"/>
+     <EnumValue value="61" display_value="Gloucester City Council"/>
+     <EnumValue value="63" display_value="Halton Borough Council"/>
+     <EnumValue value="64" display_value="Herefordshire Council"/>
+     <EnumValue value="298" display_value="Isle of Wight Council"/>
+     <EnumValue value="68" display_value="Kent County Council"/>
+     <EnumValue value="70" display_value="Lancaster City Council"/>
+     <EnumValue value="71" display_value="Leeds City Council"/>
+     <EnumValue value="303" display_value="Leicester City Council"/>
+     <EnumValue value="72" display_value="Leicestershire County Council"/>
+     <EnumValue value="156" display_value="Lichfield District Council"/>
+     <EnumValue value="306" display_value="Lincoln City Council"/>
+     <EnumValue value="73" display_value="Liverpool City Council"/>
+     <EnumValue value="19" display_value="London Borough of Barking &amp; Dagenham"/>
+     <EnumValue value="20" display_value="London Borough of Barnet"/>
+     <EnumValue value="5" display_value="London Borough of Bexley"/>
+     <EnumValue value="21" display_value="London Borough of Brent"/>
+     <EnumValue value="22" display_value="London Borough of Bromley"/>
+     <EnumValue value="25" display_value="London Borough of Croydon"/>
+     <EnumValue value="6" display_value="London Borough of Enfield"/>
+     <EnumValue value="28" display_value="London Borough of Greenwich"/>
+     <EnumValue value="7" display_value="London Borough of Hackney"/>
+     <EnumValue value="8" display_value="London Borough of Haringey"/>
+     <EnumValue value="9" display_value="London Borough of Harrow"/>
+     <EnumValue value="31" display_value="London Borough of Hillingdon"/>
+     <EnumValue value="10" display_value="London Borough of Hounslow"/>
+     <EnumValue value="32" display_value="London Borough of Islington"/>
+     <EnumValue value="12" display_value="London Borough of Lambeth"/>
+     <EnumValue value="1" display_value="London Borough of Merton"/>
+     <EnumValue value="13" display_value="London Borough of Newham"/>
+     <EnumValue value="14" display_value="London Borough of Redbridge"/>
+     <EnumValue value="35" display_value="London Borough of Richmond upon Thames"/>
+     <EnumValue value="15" display_value="London Borough of Southwark"/>
+     <EnumValue value="4" display_value="London Borough of Sutton"/>
+     <EnumValue value="16" display_value="London Borough of Tower Hamlets"/>
+     <EnumValue value="17" display_value="London Borough of Waltham Forest"/>
+     <EnumValue value="2" display_value="London Borough of Wandsworth"/>
+     <EnumValue value="74" display_value="Maidstone Borough Council"/>
+     <EnumValue value="77" display_value="Newcastle upon Tyne City Council"/>
+     <EnumValue value="126" display_value="Northamptonshire County Council"/>
+     <EnumValue value="11" display_value="Royal Borough of Kingston upon Thames"/>
+     <EnumValue value="369" display_value="Salford City Council"/>
+     <EnumValue value="89" display_value="Sefton Metropolitan Borough Council"/>
+     <EnumValue value="130" display_value="Sevenoaks District Council"/>
+     <EnumValue value="90" display_value="Slough Borough Council"/>
+     <EnumValue value="98" display_value="St Albans City &amp; District Council"/>
+     <EnumValue value="96" display_value="Stoke-on-Trent City Council"/>
+     <EnumValue value="97" display_value="Stratford-on-Avon"/>
+     <EnumValue value="134" display_value="Sunderland City Council"/>
+     <EnumValue value="177" display_value="West Lothian Council"/>
+     <EnumValue value="108" display_value="Wirral Metropolitan Borough"/>
   </UserPref>
 
 

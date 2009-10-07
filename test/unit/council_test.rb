@@ -272,7 +272,7 @@ class CouncilTest < ActiveSupport::TestCase
     
     context "when converting council to_detailed_xml" do
       setup do
-        member = Factory(:member, :council => @council)
+        member = Factory(:member, :council => @council, :party => "foobar")
         datapoint = Factory(:datapoint, :council => @council)
         committee = Factory(:committee, :council => @council)
         Member.record_timestamps = false
@@ -304,6 +304,10 @@ class CouncilTest < ActiveSupport::TestCase
       
       should "include member names" do
         assert_match %r(<member.+<first-name.+</member)m, @council.to_detailed_xml
+      end
+      
+      should "include member party" do
+        assert_match %r(<member.+<party>foobar.+</member)m, @council.to_detailed_xml
       end
       
       should "not include member emails" do
