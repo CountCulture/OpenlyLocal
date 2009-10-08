@@ -341,6 +341,14 @@ class CouncilTest < ActiveSupport::TestCase
       should "include recent activity" do
         assert_match %r(<recent-activity.+<member.+</recent-activity)m, @council.to_detailed_xml
       end
+      
+      should "include formatted meeting dates in recent activity" do
+        assert_match %r(<recent-activity.+<meeting.+<formatted-date>#{@updated_past_meeting.formatted_date}.+</recent-activity)m, @council.to_detailed_xml
+      end
+      
+      # should "include status of member in recent activity" do
+      #   assert_match %r(<recent-activity.+<member.+<status.+</member.+</recent-activity)m, @council.to_detailed_xml
+      # end
     end
         
     should "return name without Borough etc as short_name" do

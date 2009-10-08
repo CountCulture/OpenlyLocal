@@ -18,6 +18,7 @@ class Meeting < ActiveRecord::Base
   alias_attribute :location, :venue
   alias_attribute :created, :created_at
   alias_attribute :last_modified, :updated_at
+  alias_method :old_to_xml, :to_xml
 
   def validate
     errors.add_to_base("either uid or url must be present") if uid.blank?&&url.blank?
@@ -60,6 +61,10 @@ class Meeting < ActiveRecord::Base
   
   def status
     date_held > Time.now ? "future" : "past"
+  end
+  
+  def to_xml(options={}, &block)
+    old_to_xml({:methods => [:formatted_date, :openlylocal_url, :title] }.merge(options), &block)
   end
   
   private

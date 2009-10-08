@@ -143,6 +143,20 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "future", new_meeting(:date_held => 1.hour.from_now).status
     end
     
+    context "when converting meeting to_xml" do
+      should "include openlylocal_url" do
+        assert_match %r(<openlylocal-url), @meeting.to_xml
+      end
+      
+      should "include formatted_date" do
+        assert_match %r(<formatted-date), @meeting.to_xml
+      end
+      
+      should "include title" do
+        assert_match %r(<title), @meeting.to_xml
+      end
+    end
+    
     context "when calling minutes_document_body setter" do
       setup do
         @meeting.minutes_document_body = "some document text"

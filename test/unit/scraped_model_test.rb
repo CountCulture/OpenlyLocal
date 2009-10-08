@@ -292,7 +292,11 @@ class ScrapedModelTest < ActiveSupport::TestCase
     should "return nil for status by default" do
       assert_nil @test_model.status
     end
-   
+    
+    should "calulate openlylocal_url from table name" do
+      assert_equal "http://#{DefaultDomain}/committees/#{@test_model.to_param}", @test_model.openlylocal_url
+    end
+    
     context "when saving_without_losing_dirty" do
       setup do
         @test_model.save_without_losing_dirty

@@ -89,6 +89,10 @@ module ScrapedModel
         id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
       end
 
+      def openlylocal_url
+        "http://#{DefaultDomain}/#{self.class.table_name}/#{to_param}"
+      end
+
       protected
       # Updates timestamp of council when member details are updated, new member is added or deleted
       def mark_council_as_updated
