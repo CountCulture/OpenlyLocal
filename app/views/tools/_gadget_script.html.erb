@@ -18,15 +18,35 @@
     gadgets.io.makeRequest(url, insertCouncilData, params);
   };
 
-  
   function insertCouncilData(obj)
   { 
     var council = obj.data.council;
     gadgets.window.setTitle(council.name + " :: OpenlyLocal");
+    
+    var partyBreakdown = [];
+    for (var i = 0; i < council.members.length; i++) {
+      var p = council.members[i].party;
+      partyBreakdown[p] === undefined ? partyBreakdown[p] = 1 : partyBreakdown[p] +=1;
+    }
+    // turn in to proper array
+    for (var party in partyBreakdown) {
+      if (partyBreakdown.hasOwnProperty(party)) {partyBreakdown.push([partyBreakdown[party], party]);}
+    }
+    partyBreakdown = partyBreakdown.sort(function (a,b) {return b[0] - a[0]})
     var memberHtml = "";
     var committeeHtml = "";
     var meetingHtml = "";
-    var summaryHtml = "<h4>Summary</h4><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'>" + council.url + "</a></div>";
+    var summaryHtml = "<h4>" + council.name + "</h4><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'>" + council.url + "</a></div>";
+    summaryHtml += "<div class='party_breakdown'>" + council.members.length + " councillors (";
+
+    for (var i = 0; i < partyBreakdown.length; i++) {
+      var p = partyBreakdown[i];
+      summaryHtml += partyBreakdown[i][0] + " " + partyBreakdown[i][1];
+      if(partyBreakdown.length - i > 1){summaryHtml += ", ";};
+    }
+    summaryHtml += ")</div>";
+
+
     for (var i = 0; i < council.members.length; i++) {
       var m = council.members[i];
       memberHtml += "<a href='http://openlylocal.com/members/"+ m.id +"'>" + m.first_name + " " + m.last_name + "</a> ("+ m.party +")<br />";
