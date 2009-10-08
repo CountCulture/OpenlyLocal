@@ -3,6 +3,7 @@
   .collection { font-size: 70%;  padding: 5px; }
   h3 { border-bottom: 1px solid #676767;}
   ul {padding: 10px;}
+  #footer {padding 5px; background-color: #eee; border-top: 1px solid #676767;}
 </style>
 
 <script type="text/javascript">
@@ -51,7 +52,7 @@
     var memberHtml = "";
     var committeeHtml = "";
     var meetingHtml = "";
-    var summaryHtml = "<h2>" + council.name + "</h2><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'>" + council.url + "</a></div>";
+    var summaryHtml = "<h2><a href='" + council.openlylocal_url + "'>" + council.name + "</a></h2><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'>" + council.url + "</a></div>";
     summaryHtml += "<div class='party_breakdown'><strong>" + council.members.length + " councillors</strong> (";
 
     for (var i = 0; i < partyBreakdown.length; i++) {
@@ -64,11 +65,10 @@
     var recentActivity = council.recent_activity
     for (var coll in recentActivity) {
       if (recentActivity.hasOwnProperty(coll)) {
-        summaryHtml += "<h3>" + recentActivity[coll].length + " new/changed " + coll + "</h3><ul>";
+        summaryHtml += "<h3>" + recentActivity[coll].length + " new/updated " + coll + "</h3><ul>";
         for (var i = 0; i < recentActivity[coll].length; i++) {
           summaryHtml += listItemFor(recentActivity[coll][i]);
         }
-
         summaryHtml += "</ul>";
       }
     }

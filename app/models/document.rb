@@ -15,7 +15,7 @@ class Document < ActiveRecord::Base
   end
   
   def title
-    self[:title] || "#{document_type} for #{document_owner.title}"
+    self[:title] || "#{document_type} for #{document_owner.extended_title}"
   end
   
   def extended_title

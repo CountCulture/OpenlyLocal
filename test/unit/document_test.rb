@@ -42,14 +42,14 @@ class DocumentTest < ActiveSupport::TestCase
         @document = Factory(:document, :document_owner => @doc_owner)
       end
       
-      should "return document type and document owner as title" do
-        @document.stubs(:document_type).returns("FooDocument")
-        assert_equal "FooDocument for #{@doc_owner.title}", @document.title
-      end
-      
       should "return title attribute if set" do
         @document.title = "new title"
         assert_equal "new title", @document.title
+      end
+      
+      should "return document type, document owner extended title as title" do
+        @document.stubs(:document_type).returns("FooDocument")
+        assert_equal "FooDocument for #{@doc_owner.extended_title}", @document.title
       end
       
       should "return document type, document owner extended title as extended title" do
