@@ -1,9 +1,12 @@
 
 <style> 
   .collection { font-size: 70%;  padding: 5px; }
-  h3 { border-bottom: 1px solid #676767;}
-  ul {padding: 10px;}
+  h3 { border-bottom: 1px solid #676767; margin: 0.5em 0 0 0;}
+  ul {padding: 10px; margin-top: 0.5em;}
   #footer {padding 5px; background-color: #eee; border-top: 1px solid #676767;}
+  a {text-decoration: none; color: #003366;}
+  a.official_page {color: #515151;}
+  a:hover {text-decoration: underline; color: black;}
 </style>
 
 <script type="text/javascript">
@@ -29,7 +32,7 @@
     li += " <a href='" + (obj.openlylocal_url || obj.url) + "'>";
     li += (obj.title || obj.name || (obj.first_name + " " + obj.last_name));
     li += "</a>" + (obj.party ? " (" + obj.party + ")" : "");
-    li += "</li>";
+    li += obj.openlylocal_url && obj.url ? (" <a href='" + obj.url + "' class='council_page'>official page</a></li>") : "</li>";
     return li;
   }
   

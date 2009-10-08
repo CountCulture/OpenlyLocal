@@ -19,6 +19,7 @@ class NameParserTest < Test::Unit::TestCase
     "Mr Fred Flintstone" => {:name_title => "Mr", :first_name => "Fred", :last_name => "Flintstone"},
     "Mr#{160.chr}Fred Flintstone" => {:name_title => "Mr", :first_name => "Fred", :last_name => "Flintstone"},
     "Mr Barry Abraham" => {:name_title => "Mr", :first_name => "Barry", :last_name => "Abraham"}, # spaces in this are actually not usual ascii space
+    "Ms Siobhán Dorée" => {:name_title => "Ms", :first_name => "Siobhán", :last_name => "Dorée"},
     " \r\n\t  Mr&nbsp;Fred&nbsp;Flintstone" => {:name_title => "Mr", :first_name => "Fred", :last_name => "Flintstone"},
     "Mr Fred McFlintstone" => {:name_title => "Mr", :first_name => "Fred", :last_name => "McFlintstone"},
     "Prof Dr Fred Flintstone" => {:name_title => "Prof Dr", :first_name => "Fred", :last_name => "Flintstone"},
