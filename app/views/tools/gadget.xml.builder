@@ -14,6 +14,7 @@ xml.Module do
                     
     xml.Require :feature => "settitle"
     xml.Require :feature => "tabs"
+    xml.Require :feature => "setprefs"
   end
   
   xml.UserPref :name => "council",  
@@ -26,6 +27,8 @@ xml.Module do
 
     end
   end
+  xml.UserPref :name => "selectedTab",
+               :datatype => "hidden"
   
   xml.Content :type => "html" do
     xml.cdata!  render( :partial => "tools/gadget_script.html.erb" )

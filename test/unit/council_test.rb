@@ -272,17 +272,18 @@ class CouncilTest < ActiveSupport::TestCase
     
     context "when converting council to_detailed_xml" do
       setup do
-        member = Factory(:member, :council => @council, :party => "foobar")
+        @member = Factory(:member, :council => @council, :party => "foobar")
         datapoint = Factory(:datapoint, :council => @council)
-        committee = Factory(:committee, :council => @council)
-        Member.record_timestamps = false
-        @old_member = Factory(:member, :council => @council, :email => "old_email@test.com", :created_at  => 1.month.ago, :updated_at  => 1.month.ago)
-        Member.record_timestamps = true
-        Meeting.record_timestamps = false
-        @past_meeting = Factory(:meeting, :council => @council, :committee => committee, :created_at  => 1.month.ago, :updated_at  => 1.month.ago)
-        Meeting.record_timestamps = true
-        @future_meeting = Factory(:meeting, :council => @council, :committee => committee, :date_held => 3.days.from_now, :created_at  => 1.month.ago, :updated_at  => 1.month.ago)
-        @updated_past_meeting = Factory(:meeting, :council => @council, :committee => committee)
+        @committee = Factory(:committee, :council => @council)
+        mark_as_stale(@committee)
+        @updated_committee = Factory(:committee, :council => @council)
+        @old_member = Factory(:member, :council => @council, :email => "old_email@test.com")
+        mark_as_stale(@old_member)
+        @past_meeting = Factory(:meeting, :council => @council, :committee => @committee)
+        mark_as_stale(@past_meeting)
+        @future_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 3.days.from_now, :created_at  => 1.month.ago, :updated_at  => 1.month.ago)
+        mark_as_stale(@future_meeting)
+        @updated_past_meeting = Factory(:meeting, :council => @council, :committee => @committee)
         Factory(:ward, :council => @council)
       end
       
@@ -310,6 +311,10 @@ class CouncilTest < ActiveSupport::TestCase
         assert_match %r(<member.+<party>foobar.+</member)m, @council.to_detailed_xml
       end
       
+      should "include member urls" do
+        assert_match %r(<member.+<url>#{@member.url}.+</url)m, @council.to_detailed_xml
+      end
+      
       should "not include member emails" do
         assert_no_match %r(<member.+<email>#{@old_member.email}.+</member)m, @council.to_detailed_xml
       end
@@ -320,6 +325,14 @@ class CouncilTest < ActiveSupport::TestCase
       
       should "include committee ids" do
         assert_match %r(<committee.+<id.+</committee)m, @council.to_detailed_xml
+      end
+      
+      should "include committee urls" do
+        assert_match %r(<committee.+<url>#{@committee.url}</url.+</committee)m, @council.to_detailed_xml
+      end
+      
+      should "include committee openlylocal urls" do
+        assert_match %r(<committee.+<openlylocal-url>#{@committee.openlylocal_url}</openlylocal.+</committee)m, @council.to_detailed_xml
       end
       
       should "include forthcoming meeting ids" do
@@ -379,5 +392,12 @@ class CouncilTest < ActiveSupport::TestCase
       # end
     end
     
+  end
+  
+  private
+  def mark_as_stale(rec)
+    rec.class.record_timestamps = false
+    rec.update_attributes(:created_at => 2.months.ago, :updated_at => 2.months.ago)
+    rec.class.record_timestamps = true
   end
 end

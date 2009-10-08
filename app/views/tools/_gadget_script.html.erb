@@ -1,6 +1,8 @@
 
 <style> 
-  .collection { font-size: 70%;  padding: 5px; background-color: #FFFFBF;} 
+  .collection { font-size: 70%;  padding: 5px; }
+  h3 { border-bottom: 1px solid #676767;}
+  ul {padding: 10px;}
 </style>
 
 <script type="text/javascript">
@@ -8,6 +10,7 @@
   
   // Initialize tabs.
   var tabs = new gadgets.TabSet(__MODULE_ID__);
+  tabs.alignTabs("left");
                   
   function getCouncilData() {
     var councilId = prefs.getString("council");
@@ -18,12 +21,24 @@
     gadgets.io.makeRequest(url, insertCouncilData, params);
   };
 
+  function listItemFor(obj)
+  {
+    var li = "<li>";
+    li += obj.formatted_date || "";
+    li += " <a href='" + (obj.openlylocal_url || obj.url) + "'>";
+    li += (obj.title || obj.name || (obj.first_name + " " + obj.last_name));
+    li += "</a>" + (obj.party ? " (" + obj.party + ")" : "");
+    li += "</li>";
+    return li;
+  }
+  
   function insertCouncilData(obj)
   { 
     var council = obj.data.council;
+    var partyBreakdown = [];
+    var footer = "</div><div id='footer'>More details and info at <a href='http://openlylocal.com'>OpenlyLocal</a> :: Making local government more transparent</div>";
     gadgets.window.setTitle(council.name + " :: OpenlyLocal");
     
-    var partyBreakdown = [];
     for (var i = 0; i < council.members.length; i++) {
       var p = council.members[i].party;
       partyBreakdown[p] === undefined ? partyBreakdown[p] = 1 : partyBreakdown[p] +=1;
@@ -32,39 +47,50 @@
     for (var party in partyBreakdown) {
       if (partyBreakdown.hasOwnProperty(party)) {partyBreakdown.push([partyBreakdown[party], party]);}
     }
-    partyBreakdown = partyBreakdown.sort(function (a,b) {return b[0] - a[0]})
+    partyBreakdown = partyBreakdown.sort(function (a,b) {return b[0] - a[0]}); //sort with largest first
     var memberHtml = "";
     var committeeHtml = "";
     var meetingHtml = "";
-    var summaryHtml = "<h4>" + council.name + "</h4><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'>" + council.url + "</a></div>";
-    summaryHtml += "<div class='party_breakdown'>" + council.members.length + " councillors (";
+    var summaryHtml = "<h2>" + council.name + "</h2><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'>" + council.url + "</a></div>";
+    summaryHtml += "<div class='party_breakdown'><strong>" + council.members.length + " councillors</strong> (";
 
     for (var i = 0; i < partyBreakdown.length; i++) {
       var p = partyBreakdown[i];
       summaryHtml += partyBreakdown[i][0] + " " + partyBreakdown[i][1];
-      if(partyBreakdown.length - i > 1){summaryHtml += ", ";};
+      if(partyBreakdown.length - i > 1) { summaryHtml += ", "; };
     }
     summaryHtml += ")</div>";
+    
+    var recentActivity = council.recent_activity
+    for (var coll in recentActivity) {
+      if (recentActivity.hasOwnProperty(coll)) {
+        summaryHtml += "<h3>" + recentActivity[coll].length + " new/changed " + coll + "</h3><ul>";
+        for (var i = 0; i < recentActivity[coll].length; i++) {
+          summaryHtml += listItemFor(recentActivity[coll][i]);
+        }
 
+        summaryHtml += "</ul>";
+      }
+    }
 
     for (var i = 0; i < council.members.length; i++) {
       var m = council.members[i];
-      memberHtml += "<a href='http://openlylocal.com/members/"+ m.id +"'>" + m.first_name + " " + m.last_name + "</a> ("+ m.party +")<br />";
+      memberHtml += listItemFor(m);
     }    
    
     for (var i = 0; i < council.committees.length; i++) {
       var c = council.committees[i];
-      committeeHtml += "<a href='http://openlylocal.com/committees/"+ c.id +"'>" + c.title + "</a><br />";
+      committeeHtml += listItemFor(c);
     } 
 
     for (var i = 0; i < council.meetings.length; i++) {
       var m = council.meetings[i];
-      meetingHtml += m.formatted_date + " <a href='http://openlylocal.com/meetings/"+ m.id +"'>" + m.title + "</a><br />";
+      meetingHtml += listItemFor(m);
     } 
-    document.getElementById('members').innerHTML = memberHtml;
-    document.getElementById('committees').innerHTML = committeeHtml;
-    document.getElementById('meetings').innerHTML = meetingHtml;
-    document.getElementById('summary').innerHTML = summaryHtml;
+    document.getElementById('members').innerHTML = "<ul>" + memberHtml + "</ul>" + footer;
+    document.getElementById('committees').innerHTML = "<ul>" + committeeHtml + "</ul>" + footer;
+    document.getElementById('meetings').innerHTML = "<ul>" + meetingHtml + "</ul>" + footer;
+    document.getElementById('summary').innerHTML = summaryHtml + footer;
     
     tabs.addTab("Summary", {
        contentContainer: document.getElementById("summary")
