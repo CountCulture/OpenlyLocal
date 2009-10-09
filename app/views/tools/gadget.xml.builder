@@ -15,6 +15,8 @@ xml.Module do
     xml.Require :feature => "settitle"
     xml.Require :feature => "tabs"
     xml.Require :feature => "setprefs"
+    xml.Require :feature => "opensocial-0.9"
+    xml.Preload :href    => "http://openlylocal.com/councils/__UP_council__.json"
   end
   
   xml.UserPref :name => "council",  
