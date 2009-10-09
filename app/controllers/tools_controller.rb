@@ -1,10 +1,10 @@
 class ToolsController < ApplicationController
   def gadget
     @councils = Council.parsed
-    render :layout => false
   end
 
   def ning
+    @councils = Council.parsed
   end
 
 end
