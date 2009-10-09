@@ -1,7 +1,7 @@
 /*Global formats*/
 /*See also blueprint styles*/
 h1 {font-size: 2em;}
-
+h4 {margin-bottom: 0.625em;}
 a {
 	text-decoration: none;
 	color:#036;}

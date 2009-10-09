@@ -22,8 +22,40 @@
     <dd>Email us at <%= mail_to "countculture@googlemail.com", nil, :encode => "javascript" %> and we'll see what we can do</dd>
 </dl>
 
+<h3>More info on specific api calls</h3>
+<a name="councils"></a>
+<h4>path: <code>/councils.xml</code></h4>
+<p>
+  This is the starting point and returns a list of local authorities that we have opened up data for <em>(see also /councils/all.xml below)</em>
+</p>
+<p>
+It includes each authority's basic information, including address, telephone, website etc, as well as the OpenlyLocal id, which is used in calls to get detailed information about each council. It also includes the several other identifiers for the authority, including ONS SNAC code, WhatDoTheyKnow.com name and Wikipedia url.
+</p>
+
+<h4>path <code>/councils/all.xml</code></h4>
+<p>This returns the same information as councils.xml but returns information for
+all of the UK's councils, and thus can act as a lookup table <em>(see also <a href="http://countculture.wordpress.com/2009/09/09/full-list-of-uk-councils-now-online-and-accessible-via-api/" title="Full List of UK Councils now online (and accessible via API)">Full list
+of councils now online and accessible via API</a>)</em> for cross-referencing different identifiers for the local
+authorities (e.g. SNAC id and wikipedia page)</p>
+
+<h4>path <code>/councils/[council_id].xml</code></h4>
+<p>This returns information for the given council, including a list of its members,
+active committees, wards and forthcoming meetings. Note, usually only the id, title, url and
+OpenlyLocal url of these items are returned, and a further API call will need to be made to the
+appropriate URL for the detailed information for the item. It also returns recent activity for the council, i.e. new and updated records</p>
+
+<h4>path <code>/meetings.xml?council_id=[council_id]</code></h4>
+<p>Returns all forthcoming meetings for the committee.</p>
+
+<h4>path <code>/meetings.xml?committee_id=[committee_id]&include_past=true</code></h4>
+<p>By returns all meetings for the committee, including those in the past
+(returns most recent first).</p>
+
 <h3>Recent changes</h3>
 <ul id="api_changes">
+  <li>
+    <span class="date">08/10/09</span> Recent activity (new and updated members, committees, meetings) is now returned when info for a particular council is requested
+  </li>
   <li>
     <span class="date">29/09/09</span> Ward info returned with member is now full info for the ward (e.g. title, id, ONS Snac ID, Local Authority URL), not just the ID
   </li>
