@@ -144,5 +144,26 @@ task :enter_missing_snac_ids => :environment do
       ward.update_attribute(:snac_id, response)
     end
   end
+end
+
+desc "Import Council Officers from CLG CSV file" 
+task :import_council_officers => :environment do
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/KeyContactscurrenttocurrent.csv"), :headers => true).to_a
+  headings = rows.shift
+  
+  rows.each do |row| # group by council SNAC id
+    next unless council = Council.find_by_snac_id(row[1])
+    council.officers.delete_all # clear current officers
+    curr_officers = []
+    headings[2..-2].each_with_index do |position, i|
+      next if row[2+i].blank?
+      names = row[2+i].split(",") # sometimes more than one name per office
+      names.each do |name|
+        curr_officers << officer = council.officers.create(:position => position.sub(/ Current$/, ''), :full_name => name)
+        puts "#{officer.full_name}, #{position} for #{council.name}"
+      end  
+    end
+  end
   
 end
+

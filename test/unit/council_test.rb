@@ -16,6 +16,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :meetings
     should_have_many :datapoints
     should_have_many :wards
+    should_have_many :officers
     should_have_many :meeting_documents, :through => :meetings
     should_have_many :past_meeting_documents, :through => :held_meetings
     should_belong_to :portal_system
