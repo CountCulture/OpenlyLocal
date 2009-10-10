@@ -17,6 +17,7 @@ class Council < ActiveRecord::Base
   has_many :held_meetings, :class_name => "Meeting", :conditions => 'date_held <= \'#{Time.now.to_s(:db)}\''
   has_many :wards, :order => "name"
   has_many :officers
+  has_one  :chief_executive, :class_name => "Officer", :conditions => {:position => "Chief Executive"}
   has_many :datapoints
   has_many :datasets, :through => :datapoints
   has_many :meeting_documents, :through => :meetings, :source => :documents, :select => "documents.id, documents.title, documents.document_type, documents.document_owner_type, documents.document_owner_id, documents.created_at, documents.updated_at", :order => "documents.created_at DESC"

@@ -105,6 +105,6 @@ end
 
 Factory.define :officer do |f|
   f.sequence(:last_name) { |n| "Perfect#{n}" }
-  f.position "Chief Executive"
+  f.position "Some Exec"
   f.association :council
 end

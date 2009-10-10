@@ -17,6 +17,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :datapoints
     should_have_many :wards
     should_have_many :officers
+    should_have_one :chief_executive
     should_have_many :meeting_documents, :through => :meetings
     should_have_many :past_meeting_documents, :through => :held_meetings
     should_belong_to :portal_system
@@ -80,6 +81,11 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
+    should "have one chief executive" do
+      non_ceo = Factory(:officer, :council => @council)
+      ceo = Factory(:officer, :position => "Chief Executive", :council => @council)
+      assert_equal ceo, @council.chief_executive
+    end
   end
   
   context "A Council instance" do
