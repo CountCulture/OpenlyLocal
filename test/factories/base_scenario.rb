@@ -102,3 +102,9 @@ Factory.define :wdtk_request do |f|
   f.sequence(:url) { |n|  "wdtk_url/#{n}" }
   f.association :council
 end
+
+Factory.define :officer do |f|
+  f.sequence(:last_name) { |n| "Perfect#{n}" }
+  f.position "Chief Executive"
+  f.association :council
+end
