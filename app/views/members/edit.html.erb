@@ -1,0 +1,26 @@
+<h1>Editing Ward: <%= @member.full_name %></h1>
+<%= error_messages_for :member %>
+
+<% form_for @member do |f| -%>
+  <p>
+    <%= f.label :full_name %>
+    <%= f.text_field :full_name %>
+  </p>
+  <p>
+    <%= f.label :url %>
+    <%= f.text_field :url %>
+  </p>
+  <p>
+    <%= f.label :uid %>
+    <%= f.text_field :uid %>
+  </p>
+  <p>
+    <%#= f.label :snac_id %>
+    <%#= f.text_field :snac_id %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>
+
+<%= button_to "Delete Member", member_path(@member), :confirm => "Are you sure?", :method => :delete %>

@@ -1,0 +1,354 @@
+WD08CD,WD08NM,WD08CD,WD08NM
+00QAMA,Dyce/Bucksburn/Danestone,00QA,Aberdeen City Council
+00QAMB,Bridge of Don,00QA,Aberdeen City Council
+00QAMC,Kingswells/Sheddocksley,00QA,Aberdeen City Council
+00QAMD,Northfield,00QA,Aberdeen City Council
+00QAME,Hilton/Stockethill,00QA,Aberdeen City Council
+00QAMF,Tillydrone/Seaton/Old Aberdeen,00QA,Aberdeen City Council
+00QAMG,Midstocket/Rosemount,00QA,Aberdeen City Council
+00QAMH,George St/Harbour,00QA,Aberdeen City Council
+00QAMJ,Lower Deeside,00QA,Aberdeen City Council
+00QAMK,Hazlehead/Ashley/Queens Cross,00QA,Aberdeen City Council
+00QAML,Airyhall/Broomhill/Garthdee,00QA,Aberdeen City Council
+00QAMM,Torry/Ferryhill,00QA,Aberdeen City Council
+00QAMN,Kincorth/Loirston,00QA,Aberdeen City Council
+00QBMA,Banff and District,00QB,Aberdeenshire Council
+00QBMB,Troup,00QB,Aberdeenshire Council
+00QBMC,Fraserburgh and District,00QB,Aberdeenshire Council
+00QBMD,Central Buchan,00QB,Aberdeenshire Council
+00QBME,Peterhead North and Rattray,00QB,Aberdeenshire Council
+00QBMF,Peterhead South and Cruden,00QB,Aberdeenshire Council
+00QBMG,Turriff and District,00QB,Aberdeenshire Council
+00QBMH,Mid Formartine,00QB,Aberdeenshire Council
+00QBMJ,Ellon and District,00QB,Aberdeenshire Council
+00QBMK,West Garioch,00QB,Aberdeenshire Council
+00QBML,Inverurie and District,00QB,Aberdeenshire Council
+00QBMM,East Garioch,00QB,Aberdeenshire Council
+00QBMN,Westhill and District,00QB,Aberdeenshire Council
+00QBMP,"Huntly, Strathbogie and Howe of Alford",00QB,Aberdeenshire Council
+00QBMQ,"Aboyne, Upper Deeside and Donside",00QB,Aberdeenshire Council
+00QBMR,Banchory and Mid Deeside,00QB,Aberdeenshire Council
+00QBMS,North Kincardine,00QB,Aberdeenshire Council
+00QBMT,Stonehaven and Lower Deeside,00QB,Aberdeenshire Council
+00QBMU,Mearns,00QB,Aberdeenshire Council
+00QCMA,Kirriemuir and Dean,00QC,Angus Council
+00QCMB,Brechin and Edzell,00QC,Angus Council
+00QCMC,Forfar and District,00QC,Angus Council
+00QCMD,Monifeith and Sidlaw,00QC,Angus Council
+00QCME,Carnoustie and District,00QC,Angus Council
+00QCMF,Arbroath West and Letham,00QC,Angus Council
+00QCMG,Arbroath East and Lunan,00QC,Angus Council
+00QCMH,Montrose and District,00QC,Angus Council
+00QDMA,South Kintyre,00QD,Argyll & Bute Council
+00QDMB,Kintyre and the Islands,00QD,Argyll & Bute Council
+00QDMC,Mid Argyll,00QD,Argyll & Bute Council
+00QDMD,Oban South and the Isles,00QD,Argyll & Bute Council
+00QDME,Oban North and Lorn,00QD,Argyll & Bute Council
+00QDMF,Cowal,00QD,Argyll & Bute Council
+00QDMG,Dunoon,00QD,Argyll & Bute Council
+00QDMH,Isle of Bute,00QD,Argyll & Bute Council
+00QDMJ,Lomond North,00QD,Argyll & Bute Council
+00QDMK,Helensburgh Central,00QD,Argyll & Bute Council
+00QDML,Helensburgh and Lomond South,00QD,Argyll & Bute Council
+00QEMA,Tweeddale West,00QE,Scottish Borders Council
+00QEMB,Tweeddale East,00QE,Scottish Borders Council
+00QEMC,Galashiels and District,00QE,Scottish Borders Council
+00QEMD,Selkirkshire,00QE,Scottish Borders Council
+00QEME,Leaderdale and Melrose,00QE,Scottish Borders Council
+00QEMF,Mid Berwickshire,00QE,Scottish Borders Council
+00QEMG,East Berwickshire,00QE,Scottish Borders Council
+00QEMH,Kelso and District,00QE,Scottish Borders Council
+00QEMJ,Jedburgh and District,00QE,Scottish Borders Council
+00QEMK,Hawick and Denholm,00QE,Scottish Borders Council
+00QEML,Hawick and Hermitage,00QE,Scottish Borders Council
+00QFMA,Clackmannanshire West,00QF,Clackmannanshire Council
+00QFMB,Clackmannanshire North,00QF,Clackmannanshire Council
+00QFMC,Clackmannanshire Central,00QF,Clackmannanshire Council
+00QFMD,Clackmannanshire South,00QF,Clackmannanshire Council
+00QFME,Clackmannanshire East,00QF,Clackmannanshire Council
+00QGMA,Lomond,00QG,West Dunbartonshire
+00QGMB,Leven,00QG,West Dunbartonshire
+00QGMC,Dumbarton,00QG,West Dunbartonshire
+00QGMD,Kilpatrick,00QG,West Dunbartonshire
+00QGME,Clydebank Central,00QG,West Dunbartonshire
+00QGMF,Clydebank Waterfront,00QG,West Dunbartonshire
+00QHMA,Stranraer and North Rhins,00QH,Dumfries and Galloway Council
+00QHMB,Wigtown West,00QH,Dumfries and Galloway Council
+00QHMC,Mid Galloway,00QH,Dumfries and Galloway Council
+00QHMD,Dee,00QH,Dumfries and Galloway Council
+00QHME,Castle Douglas and Glenkens,00QH,Dumfries and Galloway Council
+00QHMF,Abbey,00QH,Dumfries and Galloway Council
+00QHMG,North West Dumfries,00QH,Dumfries and Galloway Council
+00QHMH,Mid and Upper Nithsdale,00QH,Dumfries and Galloway Council
+00QHMJ,Lochar,00QH,Dumfries and Galloway Council
+00QHMK,Nith,00QH,Dumfries and Galloway Council
+00QHML,Annandale South,00QH,Dumfries and Galloway Council
+00QHMM,Annandale North,00QH,Dumfries and Galloway Council
+00QHMN,Annandale East,00QH,Dumfries and Galloway Council
+00QJMA,Strathmartine,00QJ,Dundee City Council
+00QJMB,Lochee,00QJ,Dundee City Council
+00QJMC,West End,00QJ,Dundee City Council
+00QJMD,Coldside,00QJ,Dundee City Council
+00QJME,Maryfield,00QJ,Dundee City Council
+00QJMF,North East,00QJ,Dundee City Council
+00QJMG,East End,00QJ,Dundee City Council
+00QJMH,The Ferry,00QJ,Dundee City Council
+00QKMA,Annick,00QK,East Ayrshire Council
+00QKMB,Kilmarnock North,00QK,East Ayrshire Council
+00QKMC,Kilmarnock West and Crosshouse,00QK,East Ayrshire Council
+00QKMD,Kilmarnock East and Hurlford,00QK,East Ayrshire Council
+00QKME,Kilmarnock South,00QK,East Ayrshire Council
+00QKMF,Irvine Valley,00QK,East Ayrshire Council
+00QKMG,Ballochmyle,00QK,East Ayrshire Council
+00QKMH,Cumnock and New Cumnock,00QK,East Ayrshire Council
+00QKMJ,Doon Valley,00QK,East Ayrshire Council
+00QLMA,Milngavie,00QL,East Dunbartonshire Council
+00QLMB,Bearsden North,00QL,East Dunbartonshire Council
+00QLMC,Bearsden South,00QL,East Dunbartonshire Council
+00QLMD,Campsie and Kirkintilloch North,00QL,East Dunbartonshire Council
+00QLME,Bishopbriggs North and Torrance,00QL,East Dunbartonshire Council
+00QLMF,Bishopbriggs South,00QL,East Dunbartonshire Council
+00QLMG,Lenzie and Kirkintilloch South,00QL,East Dunbartonshire Council
+00QLMH,Kirkintilloch East and Twechar,00QL,East Dunbartonshire Council
+00QMMA,Musselburgh West,00QM,East Lothian Council
+00QMMB,Musselburgh East and Carberry,00QM,East Lothian Council
+00QMMC,Preston/Seton/Gosford,00QM,East Lothian Council
+00QMMD,Fa'side,00QM,East Lothian Council
+00QMME,North Berwick Coastal,00QM,East Lothian Council
+00QMMF,Haddington and Lammermuir,00QM,East Lothian Council
+00QMMG,Dunbar and East Linton,00QM,East Lothian Council
+00QNMA,"Neilston, Uplawmoor and Newton Mearns North",00QN,East Renfrewshire Council
+00QNMB,Barrhead,00QN,East Renfrewshire Council
+00QNMC,Giffnock and Thornliebank,00QN,East Renfrewshire Council
+00QNMD,"Netherlee, Stamperland and Williamwood",00QN,East Renfrewshire Council
+00QNME,Newton Mearns South,00QN,East Renfrewshire Council
+00QNMF,"Busby, Clarkston and Eaglesham",00QN,East Renfrewshire Council
+00QPMA,Almond,00QP,City of Edinburgh
+00QPMB,Pentland Hills,00QP,City of Edinburgh
+00QPMC,Drum Brae/Gyle,00QP,City of Edinburgh
+00QPMD,Forth,00QP,City of Edinburgh
+00QPME,Inverleith,00QP,City of Edinburgh
+00QPMF,Corstorphine/Murrayfield,00QP,City of Edinburgh
+00QPMG,Sighthill/Gorgie,00QP,City of Edinburgh
+00QPMH,Colinton/Fairmilehead,00QP,City of Edinburgh
+00QPMJ,Fountainbridge/Craiglockhart,00QP,City of Edinburgh
+00QPMK,Meadows/Morningside,00QP,City of Edinburgh
+00QPML,City Centre,00QP,City of Edinburgh
+00QPMM,Leith Walk,00QP,City of Edinburgh
+00QPMN,Leith,00QP,City of Edinburgh
+00QPMP,Craigentinny/Duddingston,00QP,City of Edinburgh
+00QPMQ,Southside/Newington,00QP,City of Edinburgh
+00QPMR,Liberton/Gilmerton,00QP,City of Edinburgh
+00QPMS,Portobello/Craigmillar,00QP,City of Edinburgh
+00QQMA,Bo'ness and Blackness,00QQ,Falkirk District Council
+00QQMB,Grangemouth,00QQ,Falkirk District Council
+00QQMC,Denny and Banknock,00QQ,Falkirk District Council
+00QQMD,"Carse, Kinnaird and Tryst",00QQ,Falkirk District Council
+00QQME,Bonnybridge and Larbert,00QQ,Falkirk District Council
+00QQMF,Falkirk North,00QQ,Falkirk District Council
+00QQMG,Falkirk South,00QQ,Falkirk District Council
+00QQMH,Lower Braes,00QQ,Falkirk District Council
+00QQMJ,Upper Braes,00QQ,Falkirk District Council
+00QRMA,West Fife and Coastal Villages,00QR,Fife Council
+00QRMB,Dunfermline North,00QR,Fife Council
+00QRMC,Dunfermline Central,00QR,Fife Council
+00QRMD,Dunfermline South,00QR,Fife Council
+00QRME,Rosyth,00QR,Fife Council
+00QRMF,Inverkeithing and Dalgety Bay,00QR,Fife Council
+00QRMG,The Lochs,00QR,Fife Council
+00QRMH,Cowdenbeath,00QR,Fife Council
+00QRMJ,Lochgelly and Cardenden,00QR,Fife Council
+00QRMK,"Burntisland, Kinghorn and Western Kirkcaldy",00QR,Fife Council
+00QRML,Kirkcaldy North,00QR,Fife Council
+00QRMM,Kirkcaldy Central,00QR,Fife Council
+00QRMN,Kirkcaldy East,00QR,Fife Council
+00QRMP,Glenrothes West and Kinglassie,00QR,Fife Council
+00QRMQ,"Glenrothes North, Leslie and Markinch",00QR,Fife Council
+00QRMR,Glenrothes Central and Thornton,00QR,Fife Council
+00QRMS,Howe of Fife and Tay Coast,00QR,Fife Council
+00QRMT,Tay Bridgehead,00QR,Fife Council
+00QRMU,St Andrews,00QR,Fife Council
+00QRMW,East Neuk and Landward,00QR,Fife Council
+00QRMX,Cupar,00QR,Fife Council
+00QRMY,"Leven, Kennoway and Largo",00QR,Fife Council
+00QRMZ,"Buckhaven, Methil and Wemyss Villages",00QR,Fife Council
+00QSMA,Linn,00QS,City of Glasgow
+00QSMB,Newlands/Auldburn,00QS,City of Glasgow
+00QSMC,Greater Pollok,00QS,City of Glasgow
+00QSMD,Craigton,00QS,City of Glasgow
+00QSME,Govan,00QS,City of Glasgow
+00QSMF,Pollokshields,00QS,City of Glasgow
+00QSMG,Langside,00QS,City of Glasgow
+00QSMH,Southside Central,00QS,City of Glasgow
+00QSMJ,Calton,00QS,City of Glasgow
+00QSMK,Anderston/City,00QS,City of Glasgow
+00QSML,Hillhead,00QS,City of Glasgow
+00QSMM,Partick West,00QS,City of Glasgow
+00QSMN,Garscadden/Scotstounhill,00QS,City of Glasgow
+00QSMP,Drumchapel/Anniesland,00QS,City of Glasgow
+00QSMQ,Maryhill/Kelvin,00QS,City of Glasgow
+00QSMR,Canal,00QS,City of Glasgow
+00QSMS,Springburn,00QS,City of Glasgow
+00QSMT,East Centre,00QS,City of Glasgow
+00QSMU,Shettleston,00QS,City of Glasgow
+00QSMW,Baillieston,00QS,City of Glasgow
+00QSMX,North East,00QS,City of Glasgow
+00QTMA,"North, West and Central Sutherland",00QT,Highland Council
+00QTMB,Thurso,00QT,Highland Council
+00QTMC,Wick,00QT,Highland Council
+00QTMD,Landward Caithness,00QT,Highland Council
+00QTME,East Sutherland and Edderton,00QT,Highland Council
+00QTMF,"Wester Ross, Strathpeffer and Lochalsh",00QT,Highland Council
+00QTMG,Cromarty Firth,00QT,Highland Council
+00QTMH,Tain and Easter Ross,00QT,Highland Council
+00QTMJ,Dingwall and Seaforth,00QT,Highland Council
+00QTMK,Black Isle,00QT,Highland Council
+00QTML,Eilean a'Chäo,00QT,Highland Council
+00QTMM,Caol and Mallaig,00QT,Highland Council
+00QTMN,Aird and Loch Ness,00QT,Highland Council
+00QTMP,Inverness West,00QT,Highland Council
+00QTMQ,Inverness Central,00QT,Highland Council
+00QTMR,Inverness Ness-Side,00QT,Highland Council
+00QTMS,Inverness Millburn,00QT,Highland Council
+00QTMT,Culloden and Ardersier,00QT,Highland Council
+00QTMU,Nairn,00QT,Highland Council
+00QTMW,Inverness South,00QT,Highland Council
+00QTMX,Badenoch and Strathspey,00QT,Highland Council
+00QTMY,Fort William and Ardnamurchan,00QT,Highland Council
+00QUMA,Inverclyde East,00QU,Inverclyde Council
+00QUMB,Inverclyde East Central,00QU,Inverclyde Council
+00QUMC,Inverclyde North,00QU,Inverclyde Council
+00QUMD,Inverclyde South,00QU,Inverclyde Council
+00QUME,Inverclyde West,00QU,Inverclyde Council
+00QUMF,Inverclyde South West,00QU,Inverclyde Council
+00QWMA,Penicuik,00QW,Midlothian Council
+00QWMB,Bonnyrigg,00QW,Midlothian Council
+00QWMC,Dalkeith,00QW,Midlothian Council
+00QWMD,Midlothian West,00QW,Midlothian Council
+00QWME,Midlothian East,00QW,Midlothian Council
+00QWMF,Midlothian South,00QW,Midlothian Council
+00QXMA,Speyside Glenlivet,00QX,Moray Council
+00QXMB,Keith and Cullen,00QX,Moray Council
+00QXMC,Buckie,00QX,Moray Council
+00QXMD,Fochabers Lhanbryde,00QX,Moray Council
+00QXME,Heldon and Laich,00QX,Moray Council
+00QXMF,Elgin City North,00QX,Moray Council
+00QXMG,Elgin City South,00QX,Moray Council
+00QXMH,Forres,00QX,Moray Council
+00QYMA,Irvine West,00QY,North Ayrshire Council
+00QYMB,Irvine East,00QY,North Ayrshire Council
+00QYMC,Kilwinning,00QY,North Ayrshire Council
+00QYMD,Saltcoats and Stevenston,00QY,North Ayrshire Council
+00QYME,Ardrossan and Arran,00QY,North Ayrshire Council
+00QYMF,Dalry and West Kilbride,00QY,North Ayrshire Council
+00QYMG,Kilbirnie and Beith,00QY,North Ayrshire Council
+00QYMH,North Coast and Cumbraes,00QY,North Ayrshire Council
+00QZMA,Kilsyth,00QZ,North Lanarkshire Council
+00QZMB,Cumbernauld North,00QZ,North Lanarkshire Council
+00QZMC,Cumbernauld South,00QZ,North Lanarkshire Council
+00QZMD,"Abronhill, Kildrum and the Village",00QZ,North Lanarkshire Council
+00QZME,Strathkelvin,00QZ,North Lanarkshire Council
+00QZMF,Coatbridge North and Glenboig,00QZ,North Lanarkshire Council
+00QZMG,Airdrie North,00QZ,North Lanarkshire Council
+00QZMH,Airdrie Central,00QZ,North Lanarkshire Council
+00QZMJ,Coatbridge West,00QZ,North Lanarkshire Council
+00QZMK,Coatbridge South,00QZ,North Lanarkshire Council
+00QZML,Airdrie South,00QZ,North Lanarkshire Council
+00QZMM,Fortissat,00QZ,North Lanarkshire Council
+00QZMN,Thorniewood,00QZ,North Lanarkshire Council
+00QZMP,Bellshill,00QZ,North Lanarkshire Council
+00QZMQ,Mossend and Holytown,00QZ,North Lanarkshire Council
+00QZMR,Motherwell West,00QZ,North Lanarkshire Council
+00QZMS,Motherwell North,00QZ,North Lanarkshire Council
+00QZMT,Motherwell South East and Ravenscraig,00QZ,North Lanarkshire Council
+00QZMU,Murdostoun,00QZ,North Lanarkshire Council
+00QZMW,Wishaw,00QZ,North Lanarkshire Council
+00RAMA,Kirkwall East,00RA,Orkney Islands Council
+00RAMB,Kirkwall West and Orphir,00RA,Orkney Islands Council
+00RAMC,Stromness and South Isles,00RA,Orkney Islands Council
+00RAMD,West Mainland,00RA,Orkney Islands Council
+00RAME,"East Mainland, South Ronaldsay and Burray",00RA,Orkney Islands Council
+00RAMF,North Isles,00RA,Orkney Islands Council
+00RBMA,Carse of Gowrie,00RB,Perth & Kinross Council
+00RBMB,Strathmore,00RB,Perth & Kinross Council
+00RBMC,Blairgowrie and Glens,00RB,Perth & Kinross Council
+00RBMD,Highland,00RB,Perth & Kinross Council
+00RBME,Strathtay,00RB,Perth & Kinross Council
+00RBMF,Strathearn,00RB,Perth & Kinross Council
+00RBMG,Strathallan,00RB,Perth & Kinross Council
+00RBMH,Kinross-shire,00RB,Perth & Kinross Council
+00RBMJ,Almond and Earn,00RB,Perth & Kinross Council
+00RBMK,Perth City South,00RB,Perth & Kinross Council
+00RBML,Perth City North,00RB,Perth & Kinross Council
+00RBMM,Perth City Centre,00RB,Perth & Kinross Council
+00RCMA,Renfrew North,00RC,Renfrewshire Council
+00RCMB,Renfrew South & Gallowhill,00RC,Renfrewshire Council
+00RCMC,Paisley East & Ralston,00RC,Renfrewshire Council
+00RCMD,Paisley North West,00RC,Renfrewshire Council
+00RCME,Paisley South,00RC,Renfrewshire Council
+00RCMF,Paisley South West,00RC,Renfrewshire Council
+00RCMG,"Johnstone South, Elderslie & Howwood",00RC,Renfrewshire Council
+00RCMH,"Johnstone North, Kilbarchan & Lochwinnoch",00RC,Renfrewshire Council
+00RCMJ,"Houston, Crosslee & Linwood",00RC,Renfrewshire Council
+00RCMK,"Bishopton, Bridge of Weir & Langbank",00RC,Renfrewshire Council
+00RCML,Erskine & Inchinnan,00RC,Renfrewshire Council
+00RDMA,North Isles,00RD,Shetland Islands Council
+00RDMB,Shetland North,00RD,Shetland Islands Council
+00RDMC,Shetland West,00RD,Shetland Islands Council
+00RDMD,Shetland Central,00RD,Shetland Islands Council
+00RDME,Shetland South,00RD,Shetland Islands Council
+00RDMF,Lerwick North,00RD,Shetland Islands Council
+00RDMG,Lerwick South,00RD,Shetland Islands Council
+00REMA,Troon,00RE,South Ayrshire Council
+00REMB,Prestwick,00RE,South Ayrshire Council
+00REMC,Ayr North,00RE,South Ayrshire Council
+00REMD,Ayr East,00RE,South Ayrshire Council
+00REME,Ayr West,00RE,South Ayrshire Council
+00REMF,Kyle,00RE,South Ayrshire Council
+00REMG,"Maybole, North Carrick and Coylton",00RE,South Ayrshire Council
+00REMH,Girvan and South Carrick,00RE,South Ayrshire Council
+00RFMA,Clydesdale West,00RF,South Lanarkshire Council
+00RFMB,Clydesdale North,00RF,South Lanarkshire Council
+00RFMC,Clydesdale East,00RF,South Lanarkshire Council
+00RFMD,Clydesdale South,00RF,South Lanarkshire Council
+00RFME,Avondale and Stonehouse,00RF,South Lanarkshire Council
+00RFMF,East Kilbride South,00RF,South Lanarkshire Council
+00RFMG,East Kilbride Central South,00RF,South Lanarkshire Council
+00RFMH,East Kilbride Central North,00RF,South Lanarkshire Council
+00RFMJ,East Kilbride West,00RF,South Lanarkshire Council
+00RFMK,East Kilbride East,00RF,South Lanarkshire Council
+00RFML,Rutherglen South,00RF,South Lanarkshire Council
+00RFMM,Rutherglen Central and North,00RF,South Lanarkshire Council
+00RFMN,Cambuslang West,00RF,South Lanarkshire Council
+00RFMP,Cambuslang East,00RF,South Lanarkshire Council
+00RFMQ,Blantyre,00RF,South Lanarkshire Council
+00RFMR,Bothwell and Uddingston,00RF,South Lanarkshire Council
+00RFMS,Hamilton North and East,00RF,South Lanarkshire Council
+00RFMT,Hamilton West and Earnock,00RF,South Lanarkshire Council
+00RFMU,Hamilton South,00RF,South Lanarkshire Council
+00RFMW,Larkhall,00RF,South Lanarkshire Council
+00RGMA,Trossachs and Teith,00RG,Stirling Council
+00RGMB,Forth and Endrick,00RG,Stirling Council
+00RGMC,Dunblane and Bridge of Allan,00RG,Stirling Council
+00RGMD,Castle,00RG,Stirling Council
+00RGME,Stirling West,00RG,Stirling Council
+00RGMF,Stirling East,00RG,Stirling Council
+00RGMG,Bannockburn,00RG,Stirling Council
+00RHMA,Linlithgow,00RH,West Lothian Council
+00RHMB,"Broxburn, Uphall and Winchburgh",00RH,West Lothian Council
+00RHMC,Livingston North,00RH,West Lothian Council
+00RHMD,Livingston South,00RH,West Lothian Council
+00RHME,East Livingston and East Calder,00RH,West Lothian Council
+00RHMF,Fauldhouse and the Breich Valley,00RH,West Lothian Council
+00RHMG,Whitburn and Blackburn,00RH,West Lothian Council
+00RHMH,Bathgate,00RH,West Lothian Council
+00RHMJ,Armadale and Blackridge,00RH,West Lothian Council
+00RJMA,"Barraigh, Bhatarsaigh, Eirisgeigh agus Uibhist a Deas",00RJ,Comhairle nan Eilean Siar (Western Isles Council)
+00RJMB,Beinn na Foghla agus Uibhist a Tuath,00RJ,Comhairle nan Eilean Siar (Western Isles Council)
+00RJMC,Na Hearadh agus Ceann a Deas nan Loch,00RJ,Comhairle nan Eilean Siar (Western Isles Council)
+00RJMD,Sgir'Uige agus Ceann a Tuath nan Loch,00RJ,Comhairle nan Eilean Siar (Western Isles Council)
+00RJME,Sgire an Rubha,00RJ,Comhairle nan Eilean Siar (Western Isles Council)
+00RJMF,Steïrnabhagh a Deas,00RJ,Comhairle nan Eilean Siar (Western Isles Council)
+00RJMG,Steïrnabhagh a Tuath,00RJ,Comhairle nan Eilean Siar (Western Isles Council)
+00RJMH,Loch a Tuath,00RJ,Comhairle nan Eilean Siar (Western Isles Council)
+00RJMJ,An Taobh Siar agus Nis,00RJ,Comhairle nan Eilean Siar (Western Isles Council)

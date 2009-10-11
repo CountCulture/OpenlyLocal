@@ -1,5 +1,6 @@
 class MembersController < ApplicationController
   before_filter :add_rdfa_headers, :only => :show
+  before_filter :authenticate, :except => [:show]
 
   def show
     @member = Member.find(params[:id])
@@ -18,4 +19,23 @@ class MembersController < ApplicationController
       end
     end
   end
+  
+  def edit
+    @member = Member.find(params[:id])
+  end
+  
+  def update
+    @member = Member.find(params[:id])
+    @member.update_attributes!(params[:member])
+    flash[:notice] = "Successfully updated member"
+    redirect_to member_url(@member)
+  end
+  
+  def destroy
+    @member = Member.find(params[:id])
+    @member.destroy
+    flash[:notice] = "Successfully destroyed member"
+    redirect_to council_url(@member.council)
+  end
+  
 end

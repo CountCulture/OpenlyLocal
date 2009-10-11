@@ -15,3 +15,7 @@ countculture at googlemail dot com;  http://countculture.wordpress.com/
 BUGS
 * When adding join model (e.g. committee memberships), currently added even when test processing. Plus no reporting, as reporting uses Dirty, which doesn't act on associations
 * When doing test scrape of member info new info (eg email addresses) shows up, but doesn't when processing
+
+
+NOTES
+NI Districts only avail at http://www.opsi.gov.uk/si/si1993/Uksi_19930226_en_2.htm. ONS Wards not used for electoral areas in NI.
