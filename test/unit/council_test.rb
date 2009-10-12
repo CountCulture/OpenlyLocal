@@ -38,18 +38,26 @@ class CouncilTest < ActiveSupport::TestCase
       assert Council.new.respond_to?(:party_breakdown)
     end
     
-    should "have parser named_scope" do
-      expected_options = { :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id" }
-      assert_equal expected_options, Council.parsed.proxy_options
+    context "parsed named_scope" do
+      should "pass on parsed conditions" do
+        expected_options = { :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id" }
+        assert_equal expected_options, Council.parsed.proxy_options
+      end
+
+      should "return councils with members as parsed" do
+        @another_council = Factory(:another_council)
+        @member = Factory(:member, :council => @another_council)
+        @another_member = Factory(:old_member, :council => @another_council) # add two members to @another council, @council has none
+        assert_equal [@another_council], Council.parsed
+      end
+
+      should "include unparsed councils with parsed if requested" do
+        @another_council = Factory(:another_council)
+        @member = Factory(:member, :council => @another_council)
+        assert_equal [@another_council, @council], Council.parsed(:include_unparsed => true)
+      end
     end
     
-    should "return councils with members as parsed" do
-      @another_council = Factory(:another_council)
-      @member = Factory(:member, :council => @another_council)
-      @another_member = Factory(:old_member, :council => @another_council) # add two members to @another council, @council has none
-      assert_equal [@another_council], Council.parsed
-    end
-        
     should "have many datasets through datapoints" do
       @datapoint = Factory(:datapoint, :council => @council)
       assert_equal [@datapoint.dataset], @council.datasets
@@ -66,6 +74,41 @@ class CouncilTest < ActiveSupport::TestCase
       @held_meeting = Factory(:meeting, :council => @council, :committee => @committee)
       @forthcoming_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 2.weeks.from_now)
       assert_equal [@held_meeting], @council.held_meetings
+    end
+    
+    context "when finding by parameters" do
+      setup do
+        @member = Factory(:member, :council => @council)
+        @another_council = Factory(:another_council, :snac_id => "snac_1")
+        @another_member = Factory(:member, :council => @another_council)
+        @tricky_council = Factory(:tricky_council, :snac_id => "snac_2")
+      end
+      
+      should "find all parsed councils by default" do
+        assert_equal [@another_council, @council], Council.find_by_params
+      end
+      
+      should "find unparsed councils by if requested" do
+        assert_equal [@another_council, @council, @tricky_council], Council.find_by_params(:include_unparsed => true)
+      end
+      
+      should "find parsed councils whose name matches term" do
+        assert_equal [@another_council], Council.find_by_params(:term => "not") # @another_council name is 'Another council'
+        assert_equal [@another_council, @council], Council.find_by_params(:term => "An")
+      end
+      
+      should "find unparsed councils whose name matches term" do
+        assert_equal [@tricky_council], Council.find_by_params(:term => "Tricky", :include_unparsed => true)
+      end
+      
+      should "find parsed council whose snac_id matches given id" do
+        assert_equal [@another_council], Council.find_by_params(:snac_id => "snac_1")
+      end
+      
+      should "find unparsed council whose snac_id matches given id" do
+        assert_equal [@tricky_council], Council.find_by_params(:snac_id => "snac_2", :include_unparsed => true)
+        assert_equal [], Council.find_by_params(:snac_id => "snac_2")
+      end
     end
     
     context "when getting meeting_documents" do
@@ -347,11 +390,11 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "include forthcoming meeting formatted_date" do
-        assert_match %r(<meeting.+<formatted-date>#{@future_meeting.formatted_date}.+</meeting)m, @council.to_detailed_xml
+        assert_match %r(<meeting.+<formatted-date>#{@future_meeting.formatted_date}.+</meeting.+<recent-activity)m, @council.to_detailed_xml
       end
       
       should "exclude past meeting ids" do
-        assert_no_match %r(<meeting.+<id type=\"integer\">#{@past_meeting.id}</id.+</meeting)m, @council.to_detailed_xml
+        assert_no_match %r(<meeting.+<id type=\"integer\">#{@past_meeting.id}</id.+</meeting.+<recent-activity)m, @council.to_detailed_xml
       end
       
       should "include wards ids" do

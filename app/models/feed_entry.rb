@@ -1,5 +1,6 @@
 class FeedEntry < ActiveRecord::Base
   validates_presence_of :guid, :url, :title
+  default_scope :order => "published_at DESC"
   
   def self.update_from_feed(feed_url)
     feed = Feedzirra::Feed.fetch_and_parse(feed_url)

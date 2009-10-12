@@ -25,10 +25,17 @@ class Council < ActiveRecord::Base
   belongs_to :portal_system
   validates_presence_of :name
   validates_uniqueness_of :name
-  named_scope :parsed, :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id"
+  named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? {} : {:conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id"} }
   default_scope :order => "name"
   alias_attribute :title, :name
   alias_method :old_to_xml, :to_xml
+  
+  def self.find_by_params(params={})
+    snac_id = params.delete(:snac_id)
+    conditions = params[:term] ? ["councils.name LIKE ?", "%#{params.delete(:term)}%"] : nil
+    conditions ||= snac_id ? ["councils.snac_id = ?", snac_id] : nil
+    parsed(:include_unparsed => params.delete(:include_unparsed)).all({:conditions => conditions}.merge(params))
+  end
   
   def authority_type_help_url
     AUTHORITY_TYPES[authority_type]

@@ -3,7 +3,7 @@ require 'test_helper'
 class CouncilsControllerTest < ActionController::TestCase
 
   def setup
-    @council = Factory(:council, :authority_type => "London Borough")
+    @council = Factory(:council, :authority_type => "London Borough", :snac_id => "snac_1")
     @member = Factory(:member, :council => @council)
     @old_member = Factory(:member, :council => @council)
     @another_council = Factory(:another_council)
@@ -33,6 +33,9 @@ class CouncilsControllerTest < ActionController::TestCase
       should_assign_to(:councils) { [@council]} # only parsed councils
       should_respond_with :success
       should_render_template :index
+      should "have appropriate title" do
+        assert_select "title", /UK Local Authorities\/Councils With Opened Up Data/
+      end
     end
     
     context "including unparsed councils" do
@@ -48,6 +51,47 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       should "class parsed councils as parsed" do
         assert_select "#councils .parsed", @council.name
+      end
+      should "have appropriate title" do
+        assert_select "title", /All UK Local Authorities\/Councils/
+      end
+    end
+    
+    context "with search term" do
+      setup do
+        get :index, :term => "Any"
+      end
+  
+      should_assign_to(:councils) { [@council] }
+      should_respond_with :success
+      should_render_template :index
+      should "have appropriate title" do
+        assert_select "title", /UK Local Authorities\/Councils With Opened Up Data With Term \'Any\'/
+      end
+    end
+    
+    context "with search term and including unparsed" do
+      setup do
+        get :index, :term => "Anot", :include_unparsed => true
+      end
+  
+      should_assign_to(:councils) { [@another_council] }
+      should_respond_with :success
+      should "have appropriate title" do
+        assert_select "title", /UK Local Authorities\/Councils With Term \'Anot\'/
+      end
+    end
+    
+    context "with snac_id" do
+      setup do
+        get :index, :snac_id => "snac_1"
+      end
+  
+      should_assign_to(:councils) { [@council] }
+      should_respond_with :success
+      should_render_template :index
+      should "have appropriate title" do
+        assert_select "title", /UK Local Authorities\/Councils With Opened Up Data With SNAC id \'snac_1\'/
       end
     end
     

@@ -3,8 +3,10 @@ class CouncilsController < ApplicationController
   before_filter :add_rdfa_headers, :only => :show
   caches_action :index, :show
   def index
-    @councils = params[:include_unparsed] ? Council.find(:all, :order => "name") : Council.parsed
+    @councils = Council.find_by_params(params.except(:controller, :action, :format))
     @title = params[:include_unparsed] ? "All UK Local Authorities/Councils" : "UK Local Authorities/Councils With Opened Up Data"
+    @title += " With Term '#{params[:term]}'" if params[:term]
+    @title += " With SNAC id '#{params[:snac_id]}'" if params[:snac_id]
     respond_to do |format|
       format.html
       format.xml { render :xml => @councils.to_xml(:include => nil) }
