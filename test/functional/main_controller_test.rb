@@ -9,6 +9,7 @@ class MainControllerTest < ActionController::TestCase
       @committee = Factory(:committee, :council => @council1)
       
       @meeting = Factory(:meeting, :council => @council1, :committee => @committee)
+      @news_item = Factory(:feed_entry)
       @future_meeting = Factory(:meeting, :date_held => 3.days.from_now.to_date, :council => @council1, :committee => @committee)
 
       get :index
@@ -44,6 +45,12 @@ class MainControllerTest < ActionController::TestCase
         assert_select "li", 1 do 
           assert_select "a", /#{@member.title}/
         end
+      end
+    end
+    
+    should "show latest news from blog" do
+      assert_select "#site_news" do
+        assert_select "h4", /#{@news_item.title}/
       end
     end
   end

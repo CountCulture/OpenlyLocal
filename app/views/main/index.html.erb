@@ -1,4 +1,15 @@
 <div class='intro'>
+  <div id="site_news">
+    <h2><%= link_to "Openly Local news", "http://countculture.wordpress.com" %> <%= link_to image_tag("feed_icon.gif", :alt => "RSS feed"), BlogFeedUrl %></h2>
+    <%- @news_items.each do |news_item| -%>
+      <div class="news_item">
+        <h4><%= link_to news_item.title, news_item.url %></h4>
+        <div class="info">
+          <%= truncate(news_item.summary, :length => 150) %>
+        </div>
+      </div>
+    <%- end -%>
+  </div>
   <p><strong>Openly Local</strong> is a new project to develop an open and unified way of accessing Local Government information.</p>
   <p>So far we have opened up data for over 40 local authorities, and more are being added every week, with more information being opened up too.</p>
   <p>

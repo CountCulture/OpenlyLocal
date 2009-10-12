@@ -352,3 +352,24 @@ div#dataset_data table {
 #api_info a {
 	font-weight: bold;
 }
+#site_news {
+	background-color:#F0F0F0;
+	border:1px solid #CCCCCC;
+	float:right;
+	padding:6px;
+	width:260px;
+	margin-left: 1em;
+	}
+#site_news h2 {
+	background-color:#ddd;
+	margin:-6px -6px 0;
+	padding:0 6px;
+	font-size: 1.4em;	
+	}
+#site_news h4 {
+	margin-bottom:0;
+	margin-top:6px;
+}
+#site_news div.news_item {
+	font-size:90%;
+}
