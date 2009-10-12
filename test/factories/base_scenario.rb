@@ -108,3 +108,9 @@ Factory.define :officer do |f|
   f.position "Some Exec"
   f.association :council
 end
+
+Factory.define :feed_entry do |f|
+  f.sequence(:title) { |n| "Feed Title #{n}" }
+  f.sequence(:url) { |n|  "http://feed.com/#{n}" }
+  f.sequence(:guid) { |n|  "guid_#{n}" }
+end

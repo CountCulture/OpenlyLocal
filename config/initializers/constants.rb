@@ -12,3 +12,4 @@ PARTIES = [
   ]
   
 DefaultDomain = "openlylocal.com"
+BlogFeedUrl = "http://countculture.wordpress.com/feed/"

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091010185135) do
+ActiveRecord::Schema.define(:version => 20091012104145) do
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -121,6 +121,16 @@ ActiveRecord::Schema.define(:version => 20091010185135) do
   end
 
   add_index "documents", ["document_owner_type", "document_owner_id"], :name => "index_documents_on_document_owner_type_and_document_owner_id"
+
+  create_table "feed_entries", :force => true do |t|
+    t.string   "title"
+    t.text     "summary"
+    t.string   "url"
+    t.datetime "published_at"
+    t.string   "guid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "meetings", :force => true do |t|
     t.datetime "date_held"
