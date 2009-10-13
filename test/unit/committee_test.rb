@@ -12,6 +12,7 @@ class CommitteeTest < ActiveSupport::TestCase
     should_validate_uniqueness_of :title, :scoped_to => :council_id
     should_have_many :meetings
     should_have_many :meeting_documents, :through => :meetings
+    should_have_one  :next_meeting
     should_have_many :memberships
     should_have_many :members, :through => :memberships
     should_belong_to :council
@@ -51,6 +52,21 @@ class CommitteeTest < ActiveSupport::TestCase
       end
     end
     
+    context "when finding next_meeting" do
+      setup do
+        @past_meeting = new_meeting_for(@committee, :date_held => 7.days.ago)
+      end
+      
+      should "return first meeting in the future" do
+        future_meeting = new_meeting_for(@committee, :date_held=> 2.months.from_now)
+        near_future_meeting = new_meeting_for(@committee, :date_held => 3.days.from_now)
+        assert_equal near_future_meeting, @committee.next_meeting
+      end
+      
+      should "return nil if no meetings in the future" do
+        assert_nil @committee.next_meeting
+      end
+    end
   end
     
   context "A Committee instance" do
