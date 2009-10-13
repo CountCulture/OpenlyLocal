@@ -41,14 +41,14 @@ class CouncilTest < ActiveSupport::TestCase
     context "parsed named_scope" do
       should "pass on parsed conditions" do
         expected_options = { :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id" }
-        assert_equal expected_options, Council.parsed.proxy_options
+        assert_equal expected_options, Council.parsed({}).proxy_options
       end
 
       should "return councils with members as parsed" do
         @another_council = Factory(:another_council)
         @member = Factory(:member, :council => @another_council)
         @another_member = Factory(:old_member, :council => @another_council) # add two members to @another council, @council has none
-        assert_equal [@another_council], Council.parsed
+        assert_equal [@another_council], Council.parsed({})
       end
 
       should "include unparsed councils with parsed if requested" do

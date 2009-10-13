@@ -16,7 +16,7 @@
     <strong>We currently have information on:</strong>
   </p>
   <ul>
-    <li><%= link_to "#{Council.parsed.all.size} councils", councils_path %></li>
+    <li><%= link_to "#{Council.parsed({}).all.size} councils", councils_path %></li>
     <li><%= Member.count %> councillors</li>
     <li><%= Committee.count %> committees</li>
     <li><%= Meeting.count %> committee meetings</li>

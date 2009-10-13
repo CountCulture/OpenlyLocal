@@ -1,10 +1,10 @@
 class ToolsController < ApplicationController
   def gadget
-    @councils = Council.parsed
+    @councils = Council.parsed({})
   end
 
   def ning
-    @councils = Council.parsed
+    @councils = Council.parsed({})
   end
 
 end

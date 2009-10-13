@@ -14,6 +14,18 @@ class InfoControllerTest < ActionController::TestCase
     end
   end
   
+  context "on GET to :resources" do
+    setup do
+      get :resources
+    end
+    should_respond_with :success
+    should_render_template :resources
+    should_render_with_layout
+    should "show pretty version of action name in title" do
+      assert_select "title", /Resources :: Info/
+    end
+  end
+  
   context "on GET to :vocab" do
     setup do
       get :vocab

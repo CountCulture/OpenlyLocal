@@ -20,7 +20,7 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
   sitemap.add councils_path, :priority => 0.7, :changefreq => 'daily'
 
   # add parsed councils
-  Council.parsed.each do |c|
+  Council.parsed({}).each do |c|
     sitemap.add council_path(c), :lastmod => c.updated_at
   end
 
