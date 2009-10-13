@@ -1,10 +1,12 @@
 class ToolsController < ApplicationController
+  before_filter :load_councils
   def gadget
-    @councils = Council.parsed({})
   end
 
   def ning
-    @councils = Council.parsed({})
   end
 
+  def load_councils
+    @councils = Council.parsed({})
+  end
 end

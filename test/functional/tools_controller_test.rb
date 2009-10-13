@@ -35,7 +35,22 @@ class ToolsControllerTest < ActionController::TestCase
     end
   end
   
-  # gadget test
+  context "on GET to :gadget_test" do
+    setup do
+      @council = Factory(:council)
+      @member = Factory(:member, :council => @council)
+      @another_council = Factory(:another_council)
+      get :gadget_test, :format => "xml"
+    end
+      
+    should_assign_to(:councils) { [@council]} # only parsed councils
+    should_respond_with :success
+    should_render_template :gadget
+    should_render_without_layout
+    should_respond_with_content_type 'application/xml'
+  end
+    
+  # ning test
   context "on GET to :ning" do
     setup do
       @council = Factory(:council)
@@ -58,7 +73,7 @@ class ToolsControllerTest < ActionController::TestCase
       #   assert_select "UserPref>EnumValue[display_value=?]",  @council.name
       # end
       
-      should "include code for gadget" do
+      should_eventually "include code for gadget" do
         assert_match /script type=\"text\/javascript/,  @response.body
       end
       
@@ -67,4 +82,21 @@ class ToolsControllerTest < ActionController::TestCase
       end
     end
   end
+  
+  # context "on GET to :ning_test" do
+  #   setup do
+  #     @council = Factory(:council)
+  #     @member = Factory(:member, :council => @council)
+  #     @another_council = Factory(:another_council)
+  #     get :ning_test, :format => "xml"
+  #   end
+  #     
+  #   should_assign_to(:councils) { [@council]} # only parsed councils
+  #   should_respond_with :success
+  #   should_render_template :gadget
+  #   should_render_without_layout
+  #   should_respond_with_content_type 'application/xml'
+  # end
+    
+  
 end
