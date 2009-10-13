@@ -145,6 +145,8 @@ class CommitteesControllerTest < ActionController::TestCase
 
      context "with basic request" do
        setup do
+         @another_active_committee = Factory(:committee, :council => @council)
+         @meeting_in_past_for_another_active_committee = Factory(:meeting, :council => @council, :committee => @another_active_committee)
          get :index, :council_id => @council.id
        end
 
@@ -158,9 +160,13 @@ class CommitteesControllerTest < ActionController::TestCase
        end
 
        should "should list committees for council" do
-         assert_select "#committees li", 1 do #active committees by default
+         assert_select "#committees li", 2 do #active committees by default
            assert_select "a", @committee.title
          end
+       end
+       
+       should "should list next meeting for committees" do
+         assert_select "#committees li a.meeting_link", 1
        end
        
        should "list committee meetings for council" do

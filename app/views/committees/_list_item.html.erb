@@ -1,0 +1,3 @@
+<li>
+  <strong><%= link_to list_item.title, list_item, list_options %></strong><%= " (next meeting: #{link_for(list_item.next_meeting, :text => list_item.next_meeting.date_held.to_s(:event_date))})" if list_item.next_meeting %>
+</li>
