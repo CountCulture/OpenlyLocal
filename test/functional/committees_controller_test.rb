@@ -188,9 +188,7 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should "not show link to inclue inactive committees" do
          assert_select "a[href*=include_inactive]", :text =>/include inactive/i, :count =>0
-
        end
- 
  
        should "should list committees for council" do
          assert_select "#committees li", 2 do #active committees by default
@@ -210,6 +208,14 @@ class CommitteesControllerTest < ActionController::TestCase
        should_respond_with :success
        should_render_without_layout
        should_respond_with_content_type 'application/xml'
+       
+       should "list committees" do
+         assert_select "committees>committee>title", @committee.title
+       end
+       
+       should "list members of committees" do
+         assert_select "committees>committee>members>member>first-name", @member.first_name
+       end
      end
 
      context "with json requested" do
@@ -222,6 +228,14 @@ class CommitteesControllerTest < ActionController::TestCase
        should_respond_with :success
        should_render_without_layout
        should_respond_with_content_type 'application/json'
+       
+       should "list committees" do
+         assert_match /committees\":.+title\":\"#{@committee.title}/, @response.body
+       end
+       
+       should "list members of committees" do
+         assert_match /committees\":.+members\":.+first_name\":\"#{@member.first_name}/, @response.body
+       end
      end
 
    end

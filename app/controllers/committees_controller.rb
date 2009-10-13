@@ -9,8 +9,8 @@ class CommitteesController < ApplicationController
     @title = "Committees"
     respond_to do |format|
       format.html
-      format.xml { render :xml => @committees.to_xml }
-      format.json { render :json => @committees.to_json }
+      format.xml { render :xml => @committees.to_xml(:include => [:members]) }
+      format.json { render :as_json => @committees.to_xml(:include => [:members]) }
     end
   end
   

@@ -59,6 +59,7 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "with search term" do
       setup do
+        @member = Factory(:member, :council => @another_council) # make another_council parsed
         get :index, :term => "Any"
       end
   
@@ -84,6 +85,7 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "with snac_id" do
       setup do
+        @member = Factory(:member, :council => @another_council) # make another_council parsed
         get :index, :snac_id => "snac_1"
       end
   
@@ -96,14 +98,28 @@ class CouncilsControllerTest < ActionController::TestCase
     end
     
     context "with xml requested" do
-      setup do
-        get :index, :format => "xml"
+      context "and basic request" do
+        setup do
+          get :index, :format => "xml"
+        end
+
+        should_assign_to(:councils) { [@council]}
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/xml'
       end
-  
-      should_assign_to(:councils) { [@council]}
-      should_respond_with :success
-      should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      
+      context "and search term" do
+        setup do
+          @member = Factory(:member, :council => @another_council) # make another_council parsed
+          get :index, :term => "Any", :format => "xml"
+        end
+
+        should_assign_to(:councils) { [@council] }
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/xml'
+      end
     end
     
     context "with json requested" do
