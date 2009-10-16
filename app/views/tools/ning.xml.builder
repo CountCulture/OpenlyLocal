@@ -27,9 +27,9 @@ xml.Module do
 
       end
     end
-    xml.UserPref :name => "selectedTab",
-                 :datatype => "hidden"
-
+    # xml.UserPref :name => "selectedTab",
+    #              :datatype => "hidden"
+    # 
 
   end
   
@@ -47,11 +47,13 @@ xml.Module do
   end
   
   xml.Content :type => "html", :view => "profile" do
-    xml.cdata!  "<p>Hello, Profile View!</p> "
+    xml.cdata!  render( :partial => "tools/ning_script.html.erb" )
+    # xml.cdata!  "<p>Hello, Profile View!</p> "
   end
   
   xml.Content :type => "html", :view => "canvas" do
-    xml.cdata!  "<p>Hello, Canvas View!</p> "
+    xml.cdata!  render( :partial => "tools/ning_script.html.erb" )
+    # xml.cdata!  "<p>Hello, Canvas View!</p> "
   end
   
 end

@@ -13,11 +13,12 @@
   var prefs = new gadgets.Prefs();
   
   // Initialize tabs.
-  var tabs = new gadgets.TabSet(__MODULE_ID__);
-  tabs.alignTabs("left");
+  // var tabs = new gadgets.TabSet(__MODULE_ID__);
+  // tabs.alignTabs("left");
                   
   function getCouncilData() {
-    var councilId = prefs.getString("council");
+    var councilId = 2;
+    // var councilId = prefs.getString("council");
     var params = {};
     params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
     // This URL returns a JSON-encoded string that represents a JavaScript object
@@ -40,8 +41,9 @@
   { 
     var council = obj.data.council;
     var partyBreakdown = [];
+    // alert(council.name);
     var footer = "</div><div id='footer'>More details and info at <a href='http://openlylocal.com'>OpenlyLocal</a> :: Making local government more transparent</div>";
-    gadgets.window.setTitle(council.name + " :: OpenlyLocal");
+    // gadgets.window.setTitle(council.name + " :: OpenlyLocal");
     
     for (var i = 0; i < council.members.length; i++) {
       var p = council.members[i].party;
@@ -75,7 +77,7 @@
         summaryHtml += "</ul>";
       }
     }
-
+    // alert(summaryHtml);
     for (var i = 0; i < council.members.length; i++) {
       var m = council.members[i];
       memberHtml += listItemFor(m);
@@ -95,18 +97,18 @@
     document.getElementById('meetings').innerHTML = "<ul>" + meetingHtml + "</ul>" + footer;
     document.getElementById('summary').innerHTML = summaryHtml + footer;
     
-    tabs.addTab("Summary", {
-       contentContainer: document.getElementById("summary")
-    });
-    tabs.addTab("Members", {
-       contentContainer: document.getElementById("members")
-    });
-    tabs.addTab("Committees", {
-       contentContainer: document.getElementById("committees")
-    });
-    tabs.addTab("Meetings", {
-       contentContainer: document.getElementById("meetings")
-    });
+    // tabs.addTab("Summary", {
+    //    contentContainer: document.getElementById("summary")
+    // });
+    // tabs.addTab("Members", {
+    //    contentContainer: document.getElementById("members")
+    // });
+    // tabs.addTab("Committees", {
+    //    contentContainer: document.getElementById("committees")
+    // });
+    // tabs.addTab("Meetings", {
+    //    contentContainer: document.getElementById("meetings")
+    // });
 
   }
 
