@@ -97,6 +97,12 @@ Factory.define :ward do |f|
   f.association :council
 end
 
+Factory.define :lsoa do |f|
+  f.sequence(:oa_code) { |n| "00AAFA000#{n}" }
+  f.sequence(:lsoa_code) { |n|  "E0100000#{n}" }
+  f.sequence(:lsoa_name) { |n|  "City of London 00#{n}" }
+end
+
 Factory.define :wdtk_request do |f|
   f.sequence(:title) { |n|  "FoI request Number #{n}" }
   f.sequence(:url) { |n|  "wdtk_url/#{n}" }
