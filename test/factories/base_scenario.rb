@@ -97,7 +97,7 @@ Factory.define :ward do |f|
   f.association :council
 end
 
-Factory.define :lsoa do |f|
+Factory.define :output_area do |f|
   f.sequence(:oa_code) { |n| "00AAFA000#{n}" }
   f.sequence(:lsoa_code) { |n|  "E0100000#{n}" }
   f.sequence(:lsoa_name) { |n|  "City of London 00#{n}" }
@@ -119,4 +119,8 @@ Factory.define :feed_entry do |f|
   f.sequence(:title) { |n| "Feed Title #{n}" }
   f.sequence(:url) { |n|  "http://feed.com/#{n}" }
   f.sequence(:guid) { |n|  "guid_#{n}" }
+end
+
+Factory.define :cached_postcode do |f|
+  f.sequence(:code) { |n| "AB1CD#{n}" }
 end

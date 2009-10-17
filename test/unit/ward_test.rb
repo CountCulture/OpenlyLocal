@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class WardTest < ActiveSupport::TestCase
+  subject { @ward }
   context "The Ward class" do
     setup do
       @ward = Factory(:ward)
@@ -38,6 +39,29 @@ class WardTest < ActiveSupport::TestCase
         assert_equal @ward, Ward.find_existing(:name => " #{@ward.name} Ward ", :council_id => @council.id)
       end
       
+    end
+    
+    context "when finding by postcode" do
+      setup do
+        
+      end
+      
+      should "query ons site" do
+        # Net:Http.expects(:get).with(match("ab1+cd2"))
+        # Ward.find_by_postcode("ab1 cd2")
+      end
+      
+      should "parser response" do
+        
+      end
+      
+      should "raise exception if no postocde found" do
+        
+      end
+      
+      should "raise exeption if bad response" do
+        
+      end
     end
     # should "override find_existing to find by council_id and name" do
     #   

@@ -10,11 +10,48 @@ class Ward < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => :council_id
   alias_attribute :title, :name
 
-
   # override standard find_existing from ScrapedModel to find by council and name, not UID
   def self.find_existing(params)
     find_by_council_id_and_name(params[:council_id], clean_name(params[:name]))
   end
+  
+  # This code inspire by Stef's code for BCCDIY'
+  # def self.find_by_postcode(pcode)
+  #   lookup_url = "http://www.neighbourhood.statistics.gov.uk/dissemination/LeadAreaSearch.do?a=7&r=1&i=1001&m=0&s=1255767609198&enc=1&areaSearchText=#{CGI::escape postcode }&areaSearchType=15&extendedList=true&searchAreas=
+  # 
+  #   result = ''
+  #   doc = Nokogiri::HTML(open(lookup_url))
+  # 
+  #   logger.info doc
+  # 
+  #   title = doc.at('title').inner_html
+  # 
+  #   if title == "Check Browser Settings"
+  #     follow_link = doc.css('a').first[:href]
+  #     doc = Nokogiri::HTML(open(follow_link))
+  #     logger.info doc        
+  #   end
+  # 
+  #   result_title = doc.css('h1').first.inner_html
+  #   result = nil
+  #   results = result_title.match(/Area: (.*?) \(Ward\)/)
+  #   unless results.blank?
+  #     result = results[1]
+  #   end
+  # 
+  #   unless result.blank?
+  #     #write the results to the lookup cache
+  #     
+  #     the_ward = Ward.find_by_permalink(result.parameterize)
+  #     
+  #     p = PostcodeToWard.new(:postcode=>postcode, :ward=>the_ward)
+  #     p.save
+  #     
+  #     return the_ward
+  #   else
+  #     return nil
+  #   end
+  # end
   
   def name=(raw_name)
     self[:name] = self.class.clean_name(raw_name)

@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html>
+ <head>
+ 
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+ <meta name="robots" content="no follow">
+ <meta name="keywords" content="browser settings">
+ <meta name="description" content="Neighbourhood Statistics - page to detect browser settings.">
+ <meta name="MSSmartTagsPreventParsing" content="TRUE">
+ <meta name="reply-to" content="info@ons.gov.uk (Neighbourhood Statistics)">
+ <meta name="Copyright" content="Crown Copyright - info@ons.gov.uk - http://www.statistics.gov.uk/copyright.asp">
+ <meta name="Author" content="Neighbourhood Statistics">
+ <meta name="Date" content="04/04/2008 10:00:00 AM">
+ <meta name="DC.Coverage.Spatial" content="">
+ <meta name="DC.Creator" content="Neighbourhood Statistics - Neil Sillitoe">
+ <meta name="DC.Format" content="text/html">
+ <meta name="DC.Language" scheme="ISO 639-2/T" content="eng">
+ <meta name="DC.Publisher" content="Office for National Statistics, Government Buildings, Cardiff Road, Newport. Gwent NP10 8XG, info@ons.gov.uk">
+ <meta name="DC.Rights.Copyright" content="Crown Copyright - info@ons.gov.uk - http://www.statistics.gov.uk/copyright.asp">
+ <meta name="DC.Date" scheme="W3CDTF" content="2008-04-14T10:00:00Z">
+ <meta name="DC.Date.Modified" scheme="W3CDTF" content="2008-04-14T10:00:00Z">
+ <meta name="DC.Identifier" scheme="URL" content="http://www.neighbourhood.statistics.gov.uk/dissemination">
+ <meta name="DC.Title" content="Detect browser settings">
+ <meta name="DC.Description" content="Neighbourhood Statistics - page to detect browser settings.">
+ <meta name="eGMS.Accessibility" scheme="" content="">
+ <meta name="eGMS.Subject" scheme="GCL" content="Browser settings">
+ <meta name="eGMS.Subject.Category" scheme="GCL" content="Browser settings">
+ <meta name="eGMS.Subject.Keyword" scheme="GCL" content="Settings">
+ 
+ <noscript>
+ <meta http-equiv="refresh" content="0;url=&#039;http://www.neighbourhood.statistics.gov.uk/dissemination/InvalidRequest.do;jessionid=ac1f930b30d6fbb134a4e4574a9c8a54de54ef567189?m=0&amp;s=1255783325703&amp;enc=1&amp;a=7&amp;nsjs=false&amp;nsck=false&amp;nssvg=false&#039;">
+ </noscript>
+ <title>Check Browser Settings</title>
+ </head>
+ <body>
+ <p>
+ <input name="jsEnabled" id="jsEnabled" type="hidden" value="false">
+ <input name="cookiesEnabled" id="cookiesEnabled" type="hidden" value="false">
+ <input name="svgEnabled" id="svgEnabled" type="hidden" value="false">
+ <input name="originalURL" id="originalURL" type="hidden" value="http://www.neighbourhood.statistics.gov.uk/dissemination/InvalidRequest.do;jessionid=ac1f930b30d6fbb134a4e4574a9c8a54de54ef567189?m=0&s=1255783325703&enc=1&a=7">
+ </p>
+ 
+ <script type="text/javascript">
+ var hasSVGSupport = false;
+ if ((navigator.userAgent.indexOf('MSIE') != -1)
+ && (navigator.userAgent.indexOf('Win') != -1))
+ {
+ document.writeln('<script language="VBscript">');
+ document.writeln('On Error Resume Next ');
+ document.writeln('hasSVGSupport = IsObject(CreateObject("Adobe.SVGCtl"))');
+ document.writeln('</scr' + 'ipt>');
+ }
+ try
+ {
+ if(hasSVGSupport == true)
+ {
+ document.getElementById('svgEnabled').value = 'true';
+ }
+ document.getElementById('jsEnabled').value = 'true';
+ }
+ catch(Exception)
+ {
+ // do nothing
+ }
+ // Detect if cookies are enabled (javascript version)
+ var tmpcookie = new Date();
+ chkcookie = (tmpcookie.getTime() + '');
+ document.cookie = "NeSS.chkCookie2=" + chkcookie + "; path=/";
+ if(document.cookie.indexOf(chkcookie,0)<0)
+ {
+ // cookies not enabled
+ }
+ else
+ {
+ document.getElementById('cookiesEnabled').value = 'true';
+ }
+ /* Get Screen Height*/
+ var screenHeight = 500;
+ var screenWidth = 800;
+ if( typeof( window.innerHeight ) == 'number' ) {
+ //Non-IE
+ screenHeight = window.innerHeight;
+ screenWidth = window.innerWidth;
+ } else if( document.documentElement &&
+ ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+ //IE 6+ in 'standards compliant mode'
+ screenHeight = document.documentElement.clientHeight;
+ screenWidth = document.documentElement.clientWidth;
+ } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+ //IE 4 compatible
+ screenHeight = document.body.clientHeight;
+ screenWidth = document.body.clientWidth;
+ }
+ var jsEnabled = document.getElementById('jsEnabled').value;
+ var cookiesEnabled = document.getElementById('cookiesEnabled').value;
+ var svgEnabled = document.getElementById('svgEnabled').value;
+ var url = document.getElementById('originalURL').value;
+ var urlP = url + "&nsjs=" + jsEnabled + "&nsck=" + cookiesEnabled + "&nssvg=" + svgEnabled + "&nswid=" + screenWidth;
+ // Return to original calling page passing back browser settings
+ self.location.replace(urlP);
+ </script>
+ <noscript>
+ 
+ <p><a href="http://www.neighbourhood.statistics.gov.uk/dissemination/InvalidRequest.do;jessionid=ac1f930b30d6fbb134a4e4574a9c8a54de54ef567189?m=0&amp;s=1255783325703&amp;enc=1&amp;a=7&amp;nsjs=false&amp;nsck=false&amp;nssvg=false">Please click here to continue</a></p>
+ </noscript>
+ </body>
+</html>
