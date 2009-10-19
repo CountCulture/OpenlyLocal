@@ -1,0 +1,385 @@
+Category (LGNL 2nd level),LGSL,LGIL,ServiceName,Authority level,Url 
+Parental Support,1,8,Find out about educating your child at home,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=1&amp;LGIL=8&amp;ServiceName=Find out about educating your child at home
+Parental Support,1,0,Apply to educate your child at home,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=1&amp;LGIL=0&amp;ServiceName=Apply to educate your child at home
+Schools & Colleges,2,8,Find out about help with school clothing costs,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=2&amp;LGIL=8&amp;ServiceName=Find out about help with school clothing costs
+Schools & Colleges,2,0,Apply for help with school clothing costs,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=2&amp;LGIL=0&amp;ServiceName=Apply for help with school clothing costs
+Schools & Colleges,3,8,Find out about home to school travel support,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=3&amp;LGIL=8&amp;ServiceName=Find out about home to school travel support
+Schools & Colleges,3,0,Apply for home to school travel support,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=3&amp;LGIL=0&amp;ServiceName=Apply for home to school travel support
+Schools & Colleges,4,8,Find out about free school meals,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=4&amp;LGIL=8&amp;ServiceName=Find out about free school meals
+Schools & Colleges,4,0,Apply for free school meals,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=4&amp;LGIL=0&amp;ServiceName=Apply for free school meals
+Schools & Colleges,9,8,Find out about an assessment of special educational needs,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=9&amp;LGIL=8&amp;ServiceName=Find out about an assessment of special educational needs
+Schools & Colleges,9,0,Apply for an assessment of special educational needs,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=9&amp;LGIL=0&amp;ServiceName=Apply for an assessment of special educational needs
+Schools & Colleges,11,8,Find out about disabled students allowance,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=11&amp;LGIL=8&amp;ServiceName=Find out about disabled students allowance
+Schools & Colleges,11,0,Apply for a disabled students allowance,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=11&amp;LGIL=0&amp;ServiceName=Apply for a disabled students allowance
+Pre-Schools,12,8,Find out about nursery school places,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=12&amp;LGIL=8&amp;ServiceName=Find out about nursery school places
+Pre-Schools,12,0,Apply for nursery school places,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=12&amp;LGIL=0&amp;ServiceName=Apply for nursery school places
+Schools & Colleges,13,8,Find out about primary school places,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=13&amp;LGIL=8&amp;ServiceName=Find out about primary school places
+Schools & Colleges,13,0,Apply for a primary school place,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=13&amp;LGIL=0&amp;ServiceName=Apply for a primary school place
+Schools & Colleges,14,8,Find out about secondary school places,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=14&amp;LGIL=8&amp;ServiceName=Find out about secondary school places
+Schools & Colleges,14,0,Apply for a secondary school place,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=14&amp;LGIL=0&amp;ServiceName=Apply for a secondary school place
+Childcare,18,8,Find out about school holiday schemes,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=18&amp;LGIL=8&amp;ServiceName=Find out about school holiday schemes
+Childcare,19,8,Find out about after/before school childcare,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=19&amp;LGIL=8&amp;ServiceName=Find out about after/before school childcare
+Youth Support,25,8,Find out more about student loans,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=25&amp;LGIL=8&amp;ServiceName=Find out more about student loans
+Schools & Colleges,29,8,Find out about school governors,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=29&amp;LGIL=8&amp;ServiceName=Find out about school governors
+Schools & Colleges,29,0,Apply to be a school governor,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=29&amp;LGIL=0&amp;ServiceName=Apply to be a school governor
+Schools & Colleges,34,8,Find out about pupil exclusions from school,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=34&amp;LGIL=8&amp;ServiceName=Find out about pupil exclusions from school
+Schools & Colleges,35,8,Find out about school truancy,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=35&amp;LGIL=8&amp;ServiceName=Find out about school truancy
+Schools & Colleges,36,8,Find out school term dates,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=36&amp;LGIL=8&amp;ServiceName=Find out school term dates
+Schools & Colleges,37,8,Find out more about school meals,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=37&amp;LGIL=8&amp;ServiceName=Find out more about school meals
+Schools & Colleges,37,1,Pay for school meals,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=37&amp;LGIL=1&amp;ServiceName=Pay for school meals
+Schools & Colleges,40,8,Find out abut school transport for a child with special educational needs,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=40&amp;LGIL=8&amp;ServiceName=Find out abut school transport for a child with special educational needs
+Schools & Colleges,40,0,Apply for school transport for a child with special educational needs,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=40&amp;LGIL=0&amp;ServiceName=Apply for school transport for a child with special educational needs
+Extra-curricular activities,47,8,Find out about local organisations for students,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=47&amp;LGIL=8&amp;ServiceName=Find out about local organisations for students
+Licences and street trading,48,8,Find out about performance/stage licences for school age children,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=48&amp;LGIL=8&amp;ServiceName=Find out about performance/stage licences for school age children
+Licences and street trading,48,0,Apply for a performance/stage licence for school age children,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=48&amp;LGIL=0&amp;ServiceName=Apply for a performance/stage licence for school age children
+Extra-curricular activities,51,8,Find out about instrumental tuition in schools,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=51&amp;LGIL=8&amp;ServiceName=Find out about instrumental tuition in schools
+Extra-curricular activities,51,0,Apply for instrumental tuition in school,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=51&amp;LGIL=0&amp;ServiceName=Apply for instrumental tuition in school
+Council tax,57,8,Find out more about  council tax,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=57&amp;LGIL=8&amp;ServiceName=Find out more about  council tax
+Council tax,57,2,Pay your council tax,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=57&amp;LGIL=2&amp;ServiceName=Pay your council tax
+Council tax,58,8,Find out about your council tax account,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=58&amp;LGIL=8&amp;ServiceName=Find out about your council tax account
+Council tax,58,0,Check your council tax balance,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=58&amp;LGIL=0&amp;ServiceName=Check your council tax balance
+Council tax,58,2,Request e-billing for council tax,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=58&amp;LGIL=2&amp;ServiceName=Request e-billing for council tax
+Council tax,59,8,Find out about discounts on council tax,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=59&amp;LGIL=8&amp;ServiceName=Find out about discounts on council tax
+Council tax,59,0,Apply for a discount on council tax,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=59&amp;LGIL=0&amp;ServiceName=Apply for a discount on council tax
+Council tax,60,8,Find out about exemptions from council tax,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=60&amp;LGIL=8&amp;ServiceName=Find out about exemptions from council tax
+Council tax,60,0,Apply for an exemption from council tax,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=60&amp;LGIL=0&amp;ServiceName=Apply for an exemption from council tax
+Council tax,61,8,Find out about council tax band reductions,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=61&amp;LGIL=8&amp;ServiceName=Find out about council tax band reductions
+Council tax,61,0,Apply for a council tax band reduction,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=61&amp;LGIL=0&amp;ServiceName=Apply for a council tax band reduction
+Council tax,62,8,Find out about backdating of council tax benefit claims,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=62&amp;LGIL=8&amp;ServiceName=Find out about backdating of council tax benefit claims
+Council tax,62,0,Apply for backdating of council tax benefit,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=62&amp;LGIL=0&amp;ServiceName=Apply for backdating of council tax benefit
+Council tax,63,8,Find out about council tax benefit,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=63&amp;LGIL=8&amp;ServiceName=Find out about council tax benefit
+Council tax,63,0,Check your eligibility for council tax benefit,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=63&amp;LGIL=0&amp;ServiceName=Check your eligibility for council tax benefit
+Council tax,64,8,Find out about changes in circumstances which affect council tax benefit claims,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=64&amp;LGIL=8&amp;ServiceName=Find out about changes in circumstances which affect council tax benefit claims
+Council tax,64,0,Report change of circumstances relating to council tax benefit,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=64&amp;LGIL=0&amp;ServiceName=Report change of circumstances relating to council tax benefit
+Council tax,65,8,Find out about appeals relating to council tax benefit decisions,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=65&amp;LGIL=8&amp;ServiceName=Find out about appeals relating to council tax benefit decisions
+Council tax,65,0,Appeal against a council tax benefit decision,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=65&amp;LGIL=0&amp;ServiceName=Appeal against a council tax benefit decision
+Benefits,68,8,Find out about backdating of housing benefit claims,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=68&amp;LGIL=8&amp;ServiceName=Find out about backdating of housing benefit claims
+Benefits,68,0,Apply for backdating of housing benefit,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=68&amp;LGIL=0&amp;ServiceName=Apply for backdating of housing benefit
+Benefits,69,8,Find out about housing benefit,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=69&amp;LGIL=8&amp;ServiceName=Find out about housing benefit
+Benefits,69,0,Check your eligibility for housing benefit,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=69&amp;LGIL=0&amp;ServiceName=Check your eligibility for housing benefit
+Benefits,70,8,Find out about changes in circumstances which affect housing benefit claims,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=70&amp;LGIL=8&amp;ServiceName=Find out about changes in circumstances which affect housing benefit claims
+Benefits,70,0,Report a change in circumstances affecting housing benefit,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=70&amp;LGIL=0&amp;ServiceName=Report a change in circumstances affecting housing benefit
+Benefits,72,8,Find out about appeals relating to housing benefit decisions,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=72&amp;LGIL=8&amp;ServiceName=Find out about appeals relating to housing benefit decisions
+Benefits,72,0,Appeal against a housing benefit decision,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=72&amp;LGIL=0&amp;ServiceName=Appeal against a housing benefit decision
+Council Housing,85,8,Find out about 'Hard to Let' council properties,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=85&amp;LGIL=8&amp;ServiceName=Find out about 'Hard to Let' council properties
+Housing Associations & Co-ops,87,8,Find out about Housing Association homes,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=87&amp;LGIL=8&amp;ServiceName=Find out about Housing Association homes
+Council Housing,88,8,Find out about mutual council home exchange,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=88&amp;LGIL=8&amp;ServiceName=Find out about mutual council home exchange
+Council Housing,88,0,Apply for a mutual council home exchange,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=88&amp;LGIL=0&amp;ServiceName=Apply for a mutual council home exchange
+Council Housing,90,8,Find out about appealing against  a rehousing decision,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=90&amp;LGIL=8&amp;ServiceName=Find out about appealing against  a rehousing decision
+Council Housing,90,0,Appeal against a rehousing decision appeal,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=90&amp;LGIL=0&amp;ServiceName=Appeal against a rehousing decision appeal
+Council Housing,92,8,Find out about applying for a council home,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=92&amp;LGIL=8&amp;ServiceName=Find out about applying for a council home
+Council Housing,92,0,Apply for a council home,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=92&amp;LGIL=0&amp;ServiceName=Apply for a council home
+Housing advice,97,8,Find out about support for council tenants who are victims of crime,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=97&amp;LGIL=8&amp;ServiceName=Find out about support for council tenants who are victims of crime
+Crime Prevention,98,8,Find out about support for council tenants who are victims of nuisance,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=98&amp;LGIL=8&amp;ServiceName=Find out about support for council tenants who are victims of nuisance
+Crime Prevention,98,0,Report a neighbour problem on your estate,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=98&amp;LGIL=0&amp;ServiceName=Report a neighbour problem on your estate
+Crime Prevention,99,8,Find out about community safety on council estates,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=99&amp;LGIL=8&amp;ServiceName=Find out about community safety on council estates
+Crime Prevention,99,0,Apply for community safety improvements on your estate,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=99&amp;LGIL=0&amp;ServiceName=Apply for community safety improvements on your estate
+Council Housing,101,8,Find out about squatters and unauthorised occupants in council property,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=101&amp;LGIL=8&amp;ServiceName=Find out about squatters and unauthorised occupants in council property
+Council Housing,101,0,Report suspected squatters in a council property,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=101&amp;LGIL=0&amp;ServiceName=Report suspected squatters in a council property
+Private Housing,108,8,Find out about help from the council for private tenants,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=108&amp;LGIL=8&amp;ServiceName=Find out about help from the council for private tenants
+Council Housing,109,8,Find out about advice for council tenants,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=109&amp;LGIL=8&amp;ServiceName=Find out about advice for council tenants
+Housing advice,112,8,Find out about advice for homeless people,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=112&amp;LGIL=8&amp;ServiceName=Find out about advice for homeless people
+Council Housing,114,8,Find out about parking on council estates,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=114&amp;LGIL=8&amp;ServiceName=Find out about parking on council estates
+Housing advice,115,8,Find out about renting a council garage,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=115&amp;LGIL=8&amp;ServiceName=Find out about renting a council garage
+Housing advice,115,0,Apply to rent a council garage,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=115&amp;LGIL=0&amp;ServiceName=Apply to rent a council garage
+Housing advice,115,2,Pay your garage rent,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=115&amp;LGIL=2&amp;ServiceName=Pay your garage rent
+Council Housing,116,8,Find out about rent arrears on a council tenancy,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=116&amp;LGIL=8&amp;ServiceName=Find out about rent arrears on a council tenancy
+Council Housing,117,8,Find out about eviction from council housing,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=117&amp;LGIL=8&amp;ServiceName=Find out about eviction from council housing
+Housing finance,120,8,Find out about council housing rents,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=120&amp;LGIL=8&amp;ServiceName=Find out about council housing rents
+Housing finance,120,2,Pay your council rent,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=120&amp;LGIL=2&amp;ServiceName=Pay your council rent
+Council Housing,122,8,Find out about communal heating charges for council properties,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=122&amp;LGIL=8&amp;ServiceName=Find out about communal heating charges for council properties
+Housing advice,123,8,Find out about home insurance for council tenants,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=123&amp;LGIL=8&amp;ServiceName=Find out about home insurance for council tenants
+Council Housing,124,8,Find out about making insurance claims against the council,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=124&amp;LGIL=8&amp;ServiceName=Find out about making insurance claims against the council
+Council Housing,124,0,Make an insurance claim against the council,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=124&amp;LGIL=0&amp;ServiceName=Make an insurance claim against the council
+Council Housing,129,8,Find out about the modernisation of council properties,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=129&amp;LGIL=8&amp;ServiceName=Find out about the modernisation of council properties
+Adapting homes,130,8,Find out about adaptions to council properties for people with mobility problems,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=130&amp;LGIL=8&amp;ServiceName=Find out about adaptions to council properties for people with mobility problems
+Adapting homes,130,0,Apply for an adaption to a council property,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=130&amp;LGIL=0&amp;ServiceName=Apply for an adaption to a council property
+Improvements and repairs,135,8,Find out about home improvement renovation grants,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=135&amp;LGIL=8&amp;ServiceName=Find out about home improvement renovation grants
+Improvements and repairs,135,0,Apply for home renovation grants,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=135&amp;LGIL=0&amp;ServiceName=Apply for home renovation grants
+Adapting homes,137,8,Find out about the Disability Facility Grant,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=137&amp;LGIL=8&amp;ServiceName=Find out about the Disability Facility Grant
+Adapting homes,137,0,Apply for Disabled Facilities Grant,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=137&amp;LGIL=0&amp;ServiceName=Apply for Disabled Facilities Grant
+Improvements and repairs,139,8,Find out about emergency out of hours repairs to council homes,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=139&amp;LGIL=8&amp;ServiceName=Find out about emergency out of hours repairs to council homes
+Improvements and repairs,140,8,Find out about repairs to communal areas of council properties,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=140&amp;LGIL=8&amp;ServiceName=Find out about repairs to communal areas of council properties
+Improvements and repairs,140,0,Request a repair to a communal area of a council property,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=140&amp;LGIL=0&amp;ServiceName=Request a repair to a communal area of a council property
+Improvements and repairs,141,8,Find out about repairs to council properties,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=141&amp;LGIL=8&amp;ServiceName=Find out about repairs to council properties
+Improvements and repairs,141,0,Request a repair to a council property,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=141&amp;LGIL=0&amp;ServiceName=Request a repair to a council property
+Improvements and repairs,143,8,Find out about decoration and disturbance allowances for council tenants,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=143&amp;LGIL=8&amp;ServiceName=Find out about decoration and disturbance allowances for council tenants
+Improvements and repairs,143,0,Apply for decoration or disturbance allowance,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=143&amp;LGIL=0&amp;ServiceName=Apply for decoration or disturbance allowance
+Improvements and repairs,146,8,Find out about council home repairs,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=146&amp;LGIL=8&amp;ServiceName=Find out about council home repairs
+Improvements and repairs,147,8,Find out about garden maintenance for elderly or disabled council tenants,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=147&amp;LGIL=8&amp;ServiceName=Find out about garden maintenance for elderly or disabled council tenants
+Improvements and repairs,147,0,Apply for garden maintenance for elderly or disabled council tenants,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=147&amp;LGIL=0&amp;ServiceName=Apply for garden maintenance for elderly or disabled council tenants
+Multiple occupancy homes,149,8,Find out about council rent inspections of shared accommodation,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=149&amp;LGIL=8&amp;ServiceName=Find out about council rent inspections of shared accommodation
+Multiple occupancy homes,149,0,Apply for a council rent inspection of shared accommodation,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=149&amp;LGIL=0&amp;ServiceName=Apply for a council rent inspection of shared accommodation
+Multiple occupancy homes,150,8,Find out about council safety inspections of homes in multiple occupation,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=150&amp;LGIL=8&amp;ServiceName=Find out about council safety inspections of homes in multiple occupation
+Multiple occupancy homes,150,0,Apply for a council safety inspection of a home in multiple occupation,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=150&amp;LGIL=0&amp;ServiceName=Apply for a council safety inspection of a home in multiple occupation
+Right to buy,151,8,Find out about the right to buy scheme,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=151&amp;LGIL=8&amp;ServiceName=Find out about the right to buy scheme
+Right to buy,151,0,Make an application under the right to buy scheme,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=151&amp;LGIL=0&amp;ServiceName=Make an application under the right to buy scheme
+Council Housing,156,8,Find out about council repairs of communal areas (for leaseholders),district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=156&amp;LGIL=8&amp;ServiceName=Find out about council repairs of communal areas (for leaseholders)
+Council Housing,156,0,Request a repair of a council communal area (for leasholders),district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=156&amp;LGIL=0&amp;ServiceName=Request a repair of a council communal area (for leasholders)
+Council Housing,156,2,Pay your service charges,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=156&amp;LGIL=2&amp;ServiceName=Pay your service charges
+"Fostering, adopting and looked after children",159,8,Find out about fostering a child,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=159&amp;LGIL=8&amp;ServiceName=Find out about fostering a child
+"Fostering, adopting and looked after children",160,8,Find out about adopting a child,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=160&amp;LGIL=8&amp;ServiceName=Find out about adopting a child
+"Fostering, adopting and looked after children",160,0,Apply to adopt a child,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=160&amp;LGIL=0&amp;ServiceName=Apply to adopt a child
+Equality & Diversity,169,8,Find out about the council's interpreting and translation service,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=169&amp;LGIL=8&amp;ServiceName=Find out about the council's interpreting and translation service
+Youth offending,175,8,Find out about parenting orders,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=175&amp;LGIL=8&amp;ServiceName=Find out about parenting orders
+Adapting homes,178,8,Find out about equipment and adaptions to the home for disabled people,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=178&amp;LGIL=8&amp;ServiceName=Find out about equipment and adaptions to the home for disabled people
+Adapting homes,178,0,Apply for equipment and adaptations to the home for disabled people,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=178&amp;LGIL=0&amp;ServiceName=Apply for equipment and adaptations to the home for disabled people
+Substance Abuse,204,8,Find out about rehabilitation  to help recovery following illness or injury,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=204&amp;LGIL=8&amp;ServiceName=Find out about rehabilitation  to help recovery following illness or injury
+Substance Abuse,204,0,Apply for rehabilitation advice following an illness or injury,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=204&amp;LGIL=0&amp;ServiceName=Apply for rehabilitation advice following an illness or injury
+Disabilities,209,8,Find out about a needs assessment by social services,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=209&amp;LGIL=8&amp;ServiceName=Find out about a needs assessment by social services
+Disabilities,209,0,Apply for a needs assessment by social services,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=209&amp;LGIL=0&amp;ServiceName=Apply for a needs assessment by social services
+Carers,225,8,Find out about advice and support for adult carers,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=225&amp;LGIL=8&amp;ServiceName=Find out about advice and support for adult carers
+Carers,225,0,Apply for a carers assessment,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=225&amp;LGIL=0&amp;ServiceName=Apply for a carers assessment
+Carers,227,8,Find out about short term breaks for carers,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=227&amp;LGIL=8&amp;ServiceName=Find out about short term breaks for carers
+Carers,227,0,Apply for a short term break for a carer,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=227&amp;LGIL=0&amp;ServiceName=Apply for a short term break for a carer
+Supported and Sheltered housing,230,8,Find out about sheltered and supported housing,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=230&amp;LGIL=8&amp;ServiceName=Find out about sheltered and supported housing
+Supported and Sheltered housing,230,0,Apply for sheltered and supported housing,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=230&amp;LGIL=0&amp;ServiceName=Apply for sheltered and supported housing
+Home Care,242,8,Find out about care in your own home,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=242&amp;LGIL=8&amp;ServiceName=Find out about care in your own home
+Home Care,242,4,Pay for home care,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=242&amp;LGIL=4&amp;ServiceName=Pay for home care
+"Fostering, adopting and looked after children",260,8,Find out about short term breaks for carers of children,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=260&amp;LGIL=8&amp;ServiceName=Find out about short term breaks for carers of children
+"Fostering, adopting and looked after children",260,0,Apply for short term breaks for carers of children,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=260&amp;LGIL=0&amp;ServiceName=Apply for short term breaks for carers of children
+"Fostering, adopting and looked after children",263,8,Find out about residential care for children,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=263&amp;LGIL=8&amp;ServiceName=Find out about residential care for children
+Services for the elderly,269,8,Find out about the keeping warm in winter service,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=269&amp;LGIL=8&amp;ServiceName=Find out about the keeping warm in winter service
+Community Transport,272,8,Find out about community transport schemes,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=272&amp;LGIL=8&amp;ServiceName=Find out about community transport schemes
+Community Transport,272,0,Apply for a community transport journey,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=272&amp;LGIL=0&amp;ServiceName=Apply for a community transport journey
+Community Transport,273,8,Find out about older person's bus pass,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=273&amp;LGIL=8&amp;ServiceName=Find out about older person's bus pass
+Community Transport,273,0,Apply for a older person's bus pass,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=273&amp;LGIL=0&amp;ServiceName=Apply for a older person's bus pass
+Community Transport,274,8,Find out about parking bays for registered disabled drivers,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=274&amp;LGIL=8&amp;ServiceName=Find out about parking bays for registered disabled drivers
+Disabilities,279,8,Find out about Blue Badge parking permits,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=279&amp;LGIL=8&amp;ServiceName=Find out about Blue Badge parking permits
+Disabilities,279,0,Apply for a Blue Badge parking permit,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=279&amp;LGIL=0&amp;ServiceName=Apply for a Blue Badge parking permit
+Community Transport,280,8,Find out about the disabled person's bus pass,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=280&amp;LGIL=8&amp;ServiceName=Find out about the disabled person's bus pass
+Community Transport,280,0,Apply for a disabled person's bus pass,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=280&amp;LGIL=0&amp;ServiceName=Apply for a disabled person's bus pass
+Services for the elderly,287,8,Find out about direct payments,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=287&amp;LGIL=8&amp;ServiceName=Find out about direct payments
+Services for the elderly,287,0,Apply for direct payments,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=287&amp;LGIL=0&amp;ServiceName=Apply for direct payments
+Supported and Sheltered housing,292,8,Find out more about residential care,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=292&amp;LGIL=8&amp;ServiceName=Find out more about residential care
+Services for the elderly,296,8,Find out about day centres,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=296&amp;LGIL=8&amp;ServiceName=Find out about day centres
+Support Groups,297,8,Find out about local support groups and organisations,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=297&amp;LGIL=8&amp;ServiceName=Find out about local support groups and organisations
+Support Groups,298,8,Find out about local carer support groups and organisations,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=298&amp;LGIL=8&amp;ServiceName=Find out about local carer support groups and organisations
+Carers,300,8,Find out about advice and support for young carers,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=300&amp;LGIL=8&amp;ServiceName=Find out about advice and support for young carers
+Carers,300,0,Apply for a young carers assessment,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=300&amp;LGIL=0&amp;ServiceName=Apply for a young carers assessment
+Home Care,313,8,Find out about community alarm services,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=313&amp;LGIL=8&amp;ServiceName=Find out about community alarm services
+Home Care,313,0,Apply for a community alarm,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=313&amp;LGIL=0&amp;ServiceName=Apply for a community alarm
+Services for the elderly,315,8,Find out about mobile meals service,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=315&amp;LGIL=8&amp;ServiceName=Find out about mobile meals service
+Services for the elderly,315,0,Apply for mobile meals,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=315&amp;LGIL=0&amp;ServiceName=Apply for mobile meals
+Services for the elderly,315,4,Pay for meals on wheels,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=315&amp;LGIL=4&amp;ServiceName=Pay for meals on wheels
+Marriages,317,8,Find out about civil marriage ceremonies,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=317&amp;LGIL=8&amp;ServiceName=Find out about civil marriage ceremonies
+Births,319,8,Find out about registering a birth,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=319&amp;LGIL=8&amp;ServiceName=Find out about registering a birth
+"Deaths, Funerals & Cremations",322,8,Find out about registering a still birth,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=322&amp;LGIL=8&amp;ServiceName=Find out about registering a still birth
+Births,323,8,Find out about searching for a birth certificate,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=323&amp;LGIL=8&amp;ServiceName=Find out about searching for a birth certificate
+Births,323,0,Apply for a copy birth certificate,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=323&amp;LGIL=0&amp;ServiceName=Apply for a copy birth certificate
+"Deaths, Funerals & Cremations",324,8,Find out about searching for a death certificate,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=324&amp;LGIL=8&amp;ServiceName=Find out about searching for a death certificate
+"Deaths, Funerals & Cremations",324,0,Apply for a copy death certificate,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=324&amp;LGIL=0&amp;ServiceName=Apply for a copy death certificate
+"Deaths, Funerals & Cremations",328,8,Find out about the bereavement service,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=328&amp;LGIL=8&amp;ServiceName=Find out about the bereavement service
+Adult & Community education,329,8,Find out about a community funeral service,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=329&amp;LGIL=8&amp;ServiceName=Find out about a community funeral service
+"Deaths, Funerals & Cremations",330,8,Find out about cremation,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=330&amp;LGIL=8&amp;ServiceName=Find out about cremation
+"Deaths, Funerals & Cremations",331,8,Find out about funeral expenses,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=331&amp;LGIL=8&amp;ServiceName=Find out about funeral expenses
+"Deaths, Funerals & Cremations",333,8,Find out about buying a grave plot,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=333&amp;LGIL=8&amp;ServiceName=Find out about buying a grave plot
+"Deaths, Funerals & Cremations",333,0,Apply to buy a grave plot,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=333&amp;LGIL=0&amp;ServiceName=Apply to buy a grave plot
+"Deaths, Funerals & Cremations",335,8,Find out about burial and grave details,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=335&amp;LGIL=8&amp;ServiceName=Find out about burial and grave details
+Careers Advice,337,8,Find out about jobs at your local council,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=337&amp;LGIL=8&amp;ServiceName=Find out about jobs at your local council
+Careers Advice,337,0,Apply for a job at your local council,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=337&amp;LGIL=0&amp;ServiceName=Apply for a job at your local council
+Corporate complaints,353,8,Find out about complaints procedure,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=353&amp;LGIL=8&amp;ServiceName=Find out about complaints procedure
+Corporate complaints,353,0,Make a complaint about your local council,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=353&amp;LGIL=0&amp;ServiceName=Make a complaint about your local council
+Democracy & Elections,354,8,"Search council minutes, agendas and reports",all,"local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=354&amp;LGIL=8&amp;ServiceName=Search council minutes, agendas and reports"
+Democracy & Elections,355,8,Find out about councillors declaration of interest,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=355&amp;LGIL=8&amp;ServiceName=Find out about councillors declaration of interest
+Democracy & Elections,357,8,Find out about councillor advice surgeries,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=357&amp;LGIL=8&amp;ServiceName=Find out about councillor advice surgeries
+Democracy & Elections,358,8,Find out about your local councillors,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=358&amp;LGIL=8&amp;ServiceName=Find out about your local councillors
+Democracy & Elections,359,8,Find out local council news,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=359&amp;LGIL=8&amp;ServiceName=Find out local council news
+Democracy & Elections,361,8,Find out about proxy votes,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=361&amp;LGIL=8&amp;ServiceName=Find out about proxy votes
+Democracy & Elections,361,0,Apply for a proxy vote,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=361&amp;LGIL=0&amp;ServiceName=Apply for a proxy vote
+Democracy & Elections,362,8,Find out about elections,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=362&amp;LGIL=8&amp;ServiceName=Find out about elections
+Democracy & Elections,364,8,Find out more about the electoral register,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=364&amp;LGIL=8&amp;ServiceName=Find out more about the electoral register
+Democracy & Elections,364,0,Apply to register on the electoral roll,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=364&amp;LGIL=0&amp;ServiceName=Apply to register on the electoral roll
+Community Centres & Facilities,372,8,Find out about abandoned vehicles,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=372&amp;LGIL=8&amp;ServiceName=Find out about abandoned vehicles
+Community Centres & Facilities,372,0,Report an abandoned vehicle,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=372&amp;LGIL=0&amp;ServiceName=Report an abandoned vehicle
+Licences and street trading,399,8,Find out about illegal street trading,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=399&amp;LGIL=8&amp;ServiceName=Find out about illegal street trading
+Licences and street trading,399,0,Report illegal street trading,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=399&amp;LGIL=0&amp;ServiceName=Report illegal street trading
+Pollution,412,8,Find out about noise nuisance,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=412&amp;LGIL=8&amp;ServiceName=Find out about noise nuisance
+Pollution,412,0,Report a noise nuisance,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=412&amp;LGIL=0&amp;ServiceName=Report a noise nuisance
+Pollution,413,8,Find out about local air  pollution,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=413&amp;LGIL=8&amp;ServiceName=Find out about local air  pollution
+Pollution,415,8,Find out about asbestos removal,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=415&amp;LGIL=8&amp;ServiceName=Find out about asbestos removal
+Pollution,415,0,Apply for an asbestos inspection,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=415&amp;LGIL=0&amp;ServiceName=Apply for an asbestos inspection
+Pollution,418,8,Find out about contaminated land,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=418&amp;LGIL=8&amp;ServiceName=Find out about contaminated land
+Health and medical advice,428,8,Find out about removal and disposal of syringes,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=428&amp;LGIL=8&amp;ServiceName=Find out about removal and disposal of syringes
+Health and medical advice,428,0,Report discarded syringes,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=428&amp;LGIL=0&amp;ServiceName=Report discarded syringes
+Environmental health,431,8,Find out about pest control,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=431&amp;LGIL=8&amp;ServiceName=Find out about pest control
+Environmental health,431,0,Report a pest problem,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=431&amp;LGIL=0&amp;ServiceName=Report a pest problem
+Animal Welfare,432,8,Find out about the dog warden service,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=432&amp;LGIL=8&amp;ServiceName=Find out about the dog warden service
+Animal Welfare,432,0,Report a stray dog,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=432&amp;LGIL=0&amp;ServiceName=Report a stray dog
+Grants,433,8,Find out about renovation grants,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=433&amp;LGIL=8&amp;ServiceName=Find out about renovation grants
+Grants,433,0,Apply for a renovation grant,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=433&amp;LGIL=0&amp;ServiceName=Apply for a renovation grant
+Infectious diseases,435,8,Find out about infectious diseases,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=435&amp;LGIL=8&amp;ServiceName=Find out about infectious diseases
+Libraries,437,8,Find out about library services,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=437&amp;LGIL=8&amp;ServiceName=Find out about library services
+Libraries,438,8,Find out about joining a library,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=438&amp;LGIL=8&amp;ServiceName=Find out about joining a library
+Libraries,438,0,Apply to join a library,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=438&amp;LGIL=0&amp;ServiceName=Apply to join a library
+Libraries,439,8,Search the library catalogue,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=439&amp;LGIL=8&amp;ServiceName=Search the library catalogue
+Libraries,439,0,Reserve a library book,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=439&amp;LGIL=0&amp;ServiceName=Reserve a library book
+Libraries,440,8,Find out about library loans,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=440&amp;LGIL=8&amp;ServiceName=Find out about library loans
+Libraries,440,0,Renew a library book,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=440&amp;LGIL=0&amp;ServiceName=Renew a library book
+Libraries,442,8,Find out about internet access in a library,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=442&amp;LGIL=8&amp;ServiceName=Find out about internet access in a library
+Libraries,442,1,Book internet access in a library,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=442&amp;LGIL=1&amp;ServiceName=Book internet access in a library
+Libraries,443,8,Find out about library fines,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=443&amp;LGIL=8&amp;ServiceName=Find out about library fines
+Libraries,443,1,Pay your library fine,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=443&amp;LGIL=1&amp;ServiceName=Pay your library fine
+Libraries,444,8,Find out about mobile libraries,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=444&amp;LGIL=8&amp;ServiceName=Find out about mobile libraries
+Libraries,445,8,Find out about the historical search service in a library,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=445&amp;LGIL=8&amp;ServiceName=Find out about the historical search service in a library
+Libraries,448,8,Find out about archives,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=448&amp;LGIL=8&amp;ServiceName=Find out about archives
+"Sports, Clubs and Centres",456,8,Find out about leisure passes,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=456&amp;LGIL=8&amp;ServiceName=Find out about leisure passes
+"Sports, Clubs and Centres",456,0,Apply for a leisure pass,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=456&amp;LGIL=0&amp;ServiceName=Apply for a leisure pass
+Parks and open spaces,461,8,Find out about local parks,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=461&amp;LGIL=8&amp;ServiceName=Find out about local parks
+Parking,471,8,Find out about parking fines,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=471&amp;LGIL=8&amp;ServiceName=Find out about parking fines
+Parking,471,0,Appeal against your parking fine,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=471&amp;LGIL=0&amp;ServiceName=Appeal against your parking fine
+Parking,471,4,Pay your parking fine,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=471&amp;LGIL=4&amp;ServiceName=Pay your parking fine
+Parking,474,8,Find out about parking permits,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=474&amp;LGIL=8&amp;ServiceName=Find out about parking permits
+Parking,474,0,Apply for a parking permit,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=474&amp;LGIL=0&amp;ServiceName=Apply for a parking permit
+"Roads, highways and pavements",477,8,Find out how to apply for a dropped kerb,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=477&amp;LGIL=8&amp;ServiceName=Find out how to apply for a dropped kerb
+Parking,478,8,Find out about council car parks,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=478&amp;LGIL=8&amp;ServiceName=Find out about council car parks
+Planning,485,8,Find out about planning permission,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=485&amp;LGIL=8&amp;ServiceName=Find out about planning permission
+Planning,485,0,Apply for planning permission,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=485&amp;LGIL=0&amp;ServiceName=Apply for planning permission
+Planning,493,8,Find out about local transport policy,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=493&amp;LGIL=8&amp;ServiceName=Find out about local transport policy
+Crime Prevention,497,8,Find out about crime prevention in town centres,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=497&amp;LGIL=8&amp;ServiceName=Find out about crime prevention in town centres
+Building control,499,8,Find out about building regulations,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=499&amp;LGIL=8&amp;ServiceName=Find out about building regulations
+Building control,499,0,Apply for building regulations approval,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=499&amp;LGIL=0&amp;ServiceName=Apply for building regulations approval
+Parks and open spaces,508,8,Find out about tree preservation orders,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=508&amp;LGIL=8&amp;ServiceName=Find out about tree preservation orders
+Parks and open spaces,508,0,Apply for permission to work on a protected tree,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=508&amp;LGIL=0&amp;ServiceName=Apply for permission to work on a protected tree
+Parks and open spaces,510,8,Find out about allotments,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=510&amp;LGIL=8&amp;ServiceName=Find out about allotments
+Parks and open spaces,510,0,Apply for an allotment,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=510&amp;LGIL=0&amp;ServiceName=Apply for an allotment
+Conservation,512,8,Find out about carrying out works on a property in a conservation area,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=512&amp;LGIL=8&amp;ServiceName=Find out about carrying out works on a property in a conservation area
+Conservation,512,0,Apply to carry out works on a property in a conservation area,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=512&amp;LGIL=0&amp;ServiceName=Apply to carry out works on a property in a conservation area
+Land and premises,513,8,Find out about street naming and numbering,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=513&amp;LGIL=8&amp;ServiceName=Find out about street naming and numbering
+Conservation,514,8,Find out about listed buildings,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=514&amp;LGIL=8&amp;ServiceName=Find out about listed buildings
+Planning,516,8,Search the register of planning decisions,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=516&amp;LGIL=8&amp;ServiceName=Search the register of planning decisions
+Licences and street trading,521,8,Find out about skip permits,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=521&amp;LGIL=8&amp;ServiceName=Find out about skip permits
+Licences and street trading,521,0,Apply for a skip permit,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=521&amp;LGIL=0&amp;ServiceName=Apply for a skip permit
+"Rubbish, waste and recycling",524,8,Find out which day the refuse is collected,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=524&amp;LGIL=8&amp;ServiceName=Find out which day the refuse is collected
+"Rubbish, waste and recycling",524,0,Report a missed bin collection,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=524&amp;LGIL=0&amp;ServiceName=Report a missed bin collection
+"Rubbish, waste and recycling",526,8,Find out about domestic bins,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=526&amp;LGIL=8&amp;ServiceName=Find out about domestic bins
+"Rubbish, waste and recycling",528,8,Find out about special collections for large items,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=528&amp;LGIL=8&amp;ServiceName=Find out about special collections for large items
+"Rubbish, waste and recycling",528,0,Apply for a special collection for large items,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=528&amp;LGIL=0&amp;ServiceName=Apply for a special collection for large items
+"Rubbish, waste and recycling",530,8,Find out about disposing of garden waste,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=530&amp;LGIL=8&amp;ServiceName=Find out about disposing of garden waste
+"Rubbish, waste and recycling",533,8,Find out more about recycling collections,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=533&amp;LGIL=8&amp;ServiceName=Find out more about recycling collections
+"Rubbish, waste and recycling",533,0,Apply for a recycling bin,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=533&amp;LGIL=0&amp;ServiceName=Apply for a recycling bin
+"Rubbish, waste and recycling",534,8,Find your nearest recycling centre,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=534&amp;LGIL=8&amp;ServiceName=Find your nearest recycling centre
+"Roads, highways and pavements",536,8,Find out more about blocked pavements,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=536&amp;LGIL=8&amp;ServiceName=Find out more about blocked pavements
+"Roads, highways and pavements",536,0,Report an obstruction on a pavement,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=536&amp;LGIL=0&amp;ServiceName=Report an obstruction on a pavement
+"Roads, highways and pavements",537,8,Find out more about pavement problems,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=537&amp;LGIL=8&amp;ServiceName=Find out more about pavement problems
+"Roads, highways and pavements",537,0,Report a problem with a pavement,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=537&amp;LGIL=0&amp;ServiceName=Report a problem with a pavement
+"Roads, highways and pavements",541,8,Find out about street name plates,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=541&amp;LGIL=8&amp;ServiceName=Find out about street name plates
+"Roads, highways and pavements",541,0,Report a problem with a street name plate,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=541&amp;LGIL=0&amp;ServiceName=Report a problem with a street name plate
+Walking & Cycling,546,8,Find out more about safe routes to school,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=546&amp;LGIL=8&amp;ServiceName=Find out more about safe routes to school
+"Roads, highways and pavements",550,8,Find out more about road obstructions,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=550&amp;LGIL=8&amp;ServiceName=Find out more about road obstructions
+"Roads, highways and pavements",550,0,Report an obstruction on a road,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=550&amp;LGIL=0&amp;ServiceName=Report an obstruction on a road
+Emergencies,555,8,Find out more about road flooding,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=555&amp;LGIL=8&amp;ServiceName=Find out more about road flooding
+Emergencies,555,0,Report road flooding,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=555&amp;LGIL=0&amp;ServiceName=Report road flooding
+"Roads, highways and pavements",557,8,Find out about potholes,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=557&amp;LGIL=8&amp;ServiceName=Find out about potholes
+"Roads, highways and pavements",557,0,Report a pothole,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=557&amp;LGIL=0&amp;ServiceName=Report a pothole
+Safety,558,8,Find out personal injury caused by damage and/or hazards on roads and pavements,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=558&amp;LGIL=8&amp;ServiceName=Find out personal injury caused by damage and/or hazards on roads and pavements
+Safety,558,0,Report personal injury caused by damage and/or hazards on roads and pavements,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=558&amp;LGIL=0&amp;ServiceName=Report personal injury caused by damage and/or hazards on roads and pavements
+"Roads, highways and pavements",559,8,Find out about street furniture,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=559&amp;LGIL=8&amp;ServiceName=Find out about street furniture
+"Roads, highways and pavements",559,0,Report a problem with street furniture,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=559&amp;LGIL=0&amp;ServiceName=Report a problem with street furniture
+"Roads, highways and pavements",561,8,Find out about road gritting,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=561&amp;LGIL=8&amp;ServiceName=Find out about road gritting
+"Roads, highways and pavements",561,0,Request road gritting,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=561&amp;LGIL=0&amp;ServiceName=Request road gritting
+"Roads, highways and pavements",562,8,Find out about the snow clearing service,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=562&amp;LGIL=8&amp;ServiceName=Find out about the snow clearing service
+"Roads, highways and pavements",562,0,Request snow clearance,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=562&amp;LGIL=0&amp;ServiceName=Request snow clearance
+"Roads, highways and pavements",564,8,Find out about street lights,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=564&amp;LGIL=8&amp;ServiceName=Find out about street lights
+"Roads, highways and pavements",564,0,Report a problem with a street light,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=564&amp;LGIL=0&amp;ServiceName=Report a problem with a street light
+"Roads, highways and pavements",567,8,Find out about traffic lights,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=567&amp;LGIL=8&amp;ServiceName=Find out about traffic lights
+"Roads, highways and pavements",567,0,Report a problem with a traffic light,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=567&amp;LGIL=0&amp;ServiceName=Report a problem with a traffic light
+Road Safety,568,8,Find out about pedestrian crossings,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=568&amp;LGIL=8&amp;ServiceName=Find out about pedestrian crossings
+Road Safety,568,0,Request a new pedestrian crossing,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=568&amp;LGIL=0&amp;ServiceName=Request a new pedestrian crossing
+"Roads, highways and pavements",569,8,Find out about road works in your area,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=569&amp;LGIL=8&amp;ServiceName=Find out about road works in your area
+"Roads, highways and pavements",570,8,Find out about road closures and diversions,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=570&amp;LGIL=8&amp;ServiceName=Find out about road closures and diversions
+"Roads, highways and pavements",571,8,Find out about speed limits,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=571&amp;LGIL=8&amp;ServiceName=Find out about speed limits
+Street care and cleaning,576,8,Find out about dead animal removal,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=576&amp;LGIL=8&amp;ServiceName=Find out about dead animal removal
+Street care and cleaning,576,0,Report a dead animal,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=576&amp;LGIL=0&amp;ServiceName=Report a dead animal
+Street care and cleaning,577,8,Find out about dog fouling,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=577&amp;LGIL=8&amp;ServiceName=Find out about dog fouling
+Street care and cleaning,577,0,Report a dog fouling problem,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=577&amp;LGIL=0&amp;ServiceName=Report a dog fouling problem
+Street care and cleaning,580,8,Find out about street cleaning,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=580&amp;LGIL=8&amp;ServiceName=Find out about street cleaning
+Street care and cleaning,580,0,Report a litter problem,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=580&amp;LGIL=0&amp;ServiceName=Report a litter problem
+Street care and cleaning,584,8,Find out about graffiti problems,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=584&amp;LGIL=8&amp;ServiceName=Find out about graffiti problems
+Street care and cleaning,584,0,Report a graffiti problem,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=584&amp;LGIL=0&amp;ServiceName=Report a graffiti problem
+Street care and cleaning,586,8,Find out about vandalism,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=586&amp;LGIL=8&amp;ServiceName=Find out about vandalism
+Street care and cleaning,586,0,Report vandalism,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=586&amp;LGIL=0&amp;ServiceName=Report vandalism
+Street care and cleaning,587,8,Find out about flytipping,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=587&amp;LGIL=8&amp;ServiceName=Find out about flytipping
+Street care and cleaning,587,0,Report flytipping,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=587&amp;LGIL=0&amp;ServiceName=Report flytipping
+Street care and cleaning,588,8,Find out about flyposting,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=588&amp;LGIL=8&amp;ServiceName=Find out about flyposting
+Street care and cleaning,588,0,Report flyposting,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=588&amp;LGIL=0&amp;ServiceName=Report flyposting
+Street care and cleaning,591,8,Find out about spillages on the roads,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=591&amp;LGIL=8&amp;ServiceName=Find out about spillages on the roads
+Street care and cleaning,591,0,Report a road spillage,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=591&amp;LGIL=0&amp;ServiceName=Report a road spillage
+Safety,600,8,Find out about dangerous buildings and structures,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=600&amp;LGIL=8&amp;ServiceName=Find out about dangerous buildings and structures
+Safety,600,0,Report a dangerous building or structure,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=600&amp;LGIL=0&amp;ServiceName=Report a dangerous building or structure
+Building control,603,8,Find out about nuisance caused by demolition work,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=603&amp;LGIL=8&amp;ServiceName=Find out about nuisance caused by demolition work
+Land and premises,610,8,Find out about personal searches of local land charges,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=610&amp;LGIL=8&amp;ServiceName=Find out about personal searches of local land charges
+Community Advice,615,8,Find out about grants to local voluntary organisations,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=615&amp;LGIL=8&amp;ServiceName=Find out about grants to local voluntary organisations
+Tourism & Travel,623,8,Find a tourist information centre,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=623&amp;LGIL=8&amp;ServiceName=Find a tourist information centre
+Youth support,629,8,Find out about volunteering for young people,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=629&amp;LGIL=8&amp;ServiceName=Find out about volunteering for young people
+Parental Support,630,8,Find out how to complain about a school,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=630&amp;LGIL=8&amp;ServiceName=Find out how to complain about a school
+Parental Support,630,0,Make a complaint about a school,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=630&amp;LGIL=0&amp;ServiceName=Make a complaint about a school
+Childcare,631,8,Find out about the chaperone service,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=631&amp;LGIL=8&amp;ServiceName=Find out about the chaperone service
+Services for the elderly,640,8,Find out about leisure activities for older people,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=640&amp;LGIL=8&amp;ServiceName=Find out about leisure activities for older people
+"Sports, Clubs and Centres",641,8,Find out about sports clubs,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=641&amp;LGIL=8&amp;ServiceName=Find out about sports clubs
+Extra-curricular activities,642,8,Find out about youth clubs,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=642&amp;LGIL=8&amp;ServiceName=Find out about youth clubs
+Extra-curricular activities,643,8,Find out about activities for young people,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=643&amp;LGIL=8&amp;ServiceName=Find out about activities for young people
+"Sports, Clubs and Centres",644,8,Find out about sports facilities,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=644&amp;LGIL=8&amp;ServiceName=Find out about sports facilities
+"Sports, Clubs and Centres",644,1,Book a sports facility,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=644&amp;LGIL=1&amp;ServiceName=Book a sports facility
+Planning,649,8,Find out about common land and village greens,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=649&amp;LGIL=8&amp;ServiceName=Find out about common land and village greens
+Housing advice,650,8,Find out about properties which are not fit to live in,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=650&amp;LGIL=8&amp;ServiceName=Find out about properties which are not fit to live in
+Legal advice,651,8,Find out about debt counselling,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=651&amp;LGIL=8&amp;ServiceName=Find out about debt counselling
+Housing advice,652,8,Find out about advice for tenants and landlords in the private sector,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=652&amp;LGIL=8&amp;ServiceName=Find out about advice for tenants and landlords in the private sector
+Council Housing,654,8,Find out about improving a council property,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=654&amp;LGIL=8&amp;ServiceName=Find out about improving a council property
+Council Housing,654,0,Apply for permission to alter your council home,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=654&amp;LGIL=0&amp;ServiceName=Apply for permission to alter your council home
+Parks and open spaces,655,8,Find out about gypsy and traveller sites,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=655&amp;LGIL=8&amp;ServiceName=Find out about gypsy and traveller sites
+"Roads, highways and pavements",657,8,Find out about alley gating,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=657&amp;LGIL=8&amp;ServiceName=Find out about alley gating
+Marriages,663,8,Find out about copy certificates,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=663&amp;LGIL=8&amp;ServiceName=Find out about copy certificates
+Marriages,663,0,Order a copy marriage/birth/death certificate,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=663&amp;LGIL=0&amp;ServiceName=Order a copy marriage/birth/death certificate
+Street care and cleaning,664,8,Find out about blocked drains,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=664&amp;LGIL=8&amp;ServiceName=Find out about blocked drains
+Council Housing,665,8,Find out about supported tenancies,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=665&amp;LGIL=8&amp;ServiceName=Find out about supported tenancies
+Parks and open spaces,670,8,Find out about play facilities in the community,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=670&amp;LGIL=8&amp;ServiceName=Find out about play facilities in the community
+"Deaths, Funerals & Cremations",671,8,Find out about a council funeral,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=671&amp;LGIL=8&amp;ServiceName=Find out about a council funeral
+Building control,684,8,Find out about open and derelict properties,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=684&amp;LGIL=8&amp;ServiceName=Find out about open and derelict properties
+Marriages,698,8,Find out about historical searches on marriages,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=698&amp;LGIL=8&amp;ServiceName=Find out about historical searches on marriages
+Marriages,698,1,Pay for a search of the marriage register,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=698&amp;LGIL=1&amp;ServiceName=Pay for a search of the marriage register
+Youth Support,700,8,Find advice for young people,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=700&amp;LGIL=8&amp;ServiceName=Find advice for young people
+"Roads, highways and pavements",701,8,Find out about road adoption by the council,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=701&amp;LGIL=8&amp;ServiceName=Find out about road adoption by the council
+"Roads, highways and pavements",701,0,request adoption of a road by the council,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=701&amp;LGIL=0&amp;ServiceName=request adoption of a road by the council
+Emergencies,703,8,Find out about emergency planning for a major incident,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=703&amp;LGIL=8&amp;ServiceName=Find out about emergency planning for a major incident
+Schools & Colleges,705,8,Find out about the schools admissions appeals process,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=705&amp;LGIL=8&amp;ServiceName=Find out about the schools admissions appeals process
+Schools & Colleges,705,0,Appeal against a school admission decision,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=705&amp;LGIL=0&amp;ServiceName=Appeal against a school admission decision
+Council Housing,711,8,Find out about changing a council tenancy,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=711&amp;LGIL=8&amp;ServiceName=Find out about changing a council tenancy
+Council Housing,711,0,Request a change of council tenancy,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=711&amp;LGIL=0&amp;ServiceName=Request a change of council tenancy
+Democracy & Elections,719,8,Find out about local council meetings,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=719&amp;LGIL=8&amp;ServiceName=Find out about local council meetings
+Democracy & Elections,721,8,Find out about election results,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=721&amp;LGIL=8&amp;ServiceName=Find out about election results
+Data Protection & Freedom of Information,722,8,Find out about freedom of information requests,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=722&amp;LGIL=8&amp;ServiceName=Find out about freedom of information requests
+Data Protection & Freedom of Information,722,0,Make a freedom of information request,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=722&amp;LGIL=0&amp;ServiceName=Make a freedom of information request
+Tourism & Travel,734,8,Find out about holiday accommodation,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=734&amp;LGIL=8&amp;ServiceName=Find out about holiday accommodation
+Countryside,750,8,Find out about countryside volunteering,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=750&amp;LGIL=8&amp;ServiceName=Find out about countryside volunteering
+Marine/waterway services,780,8,Find out about the use and mooring of houseboats,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=780&amp;LGIL=8&amp;ServiceName=Find out about the use and mooring of houseboats
+Trading standards,787,8,Find advice to consumers,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=787&amp;LGIL=8&amp;ServiceName=Find advice to consumers
+Trading standards,788,8,Find out about animal health and welfare,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=788&amp;LGIL=8&amp;ServiceName=Find out about animal health and welfare
+Safety,802,8,Find out about fire safety,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=802&amp;LGIL=8&amp;ServiceName=Find out about fire safety
+Children and family care,831,8,"Find out about local support groups for children, young people and families",all,"local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=831&amp;LGIL=8&amp;ServiceName=Find out about local support groups for children, young people and families"
+Arts and entertainment,838,8,Find out about local arts events,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=838&amp;LGIL=8&amp;ServiceName=Find out about local arts events
+Schools and colleges,840,8,Find out about support for looked after children,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=840&amp;LGIL=8&amp;ServiceName=Find out about support for looked after children
+Commercial waste and recycling,850,8,Find out about hazardous waste collection,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=850&amp;LGIL=8&amp;ServiceName=Find out about hazardous waste collection
+Commercial waste and recycling,850,0,Request collection of hazardous waste,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=850&amp;LGIL=0&amp;ServiceName=Request collection of hazardous waste
+"Rubbish, waste and recycling",851,8,Find out about recycling,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=851&amp;LGIL=8&amp;ServiceName=Find out about recycling
+"Councillors, democracy & elections",852,8,Find out about citizenship ceremonies,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=852&amp;LGIL=8&amp;ServiceName=Find out about citizenship ceremonies
+Planning,856,8,Find out about Local Development Frameworks,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=856&amp;LGIL=8&amp;ServiceName=Find out about Local Development Frameworks
+"Rubbish, waste and recycling",859,8,Find out about collection of clinical waste,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=859&amp;LGIL=8&amp;ServiceName=Find out about collection of clinical waste
+"Rubbish, waste and recycling",859,0,Request a collection of clinical waste,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=859&amp;LGIL=0&amp;ServiceName=Request a collection of clinical waste
+Licence - liquor,860,8,Find out about liquor licences,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=860&amp;LGIL=8&amp;ServiceName=Find out about liquor licences
+Licence - liquor,860,3,Have your say on liquor licences in your area,district/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=860&amp;LGIL=3&amp;ServiceName=Have your say on liquor licences in your area
+Consultation overview,867,8,Find out about local consultations,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=867&amp;LGIL=8&amp;ServiceName=Find out about local consultations
+Crime prevention,870,8,Find out about community safety,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=870&amp;LGIL=8&amp;ServiceName=Find out about community safety
+Naming ceremonies,873,8,Find out about naming ceremonies,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=873&amp;LGIL=8&amp;ServiceName=Find out about naming ceremonies
+Naming ceremonies,873,1,Book a naming ceremony,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=873&amp;LGIL=1&amp;ServiceName=Book a naming ceremony
+Marriage renewal,874,8,Find out about marriage renewal ceremonies,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=874&amp;LGIL=8&amp;ServiceName=Find out about marriage renewal ceremonies
+Marriage renewal,874,1,Book a marriage renewal ceremony,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=874&amp;LGIL=1&amp;ServiceName=Book a marriage renewal ceremony
+Marriages,876,8,Find out about civil partnerships,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=876&amp;LGIL=8&amp;ServiceName=Find out about civil partnerships
+Marriages,876,1,Book a civil partnership,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=876&amp;LGIL=1&amp;ServiceName=Book a civil partnership
+Youth Support,1116,8,Find out about Youth Opportunity Funding,County/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=1116&amp;LGIL=8&amp;ServiceName=Find out about Youth Opportunity Funding
+Schools & Colleges,1135,8,Find out about transport for 16-19 year olds in education,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=1135&amp;LGIL=8&amp;ServiceName=Find%20out%20about%20transport%20for%2016-19%20year%20olds%20in%20education
+Health and medical advice,1150,8,Find out about your Local Area Network (LINk),county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=1150&amp;LGIL=8&amp;ServiceName=Find your Local Area Network (LINk)
+Schools and colleges,1140,8,Find out about emergency school closures,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=1140&amp;LGIL=8&amp;ServiceName=Find out about emergency school closures
+Schools and colleges,1145,8,Find your local 14-19 prospectus,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=1145&amp;LGIL=8&amp;ServiceName=Find your local 14-19 prospectus
+Councillors,1146,8,Find out about Local Area Agreements,county/unitary,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=1146&amp;LGIL=8&amp;ServiceName=Find out about Local Area Agreements
+Emergencies,1287,8,Get local information about swine flu,all,local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=1287&amp;LGIL=8&amp;ServiceName=Get local information about swine flu
