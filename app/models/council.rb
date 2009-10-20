@@ -91,7 +91,9 @@ class Council < ActiveRecord::Base
   end
   
   def services
-    Service.all(:conditions => ["authority_level LIKE ? OR authority_level = 'all'", "%#{authority_type}%"], :order => "lgsl")
+    return [] if ldg_id.blank?
+    authority_level = (authority_type =~ /Metropolitan|London/ ? "Unitary" : authority_type)
+    ldg_id.blank? ? [] : Service.all(:conditions => ["authority_level LIKE ? OR authority_level = 'all'", "%#{authority_level}%"], :order => "lgsl") 
   end
   
   def short_name

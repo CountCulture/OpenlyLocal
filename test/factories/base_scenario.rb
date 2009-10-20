@@ -126,8 +126,8 @@ Factory.define :cached_postcode do |f|
 end
 
 Factory.define :service do |f|
-  f.sequence(:category) { |n| 42 + n }
-  f.lgsl 34
+  f.sequence(:category) { |n| "Foo #{n}" }
+  f.sequence(:lgsl) { |n| 33 + n }
   f.lgil 56
   f.service_name "Foo Service"
   f.authority_level "district/unitary"

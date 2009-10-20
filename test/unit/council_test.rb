@@ -135,18 +135,33 @@ class CouncilTest < ActiveSupport::TestCase
       setup do
         @service = Factory(:service) # this service is provided by district and unitary councils only
         @full_service = Factory(:service, :authority_level => "all") # this service is provided by all councils only
+        @unitary_service = Factory(:service, :authority_level => "unitary") # this service is provided by county councils only
+        @council.ldg_id = 42
       end
       
       should "get services that council provides" do
         @council.authority_type = "District"
         assert_equal [@service, @full_service], @council.services
         @council.authority_type = "Unitary"
-        assert_equal [@service, @full_service], @council.services
+        assert_equal [@service, @full_service, @unitary_service], @council.services
+      end
+      
+      should "treat london boroughs and metropolitan boroughs as unitary councils" do
+        @council.authority_type = "London Borough"
+        assert_equal [@service, @full_service, @unitary_service], @council.services
+        @council.authority_type = "Metropolitan Borough"
+        assert_equal [@service, @full_service, @unitary_service], @council.services
       end
       
       should "not get services that council does not provide" do
         @council.authority_type = "County"
         assert_equal [@full_service], @council.services
+      end
+      
+      should "return no results if council does not have lgd_id" do
+        @council.ldg_id = nil
+        @council.authority_type = "District"
+        assert_equal [], @council.services
       end
     end
   end

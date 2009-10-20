@@ -1,0 +1,16 @@
+<h1>Links to <%= basic_link_for @council %> Services</h1>
+<% if @services.blank? %>
+  <p class="alert">Sorry, no services found for <%= basic_link_for @council %></p>
+<% else %>
+<div id="services">
+  <% for category in @services %>
+    <h3><%= category[0] %></h3>
+    <ul>
+      <%- for service in category[1] -%>
+        <li><%= link_to service.title, service.url_for(@council) %></li>
+      <%- end -%>
+    </ul>  
+  <% end %>
+</div>
+  
+<% end %>

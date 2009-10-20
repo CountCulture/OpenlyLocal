@@ -2,7 +2,7 @@ require 'test_helper'
 
 class WardsControllerTest < ActionController::TestCase
 
-  def setup# do
+  def setup
     @ward = Factory(:ward)
     @council = @ward.council
     @member = Factory(:member, :council => @council)

@@ -14,7 +14,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/all', :controller => "councils", :action => "index", :include_unparsed => true
   map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
-  map.resources :committees, :councils, :documents, :meetings, :members, :parsers, :portal_systems
+  map.resources :committees, :councils, :documents, :meetings, :members, :parsers, :portal_systems, :services
 
 
   # The priority is based upon order of creation: first created -> highest priority.
