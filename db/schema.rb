@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091019200004) do
+ActiveRecord::Schema.define(:version => 20091019222832) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -246,6 +246,17 @@ ActiveRecord::Schema.define(:version => 20091019200004) do
     t.text     "notes"
     t.string   "referrer_url"
     t.string   "cookie_url"
+  end
+
+  create_table "services", :force => true do |t|
+    t.string   "category"
+    t.integer  "lgsl"
+    t.integer  "lgil"
+    t.string   "service_name"
+    t.string   "authority_level"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "wards", :force => true do |t|

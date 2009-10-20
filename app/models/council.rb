@@ -37,6 +37,7 @@ class Council < ActiveRecord::Base
     parsed(:include_unparsed => params.delete(:include_unparsed)).all({:conditions => conditions}.merge(params))
   end
   
+  # instance methods
   def authority_type_help_url
     AUTHORITY_TYPES[authority_type]
   end
@@ -87,6 +88,10 @@ class Council < ActiveRecord::Base
       :committees => committees.all(:conditions => conditions),
       :meetings => meetings.all(:conditions => conditions),
       :documents => meeting_documents.all(:conditions => ["documents.updated_at > ?", 7.days.ago])}
+  end
+  
+  def services
+    Service.all(:conditions => ["authority_level LIKE ? OR authority_level = 'all'", "%#{authority_type}%"], :order => "lgsl")
   end
   
   def short_name

@@ -130,6 +130,25 @@ class CouncilTest < ActiveSupport::TestCase
       ceo = Factory(:officer, :position => "Chief Executive", :council => @council)
       assert_equal ceo, @council.chief_executive
     end
+    
+    context "when getting services" do
+      setup do
+        @service = Factory(:service) # this service is provided by district and unitary councils only
+        @full_service = Factory(:service, :authority_level => "all") # this service is provided by all councils only
+      end
+      
+      should "get services that council provides" do
+        @council.authority_type = "District"
+        assert_equal [@service, @full_service], @council.services
+        @council.authority_type = "Unitary"
+        assert_equal [@service, @full_service], @council.services
+      end
+      
+      should "not get services that council does not provide" do
+        @council.authority_type = "County"
+        assert_equal [@full_service], @council.services
+      end
+    end
   end
   
   context "A Council instance" do

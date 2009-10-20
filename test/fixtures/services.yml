@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  category: MyString
+  lgsl: 1
+  lgil: 1
+  service_name: MyString
+  authority_level: MyString
+  url: MyString
+
+two:
+  category: MyString
+  lgsl: 1
+  lgil: 1
+  service_name: MyString
+  authority_level: MyString
+  url: MyString

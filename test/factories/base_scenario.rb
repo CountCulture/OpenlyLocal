@@ -124,3 +124,12 @@ end
 Factory.define :cached_postcode do |f|
   f.sequence(:code) { |n| "AB1CD#{n}" }
 end
+
+Factory.define :service do |f|
+  f.sequence(:category) { |n| 42 + n }
+  f.lgsl 34
+  f.lgil 56
+  f.service_name "Foo Service"
+  f.authority_level "district/unitary"
+  f.url  "local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=34&amp;LGIL=8&amp;ServiceName=Find out about pupil exclusions from school"
+end
