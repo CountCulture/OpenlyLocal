@@ -1,16 +1,24 @@
 <h1>Links to <%= basic_link_for @council %> Services</h1>
-<% if @services.blank? %>
+<%- if @services.blank? -%>
   <p class="alert">Sorry, no services found for <%= basic_link_for @council %></p>
-<% else %>
-<div id="services">
-  <% for category in @services %>
-    <h3><%= category[0] %></h3>
+<%- else -%>
+  <div id="categories">
+    <h3>Categories</h3>
     <ul>
-      <%- for service in category[1] -%>
-        <li><%= link_to service.title, service.url_for(@council) %></li>
+      <%- for category in @services -%>
+        <li><%= link_to category[0], params.merge(:anchor => category[0].parameterize) %></li>
       <%- end -%>
-    </ul>  
-  <% end %>
-</div>
+    </ul>
+  </div>
+  <div id="services">
+    <%- for category in @services -%>
+      <h3><a name="<%= category[0].parameterize %>"><%= category[0] %></a></h3>
+      <ul>
+        <%- for service in category[1] -%>
+          <li><%= link_to service.title, service.url_for(@council) %></li>
+        <%- end -%>
+      </ul>  
+    <%- end -%>
+  </div>
   
-<% end %>
+<%- end -%>

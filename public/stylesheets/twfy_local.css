@@ -373,3 +373,12 @@ div#dataset_data table {
 #site_news div.news_item {
 	font-size:90%;
 }
+#categories {
+	float: right;
+	width: 300px;
+	border:1px solid #ddd;
+	padding: 1em;
+	background-color: #F0F0F0;
+}
+#categories li {
+}

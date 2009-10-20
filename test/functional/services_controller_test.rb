@@ -34,6 +34,12 @@ class ServicesControllerTest < ActionController::TestCase
          end
        end
      
+       should "show list of categories" do
+         assert_select "div#categories ul li", 2  do # two different categories
+           assert_select "a", "Bar category"
+         end
+       end
+       
        should "group links by category" do
          assert_select "div#services h3", 2  do # two different categories
            assert_select "h3", "Bar category"
