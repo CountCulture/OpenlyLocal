@@ -134,8 +134,8 @@ class CouncilTest < ActiveSupport::TestCase
     context "when getting services" do
       setup do
         @service = Factory(:service) # this service is provided by district and unitary councils only
-        @full_service = Factory(:service, :authority_level => "all") # this service is provided by all councils only
-        @unitary_service = Factory(:service, :authority_level => "unitary") # this service is provided by county councils only
+        @full_service = Factory(:service, :authority_level => "all", :service_name => "bar service") # this service is provided by all councils only
+        @unitary_service = Factory(:service, :authority_level => "unitary", :service_name => "baz Service") # this service is provided by county councils only
         @council.ldg_id = 42
       end
       
@@ -162,6 +162,12 @@ class CouncilTest < ActiveSupport::TestCase
         @council.ldg_id = nil
         @council.authority_type = "District"
         assert_equal [], @council.services
+      end
+      
+      should "get services that council provides and match given term" do
+        @council.authority_type = "Unitary"
+        assert_equal [@full_service], @council.services(:term => "bar")
+        assert_equal [@service, @full_service, @unitary_service], @council.services(:term => "service") # case insensitive
       end
     end
   end

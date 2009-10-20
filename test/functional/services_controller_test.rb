@@ -3,7 +3,7 @@ require 'test_helper'
 class ServicesControllerTest < ActionController::TestCase
   def setup
     @service = Factory(:service)
-    @another_service = Factory(:service, :category => "Bar category")
+    @another_service = Factory(:service, :category => "Bar category", :service_name => "Bar service")
     @council = Factory(:council, :authority_type => "district", :ldg_id => 42)
   end
 
@@ -45,7 +45,43 @@ class ServicesControllerTest < ActionController::TestCase
            assert_select "h3", "Bar category"
          end
        end
+       
+       should "put include search form" do
+         assert_select "form#services_search"
+       end
+       
+       should "include hidden field for council id in search form" do
+         assert_select "form#services_search input#council_id[type='hidden'][value='#{@council.id}']"
+       end
      end
+     
+     context "with basic request and search term" do
+       setup do
+         get :index, :council_id => @council.id, :term => "foo"
+       end
+       
+       should_assign_to(:services)
+       should_assign_to :council
+       should_respond_with :success
+       should_render_template :index
+      
+       should "show term in title" do
+         assert_select "title", /foo/i
+       end
+       
+       should "show only titles with foo in title" do
+         assert_select "div#services li a", @service.service_name
+         assert_select "div#services li a", :text => @another_service.service_name, :count => 0
+       end
+       
+       should "put term in form input box" do
+         assert_select "form#services_search" do
+           assert_select "input[value='foo']"
+         end
+       end
+       
+     end
+     
      context "when no services" do
        setup do
          Service.delete_all

@@ -90,10 +90,12 @@ class Council < ActiveRecord::Base
       :documents => meeting_documents.all(:conditions => ["documents.updated_at > ?", 7.days.ago])}
   end
   
-  def services
+  def services(options={})
     return [] if ldg_id.blank?
     authority_level = (authority_type =~ /Metropolitan|London/ ? "Unitary" : authority_type)
-    ldg_id.blank? ? [] : Service.all(:conditions => ["authority_level LIKE ? OR authority_level = 'all'", "%#{authority_level}%"], :order => "lgsl") 
+    conditions = options[:term] ? ["(authority_level LIKE ? OR authority_level = 'all') AND service_name LIKE ?", "%#{authority_level}%", "%#{options[:term]}%"] : 
+                                  ["authority_level LIKE ? OR authority_level = 'all'", "%#{authority_level}%"]
+    Service.all(:conditions => conditions, :order => "lgsl") 
   end
   
   def short_name
