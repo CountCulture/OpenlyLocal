@@ -57,6 +57,16 @@ class LdgServiceTest < ActiveSupport::TestCase
         assert_nil @ldg_service.destination_url(@council)
       end
       
+      should "return if timeout when getting info from LocalDirectGov" do
+        HTTPClient.any_instance.expects(:get).with("http://foo.com").raises(HTTPClient::ConnectTimeoutError)
+        assert_nil @ldg_service.destination_url(@council)
+      end
+      
+      should "return if timeout when getting info from council" do
+        HTTPClient.any_instance.expects(:get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
+        HTTPClient.any_instance.expects(:get).with("http://bar.com").raises(HTTPClient::ConnectTimeoutError)
+        assert_nil @ldg_service.destination_url(@council)
+      end
     end
   end
 end
