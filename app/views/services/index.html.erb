@@ -20,7 +20,7 @@
       <h3><a name="<%= category[0].parameterize %>"><%= category[0] %></a></h3>
       <ul>
         <%- for service in category[1] -%>
-          <li><%= link_to service.title, service.url_for(@council) %></li>
+          <li><%= link_to service.title, service.url %></li>
         <%- end -%>
       </ul>  
     <%- end -%>

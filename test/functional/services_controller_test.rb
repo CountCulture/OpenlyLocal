@@ -2,9 +2,9 @@ require 'test_helper'
 
 class ServicesControllerTest < ActionController::TestCase
   def setup
-    @service = Factory(:service)
-    @another_service = Factory(:service, :category => "Bar category", :service_name => "Bar service")
     @council = Factory(:council, :authority_type => "district", :ldg_id => 42)
+    @service = Factory(:service, :council => @council)
+    @another_service = Factory(:service, :category => "Bar category", :title => "Bar service", :council => @council)
   end
 
   # index test
@@ -29,8 +29,8 @@ class ServicesControllerTest < ActionController::TestCase
        end
        
        should "list links to services" do
-         assert_select "div#services li a", @service.service_name do
-           assert_select "a[href='#{ERB::Util::h @service.url_for(@council)}']" #uris are escaped by default
+         assert_select "div#services li a", @service.title do
+           assert_select "a[href='#{ERB::Util::h @service.url}']" #uris are escaped by default
          end
        end
      
@@ -70,8 +70,8 @@ class ServicesControllerTest < ActionController::TestCase
        end
        
        should "show only titles with foo in title" do
-         assert_select "div#services li a", @service.service_name
-         assert_select "div#services li a", :text => @another_service.service_name, :count => 0
+         assert_select "div#services li a", @service.title
+         assert_select "div#services li a", :text => @another_service.title, :count => 0
        end
        
        should "put term in form input box" do

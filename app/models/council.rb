@@ -22,6 +22,7 @@ class Council < ActiveRecord::Base
   has_many :datasets, :through => :datapoints
   has_many :meeting_documents, :through => :meetings, :source => :documents, :select => "documents.id, documents.title, documents.document_type, documents.document_owner_type, documents.document_owner_id, documents.created_at, documents.updated_at", :order => "documents.created_at DESC"
   has_many :past_meeting_documents, :through => :held_meetings, :source => :documents, :order => "documents.created_at DESC"
+  has_many :services
   belongs_to :portal_system
   validates_presence_of :name
   validates_uniqueness_of :name
@@ -90,12 +91,11 @@ class Council < ActiveRecord::Base
       :documents => meeting_documents.all(:conditions => ["documents.updated_at > ?", 7.days.ago])}
   end
   
-  def services(options={})
+  def potential_services(options={})
     return [] if ldg_id.blank?
     authority_level = (authority_type =~ /Metropolitan|London/ ? "Unitary" : authority_type)
-    conditions = options[:term] ? ["(authority_level LIKE ? OR authority_level = 'all') AND service_name LIKE ?", "%#{authority_level}%", "%#{options[:term]}%"] : 
-                                  ["authority_level LIKE ? OR authority_level = 'all'", "%#{authority_level}%"]
-    Service.all(:conditions => conditions, :order => "lgsl") 
+    conditions = ["authority_level LIKE ? OR authority_level = 'all'", "%#{authority_level}%"]
+    LdgService.all(:conditions => conditions, :order => "lgsl") 
   end
   
   def short_name

@@ -17,6 +17,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :datapoints
     should_have_many :wards
     should_have_many :officers
+    should_have_many :services
     should_have_one :chief_executive
     should_have_many :meeting_documents, :through => :meetings
     should_have_many :past_meeting_documents, :through => :held_meetings
@@ -131,44 +132,44 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal ceo, @council.chief_executive
     end
     
-    context "when getting services" do
+    context "when getting potential_services" do
       setup do
-        @service = Factory(:service) # this service is provided by district and unitary councils only
-        @full_service = Factory(:service, :authority_level => "all", :service_name => "bar service") # this service is provided by all councils only
-        @unitary_service = Factory(:service, :authority_level => "unitary", :service_name => "baz Service") # this service is provided by county councils only
+        @service = Factory(:ldg_service) # this service is provided by district and unitary councils only
+        @full_service = Factory(:ldg_service, :authority_level => "all", :service_name => "bar service") # this service is provided by all councils only
+        @unitary_service = Factory(:ldg_service, :authority_level => "unitary", :service_name => "baz Service") # this service is provided by county councils only
         @council.ldg_id = 42
       end
       
       should "get services that council provides" do
         @council.authority_type = "District"
-        assert_equal [@service, @full_service], @council.services
+        assert_equal [@service, @full_service], @council.potential_services
         @council.authority_type = "Unitary"
-        assert_equal [@service, @full_service, @unitary_service], @council.services
+        assert_equal [@service, @full_service, @unitary_service], @council.potential_services
       end
       
       should "treat london boroughs and metropolitan boroughs as unitary councils" do
         @council.authority_type = "London Borough"
-        assert_equal [@service, @full_service, @unitary_service], @council.services
+        assert_equal [@service, @full_service, @unitary_service], @council.potential_services
         @council.authority_type = "Metropolitan Borough"
-        assert_equal [@service, @full_service, @unitary_service], @council.services
+        assert_equal [@service, @full_service, @unitary_service], @council.potential_services
       end
       
       should "not get services that council does not provide" do
         @council.authority_type = "County"
-        assert_equal [@full_service], @council.services
+        assert_equal [@full_service], @council.potential_services
       end
       
       should "return no results if council does not have lgd_id" do
         @council.ldg_id = nil
         @council.authority_type = "District"
-        assert_equal [], @council.services
+        assert_equal [], @council.potential_services
       end
       
-      should "get services that council provides and match given term" do
-        @council.authority_type = "Unitary"
-        assert_equal [@full_service], @council.services(:term => "bar")
-        assert_equal [@service, @full_service, @unitary_service], @council.services(:term => "service") # case insensitive
-      end
+      # should "get services that council provides and match given term" do
+      #   @council.authority_type = "Unitary"
+      #   assert_equal [@full_service], @council.services(:term => "bar")
+      #   assert_equal [@service, @full_service, @unitary_service], @council.services(:term => "service") # case insensitive
+      # end
     end
   end
   
