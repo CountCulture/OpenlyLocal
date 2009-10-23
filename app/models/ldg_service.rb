@@ -16,7 +16,9 @@ class LdgService < ActiveRecord::Base
     response = _http_get(ldg_url)
     return nil unless response && (response.status == 302) && (poss_dest_url = response.header['location'].first)
     return nil unless dest_resp = _http_get(poss_dest_url)
-    dest_resp.status == 200 ? poss_dest_url : nil
+    return nil unless dest_resp.status == 200
+    title = Hpricot(dest_resp.content).at("title").try(:inner_text)
+    { :url => poss_dest_url, :title => title}
   end
   
   def url_for(council)

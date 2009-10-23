@@ -44,11 +44,24 @@ class LdgServiceTest < ActiveSupport::TestCase
         HTTPClient.any_instance.expects(:get).with("http://bar.com").returns(stub(:status => 404))
         @ldg_service.destination_url(@council)
       end
-            
-      should "return destination url if good response from destination url" do
-        HTTPClient.any_instance.expects(:get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
-        HTTPClient.any_instance.expects(:get).with("http://bar.com").returns(stub(:status => 200))
-        assert_equal "http://bar.com", @ldg_service.destination_url(@council)
+      
+      context "and good response from destination url" do
+        setup do
+          HTTPClient.any_instance.expects(:get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
+          HTTPClient.any_instance.expects(:get).with("http://bar.com").returns(stub(:status => 200, :content => "<html><head><title>FooBar Page</title><head><body>Foo Baz</body></html>"))
+        end
+        
+        should "return hash" do
+          assert_kind_of Hash, @ldg_service.destination_url(@council)
+        end
+        
+        should "return url in hash" do
+          assert_equal "http://bar.com", @ldg_service.destination_url(@council)[:url]
+        end
+        
+        should "return title in hash" do
+          assert_equal "FooBar Page", @ldg_service.destination_url(@council)[:title]
+        end
       end
       
       should "return nil if bad response from destination url" do
