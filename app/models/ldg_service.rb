@@ -28,8 +28,8 @@ class LdgService < ActiveRecord::Base
   protected
   def _http_get(url)
     begin
-      @client ||= HTTPClient.new
-      @client.get(url)
+      client = HTTPClient.new
+      client.get(url)
     rescue Exception => e
       logger.debug "Problem getting data from #{url}: #{e.inspect}"
       return nil

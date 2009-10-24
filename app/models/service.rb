@@ -18,6 +18,7 @@ class Service < ActiveRecord::Base
       sp2 = sp1.select{ |g| (g[0]=~/contact/i || g[1].first[:title]=~/contact/i) && g[1].size>1}
       contact_us_pages = sp2.collect{ |g| g[1] }.flatten
       service_pages -= contact_us_pages 
+      puts "adding #{service_pages.size} service urls for #{council.name}"
       service_pages.each do |page|
         url, title, ldg_service = page[:url], page[:title], page[:ldg_service]
         existing_service = council.services.find_by_ldg_service_id(page[:ldg_service].id)
