@@ -18,9 +18,9 @@
   <div id="services">
     <%- for category in @services -%>
       <h3><a name="<%= category[0].parameterize %>"><%= category[0] %></a></h3>
-      <ul>
+      <ul class="<%= category[0].parameterize %>">
         <%- for service in category[1] -%>
-          <li><%= link_to service.title, service.url %></li>
+          <li><%= link_to service.title, service.url, :class => "external" %></li>
         <%- end -%>
       </ul>  
     <%- end -%>
