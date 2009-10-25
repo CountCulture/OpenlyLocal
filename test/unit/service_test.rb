@@ -41,12 +41,13 @@ class ServiceTest < ActiveSupport::TestCase
     
     context "when refreshing urls" do
       setup do
+        Council.stubs(:with_stale_services).returns([@council])
         Council.any_instance.stubs(:potential_services).returns([@ldg_service])
         @ldg_service.stubs(:destination_url).returns({:url => "http://foobar.com", :title => "Foobar Page"})
       end
       
-      should "get get all councils" do
-        Council.expects(:all).returns([@council])
+      should "get get all councils with stale services" do
+        Council.expects(:with_stale_services).returns([@council])
         Service.refresh_urls
       end
       

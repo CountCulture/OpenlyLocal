@@ -8,7 +8,7 @@ class Service < ActiveRecord::Base
   validates_uniqueness_of :ldg_service_id, :scope => :council_id
   
   def self.refresh_urls
-    Council.all(:conditions => "ldg_id IS NOT NULL").each do |council|
+    Council.with_stale_services.each do |council|
       service_pages = council.potential_services.collect do |ldg_service|
         destination_url_info = ldg_service.destination_url(council)
         destination_url_info.blank? ? nil : destination_url_info.merge(:ldg_service => ldg_service) unless destination_url_info.blank?

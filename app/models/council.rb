@@ -38,6 +38,10 @@ class Council < ActiveRecord::Base
     parsed(:include_unparsed => params.delete(:include_unparsed)).all({:conditions => conditions}.merge(params))
   end
   
+  def self.with_stale_services
+    all(:joins => "LEFT JOIN services ON services.council_id=councils.id", :conditions => ["((services.id IS NULL) OR (services.updated_at < ?)) AND (councils.ldg_id IS NOT NULL)", 7.days.ago])
+  end
+  
   # instance methods
   def authority_type_help_url
     AUTHORITY_TYPES[authority_type]
