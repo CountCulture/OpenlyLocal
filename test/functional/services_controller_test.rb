@@ -55,6 +55,41 @@ class ServicesControllerTest < ActionController::TestCase
        end
      end
      
+     context "with basic request and xml requested" do
+       setup do
+         get :index, :council_id => @council.id, :format => "xml"
+       end
+       
+       should_assign_to :services
+       should_assign_to :council
+       should_respond_with :success
+       should_render_without_layout
+       should_respond_with_content_type 'application/xml'
+       
+       should "show services for council" do
+         assert_select "services>service>title", @service.title
+         assert_select "services>service>url", @service.url
+       end
+
+     end
+     
+     context "with basic request and json requested" do
+       setup do
+         get :index, :council_id => @council.id, :format => "json"
+       end
+       
+       should_assign_to :services
+       should_assign_to :council
+       should_respond_with :success
+       should_render_without_layout
+       should_respond_with_content_type 'application/json'
+       
+       should "show services for council" do
+         assert_match /service.+title.+#{@service.title}/, @response.body
+         assert_match /service.+url.+#{@service.url}/, @response.body
+       end
+     end
+     
      context "with basic request and search term" do
        setup do
          get :index, :council_id => @council.id, :term => "foo"
