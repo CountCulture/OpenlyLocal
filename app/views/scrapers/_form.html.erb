@@ -63,9 +63,12 @@
           <%= render :partial => 'attrib', :collection => (@scraper.portal_parser? ? [Parser::AttribObject.new] : @scraper.parser.attribute_parser_object) %>
         </div>
         <br class="clear-left">
-        <p><%= link_to_function "add more attributes" do |page|
-          page.insert_html :bottom, :parser_attribute_parser, :partial => 'attrib', :object => Parser::AttribObject.new
-        end %></p>
+        <p>
+          <%= link_to "add more attributes", '#', :class => "add_more_attributes" %>
+          <div style="display:none">
+            <%= render :partial => 'attrib', :object => Parser::AttribObject.new %>
+          </div>
+        </p>
       <% end %>
     </fieldset>
   <%- end -%>

@@ -13,17 +13,30 @@ $(document).ready( function() {
           return '<a href="'+ row.url + '" class="external">' + row.title + '</a>';
       },
       width: 300,
+			cacheLength: 400,
+			minChars: 2,
 			extraParams: {
 				council_id: function() { return $("#council_id").val(); },
 				q: '',
-				minChars: 2,
 				term: function() { return $("#term").val();}
 			},
       mustMatch: true
   }).result(function(event, item) {
 			  location.href = item.url;
-			});;
+			});
 
+		$('a.show_possible_scrapers').click(function(event){
+			  $(this).parents('div.council').children('.possible_scrapers').toggle();
+				event.preventDefault();					
+		});
 
-
+		$('a.delete_parent_div').live("click", function(event){
+			  $(this).parents('div:first').remove();
+				event.preventDefault();					
+		});
+		
+		$('a.add_more_attributes').click(function(event){
+				$('.item_attribute:last').clone().appendTo("#parser_attribute_parser");
+				event.preventDefault();					
+		});
 });

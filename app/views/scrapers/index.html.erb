@@ -9,9 +9,9 @@
         <p>
           <%= "<strong>Portal System</strong> #{link_for(council.portal_system)}<br />" if council.portal_system %>
           <%= council_page_for council %> :: 
-          <%= link_to "edit", edit_council_path(council) %> :: <%= link_to_function "See possible scrapers", "$$('##{dom_id(council)} ul').first().toggle();" %>
+          <%= link_to "edit", edit_council_path(council) %> :: <%= link_to "Show possible scrapers", "#", :class => "show_possible_scrapers" %>
         </p>
-        <ul style="display:none">
+        <ul style="display:none" class="possible_scrapers">
           <%- for scraper_link in scraper_links_for_council(council) -%>
             <li><%= scraper_link %></li>
           <%- end -%>
