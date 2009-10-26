@@ -22,6 +22,13 @@
         <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external', :rel => "foaf:page" %></li>
         <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= @council.snac_id %> </li>
       </ul>
+      <%- unless @council.services.count < 10  -%>
+        <div id="council_services" class="item_grouping">
+          <h4><%= link_to "Online services", services_path(:council_id => @council.id) %></h4>
+          <%= render :partial => 'services/services_search' %>
+          <p><%= link_to "See full list", services_path(:council_id => @council.id) %></p>
+        </div>
+      <%- end -%>
     </div>
     <div id="statistics" class="item_grouping">
       <%= render :partial => 'datapoints' unless @datapoints.blank? %>

@@ -1,0 +1,5 @@
+<%- form_tag services_path, :id => "services_search", :method => :get do -%>
+  <%= hidden_field_tag 'council_id', @council.id %>
+  <%= text_field_tag :term, params[:term], :class => "live_search" %>
+  <%= submit_tag "Search", :disable_with => "Please wait..." %>
+<%- end -%>

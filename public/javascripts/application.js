@@ -1,6 +1,6 @@
 // With help from http://blog.schuager.com/2008/09/jquery-autocomplete-json-apsnet-mvc.html and http://1300grams.com/2009/08/17/jquery-autocomplete-with-json-jsonp-support-and-overriding-the-default-search-parameter-q/
 $(document).ready( function() {
-  $('#term').autocomplete("/services.json", {
+  $('.live_search').autocomplete("/services.json", {
       dataType: 'json',
       parse: function(data) {
           var rows = new Array();

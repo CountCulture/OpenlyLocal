@@ -1,9 +1,6 @@
 <h1>Links to <%= basic_link_for @council %> Services</h1>
-<%- form_tag services_path, :id => "services_search", :method => :get do -%>
-  <%= hidden_field_tag 'council_id', params[:council_id] %>
-  <%= text_field_tag :term, params[:term] %>
-  <%= submit_tag "Search", :disable_with => "Please wait..." %>
-<%- end -%>
+<%= render :partial => 'services_search' %>
+<%= content_tag(:p, link_to("Show all services", services_path(:council_id => @council.id))) if params[:term] %>
 <%- if @services.blank? -%>
   <p class="alert">Sorry, no services found for <%= basic_link_for @council %></p>
 <%- else -%>
@@ -27,3 +24,5 @@
   </div>
   
 <%- end -%>
+
+<%= render :partial => '/shared/api_info' %>

@@ -206,6 +206,15 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show rdfa attributes for committees" do
         assert_select "#committees li a[rel*='twfyl:committee']"
       end
+      
+      should "show links to services if there are 10 or more", :before => lambda { 11.times { Factory(:service, :council => @council) } } do
+        assert_select "#council_services"
+      end
+      
+      should "not show links to services if there are fewer than 10" do
+        assert_select "#council_services", false
+      end
+      
     end
           
     context "with xml requested" do
