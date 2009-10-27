@@ -12,6 +12,7 @@ class MeetingTest < ActiveSupport::TestCase
     should_belong_to :council # think about meeting should belong to council through committee
     should_validate_presence_of :date_held
     should_validate_presence_of :committee_id
+    should_validate_presence_of :council_id
     should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
     should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
     should_have_db_columns :venue
@@ -85,6 +86,19 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal DateTime.new(2008, 11, 6, 19, 30), @meeting.date_held
     end
     
+    should "convert datetime string to datetime" do
+      assert_equal DateTime.new(2009, 12, 30, 19, 30), Meeting.new(:date_held => "30-12-2009 7:30pm").date_held
+      assert_equal DateTime.new(2009, 12, 30, 19, 30), Meeting.new(:date_held => "12/30/2009 7:30pm").date_held # regression test for Ruby 1.9. Should fail for that
+    end
+    
+    should "return date for date_held if time is midnight" do
+      assert_equal Date.new(2009, 12, 30), Meeting.new(:date_held => "30-12-2009").date_held
+    end
+    
+    should "return nil date_held if no date" do
+      assert_nil Meeting.new.date_held
+    end
+    
     should "return committee name in title" do
       assert_equal "Audit Group meeting", @meeting.title
     end
@@ -141,6 +155,11 @@ class MeetingTest < ActiveSupport::TestCase
     should "return status of meeting" do
       assert_equal "past", new_meeting.status
       assert_equal "future", new_meeting(:date_held => 1.hour.from_now).status
+    end
+    
+    should "return status of meeting with no time set" do
+      assert_equal "past", new_meeting(:date_held => "3 November 2007").status
+      assert_equal "future", new_meeting(:date_held => "3 November 2020").status
     end
     
     context "when converting meeting to_xml" do

@@ -467,6 +467,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "include formatted meeting dates in recent activity" do
+        p @updated_past_meeting.date_held
         assert_match %r(<recent-activity.+<meeting.+<formatted-date>#{@updated_past_meeting.formatted_date}.+</recent-activity)m, @council.to_detailed_xml
       end
       

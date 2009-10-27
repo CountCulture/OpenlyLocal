@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091020180846) do
+ActiveRecord::Schema.define(:version => 20091027185541) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -164,6 +164,20 @@ ActiveRecord::Schema.define(:version => 20091020180846) do
 
   add_index "meetings", ["committee_id"], :name => "index_meetings_on_committee_id"
   add_index "meetings", ["council_id"], :name => "index_meetings_on_council_id"
+
+  create_table "meetings_copy", :force => true do |t|
+    t.datetime "date_held"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "committee_id"
+    t.integer  "uid",          :limit => 8
+    t.integer  "council_id"
+    t.string   "url"
+    t.text     "venue"
+  end
+
+  add_index "meetings_copy", ["committee_id"], :name => "index_meetings_on_committee_id"
+  add_index "meetings_copy", ["council_id"], :name => "index_meetings_on_council_id"
 
   create_table "members", :force => true do |t|
     t.string   "first_name"

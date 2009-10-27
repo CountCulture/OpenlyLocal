@@ -34,6 +34,12 @@ class Meeting < ActiveRecord::Base
     "#{committee.title} meeting"
   end
   
+  # return date as plain date, not datetime if meeting is at midnight
+  def date_held
+    return unless dh=self[:date_held]
+    (dh.hour==0 && dh.min==0) ? dh.to_date : dh.in_time_zone
+  end
+
   def extended_title
     "#{committee.title} meeting, #{date_held.to_s(:event_date)}"
   end
@@ -60,7 +66,7 @@ class Meeting < ActiveRecord::Base
   end
   
   def status
-    date_held > Time.now ? "future" : "past"
+    date_held.to_time > Time.now ? "future" : "past"
   end
   
   def to_xml(options={}, &block)

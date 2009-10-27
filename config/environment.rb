@@ -50,8 +50,8 @@ Rails::Initializer.run do |config|
   # Make Time.zone default to the specified zone, and make Active Record store time values
   # in the database in UTC, and return them converted to the specified local zone.
   # Run "rake -D time" for a list of tasks for finding time zone names. Comment line to use default local time.
-  config.time_zone = 'UTC'
-
+  # config.time_zone = 'UTC'
+  config.time_zone = 'London'
   # The internationalization framework can be changed to have another default locale (standard is :en) or more load paths.
   # All files from config/locales/*.rb,yml are added automatically.
   # config.i18n.load_path << Dir[File.join(RAILS_ROOT, 'my', 'locales', '*.{rb,yml}')]
@@ -84,6 +84,8 @@ require 'open-uri'
 # require 'twitter/console'
 
 # Add custom date/time formats
-Time::DATE_FORMATS[:event_date] = "%b %e %Y, %l.%M%p" 
+Time::DATE_FORMATS[:event_date] = "%b %e %Y, %l.%M%p" # add custom time format so we get some unity
+Date::DATE_FORMATS[:event_date] = "%b %e %Y" # add custom date format too
 Time::DATE_FORMATS[:vevent] = "%Y-%m-%dT%H:%M:%S" 
+Date::DATE_FORMATS[:vevent] = "%Y-%m-%dT%H:%M:%S" 
 Date::DATE_FORMATS[:custom_short] = "%B %e %Y" # add custom time format so we get some unity
