@@ -4,6 +4,7 @@ class Document < ActiveRecord::Base
   validates_uniqueness_of :url, :scope => :document_type
   belongs_to :document_owner, :polymorphic => true
   before_validation :sanitize_body
+  default_scope :order => "documents.updated_at DESC" # newest first. Specify fully for when used with joins
   
   def document_type
     self[:document_type] || "Document"
