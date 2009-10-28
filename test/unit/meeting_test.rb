@@ -92,7 +92,11 @@ class MeetingTest < ActiveSupport::TestCase
     end
     
     should "return date for date_held if time is midnight" do
-      assert_equal Date.new(2009, 12, 30), Meeting.new(:date_held => "30-12-2009").date_held
+      assert_equal Date.new(2009, 12, 30), Factory(:meeting, :committee => @committee, :council_id => @committee.council_id, :date_held => "30-12-2009").reload.date_held
+    end
+    
+    should "return date for date_held if time is midnight in BST" do
+      assert_equal Date.new(2010, 05, 11), Factory(:meeting, :committee => @committee, :council_id => @committee.council_id, :date_held => "2010-05-11T00:00:00+01:00").reload.date_held
     end
     
     should "return nil date_held if no date" do

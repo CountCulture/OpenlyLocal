@@ -36,8 +36,8 @@ class Meeting < ActiveRecord::Base
   
   # return date as plain date, not datetime if meeting is at midnight
   def date_held
-    return unless dh=self[:date_held]
-    (dh.hour==0 && dh.min==0) ? dh.to_date : dh.in_time_zone
+    return unless dh=self[:date_held]&&self[:date_held].in_time_zone
+    (dh.hour==0 && dh.min==0) ? dh.to_date : dh
   end
 
   def extended_title

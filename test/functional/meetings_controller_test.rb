@@ -140,7 +140,6 @@ class MeetingsControllerTest < ActionController::TestCase
       end
       
       should "show meeting date in title" do
-        p @meeting.date_held
         assert_select "title", /#{@meeting.date_held.to_s(:event_date).squish}/
       end
       
