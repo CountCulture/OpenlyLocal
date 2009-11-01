@@ -60,7 +60,7 @@ class GenericControllerTest < ActionController::TestCase
     end
     
     should "use title in meta description" do
-      assert_select "meta[name='description'][content*=?]", "Foo Title"
+      assert_select "meta[name='description'][content*=?]", /Foo Title/
     end
     
     should "show rdfa headers" do
@@ -89,5 +89,14 @@ class GenericControllerTest < ActionController::TestCase
     should "show council in title" do
       assert_select "title", "Foo Title :: #{@council.title} :: Openly Local"
     end
+    
+    should "use title in meta description" do
+      assert_select "meta[name='description'][content*=?]", "Foo Title"
+    end
+    
+    should "use council name in meta description" do
+      assert_select "meta[name='description'][content*=?]", @council.title
+    end
+    
   end
 end
