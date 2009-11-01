@@ -1,8 +1,12 @@
 require 'test_helper'
 
 class DatasetTest < ActiveSupport::TestCase
+  subject { @dataset }
   
   context "The Dataset class" do
+    setup do
+      @dataset = Factory(:dataset) 
+    end
 
     should_have_db_columns :title, :source, :key, :query, :description, :originator, :originator_url, :summary_column, :last_checked
     should_validate_presence_of :title, :key, :query
@@ -13,7 +17,6 @@ class DatasetTest < ActiveSupport::TestCase
     end
     
     should "should return stale datasets" do
-      @never_checked_dataset = Factory(:dataset)
       @fresh_dataset = Factory(:dataset, :key => "foo123", :last_checked => 6.days.ago)
       @stale_dataset = Factory(:dataset, :key => "bar456", :last_checked => 8.days.ago)
       stale_datasets = Dataset.stale
@@ -21,7 +24,7 @@ class DatasetTest < ActiveSupport::TestCase
       assert_equal 2, stale_datasets.size
       
       assert stale_datasets.include?(@stale_dataset)
-      assert stale_datasets.include?(@never_checked_dataset)
+      assert stale_datasets.include?(@dataset)
       assert !stale_datasets.include?(@fresh_dataset)
     end
     

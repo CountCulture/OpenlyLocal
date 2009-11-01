@@ -142,3 +142,18 @@ Factory.define :service do |f|
   f.association :ldg_service
 end
 
+Factory.define :ons_dataset_family do |f|
+  f.sequence(:title) { |n| "Ons Dataset #{n}" }
+  f.sequence(:ons_uid) { |n| n }
+end
+
+Factory.define :ons_subject do |f|
+  f.sequence(:title) { |n| "Ons Subject #{n}" }
+  f.sequence(:ons_uid) { |n| n }
+end
+
+Factory.define :ons_dataset do |f|
+  f.sequence(:start_date) { |n| (2.years.ago - (n*5).days).to_date }
+  f.sequence(:end_date) { |n| (2.years.ago - (n*5 - 2).days).to_date }
+  f.association :ons_dataset_family
+end
