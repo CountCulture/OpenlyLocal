@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091020180846) do
+ActiveRecord::Schema.define(:version => 20091101145821) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -212,6 +212,34 @@ ActiveRecord::Schema.define(:version => 20091020180846) do
     t.datetime "updated_at"
   end
 
+  create_table "ons_dataset_families", :force => true do |t|
+    t.string   "title"
+    t.integer  "ons_subject_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ons_uid"
+  end
+
+  create_table "ons_dataset_families_ons_subjects", :id => false, :force => true do |t|
+    t.integer "ons_subject_id"
+    t.integer "ons_dataset_family_id"
+  end
+
+  create_table "ons_datasets", :force => true do |t|
+    t.date     "start_date"
+    t.date     "end_date"
+    t.integer  "ons_dataset_family_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ons_subjects", :force => true do |t|
+    t.string   "title"
+    t.integer  "ons_uid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "output_areas", :force => true do |t|
     t.string  "oa_code"
     t.string  "lsoa_code"
@@ -268,6 +296,8 @@ ActiveRecord::Schema.define(:version => 20091020180846) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "services", ["council_id"], :name => "index_services_on_council_id"
 
   create_table "wards", :force => true do |t|
     t.string   "name"

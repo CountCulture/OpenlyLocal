@@ -124,11 +124,16 @@ class CouncilTest < ActiveSupport::TestCase
         
         Service.record_timestamps = false
         @service = Factory(:service, :council => @council_with_stale_services, :updated_at => 2.weeks.ago, :created_at => 2.weeks.ago) #stale
+        @service = Factory(:service, :council => @council_with_stale_services, :updated_at => 2.weeks.ago, :created_at => 2.weeks.ago) #stale
         Service.record_timestamps = true
       end
 
       should "return councils with ldg_id and stale services" do
         assert_equal [@council_with_no_services, @council_with_stale_services], Council.with_stale_services
+      end
+      
+      should "return council with several stale services just once" do
+        assert_equal 1, Council.with_stale_services.select{ |c| c == @council_with_stale_services }.size
       end
     end
     
