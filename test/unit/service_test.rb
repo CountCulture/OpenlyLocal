@@ -39,7 +39,7 @@ class ServiceTest < ActiveSupport::TestCase
       assert_equal [stale_service], Service.stale
     end
     
-    context "when refreshing urls" do
+    context "when refreshing all urls" do
       setup do
         Council.stubs(:with_stale_services).returns([@council])
         Council.any_instance.stubs(:potential_services).returns([@ldg_service])
@@ -48,27 +48,42 @@ class ServiceTest < ActiveSupport::TestCase
       
       should "get get all councils with stale services" do
         Council.expects(:with_stale_services).returns([@council])
-        Service.refresh_urls
+        Service.refresh_all_urls
+      end
+      
+      should "get refresh urls for each council with stale services" do
+        council1, council2 = stub, stub
+        Council.stubs(:with_stale_services).returns([council1, council2])
+        Service.expects(:refresh_urls_for).with(council1)
+        Service.expects(:refresh_urls_for).with(council2)
+        Service.refresh_all_urls
+      end
+    end
+    
+    context "when refreshing urls for council" do
+      setup do
+        Council.any_instance.stubs(:potential_services).returns([@ldg_service])
+        @ldg_service.stubs(:destination_url).returns({:url => "http://foobar.com", :title => "Foobar Page"})
       end
       
       should "get potential services for councils" do
         Council.any_instance.expects(:potential_services).returns([@ldg_service])
-        Service.refresh_urls
+        Service.refresh_urls_for(@council)
       end
       
       should "get destination_url for each potential service" do
         @ldg_service.expects(:destination_url).returns({:url => "http://foobar.com", :title => "Foobar Page"})
-        Service.refresh_urls
+        Service.refresh_urls_for(@council)
       end
       
       should "save service if not previously in db" do
         assert_difference "Service.count", 1 do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
         end
       end
       
       should "save service details" do
-        Service.refresh_urls
+        Service.refresh_urls_for(@council)
         s = Service.find_by_url_and_council_id("http://foobar.com", @council.id)
         assert_equal @ldg_service.category, s.category
         assert_equal @ldg_service.id, s.ldg_service_id
@@ -77,14 +92,14 @@ class ServiceTest < ActiveSupport::TestCase
       
       should "not save results if previously in db" do
         assert_difference "Service.count", 1 do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
         end
       end
       
       should "not save results if no destination_url" do
         @ldg_service.expects(:destination_url) # returns nil
         assert_no_difference "Service.count" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
         end
       end
       
@@ -100,12 +115,12 @@ class ServiceTest < ActiveSupport::TestCase
         end
         
         should "not save them" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
           assert_nil Service.find_by_url("http://foobar.com/contact_us")
         end
         
         should "still save other pages" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
           assert Service.find_by_url("http://foobar.com/baz")
         end
       end
@@ -120,12 +135,12 @@ class ServiceTest < ActiveSupport::TestCase
         end
         
         should "save it" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
           assert Service.find_by_url("http://foobar.com/contact_us")
         end
         
         should "save other pages" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
           assert Service.find_by_url("http://foobar.com/baz")
         end
       end
@@ -143,12 +158,12 @@ class ServiceTest < ActiveSupport::TestCase
         end
         
         should "not save them" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
           assert_nil Service.find_by_url("http://foobar.com/some_page/1")
         end
         
         should "still save other pages" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
           assert Service.find_by_url("http://foobar.com/some_page/2")
         end
       end
@@ -163,12 +178,12 @@ class ServiceTest < ActiveSupport::TestCase
         end
         
         should "save it" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
           assert Service.find_by_url("http://foobar.com/some_page/1")
         end
         
         should "save other pages" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
           assert Service.find_by_url("http://foobar.com/some_page/2")
         end
       end
@@ -181,12 +196,12 @@ class ServiceTest < ActiveSupport::TestCase
         
         should "not create new entry" do
           assert_no_difference "Service.count" do
-            Service.refresh_urls
+            Service.refresh_urls_for(@council)
           end
         end
         
         should "update existing entry" do
-          Service.refresh_urls
+          Service.refresh_urls_for(@council)
           assert_equal "http://foobar.com", @service.reload.url
           assert_equal @ldg_service.title, @service.title
         end
@@ -194,7 +209,7 @@ class ServiceTest < ActiveSupport::TestCase
       
       should "delete stale existing results after processing" do
         stale_service = dummy_stale_service
-        Service.refresh_urls
+        Service.refresh_urls_for(@council)
         assert_nil Service.find_by_id(stale_service.id)
       end
     end
