@@ -71,6 +71,12 @@ class DocumentsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/xml'
+      should "return basic attributes only" do
+        assert_select "document>title"
+        assert_select "document>url"
+        assert_select "document>openlylocal-url"
+        assert_select "document>body", false
+      end
     end
     
     context "with json requested" do
@@ -116,7 +122,6 @@ class DocumentsControllerTest < ActionController::TestCase
     should_assign_to(:document) { @document}
     should_respond_with :success
     should_render_template :show
-    
     should_assign_to(:council) { @council }
   
     should "show document title in title" do
@@ -131,4 +136,33 @@ class DocumentsControllerTest < ActionController::TestCase
       assert_select "p.extra_info a[href='/documents?council_id=#{@council.id}']", /other committee documents/i
     end 
   end  
+  
+  context "with xml requested" do
+    setup do
+      get :show, :id => @document.id, :format => "xml"
+    end
+    
+    should_assign_to(:document) { @document}
+    should_respond_with :success
+    should_render_without_layout
+    should_respond_with_content_type 'application/xml'
+    should "return full attributes only" do
+      assert_select "document>title"
+      assert_select "document>url"
+      assert_select "document>openlylocal-url"
+      assert_select "document>body"
+    end
+  end
+  
+  context "with json requested" do
+    setup do
+      get :show, :id => @document.id, :format => "json"
+    end
+    
+    should_assign_to(:document) { @document}
+    should_respond_with :success
+    should_render_without_layout
+    should_respond_with_content_type 'application/json'
+  end
+  
 end

@@ -147,6 +147,24 @@ class DocumentTest < ActiveSupport::TestCase
       
     end
     
+    context "when converting document to_xml" do
+      should "include id" do
+        assert_match %r(<id), @document.to_xml
+      end
+      
+      should "include openlylocal_url" do
+        assert_match %r(<openlylocal-url), @document.to_xml
+      end
+      
+      should "include council url" do
+        assert_match %r(<url), @document.to_xml
+      end
+      
+      should "include title" do
+        assert_match %r(<title), @document.to_xml
+      end
+    end
+    
     # context "when setting body" do
     #   setup do
     #     @document = Document.new

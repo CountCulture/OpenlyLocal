@@ -8,6 +8,7 @@ class Document < ActiveRecord::Base
   belongs_to :document_owner, :polymorphic => true
   before_validation :sanitize_body
   delegate :council, :to => :document_owner
+  alias_method :old_to_xml, :to_xml
   
   def document_type
     self[:document_type] || "Document"
@@ -24,6 +25,10 @@ class Document < ActiveRecord::Base
   
   def extended_title
     self[:title] || "#{document_type} for #{document_owner.extended_title}"
+  end
+  
+  def to_xml(options={}, &block)
+    old_to_xml({:methods => [:title, :openlylocal_url], :only => [:id, :url] }.merge(options), &block)
   end
   
   protected
