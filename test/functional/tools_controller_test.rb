@@ -69,6 +69,9 @@ class ToolsControllerTest < ActionController::TestCase
       should_render_without_layout
       should_respond_with_content_type 'application/xml'
       
+      should "list namespace for module" do
+        assert_select "Module[xmlns:ning='http://developer.ning.com/opensocial/']"
+      end
       # should "list all parsed councils" do
       #   assert_select "UserPref>EnumValue[display_value=?]",  @council.name
       # end
@@ -81,6 +84,33 @@ class ToolsControllerTest < ActionController::TestCase
         
       end
     end
+    
+    # context "with given council request" do
+    #   setup do
+    #     get :ning, :council_id => @council.id, :format => "xml"
+    #   end
+    #   
+    #   should_assign_to(:council) { @council } # only parsed councils
+    #   should_respond_with :success
+    #   should_render_template :ning
+    #   should_render_without_layout
+    #   should_respond_with_content_type 'application/xml'
+    #   
+    #   should "list namespace for module" do
+    #     assert_select "Module[xmlns:ning='http://developer.ning.com/opensocial/']"
+    #   end
+    #   # should "list all parsed councils" do
+    #   #   assert_select "UserPref>EnumValue[display_value=?]",  @council.name
+    #   # end
+    #   
+    #   should_eventually "include code for gadget" do
+    #     assert_match /script type=\"text\/javascript/,  @response.body
+    #   end
+    #   
+    #   should_eventually "cache action" do
+    #     
+    #   end
+    # end
   end
   
   # context "on GET to :ning_test" do

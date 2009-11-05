@@ -7,18 +7,49 @@
   a {text-decoration: none; color: #003366;}
   a.official_page {color: #515151; background: transparent url(http://openlylocal.com/images/ext_link.gif) no-repeat scroll left center; padding-left:10px;}
   a:hover {text-decoration: underline; color: black;}
+  #edit_settings a {float: right; font-size: 70%}
 </style>
+<div id="edit_settings" style="display:none">
+  <p><a href="#">edit settings</a></p>
+</div>
 
+<div id="possible_councils" style="display:none">
+  <h2>Please choose council</h2>
+  <% form_tag("/councils") do %>
+  <%= select_tag :council, options_for_select(@councils.collect{ |council| [council.name, council.id] })%>
+  <%= submit_tag %>
+  <% end -%>
+</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script type="text/javascript">
-  var prefs = new gadgets.Prefs();
+  var councilId;
   
-  // Initialize tabs.
-  // var tabs = new gadgets.TabSet(__MODULE_ID__);
-  // tabs.alignTabs("left");
-                  
+  function set_callback(response) {
+    if (response.get("set_data").hadError()) {
+      alert("There was an error storing data");
+    } else {
+      alert("Successfully updated settings");
+    }
+  };
+  
+  function get_callback(response) {
+    if (response.get("data").hadError()) {
+      alert("There was an error getting data");
+    } else {
+      var owner = response.get('owner').getData();
+      var data = response.get("data").getData();
+      if(owner.isViewer()){$("#edit_settings").show();};
+      councilId = data[owner.getId()].olCouncilId; //data is indexed by user
+      if(councilId){
+        getCouncilData();
+      }
+      else{
+        $("#possible_councils").show();
+      };
+    }
+  };
+                    
   function getCouncilData() {
-    var councilId = 2;
-    // var councilId = prefs.getString("council");
     var params = {};
     params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
     // This URL returns a JSON-encoded string that represents a JavaScript object
@@ -41,9 +72,7 @@
   { 
     var council = obj.data.council;
     var partyBreakdown = [];
-    // alert(council.name);
     var footer = "</div><div id='footer'>More details and info at <a href='http://openlylocal.com'>OpenlyLocal</a> :: Making local government more transparent</div>";
-    // gadgets.window.setTitle(council.name + " :: OpenlyLocal");
     
     for (var i = 0; i < council.members.length; i++) {
       var p = council.members[i].party;
@@ -67,7 +96,7 @@
     }
     summaryHtml += ")</div>";
     
-    var recentActivity = council.recent_activity
+    var recentActivity = council.recent_activity;
     for (var coll in recentActivity) {
       if (recentActivity.hasOwnProperty(coll)) {
         summaryHtml += "<h3>" + recentActivity[coll].length + " new/updated " + coll + "</h3><ul>";
@@ -77,7 +106,6 @@
         summaryHtml += "</ul>";
       }
     }
-    // alert(summaryHtml);
     for (var i = 0; i < council.members.length; i++) {
       var m = council.members[i];
       memberHtml += listItemFor(m);
@@ -92,10 +120,11 @@
       var m = council.meetings[i];
       meetingHtml += listItemFor(m);
     } 
-    document.getElementById('members').innerHTML = "<ul>" + memberHtml + "</ul>" + footer;
-    document.getElementById('committees').innerHTML = "<ul>" + committeeHtml + "</ul>" + footer;
-    document.getElementById('meetings').innerHTML = "<ul>" + meetingHtml + "</ul>" + footer;
-    document.getElementById('summary').innerHTML = summaryHtml + footer;
+    // document.getElementById('members').innerHTML = "<h2>Members</h2><ul>" + memberHtml + "</ul>" + footer;
+    // document.getElementById('committees').innerHTML = "<h2>Committees</h2><ul>" + committeeHtml + "</ul>" + footer;
+    // document.getElementById('meetings').innerHTML = "<h2>Forthcoming Meetings</h2><ul>" + meetingHtml + "</ul>" + footer;
+    $('#summary').html("<h2>Summary</h2>" + summaryHtml + footer);
+    gadgets.window.adjustHeight();
     
     // tabs.addTab("Summary", {
     //    contentContainer: document.getElementById("summary")
@@ -112,12 +141,30 @@
 
   }
 
-  // Call the init function on page load
-  gadgets.util.registerOnLoadHandler(getCouncilData);
-  
-</script>
+  var idspec = opensocial.newIdSpec({ "userId" : "OWNER", "groupId" : "SELF" });
+  var req = opensocial.newDataRequest();
+  req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.OWNER), "owner");
+  req.add(req.newFetchPersonAppDataRequest(idspec, "olCouncilId"),"data");
+  req.send(get_callback);
+    
+  $("#possible_councils form").submit(function(){
+    councilId = $("#possible_councils select").val();
+    var req = opensocial.newDataRequest();
+    req.add(req.newUpdatePersonAppDataRequest("VIEWER", "olCouncilId", councilId), "set_data"); //set olCouncilId for viewer (will be irrelevant if not owner of group)
+    req.send(set_callback);
+    $('#summary').html("<strong class='alert'>Reloading data...</strong>");
+    getCouncilData();
+    $("#possible_councils").hide();
+    return false;
+    });
+    
+  $("#edit_settings a").click(function(){
+    $("#possible_councils").show();
+    return false;
+    });
 
+</script>
 <div id="summary" class="collection">Loading...</div>
-<div id="members" class="collection" style="display:none">Loading...</div>
-<div id="committees" class="collection" style="display:none">Loading...</div>
-<div id="meetings" class="collection" style="display:none">Loading...</div>
+<div id="members" class="collection">Loading...</div>
+<div id="committees" class="collection">Loading...</div>
+<div id="meetings" class="collection">Loading...</div>

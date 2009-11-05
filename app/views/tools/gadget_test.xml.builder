@@ -33,7 +33,7 @@ xml.Module do
                :datatype => "hidden"
   
   xml.Content :type => "html" do
-    xml.cdata!  render( :partial => "tools/gadget_script.html.erb" )
+    xml.cdata!  render( :partial => "tools/gadget_test_script.html.erb" )
     
   end
 
