@@ -211,9 +211,7 @@ class MeetingTest < ActiveSupport::TestCase
     
     context "when calling minutes_document_body setter and meeting has existing minutes" do
       setup do
-        @existing_minutes = Factory(:document, :document_type => "Minutes")
-        @meeting.minutes = @existing_minutes
-        @existing_minutes.save!
+        @existing_minutes = Factory(:document, :document_type => "Minutes", :document_owner => @meeting)
         @meeting.minutes_document_body = "some document text"
       end
 
@@ -232,9 +230,7 @@ class MeetingTest < ActiveSupport::TestCase
         
     context "when calling agenda_document_body setter and meeting has existing agenda" do
       setup do
-        @existing_agenda = Factory(:document, :document_type => "Agenda")
-        @meeting.agenda = @existing_agenda
-        @existing_agenda.save!
+        @existing_agenda = Factory(:document, :document_type => "Agenda", :document_owner => @meeting)
         @meeting.agenda_document_body = "some document text"
       end
 

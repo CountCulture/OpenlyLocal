@@ -2,12 +2,18 @@ require 'test_helper'
 
 class DocumentTest < ActiveSupport::TestCase
   subject { @document }
+  
+  def setup
+    @committee = Factory(:committee)
+    @council = @committee.council
+    @doc_owner = Factory(:meeting, :council => @committee.council, :committee => @committee)
+    @document = Factory(:document, :document_owner => @doc_owner)
+  end
   context "The Document class" do
-    setup do
-      @document = Factory(:document)
-    end
     
     should_validate_presence_of :url
+    should_validate_presence_of :document_owner_id
+    should_validate_presence_of :document_owner_type
     should_belong_to :document_owner
     should_have_db_column :raw_body
     
@@ -30,16 +36,18 @@ class DocumentTest < ActiveSupport::TestCase
       d.valid?
       assert_nil d.errors[:url]
     end
+    
+    should "include ScraperModel mixin" do
+      assert Document.respond_to?(:find_existing)
+    end
   end
   
   context "A Document instance" do
     
     context "in general" do
-      setup do
-        @committee = Factory(:committee)
-        @council = @committee.council
-        @doc_owner = Factory(:meeting, :council => @committee.council, :committee => @committee)
-        @document = Factory(:document, :document_owner => @doc_owner)
+      
+      should "return document owner's council as council" do
+        assert_equal @council, @document.council
       end
       
       should "return title attribute if set" do

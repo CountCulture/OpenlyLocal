@@ -1,9 +1,13 @@
 class Document < ActiveRecord::Base
+  include ScrapedModel::Base
   validates_presence_of :body
   validates_presence_of :url
+  validates_presence_of :document_owner_id
+  validates_presence_of :document_owner_type
   validates_uniqueness_of :url, :scope => :document_type
   belongs_to :document_owner, :polymorphic => true
   before_validation :sanitize_body
+  delegate :council, :to => :document_owner
   
   def document_type
     self[:document_type] || "Document"
@@ -20,10 +24,6 @@ class Document < ActiveRecord::Base
   
   def extended_title
     self[:title] || "#{document_type} for #{document_owner.extended_title}"
-  end
-  
-  # Doesn't currently mixin ScrapedModel module (perhaps it should?), so add manually
-  def status
   end
   
   protected

@@ -101,7 +101,7 @@ class DocumentsControllerTest < ActionController::TestCase
       should "list documents" do
         assert_select "item", 2 do
           assert_select "title", @document.title
-          assert_select "link", "http://test.host/documents/#{@document.id}"
+          assert_select "link", "http://test.host/documents/#{@document.to_param}"
         end
       end
     end
