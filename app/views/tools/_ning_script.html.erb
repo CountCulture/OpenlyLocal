@@ -61,7 +61,7 @@
   {
     var li = "<li>";
     li += obj.formatted_date || "";
-    li += " <a href='" + (obj.openlylocal_url || obj.url) + "'>";
+    li += " <a href='" + (obj.openlylocal_url || obj.url) + "' class='openlylocal_page'>";
     li += (obj.title || obj.name || (obj.first_name + " " + obj.last_name));
     li += "</a>" + (obj.party ? " (" + obj.party + ")" : "");
     li += obj.openlylocal_url && obj.url ? (" <a href='" + obj.url + "' class='official_page'>official page</a></li>") : "</li>";
@@ -86,7 +86,7 @@
     var memberHtml = "";
     var committeeHtml = "";
     var meetingHtml = "";
-    var summaryHtml = "<h2><a href='" + council.openlylocal_url + "'>" + council.name + "</a></h2><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'>" + council.url + "</a></div>";
+    var summaryHtml = "<h2><a href='" + council.openlylocal_url + "' class='openlylocal_page'>" + council.name + "</a></h2><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'class='official_page'>" + council.url + "</a></div>";
     summaryHtml += "<div class='party_breakdown'><strong>" + council.members.length + " councillors</strong> (";
 
     for (var i = 0; i < partyBreakdown.length; i++) {
@@ -147,7 +147,13 @@
   req.add(req.newFetchPersonAppDataRequest(idspec, "olCouncilId"),"data");
   req.send(get_callback);
     
-  $("#possible_councils form").submit(function(){
+$(document).ready( function() {
+    $('a.official_page, a.openlylocal_page').live("click", function(event){
+            window.open(this.href);
+            return false;
+        });
+        
+    $("#possible_councils form").submit(function(){
     councilId = $("#possible_councils select").val();
     var req = opensocial.newDataRequest();
     req.add(req.newUpdatePersonAppDataRequest("VIEWER", "olCouncilId", councilId), "set_data"); //set olCouncilId for viewer (will be irrelevant if not owner of group)
@@ -162,9 +168,10 @@
     $("#possible_councils").show();
     return false;
     });
+  });
 
 </script>
 <div id="summary" class="collection">Loading...</div>
-<div id="members" class="collection">Loading...</div>
-<div id="committees" class="collection">Loading...</div>
-<div id="meetings" class="collection">Loading...</div>
+<div id="members" class="collection" style="display:none">Loading...</div>
+<div id="committees" class="collection" style="display:none">Loading...</div>
+<div id="meetings" class="collection" style="display:none">Loading...</div>

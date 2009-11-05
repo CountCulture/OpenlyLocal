@@ -12,7 +12,7 @@ xml.Module "xmlns:ning" => "http://developer.ning.com/opensocial/" do
     xml.Require :feature => "opensocial-0.8"
     xml.Require :feature => "dynamic-height"
     xml.Require :feature => "setprefs"
-    xml.Preload :href    => "http://openlylocal.com/councils/2.json"
+    # xml.Preload :href    => "http://openlylocal.com/councils/2.json"
 
   end
   
