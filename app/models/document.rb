@@ -28,7 +28,7 @@ class Document < ActiveRecord::Base
   end
   
   def to_xml(options={}, &block)
-    old_to_xml({:methods => [:title, :openlylocal_url], :only => [:id, :url] }.merge(options), &block)
+    old_to_xml({:methods => [:title, :openlylocal_url, :status], :only => [:id, :url] }.merge(options), &block)
   end
   
   protected

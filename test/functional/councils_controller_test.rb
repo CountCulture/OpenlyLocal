@@ -269,6 +269,11 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show associated wards" do
         assert_match /ward.+#{@ward.name}/, @response.body
       end
+      
+      should "show recent activity" do
+        assert_match /recent_activity.+members.+first_name\":\"#{@member.first_name}/, @response.body
+      end
+    
     end
     
     context "when council has datapoints" do

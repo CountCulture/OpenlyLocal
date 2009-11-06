@@ -163,6 +163,10 @@ class DocumentTest < ActiveSupport::TestCase
       should "include title" do
         assert_match %r(<title), @document.to_xml
       end
+      
+      should "include title" do
+        assert_match %r(<status), @document.to_xml
+      end
     end
     
     # context "when setting body" do
