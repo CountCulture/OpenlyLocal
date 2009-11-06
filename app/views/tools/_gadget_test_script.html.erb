@@ -1,0 +1,129 @@
+
+<style> 
+  .collection { font-size: 70%;  padding: 5px; }
+  h3 { border-bottom: 1px solid #676767; margin: 0.5em 0 0 0;}
+  ul {padding: 10px; margin-top: 0.5em;}
+  #footer { padding 5px; background-color: #eee; border-top: 1px solid #676767;}
+  a {text-decoration: none; color: #003366;}
+  a.official_page {color: #515151; background: transparent url(http://openlylocal.com/images/ext_link.gif) no-repeat scroll left center; padding-left:10px;}
+  a:hover {text-decoration: underline; color: black;}
+</style>
+
+<script type="text/javascript">
+  google.load("jquery", "1.3.2");
+  var prefs = new gadgets.Prefs();
+  
+  // Initialize tabs.
+  var tabs = new gadgets.TabSet(__MODULE_ID__);
+  tabs.alignTabs("left");
+  
+  $(document).ready( function() {
+      $('a.official_page, a.openlylocal_page').live("click", function(event){
+              window.open(this.href);
+              return false;
+          });
+    });
+                  
+  function getCouncilData() {
+    var councilId = prefs.getString("council");
+    var params = {};
+    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+    // This URL returns a JSON-encoded string that represents a JavaScript object
+    var url = "http://openlylocal.com/councils/" + councilId + ".json";
+    gadgets.io.makeRequest(url, insertCouncilData, params);
+  };
+
+  function listItemFor(obj)
+  {
+    var li = "<li>";
+    li += obj.formatted_date || "";
+    li += " <a href='" + (obj.openlylocal_url || obj.url) + "'>";
+    li += (obj.title || obj.name || (obj.first_name + " " + obj.last_name));
+    li += "</a>" + (obj.party ? " (" + obj.party + ")" : "");
+    li += obj.openlylocal_url && obj.url ? (" <a href='" + obj.url + "' class='official_page'>official page</a></li>") : "</li>";
+    return li;
+  }
+  
+  function insertCouncilData(obj)
+  { 
+    var council = obj.data.council;
+    var partyBreakdown = [];
+    var footer = "</div><div id='footer'>More details and info at <a href='http://openlylocal.com'>OpenlyLocal</a> :: Making local government more transparent</div>";
+    gadgets.window.setTitle(council.name + " :: OpenlyLocal");
+    
+    for (var i = 0; i < council.members.length; i++) {
+      var p = council.members[i].party;
+      partyBreakdown[p] === undefined ? partyBreakdown[p] = 1 : partyBreakdown[p] +=1;
+    }
+    // turn in to proper array
+    for (var party in partyBreakdown) {
+      if (partyBreakdown.hasOwnProperty(party)) {partyBreakdown.push([partyBreakdown[party], party]);}
+    }
+    partyBreakdown = partyBreakdown.sort(function (a,b) {return b[0] - a[0]}); //sort with largest first
+    var memberHtml = "";
+    var committeeHtml = "";
+    var meetingHtml = "";
+    var summaryHtml = "<h2><a href='" + council.openlylocal_url + "'>" + council.name + "</a></h2><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'>" + council.url + "</a></div>";
+    summaryHtml += "<div class='party_breakdown'><strong>" + council.members.length + " councillors</strong> (";
+
+    for (var i = 0; i < partyBreakdown.length; i++) {
+      var p = partyBreakdown[i];
+      summaryHtml += partyBreakdown[i][0] + " " + partyBreakdown[i][1];
+      if(partyBreakdown.length - i > 1) { summaryHtml += ", "; };
+    }
+    summaryHtml += ")</div>";
+    
+    var recentActivity = council.recent_activity
+    for (var coll in recentActivity) {
+      if (recentActivity.hasOwnProperty(coll)) {
+        summaryHtml += "<h3>" + recentActivity[coll].length + " new/updated " + coll + "</h3><ul>";
+        for (var i = 0; i < recentActivity[coll].length; i++) {
+          summaryHtml += listItemFor(recentActivity[coll][i]);
+        }
+        summaryHtml += "</ul>";
+      }
+    }
+
+    for (var i = 0; i < council.members.length; i++) {
+      var m = council.members[i];
+      memberHtml += listItemFor(m);
+    }    
+   
+    for (var i = 0; i < council.committees.length; i++) {
+      var c = council.committees[i];
+      committeeHtml += listItemFor(c);
+    } 
+
+    for (var i = 0; i < council.meetings.length; i++) {
+      var m = council.meetings[i];
+      meetingHtml += listItemFor(m);
+    } 
+    $('members').html("<ul>" + memberHtml + "</ul>" + footer);
+    $('committees').html("<ul>" + committeeHtml + "</ul>" + footer);
+    $('meetings').innerHTML = ("<ul>" + meetingHtml + "</ul>" + footer);
+    $('summary').html(summaryHtml + footer);
+    
+    tabs.addTab("Summary", {
+       contentContainer: document.getElementById("summary")
+    });
+    tabs.addTab("Members", {
+       contentContainer: document.getElementById("members")
+    });
+    tabs.addTab("Committees", {
+       contentContainer: document.getElementById("committees")
+    });
+    tabs.addTab("Meetings", {
+       contentContainer: document.getElementById("meetings")
+    });
+
+  }
+
+  // Call the init function on page load
+  gadgets.util.registerOnLoadHandler(getCouncilData);
+  
+</script>
+
+<div id="summary" class="collection">Loading...</div>
+<div id="members" class="collection" style="display:none">Loading...</div>
+<div id="committees" class="collection" style="display:none">Loading...</div>
+<div id="meetings" class="collection" style="display:none">Loading...</div>
