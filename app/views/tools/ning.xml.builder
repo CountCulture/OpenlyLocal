@@ -12,8 +12,19 @@ xml.Module "xmlns:ning" => "http://developer.ning.com/opensocial/" do
     xml.Require :feature => "opensocial-0.8"
     xml.Require :feature => "dynamic-height"
     xml.Require :feature => "setprefs"
+    xml.Require :feature => "views"
     # xml.Preload :href    => "http://openlylocal.com/councils/2.json"
-
+    
+    # xml.tag! "ning:navigation" do
+    #   xml.tag! "ning:link" do
+    #     xml.tag! "ning:name", "Summary"
+    #     xml.tag! "ning:URLParameter", "param=summary"
+    #   end
+    #   xml.tag! "ning:link" do
+    #     xml.tag! "ning:name", "Members/Committees"
+    #     xml.tag! "ning:URLParameter", "param=details"
+    #   end
+    # end
   end
   
   # xml.Content :type => "html" do
@@ -37,7 +48,6 @@ xml.Module "xmlns:ning" => "http://developer.ning.com/opensocial/" do
   
   xml.Content :type => "html", :view => "canvas" do
     xml.cdata!  render( :partial => "tools/ning_script.html.erb" )
-    # xml.cdata!  "<p>Hello, Canvas View!</p> "
   end
   
 end

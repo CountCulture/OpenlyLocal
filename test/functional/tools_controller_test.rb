@@ -72,6 +72,7 @@ class ToolsControllerTest < ActionController::TestCase
       should "list namespace for module" do
         assert_select "Module[xmlns:ning='http://developer.ning.com/opensocial/']"
       end
+      
       # should "list all parsed councils" do
       #   assert_select "UserPref>EnumValue[display_value=?]",  @council.name
       # end

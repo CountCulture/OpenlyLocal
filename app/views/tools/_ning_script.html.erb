@@ -1,13 +1,16 @@
 
 <style> 
-  .collection { font-size: 70%;  padding: 5px; }
-  h3 { border-bottom: 1px solid #676767; margin: 0.5em 0 0 0;}
+  body {font-size:90%;}
+  .collection ul { font-size: 80%;  margin-left: 10px; padding: 5px;}
+  h2, h3 { border-bottom: 1px solid #676767; margin: 0.5em 0 0 0;}
   ul {padding: 10px; margin-top: 0.5em;}
   #footer { padding 5px; background-color: #eee; border-top: 1px solid #676767;}
   a {text-decoration: none; color: #003366;}
   a.official_page {color: #515151; background: transparent url(http://openlylocal.com/images/ext_link.gif) no-repeat scroll left center; padding-left:10px;}
   a:hover {text-decoration: underline; color: black;}
-  #edit_settings a {float: right; font-size: 70%}
+  #edit_settings a {float: right; font-size: 80%;}
+  #recent_activity {float: right; width: 250px; padding: 6px; margin-left: 1em; background-color: #dfe7ea; border-left: 1px solid #a9bccb;}
+  #basic_info {margin-bottom: 1em;}
 </style>
 <div id="edit_settings" style="display:none">
   <p><a href="#">edit settings</a></p>
@@ -56,7 +59,22 @@
     var url = "http://openlylocal.com/councils/" + councilId + ".json";
     gadgets.io.makeRequest(url, insertCouncilData, params);
   };
-
+  
+  function listAll(coll)
+  { 
+    if(coll.length && coll.length > 0){
+      var listResult = "<ul>"
+      for (var i = 0; i < coll.length; i++) {
+        var li = coll[i];
+        listResult += listItemFor(li);
+      }
+      listResult += "</ul>";
+      return listResult;
+    }
+    else {
+      return '';
+    }
+  }
   function listItemFor(obj)
   {
     var li = "<li>";
@@ -83,61 +101,30 @@
       if (partyBreakdown.hasOwnProperty(party)) {partyBreakdown.push([partyBreakdown[party], party]);}
     }
     partyBreakdown = partyBreakdown.sort(function (a,b) {return b[0] - a[0]}); //sort with largest first
-    var memberHtml = "";
-    var committeeHtml = "";
-    var meetingHtml = "";
-    var summaryHtml = "<h2><a href='" + council.openlylocal_url + "' class='openlylocal_page'>" + council.name + "</a></h2><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'class='official_page'>" + council.url + "</a></div>";
-    summaryHtml += "<div class='party_breakdown'><strong>" + council.members.length + " councillors</strong> (";
+    var recentActivityHtml = "";
+    var basicInfo = "<h2><a href='" + council.openlylocal_url + "' class='openlylocal_page'>" + council.name + "</a></h2><div class='contact_details'>" + council.address + ", tel: " + council.telephone + ", <a href='" + council.url + "'class='official_page'>" + council.url + "</a></div>";
+    basicInfo += "<div class='party_breakdown'><strong>" + council.members.length + " councillors</strong> (";
 
     for (var i = 0; i < partyBreakdown.length; i++) {
       var p = partyBreakdown[i];
-      summaryHtml += partyBreakdown[i][0] + " " + partyBreakdown[i][1];
-      if(partyBreakdown.length - i > 1) { summaryHtml += ", "; };
+      basicInfo += partyBreakdown[i][0] + " " + partyBreakdown[i][1];
+      if(partyBreakdown.length - i > 1) { basicInfo += ", "; };
     }
-    summaryHtml += ")</div>";
+    basicInfo += ")</div>";
     
     var recentActivity = council.recent_activity;
     for (var coll in recentActivity) {
       if (recentActivity.hasOwnProperty(coll)) {
-        summaryHtml += "<h3>" + recentActivity[coll].length + " new/updated " + coll + "</h3><ul>";
-        for (var i = 0; i < recentActivity[coll].length; i++) {
-          summaryHtml += listItemFor(recentActivity[coll][i]);
-        }
-        summaryHtml += "</ul>";
+        recentActivityHtml += "<h3>" + recentActivity[coll].length + " new/updated " + coll + "</h3>" + listAll(recentActivity[coll]);
       }
     }
-    for (var i = 0; i < council.members.length; i++) {
-      var m = council.members[i];
-      memberHtml += listItemFor(m);
-    }    
-   
-    for (var i = 0; i < council.committees.length; i++) {
-      var c = council.committees[i];
-      committeeHtml += listItemFor(c);
-    } 
-
-    for (var i = 0; i < council.meetings.length; i++) {
-      var m = council.meetings[i];
-      meetingHtml += listItemFor(m);
-    } 
-    // document.getElementById('members').innerHTML = "<h2>Members</h2><ul>" + memberHtml + "</ul>" + footer;
-    // document.getElementById('committees').innerHTML = "<h2>Committees</h2><ul>" + committeeHtml + "</ul>" + footer;
-    // document.getElementById('meetings').innerHTML = "<h2>Forthcoming Meetings</h2><ul>" + meetingHtml + "</ul>" + footer;
-    $('#summary').html("<h2>Summary</h2>" + summaryHtml + footer);
-    gadgets.window.adjustHeight();
     
-    // tabs.addTab("Summary", {
-    //    contentContainer: document.getElementById("summary")
-    // });
-    // tabs.addTab("Members", {
-    //    contentContainer: document.getElementById("members")
-    // });
-    // tabs.addTab("Committees", {
-    //    contentContainer: document.getElementById("committees")
-    // });
-    // tabs.addTab("Meetings", {
-    //    contentContainer: document.getElementById("meetings")
-    // });
+    $('#basic_info').html(basicInfo);
+    $('#recent_activity').html("<h2>Recent Changes</h2>" + recentActivityHtml);
+    $('#members').html("<h2>Members</h2>" + listAll(council.members) + footer);
+    $('#committees').html("<h2>Committees</h2>" + listAll(council.committees) + footer);
+    $('#meetings').html("<h2>Forthcoming Meetings</h2>" + listAll(council.meetings) + footer);
+    gadgets.window.adjustHeight();
 
   }
 
@@ -154,24 +141,47 @@ $(document).ready( function() {
         });
         
     $("#possible_councils form").submit(function(){
-    councilId = $("#possible_councils select").val();
-    var req = opensocial.newDataRequest();
-    req.add(req.newUpdatePersonAppDataRequest("VIEWER", "olCouncilId", councilId), "set_data"); //set olCouncilId for viewer (will be irrelevant if not owner of group)
-    req.send(set_callback);
-    $('#summary').html("<strong class='alert'>Reloading data...</strong>");
-    getCouncilData();
-    $("#possible_councils").hide();
-    return false;
+      councilId = $("#possible_councils select").val();
+      var req = opensocial.newDataRequest();
+      req.add(req.newUpdatePersonAppDataRequest("VIEWER", "olCouncilId", councilId), "set_data"); //set olCouncilId for viewer (will be irrelevant if not owner of group)
+      req.send(set_callback);
+      $('#summary').html("<strong class='alert'>Reloading data...</strong>");
+      getCouncilData();
+      $("#possible_councils").hide();
+      return false;
     });
     
   $("#edit_settings a").click(function(){
     $("#possible_councils").show();
     return false;
     });
+    
+  $("#navigation a").click(function(){
+    alert("clicked on "+ this.href);
+    console.log(this);
+    $(this.href).show();
+    
+    $("#possible_councils").show();
+    return false;
+    });
+    
   });
 
 </script>
-<div id="summary" class="collection">Loading...</div>
-<div id="members" class="collection" style="display:none">Loading...</div>
-<div id="committees" class="collection" style="display:none">Loading...</div>
-<div id="meetings" class="collection" style="display:none">Loading...</div>
+<div id="navigation">
+  <ul>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#details">Members/Committees</a></li>
+  </ul>
+</div>
+<div id="summary">
+  <div id="basic_info">
+    Loading...
+  </div>
+  <div id="recent_activity"></div>
+  <div id="meetings" class="collection"></div>
+</div>
+<div id="details">
+  <div id="members" class="collection" style="display:none">Loading...</div>
+  <div id="committees" class="collection" style="display:none">Loading...</div>
+</div>
