@@ -1,30 +1,20 @@
 xml.instruct!
 
 xml.Module "xmlns:ning" => "http://developer.ning.com/opensocial/" do
-  xml.ModulePrefs :title => "Council info :: OpenlyLocal",
+  xml.ModulePrefs :title => "UK Council info :: OpenlyLocal",
                   :directory_title => "UK Council info :: OpenlyLocal",
-                  :description => "Get info on what your council is doing from OpenlyLocal.com :: making Local Government more transparent",
+                  :description => "Information about your UK local authority from OpenlyLocal.com :: making Local Government more transparent. Lists forthcoming meetings, committees, council members etc",
+                  :thumbnail => "http:/openlylocal.com/images/openlylocal_logo_120x60.png",
                   :author => "CountCulture",
                   :author_affiliation => "OpenlyLocal.com",
                   :author_email => "countculture@gmail.com",
                   :author_link => "http://OpenlyLocal.com" do
+    xml.tag! "ning:screenshot", "http://openlylocal.com/images/ning_screenshot_canvas.png", :view => "canvas"
                     
     xml.Require :feature => "opensocial-0.8"
     xml.Require :feature => "dynamic-height"
     xml.Require :feature => "setprefs"
     xml.Require :feature => "views"
-    # xml.Preload :href    => "http://openlylocal.com/councils/2.json"
-    
-    # xml.tag! "ning:navigation" do
-    #   xml.tag! "ning:link" do
-    #     xml.tag! "ning:name", "Summary"
-    #     xml.tag! "ning:URLParameter", "param=summary"
-    #   end
-    #   xml.tag! "ning:link" do
-    #     xml.tag! "ning:name", "Members/Committees"
-    #     xml.tag! "ning:URLParameter", "param=details"
-    #   end
-    # end
   end
   
   # xml.Content :type => "html" do
