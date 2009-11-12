@@ -2,8 +2,8 @@
 <style> 
   .collection { font-size: 70%;  padding: 5px; }
   h3 { border-bottom: 1px solid #676767; margin: 0.5em 0 0 0;}
-  ul {padding: 10px; margin-top: 0.5em;}
-  #footer { padding 5px; background-color: #eee; border-top: 1px solid #676767;}
+  ul {padding: 10px; margin: 0.5em 0.25em;}
+  #footer { padding 5px; background-color: #eee; border-top: 1px solid #676767; margin-top: 1em;}
   a {text-decoration: none; color: #003366;}
   a.official_page {color: #515151; background: transparent url(http://openlylocal.com/images/ext_link.gif) no-repeat scroll left center; padding-left:10px;}
   a:hover {text-decoration: underline; color: black;}
@@ -20,13 +20,13 @@
     var councilId = prefs.getString("council");
     var params = {};
     params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+    params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
     // This URL returns a JSON-encoded string that represents a JavaScript object
     var url = "http://openlylocal.com/councils/" + councilId + ".json";
     gadgets.io.makeRequest(url, insertCouncilData, params);
   };
 
-  function listItemFor(obj)
-  {
+  function listItemFor(obj) {
     var li = "<li>";
     li += obj.formatted_date || "";
     li += " <a href='" + (obj.openlylocal_url || obj.url) + "'>";
@@ -36,20 +36,34 @@
     return li;
   }
   
+  function listAll(coll) { 
+    if(coll.length && coll.length > 0){
+      var listResult = "<ul>";
+      for (var i = 0; i < coll.length; i++) {
+        var li = coll[i];
+        listResult += listItemFor(li);
+      }
+      listResult += "</ul>";
+      return listResult;
+    }
+    else { return '';}
+  }
+
   function insertCouncilData(obj)
   { 
     var council = obj.data.council;
     var partyBreakdown = [];
+    var partyBreakdownObj ={};
     var footer = "</div><div id='footer'>More details and info at <a href='http://openlylocal.com'>OpenlyLocal</a> :: Making local government more transparent</div>";
     gadgets.window.setTitle(council.name + " :: OpenlyLocal");
     
     for (var i = 0; i < council.members.length; i++) {
       var p = council.members[i].party;
-      partyBreakdown[p] === undefined ? partyBreakdown[p] = 1 : partyBreakdown[p] +=1;
+      partyBreakdownObj[p] === undefined ? partyBreakdownObj[p] = 1 : partyBreakdownObj[p] +=1;
     }
     // turn in to proper array
-    for (var party in partyBreakdown) {
-      if (partyBreakdown.hasOwnProperty(party)) {partyBreakdown.push([partyBreakdown[party], party]);}
+    for (var party in partyBreakdownObj) {
+      if (partyBreakdownObj.hasOwnProperty(party)) {partyBreakdown.push([partyBreakdownObj[party], party]);}
     }
     partyBreakdown = partyBreakdown.sort(function (a,b) {return b[0] - a[0]}); //sort with largest first
     var memberHtml = "";
@@ -65,14 +79,10 @@
     }
     summaryHtml += ")</div>";
     
-    var recentActivity = council.recent_activity
+    var recentActivity = council.recent_activity;
     for (var coll in recentActivity) {
       if (recentActivity.hasOwnProperty(coll)) {
-        summaryHtml += "<h3>" + recentActivity[coll].length + " new/updated " + coll + "</h3><ul>";
-        for (var i = 0; i < recentActivity[coll].length; i++) {
-          summaryHtml += listItemFor(recentActivity[coll][i]);
-        }
-        summaryHtml += "</ul>";
+        summaryHtml += "<h3>" + recentActivity[coll].length + " new/updated " + coll + "</h3>" + listAll(recentActivity[coll]);
       }
     }
 
@@ -80,19 +90,20 @@
       var m = council.members[i];
       memberHtml += listItemFor(m);
     }    
-   
+       
     for (var i = 0; i < council.committees.length; i++) {
       var c = council.committees[i];
       committeeHtml += listItemFor(c);
     } 
-
+    
     for (var i = 0; i < council.meetings.length; i++) {
       var m = council.meetings[i];
       meetingHtml += listItemFor(m);
     } 
-    document.getElementById('members').innerHTML = "<ul>" + memberHtml + "</ul>" + footer;
-    document.getElementById('committees').innerHTML = "<ul>" + committeeHtml + "</ul>" + footer;
-    document.getElementById('meetings').innerHTML = "<ul>" + meetingHtml + "</ul>" + footer;
+
+    document.getElementById('members').innerHTML = listAll(council.members) + footer;
+    document.getElementById('committees').innerHTML = listAll(council.committees) + footer;
+    document.getElementById('meetings').innerHTML = listAll(council.meetings) + footer;
     document.getElementById('summary').innerHTML = summaryHtml + footer;
     
     tabs.addTab("Summary", {
