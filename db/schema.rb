@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091101145821) do
+ActiveRecord::Schema.define(:version => 20091112173934) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -156,7 +156,7 @@ ActiveRecord::Schema.define(:version => 20091101145821) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "committee_id"
-    t.integer  "uid",          :limit => 8
+    t.string   "uid"
     t.integer  "council_id"
     t.string   "url"
     t.text     "venue"
@@ -177,7 +177,7 @@ ActiveRecord::Schema.define(:version => 20091101145821) do
     t.date     "date_elected"
     t.date     "date_left"
     t.integer  "council_id"
-    t.integer  "uid",                   :limit => 8
+    t.string   "uid"
     t.string   "name_title"
     t.string   "qualifications"
     t.string   "register_of_interests"
