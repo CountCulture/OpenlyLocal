@@ -246,6 +246,19 @@ class ItemScraperTest < ActiveSupport::TestCase
           
         end
         
+        context "and blank url" do
+          setup do
+            @scraper.update_attribute(:url, "")
+          end
+
+          should "get data from each related_object's url" do
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_1.uid}")
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_2.uid}")
+            @scraper.process
+          end
+
+        end
+        
         context "and problem getting data" do
 
           setup do
