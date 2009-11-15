@@ -10,82 +10,118 @@ class WardsControllerTest < ActionController::TestCase
   end
 
   # show test
-   context "on GET to :show" do
+  context "on GET to :show" do
      
-     context "with basic request" do
-       setup do
-         get :show, :id => @ward.id
-       end
-
-       should_assign_to :ward
-       should_respond_with :success
-       should_render_template :show
+    context "with basic request" do
+      setup do
+        get :show, :id => @ward.id
+      end
+   
+      should_assign_to :ward
+      should_respond_with :success
+      should_render_template :show
+     
+      should "show ward in title" do
+        assert_select "title", /#{@ward.title}/
+      end
       
-       should "show ward in title" do
-         assert_select "title", /#{@ward.title}/
-       end
-       
-       should "show council in title" do
-         assert_select "title", /#{@ward.council.title}/
-       end
-       
-       should "list members" do
-         assert_select "div#members li a", @member.title
-       end
-     
-       should "not show list of committees" do
-         assert_select "#committees", false
-       end
-       should "not show list of meetings" do
-         assert_select "#meetings", false
-       end
-     end
-     
-     context "with basic request when ward has committees" do
-       setup do
-         @ward.committees << @committee = Factory(:committee, :council => @council)
-         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
-         get :show, :id => @ward.id
-       end
-
-       should_respond_with :success
+      should "show council in title" do
+        assert_select "title", /#{@ward.council.title}/
+      end
       
-       should "show link to committee" do
-         assert_select "#committees a", /#{@committee.title}/
-       end
-       
-       should "show ward committee meetings" do
-         assert_select "#meetings li", /#{@meeting.title}/
-
-       end 
-     end
+      should "list members" do
+        assert_select "div#members li a", @member.title
+      end
+    
+      should "not show list of committees" do
+        assert_select "#committees", false
+      end
+      should "not show list of meetings" do
+        assert_select "#meetings", false
+      end
+    end
+    
+    context "with basic request when ward has committees" do
+      setup do
+        @ward.committees << @committee = Factory(:committee, :council => @council)
+        @meeting = Factory(:meeting, :committee => @committee, :council => @council)
+        get :show, :id => @ward.id
+      end
+      
+      should_respond_with :success
+      
+      should "show link to committee" do
+        assert_select "#committees a", /#{@committee.title}/
+      end
+      
+      should "show ward committee meetings" do
+        assert_select "#meetings li", /#{@meeting.title}/
+      
+      end 
+    end
      
-     context "with xml request" do
-       setup do
-         @ward.committees << @committee = Factory(:committee, :council => @council)
-         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
-         get :show, :id => @ward.id, :format => "xml"
-       end
-
-       should_assign_to :ward
-       should_respond_with :success
-       should_render_without_layout
-       should_respond_with_content_type 'application/xml'
-       
-       should "include members in response" do
-         assert_select "ward member"
-       end
-
-       should "include committees in response" do
-         assert_select "ward>committees>committee"
-       end
-
-       should "include meetings in response" do
-         assert_select "ward meetings meeting"
-       end
-       
+    context "with xml request" do
+      setup do
+        @ward.committees << @committee = Factory(:committee, :council => @council)
+        @meeting = Factory(:meeting, :committee => @committee, :council => @council)
+        get :show, :id => @ward.id, :format => "xml"
+      end
+    
+      should_assign_to :ward
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/xml'
+      
+      should "include members in response" do
+        assert_select "ward member"
+      end
+    
+      should "include committees in response" do
+        assert_select "ward>committees>committee"
+      end
+    
+      should "include meetings in response" do
+        assert_select "ward meetings meeting"
+      end
+    end
+     
+    context "with rdf request" do
+      setup do
+        @ward.committees << @committee = Factory(:committee, :council => @council)
+        @meeting = Factory(:meeting, :committee => @committee, :council => @council)
+        get :show, :id => @ward.id, :format => "rdf"
       end
      
+      should_assign_to :ward
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/rdf+xml'
+     
+      should "show rdf headers" do
+        assert_match /rdf:rdf.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:rdf.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:rdf.+ xmlns:administrative-geography/m, @response.body
+      end
+
+      should_eventually "show rdf info" do
+        flunk
+      end
+
+      should_eventually "include members in response" do
+        puts @response.body
+        assert_select "ward member"
+      end
+     
+      should_eventually "include committees in response" do
+        assert_select "ward>committees>committee"
+      end
+     
+      should_eventually "include meetings in response" do
+        assert_select "ward meetings meeting"
+      end
+  
+    end
+
      context "with json request" do
        setup do
          @ward.committees << @committee = Factory(:committee, :council => @council)

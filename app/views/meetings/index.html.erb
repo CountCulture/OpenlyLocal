@@ -2,7 +2,7 @@
 <p><%= link_to_calendar %> :: <%= params[:include_past] ? link_to("Restrict to forthcoming meetings", params.except(:include_past)) : link_to("Include meetings in the past", params.merge(:include_past => true)) %></p>
 <p class="extra_info"><%= link_for @council %> :: <%= link_to h("#{@council.title} committees"), committees_path(:council_id => @council.id) %></p>
 <div id="meetings" about="<%= council_path(@council) %>">
-  <%= list_all @meetings, :rel => "twfyl:meeting" %>
+  <%= list_all @meetings, :rel => "openlylocal:meeting" %>
 </div>
 
 <%= render :partial => '/shared/api_info' %>

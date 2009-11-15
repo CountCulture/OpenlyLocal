@@ -48,7 +48,7 @@ class MeetingsControllerTest < ActionController::TestCase
       end
       
       should "show rdfa attributes for meetings" do
-        assert_select "#meetings li[rel='twfyl:meeting']"
+        assert_select "#meetings li[rel='openlylocal:meeting']"
       end
 
     end
@@ -186,7 +186,7 @@ class MeetingsControllerTest < ActionController::TestCase
       end
       
       should "show rdfa attributes for other meetings" do
-        assert_select "#other_meetings li[rel='twfyl:meeting']"
+        assert_select "#other_meetings li[rel='openlylocal:meeting']"
       end
     end
     

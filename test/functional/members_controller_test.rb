@@ -48,7 +48,7 @@ class MembersControllerTest < ActionController::TestCase
        end
 
        should "show rdfa typeof" do
-         assert_select "div[typeof*='twfyl:LocalAuthorityMember']"
+         assert_select "div[typeof*='openlylocal:LocalAuthorityMember']"
        end
 
        should "use member name as foaf:name" do
@@ -60,7 +60,7 @@ class MembersControllerTest < ActionController::TestCase
        end
        
        should "show foaf attributes for meetings" do
-         assert_select "#meetings li[rel*='twfyl:meeting']"
+         assert_select "#meetings li[rel*='openlylocal:meeting']"
        end
        
        should "show canonical url" do

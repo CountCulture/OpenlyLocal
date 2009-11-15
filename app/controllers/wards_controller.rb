@@ -10,6 +10,7 @@ class WardsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml { render :xml => @ward.to_xml(:include => [:members, :committees, :meetings]) }
+      format.rdf 
       format.json { render :json => @ward.to_json(:include => [:members, :committees, :meetings]) }
     end
   end

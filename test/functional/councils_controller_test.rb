@@ -192,7 +192,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "show rdfa local authority" do
-        assert_select "#data span[about='[twfyl:LondonBoroughAuthority]']"
+        assert_select "#data span[about='[openlylocal:LondonBoroughAuthority]']"
       end
       
       should "use council name as foaf:name" do
@@ -204,7 +204,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "show rdfa attributes for committees" do
-        assert_select "#committees li a[rel*='twfyl:committee']"
+        assert_select "#committees li a[rel*='openlylocal:committee']"
       end
       
       should "show links to services if there are 10 or more", :before => lambda { 11.times { Factory(:service, :council => @council) } } do
@@ -276,6 +276,89 @@ class CouncilsControllerTest < ActionController::TestCase
     
     end
     
+    context "with rdf request" do
+      setup do
+        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk")
+        get :show, :id => @council.id, :format => "rdf"
+      end
+     
+      should_assign_to :council
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/rdf+xml'
+     
+      should "show rdf headers" do
+        assert_match /rdf:rdf.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:rdf.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:rdf.+ xmlns:administrative-geography/m, @response.body
+      end
+      
+      should "show name of council" do
+        assert_match /rdf:Description.+rdfs:label>#{@council.title}/m, @response.body
+      end
+      
+      should "show type of council" do
+        assert_match /rdf:type.+openlylocal:LondonBorough/m, @response.body
+      end
+      
+      should "show council is same as other resources" do
+        assert_match /owl:sameas.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
+        assert_match /owl:sameas.+rdf:resource.+#{Regexp.escape(@council.dbpedia_url)}/, @response.body
+      end
+      
+      should "show details of council" do
+        assert_match /foaf:address.+#{Regexp.escape(@council.address)}/, @response.body
+        assert_match /foaf:phone.+#{Regexp.escape(@council.telephone)}/, @response.body
+        assert_match /foaf:homepage.+#{Regexp.escape(@council.url)}/, @response.body
+      end
+      
+      should "show wards" do
+        assert_match /openlylocal:Ward.+rdf:resource.+\/wards\/#{@ward.id}/, @response.body
+        assert_match /rdf:Description.+\/wards\/#{@ward.id}/, @response.body
+      end
+      
+      should_eventually "show committees" do
+        # assert_match /spatialrelations:contains.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
+        flunk
+      end
+      
+      should_eventually "show members" do
+        # assert_match /spatialrelations:contains.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
+        flunk
+      end
+    end
+
+    context "with rdf request and missing attributes" do
+      setup do
+        @council.update_attribute(:snac_id, nil)
+      end
+     
+      should "show rdf headers" do
+        get :show, :id => @council.id, :format => "rdf"
+        assert_match /rdf:rdf.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:rdf.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:rdf.+ xmlns:administrative-geography/m, @response.body
+      end
+      
+      should "show name of council" do
+        get :show, :id => @council.id, :format => "rdf"
+        assert_match /rdf:Description.+rdfs:label>#{@council.title}/m, @response.body
+      end
+      
+      should "not show council is same as other resources" do
+        get :show, :id => @council.id, :format => "rdf"
+        assert_no_match /owl:sameas.+rdf:resource.+statistics.data.gov.uk/, @response.body
+        assert_no_match /owl:sameas.+rdf:resource.+dbpedia/, @response.body
+      end
+      
+      should "not show missing details of council" do
+        get :show, :id => @council.id, :format => "rdf"
+        assert_no_match /foaf:address/, @response.body
+        assert_no_match /foaf:telephone/, @response.body
+      end
+      
+    end
+
     context "when council has datapoints" do
       setup do
         @datapoint = Factory(:datapoint, :council => @council)

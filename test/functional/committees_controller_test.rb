@@ -54,7 +54,7 @@ class CommitteesControllerTest < ActionController::TestCase
        end
 
        should "show rdfa typeof" do
-         assert_select "div[typeof*='twfyl:LocalAuthorityCommittee']"
+         assert_select "div[typeof*='openlylocal:LocalAuthorityCommittee']"
        end
 
        should "use member name as foaf:name" do
@@ -66,7 +66,7 @@ class CommitteesControllerTest < ActionController::TestCase
        end
        
        should "show foaf attributes for meetings" do
-         assert_select "#meetings li[rel*='twfyl:meeting']"
+         assert_select "#meetings li[rel*='openlylocal:meeting']"
        end
        
        should "not show link to ward" do

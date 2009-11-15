@@ -27,6 +27,7 @@ class CouncilsController < ApplicationController
       format.html
       format.xml { render :xml => @council.to_detailed_xml }
       format.json { render :as_json => @council.to_detailed_xml }
+      format.rdf
     end
   end
   
