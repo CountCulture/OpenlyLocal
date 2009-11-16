@@ -9,5 +9,19 @@ xml.tag! "rdf:RDF",
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
   xml.tag! "rdf:Description", "rdf:about" => committee_url(:id => @committee.id) do
     xml.tag! "rdfs:label", @committee.title
+    xml.tag! "rdf:type", "rdf:resource" => "openlylocal:LocalAuthorityCommittee"
+    
+    @committee.members.each do |member|
+      xml.tag! "foaf:member", "rdf:resource" => member_url(:id => member.id)
+    end
+    
+    @meetings.each do |meeting|
+      xml.tag! "openlylocal:meeting", "rdf:resource" => meeting_url(:id => meeting.id)
+    end
   end
+  
+  xml.tag! "rdf:Description", "rdf:about" => council_url(:id => @council.id) do
+    xml.tag! "openlylocal:LocalAuthorityCommittee", "rdf:resource" => committee_url(:id => @committee.id)
+  end
+  
 end

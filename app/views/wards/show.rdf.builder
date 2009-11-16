@@ -9,6 +9,7 @@ xml.tag! "rdf:RDF",
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
   xml.tag! "rdf:Description", "rdf:about" => ward_url(:id => @ward.id) do
     xml.tag! "rdfs:label", @ward.name
+    xml.tag! "owl:sameAs", "rdf:resource" => "http://statistics.data.gov.uk/id/local-authority-ward/#{@ward.snac_id}" unless @ward.snac_id.blank?
   end
 end
 

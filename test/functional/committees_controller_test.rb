@@ -157,6 +157,22 @@ class CommitteesControllerTest < ActionController::TestCase
        should "show rdf info for committee" do
          assert_match /rdf:Description.+rdf:about.+\/committees\/#{@committee.id}/, @response.body
          assert_match /rdf:Description.+rdfs:label>#{@committee.title}/m, @response.body
+         assert_match /rdf:type.+openlylocal:LocalAuthorityCommittee/m, @response.body
+       end
+
+       should "show members" do
+         assert_match /foaf:member.+rdf:resource.+\/members\/#{@member.id}/, @response.body
+         # assert_match /rdf:Description.+\/members\/#{@member.id}/, @response.body
+       end
+       
+       should "show meetings" do
+         assert_match /openlylocal:meeting.+rdf:resource.+\/meetings\/#{@meeting.id}/, @response.body
+         # assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/members\/#{@member.id}/, @response.body
+         # assert_match /rdf:Description.+\/members\/#{@member.id}/, @response.body
+       end
+       
+       should "show council relationship" do
+         assert_match /rdf:Description.+\/councils\/#{@council.id}.+openlylocal:LocalAuthorityCommittee.+\/committees\/#{@committee.id}/m, @response.body
        end
 
      end

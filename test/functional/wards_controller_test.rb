@@ -87,6 +87,7 @@ class WardsControllerTest < ActionController::TestCase
      
     context "with rdf request" do
       setup do
+        @ward.update_attribute(:snac_id, "01ABC")
         @ward.committees << @committee = Factory(:committee, :council => @council)
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
         get :show, :id => @ward.id, :format => "rdf"
@@ -108,6 +109,11 @@ class WardsControllerTest < ActionController::TestCase
         assert_match /rdf:Description.+rdfs:label>#{@ward.title}/m, @response.body
       end
 
+      should "show ward is same as other resources" do
+        assert_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority-ward\/#{@ward.snac_id}/, @response.body
+        # assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_url)}/, @response.body
+      end
+      
       should_eventually "include members in response" do
         puts @response.body
         assert_select "ward member"
@@ -121,6 +127,34 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "ward meetings meeting"
       end
   
+    end
+
+    context "with rdf request when no snac_id etc" do
+      setup do
+        # @ward.committees << @committee = Factory(:committee, :council => @council)
+        # @meeting = Factory(:meeting, :committee => @committee, :council => @council)
+        get :show, :id => @ward.id, :format => "rdf"
+      end
+     
+      should_assign_to :ward
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/rdf+xml'
+     
+      should "show rdf headers" do
+        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+      end
+
+      should "show rdf info for ward" do
+        assert_match /rdf:Description.+rdf:about.+\/wards\/#{@ward.id}/, @response.body
+        assert_match /rdf:Description.+rdfs:label>#{@ward.title}/m, @response.body
+      end
+
+      should "not show ward is same as other resources" do
+        assert_no_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority-ward/, @response.body
+      end
     end
 
      context "with json request" do

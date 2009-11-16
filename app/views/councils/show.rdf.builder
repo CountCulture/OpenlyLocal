@@ -12,8 +12,8 @@ xml.tag! "rdf:RDF",
   xml.tag! "rdf:Description", "rdf:about" => council_url(:id => @council.id) do
     xml.tag! "rdfs:label", @council.title
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:#{@council.authority_type.gsub(/\s+/,'')}Authority"
-    xml.tag! "owl:sameas", "rdf:resource" => "http://statistics.data.gov.uk/doc/local-authority/#{@council.snac_id}" unless @council.snac_id.blank?
-    xml.tag! "owl:sameas", "rdf:resource" => @council.dbpedia_url unless @council.dbpedia_url.blank?
+    xml.tag! "owl:sameAs", "rdf:resource" => "http://statistics.data.gov.uk/id/local-authority/#{@council.snac_id}" unless @council.snac_id.blank?
+    xml.tag! "owl:sameAs", "rdf:resource" => @council.dbpedia_url unless @council.dbpedia_url.blank?
     xml.tag! "foaf:address", @council.address unless @council.address.blank?
     xml.tag! "foaf:phone", @council.foaf_telephone unless @council.foaf_telephone.blank?
     xml.tag! "foaf:homepage", @council.url unless @council.url.blank?
@@ -23,11 +23,12 @@ xml.tag! "rdf:RDF",
         xml.tag! "vCard:Country", @council.country 
       end
     end
+    
     @wards.each do |ward|
       xml.tag! "openlylocal:Ward", "rdf:resource" => ward_url(:id => ward.id)
     end
     @committees.each do |committee|
-      xml.tag! "openlylocal:Committee", "rdf:resource" => committee_url(:id => committee.id)
+      xml.tag! "openlylocal:LocalAuthorityCommittee", "rdf:resource" => committee_url(:id => committee.id)
     end
     @members.each do |member|
       xml.tag! "openlylocal:LocalAuthorityMember", "rdf:resource" => member_url(:id => member.id)

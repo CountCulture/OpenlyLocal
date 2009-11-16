@@ -302,8 +302,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "show council is same as other resources" do
-        assert_match /owl:sameas.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
-        assert_match /owl:sameas.+rdf:resource.+#{Regexp.escape(@council.dbpedia_url)}/, @response.body
+        assert_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
+        assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_url)}/, @response.body
       end
       
       should "show details of council" do
@@ -322,7 +322,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "show committees" do
-        assert_match /openlylocal:Committee.+rdf:resource.+\/committees\/#{@committee.id}/, @response.body
+        assert_match /openlylocal:LocalAuthorityCommittee.+rdf:resource.+\/committees\/#{@committee.id}/, @response.body
         assert_match /rdf:Description.+\/committees\/#{@committee.id}/, @response.body
       end
       
