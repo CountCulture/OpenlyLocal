@@ -5,6 +5,7 @@ xml.tag! "rdf:RDF",
          "xmlns:rdf"   => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", 
          "xmlns:dct"   => "http://purl.org/dc/terms/", 
          "xmlns:xsd"   => "http://www.w3.org/2001/XMLSchema#", 
+         "xmlns:owl"   => "http://www.w3.org/2002/07/owl#",
          "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
   xml.tag! "rdf:Description", "rdf:about" => ward_url(:id => @ward.id) do
