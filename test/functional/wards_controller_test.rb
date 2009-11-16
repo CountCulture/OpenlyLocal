@@ -98,13 +98,14 @@ class WardsControllerTest < ActionController::TestCase
       should_respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
-        assert_match /rdf:rdf.+ xmlns:foaf/m, @response.body
-        assert_match /rdf:rdf.+ xmlns:openlylocal/m, @response.body
-        assert_match /rdf:rdf.+ xmlns:administrative-geography/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
 
-      should_eventually "show rdf info" do
-        flunk
+      should "show rdf info for ward" do
+        assert_match /rdf:Description.+rdf:about.+\/wards\/#{@ward.id}/, @response.body
+        assert_match /rdf:Description.+rdfs:label>#{@ward.title}/m, @response.body
       end
 
       should_eventually "include members in response" do

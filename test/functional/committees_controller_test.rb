@@ -138,6 +138,28 @@ class CommitteesControllerTest < ActionController::TestCase
        should_respond_with_content_type 'text/calendar'
      end
      
+     context "with rdf request" do
+       setup do
+         get :show, :id => @committee.id, :format => "rdf"
+       end
+
+       should_assign_to(:committee) { @committee }
+       should_respond_with :success
+       should_render_without_layout
+       should_respond_with_content_type 'application/rdf+xml'
+
+       should "show rdf headers" do
+         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+       end
+
+       should "show rdf info for committee" do
+         assert_match /rdf:Description.+rdf:about.+\/committees\/#{@committee.id}/, @response.body
+         assert_match /rdf:Description.+rdfs:label>#{@committee.title}/m, @response.body
+       end
+
+     end
    end  
 
    # index test

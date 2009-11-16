@@ -25,6 +25,7 @@ class CommitteesController < ApplicationController
       format.html
       format.xml { render :xml => @committee.to_xml(:include => [:members, :meetings]) }
       format.json { render :json => @committee.to_json(:include => [:members, :meetings]) }
+      format.rdf
       format.ics do
         @meetings.extend(IcalUtilities::ArrayExtensions)
         render :text => @meetings.to_ical(:name => "#{@title} meetings :: #{@council.title} :: OpenlyLocal", :url => committee_url(@committee), :attribute_aliases => {:event_uid => :uid})

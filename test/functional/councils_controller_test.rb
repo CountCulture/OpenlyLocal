@@ -288,9 +288,9 @@ class CouncilsControllerTest < ActionController::TestCase
       should_respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
-        assert_match /rdf:rdf.+ xmlns:foaf/m, @response.body
-        assert_match /rdf:rdf.+ xmlns:openlylocal/m, @response.body
-        assert_match /rdf:rdf.+ xmlns:administrative-geography/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
       
       should "show name of council" do
@@ -317,9 +317,9 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_match /rdf:Description.+\/wards\/#{@ward.id}/, @response.body
       end
       
-      should_eventually "show committees" do
-        # assert_match /spatialrelations:contains.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
-        flunk
+      should "show committees" do
+        assert_match /openlylocal:Committee.+rdf:resource.+\/committees\/#{@committee.id}/, @response.body
+        assert_match /rdf:Description.+\/committees\/#{@committee.id}/, @response.body
       end
       
       should_eventually "show members" do
@@ -335,9 +335,9 @@ class CouncilsControllerTest < ActionController::TestCase
      
       should "show rdf headers" do
         get :show, :id => @council.id, :format => "rdf"
-        assert_match /rdf:rdf.+ xmlns:foaf/m, @response.body
-        assert_match /rdf:rdf.+ xmlns:openlylocal/m, @response.body
-        assert_match /rdf:rdf.+ xmlns:administrative-geography/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
       
       should "show name of council" do

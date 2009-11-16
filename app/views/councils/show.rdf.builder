@@ -19,10 +19,18 @@ xml.tag! "rdf:RDF",
     @wards.each do |ward|
       xml.tag! "openlylocal:Ward", "rdf:resource" => ward_url(:id => ward.id)
     end
+    @committees.each do |committee|
+      xml.tag! "openlylocal:Committee", "rdf:resource" => committee_url(:id => committee.id)
+    end
   end
   @wards.each do |ward|
     xml.tag! "rdf:Description", "rdf:about" => ward_url(:id => ward.id) do
       xml.tag! "rdfs:label", ward.title
+    end
+  end
+  @committees.each do |committee|
+    xml.tag! "rdf:Description", "rdf:about" => committee_url(:id => committee.id) do
+      xml.tag! "rdfs:label", committee.title
     end
   end
 end
