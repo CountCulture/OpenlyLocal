@@ -111,7 +111,10 @@ class WardsControllerTest < ActionController::TestCase
 
       should "show ward is same as other resources" do
         assert_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority-ward\/#{@ward.snac_id}/, @response.body
-        # assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_url)}/, @response.body
+      end
+      
+      should "show council relationship" do
+        assert_match /rdf:Description.+\/councils\/#{@council.id}.+openlylocal:Ward.+\/wards\/#{@ward.id}/m, @response.body
       end
       
       should_eventually "include members in response" do

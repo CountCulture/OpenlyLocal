@@ -11,6 +11,7 @@ class CouncilsController < ApplicationController
       format.html
       format.xml { render :xml => @councils.to_xml(:include => nil) }
       format.json { render :json =>  @councils.to_json }
+      format.rdf
     end
   end
   

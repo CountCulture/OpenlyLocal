@@ -132,6 +132,34 @@ class CouncilsControllerTest < ActionController::TestCase
       should_render_without_layout
       should_respond_with_content_type 'application/json'
     end
+    
+    context "with rdf request and missing attributes" do
+      setup do
+        get :index, :format => "rdf"
+      end
+     
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/rdf+xml'
+     
+      should "show rdf headers" do
+        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+      end
+      
+      should "list councils" do
+        assert_match /rdf:Description.+rdf:about.+\/councils\/#{@council.id}/m, @response.body
+        assert_match /rdf:Description.+rdfs:label.+#{@council.title}/m, @response.body
+      end
+            
+      should "include parsed and unparsed councils" do
+        assert_match /rdf:Description.+rdf:about.+\/councils\/#{@council.id}/m, @response.body
+        assert_match /rdf:Description.+rdf:about.+\/councils\/#{@another_council.id}/m, @response.body
+      end
+      
+    end
+
   end
 
   # show test

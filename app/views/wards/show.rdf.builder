@@ -12,6 +12,11 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdfs:label", @ward.name
     xml.tag! "owl:sameAs", "rdf:resource" => "http://statistics.data.gov.uk/id/local-authority-ward/#{@ward.snac_id}" unless @ward.snac_id.blank?
   end
+  
+  xml.tag! "rdf:Description", "rdf:about" => council_url(:id => @council.id) do
+    xml.tag! "openlylocal:Ward", "rdf:resource" => ward_url(:id => @ward.id)
+  end
+  
 end
 
 # xmlns:administrative-geography="http://statistics.data.gov.uk/def/administrative-geography/"
