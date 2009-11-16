@@ -322,9 +322,9 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_match /rdf:Description.+\/committees\/#{@committee.id}/, @response.body
       end
       
-      should_eventually "show members" do
-        # assert_match /spatialrelations:contains.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
-        flunk
+      should "show members" do
+        assert_match /openlylocal:Member.+rdf:resource.+\/members\/#{@member.id}/, @response.body
+        assert_match /rdf:Description.+\/members\/#{@member.id}/, @response.body
       end
     end
 

@@ -121,6 +121,33 @@ class MembersControllerTest < ActionController::TestCase
        should_render_without_layout
        should_respond_with_content_type 'text/calendar'
      end
+     
+     context "with rdf request" do
+       setup do
+         get :show, :id => @member.id, :format => "rdf"
+       end
+
+       should_assign_to(:member) { @member }
+       should_respond_with :success
+       should_render_without_layout
+       should_respond_with_content_type 'application/rdf+xml'
+
+       should "show rdf headers" do
+         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+       end
+
+       should "show rdf info for member" do
+         assert_match /rdf:Description.+rdf:about.+\/members\/#{@member.id}/, @response.body
+         assert_match /rdf:Description.+rdfs:label>#{@member.title}/m, @response.body
+       end
+
+       should "show personal info for member" do
+         assert_match /rdf:Description.+foaf:name.+#{@member.full_name}/m, @response.body
+       end
+
+     end
    end  
    
    context "on get to :edit a scraper without auth" do

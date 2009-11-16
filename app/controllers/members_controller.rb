@@ -11,6 +11,7 @@ class MembersController < ApplicationController
     api_options = {:except => [:ward_id], :include => [:ward, :committees, :forthcoming_meetings]}
     respond_to do |format|
       format.html
+      format.rdf
       format.xml { render :xml => @member.to_xml(api_options)}
       format.json { render :json => @member.to_json(api_options) }
       format.ics do

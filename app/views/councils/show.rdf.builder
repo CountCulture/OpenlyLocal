@@ -22,6 +22,9 @@ xml.tag! "rdf:RDF",
     @committees.each do |committee|
       xml.tag! "openlylocal:Committee", "rdf:resource" => committee_url(:id => committee.id)
     end
+    @members.each do |member|
+      xml.tag! "openlylocal:Member", "rdf:resource" => member_url(:id => member.id)
+    end
   end
   @wards.each do |ward|
     xml.tag! "rdf:Description", "rdf:about" => ward_url(:id => ward.id) do
@@ -31,6 +34,11 @@ xml.tag! "rdf:RDF",
   @committees.each do |committee|
     xml.tag! "rdf:Description", "rdf:about" => committee_url(:id => committee.id) do
       xml.tag! "rdfs:label", committee.title
+    end
+  end
+  @members.each do |member|
+    xml.tag! "rdf:Description", "rdf:about" => member_url(:id => member.id) do
+      xml.tag! "rdfs:label", member.title
     end
   end
 end
