@@ -1,5 +1,5 @@
 xml.instruct! :xml, :version => "1.0" 
-xml.tag! "rdf:rdf",
+xml.tag! "rdf:RDF",
          "xmlns:foaf"  => "http://xmlns.com/foaf/0.1/", 
          "xmlns:rdfs"  => "http://www.w3.org/2000/01/rdf-schema#", 
          "xmlns:rdf"   => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", 
