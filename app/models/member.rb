@@ -41,6 +41,10 @@ class Member < ActiveRecord::Base
     date_left
   end
   
+  def foaf_telephone
+    "tel:+44-#{telephone.gsub(/^0/, '').gsub(/\s/, '-')}" unless telephone.blank?
+  end
+  
   def party=(party_name)
     self[:party] = party_name.gsub(/party/i, '').sub(/^(The|the)/,'').gsub(/\302\240/,'').strip unless party_name.blank?
   end

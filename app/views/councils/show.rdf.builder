@@ -5,6 +5,7 @@ xml.tag! "rdf:RDF",
          "xmlns:rdf"   => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", 
          "xmlns:dct"   => "http://purl.org/dc/terms/", 
          "xmlns:xsd"   => "http://www.w3.org/2001/XMLSchema#", 
+         "xmlns:vCard" => "http://www.w3.org/2001/vcard-rdf/3.0#",
          "xmlns:owl"   => "http://www.w3.org/2002/07/owl#",
          "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
@@ -14,8 +15,14 @@ xml.tag! "rdf:RDF",
     xml.tag! "owl:sameas", "rdf:resource" => "http://statistics.data.gov.uk/doc/local-authority/#{@council.snac_id}" unless @council.snac_id.blank?
     xml.tag! "owl:sameas", "rdf:resource" => @council.dbpedia_url unless @council.dbpedia_url.blank?
     xml.tag! "foaf:address", @council.address unless @council.address.blank?
-    xml.tag! "foaf:phone", @council.telephone unless @council.telephone.blank?
+    xml.tag! "foaf:phone", @council.foaf_telephone unless @council.foaf_telephone.blank?
     xml.tag! "foaf:homepage", @council.url unless @council.url.blank?
+    unless @council.address.blank?
+      xml.tag! "vCard:ADR", "rdf:parseType" => "Resource" do
+        xml.tag! "vCard:Extadd", @council.address
+        xml.tag! "vCard:Country", @council.country 
+      end
+    end
     @wards.each do |ward|
       xml.tag! "openlylocal:Ward", "rdf:resource" => ward_url(:id => ward.id)
     end
@@ -23,7 +30,7 @@ xml.tag! "rdf:RDF",
       xml.tag! "openlylocal:Committee", "rdf:resource" => committee_url(:id => committee.id)
     end
     @members.each do |member|
-      xml.tag! "openlylocal:Member", "rdf:resource" => member_url(:id => member.id)
+      xml.tag! "openlylocal:LocalAuthorityMember", "rdf:resource" => member_url(:id => member.id)
     end
   end
   @wards.each do |ward|

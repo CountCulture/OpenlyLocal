@@ -123,30 +123,77 @@ class MembersControllerTest < ActionController::TestCase
      end
      
      context "with rdf request" do
-       setup do
-         get :show, :id => @member.id, :format => "rdf"
+       context "for member with full personal details" do
+         setup do
+           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof")
+           get :show, :id => @member.id, :format => "rdf"
+         end
+
+         should_assign_to(:member) { @member }
+         should_respond_with :success
+         should_render_without_layout
+         should_respond_with_content_type 'application/rdf+xml'
+
+         should "show rdf headers" do
+           assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+           assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+           assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+         end
+
+         should "show rdf info for member" do
+           assert_match /rdf:Description.+rdf:about.+\/members\/#{@member.id}/, @response.body
+           assert_match /rdf:Description.+rdfs:label>#{@member.title}/m, @response.body
+           assert_match /rdf:type.+openlylocal:LocalAuthorityMember/m, @response.body
+         end
+
+         should "show personal info for member with info" do
+           assert_match /rdf:Description.+foaf:name.+#{@member.full_name}/m, @response.body
+           assert_match /rdf:Description.+foaf:page.+#{@member.url}/m, @response.body
+           assert_match /rdf:Description.+foaf:title.+#{@member.name_title}/m, @response.body
+           assert_match /rdf:Description.+foaf:phone.+#{Regexp.escape(@member.foaf_telephone)}/m, @response.body
+           assert_match /rdf:Description.+foaf:mbox.+mailto:#{@member.email}/m, @response.body
+         end
+         
+         should "show address for member as vCard" do
+           assert_match /rdf:Description.+vCard:ADR.+vCard:Extadd.+#{Regexp.escape(@member.address)}/m, @response.body
+         end
+         
+         should "show committee memberships" do
+           assert_match /rdf:Description.+\/committees\/#{@committee.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
+         end
+         
+         should "show council membership" do
+           assert_match /rdf:Description.+\/councils\/#{@council.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
+         end
+
        end
 
-       should_assign_to(:member) { @member }
-       should_respond_with :success
-       should_render_without_layout
-       should_respond_with_content_type 'application/rdf+xml'
+       context "for member without full personal details" do
+         setup do
+           get :show, :id => @member.id, :format => "rdf"
+         end
 
-       should "show rdf headers" do
-         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
-         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
-         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+         should_assign_to(:member) { @member }
+         should_respond_with :success
+         should_render_without_layout
+         should_respond_with_content_type 'application/rdf+xml'
+
+         should "not show personal info for member without info" do
+           assert_match /rdf:Description.+foaf:name.+#{@member.full_name}/m, @response.body
+           assert_match /rdf:Description.+foaf:page.+#{@member.url}/m, @response.body
+           assert_no_match /rdf:Description.+foaf:title/m, @response.body
+           assert_no_match /rdf:Description.+foaf:phone/m, @response.body
+           assert_no_match /rdf:Description.+foaf:mbox/m, @response.body
+         end
+         should "show not address for member" do
+           assert_no_match /rdf:Description.+vCard:ADR/m, @response.body
+         end
+         
+         should "show council membership" do
+           assert_match /rdf:Description.+\/councils\/#{@council.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
+         end
+
        end
-
-       should "show rdf info for member" do
-         assert_match /rdf:Description.+rdf:about.+\/members\/#{@member.id}/, @response.body
-         assert_match /rdf:Description.+rdfs:label>#{@member.title}/m, @response.body
-       end
-
-       should "show personal info for member" do
-         assert_match /rdf:Description.+foaf:name.+#{@member.full_name}/m, @response.body
-       end
-
      end
    end  
    

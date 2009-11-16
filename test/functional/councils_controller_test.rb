@@ -308,8 +308,12 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should "show details of council" do
         assert_match /foaf:address.+#{Regexp.escape(@council.address)}/, @response.body
-        assert_match /foaf:phone.+#{Regexp.escape(@council.telephone)}/, @response.body
+        assert_match /foaf:phone.+#{Regexp.escape(@council.foaf_telephone)}/, @response.body
         assert_match /foaf:homepage.+#{Regexp.escape(@council.url)}/, @response.body
+      end
+      
+      should "show address for member as vCard" do
+        assert_match /rdf:Description.+vCard:ADR.+vCard:Extadd.+#{Regexp.escape(@council.address)}/m, @response.body
       end
       
       should "show wards" do
@@ -323,7 +327,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "show members" do
-        assert_match /openlylocal:Member.+rdf:resource.+\/members\/#{@member.id}/, @response.body
+        assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/members\/#{@member.id}/, @response.body
         assert_match /rdf:Description.+\/members\/#{@member.id}/, @response.body
       end
     end
