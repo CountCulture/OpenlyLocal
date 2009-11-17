@@ -8,14 +8,20 @@ xml.tag! "rdf:RDF",
          "xmlns:owl"   => "http://www.w3.org/2002/07/owl#",
          "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
-  xml.tag! "rdf:Description", "rdf:about" => ward_url(:id => @ward.id) do
+  xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@ward) do
     xml.tag! "rdfs:label", @ward.name
+    xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@ward)
     xml.tag! "owl:sameAs", "rdf:resource" => "http://statistics.data.gov.uk/id/local-authority-ward/#{@ward.snac_id}" unless @ward.snac_id.blank?
   end
   
-  xml.tag! "rdf:Description", "rdf:about" => council_url(:id => @council.id) do
-    xml.tag! "openlylocal:Ward", "rdf:resource" => ward_url(:id => @ward.id)
+  xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@council) do
+    xml.tag! "openlylocal:Ward", "rdf:resource" => resource_uri_for( @ward)
   end
+  
+  %w(rdf json xml).each do |format|
+    xml.tag! "dct:hasFormat", "rdf:resource" => ward_url(:id => @ward.id, :format => format)
+  end
+  xml.tag! "dct:hasFormat", "rdf:resource" => ward_url(:id => @ward.id) # html version
   
 end
 

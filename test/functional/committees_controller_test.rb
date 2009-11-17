@@ -154,6 +154,14 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
        end
 
+       should "show uri of committee resource" do
+         assert_match /rdf:Description.+rdf:about.+\/id\/committees\/#{@committee.id}/, @response.body
+       end
+
+       should "show committee as primary resource" do
+         assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/committees\/#{@committee.id}/m, @response.body
+       end
+
        should "show rdf info for committee" do
          assert_match /rdf:Description.+rdf:about.+\/committees\/#{@committee.id}/, @response.body
          assert_match /rdf:Description.+rdfs:label>#{@committee.title}/m, @response.body

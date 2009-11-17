@@ -8,9 +8,10 @@ xml.tag! "rdf:RDF",
          "xmlns:vCard" => "http://www.w3.org/2001/vcard-rdf/3.0#",
          "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
-  xml.tag! "rdf:Description", "rdf:about" => member_url(:id => @member.id) do
+  xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@member) do
     xml.tag! "rdfs:label", @member.title
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:LocalAuthorityMember"
+    xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@member)
     xml.tag! "foaf:name", @member.full_name
     xml.tag! "foaf:page", @member.url
     xml.tag! "foaf:title", @member.name_title unless @member.name_title.blank?
@@ -23,18 +24,23 @@ xml.tag! "rdf:RDF",
     end
     
     @committees.each do |committee|
-      xml.tag! "openlylocal:Committee", "rdf:resource" => committee_url(:id => committee.id)
+      xml.tag! "openlylocal:Committee", "rdf:resource" => resource_uri_for(committee)
     end
+    
+    %w(rdf json xml).each do |format|
+      xml.tag! "dct:hasFormat", "rdf:resource" => member_url(:id => @member.id, :format => format)
+    end
+    xml.tag! "dct:hasFormat", "rdf:resource" => member_url(:id => @member.id) # html version
   end
   
   @committees.each do |committee|
-    xml.tag! "rdf:Description", "rdf:about" => committee_url(:id => committee.id) do
-      xml.tag! "foaf:member", "rdf:resource" => member_url(:id => @member.id)
+    xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(committee) do
+      xml.tag! "foaf:member", "rdf:resource" => resource_uri_for(@member)
     end
   end
   
-  xml.tag! "rdf:Description", "rdf:about" => council_url(:id => @council.id) do
-    xml.tag! "foaf:member", "rdf:resource" => member_url(:id => @member.id)
+  xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@council) do
+    xml.tag! "foaf:member", "rdf:resource" => resource_uri_for(@member)
   end
-  
+    
 end

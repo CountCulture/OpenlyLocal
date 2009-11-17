@@ -317,15 +317,6 @@ class CouncilsControllerTest < ActionController::TestCase
     
     end
     
-
-    # <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
-    # <rdf:type rdf:resource="http://purl.org/dc/dcmitype/Text"/>
-    # <foaf:primaryTopic rdf:resource="http://statistics.data.gov.uk/id/local-authority/41UD"/>
-    # <dct:title>Linked Data for Lichfield District Council</dct:title>
-    # <dct:hasFormat rdf:resource="http://statistics.data.gov.uk/doc/local-authority/41UD.rdf"/>
-    # <dct:hasFormat rdf:resource="http://statistics.data.gov.uk/doc/local-authority/41UD.html"/>
-    # <dct:hasFormat rdf:resource="http://statistics.data.gov.uk/doc/local-authority/41UD.json"/>
-
     context "with rdf request" do
       setup do
         @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk")
@@ -343,6 +334,14 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
       
+      should "show uri of council resource" do
+        assert_match /rdf:Description.+rdf:about.+\/id\/councils\/#{@council.id}/, @response.body
+      end
+      
+      should "show council as primary resource" do
+        assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/councils\/#{@council.id}/m, @response.body
+      end
+      
       should "show name of council" do
         assert_match /rdf:Description.+rdfs:label>#{@council.title}/m, @response.body
       end
@@ -351,11 +350,7 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_match /rdf:type.+openlylocal:LondonBorough/m, @response.body
       end
       
-      should "show council as primary resource" do
-        
-      end
-      
-      should_eventually "show alternative representations" do
+      should "show alternative representations" do
         assert_match /dct:hasFormat rdf:resource.+\/councils\/#{@council.id}.rdf/m, @response.body
         assert_match /dct:hasFormat rdf:resource.+\/councils\/#{@council.id}\"/m, @response.body
         assert_match /dct:hasFormat rdf:resource.+\/councils\/#{@council.id}.json/m, @response.body
@@ -378,18 +373,18 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "show wards" do
-        assert_match /openlylocal:Ward.+rdf:resource.+\/wards\/#{@ward.id}/, @response.body
-        assert_match /rdf:Description.+\/wards\/#{@ward.id}/, @response.body
+        assert_match /openlylocal:Ward.+rdf:resource.+\/id\/wards\/#{@ward.id}/, @response.body
+        assert_match /rdf:Description.+\/id\/wards\/#{@ward.id}/, @response.body
       end
       
       should "show committees" do
-        assert_match /openlylocal:LocalAuthorityCommittee.+rdf:resource.+\/committees\/#{@committee.id}/, @response.body
-        assert_match /rdf:Description.+\/committees\/#{@committee.id}/, @response.body
+        assert_match /openlylocal:LocalAuthorityCommittee.+rdf:resource.+\/id\/committees\/#{@committee.id}/, @response.body
+        assert_match /rdf:Description.+\/id\/committees\/#{@committee.id}/, @response.body
       end
       
       should "show members" do
-        assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/members\/#{@member.id}/, @response.body
-        assert_match /rdf:Description.+\/members\/#{@member.id}/, @response.body
+        assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/id\/members\/#{@member.id}/, @response.body
+        assert_match /rdf:Description.+\/id\/members\/#{@member.id}/, @response.body
       end
     end
 

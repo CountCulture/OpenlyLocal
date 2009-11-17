@@ -9,9 +9,10 @@ xml.tag! "rdf:RDF",
          "xmlns:owl"   => "http://www.w3.org/2002/07/owl#",
          "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
-  xml.tag! "rdf:Description", "rdf:about" => council_url(:id => @council.id) do
+  xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@council) do
     xml.tag! "rdfs:label", @council.title
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:#{@council.authority_type.gsub(/\s+/,'')}Authority"
+    xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@council)
     xml.tag! "owl:sameAs", "rdf:resource" => "http://statistics.data.gov.uk/id/local-authority/#{@council.snac_id}" unless @council.snac_id.blank?
     xml.tag! "owl:sameAs", "rdf:resource" => @council.dbpedia_url unless @council.dbpedia_url.blank?
     xml.tag! "foaf:address", @council.address unless @council.address.blank?
@@ -25,27 +26,36 @@ xml.tag! "rdf:RDF",
     end
     
     @wards.each do |ward|
-      xml.tag! "openlylocal:Ward", "rdf:resource" => ward_url(:id => ward.id)
+      xml.tag! "openlylocal:Ward", "rdf:resource" => resource_uri_for(ward)
     end
     @committees.each do |committee|
-      xml.tag! "openlylocal:LocalAuthorityCommittee", "rdf:resource" => committee_url(:id => committee.id)
+      xml.tag! "openlylocal:LocalAuthorityCommittee", "rdf:resource" => resource_uri_for(committee)
     end
     @members.each do |member|
-      xml.tag! "openlylocal:LocalAuthorityMember", "rdf:resource" => member_url(:id => member.id)
+      xml.tag! "openlylocal:LocalAuthorityMember", "rdf:resource" => resource_uri_for(member)
     end
+    
+    %w(rdf json xml).each do |format|
+      xml.tag! "dct:hasFormat", "rdf:resource" => council_url(:id => @council.id, :format => format)
+    end
+    xml.tag! "dct:hasFormat", "rdf:resource" => council_url(:id => @council.id) # html version
+    
   end
+  
   @wards.each do |ward|
-    xml.tag! "rdf:Description", "rdf:about" => ward_url(:id => ward.id) do
+    xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(ward) do
       xml.tag! "rdfs:label", ward.title
     end
   end
+  
   @committees.each do |committee|
-    xml.tag! "rdf:Description", "rdf:about" => committee_url(:id => committee.id) do
+    xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(committee) do
       xml.tag! "rdfs:label", committee.title
     end
   end
+  
   @members.each do |member|
-    xml.tag! "rdf:Description", "rdf:about" => member_url(:id => member.id) do
+    xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(member) do
       xml.tag! "rdfs:label", member.title
     end
   end

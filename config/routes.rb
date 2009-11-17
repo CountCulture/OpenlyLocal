@@ -11,7 +11,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
   map.resources :committees, :documents, :meetings, :members, :parsers, :portal_systems, :services, :wards
   map.resources :councils
-  map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}}) do |restype|
+  map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}, :only => [:show]}) do |restype|
     restype.resources :councils
     restype.resources :members
     restype.resources :committees

@@ -104,8 +104,12 @@ class WardsControllerTest < ActionController::TestCase
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
 
+      should "show ward as primary resource" do
+        assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/wards\/#{@ward.id}/m, @response.body
+      end
+      
       should "show rdf info for ward" do
-        assert_match /rdf:Description.+rdf:about.+\/wards\/#{@ward.id}/, @response.body
+        assert_match /rdf:Description.+rdf:about.+\/id\/wards\/#{@ward.id}/, @response.body
         assert_match /rdf:Description.+rdfs:label>#{@ward.title}/m, @response.body
       end
 
@@ -113,8 +117,15 @@ class WardsControllerTest < ActionController::TestCase
         assert_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority-ward\/#{@ward.snac_id}/, @response.body
       end
       
+      should "show alternative representations" do
+        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}.rdf/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}\"/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}.json/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}.xml/m, @response.body
+      end
+      
       should "show council relationship" do
-        assert_match /rdf:Description.+\/councils\/#{@council.id}.+openlylocal:Ward.+\/wards\/#{@ward.id}/m, @response.body
+        assert_match /rdf:Description.+\/id\/councils\/#{@council.id}.+openlylocal:Ward.+\/id\/wards\/#{@ward.id}/m, @response.body
       end
       
       should_eventually "include members in response" do

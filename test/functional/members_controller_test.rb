@@ -140,8 +140,12 @@ class MembersControllerTest < ActionController::TestCase
            assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
          end
 
+         should "show member as primary resource" do
+           assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/members\/#{@member.id}/m, @response.body
+         end
+
          should "show rdf info for member" do
-           assert_match /rdf:Description.+rdf:about.+\/members\/#{@member.id}/, @response.body
+           assert_match /rdf:Description.+rdf:about.+\/id\/members\/#{@member.id}/, @response.body
            assert_match /rdf:Description.+rdfs:label>#{@member.title}/m, @response.body
            assert_match /rdf:type.+openlylocal:LocalAuthorityMember/m, @response.body
          end
@@ -158,12 +162,19 @@ class MembersControllerTest < ActionController::TestCase
            assert_match /rdf:Description.+vCard:ADR.+vCard:Extadd.+#{Regexp.escape(@member.address)}/m, @response.body
          end
          
+         should "show alternative representations" do
+           assert_match /dct:hasFormat rdf:resource.+\/members\/#{@member.id}.rdf/m, @response.body
+           assert_match /dct:hasFormat rdf:resource.+\/members\/#{@member.id}\"/m, @response.body
+           assert_match /dct:hasFormat rdf:resource.+\/members\/#{@member.id}.json/m, @response.body
+           assert_match /dct:hasFormat rdf:resource.+\/members\/#{@member.id}.xml/m, @response.body
+         end
+         
          should "show committee memberships" do
-           assert_match /rdf:Description.+\/committees\/#{@committee.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
+           assert_match /rdf:Description.+\/id\/committees\/#{@committee.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
          end
          
          should "show council membership" do
-           assert_match /rdf:Description.+\/councils\/#{@council.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
+           assert_match /rdf:Description.+\/id\/councils\/#{@council.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
          end
 
        end
