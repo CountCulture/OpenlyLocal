@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   before_filter :share_this, :only => [:index, :show]
   before_filter :set_canonical_url, :only => [:show]
+  before_filter :redirect_from_resource, :only => :show
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
@@ -63,6 +64,10 @@ class ApplicationController < ActionController::Base
     @header_link = {:rel => "foaf:primaryTopic", :href => "#this"}
   end
   
+  def redirect_from_resource
+    redirect_to params.except(:redirect_from_resource), :status => 303 if params[:redirect_from_resource]
+  end
+  
   def set_canonical_url
     @canonical_url = true
   end
@@ -70,4 +75,5 @@ class ApplicationController < ActionController::Base
   def show_rss_link
     @show_rss_link = true
   end
+
 end

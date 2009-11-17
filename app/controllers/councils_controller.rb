@@ -57,4 +57,5 @@ class CouncilsController < ApplicationController
   rescue
     render :action => "edit"
   end
+  
 end

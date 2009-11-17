@@ -164,6 +164,19 @@ class CouncilsControllerTest < ActionController::TestCase
 
   # show test
   context "on GET to :show " do
+    should "route resource to show action" do
+      assert_routing "/councils/23", {:controller => "councils", :action => "show", :id => "23"} #default route
+      assert_routing "/id/councils/23", {:controller => "councils", :action => "show", :id => "23", :redirect_from_resource => true}
+    end
+    
+    context "when passed redirect_from_resource as parameter" do
+      setup do
+        get :show, :id => @council.id, :redirect_from_resource => true
+      end
+
+      should_respond_with 303
+      should_redirect_to("the council show page") {council_url(:id => @council.id)}
+    end
     
     context "with basic request" do
       setup do
@@ -304,6 +317,15 @@ class CouncilsControllerTest < ActionController::TestCase
     
     end
     
+
+    # <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+    # <rdf:type rdf:resource="http://purl.org/dc/dcmitype/Text"/>
+    # <foaf:primaryTopic rdf:resource="http://statistics.data.gov.uk/id/local-authority/41UD"/>
+    # <dct:title>Linked Data for Lichfield District Council</dct:title>
+    # <dct:hasFormat rdf:resource="http://statistics.data.gov.uk/doc/local-authority/41UD.rdf"/>
+    # <dct:hasFormat rdf:resource="http://statistics.data.gov.uk/doc/local-authority/41UD.html"/>
+    # <dct:hasFormat rdf:resource="http://statistics.data.gov.uk/doc/local-authority/41UD.json"/>
+
     context "with rdf request" do
       setup do
         @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk")
@@ -327,6 +349,17 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should "show type of council" do
         assert_match /rdf:type.+openlylocal:LondonBorough/m, @response.body
+      end
+      
+      should "show council as primary resource" do
+        
+      end
+      
+      should_eventually "show alternative representations" do
+        assert_match /dct:hasFormat rdf:resource.+\/councils\/#{@council.id}.rdf/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/councils\/#{@council.id}\"/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/councils\/#{@council.id}.json/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/councils\/#{@council.id}.xml/m, @response.body
       end
       
       should "show council is same as other resources" do
