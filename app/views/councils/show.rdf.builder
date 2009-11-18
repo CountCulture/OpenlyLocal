@@ -7,6 +7,7 @@ xml.tag! "rdf:RDF",
          "xmlns:xsd"   => "http://www.w3.org/2001/XMLSchema#", 
          "xmlns:vCard" => "http://www.w3.org/2001/vcard-rdf/3.0#",
          "xmlns:owl"   => "http://www.w3.org/2002/07/owl#",
+         "xmlns:geonames" => "http://www.geonames.org/ontology#",
          "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
            
@@ -26,6 +27,7 @@ xml.tag! "rdf:RDF",
         xml.tag! "vCard:Country", @council.country 
       end
     end
+    # xml.tag! "geonames:population", @council.population unless @council.population.blank?
     
     @wards.each do |ward|
       xml.tag! "openlylocal:Ward", "rdf:resource" => resource_uri_for(ward)
