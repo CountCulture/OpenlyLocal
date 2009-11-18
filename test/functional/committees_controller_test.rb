@@ -166,13 +166,10 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should "show members" do
          assert_match /foaf:member.+rdf:resource.+\/members\/#{@member.id}/, @response.body
-         # assert_match /rdf:Description.+\/members\/#{@member.id}/, @response.body
        end
        
        should "show meetings" do
          assert_match /openlylocal:meeting.+rdf:resource.+\/meetings\/#{@meeting.id}/, @response.body
-         # assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/members\/#{@member.id}/, @response.body
-         # assert_match /rdf:Description.+\/members\/#{@member.id}/, @response.body
        end
        
        should "show council relationship" do
