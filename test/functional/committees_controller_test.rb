@@ -49,22 +49,6 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "link[rel='primarytopic'][href*='/id/committees/#{@committee.id}']"
        end
 
-       should "show rdfa typeof" do
-         assert_select "div[typeof*='openlylocal:LocalAuthorityCommittee']"
-       end
-
-       should "use member name as foaf:name" do
-         assert_select "h1 span[property*='foaf:name']", @committee.title
-       end
-
-       should "show rdfa attributes for members" do
-         assert_select "#members li a[rel*='foaf:member']"
-       end
-       
-       should "show foaf attributes for meetings" do
-         assert_select "#meetings li[rel*='openlylocal:meeting']"
-       end
-       
        should "not show link to ward" do
          assert_select ".extra_info a", :text => /ward committee/i, :count => 0
        end

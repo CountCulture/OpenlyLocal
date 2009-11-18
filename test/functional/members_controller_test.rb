@@ -42,22 +42,6 @@ class MembersControllerTest < ActionController::TestCase
        should "show link to resource uri in head" do
          assert_select "link[rel*='primarytopic'][href*='/id/members/#{@member.id}']"
        end
-
-       should "show rdfa typeof" do
-         assert_select "div[typeof*='openlylocal:LocalAuthorityMember']"
-       end
-
-       should "use member name as foaf:name" do
-         assert_select "h1 span[property*='foaf:name']", @member.full_name
-       end
-
-       should "show rdfa attributes for committees" do
-         assert_select "#committees li a[rev*='foaf:member']"
-       end
-       
-       should "show foaf attributes for meetings" do
-         assert_select "#meetings li[rel*='openlylocal:meeting']"
-       end
        
        should "show canonical url" do
          assert_select "link[rel='canonical'][href='/members/#{@member.to_param}']"

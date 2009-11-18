@@ -228,22 +228,6 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "link[rel*='primarytopic'][href*='/id/councils/#{@council.id}']" # uri based on controller
       end
 
-      should "show rdfa local authority" do
-        assert_select "#data span[about='[openlylocal:LondonBoroughAuthority]']"
-      end
-      
-      should "use council name as foaf:name" do
-        assert_select "h1[property*='foaf:name']", @council.title
-      end
-      
-      should "show foaf attributes for members" do
-        assert_select "#members li a[rel*='foaf:member']"
-      end
-      
-      should "show rdfa attributes for committees" do
-        assert_select "#committees li a[rel*='openlylocal:committee']"
-      end
-      
       should "show links to services if there are 10 or more", :before => lambda { 11.times { Factory(:service, :council => @council) } } do
         assert_select "#council_services"
       end
