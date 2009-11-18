@@ -1,10 +1,15 @@
 class Document < ActiveRecord::Base
+  include ScrapedModel::Base
   validates_presence_of :body
   validates_presence_of :url
+  validates_presence_of :document_owner_id
+  validates_presence_of :document_owner_type
   validates_uniqueness_of :url, :scope => :document_type
   belongs_to :document_owner, :polymorphic => true
   before_validation :sanitize_body
   default_scope :order => "documents.updated_at DESC" # newest first. Specify fully for when used with joins
+  delegate :council, :to => :document_owner
+  alias_method :old_to_xml, :to_xml
   
   def document_type
     self[:document_type] || "Document"
@@ -23,8 +28,8 @@ class Document < ActiveRecord::Base
     self[:title] || "#{document_type} for #{document_owner.extended_title}"
   end
   
-  # Doesn't currently mixin ScrapedModel module (perhaps it should?), so add manually
-  def status
+  def to_xml(options={}, &block)
+    old_to_xml({:methods => [:title, :openlylocal_url, :status], :only => [:id, :url] }.merge(options), &block)
   end
   
   protected

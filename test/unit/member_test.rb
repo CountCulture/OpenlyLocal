@@ -107,6 +107,18 @@ class MemberTest < ActiveSupport::TestCase
 
     end
     
+    context "when returning foaf version of telephone number" do
+
+      should "return nil if telephone blank" do
+        assert_nil @member.foaf_telephone
+      end
+      
+      should "return formatted number" do
+        @member.telephone = "0162 384 298"
+        assert_equal "tel:+44-162-384-298", @member.foaf_telephone
+      end
+    end
+    
     should "allow access to wards via name" do
       ward = Factory(:ward)
       ward.members << @member

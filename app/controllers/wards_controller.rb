@@ -1,5 +1,6 @@
 class WardsController < ApplicationController
   before_filter :authenticate, :except => [:show]
+  before_filter :linked_data_available, :only => :show
   
   def show
     @ward = Ward.find(params[:id])
@@ -10,6 +11,7 @@ class WardsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml { render :xml => @ward.to_xml(:include => [:members, :committees, :meetings]) }
+      format.rdf 
       format.json { render :json => @ward.to_json(:include => [:members, :committees, :meetings]) }
     end
   end

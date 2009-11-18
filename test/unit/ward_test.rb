@@ -94,7 +94,7 @@ class WardTest < ActiveSupport::TestCase
         @member = Factory(:member, :council => @council)
         @old_member = Factory(:old_member, :council => @council)
         @another_council = Factory(:another_council)
-        @another_council_member = Factory(:member, :council => @another_council, :uid => 999)
+        @another_council_member = Factory(:member, :council => @another_council, :uid => "999")
         @ward.members << @old_member
       end
 

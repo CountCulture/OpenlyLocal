@@ -16,7 +16,7 @@ xml.Module do
     xml.Require :feature => "tabs"
     xml.Require :feature => "setprefs"
     xml.Require :feature => "opensocial-0.9"
-    xml.Preload :href    => "http://openlylocal.com/councils/__UP_council__.json"
+    # xml.Preload :href    => "http://openlylocal.com/councils/__UP_council__.json"
   end
   
   xml.UserPref :name => "council",  
@@ -33,7 +33,7 @@ xml.Module do
                :datatype => "hidden"
   
   xml.Content :type => "html" do
-    xml.cdata!  render( :partial => "tools/gadget_script.html.erb" )
+    xml.cdata!  render( :partial => "tools/gadget_test_script_#{params[:version]||1}.html.erb" )
     
   end
 

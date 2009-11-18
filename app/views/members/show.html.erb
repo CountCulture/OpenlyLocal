@@ -1,4 +1,4 @@
-<%- div_for @member, :resource => "#this", :typeof => "twfyl:LocalAuthorityMember" do -%>
+<%- div_for @member, :resource => "#this", :typeof => "openlylocal:LocalAuthorityMember" do -%>
   <h1><span property="foaf:name rdfs:label"><%= @member.full_name %></span> <em><%= council_page_for @member, :rel => "foaf:page" %></em></h1>
   <div id="data">
     <p class="attribute"><strong>Council</strong> <%= link_to h(@council.name), @council, :rev => "foaf:member" %></p>
@@ -20,7 +20,7 @@
   <div id="meetings" class="item_grouping">
     <h3>Forthcoming meetings</h3>
     <p><%= link_to_calendar %></p>
-    <%= list_all @forthcoming_meetings, :rel => "twfyl:meeting" %>
+    <%= list_all @forthcoming_meetings, :rel => "openlylocal:meeting" %>
   </div>
 
   <%= render :partial => '/shared/api_info' %>

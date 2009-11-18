@@ -1,23 +1,24 @@
 ActionController::Routing::Routes.draw do |map|
+
   map.resources :ons_datasets
-
-  map.resources :wards
-
-  map.resources :datasets
   map.resources :datasets, :member => { :data => :get }
-
-  map.resources 
 
   map.resources :scrapers
   map.resources :item_scrapers, :controller => "scrapers"
   map.resources :info_scrapers, :controller => "scrapers"
-  # map.resources :councils, :collection => { :all => :get }
   
   map.connect 'councils/all', :controller => "councils", :action => "index", :include_unparsed => true
   map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
-  map.resources :committees, :councils, :documents, :meetings, :members, :parsers, :portal_systems, :services
-
+  map.resources :committees, :documents, :meetings, :members, :parsers, :portal_systems, :services, :wards
+  map.resources :councils
+  map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}, :only => [:show]}) do |restype|
+    restype.resources :councils
+    restype.resources :members
+    restype.resources :committees
+    restype.resources :wards
+    restype.resources :meetings
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
 
@@ -47,7 +48,7 @@ ActionController::Routing::Routes.draw do |map|
   #     products.resources :comments
   #     products.resources :sales, :collection => { :recent => :get }
   #   end
-
+  
   # Sample resource route within a namespace:
   #   map.namespace :admin do |admin|
   #     # Directs /admin/products/* to Admin::ProductsController (app/controllers/admin/products_controller.rb)

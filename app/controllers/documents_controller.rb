@@ -8,7 +8,7 @@ class DocumentsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml { render :xml => @documents.to_xml }
-      format.json { render :json => @documents.to_json }
+      format.json { render :as_json => @documents.to_xml }
       format.rss { render :layout => false }
     end
   end
@@ -17,6 +17,12 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     @council = @document.document_owner.council
     @title = @document.extended_title
+    respond_to do |format|
+      format.html
+      format.xml { render :xml => @document.to_xml(:only => nil) }
+      format.json { render :as_json => @document.to_xml(:only => nil) }
+      # format.rss { render :layout => false }
+    end
   end
 
 end

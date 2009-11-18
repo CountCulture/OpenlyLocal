@@ -31,7 +31,7 @@ every 7.days do
 end
 
 every :sunday, :at => '3am' do
-  command "/opt/ruby-enterprise-1.8.6/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Service.refresh_urls' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8.6/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Service.refresh_all_urls' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
 end
 #
 # every 4.days do

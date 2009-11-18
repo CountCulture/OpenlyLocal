@@ -58,6 +58,10 @@ module ApplicationHelper
     end
   end
   
+  def resource_uri_for(obj)
+    url_for(:id => obj.id, :only_path => false, :action => "show", :controller => obj.class.table_name, :redirect_from_resource => true)
+  end
+  
   def timestamp_data_for(obj)
     content_tag(:p, "Last updated #{obj.updated_at.to_s(:short)} (#{time_ago_in_words(obj.updated_at)} ago)", :class => "attribution")
   end

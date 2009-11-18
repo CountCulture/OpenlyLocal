@@ -43,7 +43,7 @@ end
 
 Factory.define :member do |f|
   f.sequence(:full_name) { |n| "Bob Wilson#{n}" } 
-  f.sequence(:uid) { |n| 76 + n }
+  f.sequence(:uid) { |n| (76 + n).to_s }
   f.sequence(:url) { |n| "http://www.anytown.gov.uk/members/bob#{n}" }
   f.association :council
 end

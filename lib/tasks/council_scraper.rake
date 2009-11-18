@@ -167,3 +167,16 @@ task :import_council_officers => :environment do
   
 end
 
+desc "Enter missing Council LDG ids"
+task :enter_missing_ldg_ids => :environment do
+  
+  Council.all(nil, :conditions => "ldg_id IS NULL AND (country='England' OR country='Wales')").each do |council|
+    puts "\n====================\n#{council.name} (#{council.authority_type})\n"
+    puts "Please enter LDG id (type q to quit n to skip this council): "
+    response = $stdin.gets.chomp
+    next if response == "n"
+    break if response == "q"
+    council.update_attribute(:ldg_id, response)
+  end
+end
+

@@ -1,5 +1,5 @@
 class MembersController < ApplicationController
-  before_filter :add_rdfa_headers, :only => :show
+  before_filter :linked_data_available, :only => :show
   before_filter :authenticate, :except => [:show]
 
   def show
@@ -11,6 +11,7 @@ class MembersController < ApplicationController
     api_options = {:except => [:ward_id], :include => [:ward, :committees, :forthcoming_meetings]}
     respond_to do |format|
       format.html
+      format.rdf
       format.xml { render :xml => @member.to_xml(api_options)}
       format.json { render :json => @member.to_json(api_options) }
       format.ics do
