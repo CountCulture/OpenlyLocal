@@ -25,6 +25,10 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "title", /#{@ward.title}/
       end
       
+      should "show link to resource uri in head" do
+        assert_select "link[rel*='primaryTopic'][href*='/id/wards/#{@ward.id}']"
+      end
+
       should "show council in title" do
         assert_select "title", /#{@ward.council.title}/
       end
@@ -104,6 +108,13 @@ class WardsControllerTest < ActionController::TestCase
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
 
+      should "show alternative representations" do
+        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}.rdf/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}\"/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}.json/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}.xml/m, @response.body
+      end
+      
       should "show ward as primary resource" do
         assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/wards\/#{@ward.id}/m, @response.body
       end
@@ -115,13 +126,6 @@ class WardsControllerTest < ActionController::TestCase
 
       should "show ward is same as other resources" do
         assert_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority-ward\/#{@ward.snac_id}/, @response.body
-      end
-      
-      should "show alternative representations" do
-        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}.rdf/m, @response.body
-        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}\"/m, @response.body
-        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}.json/m, @response.body
-        assert_match /dct:hasFormat rdf:resource.+\/wards\/#{@ward.id}.xml/m, @response.body
       end
       
       should "show council relationship" do

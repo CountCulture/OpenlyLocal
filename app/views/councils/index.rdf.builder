@@ -10,7 +10,7 @@ xml.tag! "rdf:RDF",
          "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
   Council.all.each do |council|
-    xml.tag! "rdf:Description", "rdf:about" => council_url(:id => council.id) do
+    xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(council) do
       xml.tag! "rdfs:label", council.title
     end
   end

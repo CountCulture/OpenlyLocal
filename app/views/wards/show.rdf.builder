@@ -8,35 +8,42 @@ xml.tag! "rdf:RDF",
          "xmlns:owl"   => "http://www.w3.org/2002/07/owl#",
          "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
+           
+  # basic info about this resource         
   xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@ward) do
     xml.tag! "rdfs:label", @ward.name
-    xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@ward)
     xml.tag! "owl:sameAs", "rdf:resource" => "http://statistics.data.gov.uk/id/local-authority-ward/#{@ward.snac_id}" unless @ward.snac_id.blank?
   end
   
+  # establish relationship with council
   xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@council) do
     xml.tag! "openlylocal:Ward", "rdf:resource" => resource_uri_for( @ward)
   end
-  
-  %w(rdf json xml).each do |format|
-    xml.tag! "dct:hasFormat", "rdf:resource" => ward_url(:id => @ward.id, :format => format)
+
+  # basic info about this page
+  xml.tag! "rdf:Description", "rdf:about" => ward_url(:id => @ward.id) do
+    xml.tag! "rdf:type", "rdf:resource" => "http://purl.org/dc/dcmitype/Text"
+    xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"
+    xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@ward)
+    xml.tag! "dct:title", "Information about #{@ward.name} ward"
+    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @ward.created_at
+    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @ward.updated_at
+    # show alt representations for ward
+    ResourceRepresentations.keys.each do |format|
+      xml.tag! "dct:hasFormat", "rdf:resource" => ward_url(:id => @ward.id, :format => format)
+    end
   end
-  xml.tag! "dct:hasFormat", "rdf:resource" => ward_url(:id => @ward.id) # html version
+  
+  # show info for alt representations
+  ResourceRepresentations.each do |format, mime_type|
+    xml.tag! "rdf:Description", "rdf:about" => ward_url(:id => @ward.id, :format => format) do
+      xml.tag! "dct:isFormatOf", "rdf:resource" => ward_url(:id => @ward.id)
+      xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@ward)
+      xml.tag! "rdf:type", "rdf:resource" => "http://purl.org/dc/dcmitype/Text"
+      xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"
+      xml.tag! "dct:format", mime_type
+      xml.tag! "dct:title", "#{format == :rdf ? 'Linked ' : ''}Data in #{format.to_s.upcase} format for #{@ward.name}"
+    end
+  end
   
 end
-
-# xmlns:administrative-geography="http://statistics.data.gov.uk/def/administrative-geography/"
-
-# <rdf:Description rdf:about="<%= show_it_path(@company) %>">
-#   <rdfs:label>Description of the company <%= @company.name %></rdfs:label>
-#   <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"><%= @company.created_at %></dcterms:created>
-#   <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"><%= @company.updated_at %></dcterms:modified>
-#   <foaf:primaryTopic rdf:resource="<%= show_it_path(@company.company_number) %>"/>
-# </rdf:Description>
-#  
-# <foaf:Organization rdf:about="<%= show_it_path(@company.company_number) %>">
-#    <foaf:name><%= @company.name %></foaf:name>
-#    <foafcorp:company_number><%= @company.company_number %></foafcorp:company_number>
-#    <!-- TODO: extend address details when we receive companies house xml (stored in 1 single field atm) -->
-#    <vcard:Extadd><%= @company.address %></vcard:Extadd>
-# </foaf:Organization>

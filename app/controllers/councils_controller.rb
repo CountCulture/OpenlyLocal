@@ -1,6 +1,6 @@
 class CouncilsController < ApplicationController
   before_filter :authenticate, :except => [:index, :show]
-  before_filter :add_rdfa_headers, :only => :show
+  before_filter :linked_data_available, :only => :show
   caches_action :index, :show
   def index
     @councils = Council.find_by_params(params.except(:controller, :action, :format))

@@ -39,12 +39,8 @@ class MembersControllerTest < ActionController::TestCase
          assert_select "#meetings a.calendar[href*='#{@member.id}.ics']"
        end
        
-       should "show rdfa headers" do
-         assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
-       end
-
-       should "show rdfa stuff in head" do
-         assert_select "head link[rel*='foaf']"
+       should "show link to resource uri in head" do
+         assert_select "link[rel*='primaryTopic'][href*='/id/members/#{@member.id}']"
        end
 
        should "show rdfa typeof" do

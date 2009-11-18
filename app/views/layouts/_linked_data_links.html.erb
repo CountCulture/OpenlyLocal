@@ -1,0 +1,7 @@
+<%- if params[:id] -%>
+  <link rel="primaryTopic" href="http://openlylocal/id/<%= controller.controller_name %>/<%= params[:id] %>" />
+  <link rel="alternate" type="application/rdf+xml" href="http://openlylocal/<%= controller.controller_name %>/<%= params[:id] %>.rdf" title="RDF/XML version of this document"/>
+  <link rel="alternate" type="application/xml" href="http://openlylocal/<%= controller.controller_name %>/<%= params[:id] %>.xml" title="XML version of this document"/>
+  <link rel="alternate" type="text/html" href="http://openlylocal/<%= controller.controller_name %>/<%= params[:id] %>.html" title="HTML version of this document"/>
+  <link rel="alternate" type="application/json" href="http://openlylocal/<%= controller.controller_name %>/<%= params[:id] %>.json" title="JSON version of this document"/>
+<%- end -%>

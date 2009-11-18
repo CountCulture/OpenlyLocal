@@ -1,5 +1,5 @@
 class MembersController < ApplicationController
-  before_filter :add_rdfa_headers, :only => :show
+  before_filter :linked_data_available, :only => :show
   before_filter :authenticate, :except => [:show]
 
   def show

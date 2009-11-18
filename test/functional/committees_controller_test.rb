@@ -45,12 +45,8 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "div#documents li a", @document.extended_title
        end
        
-       should "show rdfa headers" do
-         assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
-       end
-
-       should "show rdfa stuff in head" do
-         assert_select "head link[rel*='foaf']"
+       should "show link to resource uri in head" do
+         assert_select "link[rel='primaryTopic'][href*='/id/committees/#{@committee.id}']"
        end
 
        should "show rdfa typeof" do

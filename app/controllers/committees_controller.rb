@@ -1,5 +1,5 @@
 class CommitteesController < ApplicationController
-  before_filter :add_rdfa_headers, :only => :show
+  before_filter :linked_data_available, :only => :show
   
   def index
     @council = Council.find(params[:council_id])

@@ -149,13 +149,13 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "list councils" do
-        assert_match /rdf:Description.+rdf:about.+\/councils\/#{@council.id}/m, @response.body
+        assert_match /rdf:Description.+rdf:about.+\/id\/councils\/#{@council.id}/m, @response.body
         assert_match /rdf:Description.+rdfs:label.+#{@council.title}/m, @response.body
       end
             
       should "include parsed and unparsed councils" do
-        assert_match /rdf:Description.+rdf:about.+\/councils\/#{@council.id}/m, @response.body
-        assert_match /rdf:Description.+rdf:about.+\/councils\/#{@another_council.id}/m, @response.body
+        assert_match /rdf:Description.+rdf:about.+\/id\/councils\/#{@council.id}/m, @response.body
+        assert_match /rdf:Description.+rdf:about.+\/id\/councils\/#{@another_council.id}/m, @response.body
       end
       
     end
@@ -224,14 +224,10 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "#documents li", @past_document.extended_title
       end
       
-      should "show rdfa headers" do
-        assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
+      should "show link to resource uri in head" do
+        assert_select "link[rel*='primaryTopic'][href*='/id/councils/#{@council.id}']" # uri based on controller
       end
 
-      should "show rdfa stuff in head" do
-        assert_select "head link[rel*='foaf']"
-      end
-      
       should "show rdfa local authority" do
         assert_select "#data span[about='[openlylocal:LondonBoroughAuthority]']"
       end

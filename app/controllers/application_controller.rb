@@ -59,9 +59,8 @@ class ApplicationController < ActionController::Base
     @share_this = true
   end
   
-  def add_rdfa_headers
-    @add_rdfa_headers = true
-    @header_link = {:rel => "foaf:primaryTopic", :href => "#this"}
+  def linked_data_available
+    @linked_data_available = true
   end
   
   def redirect_from_resource

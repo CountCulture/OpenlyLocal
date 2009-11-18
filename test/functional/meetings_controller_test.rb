@@ -35,22 +35,6 @@ class MeetingsControllerTest < ActionController::TestCase
         assert_select "title", /Forthcoming Committee Meetings/
       end
       
-      should "show rdfa headers" do
-        assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
-      end
-
-      should "show rdfa stuff in head" do
-        assert_select "head link[rel*='foaf']"
-      end
-
-      should "show rdfa attributes for council" do
-        assert_select "div#meetings[about*='councils/#{@council.id}']"
-      end
-      
-      should "show rdfa attributes for meetings" do
-        assert_select "#meetings li[rel='openlylocal:meeting']"
-      end
-
     end
         
     context "and include_past meetings requested" do
@@ -155,12 +139,8 @@ class MeetingsControllerTest < ActionController::TestCase
         assert_select "#minutes_extract", false
       end
       
-      should "show rdfa headers" do
-        assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
-      end
-
-      should "show rdfa stuff in head" do
-        assert_select "head link[rel*='foaf']"
+      should "show link to resource uri in head" do
+        assert_select "link[rel*='primaryTopic'][href*='/id/meetings/#{@meeting.id}']"
       end
 
       should "show rdfa typeof" do

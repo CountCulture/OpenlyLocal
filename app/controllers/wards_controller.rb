@@ -1,5 +1,6 @@
 class WardsController < ApplicationController
   before_filter :authenticate, :except => [:show]
+  before_filter :linked_data_available, :only => :show
   
   def show
     @ward = Ward.find(params[:id])

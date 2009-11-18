@@ -13,3 +13,8 @@ PARTIES = [
   
 DefaultDomain = "openlylocal.com"
 BlogFeedUrl = "http://countculture.wordpress.com/feed/"
+
+ResourceRepresentations = { :rdf => "application/rdf+xml", 
+                            :json  => "application/json",
+                            :xml  => "application/xml",
+                            :html => "text/html" }
