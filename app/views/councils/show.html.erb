@@ -20,7 +20,7 @@
         <%- end -%>
         <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external' %></li>
         <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external' %></li>
-        <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= @council.snac_id %> </li>
+        <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= link_to(@council.snac_id, "http://statistics.data.gov.uk/doc/local-authority/#{@council.snac_id}", :class => "external") unless @council.snac_id.blank? %> </li>
       </ul>
       <%- unless @council.services.count < 10  -%>
         <div id="council_services" class="item_grouping">
