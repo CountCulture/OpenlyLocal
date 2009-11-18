@@ -9,6 +9,7 @@ class Document < ActiveRecord::Base
   before_validation :sanitize_body
   delegate :council, :to => :document_owner
   alias_method :old_to_xml, :to_xml
+  default_scope :order => "documents.updated_at DESC" # newest first. Specify fully for when used with joins
   
   def document_type
     self[:document_type] || "Document"
