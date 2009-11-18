@@ -15,6 +15,7 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdfs:label", @council.title
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:#{@council.authority_type.gsub(/\s+/,'')}Authority"
     xml.tag! "owl:sameAs", "rdf:resource" => "http://statistics.data.gov.uk/id/local-authority/#{@council.snac_id}" unless @council.snac_id.blank?
+    xml.tag! "owl:sameAs", "rdf:resource" => "http://data.ordnancesurvey.co.uk/id/#{@council.os_id}" unless @council.os_id.blank?
     xml.tag! "owl:sameAs", "rdf:resource" => @council.dbpedia_url unless @council.dbpedia_url.blank?
     xml.tag! "foaf:address", @council.address unless @council.address.blank?
     xml.tag! "foaf:phone", @council.foaf_telephone unless @council.foaf_telephone.blank?

@@ -299,7 +299,7 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "with rdf request" do
       setup do
-        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk")
+        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk", :os_id => "7000123")
         get :show, :id => @council.id, :format => "rdf"
       end
      
@@ -340,6 +340,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show council is same as other resources" do
         assert_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
         assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_url)}/, @response.body
+        assert_match /owl:sameAs.+rdf:resource.+data.ordnancesurvey.co.uk\/id\/#{@council.os_id}/, @response.body
       end
       
       should "show details of council" do
@@ -389,6 +390,7 @@ class CouncilsControllerTest < ActionController::TestCase
         get :show, :id => @council.id, :format => "rdf"
         assert_no_match /owl:sameas.+rdf:resource.+statistics.data.gov.uk/, @response.body
         assert_no_match /owl:sameas.+rdf:resource.+dbpedia/, @response.body
+        assert_no_match /owl:sameAs.+rdf:resource.+data.ordnancesurvey.co.uk/, @response.body
       end
       
       should "not show missing details of council" do
