@@ -140,34 +140,9 @@ class MeetingsControllerTest < ActionController::TestCase
       end
       
       should "show link to resource uri in head" do
-        assert_select "link[rel*='primaryTopic'][href*='/id/meetings/#{@meeting.id}']"
+        assert_select "link[rel*='primarytopic'][href*='/id/meetings/#{@meeting.id}']"
       end
 
-      should "show rdfa typeof" do
-        assert_select "div[typeof*='vcal:Vevent']"
-      end
-
-      should "use committee name as cal:summary" do
-        assert_select "h1 span[property*='vcal:summary']", /#{@committee.title}/
-      end
-
-      should "show meeting start time in machine format" do
-        assert_select "span[property='vcal:dtstart'][content='#{@meeting.date_held.to_s(:vevent)}']"
-      end
-
-      should "show rdfa attributes for council" do
-        assert_select "span[about*='councils/#{@council.to_param}']"
-      end
-      
-      should "show foaf attributes for members" do
-        assert_select "div[about='/committees/#{@committee.to_param}']" do
-          assert_select "a[rel='foaf:member']", @member.title
-        end
-      end
-      
-      should "show rdfa attributes for other meetings" do
-        assert_select "#other_meetings li[rel='openlylocal:meeting']"
-      end
     end
     
     context "when meeting has minutes" do
@@ -194,7 +169,6 @@ class MeetingsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/xml'
-      
     end
     
     context "with json request" do
@@ -206,8 +180,53 @@ class MeetingsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/json'
-      
     end
     
+    context "with rdf requested" do
+      setup do
+        get :show, :id => @meeting.id, :format => "rdf"
+      end
+
+      should_assign_to(:meeting) { @meeting }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/rdf+xml'
+
+      should "show rdf headers" do
+        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:vcal/m, @response.body
+      end
+
+      should "show basic rdf info for meeting" do
+        assert_match /rdf:Description.+rdf:about.+\/id\/meetings\/#{@meeting.id}/, @response.body
+        assert_match /rdf:Description.+rdfs:label>#{@meeting.title}/m, @response.body
+        assert_match /rdf:type.+openlylocal:meeting/m, @response.body
+        assert_match /rdf:type.+vcal:Vevent/m, @response.body
+      end
+      
+      should "show detailed event info for meeting" do
+        assert_match /rdf:type.+vcal:summary.+#{@meeting.title}/m, @response.body
+        assert_match /rdf:type.+vcal:dtstart.+#{@meeting.date_held.to_s(:vevent)}/m, @response.body
+        assert_match /rdf:type.+vcal:location.+#{@meeting.venue}/m, @response.body
+        
+      end
+      
+      should "show meeting as primary resource" do
+        assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/meetings\/#{@meeting.id}/m, @response.body
+      end
+      
+       should "show alternative representations" do
+        assert_match /dct:hasFormat rdf:resource.+\/meetings\/#{@meeting.id}.rdf/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/meetings\/#{@meeting.id}\"/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/meetings\/#{@meeting.id}.json/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/meetings\/#{@meeting.id}.xml/m, @response.body
+      end
+      
+      should "show committee relationship" do
+        assert_match /rdf:Description.+\/committees\/#{@committee.id}.+openlylocal:meeting.+\/meetings\/#{@meeting.id}/m, @response.body
+      end
+    end
   end  
 end

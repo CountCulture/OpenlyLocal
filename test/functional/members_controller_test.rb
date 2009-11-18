@@ -40,7 +40,7 @@ class MembersControllerTest < ActionController::TestCase
        end
        
        should "show link to resource uri in head" do
-         assert_select "link[rel*='primaryTopic'][href*='/id/members/#{@member.id}']"
+         assert_select "link[rel*='primarytopic'][href*='/id/members/#{@member.id}']"
        end
 
        should "show rdfa typeof" do

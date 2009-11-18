@@ -12,7 +12,6 @@ xml.tag! "rdf:RDF",
   xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@committee) do
     xml.tag! "rdfs:label", @committee.title
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:LocalAuthorityCommittee"
-    # xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@committee)
     
     @committee.members.each do |member|
       xml.tag! "foaf:member", "rdf:resource" => resource_uri_for(member)

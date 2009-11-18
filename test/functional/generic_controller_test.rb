@@ -121,7 +121,7 @@ class GenericControllerTest < ActionController::TestCase
     end
     
     should "show link to resource uri in head" do
-      assert_select "link[rel*='primaryTopic'][href*='/id/generic/42']" # uri based on controller
+      assert_select "link[rel*='primarytopic'][href*='/id/generic/42']" # uri based on controller
     end
     
     should "not show alternative resource links in head when no id in params" do

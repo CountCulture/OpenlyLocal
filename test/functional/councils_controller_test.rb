@@ -225,7 +225,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "show link to resource uri in head" do
-        assert_select "link[rel*='primaryTopic'][href*='/id/councils/#{@council.id}']" # uri based on controller
+        assert_select "link[rel*='primarytopic'][href*='/id/councils/#{@council.id}']" # uri based on controller
       end
 
       should "show rdfa local authority" do

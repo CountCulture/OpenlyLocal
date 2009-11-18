@@ -13,7 +13,6 @@ xml.tag! "rdf:RDF",
   xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@member) do
     xml.tag! "rdfs:label", @member.title
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:LocalAuthorityMember"
-    # xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@member)
     xml.tag! "foaf:name", @member.full_name
     xml.tag! "foaf:page", @member.url
     xml.tag! "foaf:title", @member.name_title unless @member.name_title.blank?

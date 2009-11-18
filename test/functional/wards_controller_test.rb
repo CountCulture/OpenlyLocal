@@ -26,7 +26,7 @@ class WardsControllerTest < ActionController::TestCase
       end
       
       should "show link to resource uri in head" do
-        assert_select "link[rel*='primaryTopic'][href*='/id/wards/#{@ward.id}']"
+        assert_select "link[rel*='primarytopic'][href*='/id/wards/#{@ward.id}']"
       end
 
       should "show council in title" do

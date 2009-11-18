@@ -16,6 +16,7 @@ ActionController::Routing::Routes.draw do |map|
     restype.resources :members
     restype.resources :committees
     restype.resources :wards
+    restype.resources :meetings
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
