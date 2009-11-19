@@ -3,12 +3,12 @@
 # # [[main_name, preferred abbreviation, other, names], colour]
 
 PARTIES = [
-  [ [ "Conservative", "Con", "Conservatives", "Cons" ], "0281AA" ],
-  [ [ "Labour", "Lab"], "AA0000" ],
-  [ [ "Liberal Democrat", "LibDem", "Liberal Democrats", "Liberal democrats", "LDem", "Lib Dem", "Lib" ], "F3A63C" ],
-  [ [ "Plaid Cymru", "Plaid Cymru" ], "FDC00F"],
+  [ [ "Conservative", "Con", "Conservatives", "Cons", "CONSERVATIVE" ], "0281AA" ],
+  [ [ "Labour", "Lab", "LABOUR"], "AA0000" ],
+  [ [ "Liberal Democrat", "LibDem", "Liberal Democrats", "Liberal democrats", "LDem", "Lib Dem", "Lib", "LIBERAL DEMOCRATS" ], "F3A63C" ],
+  [ [ "Plaid Cymru", "PLAID CYMRU" ], "FDC00F"],
   [ [ "Scottish National", "SNP" ], "FAE93E"],
-  [ [ "Green", "Green", "Greens" ], "73A533" ]
+  [ [ "Green", "Green", "Greens", "GREEN" ], "73A533" ]
   ]
   
 DefaultDomain = "openlylocal.com"
