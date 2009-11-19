@@ -49,6 +49,7 @@ class Scraper < ActiveRecord::Base
   end
   
   def process(options={})
+    mark_as_unproblematic # clear problematic flag. It will be reset if there's a prob
     self.parsing_results = parser.process(_data(url), self).results
     update_with_results(parsing_results, options)
     update_last_scraped if options[:save_results]&&parser.errors.empty?
@@ -167,6 +168,11 @@ class Scraper < ActiveRecord::Base
   # marks as problematic without changing timestamps
   def mark_as_problematic
     self.class.update_all({ :problematic => true }, { :id => id })
+  end
+  
+  # marks as unproblematic without changing timestamps
+  def mark_as_unproblematic
+    self.class.update_all({ :problematic => false }, { :id => id })
   end
   
   def update_last_scraped

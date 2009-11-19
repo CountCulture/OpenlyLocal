@@ -198,6 +198,15 @@ class ScraperTest < ActiveSupport::TestCase
       assert @scraper.problematic?
     end
     
+    should "mark as unproblematic without changing updated_at timestamp" do
+      ItemScraper.record_timestamps = false # update timestamp without triggering callbacks
+      @scraper.update_attributes(:updated_at => 2.days.ago, :problematic => true) #... though thought from Rails 2.3 you could do this without turning off timestamps
+      ItemScraper.record_timestamps = true
+      @scraper.send(:mark_as_unproblematic)
+      assert_in_delta 2.days.ago, @scraper.reload.updated_at, 2 # check timestamp hasn't changed...
+      assert !@scraper.problematic?
+    end
+    
     context "when calculating results_summary" do
       setup do
         @basic_sor = stub(:status => "unchanged")
@@ -424,6 +433,12 @@ class ScraperTest < ActiveSupport::TestCase
         assert !@scraper.reload.problematic?
       end
       
+      should "clear set problematic flag if no problems" do
+        @scraper.update_attribute(:problematic, true)
+        @scraper.process
+        assert !@scraper.reload.problematic?
+      end
+      
       context "and problem parsing" do
         setup do
           @parser.update_attribute(:item_parser, "foo")
@@ -438,6 +453,13 @@ class ScraperTest < ActiveSupport::TestCase
           @scraper.process
           assert @scraper.reload.problematic?
         end
+        
+        should "not clear set problematic flag " do
+          @scraper.update_attribute(:problematic, true)
+          @scraper.process
+          assert @scraper.reload.problematic?
+        end
+
       end
       
       context "and problem getting data" do

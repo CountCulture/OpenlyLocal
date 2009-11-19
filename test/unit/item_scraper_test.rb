@@ -81,6 +81,13 @@ class ItemScraperTest < ActiveSupport::TestCase
           @scraper.process
           assert !@scraper.reload.problematic?
         end
+        
+        should "clear set problematic flag if no problems" do
+          @scraper.update_attribute(:problematic, true)
+          @scraper.process
+          assert !@scraper.reload.problematic?
+        end
+
       end
 
       context "and problem getting data" do
@@ -110,6 +117,13 @@ class ItemScraperTest < ActiveSupport::TestCase
           @scraper.process
           assert @scraper.reload.problematic?
         end
+        
+        should "not clear set problematic flag" do
+          @scraper.update_attribute(:problematic, true)
+          @scraper.process
+          assert @scraper.reload.problematic?
+        end
+
       end
 
       context "and non-ScraperError occurs" do
@@ -228,6 +242,12 @@ class ItemScraperTest < ActiveSupport::TestCase
             assert !@scraper.reload.problematic?
           end
           
+          should "clear set problematic flag if no problems" do
+            @scraper.update_attribute(:problematic, true)
+            @scraper.process
+            assert !@scraper.reload.problematic?
+          end
+
           context "and problem parsing" do
             setup do
               @parser.update_attribute(:item_parser, "foo")
@@ -242,6 +262,13 @@ class ItemScraperTest < ActiveSupport::TestCase
               @scraper.process
               assert @scraper.reload.problematic?
             end
+            
+            should "not clear set problematic flag" do
+              @scraper.update_attribute(:problematic, true)
+              @scraper.process
+              assert @scraper.reload.problematic?
+            end
+
           end
           
         end
@@ -269,6 +296,13 @@ class ItemScraperTest < ActiveSupport::TestCase
             @scraper.process
             assert @scraper.reload.problematic?
           end
+          
+          should "not clear set problematic flag" do
+            @scraper.update_attribute(:problematic, true)
+            @scraper.process
+            assert @scraper.reload.problematic?
+          end
+
         end
       end
             
