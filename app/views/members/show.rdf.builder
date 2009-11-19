@@ -6,7 +6,8 @@ xml.tag! "rdf:RDF",
          "xmlns:dct"   => "http://purl.org/dc/terms/", 
          "xmlns:xsd"   => "http://www.w3.org/2001/XMLSchema#",
          "xmlns:vCard" => "http://www.w3.org/2001/vcard-rdf/3.0#",
-         "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
+         "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/",
+         "xmlns:dbpedia-owl" => "http://dbpedia.org/ontology/",
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
            
   # basic info about this resource         
@@ -18,6 +19,7 @@ xml.tag! "rdf:RDF",
     xml.tag! "foaf:title", @member.name_title unless @member.name_title.blank?
     xml.tag! "foaf:phone", @member.foaf_telephone unless @member.foaf_telephone.blank?
     xml.tag! "foaf:mbox", "mailto:#{@member.email}" unless @member.email.blank?
+    xml.tag!("dbpedia-owl:party", "rdf:resource" => @member.party.dbpedia_uri) unless @member.party.dbpedia_uri.blank?
     unless @member.address.blank?
       xml.tag! "vCard:ADR", "rdf:parseType" => "Resource" do
         xml.tag! "vCard:Extadd", @member.address

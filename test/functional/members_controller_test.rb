@@ -105,7 +105,7 @@ class MembersControllerTest < ActionController::TestCase
      context "with rdf request" do
        context "for member with full personal details" do
          setup do
-           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof")
+           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof", :party => "Labour")
            get :show, :id => @member.id, :format => "rdf"
          end
 
@@ -136,6 +136,8 @@ class MembersControllerTest < ActionController::TestCase
            assert_match /rdf:Description.+foaf:title.+#{@member.name_title}/m, @response.body
            assert_match /rdf:Description.+foaf:phone.+#{Regexp.escape(@member.foaf_telephone)}/m, @response.body
            assert_match /rdf:Description.+foaf:mbox.+mailto:#{@member.email}/m, @response.body
+           assert_match /rdf:Description.+dbpedia-owl:party.+#{Regexp.escape(@member.party.dbpedia_uri)}/m, @response.body
+           
          end
          
          should "show address for member as vCard" do
@@ -175,15 +177,15 @@ class MembersControllerTest < ActionController::TestCase
            assert_no_match /rdf:Description.+foaf:title/m, @response.body
            assert_no_match /rdf:Description.+foaf:phone/m, @response.body
            assert_no_match /rdf:Description.+foaf:mbox/m, @response.body
+           assert_no_match /rdf:Description.+dbpedia\-owl:party/m, @response.body
          end
-         should "show not address for member" do
+         should "not show address for member" do
            assert_no_match /rdf:Description.+vCard:ADR/m, @response.body
          end
          
          should "show council membership" do
            assert_match /rdf:Description.+\/councils\/#{@council.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
          end
-
        end
      end
    end  

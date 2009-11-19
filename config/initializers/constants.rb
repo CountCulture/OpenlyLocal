@@ -1,14 +1,15 @@
 # List of parties we have info for
 # Each element in the array is an array of the form:
-# # [[main_name, preferred abbreviation, other, names], colour]
+# # [[main_name, preferred abbreviation, other, names], colour, wikipedia/dbpedia id]
 
 PARTIES = [
-  [ [ "Conservative", "Con", "Conservatives", "Cons", "CONSERVATIVE" ], "0281AA" ],
-  [ [ "Labour", "Lab", "LABOUR"], "AA0000" ],
-  [ [ "Liberal Democrat", "LibDem", "Liberal Democrats", "Liberal democrats", "LDem", "Lib Dem", "Lib", "LIBERAL DEMOCRATS" ], "F3A63C" ],
-  [ [ "Plaid Cymru", "PLAID CYMRU" ], "FDC00F"],
-  [ [ "Scottish National", "SNP" ], "FAE93E"],
-  [ [ "Green", "Green", "Greens", "GREEN" ], "73A533" ]
+  [ [ "Conservative", "Con", "Conservatives", "Cons", "CONSERVATIVE" ], "0281AA", "Conservative_Party_(UK)" ],
+  [ [ "Labour", "Lab", "LABOUR"], "AA0000", "Labour_Party_(UK)" ],
+  [ [ "Liberal Democrat", "LibDem", "Liberal Democrats", "Liberal democrats", "LDem", "Lib Dem", "Lib", "LIBERAL DEMOCRATS" ], "F3A63C", "Liberal_Democrats" ],
+  [ [ "Plaid Cymru", "PLAID CYMRU" ], "FDC00F", "Plaid_Cymru" ],
+  [ [ "Scottish National", "SNP" ], "FAE93E", "Scottish_National_Party" ],
+  [ [ "Green", "Green", "Greens", "GREEN" ], "73A533" ],
+  [ [ "British National Party", "BNP" ], nil, "British_National_Party" ]
   ]
   
 DefaultDomain = "openlylocal.com"
