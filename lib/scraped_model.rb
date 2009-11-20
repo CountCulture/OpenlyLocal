@@ -49,23 +49,18 @@ module ScrapedModel
         find_by_council_id_and_uid(params[:council_id], params[:uid])
       end
 
-      def build_or_update(params)
-        existing_record = find_existing(params)
-        existing_record.attributes = params if existing_record
-        existing_record || self.new(params)
+      def build_or_update(params_array, options={})
+        results = [params_array].flatten.collect do |params| #make into array if it isn't one
+          params = params.merge(:council_id => options[:council_id])
+          existing_record = find_existing(params)
+          existing_record.attributes = params if existing_record
+          result = existing_record || self.new(params)
+          options[:save_results] ? result.save_without_losing_dirty : result.valid? # we want to know what's changed and keep any errors, so run save_without_losing_dirty if we're saving, run validation to add errors to item otherwise
+          result
+        end
+        results
       end
-    
-      def create_or_update_and_save(params)
-        updated_record = self.build_or_update(params)
-        updated_record.save_without_losing_dirty
-        updated_record
-      end
-    
-      def create_or_update_and_save!(params)
-        updated_record = build_or_update(params)
-        updated_record.save_without_losing_dirty || raise(ActiveRecord::RecordNotSaved)
-        updated_record
-      end
+
     end
   
     module InstanceMethods

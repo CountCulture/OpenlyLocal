@@ -254,6 +254,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   
     should "not show summary of problems" do
+      puts css_select("div.errorExplanation")
       assert_select "div.errorExplanation", false
     end
   end

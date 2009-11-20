@@ -403,7 +403,7 @@ class ScraperTest < ActiveSupport::TestCase
       
       should "build new or update existing instance of result_class with parser results and scraper council" do
         dummy_new_member = Member.new
-        Member.expects(:build_or_update).with(:full_name => "Fred Flintstone", :council_id => @council.id, :url => "http://www.anytown.gov.uk/members/fred").returns(dummy_new_member)
+        Member.expects(:build_or_update).with([{:full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id }).returns([dummy_new_member])
         dummy_new_member.expects(:save).never
         @scraper.process
       end
@@ -415,7 +415,7 @@ class ScraperTest < ActiveSupport::TestCase
       
       should "store instances of scraped_object_result in results" do
         dummy_member = Member.new(:full_name => "Fred Flintstone")
-        Member.stubs(:build_or_update).returns(dummy_member)
+        Member.stubs(:build_or_update).returns([dummy_member])
         results = @scraper.process.results
         assert_kind_of ScrapedObjectResult, results.first
         assert_match /new/, results.first.status
@@ -442,7 +442,6 @@ class ScraperTest < ActiveSupport::TestCase
       context "and problem parsing" do
         setup do
           @parser.update_attribute(:item_parser, "foo")
-          # @parser.stubs(:errors => stub(:empty? => false))
         end
 
         should "not build or update instance of result_class if no results" do
@@ -495,22 +494,23 @@ class ScraperTest < ActiveSupport::TestCase
 
         should "create new or update and save existing instance of result_class with parser results and scraper council" do
           dummy_new_member = Member.new
-          Member.expects(:build_or_update).with(:full_name => "Fred Flintstone", :council_id => @council.id, :url => "http://www.anytown.gov.uk/members/fred").returns(dummy_new_member)
+          Member.expects(:build_or_update).with([{:full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id, :save_results => true}).returns([dummy_new_member])
           @scraper.process(:save_results => true)
         end
 
-        should "save record using save_without_losing_dirty" do
-          dummy_new_member = Member.new
-          Member.stubs(:build_or_update).returns(dummy_new_member)
-          dummy_new_member.expects(:save_without_losing_dirty)
-          
-          @scraper.process(:save_results => true)
-        end
+        # should "save record using save_without_losing_dirty" do
+        #   dummy_new_member = Member.new
+        #   Member.stubs(:build_or_update).returns(dummy_new_member)
+        #   dummy_new_member.expects(:save_without_losing_dirty)
+        #   
+        #   @scraper.process(:save_results => true)
+        # end
 
         should "store instances of result class in results" do
           dummy_member = Member.new(:full_name => "Fred Flintstone")
-          Member.stubs(:build_or_update).returns(dummy_member)
+          Member.stubs(:build_or_update).returns([dummy_member])
           results = @scraper.process(:save_results => true).results
+          p results
           
           assert_kind_of ScrapedObjectResult, results.first
           assert_match /new/, results.first.status

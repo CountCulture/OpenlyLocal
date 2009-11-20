@@ -7,6 +7,7 @@ class TestModel <ActiveRecord::Base
   has_many :test_child_models, :class_name => "TestChildModel", :foreign_key => "committee_id"
   has_many :test_join_models, :foreign_key => "committee_id"
   has_many :test_joined_models, :through => :test_join_models
+  validates_presence_of :uid
   allow_access_to :test_child_models, :via => [:url, :uid]
 end
 
@@ -41,7 +42,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
       TestModel.delete_all # doesn't seem to delete old records !?!
       @test_model = TestModel.create!(:uid => 33, :council_id => 99, :title => "Foo  Committee", :normalised_title => "foo")
       @another_test_model = TestModel.create!(:uid => 34, :council_id => 99, :title => "Bar Committee")
-      @params = {:uid => 2, :council_id => 2, :url => "http:/some.url"} # uid and council_id can be anything as we stub finding of existing member
+      @params = {:uid => 2, :url => "http:/some.url"} # uid and council_id can be anything as we stub finding of existing member
     end
 
     should "respond to association_extension_attributes" do
@@ -140,7 +141,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
  
     end
 
-   context "when finding existing member from params" do
+    context "when finding existing member from params" do
 
       should "should return member which has given uid and council" do
         assert_equal @test_model, TestModel.find_existing(:uid => @test_model.uid, :council_id => @test_model.council_id)
@@ -162,105 +163,200 @@ class ScrapedModelTest < ActiveSupport::TestCase
     end
     
     context "when building_or_updating from params" do
-      setup do
-      end
-      
       should "should use existing record if it exists" do
         TestModel.expects(:find_existing).returns(@test_model)
         
-        TestModel.build_or_update(@params)
+        TestModel.build_or_update([@params])
       end
       
       should "return existing record if it exists" do
         TestModel.stubs(:find_existing).returns(@test_model)
         
-        rekord = TestModel.build_or_update(@params)
+        rekord = TestModel.build_or_update([@params]).first
         assert_equal @test_model, rekord
       end
       
       should "update existing record" do
         TestModel.stubs(:find_existing).returns(@test_model)
-        rekord = TestModel.build_or_update(@params)
-        assert_equal 2, rekord.council_id
+        rekord = TestModel.build_or_update([@params], {:council_id => 99}).first
+        assert_equal 99, rekord.council_id
         assert_equal "http:/some.url", rekord.url
       end
       
       should "should build with attributes for new member when existing not found" do
         TestModel.stubs(:find_existing) # => returns nil
-        TestModel.expects(:new).with(@params)
+        TestModel.expects(:new).with(@params.merge(:council_id => nil)).returns(stub(:valid? => true))
         
-        TestModel.build_or_update(@params)
+        TestModel.build_or_update([@params])
       end
       
       should "should return new record when existing not found" do
         TestModel.stubs(:find_existing) # => returns nil
-        dummy_new_record = stub
+        dummy_new_record = stub(:valid? => true)
         TestModel.stubs(:new).returns(dummy_new_record)
         
-        assert_equal dummy_new_record, TestModel.build_or_update(@params)
+        assert_equal [dummy_new_record], TestModel.build_or_update([@params])
+      end
+      
+      should "use params and council_id to create new record" do
+        TestModel.stubs(:find_existing) # => returns nil
+        TestModel.expects(:new).with(@params.merge(:council_id => 99)).returns(stub(:valid? => true))
+        TestModel.build_or_update([@params], {:council_id => 99})
+      end
+      
+      should "validate new records by default" do
+        TestModel.stubs(:find_existing) # => returns nil
+        
+        assert_equal "can't be blank", TestModel.build_or_update([{:uid => ""}]).first.errors[:uid]
+      end
+      
+      should "validate existing records by default" do
+        TestModel.stubs(:find_existing).returns(@test_model)
+        
+        assert_equal "can't be blank", TestModel.build_or_update([{:uid => ""}]).first.errors[:uid]
+      end
+      
+      should "save existing records if requested" do
+        TestModel.stubs(:find_existing).returns(@test_model)
+        
+        TestModel.build_or_update([{:title => "new title"}], {:save_results => true})
+        assert_equal "new title", @test_model.reload.title
+      end
+      
+      should "save new records if requested" do
+        TestModel.stubs(:find_existing) # => returns nil
+        new_record = TestModel.build_or_update([@params], {:save_results => true}).first
+        assert !new_record.new_record?
+        assert new_record.new_record_before_save?
+        assert_equal "http:/some.url", new_record.url
+      end
+      
+      should "save new records using save_without_losing_dirty" do
+        TestModel.stubs(:find_existing).returns(@test_model)
+        @test_model.expects(:save_without_losing_dirty)
+        new_record = TestModel.build_or_update([@params], {:save_results => true})
+      end
+
+    end
+    
+    context "when building_or_updating from collection of params" do
+      setup do
+        @other_params = { :uid => 999, :url => "http://other.url", :title => "new title" } # uid and council_id can be anything as we stub finding of existing member
+      end
+      
+      should "should use existing record if it exists" do
+        
+        TestModel.expects(:find_existing).twice.returns(@test_model)
+        
+        TestModel.build_or_update([@params, @other_params])
+      end
+      
+      should "return existing records if they exists" do
+        TestModel.stubs(:find_existing).returns(@test_model).then.returns(@another_test_model)
+        
+        rekord = TestModel.build_or_update([@params, @other_params])
+        assert_equal [ @test_model, @another_test_model ], rekord
+      end
+      
+      should "update existing record" do
+        TestModel.stubs(:find_existing).returns(@test_model).then.returns(@another_test_model)
+        rekord = TestModel.build_or_update(@params).first
+        assert_equal "http:/some.url", rekord.url
+      end
+      
+      should "should build with attributes for new member when no existing found" do
+        TestModel.stubs(:find_existing) # => returns nil
+        TestModel.expects(:new).with(@params.merge(:council_id => nil)).returns(stub(:valid? => true))
+        TestModel.expects(:new).with(@other_params.merge(:council_id => nil)).returns(stub(:valid? => true))
+        
+        TestModel.build_or_update([@params, @other_params])
+      end
+      
+      should "should build with attributes for new member when some existing not found" do
+        TestModel.stubs(:find_existing).returns(nil).then.returns(@another_test_model)
+        TestModel.expects(:new).with(@params.merge(:council_id => nil)).returns(stub(:valid? => true))
+        TestModel.expects(:new).with(@other_params.merge(:council_id => nil)).never
+        
+        TestModel.build_or_update([@params, @other_params])
+      end
+      
+      should "should return new record when no existing found" do
+        TestModel.stubs(:find_existing) # => returns nil
+        dummy_new_record1, dummy_new_record2 = stub(:valid? => true), stub(:valid? => true)
+        TestModel.stubs(:new).returns(dummy_new_record1).then.returns(dummy_new_record2)
+        
+        assert_equal [dummy_new_record1, dummy_new_record2], TestModel.build_or_update([@params, @other_params])
+      end
+      
+      should "should return new record when some existing not found" do
+        TestModel.stubs(:find_existing).returns(nil).then.returns(@another_test_model)
+        dummy_new_record1, dummy_new_record2 = stub(:valid? => true), stub(:valid? => true)
+        TestModel.stubs(:new).returns(dummy_new_record1)
+        
+        assert_equal [dummy_new_record1, @another_test_model], TestModel.build_or_update([@params, @other_params])
       end
       
     end
     
-    context "when creating_or_update_and_saving from params" do
-
-      context "with existing record" do
-        setup do
-          @dummy_record = stub_everything
-        end
-        
-        should "build_or_update on class" do
-          TestModel.expects(:build_or_update).with(@params).returns(@dummy_record)
-          TestModel.create_or_update_and_save(@params)
-        end
-        
-        should "save_without_losing_dirty on record built or updated" do
-          TestModel.stubs(:build_or_update).returns(@dummy_record)
-          @dummy_record.expects(:save_without_losing_dirty)
-          TestModel.create_or_update_and_save(@params)
-        end
-        
-        should "return updated record" do
-          TestModel.stubs(:build_or_update).returns(@dummy_record)
-          assert_equal @dummy_record, TestModel.create_or_update_and_save(@params)
-        end
-        
-        should "not raise exception if saving fails" do
-          TestModel.stubs(:build_or_update).returns(@dummy_record)
-          @dummy_record.stubs(:save_without_losing_dirty)
-          assert_nothing_raised() { TestModel.create_or_update_and_save(@params) }
-        end
-      end
-    end
-
-    context "when creating_or_update_and_saving! from params" do
-      setup do
-        @dummy_record = stub_everything
-        @dummy_record.stubs(:save_without_losing_dirty).returns(true)
-      end
-            
-      should "build_or_update on class" do
-        TestModel.expects(:build_or_update).with(@params).returns(@dummy_record)
-        TestModel.create_or_update_and_save!(@params)
-      end
-      
-      should "save_without_losing_dirty on record built or updated" do
-        TestModel.stubs(:build_or_update).returns(@dummy_record)
-        @dummy_record.expects(:save_without_losing_dirty).returns(true)
-        TestModel.create_or_update_and_save!(@params)
-      end
-      
-      should "return updated record" do
-        TestModel.stubs(:build_or_update).returns(@dummy_record)
-        assert_equal @dummy_record, TestModel.create_or_update_and_save!(@params)
-      end
-      
-      should "raise exception if saving fails" do
-        TestModel.stubs(:build_or_update).returns(@dummy_record)
-        @dummy_record.stubs(:save_without_losing_dirty)
-        assert_raise(ActiveRecord::RecordNotSaved) {  TestModel.create_or_update_and_save!(@params) }
-      end
-    end
+    # context "when creating_or_update_and_saving from params" do
+    # 
+    #   context "with existing record" do
+    #     setup do
+    #       @dummy_record = stub_everything
+    #     end
+    #     
+    #     should "build_or_update on class" do
+    #       TestModel.expects(:build_or_update).with(@params).returns(@dummy_record)
+    #       TestModel.create_or_update_and_save(@params)
+    #     end
+    #     
+    #     should "save_without_losing_dirty on record built or updated" do
+    #       TestModel.stubs(:build_or_update).returns(@dummy_record)
+    #       @dummy_record.expects(:save_without_losing_dirty)
+    #       TestModel.create_or_update_and_save(@params)
+    #     end
+    #     
+    #     should "return updated record" do
+    #       TestModel.stubs(:build_or_update).returns(@dummy_record)
+    #       assert_equal @dummy_record, TestModel.create_or_update_and_save(@params)
+    #     end
+    #     
+    #     should "not raise exception if saving fails" do
+    #       TestModel.stubs(:build_or_update).returns(@dummy_record)
+    #       @dummy_record.stubs(:save_without_losing_dirty)
+    #       assert_nothing_raised() { TestModel.create_or_update_and_save(@params) }
+    #     end
+    #   end
+    # end
+    # 
+    # context "when creating_or_update_and_saving! from params" do
+    #   setup do
+    #     @dummy_record = stub_everything
+    #     @dummy_record.stubs(:save_without_losing_dirty).returns(true)
+    #   end
+    #         
+    #   should "build_or_update on class" do
+    #     TestModel.expects(:build_or_update).with(@params).returns(@dummy_record)
+    #     TestModel.create_or_update_and_save!(@params)
+    #   end
+    #   
+    #   should "save_without_losing_dirty on record built or updated" do
+    #     TestModel.stubs(:build_or_update).returns(@dummy_record)
+    #     @dummy_record.expects(:save_without_losing_dirty).returns(true)
+    #     TestModel.create_or_update_and_save!(@params)
+    #   end
+    #   
+    #   should "return updated record" do
+    #     TestModel.stubs(:build_or_update).returns(@dummy_record)
+    #     assert_equal @dummy_record, TestModel.create_or_update_and_save!(@params)
+    #   end
+    #   
+    #   should "raise exception if saving fails" do
+    #     TestModel.stubs(:build_or_update).returns(@dummy_record)
+    #     @dummy_record.stubs(:save_without_losing_dirty)
+    #     assert_raise(ActiveRecord::RecordNotSaved) {  TestModel.create_or_update_and_save!(@params) }
+    #   end
+    # end
 
   end
  
