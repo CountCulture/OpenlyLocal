@@ -180,3 +180,30 @@ task :enter_missing_ldg_ids => :environment do
   end
 end
 
+desc "Import OS Ids from SPARQL endpoint" 
+task :import_os_ids => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  
+  areas = { Ward => %w(UnitaryAuthorityWard DistrictWard LondonBoroughWard), Council => %w(Borough District County) }
+  base_url = "http://api.talis.com/stores/ordnance-survey/services/sparql?query="
+  path_template = "PREFIX+rdf%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+rdfs%3A++%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0D%0APREFIX+admingeo%3A+%3Chttp%3A%2F%2Fdata.ordnancesurvey.co.uk%2Fontology%2Fadmingeo%2F%3E%0D%0A%0D%0Aselect+%3Fa+%3Fname+%3Fcode%0D%0Awhere+%7B%3Fa+rdf%3Atype+admingeo%3A???+.%0D%0A+++++++%3Fa+rdfs%3Alabel+%3Fname+.%0D%0A+++++++%3Fa+admingeo%3AhasCensusCode+%3Fcode+.%7D"
+
+  areas.each do |area_type, area_subtypes|
+    area_subtypes.each do |area_subtype|
+      url = base_url + path_template.sub("???", area_subtype)
+      puts "===================\nAbout to get data from #{url}"
+      results = Hpricot.XML(open(url)).search('result')
+      puts "Retrieved #{results.size} results"
+      results.each do |result|
+        if ward = area_type.find_by_snac_id(result.search('literal').last.inner_text)
+          os_id = result.at('uri').inner_text.scan(/\d+$/).to_s
+          ward.update_attribute(:os_id, os_id)
+          puts "updated #{area_type.to_s.downcase} (#{ward.name}) with os_id: #{os_id}"
+        else
+          puts "Could not find #{area_type.to_s.downcase} for result: #{result.inner_html}"
+        end
+      end
+    end
+  end
+end

@@ -39,28 +39,8 @@ class MembersControllerTest < ActionController::TestCase
          assert_select "#meetings a.calendar[href*='#{@member.id}.ics']"
        end
        
-       should "show rdfa headers" do
-         assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
-       end
-
-       should "show rdfa stuff in head" do
-         assert_select "head link[rel*='foaf']"
-       end
-
-       should "show rdfa typeof" do
-         assert_select "div[typeof*='twfyl:LocalAuthorityMember']"
-       end
-
-       should "use member name as foaf:name" do
-         assert_select "h1 span[property*='foaf:name']", @member.full_name
-       end
-
-       should "show rdfa attributes for committees" do
-         assert_select "#committees li a[rev*='foaf:member']"
-       end
-       
-       should "show foaf attributes for meetings" do
-         assert_select "#meetings li[rel*='twfyl:meeting']"
+       should "show link to resource uri in head" do
+         assert_select "link[rel*='primarytopic'][href*='/id/members/#{@member.id}']"
        end
        
        should "show canonical url" do
@@ -120,6 +100,93 @@ class MembersControllerTest < ActionController::TestCase
        should_respond_with :success
        should_render_without_layout
        should_respond_with_content_type 'text/calendar'
+     end
+     
+     context "with rdf request" do
+       context "for member with full personal details" do
+         setup do
+           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof", :party => "Labour")
+           get :show, :id => @member.id, :format => "rdf"
+         end
+
+         should_assign_to(:member) { @member }
+         should_respond_with :success
+         should_render_without_layout
+         should_respond_with_content_type 'application/rdf+xml'
+
+         should "show rdf headers" do
+           assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+           assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+           assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+         end
+
+         should "show member as primary resource" do
+           assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/members\/#{@member.id}/m, @response.body
+         end
+
+         should "show rdf info for member" do
+           assert_match /rdf:Description.+rdf:about.+\/id\/members\/#{@member.id}/, @response.body
+           assert_match /rdf:Description.+rdfs:label>#{@member.title}/m, @response.body
+           assert_match /rdf:type.+openlylocal:LocalAuthorityMember/m, @response.body
+         end
+
+         should "show personal info for member with info" do
+           assert_match /rdf:Description.+foaf:name.+#{@member.full_name}/m, @response.body
+           assert_match /rdf:Description.+foaf:page.+#{@member.url}/m, @response.body
+           assert_match /rdf:Description.+foaf:title.+#{@member.name_title}/m, @response.body
+           assert_match /rdf:Description.+foaf:phone.+#{Regexp.escape(@member.foaf_telephone)}/m, @response.body
+           assert_match /rdf:Description.+foaf:mbox.+mailto:#{@member.email}/m, @response.body
+           assert_match /rdf:Description.+dbpedia-owl:party.+#{Regexp.escape(@member.party.dbpedia_uri)}/m, @response.body
+           
+         end
+         
+         should "show address for member as vCard" do
+           assert_match /rdf:Description.+vCard:ADR.+vCard:Extadd.+#{Regexp.escape(@member.address)}/m, @response.body
+         end
+         
+         should "show alternative representations" do
+           assert_match /dct:hasFormat rdf:resource.+\/members\/#{@member.id}.rdf/m, @response.body
+           assert_match /dct:hasFormat rdf:resource.+\/members\/#{@member.id}\"/m, @response.body
+           assert_match /dct:hasFormat rdf:resource.+\/members\/#{@member.id}.json/m, @response.body
+           assert_match /dct:hasFormat rdf:resource.+\/members\/#{@member.id}.xml/m, @response.body
+         end
+         
+         should "show committee memberships" do
+           assert_match /rdf:Description.+\/id\/committees\/#{@committee.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
+         end
+         
+         should "show council membership" do
+           assert_match /rdf:Description.+\/id\/councils\/#{@council.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
+         end
+
+       end
+
+       context "for member without full personal details" do
+         setup do
+           get :show, :id => @member.id, :format => "rdf"
+         end
+
+         should_assign_to(:member) { @member }
+         should_respond_with :success
+         should_render_without_layout
+         should_respond_with_content_type 'application/rdf+xml'
+
+         should "not show personal info for member without info" do
+           assert_match /rdf:Description.+foaf:name.+#{@member.full_name}/m, @response.body
+           assert_match /rdf:Description.+foaf:page.+#{@member.url}/m, @response.body
+           assert_no_match /rdf:Description.+foaf:title/m, @response.body
+           assert_no_match /rdf:Description.+foaf:phone/m, @response.body
+           assert_no_match /rdf:Description.+foaf:mbox/m, @response.body
+           assert_no_match /rdf:Description.+dbpedia\-owl:party/m, @response.body
+         end
+         should "not show address for member" do
+           assert_no_match /rdf:Description.+vCard:ADR/m, @response.body
+         end
+         
+         should "show council membership" do
+           assert_match /rdf:Description.+\/councils\/#{@council.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
+         end
+       end
      end
    end  
    

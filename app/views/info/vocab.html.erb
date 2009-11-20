@@ -23,9 +23,9 @@
       <div id="content">
     		<h1 property="rdfs:label">OpenlyLocal - Proposed RDF Vocabulary</h1>
 		
-    		<p>This document for testing purposes only <em>the namespace URL is therefore likely to change, very soon.</em>. It currently describes the 
+    		<p>This document is experimental <em>and therefore may change without warning</em>. It currently describes the 
     		namespace <code><%= rdfa_vocab_url %>#</code> with string
-    		<code>twfyl</code> recommended for use as prefix in 
+    		<code>openlylocal</code> recommended for use as prefix in 
     		<a href="http://en.wikipedia.org/wiki/CURIE">CURIE</a>s.</p>
 
 		
@@ -33,48 +33,54 @@
 	
     		<h2>Classes</h2>
     		<div typeof="rdfs:Class" id="LocalAuthorityMember" about="#LocalAuthorityMember">
-    			<h3><span property="rdfs:label">Local Government Member</span> (twfyl:LocalGovernmentMember)</h3>
+    			<h3><span property="rdfs:label">Local Government Member</span> (openlylocal:LocalAuthorityMember)</h3>
     			<p property="rdfs:comment">Represents the class of elected people in local government.</p>
-    			<p>Local Government members are <a href="http://xmlns.com/foaf/0.1/Person" rel="rdfs:subClassOf">people</a>.</p>
+    			<p>Local Authority members are <a href="http://xmlns.com/foaf/0.1/Person" rel="rdfs:subClassOf">people</a>.</p>
     		</div>
     		<div typeof="rdfs:Class" id="LocalAuthorityCommittee" about="#LocalAuthorityCommittee">
-    			<h3><span property="rdfs:label">Committee</span> (twfyl:LocalAuthorityCommittee)</h3>
+    			<h3><span property="rdfs:label">Committee</span> (openlylocal:LocalAuthorityCommittee)</h3>
     			<p property="rdfs:comment">Represents the class of groups known as committees, forming parts of local authorities.</p>
     			<p>Committees are <a href="http://xmlns.com/foaf/0.1/Group" rel="rdfs:subClassOf">groups</a> of people.</p>
     		</div>
     		<div typeof="rdfs:Class" id="LocalAuthority" about="#LocalAuthority">
-    			<h3><span property="rdfs:label">Local Authority</span> (twfyl:LocalAuthority)</h3>
+    			<h3><span property="rdfs:label">Local Authority</span> (openlylocal:LocalAuthority)</h3>
     			<p property="rdfs:comment">Represents the class of local authorities.</p>
-    			<p>Local authorities are <a href="http://xmlns.com/foaf/0.1/Organization" rel="rdfs:subClassOf">organisations</a> that run a small area.</p>
+    			<p>Local authorities are <a href="http://xmlns.com/foaf/0.1/Organization" rel="rdfs:subClassOf">organisations</a> that run a small area and is also represented in <a href="http://statistics.data.gov.uk/def/administrative-geography/LocalAuthority" rel="rdfs:seeAlso">ONS</a>.</p>
     		</div>
     		<div typeof="rdfs:Class" id="CountyAuthority" about="#CountyAuthority">
-    			<h3><span property="rdfs:label">County</span> (twfyl:CountyAuthority)</h3>
+    			<h3><span property="rdfs:label">County</span> (openlylocal:CountyAuthority)</h3>
     			<p property="rdfs:comment">Represents the class of Counties.</p>
     			<p>A County is a kind of <a href="#LocalAuthority" rel="rdfs:subClassOf">Local Authority</a></p>
     		</div>
     		<div typeof="rdfs:Class" id="DistrictAuthority" about="#DistrictAuthority">
-    			<h3><span property="rdfs:label">District</span> (twfyl:DistrictAuthority)</h3>
-    			<p property="rdfs:comment">Represents districts. TODO what is a district exactly?</p>
+    			<h3><span property="rdfs:label">District</span> (openlylocal:DistrictAuthority)</h3>
+    			<p property="rdfs:comment">Represents the class of District authorities</p>
     			<p>A District is a kind of <a href="#LocalAuthority" rel="rdfs:subClassOf">Local Authority</a></p>
     		</div>
     		<div typeof="rdfs:Class" id="LondonBoroughAuthority" about="#LondonBoroughAuthority">
-    			<h3><span property="rdfs:label">London Borough</span> (twfyl:LondonBoroughAuthority)</h3>
+    			<h3><span property="rdfs:label">London Borough</span> (openlylocal:LondonBoroughAuthority)</h3>
     			<p property="rdfs:comment">Represents the class of London Boroughs.</p>
     			<p>A London Borough is a kind of <a href="#LocalAuthority" rel="rdfs:subClassOf">Local Authority</a>
     			and is also represented in <a href="http://dbpedia.org/resource/London_borough" rel="rdfs:seeAlso">DBpedia</a>.</p>
     		</div>
     		<div typeof="rdfs:Class" id="UnitaryAuthority" about="#UnitaryAuthority">
-    			<h3><span property="rdfs:label">Unitary Authority</span> (twfyl:UnitaryAuthority)</h3>
+    			<h3><span property="rdfs:label">Unitary Authority</span> (openlylocal:UnitaryAuthority)</h3>
     			<p property="rdfs:comment">Represents the class of Unitary authorities.</p>
     			<p>A Unitary Authority is a kind of <a href="#LocalAuthority" rel="rdfs:subClassOf">Local Authority</a>
     			and is also represented in 
     			<a href="http://dbpedia.org/resource/Unitary_authority" rel="rdfs:seeAlso">DBpedia</a>.</p>
     		</div>
-		
+    		<div typeof="rdfs:Class" id="Ward" about="#Ward">
+    			<h3><span property="rdfs:label">Ward</span> (openlylocal:Ward)</h3>
+    			<p property="rdfs:comment">Represents the class of Wards.</p>
+    			<p>Wards are <a href="http://dbpedia.org/class/yago/SubdivisionsOfTheUnitedKingdom" rel="rdfs:subClassOf">subdivisions of the United Kingdom</a> 
+    			<a href="http://dbpedia.org/resource/Wards_of_the_United_Kingdom" rel="rdfs:seeAlso">DBpedia</a>.</p>
+    		</div>
+    		
 		
     		<h2>Properties</h2>
     		<div typeof="rdf:Property" id="full-address" about="#full-address">
-    			<h3><span property="rdfs:label">full address</span> (twfyl:full-address)</h3>
+    			<h3><span property="rdfs:label">full address</span> (openlylocal:full-address)</h3>
     			<p property="rdfs:comment">A string literal 
     				providing the address of the entity. This 
     				is intended as an unstructured alternative to 
@@ -84,7 +90,7 @@
     		</div>
 
     		<div typeof="rdf:Property" id="foi-data" about="#foi-data">
-    			<h3><span property="rdfs:label">FOI data</span> (twfyl:foi-data)</h3>
+    			<h3><span property="rdfs:label">FOI data</span> (openlylocal:foi-data)</h3>
     			<p property="rdfs:comment">Links the entity to a page containing 
     				information obtained under a Freedom of Information Act in a 
     				relevant jurisdiction.</p>
@@ -93,7 +99,7 @@
     		</div>
 		
     		<div typeof="rdf:Property" id="meeting" about="#meeting">
-    			<h3><span property="rdfs:label">meeting</span> (twfyl:meeting)</h3>
+    			<h3><span property="rdfs:label">meeting</span> (openlylocal:meeting)</h3>
     			<p property="rdfs:comment">Links an organisation to a meeting of the organisation or of any part 
     			of the organisation. A relationship of this kind signals the intent of the group members to
     			attend, but does not imply attendance.</p>
@@ -102,21 +108,21 @@
     		</div>
 
     		<div typeof="rdf:Property" id="committee" about="#committee">
-    			<h3><span property="rdfs:label">committee</span> (twfyl:committee)</h3>
+    			<h3><span property="rdfs:label">committee</span> (openlylocal:committee)</h3>
     			<p><span property="rdfs:comment">Links a local authority to a part of itself.</span>
     			<span>In particular an <a rel="rdfs:domain" href="http://xmlns.com/foaf/0.1/Organization">Organisation</a>
     			is linked to a <a rel="rdfs:range" href="http://xmlns.com/foaf/0.1/Group">Group</a>.</span></p>
     		</div>
 		
     		<div typeof="rdf:Property" id="notes" about="#notes">
-    			<h3><span property="rdfs:label">notes</span> (twfyl:notes)</h3>
+    			<h3><span property="rdfs:label">notes</span> (openlylocal:notes)</h3>
     			<p><span property="rdfs:comment">Links a thing to notes about the thing provided by They Work For You.</span>
     			<span>The notes can be any <a rel="rdfs:range" href="http://www.w3.org/2000/01/rdf-schema#Literal">literal</a> 
     			including text in any language, XML or XHTML.</span></p>
     		</div>
 		
     		<div typeof="rdf:Property" id="minutes" about="#minutes">
-    			<h3><span property="rdfs:label">minutes</span> (twfyl:minutes)</h3>
+    			<h3><span property="rdfs:label">minutes</span> (openlylocal:minutes)</h3>
     			<p property="rdfs:comment">Links an event to a document describing the decisions and discussion that 
     			occurred at the event, as well as information about the running of the event.</p>
     			<p>The minutes link connects an <a rel="rdfs:domain" href="http://www.w3.org/2002/12/cal#Vevent">Event</a> to a

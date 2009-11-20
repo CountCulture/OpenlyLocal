@@ -1,11 +1,11 @@
-<%- div_for @meeting, :resource => "#this", :typeof => "vcal:Vevent" do -%>
+<%- div_for @meeting do -%>
   <h4 class="owner">Meeting of the <%= basic_link_for @council %></h4>
-  <h1><span property="rdfs:label vcal:summary"  content="<%= @meeting.extended_title %>"><%= link_for @committee %></span>, <span datatype="xsd:dateTime" property="vcal:dtstart" content="<%= @meeting.date_held.to_s(:vevent) %>"><%= @meeting.date_held.to_s(:event_date).squish %></span> <em><%= council_page_for @meeting %></em></h1>
+  <h1><%= link_for @committee %>, <%= @meeting.date_held.to_s(:event_date).squish %> <em><%= council_page_for @meeting %></em></h1>
 
   <p class="extra_info">
-    <strong>Venue </strong><%= @meeting.venue.blank? ?  "Not known" : content_tag(:span, @meeting.venue, :property => "vcal:location") %> :: 
+    <strong>Venue </strong><%= @meeting.venue.blank? ?  "Not known" : @meeting.venue %> :: 
      <%= link_to "Committee details", @committee %> :: 
-     <span about="<%= council_path(@council) %>">Other <%= link_to "meetings", meetings_path(:council_id => @council.id), :rel => "rdfs:seeAlso" %>/<%= link_to "committees", committees_path(:council_id => @council.id), :rel => "rdfs:seeAlso" %> for <%= basic_link_for @council %></span>
+     Other <%= link_to "meetings", meetings_path(:council_id => @council.id) %>/<%= link_to "committees", committees_path(:council_id => @council.id) %> for <%= basic_link_for @council %>
   </p>
   <%- if @meeting.minutes -%>
     <div id="minutes_extract">
@@ -22,7 +22,7 @@
   </div>
   <div id="other_meetings" class="item_grouping">
     <h3>Other meetings of this committee</h3>
-    <%= list_all @other_meetings, :rel => "twfyl:meeting" %>
+    <%= list_all @other_meetings, :rel => "openlylocal:meeting" %>
   </div>
   <%= render :partial => '/shared/api_info' %>
   <%= timestamp_data_for @meeting %>

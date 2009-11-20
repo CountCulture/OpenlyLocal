@@ -1,10 +1,10 @@
-<%- div_for @member, :resource => "#this", :typeof => "twfyl:LocalAuthorityMember" do -%>
-  <h1><span property="foaf:name rdfs:label"><%= @member.full_name %></span> <em><%= council_page_for @member, :rel => "foaf:page" %></em></h1>
+<%- div_for @member do -%>
+  <h1><%= @member.full_name %> <em><%= council_page_for @member %></em></h1>
   <div id="data">
-    <p class="attribute"><strong>Council</strong> <%= link_to h(@council.name), @council, :rev => "foaf:member" %></p>
+    <p class="attribute"><strong>Council</strong> <%= link_to h(@council.name), @council %></p>
     <p class="attribute"><strong>Party </strong><%= @member.party %></p>
     <p class="attribute"><strong>Ward </strong><%= link_for(@member.ward) || 'not known' %></p>
-    <p class="attribute"><strong>Email </strong><%= @member.email ? mail_to(@member.email, @member.email, :encode => "javascript", :rel => "foaf:mbox") : 'not known' %></p>
+    <p class="attribute"><strong>Email </strong><%= @member.email ? mail_to(@member.email, @member.email, :encode => "javascript") : 'not known' %></p>
     <p class="attribute"><strong>Address </strong><%= @member.address || 'not known' %></p>
     <p class="attribute"><strong>Telephone </strong><%= @member.telephone || 'not known' %></p>
     <p class="attribute"><strong>Date elected </strong><%= @member.date_elected ? @member.date_elected.to_s(:custom_short) : 'not known' %></p>
@@ -13,14 +13,14 @@
 
   <div id="committees" class="item_grouping">
     <h3>Committee Memberships</h3>
-    <%= list_all @committees, :rev => "foaf:member" %>
+    <%= list_all @committees %>
     <%= content_tag(:p, "#{@committees.size} committees in total. Average for this council: " + ("%.1f" % @council.average_membership_count), :class => "notes") unless @committees.blank? %>
   </div>
 
   <div id="meetings" class="item_grouping">
     <h3>Forthcoming meetings</h3>
     <p><%= link_to_calendar %></p>
-    <%= list_all @forthcoming_meetings, :rel => "twfyl:meeting" %>
+    <%= list_all @forthcoming_meetings %>
   </div>
 
   <%= render :partial => '/shared/api_info' %>

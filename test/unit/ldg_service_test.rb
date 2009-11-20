@@ -25,30 +25,36 @@ class LdgServiceTest < ActiveSupport::TestCase
     
     context "when returning destination_url for council" do
       setup do
-        HTTPClient.any_instance.stubs(:get).returns(stub(:status => 404)) # just return 404 for everything by default
         @ldg_service.stubs(:url_for).with(@council).returns("http://foo.com")
       end
       
-      should "use built url" do
-        @ldg_service.expects(:url_for).with(@council).returns("http://foo.com")
-        @ldg_service.destination_url(@council)
-      end
-      
-      should "query built url" do
-        HTTPClient.any_instance.expects(:get).with("http://foo.com")
-        @ldg_service.destination_url(@council)
-      end
-      
-      should "query url returned by directgov server" do
-        HTTPClient.any_instance.expects(:get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
-        HTTPClient.any_instance.expects(:get).with("http://bar.com").returns(stub(:status => 404))
-        @ldg_service.destination_url(@council)
+      context "in general" do
+        setup do
+          LdgService.any_instance.stubs(:_http_get).returns(stub(:status => 404)) # just return 404 for everything by default
+          @ldg_service.stubs(:url_for).with(@council).returns("http://foo.com")
+        end
+
+        should "use built url" do
+          @ldg_service.expects(:url_for).with(@council).returns("http://foo.com")
+          @ldg_service.destination_url(@council)
+        end
+
+        should "query built url" do
+          LdgService.any_instance.expects(:_http_get).with("http://foo.com")
+          @ldg_service.destination_url(@council)
+        end
+
+        should "query url returned by directgov server" do
+          LdgService.any_instance.expects(:_http_get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
+          LdgService.any_instance.expects(:_http_get).with("http://bar.com").returns(stub(:status => 404))
+          @ldg_service.destination_url(@council)
+        end
       end
       
       context "and good response from destination url" do
         setup do
-          HTTPClient.any_instance.expects(:get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
-          HTTPClient.any_instance.expects(:get).with("http://bar.com").returns(stub(:status => 200, :content => "<html><head><title>FooBar Page</title><head><body>Foo Baz</body></html>"))
+          LdgService.any_instance.stubs(:_http_get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
+          LdgService.any_instance.stubs(:_http_get).with("http://bar.com").returns(stub(:status => 200, :content => "<html><head><title>FooBar Page</title><head><body>Foo Baz</body></html>"))
         end
         
         should "return hash" do
@@ -64,20 +70,60 @@ class LdgServiceTest < ActiveSupport::TestCase
         end
       end
       
+      context "and redirect from destination url" do
+        setup do
+          LdgService.any_instance.stubs(:_http_get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
+          LdgService.any_instance.stubs(:_http_get).with("http://bar.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com/foo"]}))
+          LdgService.any_instance.stubs(:_http_get).with("http://bar.com/foo").returns(stub(:status => 200, :content => "<html><head><title>FooBar Page</title><head><body>Foo Baz</body></html>"))
+        end
+        
+        should "follow redirect and return hash" do
+          assert_kind_of Hash, @ldg_service.destination_url(@council)
+        end
+        
+        should "follow redirect and return url in hash" do
+          assert_equal "http://bar.com/foo", @ldg_service.destination_url(@council)[:url]
+        end
+        
+        should "follow redirect and return title in hash" do
+          assert_equal "FooBar Page", @ldg_service.destination_url(@council)[:title]
+        end
+      end
+      
+      context "and redirect to relative url from destination url" do
+        setup do
+          LdgService.any_instance.stubs(:_http_get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
+          LdgService.any_instance.stubs(:_http_get).with("http://bar.com").returns(stub(:status => 302, :header => {'location' => ["./foo"]}))
+          LdgService.any_instance.stubs(:_http_get).with("http://bar.com/foo").returns(stub(:status => 200, :content => "<html><head><title>FooBar Page</title><head><body>Foo Baz</body></html>"))
+        end
+        
+        should "follow redirect and return hash" do
+          assert_kind_of Hash, @ldg_service.destination_url(@council)
+        end
+        
+        should "follow redirect and return url in hash" do
+          assert_equal "http://bar.com/foo", @ldg_service.destination_url(@council)[:url]
+        end
+        
+        should "follow redirect and return title in hash" do
+          assert_equal "FooBar Page", @ldg_service.destination_url(@council)[:title]
+        end
+      end
+      
       should "return nil if bad response from destination url" do
-        HTTPClient.any_instance.expects(:get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
-        HTTPClient.any_instance.expects(:get).with("http://bar.com").returns(stub(:status => 404))
+        LdgService.any_instance.stubs(:_http_get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
+        LdgService.any_instance.stubs(:_http_get).with("http://bar.com").returns(stub(:status => 404))
         assert_nil @ldg_service.destination_url(@council)
       end
       
       should "return if timeout when getting info from LocalDirectGov" do
-        HTTPClient.any_instance.expects(:get).with("http://foo.com").raises(HTTPClient::ConnectTimeoutError)
+        LdgService.any_instance.stubs(:_http_get).with("http://foo.com").raises(HTTPClient::ConnectTimeoutError)
         assert_nil @ldg_service.destination_url(@council)
       end
       
       should "return if timeout when getting info from council" do
-        HTTPClient.any_instance.expects(:get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
-        HTTPClient.any_instance.expects(:get).with("http://bar.com").raises(HTTPClient::ConnectTimeoutError)
+        LdgService.any_instance.stubs(:_http_get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
+        LdgService.any_instance.stubs(:_http_get).with("http://bar.com").raises(HTTPClient::ConnectTimeoutError)
         assert_nil @ldg_service.destination_url(@council)
       end
     end

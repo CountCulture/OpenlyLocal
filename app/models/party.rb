@@ -1,5 +1,5 @@
 class Party
-  attr_reader :name, :colour
+  attr_reader :name, :colour, :dbpedia_uri
   
   # aliases PARTIES constant to make for easier testing, and also should we change interface in future
   def self.raw_data
@@ -9,7 +9,8 @@ class Party
   def initialize(raw_name)
     if party_details = self.class.raw_data.detect{ |p| p.first.include?(raw_name) }
       @name = party_details.first.first # assign first element of names array which is the canonical one
-      @colour = party_details.last
+      @colour = party_details[1]
+      @dbpedia_uri = party_details[2] ? "http://dbpedia.org/resource/#{party_details[2]}" : nil
     else
       @name = raw_name.blank? ? nil : raw_name # set to nil if empty string
     end

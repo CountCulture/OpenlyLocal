@@ -1,6 +1,6 @@
 class CouncilsController < ApplicationController
   before_filter :authenticate, :except => [:index, :show]
-  before_filter :add_rdfa_headers, :only => :show
+  before_filter :linked_data_available, :only => :show
   caches_action :index, :show
   def index
     @councils = Council.find_by_params(params.except(:controller, :action, :format))
@@ -11,6 +11,7 @@ class CouncilsController < ApplicationController
       format.html
       format.xml { render :xml => @councils.to_xml(:include => nil) }
       format.json { render :json =>  @councils.to_json }
+      format.rdf
     end
   end
   
@@ -27,6 +28,7 @@ class CouncilsController < ApplicationController
       format.html
       format.xml { render :xml => @council.to_detailed_xml }
       format.json { render :as_json => @council.to_detailed_xml }
+      format.rdf
     end
   end
   
@@ -55,4 +57,5 @@ class CouncilsController < ApplicationController
   rescue
     render :action => "edit"
   end
+  
 end

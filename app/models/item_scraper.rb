@@ -5,6 +5,7 @@ class ItemScraper < Scraper
     if related_model.blank?
       super
     else
+      mark_as_unproblematic # clear problematic flag. It will be reset if there's a prob
       related_objects.each do |obj|
         raw_results = parser.process(_data(target_url_for(obj)), self).results
         logger.debug { "\n\n**************RESULTS from parsing #{target_url_for(obj)}:\n#{raw_results.inspect}" }

@@ -1,6 +1,7 @@
 class InfoScraper < Scraper
   
   def process(options={})
+    mark_as_unproblematic # clear problematic flag. It will be reset if there's a prob
     @related_objects = [options[:objects]].flatten if options[:objects]
     @objects_with_errors_count = 0
     related_objects.each do |obj|

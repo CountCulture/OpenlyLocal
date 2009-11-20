@@ -378,6 +378,14 @@ class ApplicationHelperTest < ActionView::TestCase
     end
   end
   
+  context "resource_uri_for helper method" do
+    
+    should "return url_for object with :redirect_from_resource flag set and only using id" do
+      # @obj = Factory(:committee )
+      # assert_equal "http://test.com/id/committees/#{@obj.id}", resource_uri_for(@obj)
+    end
+  end
+  
   private
   def stale_factory_object(name, options={})
     obj = Factory(name, options)

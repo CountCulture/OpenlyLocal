@@ -45,30 +45,10 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "div#documents li a", @document.extended_title
        end
        
-       should "show rdfa headers" do
-         assert_select "html[xmlns:foaf*='xmlns.com/foaf']"
+       should "show link to resource uri in head" do
+         assert_select "link[rel='primarytopic'][href*='/id/committees/#{@committee.id}']"
        end
 
-       should "show rdfa stuff in head" do
-         assert_select "head link[rel*='foaf']"
-       end
-
-       should "show rdfa typeof" do
-         assert_select "div[typeof*='twfyl:LocalAuthorityCommittee']"
-       end
-
-       should "use member name as foaf:name" do
-         assert_select "h1 span[property*='foaf:name']", @committee.title
-       end
-
-       should "show rdfa attributes for members" do
-         assert_select "#members li a[rel*='foaf:member']"
-       end
-       
-       should "show foaf attributes for meetings" do
-         assert_select "#meetings li[rel*='twfyl:meeting']"
-       end
-       
        should "not show link to ward" do
          assert_select ".extra_info a", :text => /ward committee/i, :count => 0
        end
@@ -138,6 +118,49 @@ class CommitteesControllerTest < ActionController::TestCase
        should_respond_with_content_type 'text/calendar'
      end
      
+     context "with rdf request" do
+       setup do
+         get :show, :id => @committee.id, :format => "rdf"
+       end
+
+       should_assign_to(:committee) { @committee }
+       should_respond_with :success
+       should_render_without_layout
+       should_respond_with_content_type 'application/rdf+xml'
+
+       should "show rdf headers" do
+         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+       end
+
+       should "show uri of committee resource" do
+         assert_match /rdf:Description.+rdf:about.+\/id\/committees\/#{@committee.id}/, @response.body
+       end
+
+       should "show committee as primary resource" do
+         assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/committees\/#{@committee.id}/m, @response.body
+       end
+
+       should "show rdf info for committee" do
+         assert_match /rdf:Description.+rdf:about.+\/committees\/#{@committee.id}/, @response.body
+         assert_match /rdf:Description.+rdfs:label>#{@committee.title}/m, @response.body
+         assert_match /rdf:type.+openlylocal:LocalAuthorityCommittee/m, @response.body
+       end
+
+       should "show members" do
+         assert_match /foaf:member.+rdf:resource.+\/members\/#{@member.id}/, @response.body
+       end
+       
+       should "show meetings" do
+         assert_match /openlylocal:meeting.+rdf:resource.+\/meetings\/#{@meeting.id}/, @response.body
+       end
+       
+       should "show council relationship" do
+         assert_match /rdf:Description.+\/councils\/#{@council.id}.+openlylocal:LocalAuthorityCommittee.+\/committees\/#{@committee.id}/m, @response.body
+       end
+
+     end
    end  
 
    # index test

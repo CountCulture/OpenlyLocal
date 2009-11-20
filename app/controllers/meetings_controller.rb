@@ -1,5 +1,5 @@
 class MeetingsController < ApplicationController
-  before_filter :add_rdfa_headers
+  before_filter :linked_data_available
   
   def index
     @council = Council.find(params[:council_id]) 
@@ -24,6 +24,7 @@ class MeetingsController < ApplicationController
     @title = "#{@meeting.title}, #{@meeting.date_held.to_s(:event_date).squish}"
     respond_to do |format|
       format.html
+      format.rdf
       format.xml { render :xml => @meeting.to_xml }
       format.json { render :json => @meeting.to_json }
     end
