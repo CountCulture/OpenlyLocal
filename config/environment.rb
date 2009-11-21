@@ -83,6 +83,11 @@ end
 require 'open-uri'
 # require 'twitter/console'
 
+# set default host for Action mailer so can have urls in emails
+class ActionMailer::Base
+  default_url_options[:host] = "openlylocal.com"
+end
+
 # Add custom date/time formats
 Time::DATE_FORMATS[:event_date] = "%b %e %Y, %l.%M%p" # add custom time format so we get some unity
 Date::DATE_FORMATS[:event_date] = "%b %e %Y" # add custom date format too
