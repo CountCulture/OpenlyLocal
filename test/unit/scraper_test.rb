@@ -510,7 +510,6 @@ class ScraperTest < ActiveSupport::TestCase
           dummy_member = Member.new(:full_name => "Fred Flintstone")
           Member.stubs(:build_or_update).returns([dummy_member])
           results = @scraper.process(:save_results => true).results
-          p results
           
           assert_kind_of ScrapedObjectResult, results.first
           assert_match /new/, results.first.status

@@ -43,22 +43,60 @@ module ScrapedModel
       end
 
 
-     # default find_existing. Overwrite in models that include this mixin if necessary
+
+      # default find_all_existing. By default finds for instances of model associated 
+      # with council as specified in params[:council_id]. Overwrite in models that need 
+      # more specific behaviour, e.g. Meeting model should return only meetings 
+      # associated with given council and committe
+      def find_all_existing(params)
+        raise ArgumentError, ":council_id is missing from submitted params" if params[:council_id].blank? 
+        find_all_by_council_id(params[:council_id])
+      end
+
+      # default find_existing. Overwrite in models that include this mixin if necessary
       def find_existing(params)
         return if params[:uid].blank? || params[:council_id].blank?
         find_by_council_id_and_uid(params[:council_id], params[:uid])
       end
 
       def build_or_update(params_array, options={})
+        # exist_records = find_all_existing
+        # updated_records, new_records = [], [], []
+        # [params_array].flatten.collect do |params|
+          # if result = exist_records.detect{ |r| r.matches_params(params)}
+            # result.attributes = params
+            # exist_records -= result
+            # updated_records << result
+          # else
+            # result = record_not_found_behaviour(params)
+            # new_records << result
+          # end
+          # orphan_record_callback(exist_records)
+          # options[:save_results] ? result.save_without_losing_dirty : result.valid?
+          # 
+        # end
+        exist_records = find_all_existing(params_array.first.merge(:council_id => options[:council_id])) # want council_id and other params (e.g. committee_id) that *might* be necessary to find all existing records
         results = [params_array].flatten.collect do |params| #make into array if it isn't one
-          params = params.merge(:council_id => options[:council_id])
-          existing_record = find_existing(params)
-          existing_record.attributes = params if existing_record
-          result = existing_record || self.new(params)
+          if result = exist_records.detect{ |r| r.matches_params(params) }
+            result.attributes = params
+          end
+          result ||= record_not_found_behaviour(params.merge(:council_id => options[:council_id]))
           options[:save_results] ? result.save_without_losing_dirty : result.valid? # we want to know what's changed and keep any errors, so run save_without_losing_dirty if we're saving, run validation to add errors to item otherwise
           result
         end
         results
+      end
+      
+      # stub method. Is called in build_or_update with those records that
+      # are in db but that weren't returned by scraper/parser (for example old 
+      # commitees/meetings/councillors). By default does nothing. However may 
+      # be overridden in model class, e.g. to mark events as defunct in some way
+      def orphan_records_callback(recs=nil)
+      end
+      
+      # default record_not_found_behaviour. Overwrite in models that include this mixin if necessary
+      def record_not_found_behaviour(params)
+        self.new(params)
       end
 
     end
@@ -71,7 +109,14 @@ module ScrapedModel
         changed_attributes.update(ch_attributes) # so merge them back in
         success # return result of saving
       end
-    
+      
+      # override this in individual classes to define whether params from scraper parser are the same
+      # record as current one. By default this is if the uid is the same (we should only be matching 
+      # against records from the correct council so don't need to check council_id)
+      def matches_params(params={})
+        params[:uid] == self[:uid] 
+      end
+      
       def new_record_before_save?
         instance_variable_get(:@new_record_before_save)
       end

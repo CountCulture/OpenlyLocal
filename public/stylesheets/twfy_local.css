@@ -261,6 +261,10 @@ div.new {
 	background:#E6EFC2;
 	border-color:#C6D880;
 	}
+.errors {
+	background:#FBE3E4;
+	border-color:#8a1f11;
+	}
 div.unchanged {
 	margin-bottom: .5em; }
 .unchanged, .unchanged a {
@@ -277,7 +281,7 @@ span.new {
 	background-color:#264409; }	
 span.changed {
 	background-color:#514721; }	
-span.error {
+span.error, span.errors {
 	background-color:#8a1f11; }	
 /*Scraper-specific formatting*/
 a.new_scraper_link {

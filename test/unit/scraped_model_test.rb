@@ -162,18 +162,69 @@ class ScrapedModelTest < ActiveSupport::TestCase
       end
     end
     
-    context "when building_or_updating from params" do
-      should "should use existing record if it exists" do
-        TestModel.expects(:find_existing).returns(@test_model)
-        
-        TestModel.build_or_update([@params])
+    context "when finding all existing records from params by default" do
+      should "find all restricted to council given in params" do
+        TestModel.expects(:find_all_by_council_id).with(123)
+        TestModel.find_all_existing(:council_id => 123)
       end
       
-      should "return existing record if it exists" do
-        TestModel.stubs(:find_existing).returns(@test_model)
+      should "raise exception if no council_id in params" do
+        assert_raise(ArgumentError) { TestModel.find_all_existing({}) }
+      end
+    end
+    
+    context "record_not_found_behaviour" do
+      should "by default create new instance from params" do
+        assert_equal TestModel.new(:title => "bar").attributes, TestModel.record_not_found_behaviour(:title => "bar").attributes
+      end
+    end
+    
+    should "should have orphan_record_callback method" do
+      assert TestModel.respond_to?(:orphan_records_callback)
+    end
+    
+    context "when building_or_updating from params" do
+      setup do
+        TestModel.stubs(:find_all_existing).returns([@test_model, @another_test_model])
+      end
+      
+      # should "should use existing record if it exists" do
+      #   TestModel.expects(:find_existing).returns(@test_model)
+      #   
+      #   TestModel.build_or_update([@params], :council_id=>99)
+      # end
+      
+      should "find all existing records using given council_id and first params in array" do
+        TestModel.expects(:find_all_existing).with(@params.merge(:council_id => 42)).returns([])
+        TestModel.build_or_update([@params], :council_id => 42)
+      end
+      
+      should "match params against existing records" do
+        # TestModel.stubs(:find_all_existing).returns([@test_model, @another_test_model])
+        @test_model.expects(:matches_params).with(@params) # @params[:uid] == 2
+        @another_test_model.expects(:matches_params).with(@params) #first existing one didn't match so tries next one
+        TestModel.build_or_update([@params], :council_id => 42)
+      end
+      
+      should "use matched record to be updated" do
+        # TestModel.stubs(:find_all_existing).returns([@test_model, @another_test_model])
+        @test_model.expects(:matches_params).returns(true)
+        @another_test_model.expects(:matches_params).never # @test_model is matched so never tests @another_test_model
+        TestModel.build_or_update([@params], :council_id => 42)
+      end
+      
+      should "update matched record" do
+        # TestModel.stubs(:find_all_existing).returns([@test_model, @another_test_model])
+        @test_model.expects(:matches_params).returns(true)
+        TestModel.build_or_update([@params], :council_id => 42)
+        assert_equal "http:/some.url", @test_model.url
+      end
+      
+      should "return matched record" do
+        # TestModel.stubs(:find_existing).returns(@test_model)
+        @test_model.expects(:matches_params).returns(true)
         
-        rekord = TestModel.build_or_update([@params]).first
-        assert_equal @test_model, rekord
+        assert_equal [@test_model], TestModel.build_or_update([@params], :council_id => 42)
       end
       
       should "update existing record" do
@@ -183,23 +234,26 @@ class ScrapedModelTest < ActiveSupport::TestCase
         assert_equal "http:/some.url", rekord.url
       end
       
-      should "should build with attributes for new member when existing not found" do
-        TestModel.stubs(:find_existing) # => returns nil
-        TestModel.expects(:new).with(@params.merge(:council_id => nil)).returns(stub(:valid? => true))
+      should "build with attributes for new member when existing not found" do
+        TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
+        # TestModel.stubs(:find_existing) # => returns nil
+        TestModel.expects(:new).with(@params.merge(:council_id => 99)).returns(stub(:valid? => true))
         
-        TestModel.build_or_update([@params])
+        TestModel.build_or_update([@params], :council_id=>99)
       end
       
-      should "should return new record when existing not found" do
-        TestModel.stubs(:find_existing) # => returns nil
+      should "return new record when existing not found" do
+        TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
+        # TestModel.stubs(:find_existing) # => returns nil
         dummy_new_record = stub(:valid? => true)
         TestModel.stubs(:new).returns(dummy_new_record)
         
-        assert_equal [dummy_new_record], TestModel.build_or_update([@params])
+        assert_equal [dummy_new_record], TestModel.build_or_update([@params], :council_id=>99)
       end
       
       should "use params and council_id to create new record" do
-        TestModel.stubs(:find_existing) # => returns nil
+        TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
+        # TestModel.stubs(:find_existing) # => returns nil
         TestModel.expects(:new).with(@params.merge(:council_id => 99)).returns(stub(:valid? => true))
         TestModel.build_or_update([@params], {:council_id => 99})
       end
@@ -207,93 +261,112 @@ class ScrapedModelTest < ActiveSupport::TestCase
       should "validate new records by default" do
         TestModel.stubs(:find_existing) # => returns nil
         
-        assert_equal "can't be blank", TestModel.build_or_update([{:uid => ""}]).first.errors[:uid]
+        assert_equal "can't be blank", TestModel.build_or_update([{:uid => ""}], :council_id=>99).first.errors[:uid]
       end
       
       should "validate existing records by default" do
         TestModel.stubs(:find_existing).returns(@test_model)
         
-        assert_equal "can't be blank", TestModel.build_or_update([{:uid => ""}]).first.errors[:uid]
+        assert_equal "can't be blank", TestModel.build_or_update([{:uid => ""}], :council_id=>99).first.errors[:uid]
       end
       
       should "save existing records if requested" do
-        TestModel.stubs(:find_existing).returns(@test_model)
+        @test_model.expects(:matches_params).returns(true)
         
-        TestModel.build_or_update([{:title => "new title"}], {:save_results => true})
+        TestModel.build_or_update([{:title => "new title"}], {:save_results => true, :council_id=>99})
         assert_equal "new title", @test_model.reload.title
       end
       
       should "save new records if requested" do
-        TestModel.stubs(:find_existing) # => returns nil
-        new_record = TestModel.build_or_update([@params], {:save_results => true}).first
+        TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
+        new_record = TestModel.build_or_update([@params], {:save_results => true, :council_id=>99}).first
         assert !new_record.new_record?
         assert new_record.new_record_before_save?
         assert_equal "http:/some.url", new_record.url
       end
       
       should "save new records using save_without_losing_dirty" do
-        TestModel.stubs(:find_existing).returns(@test_model)
-        @test_model.expects(:save_without_losing_dirty)
-        new_record = TestModel.build_or_update([@params], {:save_results => true})
+        TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
+        TestModel.any_instance.expects(:save_without_losing_dirty)
+        new_record = TestModel.build_or_update([@params], {:save_results => true, :council_id=>99})
       end
 
     end
     
-    context "when building_or_updating from collection of params" do
+    context "when building_or_updating from several params" do
       setup do
+        TestModel.stubs(:find_all_existing).returns([@test_model, @another_test_model])
         @other_params = { :uid => 999, :url => "http://other.url", :title => "new title" } # uid and council_id can be anything as we stub finding of existing member
       end
       
-      should "should use existing record if it exists" do
-        
-        TestModel.expects(:find_existing).twice.returns(@test_model)
-        
-        TestModel.build_or_update([@params, @other_params])
+      should "should use existing records" do
+        TestModel.expects(:find_all_existing).returns([@test_model, @another_test_model])
+              
+        TestModel.build_or_update([@params, @other_params], :council_id=>99)
       end
       
-      should "return existing records if they exists" do
-        TestModel.stubs(:find_existing).returns(@test_model).then.returns(@another_test_model)
+      should "return existing records that match params" do
+        @test_model.expects(:matches_params)
+        @another_test_model.expects(:matches_params).returns(true)
         
-        rekord = TestModel.build_or_update([@params, @other_params])
-        assert_equal [ @test_model, @another_test_model ], rekord
+        rekords = TestModel.build_or_update([@params, @other_params], :council_id=>99)
+        assert_equal [ @another_test_model ], rekords
       end
       
-      should "update existing record" do
-        TestModel.stubs(:find_existing).returns(@test_model).then.returns(@another_test_model)
-        rekord = TestModel.build_or_update(@params).first
-        assert_equal "http:/some.url", rekord.url
+      should "update existing records" do
+        @test_model.expects(:matches_params).returns(true)  
+        @another_test_model.expects(:matches_params).returns(true)  
+        rekords = TestModel.build_or_update([@params, @other_params], :council_id=>99).first
+        assert_equal "http:/some.url", rekords.first.url
+        assert_equal "http://other.url", rekords.last.url
       end
       
       should "should build with attributes for new member when no existing found" do
-        TestModel.stubs(:find_existing) # => returns nil
-        TestModel.expects(:new).with(@params.merge(:council_id => nil)).returns(stub(:valid? => true))
-        TestModel.expects(:new).with(@other_params.merge(:council_id => nil)).returns(stub(:valid? => true))
+        TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
+        TestModel.expects(:new).with(@params.merge(:council_id => 99)).returns(stub(:valid? => true))
+        TestModel.expects(:new).with(@other_params.merge(:council_id => 99)).returns(stub(:valid? => true))
         
-        TestModel.build_or_update([@params, @other_params])
+        TestModel.build_or_update([@params, @other_params], :council_id=>99)
       end
       
       should "should build with attributes for new member when some existing not found" do
-        TestModel.stubs(:find_existing).returns(nil).then.returns(@another_test_model)
-        TestModel.expects(:new).with(@params.merge(:council_id => nil)).returns(stub(:valid? => true))
-        TestModel.expects(:new).with(@other_params.merge(:council_id => nil)).never
+        @test_model.expects(:matches_params).twice.returns(true).then.returns(false)
+        @another_test_model.expects(:matches_params) # => false
+        TestModel.expects(:new).with(@params.merge(:council_id => 99)).never
+        TestModel.expects(:new).with(@other_params.merge(:council_id => 99)).returns(stub(:valid? => true))
         
-        TestModel.build_or_update([@params, @other_params])
+        TestModel.build_or_update([@params, @other_params], :council_id=>99)
       end
       
       should "should return new record when no existing found" do
-        TestModel.stubs(:find_existing) # => returns nil
         dummy_new_record1, dummy_new_record2 = stub(:valid? => true), stub(:valid? => true)
         TestModel.stubs(:new).returns(dummy_new_record1).then.returns(dummy_new_record2)
         
-        assert_equal [dummy_new_record1, dummy_new_record2], TestModel.build_or_update([@params, @other_params])
+        assert_equal [dummy_new_record1, dummy_new_record2], TestModel.build_or_update([@params, @other_params], :council_id=>99)
       end
       
       should "should return new record when some existing not found" do
-        TestModel.stubs(:find_existing).returns(nil).then.returns(@another_test_model)
+        @test_model.expects(:matches_params).twice.returns(false).then.returns(true)
         dummy_new_record1, dummy_new_record2 = stub(:valid? => true), stub(:valid? => true)
         TestModel.stubs(:new).returns(dummy_new_record1)
         
-        assert_equal [dummy_new_record1, @another_test_model], TestModel.build_or_update([@params, @other_params])
+        assert_equal [dummy_new_record1, @test_model], TestModel.build_or_update([@params, @other_params], :council_id=>99)
+      end
+      
+      should "should execute record_not_found_behaviour when some existing not found" do
+        dummy_new_record1, dummy_new_record2 = stub(:valid? => true), stub(:valid? => true)
+        TestModel.expects(:record_not_found_behaviour).with(@params.merge(:council_id => 99)).returns(dummy_new_record1)
+        TestModel.expects(:record_not_found_behaviour).with(@other_params.merge(:council_id => 99)).returns(dummy_new_record2)
+        
+        TestModel.build_or_update([@params, @other_params], :council_id=>99)
+      end
+      
+      should_eventually "execute orphan_records_callback on records not returned by scraper" do
+        # TestModel.stubs(:find_existing).returns(nil).then.returns(@another_test_model)
+        # dummy_new_record1, dummy_new_record2 = stub(:valid? => true), stub(:valid? => true)
+        # TestModel.expects(:record_not_found_behaviour).with(@params.merge(:council_id => 99)).returns(dummy_new_record1)
+        # 
+        # TestModel.build_or_update([@params, @other_params], :council_id=>99)
       end
       
     end
@@ -391,6 +464,16 @@ class ScrapedModelTest < ActiveSupport::TestCase
     
     should "calulate openlylocal_url from table name" do
       assert_equal "http://#{DefaultDomain}/committees/#{@test_model.to_param}", @test_model.openlylocal_url
+    end
+    
+    should "match params based on uid default" do
+      test_model = TestModel.new(:uid => "bar")
+      assert !test_model.matches_params()
+      assert !test_model.matches_params(:uid => nil)
+      assert !test_model.matches_params(:uid => "foo")
+      # assert !test_model.matches_params(:council_id => 42, :uid => "foo")
+      # assert !test_model.matches_params(:council_id => 99, :uid => "bar")
+      assert test_model.matches_params(:uid => "bar")
     end
     
     context "when saving_without_losing_dirty" do
