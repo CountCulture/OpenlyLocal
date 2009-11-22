@@ -236,7 +236,6 @@ class ScrapedModelTest < ActiveSupport::TestCase
       
       should "build with attributes for new member when existing not found" do
         TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
-        # TestModel.stubs(:find_existing) # => returns nil
         TestModel.expects(:new).with(@params.merge(:council_id => 99)).returns(stub(:valid? => true))
         
         TestModel.build_or_update([@params], :council_id=>99)
@@ -244,7 +243,6 @@ class ScrapedModelTest < ActiveSupport::TestCase
       
       should "return new record when existing not found" do
         TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
-        # TestModel.stubs(:find_existing) # => returns nil
         dummy_new_record = stub(:valid? => true)
         TestModel.stubs(:new).returns(dummy_new_record)
         
@@ -253,7 +251,6 @@ class ScrapedModelTest < ActiveSupport::TestCase
       
       should "use params and council_id to create new record" do
         TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
-        # TestModel.stubs(:find_existing) # => returns nil
         TestModel.expects(:new).with(@params.merge(:council_id => 99)).returns(stub(:valid? => true))
         TestModel.build_or_update([@params], {:council_id => 99})
       end
@@ -306,23 +303,25 @@ class ScrapedModelTest < ActiveSupport::TestCase
       end
       
       should "return existing records that match params" do
-        @test_model.expects(:matches_params)
-        @another_test_model.expects(:matches_params).returns(true)
+        @test_model.stubs(:matches_params)
+        @another_test_model.stubs(:matches_params).returns(true).then.returns(false)
         
         rekords = TestModel.build_or_update([@params, @other_params], :council_id=>99)
-        assert_equal [ @another_test_model ], rekords
+        assert_equal @another_test_model, rekords.first
+        assert_kind_of TestModel, rekords.last
+        assert rekords.last.new_record?
       end
       
       should "update existing records" do
-        @test_model.expects(:matches_params).returns(true)  
-        @another_test_model.expects(:matches_params).returns(true)  
-        rekords = TestModel.build_or_update([@params, @other_params], :council_id=>99).first
-        assert_equal "http:/some.url", rekords.first.url
-        assert_equal "http://other.url", rekords.last.url
+        @test_model.stubs(:matches_params).returns(true).then.returns(false) 
+        @another_test_model.stubs(:matches_params).returns(true)  
+        TestModel.build_or_update([@params, @other_params], :council_id=>99).first
+        assert_equal "http:/some.url", @test_model.url
+        assert_equal "http://other.url", @another_test_model.url
       end
       
       should "should build with attributes for new member when no existing found" do
-        TestModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
+        TestModel.any_instance.stubs(:matches_params)
         TestModel.expects(:new).with(@params.merge(:council_id => 99)).returns(stub(:valid? => true))
         TestModel.expects(:new).with(@other_params.merge(:council_id => 99)).returns(stub(:valid? => true))
         
@@ -330,7 +329,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
       end
       
       should "should build with attributes for new member when some existing not found" do
-        @test_model.expects(:matches_params).twice.returns(true).then.returns(false)
+        @test_model.stubs(:matches_params).returns(true).then.returns(false)
         @another_test_model.expects(:matches_params) # => false
         TestModel.expects(:new).with(@params.merge(:council_id => 99)).never
         TestModel.expects(:new).with(@other_params.merge(:council_id => 99)).returns(stub(:valid? => true))
