@@ -207,3 +207,20 @@ task :import_os_ids => :environment do
     end
   end
 end
+desc "Import County-District relationship from SPARQL endpoint" 
+task :import_country_districts_relationships => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  Council.find_all_by_authority_type("County").each do |county|
+    begin
+      doc = Hpricot.XML(open("http://statistics.data.gov.uk/doc/county/#{county.snac_id}.rdf"))
+      districts = doc.search('administrative-geography:district').collect{ |d| d["rdf:resource"].scan(/local-authority-district\/(\w+)$/).to_s }
+      puts "Found #{districts.size} districts for #{county.name}"
+      districts.each do |snac_id|
+        Council.find_by_snac_id(snac_id).update_attribute(:parent_authority_id, county.id)
+      end
+    rescue Exception => e
+      puts "There was an error getting/processing info for #{county.name}: #{e.inspect}"
+    end    
+  end
+end

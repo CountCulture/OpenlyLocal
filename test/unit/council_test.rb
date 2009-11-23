@@ -19,6 +19,8 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :officers
     should_have_many :services
     should_have_one :chief_executive
+    should_belong_to :parent_authority
+    should_have_many :child_authorities
     should_have_many :meeting_documents, :through => :meetings
     should_have_many :past_meeting_documents, :through => :held_meetings
     should_belong_to :portal_system
