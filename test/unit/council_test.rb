@@ -37,6 +37,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_db_column :population
     should_have_db_column :twitter_account
     should_have_db_column :ldg_id
+    should_have_db_column :police_neighbourhood_url
     
     should "mixin PartyBreakdownSummary module" do
       assert Council.new.respond_to?(:party_breakdown)
