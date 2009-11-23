@@ -309,7 +309,7 @@ a.new_scraper_link {
 
 /*Dataset specific formatting*/
 #statistics {
-	width: 600px;
+	width: 300px;
 	overflow:auto;
 }
 div#dataset_data {

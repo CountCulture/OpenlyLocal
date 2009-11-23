@@ -43,10 +43,16 @@ class WardsControllerTest < ActionController::TestCase
       should "not show list of meetings" do
         assert_select "#meetings", false
       end
+      
+      should "not show link to police neighbourhood team" do
+        assert_select "a", :text => /Police neighbourhood team for #{@ward.name}/i, :count => 0
+      end 
+      
     end
     
-    context "with basic request when ward has committees" do
+    context "with basic request when ward has additional attributes" do
       setup do
+        @ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
         @ward.committees << @committee = Factory(:committee, :council => @council)
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
         get :show, :id => @ward.id
@@ -60,12 +66,17 @@ class WardsControllerTest < ActionController::TestCase
       
       should "show ward committee meetings" do
         assert_select "#meetings li", /#{@meeting.title}/
+      end
       
+      should "show link to police neighbourhood team" do
+        assert_select "a", /Police neighbourhood team for #{@ward.name}/i
       end 
+      
     end
-     
+          
     context "with xml request" do
       setup do
+        @ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
         @ward.committees << @committee = Factory(:committee, :council => @council)
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
         get :show, :id => @ward.id, :format => "xml"
@@ -86,6 +97,10 @@ class WardsControllerTest < ActionController::TestCase
     
       should "include meetings in response" do
         assert_select "ward meetings meeting"
+      end
+      
+      should "include police_neighbourhood_url in response" do
+        assert_select "ward police-neighbourhood-url"
       end
     end
      
@@ -134,7 +149,6 @@ class WardsControllerTest < ActionController::TestCase
       end
       
       should_eventually "include members in response" do
-        puts @response.body
         assert_select "ward member"
       end
      

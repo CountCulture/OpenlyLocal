@@ -219,6 +219,10 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "a.calendar[href*='meetings.ics?council_id=#{@council.id}']"
       end
       
+      should "not show link to police url" do
+        assert_select "extra info a", :text => /police/, :count => 0
+      end
+      
       should "list documents" do
         assert_equal [@past_document], assigns(:documents)
         assert_select "#documents li", @past_document.extended_title
@@ -267,6 +271,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show associated wards" do
         assert_select "council>wards>ward>url", @ward.url
       end
+      
     end
     
     context "with json requested" do

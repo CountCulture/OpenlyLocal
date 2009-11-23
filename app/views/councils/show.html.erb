@@ -18,21 +18,24 @@
         <%- unless @council.wdtk_name.blank? -%>
           <li><%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@council.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@council.wdtk_name}", :class => "feed" %>)</li>
         <%- end -%>
+        <%- unless @council.police_neighbourhood_url.blank? -%>
+          <li><%= link_to "Local Police website", @council.police_neighbourhood_url, :class => 'external' %></li>
+        <%- end -%>
         <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external' %></li>
         <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external' %></li>
         <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= link_to(@council.snac_id, "http://statistics.data.gov.uk/doc/local-authority/#{@council.snac_id}", :class => "external") unless @council.snac_id.blank? %> </li>
       </ul>
-      <%- unless @council.services.count < 10  -%>
-        <div id="council_services" class="item_grouping">
-          <h4><%= link_to "Online services", services_path(:council_id => @council.id) %></h4>
-          <%= render :partial => 'services/services_search' %>
-          <p><%= link_to "See full list", services_path(:council_id => @council.id) %></p>
-        </div>
-      <%- end -%>
     </div>
     <div id="statistics" class="item_grouping">
       <%= render :partial => 'datapoints' unless @datapoints.blank? %>
     </div>
+    <%- unless @council.services.count < 10  -%>
+      <div id="council_services" class="item_grouping">
+        <h4><%= link_to "Online services", services_path(:council_id => @council.id) %></h4>
+        <%= render :partial => 'services/services_search' %>
+        <p><%= link_to "See full list", services_path(:council_id => @council.id) %></p>
+      </div>
+    <%- end -%>
   </div>
 </div>
 
