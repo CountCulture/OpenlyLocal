@@ -18,7 +18,7 @@ class MemberTest < ActiveSupport::TestCase
     should_validate_uniqueness_of :uid, :scoped_to => :council_id
     should_validate_presence_of :uid
     should "include ScraperModel mixin" do
-      assert Member.respond_to?(:find_existing)
+      assert Member.respond_to?(:find_all_existing)
     end
                 
   end

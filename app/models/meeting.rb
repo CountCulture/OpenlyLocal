@@ -24,12 +24,6 @@ class Meeting < ActiveRecord::Base
     errors.add_to_base("either uid or url must be present") if uid.blank?&&url.blank?
   end
 
-  # overwrite base find_existing so we can find by committee and url if uid is blank?
-  def self.find_existing(params)
-    params[:uid].blank? ? find_by_council_id_and_committee_id_and_url(params[:council_id], params[:committee_id], params[:url]) : 
-      find_by_council_id_and_uid(params[:council_id], params[:uid])
-  end
-
   def title
     "#{committee.title} meeting"
   end
@@ -56,6 +50,11 @@ class Meeting < ActiveRecord::Base
     create_document_body(doc_body, :minutes)
   end
   
+  # overwrite base matches_params so we can find by committee and url if uid is blank?
+  def matches_params(params={})
+    params[:uid].blank? ? (self[:committee_id] == params[:committee_id] && self[:url]==params[:url]) : super
+  end
+
   # Formats the contact details in a way the IcalUtilities can use
   def organizer
     { :cn => committee.title, :uri => committee.url }

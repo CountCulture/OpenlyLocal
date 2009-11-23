@@ -53,7 +53,7 @@ class MeetingTest < ActiveSupport::TestCase
 
 
     should "include ScraperModel mixin" do
-      assert Meeting.respond_to?(:find_existing)
+      assert Meeting.respond_to?(:find_all_existing)
     end
     
     should "have forthcoming named scope" do
@@ -63,16 +63,6 @@ class MeetingTest < ActiveSupport::TestCase
       assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
     end
     
-    should "find_existing from uid if uid exists" do
-      @meeting.update_attribute(:uid, 42)
-      assert_equal @meeting, Meeting.find_existing(:uid => 42, :council_id => @meeting.council_id)
-    end
-
-    should "find existing from council, committee and url if uid is blank" do
-      another_meeting = Factory(:meeting, :council => @meeting.council, :date_held => 3.days.from_now, :committee => @meeting.committee, :url => "bar.com/meeting")
-      @meeting.update_attribute(:url, "foo.com/meeting")
-      assert_equal another_meeting, Meeting.find_existing(:uid => nil, :council_id => @meeting.council_id, :committee_id => @meeting.committee_id, :url => another_meeting.url)
-    end
   end
   
 
@@ -178,6 +168,31 @@ class MeetingTest < ActiveSupport::TestCase
       should "include title" do
         assert_match %r(<title), @meeting.to_xml
       end
+    end
+    
+    context "when matching existing member against params should override default and" do
+      should "should match uid if it exists" do
+        assert !@meeting.matches_params(:uid => 42)
+        @meeting.uid = 42
+        assert !@meeting.matches_params(:uid => nil)
+        assert !@meeting.matches_params(:uid => 41)
+        assert !@meeting.matches_params
+        assert @meeting.matches_params(:uid => 42)
+      end
+      
+      should "should match committee_id and url if uid is blank" do
+        another_meeting = Factory(:meeting, :council => @meeting.council, :date_held => 3.days.from_now, :committee => @meeting.committee, :url => "bar.com/meeting")
+        assert another_meeting.matches_params(:committee_id => another_meeting.committee_id, :url => another_meeting.url)
+        assert !another_meeting.matches_params(:url => another_meeting.url)
+        assert !another_meeting.matches_params(:committee_id => nil, :url => another_meeting.url)
+        assert !another_meeting.matches_params(:url => another_meeting.url)
+      end
+      
+      should "should not match when no params" do
+        assert !@meeting.matches_params
+        assert Meeting.new.matches_params
+      end
+      
     end
     
     context "when calling minutes_document_body setter" do

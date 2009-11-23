@@ -38,7 +38,7 @@ class DocumentTest < ActiveSupport::TestCase
     end
     
     should "include ScraperModel mixin" do
-      assert Document.respond_to?(:find_existing)
+      assert Document.respond_to?(:find_all_existing)
     end
   end
   

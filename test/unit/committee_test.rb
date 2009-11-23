@@ -20,7 +20,7 @@ class CommitteeTest < ActiveSupport::TestCase
     should_have_named_scope :active
     
     should "include ScraperModel mixin" do
-      assert Committee.respond_to?(:find_existing)
+      assert Committee.respond_to?(:find_all_existing)
     end
     
     should "mixin PartyBreakdownSummary module" do
