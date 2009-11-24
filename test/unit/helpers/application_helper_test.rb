@@ -9,7 +9,7 @@ class ApplicationHelperTest < ActionView::TestCase
     end
     
     should "return div tag using key as attrib name and value as value" do
-      assert_dom_equal content_tag(:div, "<strong class=\"name\">Foo Bar</strong> <span class=\"value\">some value</span>", :class => "attribute foo_bar"), attribute_tag(:foo_bar, "some value")
+      assert_dom_equal "<dt class=\"foo_bar\">Foo Bar</dt> <dd>some value</dd>", attribute_tag(:foo_bar, "some value")
     end
     
     should "return nil if value is nil" do

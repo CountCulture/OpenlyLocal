@@ -4,9 +4,9 @@ module ApplicationHelper
   # Generates an attribute block
   def attribute_tag(attrib_name=nil, attrib_value=nil, &block)
     if block_given?
-      concat(content_tag(:div, "<strong class=\"name\">#{attrib_name.to_s.titleize}</strong> <span class=\"value\">#{capture(&block)}</span>", :class => "attribute #{attrib_name}"))
+      concat("<dt class=\"#{attrib_name}\">#{attrib_name.to_s.titleize}</dt> <dd>#{capture(&block)}</dd>")
     else
-      content_tag(:div, "<strong class=\"name\">#{attrib_name.to_s.titleize}</strong> <span class=\"value\">#{attrib_value}</span>", :class => "attribute #{attrib_name}") unless attrib_value.blank?
+      "<dt class=\"#{attrib_name}\">#{attrib_name.to_s.titleize}</dt> <dd>#{attrib_value}</dd>" unless attrib_value.blank?
     end
   end
   

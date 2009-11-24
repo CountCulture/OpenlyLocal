@@ -315,9 +315,9 @@ class CouncilsControllerTest < ActionController::TestCase
     
     end
     
-    context "with rdf request" do
+    context "with rdf requested" do
       setup do
-        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk", :os_id => "7000123")
+        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk", :os_id => "7000123", :parent_authority_id => @another_council.id)
         get :show, :id => @council.id, :format => "rdf"
       end
      
@@ -384,6 +384,32 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show members" do
         assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/id\/members\/#{@member.id}/, @response.body
         assert_match /rdf:Description.+\/id\/members\/#{@member.id}/, @response.body
+      end
+      
+      should "show relationship with parent authority" do
+        assert_match /rdf:Description.+\/id\/councils\/#{@another_council.id}.+openlylocal:isParentAuthorityOf.+\/id\/councils\/#{@council.id}/m, @response.body
+      end
+    end
+
+    context "with rdf requested and child authorities" do
+      setup do
+        @council.child_authorities << @another_council
+        get :show, :id => @council.id, :format => "rdf"
+      end
+     
+      should_assign_to :council
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/rdf+xml'
+     
+      should "show relationship with child authorities" do
+        # assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/id\/members\/#{@member.id}/, @response.body
+
+        assert_match /rdf:Description.+\/id\/councils\/#{@council.id}.+openlylocal:isParentAuthorityOf.+\/id\/councils\/#{@another_council.id}/m, @response.body
+      end
+      
+      should "show child authorities" do    
+        assert_match /rdf:Description.+\/id\/councils\/#{@another_council.id}/, @response.body
       end
     end
 
