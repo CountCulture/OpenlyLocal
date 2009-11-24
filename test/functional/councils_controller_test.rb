@@ -180,6 +180,7 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "with basic request" do
       setup do
+        Council.any_instance.stubs(:party_breakdown => [])
         get :show, :id => @council.id
       end
 
@@ -240,8 +241,20 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "#council_services", false
       end
       
+      should "not show child councils if there is none" do
+        assert_select "#child_councils", false
+      end
+      
+      should "not show parent council if there is none" do
+        assert_select "#associated_councils", :text => /county/i, :count => 0
+      end
+      
+      should "not show party breakdown" do
+        assert_select "#party_breakdown", false
+      end
+      
     end
-          
+    
     context "with xml requested" do
       setup do
         get :show, :id => @council.id, :format => "xml"
@@ -406,14 +419,32 @@ class CouncilsControllerTest < ActionController::TestCase
       
     end
 
-    context "when council has datapoints" do
+    context "with basic request and council has optional attributes" do
       setup do
         @datapoint = Factory(:datapoint, :council => @council)
         @dataset = @datapoint.dataset
         Council.any_instance.stubs(:datapoints).returns([@datapoint, @datapoint])
+        Council.any_instance.stubs(:party_breakdown => [[Party.new("Conservative"), 4], [Party.new("Labour"), 3]])
+        @council.child_authorities << @another_council # add parent/child relationship
       end
       
-      context "with summary" do
+      should "show party breakdown" do
+        get :show, :id => @council.id
+        assert_select "#party_breakdown"
+      end
+
+      should "show child district authorities when they exist" do
+        @council.child_authorities << @another_council
+        get :show, :id => @council.id
+        assert_select "#associated_councils a", /#{@another_council.name}/
+      end
+
+      should "show parent country authority if it exists" do
+        get :show, :id => @another_council.id
+        assert_select "#associated_councils a", /#{@council.name}/
+      end
+
+      context "with datapoint summary" do
         setup do
           @datapoint.stubs(:summary => ["heading_1", "data_1"])
           get :show, :id => @council.id
@@ -436,7 +467,7 @@ class CouncilsControllerTest < ActionController::TestCase
         end
       end
             
-      context "without summary" do
+      context "without datapoint summary" do
         setup do
           @datapoint.stubs(:summary)
           get :show, :id => @council.id
@@ -470,30 +501,7 @@ class CouncilsControllerTest < ActionController::TestCase
           assert_match /dataset.+#{@datapoint.dataset.title}/, @response.body
         end
       end
-    end
-    
-    context "and party_breakdown is available" do
-      setup do
-        Council.any_instance.stubs(:party_breakdown => [[Party.new("Conservative"), 4], [Party.new("Labour"), 3]])
-        get :show, :id => @council.id
-      end
-      
-      should "show party breakdown" do
-        assert_select "#party_breakdown"
-      end
-    end
-    
-    context "and party_breakdown has no data" do
-      setup do
-        Council.any_instance.stubs(:party_breakdown => [])
-        get :show, :id => @council.id
-      end
-
-      should "not show party breakdown" do
-        assert_select "#party_breakdown", false
-      end
-    end
-    
+    end    
     
   end  
 

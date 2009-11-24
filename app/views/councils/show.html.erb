@@ -1,7 +1,17 @@
 <div id="data">
   <h1><%= @council.name %></h1>
   <%= render :partial => 'party_breakdown' unless @party_breakdown.blank? %>
-  <p class="attribute"><strong>website</strong> <%= link_to @council.url, @council.url, :class => :external %> <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %></p>
+  <div id="associated_councils">
+    <%- unless @council.child_authorities.blank? -%>
+    <p class="attribute"><strong>District Councils</strong>
+      <%= @council.child_authorities.collect{ |c| basic_link_for c }.join(", ") %>
+    <%- end -%>
+    </p>
+    <%- if @council.parent_authority -%>
+    <p class="attribute"><strong>County Council</strong> <%= basic_link_for @council.parent_authority %></p>
+    <%- end -%>
+  </div>
+  <p class="attribute"><strong>Website</strong> <%= link_to @council.url, @council.url, :class => :external %> <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %></p>
   <p class="attribute"><strong>Authority type</strong> <%= @council.authority_type %> <%= help_link_to(@council.authority_type_help_url) %></p>
   <p class="attribute"><strong>Address</strong> <%= @council.address %></p>
   <p class="attribute"><strong>Telephone</strong> <%= content_tag(:span, @council.telephone, :about => @council.foaf_telephone) unless @council.telephone.blank? %></p>
