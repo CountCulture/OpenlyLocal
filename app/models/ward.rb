@@ -50,7 +50,7 @@ class Ward < ActiveRecord::Base
   
   # override standard matches_params from ScrapedModel to match against name if uid is blank
   def matches_params(params={})
-    params[:uid].blank? ? self[:name] == clean_name(params[:name]) : super
+    self[:name]==clean_name(params[:name]) || (!params[:uid].blank? && super )
   end
 
   def name=(raw_name)

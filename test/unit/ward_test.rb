@@ -82,6 +82,10 @@ class WardTest < ActiveSupport::TestCase
         assert @ward.matches_params(:name => @ward.name)
       end
       
+      should "should match name in preference to uid" do
+        assert @ward.matches_params(:uid => 99, :name => @ward.name)
+      end
+      
       should "should not match when no params" do
         assert !@ward.matches_params
       end
