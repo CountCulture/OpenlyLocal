@@ -2,6 +2,25 @@ require 'test_helper'
 
 class ApplicationHelperTest < ActionView::TestCase
   
+  context "attribute_tag helper method" do
+
+    should "return nil by default" do
+      assert_nil attribute_tag
+    end
+    
+    should "return div tag using key as attrib name and value as value" do
+      assert_dom_equal content_tag(:div, "<strong class=\"name\">Foo Bar</strong> <span class=\"value\">some value</span>", :class => "attribute foo_bar"), attribute_tag(:foo_bar, "some value")
+    end
+    
+    should "return nil if value is nil" do
+      assert_nil attribute_tag(:foo_bar, nil)
+    end
+    
+    should "return nil if value is blank" do
+      assert_nil attribute_tag(:foo_bar, "")
+    end
+  end
+  
   context "link_for helper method" do
 
     should "return nil by default" do
@@ -82,6 +101,10 @@ class ApplicationHelperTest < ActionView::TestCase
 
     should "return nil by default" do
       assert_nil basic_link_for
+    end
+    
+    should "return nil by if blank" do
+      assert_nil basic_link_for("")
     end
     
     should "return show as plain text if object is new" do

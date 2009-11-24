@@ -1,5 +1,15 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  
+  # Generates an attribute block
+  def attribute_tag(attrib_name=nil, attrib_value=nil, &block)
+    if block_given?
+      concat(content_tag(:div, "<strong class=\"name\">#{attrib_name.to_s.titleize}</strong> <span class=\"value\">#{capture(&block)}</span>", :class => "attribute #{attrib_name}"))
+    else
+      content_tag(:div, "<strong class=\"name\">#{attrib_name.to_s.titleize}</strong> <span class=\"value\">#{attrib_value}</span>", :class => "attribute #{attrib_name}") unless attrib_value.blank?
+    end
+  end
+  
   def council_page_for(obj, options={})
     return if obj.url.blank?
     link_to("official page", obj.url, {:class => "official_page external"}.merge(options))

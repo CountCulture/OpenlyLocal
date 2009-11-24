@@ -1,25 +1,21 @@
 <div id="data">
   <h1><%= @council.name %></h1>
   <%= render :partial => 'party_breakdown' unless @party_breakdown.blank? %>
-  <div id="associated_councils">
-    <%- unless @council.child_authorities.blank? -%>
-    <p class="attribute"><strong>District Councils</strong>
-      <%= @council.child_authorities.collect{ |c| basic_link_for c }.join(", ") %>
-    <%- end -%>
-    </p>
-    <%- if @council.parent_authority -%>
-    <p class="attribute"><strong>County Council</strong> <%= basic_link_for @council.parent_authority %></p>
-    <%- end -%>
-  </div>
-  <p class="attribute"><strong>Website</strong> <%= link_to @council.url, @council.url, :class => :external %> <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %></p>
+  <%- attribute_tag :website do -%>
+    <%= link_to @council.url, @council.url, :class => :external %> <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %>
+  <%- end -%>
   <p class="attribute"><strong>Authority type</strong> <%= @council.authority_type %> <%= help_link_to(@council.authority_type_help_url) %></p>
-  <p class="attribute"><strong>Address</strong> <%= @council.address %></p>
-  <p class="attribute"><strong>Telephone</strong> <%= content_tag(:span, @council.telephone, :about => @council.foaf_telephone) unless @council.telephone.blank? %></p>
-  <p class="attribute"><strong>Chief Executive</strong> <%= @council.chief_executive.try(:full_name) || "Not known" %></p>
-  <p class="attribute">
-    <strong>Population</strong> <%= @council.population ? number_with_delimiter(@council.population) : "not known" %> <span class="source attribution">(Source: <%= link_to "ONS Crown Copyright", "http://www.statistics.gov.uk/downloads/theme_population/Mid_2008_UK_England_&_Wales_Scotland_and_Northern_Ireland_27_08_09.zip", :class => "external" %>)</span>
-  </p>
-  <p class="attribute"><strong>Wikipedia page</strong> <%= link_to @council.wikipedia_url, @council.wikipedia_url, :class => 'external' %></p>
+  <div id="associated_councils">
+      <%= attribute_tag :district_councils, @council.child_authorities.collect{ |c| basic_link_for c }.join(", ") %>
+      <%= attribute_tag :county_council, basic_link_for(@council.parent_authority) %>
+  </div>
+  <%= attribute_tag :address, @council.address %>
+  <%= attribute_tag( :telephone, content_tag(:span, @council.telephone, :about => @council.foaf_telephone)) unless @council.telephone.blank? %>
+  <%= attribute_tag :chief_executive, @council.chief_executive.try(:full_name) %>
+  <%- attribute_tag :population do -%>
+    <%= @council.population ? number_with_delimiter(@council.population) : "not known" %> <span class="source attribution">(Source: <%= link_to "ONS Crown Copyright", "http://www.statistics.gov.uk/downloads/theme_population/Mid_2008_UK_England_&_Wales_Scotland_and_Northern_Ireland_27_08_09.zip", :class => "external" %>)</span>
+  <%- end -%>
+  <%= attribute_tag :wikipedia_url, link_to(@council.wikipedia_url, @council.wikipedia_url, :class => 'external') %>
   <div class="extra_info">
     <h3>Other info</h3>
     <div id="external_links" class="item_grouping">
