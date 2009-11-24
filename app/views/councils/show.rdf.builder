@@ -38,6 +38,10 @@ xml.tag! "rdf:RDF",
     @members.each do |member|
       xml.tag! "openlylocal:LocalAuthorityMember", "rdf:resource" => resource_uri_for(member)
     end
+    # show child authorities if they exist
+    @council.child_authorities.each do |ca|
+      xml.tag! "openlylocal:isParentAuthorityOf", "rdf:resource" => resource_uri_for(ca)
+    end
   end
   
   # show info on related items
@@ -56,6 +60,21 @@ xml.tag! "rdf:RDF",
       xml.tag! "rdfs:label", member.title
     end
   end
+  
+  # establish relationship with parent authority
+  if @council.parent_authority
+    xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@council.parent_authority) do
+      xml.tag! "rdfs:label", @council.parent_authority.title
+      xml.tag! "openlylocal:isParentAuthorityOf", "rdf:resource" => resource_uri_for( @council)
+    end
+  end
+  
+  # show info on child authorities
+    @council.child_authorities.each do |ca|
+      xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(ca) do
+        xml.tag! "rdfs:label", ca.title
+      end
+    end
   
   # basic info about this page
   xml.tag! "rdf:Description", "rdf:about" => council_url(:id => @council.id) do

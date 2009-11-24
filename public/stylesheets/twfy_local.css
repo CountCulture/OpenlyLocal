@@ -180,13 +180,16 @@ body {
 #data h1 {
 	float:left;
 	}
-#data .attribute {
+#data .attributes {
 	clear:left;
 	margin-bottom: 0.75em;
 	}
-#data .attribute strong {
+#data .attributes dt {
 	float: left;
 	width: 10em;
+}
+#data .attributes dd {
+	margin-left: 11em;
 }
 .extra_info  {
 	clear: both;
@@ -313,7 +316,7 @@ a.new_scraper_link {
 
 /*Dataset specific formatting*/
 #statistics {
-	width: 600px;
+	width: 300px;
 	overflow:auto;
 }
 div#dataset_data {

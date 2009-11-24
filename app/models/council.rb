@@ -23,6 +23,8 @@ class Council < ActiveRecord::Base
   has_many :meeting_documents, :through => :meetings, :source => :documents, :select => "documents.id, documents.title, documents.document_type, documents.document_owner_type, documents.document_owner_id, documents.created_at, documents.updated_at", :order => "documents.created_at DESC"
   has_many :past_meeting_documents, :through => :held_meetings, :source => :documents, :order => "documents.created_at DESC"
   has_many :services
+  belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
+  has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   belongs_to :portal_system
   validates_presence_of :name
   validates_uniqueness_of :name
