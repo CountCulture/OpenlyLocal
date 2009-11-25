@@ -26,6 +26,7 @@ class Council < ActiveRecord::Base
   belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
   has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   belongs_to :portal_system
+  belongs_to :police_force
   validates_presence_of :name
   validates_uniqueness_of :name
   named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? {} : {:conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id"} }
