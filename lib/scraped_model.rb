@@ -63,7 +63,8 @@ module ScrapedModel
           result ||= record_not_found_behaviour(params.merge(:council_id => options[:council_id]))
           orphan_records_callback(exist_records, :save_results => options[:save_results])
           options[:save_results] ? result.save_without_losing_dirty : result.valid? # we want to know what's changed and keep any errors, so run save_without_losing_dirty if we're saving, run validation to add errors to item otherwise
-          result
+          logger.debug { "**********result = #{result.inspect}" }
+          ScrapedObjectResult.new(result)
         end
       end
       

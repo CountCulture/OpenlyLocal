@@ -56,7 +56,7 @@ class Scraper < ActiveRecord::Base
     mark_as_problematic unless parser.errors.empty?
     self
   rescue ScraperError => e
-    logger.debug { "*******#{e.message} while processing #{self.inspect}" }
+    logger.debug { "*******#{e.message} while processing #{self.inspect}: #{e.backtrace}" }
     errors.add_to_base(e.message)
     mark_as_problematic
     self
@@ -156,14 +156,7 @@ class Scraper < ActiveRecord::Base
   
   def update_with_results(parsing_results, options={})
     unless parsing_results.blank?
-      raw_results = result_model.constantize.build_or_update(parsing_results, options.merge(:council_id => council_id))
-      # p results, (raw_results.collect{ |r| ScrapedObjectResult.new(r) })
-      raw_results.each{ |r| results << ScrapedObjectResult.new(r) }
-      # parsing_results.each do |result|
-      #   item = result_model.constantize.build_or_update(result.merge(:council_id => council.id))
-      #   options[:save_results] ? item.save_without_losing_dirty : item.valid? # we want to know what's changed and keep any errors, so run save_without_losing_dirty if we're saving, run validation to add errors to item otherwise
-      #   results << ScrapedObjectResult.new(item)
-      # end
+      @results = result_model.constantize.build_or_update(parsing_results, options.merge(:council_id => council_id))
     end
   end
 

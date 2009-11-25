@@ -240,6 +240,7 @@ class ScrapersControllerTest < ActionController::TestCase
     should_change "Member.count", :by => 1
     
     should "show summary of successful results" do
+      p assigns(:scraper).errors
       assert_select "#results_summary" do
         assert_select "p", /1 new/
       end
@@ -254,7 +255,6 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   
     should "not show summary of problems" do
-      puts css_select("div.errorExplanation")
       assert_select "div.errorExplanation", false
     end
   end

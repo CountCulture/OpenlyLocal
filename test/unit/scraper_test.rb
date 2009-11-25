@@ -378,6 +378,7 @@ class ScraperTest < ActiveSupport::TestCase
       setup do
         @parser = @scraper.parser
         @parser.stubs(:results).returns([{ :full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
+        # @parser.stubs(:process).returns(@parser)
         @scraper.stubs(:_data).returns("something")
       end
       
@@ -415,8 +416,9 @@ class ScraperTest < ActiveSupport::TestCase
       
       should "store instances of scraped_object_result in results" do
         dummy_member = Member.new(:full_name => "Fred Flintstone")
-        Member.stubs(:build_or_update).returns([dummy_member])
+        Member.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_member)])
         results = @scraper.process.results
+        
         assert_kind_of ScrapedObjectResult, results.first
         assert_match /new/, results.first.status
         assert_equal "Member", results.first.base_object_klass
@@ -494,7 +496,7 @@ class ScraperTest < ActiveSupport::TestCase
 
         should "create new or update and save existing instance of result_class with parser results and scraper council" do
           dummy_new_member = Member.new
-          Member.expects(:build_or_update).with([{:full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id, :save_results => true}).returns([dummy_new_member])
+          Member.expects(:build_or_update).with([{:full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id, :save_results => true}).returns([ScrapedObjectResult.new(dummy_new_member)])
           @scraper.process(:save_results => true)
         end
 
@@ -508,7 +510,7 @@ class ScraperTest < ActiveSupport::TestCase
 
         should "store instances of result class in results" do
           dummy_member = Member.new(:full_name => "Fred Flintstone")
-          Member.stubs(:build_or_update).returns([dummy_member])
+          Member.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_member)])
           results = @scraper.process(:save_results => true).results
           
           assert_kind_of ScrapedObjectResult, results.first

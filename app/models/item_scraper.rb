@@ -16,7 +16,7 @@ class ItemScraper < Scraper
       self
     end
   rescue Exception => e
-    logger.debug { "*******#{e.message} while processing #{self.inspect}" }
+    logger.debug { "*******#{e.message} while processing #{self.inspect}:\n#{e.backtrace}" }
     errors.add_to_base(e.message)
     mark_as_problematic
     self

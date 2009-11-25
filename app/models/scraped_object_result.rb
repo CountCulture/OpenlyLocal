@@ -22,6 +22,13 @@ class ScrapedObjectResult
     @status += " errors" unless @errors.empty?
   end
   
+  # Makes testing possible. Basically was this created from an equivalent AR type object (i.e. one that has same id and class)
+  def ==(obj)
+    obj.is_a?(ScrapedObjectResult) &&
+      base_object_klass == obj.base_object_klass &&
+      id == obj.id 
+  end
+  
   private
   def truncate_values(hsh)
     return if hsh.blank?
