@@ -18,12 +18,13 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :wards
     should_have_many :officers
     should_have_many :services
-    should_have_one :chief_executive
-    should_belong_to :parent_authority
     should_have_many :child_authorities
     should_have_many :meeting_documents, :through => :meetings
     should_have_many :past_meeting_documents, :through => :held_meetings
+    should_have_one :chief_executive
+    should_belong_to :parent_authority
     should_belong_to :portal_system
+    should_belong_to :police_force
     should_have_db_column :notes
     should_have_db_column :wikipedia_url
     should_have_db_column :ons_url

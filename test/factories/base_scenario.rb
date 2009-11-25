@@ -142,3 +142,8 @@ Factory.define :service do |f|
   f.association :ldg_service
 end
 
+Factory.define :police_force do |f|
+  f.sequence(:name) { |n| "Force #{n}" }
+  f.sequence(:url) { |n|  "http://police.uk/force#{n}" }
+end
+

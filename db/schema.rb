@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091123153419) do
+ActiveRecord::Schema.define(:version => 20091125082023) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20091123153419) do
     t.string   "os_id"
     t.integer  "parent_authority_id"
     t.string   "police_neighbourhood_url"
+    t.integer  "police_force_id"
   end
 
   create_table "councils_copy", :force => true do |t|
@@ -262,6 +263,14 @@ ActiveRecord::Schema.define(:version => 20091123153419) do
     t.string   "related_model"
     t.string   "scraper_type"
     t.string   "path"
+  end
+
+  create_table "police_forces", :force => true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.string   "police_authority_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "portal_systems", :force => true do |t|
