@@ -317,7 +317,7 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "with rdf requested" do
       setup do
-        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk", :os_id => "7000123", :parent_authority_id => @another_council.id)
+        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk", :os_id => "7000123", :parent_authority_id => @another_council.id, :twitter_account => "anytown_twitter")
         get :show, :id => @council.id, :format => "rdf"
       end
      
@@ -389,6 +389,11 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show relationship with parent authority" do
         assert_match /rdf:Description.+\/id\/councils\/#{@another_council.id}.+openlylocal:isParentAuthorityOf.+\/id\/councils\/#{@council.id}/m, @response.body
       end
+      
+      should "show twitter details" do
+        get :show, :id => @council.id, :format => "rdf"
+        assert_match /rdf:Description.+foaf:OnlineAccount.+twitter\.com/m, @response.body
+      end
     end
 
     context "with rdf requested and child authorities" do
@@ -443,6 +448,11 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_no_match /foaf:telephone/, @response.body
       end
       
+      should "not show twitter details" do
+        get :show, :id => @council.id, :format => "rdf"
+        assert_no_match /foaf:OnlineAccount/, @response.body
+        assert_no_match /twitter\.com/, @response.body
+      end
     end
 
     context "with basic request and council has optional attributes" do

@@ -21,12 +21,22 @@ xml.tag! "rdf:RDF",
     xml.tag! "foaf:address", @council.address unless @council.address.blank?
     xml.tag! "foaf:phone", @council.foaf_telephone unless @council.foaf_telephone.blank?
     xml.tag! "foaf:homepage", @council.url unless @council.url.blank?
+    
     unless @council.address.blank?
       xml.tag! "vCard:ADR", "rdf:parseType" => "Resource" do
         xml.tag! "vCard:Extadd", @council.address
         xml.tag! "vCard:Country", @council.country 
       end
     end
+    unless @council.twitter_account.blank?
+      xml.tag! "foaf:holdsAccount" do
+        xml.tag! "foaf:OnlineAccount", "rdf:about" => "http://twitter.com/#{@council.twitter_account}" do
+          xml.tag! "foaf:accountServiceHomepage", "rdf:resource" => "http://twitter.com/"
+          xml.tag! "foaf:accountName", @council.twitter_account
+        end
+      end
+    end
+    
     # xml.tag! "geonames:population", @council.population unless @council.population.blank?
     
     @wards.each do |ward|
