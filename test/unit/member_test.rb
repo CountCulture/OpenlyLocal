@@ -23,6 +23,11 @@ class MemberTest < ActiveSupport::TestCase
        
     should "overwrite orphan_records_callback and notify Hoptoad of orphan records" do
       HoptoadNotifier.expects(:notify).with(has_entries(:error_class => "OrphanRecords"))
+      Member.send(:orphan_records_callback, [@existing_member], :save_results => true)
+    end       
+      
+    should "not notify Hoptoad of orphan records if not saving_records" do
+      HoptoadNotifier.expects(:notify).with(has_entries(:error_class => "OrphanRecords"))
       Member.send(:orphan_records_callback, [@existing_member])
     end       
       

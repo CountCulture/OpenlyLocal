@@ -55,11 +55,11 @@ class Member < ActiveRecord::Base
   
   protected
   def self.orphan_records_callback(recs=nil, opts={})
-    return if recs.blank?
+    return if recs.blank? || !options[:save_results]
     logger.debug { "**** #{recs.size} orphan Member records: #{recs.inspect}" }
     HoptoadNotifier.notify(
       :error_class => "OrphanRecords",
-      :error_message => "#{recs.size} orphan Member records found for : #{recs.first.council.name}",
+      :error_message => "#{recs.size} orphan Member records found for : #{recs.first.council.name}.\n#{recs.inspect}",
       :request => { :params => opts }
     )
   end
