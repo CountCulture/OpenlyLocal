@@ -27,7 +27,7 @@ class MemberTest < ActiveSupport::TestCase
     end       
       
     should "not notify Hoptoad of orphan records if not saving_records" do
-      HoptoadNotifier.expects(:notify).with(has_entries(:error_class => "OrphanRecords"))
+      HoptoadNotifier.expects(:notify).never
       Member.send(:orphan_records_callback, [@existing_member])
     end       
       
