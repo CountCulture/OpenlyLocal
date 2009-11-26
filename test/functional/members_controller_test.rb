@@ -128,6 +128,7 @@ class MembersControllerTest < ActionController::TestCase
            assert_match /rdf:Description.+rdf:about.+\/id\/members\/#{@member.id}/, @response.body
            assert_match /rdf:Description.+rdfs:label>#{@member.title}/m, @response.body
            assert_match /rdf:type.+openlylocal:LocalAuthorityMember/m, @response.body
+           assert_match /foaf:page.+#{Regexp.escape(@member.url)}/m, @response.body
          end
 
          should "show personal info for member with info" do
@@ -137,7 +138,6 @@ class MembersControllerTest < ActionController::TestCase
            assert_match /rdf:Description.+foaf:phone.+#{Regexp.escape(@member.foaf_telephone)}/m, @response.body
            assert_match /rdf:Description.+foaf:mbox.+mailto:#{@member.email}/m, @response.body
            assert_match /rdf:Description.+dbpedia-owl:party.+#{Regexp.escape(@member.party.dbpedia_uri)}/m, @response.body
-           
          end
          
          should "show address for member as vCard" do

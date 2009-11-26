@@ -106,7 +106,7 @@ class WardsControllerTest < ActionController::TestCase
      
     context "with rdf request" do
       setup do
-        @ward.update_attributes(:snac_id => "01ABC", :os_id => "700123")
+        @ward.update_attributes(:snac_id => "01ABC", :os_id => "700123", :url => "http://anytown.gov.uk/ward/53")
         @ward.committees << @committee = Factory(:committee, :council => @council)
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
         get :show, :id => @ward.id, :format => "rdf"
@@ -137,6 +137,7 @@ class WardsControllerTest < ActionController::TestCase
       should "show rdf info for ward" do
         assert_match /rdf:Description.+rdf:about.+\/id\/wards\/#{@ward.id}/, @response.body
         assert_match /rdf:Description.+rdfs:label>#{@ward.title}/m, @response.body
+        assert_match /rdf:Description.+foaf:page>#{Regexp.escape(@ward.url)}/m, @response.body
       end
 
       should "show ward is same as other resources" do
@@ -186,6 +187,10 @@ class WardsControllerTest < ActionController::TestCase
       should "not show ward is same as other resources" do
         assert_no_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority-ward/, @response.body
         assert_no_match /owl:sameAs.+rdf:resource.+data.ordnancesurvey.co.uk/, @response.body
+      end
+      
+      should "not show missing attributes" do
+        assert_no_match /rdf:Description.+foaf:page/m, @response.body
       end
     end
 
