@@ -3,7 +3,9 @@
   <%= render :partial => 'party_breakdown' unless @party_breakdown.blank? %>
   <dl id="main_attributes" class="attributes">
     <%- attribute_tag :website do -%>
-      <%= link_to @council.url, @council.url, :class => :external %> <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %>
+      <%= link_to @council.url, @council.url, :class => :external %> 
+      <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %>
+      <%= link_to("Twitter feed", "http://twitter.com/#{@council.twitter_account}", :class => "twitter feed") unless @council.twitter_account.blank? %>
     <%- end -%>
     <%- attribute_tag :authority_type do -%>
       <%= @council.authority_type %> <%= help_link_to(@council.authority_type_help_url) %>
@@ -18,7 +20,7 @@
     <%- attribute_tag :population do -%>
       <%= @council.population ? number_with_delimiter(@council.population) : "not known" %> <span class="source attribution">(Source: <%= link_to "ONS Crown Copyright", "http://www.statistics.gov.uk/downloads/theme_population/Mid_2008_UK_England_&_Wales_Scotland_and_Northern_Ireland_27_08_09.zip", :class => "external" %>)</span>
     <%- end -%>
-    <%= attribute_tag :wikipedia_url, link_to(@council.wikipedia_url, @council.wikipedia_url, :class => 'external') %>
+    <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@council.wikipedia_url), @council.wikipedia_url, :class => 'external') unless @council.wikipedia_url.blank? %>
   </dl>
   <div class="extra_info">
     <h3>Other info</h3>

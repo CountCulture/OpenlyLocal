@@ -39,6 +39,9 @@ a.feed, a.rss {
 	margin-left:2px;
 	padding: 2px 0px 2px 18px;
 	 }
+a.twitter {
+	background: transparent url(../images/twitter_icon.png) no-repeat scroll left top;
+	 }
 /*a.new {
 	display: inline-block;
 	padding-left: 24px;

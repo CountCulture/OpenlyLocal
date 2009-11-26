@@ -207,6 +207,7 @@ task :import_os_ids => :environment do
     end
   end
 end
+
 desc "Import County-District relationship from SPARQL endpoint" 
 task :import_country_districts_relationships => :environment do
   require 'hpricot'
@@ -222,5 +223,31 @@ task :import_country_districts_relationships => :environment do
     rescue Exception => e
       puts "There was an error getting/processing info for #{county.name}: #{e.inspect}"
     end    
+  end
+end
+
+desc "add council twitter ids"
+task :add_council_twitter_ids => :environment do
+  auth_data = YAML.load_file("#{RAILS_ROOT}/config/twitter.yml")["production"]
+  base_url = "http://api.twitter.com/1/Directgov/ukcouncils/members.xml?cursor="
+  cursor = "-1"
+  require 'hpricot'
+  require 'httpclient'
+  client = HTTPClient.new
+  client.set_auth(nil, auth_data["login"], auth_data["password"])
+  while cursor != '0' do
+    doc = Hpricot.XML(client.get_content(base_url+cursor))
+    cursor = doc.at('next_cursor').inner_text
+    doc.search('users>user').each do |member|
+      m_url = URI.parse(member.at('url').inner_text.strip).host
+      
+      m_id = member.at('screen_name').inner_text
+      if council = Council.find(:first, :conditions => ["url LIKE ?", "%#{m_url}%"])
+        puts "Found twitter url for #{council.name}: #{m_id}"
+        council.update_attribute(:twitter_account, m_id)
+      else
+        puts "Failed to find council with url: #{m_url}"
+      end
+    end
   end
 end

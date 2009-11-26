@@ -14,6 +14,7 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdfs:label", @ward.name
     xml.tag! "owl:sameAs", "rdf:resource" => "http://statistics.data.gov.uk/id/local-authority-ward/#{@ward.snac_id}" unless @ward.snac_id.blank?
     xml.tag! "owl:sameAs", "rdf:resource" => "http://data.ordnancesurvey.co.uk/id/#{@ward.os_id}" unless @ward.os_id.blank?
+    xml.tag! "foaf:page", @ward.url unless @ward.url.blank?
   end
   
   # establish relationship with council
