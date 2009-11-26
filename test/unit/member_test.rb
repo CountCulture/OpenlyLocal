@@ -20,7 +20,16 @@ class MemberTest < ActiveSupport::TestCase
     should "include ScraperModel mixin" do
       assert Member.respond_to?(:find_all_existing)
     end
-                
+       
+    should "overwrite orphan_records_callback and notify Hoptoad of orphan records" do
+      HoptoadNotifier.expects(:notify).with(has_entries(:error_class => "OrphanRecords"))
+      Member.send(:orphan_records_callback, [@existing_member])
+    end       
+      
+    should "not notify Hoptoad of orphan records if there are none" do
+      HoptoadNotifier.expects(:notify).never
+      Member.send(:orphan_records_callback)
+    end         
   end
   
   context "A Member instance" do

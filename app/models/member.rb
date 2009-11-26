@@ -53,6 +53,17 @@ class Member < ActiveRecord::Base
     Party.new(self[:party])
   end
   
+  protected
+  def self.orphan_records_callback(recs=nil, opts={})
+    return if recs.blank?
+    logger.debug { "**** #{recs.size} orphan Member records: #{recs.inspect}" }
+    HoptoadNotifier.notify(
+      :error_class => "OrphanRecords",
+      :error_message => "#{recs.size} orphan Member records found for : #{recs.first.council.name}",
+      :request => { :params => opts }
+    )
+  end
+  
   private
   def tweet_about_it
     Delayed::Job.enqueue Tweeter.new("#{@council.title.length > 60 ? @council.short_name : @council.title} has been added to OpenlyLocal #localdemocracy #opendata", :url => "http://openlylocal.com/councils/#{@council.to_param}") if council.members.count == 1

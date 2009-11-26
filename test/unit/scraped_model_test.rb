@@ -154,7 +154,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
     
     context "record_not_found_behaviour" do
       should "by default create new instance from params" do
-        assert_equal TestModel.new(:title => "bar").attributes, TestModel.record_not_found_behaviour(:title => "bar").attributes
+        assert_equal TestModel.new(:title => "bar").attributes, TestModel.send(:record_not_found_behaviour, :title => "bar").attributes
       end
     end
     
@@ -255,19 +255,19 @@ class ScrapedModelTest < ActiveSupport::TestCase
         new_record = TestModel.build_or_update([@params], {:save_results => true, :council_id=>99})
       end
 
-      should "execute orphan_records_callback on records not matched by parsed params" do
+      should "execute orphan_records_callback on all records not matched by parsed params" do
         TestModel.any_instance.stubs(:matches_params) # => returns nil
         TestModel.expects(:orphan_records_callback).with([@test_model, @another_test_model], anything)
         TestModel.build_or_update([@params], :council_id=>99)
       end
       
       should "not execute orphan_records_callback on records matched by parsed params" do
-        @test_model.stubs(:matches_params)
-        @another_test_model.stubs(:matches_params).returns(true).then.returns(false)
-        TestModel.expects(:orphan_records_callback).with([@test_model], anything)
+        @test_model.stubs(:matches_params).returns(true)
+        @another_test_model.stubs(:matches_params)
+        TestModel.expects(:orphan_records_callback).with([@another_test_model], anything)
         TestModel.build_or_update([@params], :council_id=>99)
       end
-      
+            
       should "pass save_results flag to orphan_records_callback when true" do
         TestModel.any_instance.stubs(:matches_params) # => returns nil
         TestModel.expects(:orphan_records_callback).with(anything, {:save_results => true})
@@ -352,6 +352,19 @@ class ScrapedModelTest < ActiveSupport::TestCase
         TestModel.build_or_update([@params, @other_params], :council_id=>99)
       end
       
+      should "execute orphan_records_callback on all records not matched by parsed params" do
+        TestModel.any_instance.stubs(:matches_params) # => returns nil
+        TestModel.expects(:orphan_records_callback).with([@test_model, @another_test_model], anything)
+        TestModel.build_or_update([@params, @other_params], :council_id=>99)
+      end
+      
+      should "not execute orphan_records_callback on records matched by parsed params" do
+        @test_model.stubs(:matches_params).returns(true).then.returns(:false)
+        @another_test_model.stubs(:matches_params)
+        TestModel.expects(:orphan_records_callback).with([@another_test_model], anything)
+        TestModel.build_or_update([@params, @other_params], :council_id=>99)
+      end
+            
     end
     
     # context "when creating_or_update_and_saving from params" do

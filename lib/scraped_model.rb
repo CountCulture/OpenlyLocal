@@ -61,13 +61,15 @@ module ScrapedModel
             exist_records.delete(result)
           end
           result ||= record_not_found_behaviour(params.merge(:council_id => options[:council_id]))
-          orphan_records_callback(exist_records, :save_results => options[:save_results])
           options[:save_results] ? result.save_without_losing_dirty : result.valid? # we want to know what's changed and keep any errors, so run save_without_losing_dirty if we're saving, run validation to add errors to item otherwise
           logger.debug { "**********result = #{result.inspect}" }
           ScrapedObjectResult.new(result)
         end
+        orphan_records_callback(exist_records, :save_results => options[:save_results])
+        results
       end
       
+      protected
       # stub method. Is called in build_or_update with those records that
       # are in db but that weren't returned by scraper/parser (for example old 
       # commitees/meetings/councillors). By default does nothing. However may 
