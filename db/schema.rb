@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091125082023) do
+ActiveRecord::Schema.define(:version => 20091127131748) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -57,29 +57,8 @@ ActiveRecord::Schema.define(:version => 20091125082023) do
     t.integer  "ldg_id"
     t.string   "os_id"
     t.integer  "parent_authority_id"
-    t.string   "police_neighbourhood_url"
+    t.string   "police_force_url"
     t.integer  "police_force_id"
-  end
-
-  create_table "councils_copy", :force => true do |t|
-    t.string   "name"
-    t.string   "url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "base_url"
-    t.string   "telephone"
-    t.text     "address"
-    t.string   "authority_type"
-    t.integer  "portal_system_id"
-    t.text     "notes"
-    t.string   "wikipedia_url"
-    t.string   "ons_url"
-    t.integer  "egr_id"
-    t.string   "wdtk_name"
-    t.string   "feed_url"
-    t.string   "data_source_url"
-    t.string   "data_source_name"
-    t.string   "snac_id"
   end
 
   create_table "datapoints", :force => true do |t|
@@ -271,6 +250,9 @@ ActiveRecord::Schema.define(:version => 20091125082023) do
     t.string   "police_authority_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "wikipedia_url"
+    t.string   "telephone"
+    t.text     "address"
   end
 
   create_table "portal_systems", :force => true do |t|

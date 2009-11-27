@@ -91,7 +91,7 @@ class Council < ActiveRecord::Base
   end
   
   def police_force_url
-    police_neighbourhood_url.blank? ? police_force.try(:url) : police_neighbourhood_url
+    self[:police_force_url].blank? ? police_force.try(:url) : self[:police_force_url]
   end
     
   def recent_activity

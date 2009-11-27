@@ -38,7 +38,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_db_column :population
     should_have_db_column :twitter_account
     should_have_db_column :ldg_id
-    should_have_db_column :police_neighbourhood_url
+    should_have_db_column :police_force_url
     
     should "mixin PartyBreakdownSummary module" do
       assert Council.new.respond_to?(:party_breakdown)
@@ -296,23 +296,23 @@ class CouncilTest < ActiveSupport::TestCase
         @force = Factory(:police_force)
       end
       
-      should "return police_neighbourhood_url if set and police_force is not" do
-        @council.update_attribute(:police_neighbourhood_url, "http://police.com/anytown")
+      should "return police_force_url if set and police_force is not" do
+        @council.update_attribute(:police_force_url, "http://police.com/anytown")
         assert_equal "http://police.com/anytown", @council.police_force_url
       end
       
-      should "return police_neighbourhood_url if set and police_force is" do
-        @council.update_attribute(:police_neighbourhood_url, "http://police.com/anytown")
+      should "return police_force_url if set and police_force is" do
+        @council.update_attribute(:police_force_url, "http://police.com/anytown")
         @council.update_attribute(:police_force_id, @force.id)
         assert_equal "http://police.com/anytown", @council.police_force_url
       end
       
-      should "return assoc police_force url if police_neighbourhood_url blank" do
+      should "return assoc police_force url if police_force_url blank" do
         @council.update_attribute(:police_force_id, @force.id)
         assert_equal @force.url, @council.police_force_url
       end
       
-      should "return nil if no assoc police_force and police_neighbourhood_url blank" do
+      should "return nil if no assoc police_force and police_force_url blank" do
         assert_nil @council.police_force_url
       end
     end
