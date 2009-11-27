@@ -291,6 +291,32 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning police_force_url" do
+      setup do
+        @force = Factory(:police_force)
+      end
+      
+      should "return police_neighbourhood_url if set and police_force is not" do
+        @council.update_attribute(:police_neighbourhood_url, "http://police.com/anytown")
+        assert_equal "http://police.com/anytown", @council.police_force_url
+      end
+      
+      should "return police_neighbourhood_url if set and police_force is" do
+        @council.update_attribute(:police_neighbourhood_url, "http://police.com/anytown")
+        @council.update_attribute(:police_force_id, @force.id)
+        assert_equal "http://police.com/anytown", @council.police_force_url
+      end
+      
+      should "return assoc police_force url if police_neighbourhood_url blank" do
+        @council.update_attribute(:police_force_id, @force.id)
+        assert_equal @force.url, @council.police_force_url
+      end
+      
+      should "return nil if no assoc police_force and police_neighbourhood_url blank" do
+        assert_nil @council.police_force_url
+      end
+    end
+    
     context "when getting active_committees" do
       setup do
         @committee = Factory(:committee, :council => @council)
@@ -317,7 +343,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
 
-    context "when caclulating whether council has active committees" do
+    context "when calculating whether council has active committees" do
       setup do
         @committee = Factory(:committee, :council => @council)
         @another_committee = Factory(:committee, :council => @council)

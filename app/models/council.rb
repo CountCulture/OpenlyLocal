@@ -89,6 +89,10 @@ class Council < ActiveRecord::Base
   def parsed?
     !members.blank?
   end
+  
+  def police_force_url
+    police_neighbourhood_url.blank? ? police_force.try(:url) : police_neighbourhood_url
+  end
     
   def recent_activity
     conditions = ["updated_at > ?", 7.days.ago]
