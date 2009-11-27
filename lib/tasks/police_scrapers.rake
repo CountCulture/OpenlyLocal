@@ -77,3 +77,21 @@ task :connect_police_force_to_la => :environment do
   end
 end
 
+desc "Get wikipedia info for Police Forces" 
+task :get_police_force_wikipedia_info => :environment do
+  PoliceForce.first(:conditions => "name LIKE 'Dyfed%'").update_attribute(:name, "Dyfed-Powys Police")
+  require 'hpricot'
+  require 'httpclient'
+  client = HTTPClient.new
+  PoliceForce.all.each do |force|
+    poss_url = "http://en.wikipedia.org/wiki/#{URI.escape(force.name.split(" - ").first.strip.sub('&', 'and').gsub(/\s/,'_'))}"
+    resp = client.get(poss_url)
+    if resp.status == 200
+      puts "Found wikipedia page for #{force.name}: #{poss_url}"
+      force.update_attribute(:wikipedia_url, poss_url)
+    else
+      puts "Prob finding wikipedia page for #{force.name}. Status: #{resp.status}\n#{resp.header.inspect}"
+    end
+  end
+end
+
