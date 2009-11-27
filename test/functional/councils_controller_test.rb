@@ -285,6 +285,9 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "council>wards>ward>url", @ward.url
       end
       
+      should "show twtter id" do
+        assert_select "council>twitter-account"
+      end
     end
     
     context "with json requested" do
@@ -391,6 +394,11 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "show twitter details" do
+        get :show, :id => @council.id, :format => "rdf"
+        assert_match /rdf:Description.+foaf:OnlineAccount.+twitter\.com/m, @response.body
+      end
+      
+      should_eventually "show police force details" do
         get :show, :id => @council.id, :format => "rdf"
         assert_match /rdf:Description.+foaf:OnlineAccount.+twitter\.com/m, @response.body
       end
