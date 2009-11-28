@@ -19,3 +19,5 @@ ResourceRepresentations = { :rdf => "application/rdf+xml",
                             :json  => "application/json",
                             :xml  => "application/xml",
                             :html => "text/html" }
+                            
+GoogleGadgetAnalyticsId = "UA-9440277-2"

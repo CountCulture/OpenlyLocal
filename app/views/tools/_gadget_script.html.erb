@@ -15,6 +15,10 @@
   // Initialize tabs.
   var tabs = new gadgets.TabSet(__MODULE_ID__);
   tabs.alignTabs("left");
+  
+  // Initialize google gadget.
+  var ga = new _IG_GA(GoogleGadgetAnalyticsId);
+  ga.reportPageview('/tools/googleGadgetView');
                   
   function getCouncilData() {
     var councilId = prefs.getString("council");
