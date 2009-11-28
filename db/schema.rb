@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091127131748) do
+ActiveRecord::Schema.define(:version => 20091128194638) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -253,6 +253,7 @@ ActiveRecord::Schema.define(:version => 20091127131748) do
     t.string   "wikipedia_url"
     t.string   "telephone"
     t.text     "address"
+    t.string   "wdtk_name"
   end
 
   create_table "portal_systems", :force => true do |t|

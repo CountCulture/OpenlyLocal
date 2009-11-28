@@ -95,3 +95,20 @@ task :get_police_force_wikipedia_info => :environment do
   end
 end
 
+desc "Get WDTK ids for Police Forces"
+task :get_police_force_wdtk_ids  => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  doc = Hpricot(open("http://www.whatdotheyknow.com/body/list/police"))
+  force_links = doc.search('.body_listing a')
+  PoliceForce.all.each do |force|
+    short_name = force.name.gsub(/Police|Constabulary|Service/,'').sub("&", "and").sub(/ \- .+$/,'').sub('-',' ').strip
+    if f=force_links.detect{ |fl| fl.inner_text.sub("&", "and") =~ /#{short_name}/ }
+      wdtk_name = f[:href].scan(/body\/(.+)/).to_s
+      puts "Found entry for #{short_name}: #{f.inner_text} (WDTK name = #{wdtk_name})"
+      force.update_attribute(:wdtk_name, wdtk_name)
+    else
+      puts "Couldn't match force (#{short_name})"
+    end
+  end
+end

@@ -17,5 +17,6 @@ class PoliceForceTest < ActiveSupport::TestCase
     should_have_db_column :wikipedia_url
     should_have_db_column :telephone
     should_have_db_column :address
+    should_have_db_column :wdtk_name
   end
 end
