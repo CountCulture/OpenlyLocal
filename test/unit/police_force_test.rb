@@ -18,5 +18,13 @@ class PoliceForceTest < ActiveSupport::TestCase
     should_have_db_column :telephone
     should_have_db_column :address
     should_have_db_column :wdtk_name
+    
+    should "have stub status method" do
+      assert_nil @police_force.status
+    end
+    
+    should "have alias name as title" do
+      assert_equal @police_force.name, @police_force.title
+    end
   end
 end

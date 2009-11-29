@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :police_forces
+
 
   map.resources :datasets, :member => { :data => :get }
 

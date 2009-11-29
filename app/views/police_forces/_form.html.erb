@@ -1,0 +1,27 @@
+<%= error_messages_for :police_force %>
+
+<% form_for @police_force do |f| -%>
+  <p>
+    <%= f.label :name, "Name" %>
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :url, "Url" %>
+    <%= f.text_field :url %>
+  </p>
+  <p>
+    <%= f.label :wdtk_name, "WhatDoTheyKnow name" %>
+    <%= f.text_field :wdtk_name %>
+  </p>
+  <p>
+    <%= f.label :address %>
+    <%= f.text_area :address %>
+  </p>
+  <p>
+    <%= f.label :telephone %>
+    <%= f.text_field :telephone %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>

@@ -1,0 +1,10 @@
+<h1><%= h @police_force.name %></h1>
+
+<%= attribute_tag :address, @police_force.address %>
+<%= attribute_tag :address, @police_force.telephone %>
+<%= attribute_tag :website, @police_force.url %>
+
+<div id="councils" class="item_grouping">
+  <h4>Polices area covered by following councils</h4>
+  <%= list_all @police_force.councils %>
+</div>
