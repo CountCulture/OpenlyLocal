@@ -20,6 +20,7 @@
     <%- attribute_tag :population do -%>
       <%= @council.population ? number_with_delimiter(@council.population) : "not known" %> <span class="source attribution">(Source: <%= link_to "ONS Crown Copyright", "http://www.statistics.gov.uk/downloads/theme_population/Mid_2008_UK_England_&_Wales_Scotland_and_Northern_Ireland_27_08_09.zip", :class => "external" %>)</span>
     <%- end -%>
+    <%= attribute_tag :police_force, basic_link_for(@council.police_force) %>
     <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@council.wikipedia_url), @council.wikipedia_url, :class => 'external') unless @council.wikipedia_url.blank? %>
   </dl>
   <div class="extra_info">
@@ -29,9 +30,6 @@
       <ul>
         <%- unless @council.wdtk_name.blank? -%>
           <li><%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@council.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@council.wdtk_name}", :class => "feed" %>)</li>
-        <%- end -%>
-        <%- if @council.police_force -%>
-          <li><strong>Police Force</strong> <%= link_to @council.police_force.name, @council.police_force_url, :class => 'external' %></li>
         <%- end -%>
         <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external' %></li>
         <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external' %></li>

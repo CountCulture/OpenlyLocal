@@ -8,24 +8,54 @@ class PoliceForcesControllerTest < ActionController::TestCase
   
   # index test
   context "on GET to :index" do
-    setup do
-      get :index
+    context "with basic request" do
+      setup do
+        get :index
+      end
+
+      should_assign_to(:police_forces) { PoliceForce.find(:all)}
+      should_respond_with :success
+      should_render_template :index
+      should "list police forces" do
+        assert_select "li a", @police_force.name
+      end
+
+      should "show share block" do
+        assert_select "#share_block"
+      end
+
+      should "show api block" do
+        assert_select "#api_info"
+      end
+      
+      should 'show title' do
+        assert_select "title", /police forces/i
+      end
     end
+    
+    context "with xml request" do
+      setup do
+        @police_force.update_attribute(:address, "35 Some St, Anytown AN1 2NT")
+        get :index, :format => "xml"
+      end
+
+      should_assign_to(:police_forces) { PoliceForce.find(:all) }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/xml'
+    end
+    
+    context "with json requested" do
+      setup do
+        get :index, :format => "json"
+      end
   
-    should_assign_to(:police_forces) { PoliceForce.find(:all)}
-    should_respond_with :success
-    should_render_template :index
-    should "list police forces" do
-      assert_select "li a", @police_force.name
+      should_assign_to(:police_forces) { PoliceForce.find(:all) }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/json'
     end
     
-    should "show share block" do
-      assert_select "#share_block"
-    end
-    
-    should_eventually "show api block" do
-      assert_select "#api_info"
-    end
   end  
 
   # show test

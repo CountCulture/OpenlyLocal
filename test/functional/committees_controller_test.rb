@@ -170,6 +170,7 @@ class CommitteesControllerTest < ActionController::TestCase
        setup do
          @another_active_committee = Factory(:committee, :council => @council)
          @meeting_in_past_for_another_active_committee = Factory(:meeting, :council => @council, :committee => @another_active_committee)
+         @inactive_committee = Factory(:committee, :council => @council)
          get :index, :council_id => @council.id
        end
 
@@ -182,9 +183,10 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "title", /#{@council.title}/
        end
 
-       should "should list committees for council" do
+       should "should list active committees for council" do
          assert_select "#committees li", 2 do #active committees by default
            assert_select "a", @committee.title
+           assert_select "a", :text => @inactive_committee.title, :count => 0
          end
        end
        
@@ -200,13 +202,14 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "div#documents li a", @document.extended_title
        end
        
-       should "show link to inclue inactive committees" do
+       should "show link to include inactive committees" do
          assert_select "a[href*=include_inactive]", /include inactive/i
        end
      end
 
      context "when inactive included" do
        setup do
+         @inactive_committee = Factory(:committee, :council => @council)
          get :index, :council_id => @council.id, :include_inactive => true
        end
 
@@ -215,13 +218,14 @@ class CommitteesControllerTest < ActionController::TestCase
        should_respond_with :success
        should_render_template :index
 
-       should "not show link to inclue inactive committees" do
+       should "not show link to include inactive committees" do
          assert_select "a[href*=include_inactive]", :text =>/include inactive/i, :count =>0
        end
  
-       should "should list committees for council" do
-         assert_select "#committees li", 2 do #active committees by default
-           assert_select "a", @committee.title
+       should "should include list committees for council" do
+         assert_select "#committees li", 3 do #active committees by default
+           assert_select "a.active", @committee.title
+           assert_select "a.inactive", @inactive_committee.title
          end
        end
        

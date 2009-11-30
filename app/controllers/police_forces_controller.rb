@@ -4,6 +4,12 @@ class PoliceForcesController < ApplicationController
   
   def index
     @police_forces = PoliceForce.find(:all)
+    @title = "UK Police Forces"
+    respond_to do |format|
+      format.html
+      format.xml { render :xml => @police_forces.to_xml }
+      format.json { render :json => @police_force.to_json }
+    end
   end
   
   def show

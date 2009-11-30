@@ -6,6 +6,7 @@ xml.tag! "rdf:RDF",
          "xmlns:dct"   => "http://purl.org/dc/terms/", 
          "xmlns:xsd"   => "http://www.w3.org/2001/XMLSchema#", 
          "xmlns:owl"   => "http://www.w3.org/2002/07/owl#",
+         "xmlns:vCard" => "http://www.w3.org/2001/vcard-rdf/3.0#",
          "xmlns:administrative-geography"   => "http://statistics.data.gov.uk/def/administrative-geography/", 
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
            
