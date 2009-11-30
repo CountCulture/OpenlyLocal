@@ -187,11 +187,11 @@ body {
 	clear:left;
 	margin-bottom: 0.75em;
 	}
-#data .attributes dt {
+.attributes dt {
 	float: left;
 	width: 10em;
 }
-#data .attributes dd {
+.attributes dd {
 	margin-left: 11em;
 }
 .extra_info  {

@@ -1,12 +1,21 @@
 class PoliceForcesController < ApplicationController
   before_filter :authenticate, :except => [:index, :show]
-
+  before_filter :linked_data_available, :only => [:show]
+  
   def index
     @police_forces = PoliceForce.find(:all)
   end
   
   def show
     @police_force = PoliceForce.find(params[:id])
+    @title = @police_force.name
+    respond_to do |format|
+      includes = {:councils => {:only => [:id, :name, :url], :methods => :openlylocal_url}}
+      format.html
+      format.xml { render :xml => @police_force.to_xml(:include => includes) }
+      format.rdf 
+      format.json { render :as_json => @police_force.to_xml(:include => includes) }
+    end
   end
   
   def new
@@ -16,7 +25,7 @@ class PoliceForcesController < ApplicationController
   def create
     @police_force = PoliceForce.new(params[:police_force])
     @police_force.save!
-    flash[:notice] = "Successfully created portal system"
+    flash[:notice] = "Successfully created police force"
     redirect_to police_force_path(@police_force)
   rescue
     render :action => "new"

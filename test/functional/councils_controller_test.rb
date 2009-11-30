@@ -360,14 +360,14 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should "show council is same as other resources" do
         assert_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
-        assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_url)}/, @response.body
+        assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_resource)}/, @response.body
         assert_match /owl:sameAs.+rdf:resource.+data.ordnancesurvey.co.uk\/id\/#{@council.os_id}/, @response.body
       end
       
       should "show details of council" do
-        assert_match /foaf:address.+#{Regexp.escape(@council.address)}/, @response.body
         assert_match /foaf:phone.+#{Regexp.escape(@council.foaf_telephone)}/, @response.body
         assert_match /foaf:homepage.+#{Regexp.escape(@council.url)}/, @response.body
+        assert_match /vCard:Extadd.+#{Regexp.escape(@council.address)}/, @response.body
       end
       
       should "show address for member as vCard" do
@@ -398,9 +398,11 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_match /rdf:Description.+foaf:OnlineAccount.+twitter\.com/m, @response.body
       end
       
-      should_eventually "show police force details" do
+      should "show police force details" do
+        @police_force = Factory(:police_force)
+        @police_force.councils << @council
         get :show, :id => @council.id, :format => "rdf"
-        assert_match /rdf:Description.+foaf:OnlineAccount.+twitter\.com/m, @response.body
+        assert_match /rdf:Description.+\/id\/police_forces\/#{@police_force.id}.+openlylocal:isPoliceForceFor.+\/id\/councils\/#{@council.id}/m, @response.body
       end
     end
 
@@ -416,8 +418,6 @@ class CouncilsControllerTest < ActionController::TestCase
       should_respond_with_content_type 'application/rdf+xml'
      
       should "show relationship with child authorities" do
-        # assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/id\/members\/#{@member.id}/, @response.body
-
         assert_match /rdf:Description.+\/id\/councils\/#{@council.id}.+openlylocal:isParentAuthorityOf.+\/id\/councils\/#{@another_council.id}/m, @response.body
       end
       

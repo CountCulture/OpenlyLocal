@@ -124,6 +124,12 @@
     			<p>The minutes link connects an <a rel="rdfs:domain" href="http://www.w3.org/2002/12/cal#Vevent">Event</a> to a
     			<a rel="rdfs:range"  href="http://xmlns.com/foaf/0.1/Document">Document</a>.</p>
     		</div>
+    		
+    		<div typeof="rdf:Property" id="isPoliceForceFor" about="#isPoliceForceFor">
+    			<h3><span property="rdfs:label">Is Police Force For</span> (openlylocal:isPoliceForceFor)</h3>
+    			<p property="rdfs:comment">Links PoliceForces and Local Authorities. A <a rel="rdfs:domain" href="http://dbpedia.org/resource/Category:Police_forces_of_the_United_Kingdom">PoliceForce</a> is considered to be a the police force for a <a rel="rdfs:domain" href="#LocalAuthority">LocalAuthority</a>, and is responsible for the policing and law enforcement in the LocalAuthority's area</p>
+    		</div>
+    		
       </div>
       <%= render :partial => 'shared/footer' %>
 		</div>

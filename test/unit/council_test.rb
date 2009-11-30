@@ -241,15 +241,15 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
-    context "when returning dbpedia_url" do
+    context "when returning dbpedia_resource" do
 
       should "return nil if wikipedia_url blank" do
-        assert_nil @council.dbpedia_url
+        assert_nil @council.dbpedia_resource
       end
       
       should "return dbpedia url" do
         @council.wikipedia_url = "http://en.wikipedia.org/wiki/Herefordshire"
-        assert_equal "http://dbpedia.org/page/Herefordshire", @council.dbpedia_url
+        assert_equal "http://dbpedia.org/resource/Herefordshire", @council.dbpedia_resource
       end
     end
     

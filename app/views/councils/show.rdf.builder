@@ -17,8 +17,7 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:#{@council.authority_type.gsub(/\s+/,'')}Authority"
     xml.tag! "owl:sameAs", "rdf:resource" => "http://statistics.data.gov.uk/id/local-authority/#{@council.snac_id}" unless @council.snac_id.blank?
     xml.tag! "owl:sameAs", "rdf:resource" => "http://data.ordnancesurvey.co.uk/id/#{@council.os_id}" unless @council.os_id.blank?
-    xml.tag! "owl:sameAs", "rdf:resource" => @council.dbpedia_url unless @council.dbpedia_url.blank?
-    xml.tag! "foaf:address", @council.address unless @council.address.blank?
+    xml.tag! "owl:sameAs", "rdf:resource" => @council.dbpedia_resource unless @council.dbpedia_resource.blank?
     xml.tag! "foaf:phone", @council.foaf_telephone unless @council.foaf_telephone.blank?
     xml.tag! "foaf:homepage", @council.url unless @council.url.blank?
     
@@ -76,6 +75,14 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@council.parent_authority) do
       xml.tag! "rdfs:label", @council.parent_authority.title
       xml.tag! "openlylocal:isParentAuthorityOf", "rdf:resource" => resource_uri_for( @council)
+    end
+  end
+  
+  # establish relationship with police_force
+  if @council.police_force
+    xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@council.police_force) do
+      xml.tag! "rdfs:label", @council.police_force.title
+      xml.tag! "openlylocal:isPoliceForceFor", "rdf:resource" => resource_uri_for( @council)
     end
   end
   

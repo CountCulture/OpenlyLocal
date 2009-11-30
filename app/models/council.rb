@@ -74,8 +74,8 @@ class Council < ActiveRecord::Base
     read_attribute(:base_url).blank? ? url : read_attribute(:base_url)
   end
   
-  def dbpedia_url
-    wikipedia_url.gsub(/en\.wikipedia.org\/wiki/, "dbpedia.org/page") unless wikipedia_url.blank?
+  def dbpedia_resource
+    wikipedia_url.gsub(/en\.wikipedia.org\/wiki/, "dbpedia.org/resource") unless wikipedia_url.blank?
   end
   
   def foaf_telephone
