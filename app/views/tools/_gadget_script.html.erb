@@ -17,7 +17,7 @@
   tabs.alignTabs("left");
   
   // Initialize google gadget.
-  var ga = new _IG_GA(GoogleGadgetAnalyticsId);
+  var ga = new _IG_GA('<%= GoogleGadgetAnalyticsId %>');
   ga.reportPageview('/tools/googleGadgetView');
                   
   function getCouncilData() {
