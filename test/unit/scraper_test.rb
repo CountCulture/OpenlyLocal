@@ -378,7 +378,6 @@ class ScraperTest < ActiveSupport::TestCase
       setup do
         @parser = @scraper.parser
         @parser.stubs(:results).returns([{ :full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
-        # @parser.stubs(:process).returns(@parser)
         @scraper.stubs(:_data).returns("something")
       end
       
@@ -418,7 +417,6 @@ class ScraperTest < ActiveSupport::TestCase
         dummy_member = Member.new(:full_name => "Fred Flintstone")
         Member.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_member)])
         results = @scraper.process.results
-        
         assert_kind_of ScrapedObjectResult, results.first
         assert_match /new/, results.first.status
         assert_equal "Member", results.first.base_object_klass

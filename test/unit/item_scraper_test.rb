@@ -157,7 +157,6 @@ class ItemScraperTest < ActiveSupport::TestCase
       
       context "item_scraper with related_model" do
         setup do
-          # @scraper.parser.update_attribute(:related_model, "Committee")
           @scraper.parser.update_attributes(:result_model => "Meeting", :related_model => "Committee")
           
           @committee_1 = Factory(:committee, :council => @scraper.council)
@@ -190,6 +189,22 @@ class ItemScraperTest < ActiveSupport::TestCase
             @parser.expects(:process).twice.with(anything, @scraper).returns(stub_everything(:results => []))
             @scraper.process
           end
+          
+          should "store all instances of scraped_object_result in results" do
+            Parser.any_instance.stubs(:process).returns(stub_everything(:results => [{:date_held => 3.days.ago, :uid => 42}]))
+            
+            dummy_members = (1..3).collect{ |i|  Meeting.new(:date_held => i.days.ago, :committee_id => @committee_1.id, :venue => "Venue #{i}") }
+            Meeting.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_members[0])]).then.returns([ScrapedObjectResult.new(dummy_members[1]), ScrapedObjectResult.new(dummy_members[2])])
+            
+            results = @scraper.process.results
+            assert_equal 3, results.size
+            assert_kind_of ScrapedObjectResult, results.first
+            assert_match /new/, results.first.status
+            assert_equal "Meeting", results.first.base_object_klass
+            assert_equal "#{@committee_1.title} meeting", results.first.title
+          end
+
+          
           
           should "not update last_scraped attribute if not saving results" do
             assert_nil @scraper.process.last_scraped
