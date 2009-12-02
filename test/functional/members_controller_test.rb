@@ -5,12 +5,64 @@ class MembersControllerTest < ActionController::TestCase
   def setup
     @member = Factory(:member)
     @council = @member.council
+    @ex_member = Factory(:member, :council => @council, :date_left => 1.month.ago)
     @ward = Factory(:ward, :council => @council)
     @ward.members << @member
     @committee = Factory(:committee, :council => @council)
     @member.committees << @committee
     @forthcoming_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 2.days.from_now)
   end
+  
+  # index test
+  context "on GET to :index" do
+    
+    context "with basic request and council_id" do
+      setup do
+        get :index, :council_id => @council.id
+      end
+      
+      should_assign_to(:members) { [@member] } # current members
+      should_assign_to(:council) { @council }
+      should_respond_with :success
+      
+      should "show title" do
+        assert_select "title", /current members/i
+      end
+      
+      should "list current members" do
+        assert_select ".members li a", @member.full_name
+      end
+      
+      should "show link to include ex_members" do
+        assert_select "a[href*=include_ex_members]"
+      end
+    end
+    
+    context "with basic request and council_id and ex-members included" do
+      setup do
+        get :index, :council_id => @council.id, :include_ex_members => true
+      end
+      
+      should_assign_to(:members) { [@member, @ex_member] } # current members
+      should_assign_to(:council) { @council }
+      should_respond_with :success
+      
+      should "show title" do
+        assert_select "title", /all members/i
+      end
+      
+      should "list all members" do
+        assert_select ".members li a", @member.full_name
+        assert_select ".members li a", @ex_member.full_name
+      end
+      
+      should "not show link to include ex_members" do
+        assert_select "a[href*=include_ex_members]", false
+      end
+    end
+
+  end
+  
   # show test
    context "on GET to :show" do
 

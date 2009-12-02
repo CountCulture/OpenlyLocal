@@ -50,7 +50,7 @@
 </div>
 
 <div id="members" class="item_grouping">
-  <h3>Current councillors</h3>
+  <h3><%= link_to "Current councillors", members_path(:council_id => @council.id) %></h3>
   <%= list_all @members %>
 </div>
 

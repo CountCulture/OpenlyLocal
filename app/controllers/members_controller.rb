@@ -1,7 +1,13 @@
 class MembersController < ApplicationController
   before_filter :linked_data_available, :only => :show
-  before_filter :authenticate, :except => [:show]
-
+  before_filter :authenticate, :except => [:show, :index]
+  
+  def index
+    @council = Council.find(params[:council_id])
+    @members = params[:include_ex_members] ? @council.members : @council.members.current
+    @title = params[:include_ex_members] ? "All members" : "Current members"
+  end
+  
   def show
     @member = Member.find(params[:id])
     @council = @member.council

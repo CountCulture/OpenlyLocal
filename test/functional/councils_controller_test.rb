@@ -6,6 +6,7 @@ class CouncilsControllerTest < ActionController::TestCase
     @council = Factory(:council, :authority_type => "London Borough", :snac_id => "snac_1")
     @member = Factory(:member, :council => @council)
     @old_member = Factory(:member, :council => @council)
+    @ex_member = Factory(:member, :council => @council, :date_left => 1.month.ago)
     @another_council = Factory(:another_council)
     @committee = Factory(:committee, :council => @council)
     @past_meeting = Factory(:meeting, :committee => @committee, :council => @council)
@@ -190,8 +191,9 @@ class CouncilsControllerTest < ActionController::TestCase
       should_assign_to(:members) { @council.members.current }
       should_assign_to(:committees) { [@committee] }
 
-      should "list all members" do
+      should "list all active members" do
         assert_select "#members li", @council.members.current.size
+        assert_select "#members a", :text => /#{@ex_member.title}/, :count => 0
       end
       
       should "list all active committees" do

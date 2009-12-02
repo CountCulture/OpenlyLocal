@@ -6,7 +6,9 @@ class WardsControllerTest < ActionController::TestCase
     @ward = Factory(:ward)
     @council = @ward.council
     @member = Factory(:member, :council => @council)
+    @ex_member = Factory(:member, :council => @council, :date_left => 1.month.ago)
     @ward.members << @member
+    @ward.members << @ex_member
   end
 
   # show test
@@ -33,8 +35,9 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "title", /#{@ward.council.title}/
       end
       
-      should "list members" do
+      should "list current members" do
         assert_select "div#members li a", @member.title
+        assert_select "div#members li a", :text => @ex_member.title, :count => 0
       end
     
       should "not show list of committees" do

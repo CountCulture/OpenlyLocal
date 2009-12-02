@@ -5,7 +5,7 @@ class WardsController < ApplicationController
   def show
     @ward = Ward.find(params[:id])
     @council = @ward.council
-    @members = @ward.members
+    @members = @ward.members.current
     @committees = @ward.committees
     @title = "#{@ward.name} ward"
     respond_to do |format|
