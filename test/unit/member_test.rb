@@ -24,6 +24,7 @@ class MemberTest < ActiveSupport::TestCase
     context "should overwrite orphan_records_callback and" do
       setup do
         @another_member = Factory(:member, :council => @existing_member.council)
+        @vacancy = Factory.create(:member, :full_name => "Vacancy", :council => @existing_member.council)
       end
       
       should "overwrite orphan_records_callback and notify Hoptoad of orphan records" do
@@ -40,6 +41,12 @@ class MemberTest < ActiveSupport::TestCase
         Member.send(:orphan_records_callback, [@existing_member, @another_member])
         assert !@existing_member.reload.ex_member?
         assert !@another_member.reload.ex_member?
+      end
+      
+      should "not delete vacancies if not saving results" do      
+        Member.send(:orphan_records_callback, [@existing_member, @vacancy])
+        assert !@existing_member.reload.ex_member?
+        assert Member.find_by_id(@vacancy.id)
       end
       
       should "not notify Hoptoad of orphan records if there are none" do
@@ -66,6 +73,12 @@ class MemberTest < ActiveSupport::TestCase
         assert @existing_member.reload.ex_member?
         assert @another_member.reload.ex_member?
         assert_equal Date.today, @existing_member.date_left
+      end  
+           
+      should "delete records that are vacancies" do
+        Member.send(:orphan_records_callback, [@existing_member, @vacancy], :save_results => true)
+        assert_nil Member.find_by_id(@vacancy.id)
+        assert @existing_member.reload.ex_member?
       end       
     end   
       
@@ -73,32 +86,43 @@ class MemberTest < ActiveSupport::TestCase
   
   context "A Member instance" do
     setup do
-      NameParser.stubs(:parse).returns(:first_name => "Fred", :last_name => "Scuttle", :name_title => "Prof", :qualifications => "PhD")
       @member = new_member(:full_name => "Fred Scuttle")
     end
     
-    should "return full name" do
-      assert_equal "Fred Scuttle", @member.full_name
-    end
-    
-    should "should extract first name from full name" do
-      assert_equal "Fred", @member.first_name
-    end
-    
-    should "extract last name from full name" do
-      assert_equal "Scuttle", @member.last_name
-    end
-    
-    should "extract name_title from full name" do
-      assert_equal "Prof", @member.name_title
-    end
-    
-    should "extract qualifications from full name" do
-      assert_equal "PhD", @member.qualifications
-    end
-    
-    should "alias full_name as title" do
-      assert_equal @member.full_name, @member.title
+    context "when parsing name" do
+      setup do
+        NameParser.stubs(:parse).returns(:first_name => "Fred", :last_name => "Scuttle", :name_title => "Prof", :qualifications => "PhD")
+        @named_member = new_member(:full_name => "Fred Scuttle")
+      end
+
+      should "send name to parser" do
+        NameParser.expects(:parse).with("Fred Scuttleman").returns(stub_everything)
+        new_member(:full_name => "Fred Scuttleman")
+      end
+
+      should "return full name" do
+        assert_equal "Fred Scuttle", @named_member.full_name
+      end
+
+      should "should extract first name from full name" do
+        assert_equal "Fred", @named_member.first_name
+      end
+
+      should "extract last name from full name" do
+        assert_equal "Scuttle", @named_member.last_name
+      end
+
+      should "extract name_title from full name" do
+        assert_equal "Prof", @named_member.name_title
+      end
+
+      should "extract qualifications from full name" do
+        assert_equal "PhD", @named_member.qualifications
+      end
+
+      should "alias full_name as title" do
+        assert_equal @member.full_name, @named_member.title
+      end
     end
     
     should "be ex_member if has left office" do
@@ -114,6 +138,13 @@ class MemberTest < ActiveSupport::TestCase
       assert_nil member.status
       member.update_attribute(:date_left, 3.days.ago)
       assert_equal "ex_member", member.status
+      member.update_attribute(:full_name, "Vacancy")
+      assert_equal "vacancy", member.status
+    end
+    
+    should "return whether member is a vacancy" do
+      assert new_member(:full_name => "Vacancy").vacancy?
+      assert new_member(:full_name => "Vacant Seat").vacancy?
     end
     
     context "when assigning party" do

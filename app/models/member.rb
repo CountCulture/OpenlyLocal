@@ -58,7 +58,11 @@ class Member < ActiveRecord::Base
   end
   
   def status
-    ex_member? ? 'ex_member' : nil
+    vacancy? ? 'vacancy' : (ex_member? ? 'ex_member' : nil)
+  end
+  
+  def vacancy?
+    full_name =~ /vacancy|vacant/i
   end
   
   protected
@@ -66,6 +70,7 @@ class Member < ActiveRecord::Base
     return if recs.blank? || !options[:save_results] || recs.all?{ |r| r.ex_member? } #skip if no records or doing dry run, or if all records already marked
     recs = recs.select{ |r| !r.ex_member? } #eleminate ex_members
     logger.debug { "**** #{recs.size} orphan Member records: #{recs.inspect}" }
+    recs.delete_if{ |r| (r.full_name =~ /vacancy|vacant/i)&&r.destroy}
     recs.each { |r| r.mark_as_ex_member }
     HoptoadNotifier.notify(
       :error_class => "OrphanRecords",
