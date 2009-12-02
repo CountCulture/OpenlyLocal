@@ -107,7 +107,7 @@ margin-left:2em;
 }
 img.icon {
 	margin: 0 .25em;}
-body.councils li a.unparsed, body.committees li a.inactive {
+body.councils li a.unparsed, body.committees li a.inactive, body.members a.ex_member {
 	color:#9e9e9e; }
 	
 /*General template format*/
