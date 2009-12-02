@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091128194638) do
+ActiveRecord::Schema.define(:version => 20091202124802) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(:version => 20091128194638) do
   end
 
   add_index "committees", ["council_id"], :name => "index_committees_on_council_id"
+  add_index "committees", ["ward_id"], :name => "index_committees_on_ward_id"
 
   create_table "councils", :force => true do |t|
     t.string   "name"
@@ -60,6 +61,10 @@ ActiveRecord::Schema.define(:version => 20091128194638) do
     t.string   "police_force_url"
     t.integer  "police_force_id"
   end
+
+  add_index "councils", ["parent_authority_id"], :name => "index_councils_on_parent_authority_id"
+  add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
+  add_index "councils", ["portal_system_id"], :name => "index_councils_on_portal_system_id"
 
   create_table "datapoints", :force => true do |t|
     t.text     "data"
@@ -195,6 +200,8 @@ ActiveRecord::Schema.define(:version => 20091128194638) do
     t.datetime "updated_at"
   end
 
+  add_index "officers", ["council_id"], :name => "index_officers_on_council_id"
+
   create_table "ons_dataset_families", :force => true do |t|
     t.string   "title"
     t.integer  "ons_subject_id"
@@ -244,6 +251,8 @@ ActiveRecord::Schema.define(:version => 20091128194638) do
     t.string   "path"
   end
 
+  add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"
+
   create_table "police_forces", :force => true do |t|
     t.string   "name"
     t.string   "url"
@@ -282,6 +291,10 @@ ActiveRecord::Schema.define(:version => 20091128194638) do
     t.string   "cookie_url"
   end
 
+  add_index "scrapers", ["council_id"], :name => "index_scrapers_on_council_id"
+  add_index "scrapers", ["id", "type"], :name => "index_scrapers_on_id_and_type"
+  add_index "scrapers", ["parser_id"], :name => "index_scrapers_on_parser_id"
+
   create_table "services", :force => true do |t|
     t.string   "title"
     t.string   "url"
@@ -293,6 +306,7 @@ ActiveRecord::Schema.define(:version => 20091128194638) do
   end
 
   add_index "services", ["council_id"], :name => "index_services_on_council_id"
+  add_index "services", ["ldg_service_id"], :name => "index_services_on_ldg_service_id"
 
   create_table "wards", :force => true do |t|
     t.string   "name"
@@ -317,5 +331,7 @@ ActiveRecord::Schema.define(:version => 20091128194638) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "wdtk_requests", ["council_id"], :name => "index_wdtk_requests_on_council_id"
 
 end
