@@ -20,21 +20,55 @@ class MemberTest < ActiveSupport::TestCase
     should "include ScraperModel mixin" do
       assert Member.respond_to?(:find_all_existing)
     end
-       
-    should "overwrite orphan_records_callback and notify Hoptoad of orphan records" do
-      HoptoadNotifier.expects(:notify).with(has_entries(:error_class => "OrphanRecords"))
-      Member.send(:orphan_records_callback, [@existing_member], :save_results => true)
-    end       
+    
+    context "should overwrite orphan_records_callback and" do
+      setup do
+        @another_member = Factory(:member, :council => @existing_member.council)
+      end
       
-    should "not notify Hoptoad of orphan records if not saving_records" do
-      HoptoadNotifier.expects(:notify).never
-      Member.send(:orphan_records_callback, [@existing_member])
-    end       
+      should "overwrite orphan_records_callback and notify Hoptoad of orphan records" do
+        HoptoadNotifier.expects(:notify).with(has_entries(:error_class => "OrphanRecords", :error_message => regexp_matches(/2 orphan Member records/)))
+        Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
+      end       
+
+      should "not notify Hoptoad of orphan records if not saving results" do
+        HoptoadNotifier.expects(:notify).never
+        Member.send(:orphan_records_callback, [@existing_member, @another_member])
+      end       
+
+      should "not mark orphan members as ex_members if not saving results" do      
+        Member.send(:orphan_records_callback, [@existing_member, @another_member])
+        assert !@existing_member.reload.ex_member?
+        assert !@another_member.reload.ex_member?
+      end
       
-    should "not notify Hoptoad of orphan records if there are none" do
-      HoptoadNotifier.expects(:notify).never
-      Member.send(:orphan_records_callback)
-    end         
+      should "not notify Hoptoad of orphan records if there are none" do
+        HoptoadNotifier.expects(:notify).never
+        Member.send(:orphan_records_callback, [], :save_results => true)
+      end   
+
+      should "not notify Hoptoad of orphan records if members already marked as ex_members" do
+        @existing_member.update_attribute(:date_left, 3.days.ago)
+        @another_member.update_attribute(:date_left, 5.days.ago)
+        HoptoadNotifier.expects(:notify).never
+        Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
+      end  
+           
+      should "notify Hoptoad of orphan records if some members not marked as ex_member" do
+        @existing_member.update_attribute(:date_left, 3.days.ago)
+        
+        HoptoadNotifier.expects(:notify).with(has_entries(:error_message => regexp_matches(/1 orphan Member records/)))
+        Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
+      end   
+          
+      should "mark orphan members as ex_members" do
+        Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
+        assert @existing_member.reload.ex_member?
+        assert @another_member.reload.ex_member?
+        assert_equal Date.today, @existing_member.date_left
+      end       
+    end   
+      
   end
   
   context "A Member instance" do
@@ -73,6 +107,13 @@ class MemberTest < ActiveSupport::TestCase
     
     should "not be ex_member if has not left office" do
       assert !new_member.ex_member?
+    end
+    
+    should "return status of member" do
+      member = Factory(:member)
+      assert_nil member.status
+      member.update_attribute(:date_left, 3.days.ago)
+      assert_equal "ex_member", member.status
     end
     
     context "when assigning party" do
@@ -156,6 +197,21 @@ class MemberTest < ActiveSupport::TestCase
         Delayed::Job.expects(:enqueue).with(kind_of(Tweeter)).never
         Factory(:member, :council => member.council)
       end
+    end
+    
+    context "when marking as ex_member" do
+      should "set date_left to current date" do
+        member = Factory(:member)
+        member.mark_as_ex_member
+        assert_equal Date.today, member.reload.date_left
+      end 
+      
+      should "not update date_left if already set" do
+        member = Factory(:member, :date_left => 3.days.ago)
+        member.mark_as_ex_member
+        assert_equal 3.days.ago.to_date, member.reload.date_left
+      end  
+       
     end
     
     context "with committees" do
