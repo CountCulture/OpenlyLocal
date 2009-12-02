@@ -7,19 +7,21 @@ class ItemScraper < Scraper
     else
       mark_as_unproblematic # clear problematic flag. It will be reset if there's a prob
       related_objects.each do |obj|
-        raw_results = parser.process(_data(target_url_for(obj)), self).results
-        logger.debug { "\n\n**************RESULTS from parsing #{target_url_for(obj)}:\n#{raw_results.inspect}" }
-        update_with_results(raw_results.collect{ |r| r.merge("#{obj.class.to_s.downcase}_id".to_sym => obj.id) }, options) unless raw_results.blank?
+        begin
+          raw_results = parser.process(_data(target_url_for(obj)), self).results
+          logger.debug { "\n\n**************RESULTS from parsing #{target_url_for(obj)}:\n#{raw_results.inspect}" }
+          update_with_results(raw_results.collect{ |r| r.merge("#{obj.class.to_s.downcase}_id".to_sym => obj.id) }, options) unless raw_results.blank?
+        rescue Exception => e
+          logger.debug { "*******#{e.message} while processing #{self.inspect}:\n#{e.backtrace}" }
+          errors.add_to_base(e.message)
+          mark_as_problematic
+          nil
+        end
       end
       update_last_scraped if options[:save_results]&&parser.errors.empty?
       mark_as_problematic unless parser.errors.empty?
       self
     end
-  rescue Exception => e
-    logger.debug { "*******#{e.message} while processing #{self.inspect}:\n#{e.backtrace}" }
-    errors.add_to_base(e.message)
-    mark_as_problematic
-    self
   end
 
   def related_objects
