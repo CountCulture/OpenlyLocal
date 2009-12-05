@@ -80,6 +80,7 @@ class MeetingTest < ActiveSupport::TestCase
     context "should overwrite orphan_records_callback and" do
       setup do
         @future_meeting = Factory(:meeting, :committee => @committee, :council => @committee.council, :date_held => 5.days.from_now)
+        @meeting_with_no_time = Factory(:meeting, :committee => @committee, :council => @committee.council, :date_held => 5.days.from_now.to_date)
       end
 
       should "not delete orphan_record if not saving results" do      
@@ -95,6 +96,11 @@ class MeetingTest < ActiveSupport::TestCase
       should "delete orphan meetings in the future" do
         Meeting.send(:orphan_records_callback, [@meeting, @future_meeting], :save_results => true)
         assert_nil Meeting.find_by_id(@future_meeting.id)
+      end  
+
+      should "delete orphan meetings in the future when time is not known" do
+        Meeting.send(:orphan_records_callback, [@meeting, @meeting_with_no_time], :save_results => true)
+        assert_nil Meeting.find_by_id(@meeting_with_no_time.id)
       end  
 
       should "not delete orphan meetings in the past" do

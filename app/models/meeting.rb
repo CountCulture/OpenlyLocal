@@ -82,7 +82,7 @@ class Meeting < ActiveRecord::Base
   # overwrites standard orphan_records_callback (defined in ScrapedModel mixin) to delete meetings not yet happened
   def self.orphan_records_callback(recs=nil, options={})
     return if recs.blank? || !options[:save_results] # skip if no records or doing dry run
-    recs.select{ |r| r.date_held > Time.now }.each do |r|
+    recs.select{ |r| r[:date_held] > Time.now }.each do |r| # check vs attribute, not method, which turns into date if time is not known (i.e. midnight)
       r.destroy
       logger.debug { "Destroyed orphan record: #{r.inspect}" }
     end #delete orphan meetings that have not yet happened
