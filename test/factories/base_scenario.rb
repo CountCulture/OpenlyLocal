@@ -62,11 +62,9 @@ Factory.define :committee do |f|
 end
 
 Factory.define :meeting do |f|
-  # f.sequence(:uid) { |n| 122 + n }
   f.association :council
   f.association :committee
   f.sequence(:date_held){ |n| "20 September 2009".to_datetime - n.minutes }
-  f.sequence(:url) { |n| "http://www.anytown.gov.uk/meeting/#{122+n}" }
 end
 
 Factory.define :portal_system do |f|

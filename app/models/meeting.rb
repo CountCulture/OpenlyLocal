@@ -7,7 +7,7 @@ class Meeting < ActiveRecord::Base
   has_many :documents, :as => "document_owner"
   validates_presence_of :date_held, :committee_id, :council_id
   validates_uniqueness_of :uid, :scope => :council_id, :allow_nil => true
-  validates_uniqueness_of :url, :scope => :council_id, :if => Proc.new { |meeting| meeting.uid.blank? }, :message => "must be unique"
+  validates_uniqueness_of :url, :scope => :council_id, :allow_nil => true, :if => Proc.new { |meeting| meeting.uid.blank? }, :message => "must be unique"
   validates_uniqueness_of :date_held, :scope => [:council_id, :committee_id]
   named_scope :forthcoming, lambda { { :conditions => ["date_held >= ?", Time.now], :order => "date_held" } }
   default_scope :order => "date_held"
@@ -19,10 +19,6 @@ class Meeting < ActiveRecord::Base
   alias_attribute :created, :created_at
   alias_attribute :last_modified, :updated_at
   alias_method :old_to_xml, :to_xml
-
-  def validate
-    errors.add_to_base("either uid or url must be present") if uid.blank?&&url.blank?
-  end
 
   def title
     "#{committee.title} meeting"
@@ -50,9 +46,13 @@ class Meeting < ActiveRecord::Base
     create_document_body(doc_body, :minutes)
   end
   
-  # overwrite base matches_params so we can find by committee and url if uid is blank?
+  # overwrite base matches_params so we can find by committee and url or committee and date_held if uid is blank?
   def matches_params(params={})
-    params[:uid].blank? ? (self[:committee_id] == params[:committee_id] && self[:url]==params[:url]) : super
+    if params[:uid].blank?
+      self[:committee_id] == params[:committee_id] && (self[:url]==params[:url] || self[:date_held]==params[:date_held])
+    else
+      super 
+    end
   end
 
   # Formats the contact details in a way the IcalUtilities can use

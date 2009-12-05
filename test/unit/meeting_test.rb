@@ -31,14 +31,14 @@ class MeetingTest < ActiveSupport::TestCase
       assert_nil new_meet.errors[:uid]
     end
     
-    should "validate presence either of uid or url" do
-      assert new_meeting(:uid => 42).valid?
-      assert new_meeting(:url => "foo.com").valid?
-      nm = new_meeting
-      assert !nm.valid?
-      assert_equal "either uid or url must be present", nm.errors[:base]
-    end
-
+    # should "validate presence either of uid or url" do
+    #   assert new_meeting(:uid => 42).valid?
+    #   assert new_meeting(:url => "foo.com").valid?
+    #   nm = new_meeting
+    #   assert !nm.valid?
+    #   assert_equal "either uid or url must be present", nm.errors[:base]
+    # end
+    # 
     should "validate uniqueness of url if uid is blank?" do
      @meeting.update_attribute(:url, "foo.com")
       nm = new_meeting(:url => "foo.com", :council_id => @meeting.council_id)
@@ -46,11 +46,10 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "must be unique", nm.errors[:url]
     end
     
-    should "not validate uniqueness of url if uid is blank?" do
+    should "not validate uniqueness of url if uid is not blank?" do
       nm = new_meeting(:url => "foo.com", :uid => 43, :council_id => @meeting.council_id)
       assert nm.valid?
     end
-
 
     should "include ScraperModel mixin" do
       assert Meeting.respond_to?(:find_all_existing)
@@ -197,20 +196,31 @@ class MeetingTest < ActiveSupport::TestCase
     
     context "when matching existing member against params should override default and" do
       should "should match uid if it exists" do
+        meeting_with_uid = Factory(:meeting, :council => @meeting.council, :date_held => 3.days.from_now, :committee => @meeting.committee, :url => "bar.com/meeting")
         assert !@meeting.matches_params(:uid => 42)
         @meeting.uid = 42
         assert !@meeting.matches_params(:uid => nil)
         assert !@meeting.matches_params(:uid => 41)
         assert !@meeting.matches_params
         assert @meeting.matches_params(:uid => 42)
+        assert @meeting.matches_params(:uid => 42, :url => "bar.com/foo") #ignore that url is different
+        assert @meeting.matches_params(:uid => 42, :date_held => 4.days.from_now) #ignore that date_held is different
       end
       
       should "should match committee_id and url if uid is blank" do
-        another_meeting = Factory(:meeting, :council => @meeting.council, :date_held => 3.days.from_now, :committee => @meeting.committee, :url => "bar.com/meeting")
-        assert another_meeting.matches_params(:committee_id => another_meeting.committee_id, :url => another_meeting.url)
-        assert !another_meeting.matches_params(:url => another_meeting.url)
-        assert !another_meeting.matches_params(:committee_id => nil, :url => another_meeting.url)
-        assert !another_meeting.matches_params(:url => another_meeting.url)
+        meeting_with_url = Factory(:meeting, :council => @meeting.council, :date_held => 3.days.from_now, :committee => @meeting.committee, :url => "bar.com/meeting")
+        assert meeting_with_url.matches_params(:committee_id => meeting_with_url.committee_id, :url => meeting_with_url.url)
+        assert meeting_with_url.matches_params(:committee_id => meeting_with_url.committee_id, :url => meeting_with_url.url, :date_held => 4.days.from_now) #ignore that date_held is different
+        assert !meeting_with_url.matches_params(:url => meeting_with_url.url)
+        assert !meeting_with_url.matches_params(:committee_id => nil, :url => meeting_with_url.url)
+      end
+      
+      should "should match committee_id and date_held if uid and url are blank" do
+        date_held = 3.days.from_now
+        meeting_with_date_held = Factory(:meeting, :council => @meeting.council, :date_held => date_held, :committee => @meeting.committee) #no uid
+        assert meeting_with_date_held.matches_params(:committee_id => meeting_with_date_held.committee_id, :date_held => date_held)
+        assert !meeting_with_date_held.matches_params(:date_held => date_held)
+        assert !meeting_with_date_held.matches_params(:committee_id => nil, :date_held => date_held)
       end
       
       should "should not match when no params" do

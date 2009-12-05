@@ -136,7 +136,7 @@ class MembersControllerTest < ActionController::TestCase
          assert_match /committees.+committee/, @response.body
        end
        should "include meetings" do
-         assert_match /meetings.+meeting/, @response.body
+         assert_match /forthcoming_meetings.+id\":#{@forthcoming_meeting.id}/, @response.body
        end
        should "include ward info" do
          assert_match %r(ward.+name.+#{@ward.name}), @response.body
