@@ -54,6 +54,7 @@ module ScrapedModel
       end
 
       def build_or_update(params_array, options={})
+        return if params_array.blank?
         exist_records = find_all_existing(params_array.first.merge(:council_id => options[:council_id])) # want council_id and other params (e.g. committee_id) that *might* be necessary to find all existing records
         results = [params_array].flatten.collect do |params| #make into array if it isn't one
           if result = exist_records.detect{ |r| r.matches_params(params) }

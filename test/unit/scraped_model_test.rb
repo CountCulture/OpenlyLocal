@@ -268,6 +268,11 @@ class ScrapedModelTest < ActiveSupport::TestCase
         TestModel.build_or_update([@params], :council_id=>99)
       end
             
+      should "not execute orphan_records_callback on if no parsed params" do
+        TestModel.expects(:orphan_records_callback).never
+        TestModel.build_or_update([], :council_id=>99)
+      end
+            
       should "pass save_results flag to orphan_records_callback when true" do
         TestModel.any_instance.stubs(:matches_params) # => returns nil
         TestModel.expects(:orphan_records_callback).with(anything, {:save_results => true})
