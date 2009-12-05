@@ -30,10 +30,15 @@ class PoliceForceTest < ActiveSupport::TestCase
       assert_nil @police_force.status
     end
 
-    should "have alias name as title" do
+    should "alias name as title" do
       assert_equal @police_force.name, @police_force.title
     end
 
+    should "user title in to_param method" do
+      @police_force.name = "some title-with/stuff"
+      assert_equal "#{@police_force.id}-some-title-with-stuff", @police_force.to_param
+    end
+    
     context "when returning dbpedia_resource" do
 
       should "return nil if wikipedia_url blank" do
