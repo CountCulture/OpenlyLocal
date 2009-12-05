@@ -20,6 +20,12 @@ class Meeting < ActiveRecord::Base
   alias_attribute :last_modified, :updated_at
   alias_method :old_to_xml, :to_xml
 
+  # Overwrite existing find_all_existing from scraped_model so only return meetings with council_id and same committee_id from params
+  def self.find_all_existing(params)
+    raise ArgumentError, ":committee_id or :council_id is missing from submitted params" if params[:council_id].blank? || params[:committee_id].blank? 
+    find_all_by_council_id_and_committee_id(params[:council_id], params[:committee_id])
+  end
+  
   def title
     "#{committee.title} meeting"
   end
@@ -76,7 +82,10 @@ class Meeting < ActiveRecord::Base
   # overwrites standard orphan_records_callback (defined in ScrapedModel mixin) to delete meetings not yet happened
   def self.orphan_records_callback(recs=nil, options={})
     return if recs.blank? || !options[:save_results] # skip if no records or doing dry run
-    recs.each{ |r| r.destroy if r.date_held > Time.now} #delete orphan meetings that have not yet happened
+    recs.select{ |r| r.date_held > Time.now }.each do |r|
+      r.destroy
+      logger.debug { "Destroyed orphan record: #{r.inspect}" }
+    end #delete orphan meetings that have not yet happened
   end
   
   private

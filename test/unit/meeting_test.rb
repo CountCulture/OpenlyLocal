@@ -5,7 +5,8 @@ class MeetingTest < ActiveSupport::TestCase
   context "The Meeting Class" do
     setup do
       @committee = Factory(:committee)
-      @meeting = Factory(:meeting, :committee => @committee, :council => @committee.council)
+      @council = @committee.council
+      @meeting = Factory(:meeting, :committee => @committee, :council => @council)
    end
 
     should_belong_to :committee
@@ -31,14 +32,6 @@ class MeetingTest < ActiveSupport::TestCase
       assert_nil new_meet.errors[:uid]
     end
     
-    # should "validate presence either of uid or url" do
-    #   assert new_meeting(:uid => 42).valid?
-    #   assert new_meeting(:url => "foo.com").valid?
-    #   nm = new_meeting
-    #   assert !nm.valid?
-    #   assert_equal "either uid or url must be present", nm.errors[:base]
-    # end
-    # 
     should "validate uniqueness of url if uid is blank?" do
      @meeting.update_attribute(:url, "foo.com")
       nm = new_meeting(:url => "foo.com", :council_id => @meeting.council_id)
@@ -60,6 +53,28 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal expected_options[:order], Meeting.forthcoming.proxy_options[:order]
       assert_equal expected_options[:conditions].first, Meeting.forthcoming.proxy_options[:conditions].first
       assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
+    end
+    
+    context "should overwrite find_all_existing and" do
+      setup do
+        another_committee = Factory(:committee, :council => @council)
+        another_committee_meeting = Factory(:meeting, :committee => another_committee, :council => @council)
+        another_council = Factory(:another_council)
+        another_council_committee = Factory(:committee, :council => another_council, :uid => @committee.uid) # same uid, diff council
+        another_council_meeting = Factory(:meeting, :committee => another_council_committee, :council => another_council)
+      end
+      
+      should "find only those meetings that are for the same committee and council" do
+        assert_equal [@meeting], Meeting.find_all_existing(:council_id => @council.id, :committee_id => @committee.id)
+      end
+      
+      should "raise exception if no council_id in params" do
+        assert_raise(ArgumentError) { Meeting.find_all_existing({:council_id => @council.id}) }
+      end
+      
+      should "raise exception if no committee_id in params" do
+        assert_raise(ArgumentError) { Meeting.find_all_existing({:committee_id => @committee.id}) }
+      end
     end
   
     context "should overwrite orphan_records_callback and" do
