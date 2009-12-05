@@ -9,7 +9,7 @@
     <%= attribute_tag :address, @member.address %>
     <%= attribute_tag :telephone, @member.telephone %>
     <%= attribute_tag :date_elected, (@member.date_elected ? @member.date_elected.to_s(:custom_short) : 'not known') %>
-    <%= attribute_tag :date_left, (@member.date_left ? "#{@member.date_left.to_s(:custom_short)} approx" : 'not known') %>
+    <%= attribute_tag(:date_left, "#{@member.date_left.to_s(:custom_short)} (approx)") unless @member.date_left.blank? %>
     <%= attribute_tag :register_of_interests, (@member.register_of_interests ? link_to(@member.register_of_interests, @member.register_of_interests, :class => "external") : 'not known') %>
   </dl>
 
