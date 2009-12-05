@@ -66,6 +66,7 @@ class Member < ActiveRecord::Base
   end
   
   protected
+  # overwrites standard orphan_records_callback (defined in ScrapedModel mixin) to mark members as left and notify admin
   def self.orphan_records_callback(recs=nil, options={})
     return if recs.blank? || !options[:save_results] || recs.all?{ |r| r.ex_member? } #skip if no records or doing dry run, or if all records already marked
     recs = recs.select{ |r| !r.ex_member? } #eleminate ex_members

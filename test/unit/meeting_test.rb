@@ -62,7 +62,32 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal expected_options[:conditions].first, Meeting.forthcoming.proxy_options[:conditions].first
       assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
     end
-    
+  
+    context "should overwrite orphan_records_callback and" do
+      setup do
+        @future_meeting = Factory(:meeting, :committee => @committee, :council => @committee.council, :date_held => 5.days.from_now)
+      end
+
+      should "not delete orphan_record if not saving results" do      
+        Meeting.send(:orphan_records_callback, [@meeting, @future_meeting])
+        assert Meeting.find_by_id(@meeting.id)
+        assert Meeting.find_by_id(@future_meeting.id)
+      end
+
+      should "not fail if the are no orphan records" do
+        assert_nothing_raised(Exception) { Meeting.send(:orphan_records_callback, [], :save_results => true) }
+      end   
+
+      should "delete orphan meetings in the future" do
+        Meeting.send(:orphan_records_callback, [@meeting, @future_meeting], :save_results => true)
+        assert_nil Meeting.find_by_id(@future_meeting.id)
+      end  
+
+      should "not delete orphan meetings in the past" do
+        Meeting.send(:orphan_records_callback, [@meeting, @future_meeting], :save_results => true)
+        assert Meeting.find_by_id(@meeting.id)
+      end       
+    end       
   end
   
 

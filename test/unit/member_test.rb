@@ -27,7 +27,7 @@ class MemberTest < ActiveSupport::TestCase
         @vacancy = Factory.create(:member, :full_name => "Vacancy", :council => @existing_member.council)
       end
       
-      should "overwrite orphan_records_callback and notify Hoptoad of orphan records" do
+      should "notify Hoptoad of orphan records" do
         HoptoadNotifier.expects(:notify).with(has_entries(:error_class => "OrphanRecords", :error_message => regexp_matches(/2 orphan Member records/)))
         Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
       end       

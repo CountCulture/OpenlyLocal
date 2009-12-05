@@ -72,6 +72,13 @@ class Meeting < ActiveRecord::Base
     old_to_xml({:methods => [:formatted_date, :openlylocal_url, :title] }.merge(options), &block)
   end
   
+  protected
+  # overwrites standard orphan_records_callback (defined in ScrapedModel mixin) to delete meetings not yet happened
+  def self.orphan_records_callback(recs=nil, options={})
+    return if recs.blank? || !options[:save_results] # skip if no records or doing dry run
+    recs.each{ |r| r.destroy if r.date_held > Time.now} #delete orphan meetings that have not yet happened
+  end
+  
   private
   def create_document_body(doc_body=nil, type=nil)
     existing_record = send(type)
