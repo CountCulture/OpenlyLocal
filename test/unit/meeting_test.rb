@@ -17,6 +17,7 @@ class MeetingTest < ActiveSupport::TestCase
     should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
     should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
     should_have_db_columns :venue
+    should_have_db_columns :status
     should_validate_uniqueness_of :date_held, :scoped_to => [:council_id, :committee_id]
     should "validate uniqueness of uid scoped to council_id" do
       #shoulda macros can't allow for nil values
@@ -191,15 +192,31 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "#{@meeting.created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{@meeting.id}@twfylocal", @meeting.event_uid
     end
     
-    should "return status of meeting" do
+  context "when returning status" do
+    
+    should "return lower case version of status attribute" do
+      assert_equal "cancelled", new_meeting(:status => "Cancelled", :date_held => nil).status
+    end
+    
+    should "return nil if no status attribute or date_held time" do
+      assert_nil new_meeting(:date_held => nil).status
+    end
+    
+    should "return status of meeting if date_held" do
       assert_equal "past", new_meeting.status
       assert_equal "future", new_meeting(:date_held => 1.hour.from_now).status
     end
     
-    should "return status of meeting with no time set" do
+    should "add status of meeting with no time set" do
       assert_equal "past", new_meeting(:date_held => "3 November 2007").status
       assert_equal "future", new_meeting(:date_held => "3 November 2020").status
     end
+    
+    should "return lower case version of status attribute and time status of meeting with date_held" do
+      assert_equal "cancelled past", new_meeting(:status => "Cancelled").status
+      assert_equal "cancelled future", new_meeting(:date_held => "3 November 2020", :status => "Cancelled").status
+    end
+  end
     
     context "when converting meeting to_xml" do
       should "include openlylocal_url" do

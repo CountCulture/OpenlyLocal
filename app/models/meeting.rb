@@ -71,7 +71,11 @@ class Meeting < ActiveRecord::Base
   end
   
   def status
-    date_held.to_time > Time.now ? "future" : "past"
+    return unless self[:date_held] || self[:status]
+    st = []
+    st << self[:status].downcase unless self[:status].blank?
+    st << (self[:date_held] > Time.now ? "future" : "past") unless self[:date_held].blank?
+    st.join(" ")
   end
   
   def to_xml(options={}, &block)
