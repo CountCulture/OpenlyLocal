@@ -49,11 +49,30 @@ class MeetingTest < ActiveSupport::TestCase
       assert Meeting.respond_to?(:find_all_existing)
     end
     
-    should "have forthcoming named scope" do
-      expected_options = {:conditions => ["date_held >= ?", Time.now], :order => "date_held" }
-      assert_equal expected_options[:order], Meeting.forthcoming.proxy_options[:order]
-      assert_equal expected_options[:conditions].first, Meeting.forthcoming.proxy_options[:conditions].first
-      assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
+    context "with forthcoming named scope" do
+      setup do
+        @future_meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 5.days.from_now)
+        @future_cancelled_meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 6.days.from_now, :status => "cancelled")
+      end
+      
+      should "fetch only meetings in the future" do
+        expected_options = {:conditions => ["date_held >= ? AND (status IS NULL OR status NOT LIKE 'cancelled')", Time.now], :order => "date_held" }
+        assert_equal expected_options[:order], Meeting.forthcoming.proxy_options[:order]
+        assert_equal expected_options[:conditions].first, Meeting.forthcoming.proxy_options[:conditions].first
+        assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
+      end
+      
+      should "not return meetings in the past" do
+        assert !Meeting.forthcoming.include?(@meeting)
+      end
+      
+      should "return meetings in the future" do
+        assert Meeting.forthcoming.include?(@future_meeting)
+      end
+      
+      should "not include cancelled meetings" do
+        assert !Meeting.forthcoming.include?(@future_cancelled_meeting)
+      end
     end
     
     context "should overwrite find_all_existing and" do
@@ -149,6 +168,13 @@ class MeetingTest < ActiveSupport::TestCase
     
     should "return formatted date as formatted date with extra spaces removed" do
       assert_equal "Nov 6 2008, 7.30PM", @meeting.formatted_date
+    end
+    
+    should "mark as cancelled if status is cancelled" do
+      assert !new_meeting.cancelled?
+      assert !new_meeting(:status => "foo").cancelled?
+      assert new_meeting(:status => "cancelled").cancelled?
+      assert new_meeting(:status => "Cancelled").cancelled?
     end
     
     should "have polymorphic Meeting type document as minutes" do

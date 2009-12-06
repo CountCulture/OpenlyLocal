@@ -9,7 +9,7 @@ class Meeting < ActiveRecord::Base
   validates_uniqueness_of :uid, :scope => :council_id, :allow_nil => true
   validates_uniqueness_of :url, :scope => :council_id, :allow_nil => true, :if => Proc.new { |meeting| meeting.uid.blank? }, :message => "must be unique"
   validates_uniqueness_of :date_held, :scope => [:council_id, :committee_id]
-  named_scope :forthcoming, lambda { { :conditions => ["date_held >= ?", Time.now], :order => "date_held" } }
+  named_scope :forthcoming, lambda { { :conditions => ["date_held >= ? AND (status IS NULL OR status NOT LIKE 'cancelled')", Time.now], :order => "date_held" } }
   default_scope :order => "date_held"
   
   # alias attributes with names IcalUtilities wants to encode Vevents
@@ -28,6 +28,10 @@ class Meeting < ActiveRecord::Base
   
   def title
     "#{committee.title} meeting"
+  end
+  
+  def cancelled?
+    self[:status]=~/cancelled/i
   end
   
   # return date as plain date, not datetime if meeting is at midnight

@@ -1,4 +1,5 @@
 <%- div_for @meeting do -%>
+  <%= content_tag(:h4, "Meeting Cancelled", :class => "alert") if @meeting.cancelled? %>
   <h4 class="owner">Meeting of the <%= basic_link_for @council %></h4>
   <h1><%= link_for @committee %>, <%= @meeting.date_held.to_s(:event_date).squish %> <em><%= council_page_for @meeting %></em></h1>
 

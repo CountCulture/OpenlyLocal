@@ -227,6 +227,7 @@ div.item_grouping h3 {
 /*Meeting formatting*/
 .past {color:#515151;}
 .past a {color:#282828;}
+.cancelled, a.cancelled {color:#9e9e9e; }
 /*.future a {font-weight:bold;}*/
 
 /*Parser-specific formatting*/
