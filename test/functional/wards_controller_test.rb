@@ -14,12 +14,27 @@ class WardsControllerTest < ActionController::TestCase
   # show test
   context "on GET to :show" do
      
+    should "route to show action with id" do
+      assert_routing "wards/23", {:controller => "wards", :action => "show", :id => "23"} #default route
+    end
+    
+    should "route resource to show action" do
+      assert_routing "id/wards/23", {:controller => "wards", :action => "show", :id => "23", :redirect_from_resource => true}
+    end
+
+    should "route ward identified by snac_id to show action" do
+      assert_routing "wards/snac_id/23", {:controller => "wards", :action => "show", :snac_id => "23"}
+      assert_routing "wards/snac_id/23.xml", {:controller => "wards", :action => "show", :snac_id => "23", :format => "xml"}
+      assert_routing "wards/snac_id/23.json", {:controller => "wards", :action => "show", :snac_id => "23", :format => "json"}
+      assert_routing "wards/snac_id/23.rdf", {:controller => "wards", :action => "show", :snac_id => "23", :format => "rdf"}
+    end
+
     context "with basic request" do
       setup do
         get :show, :id => @ward.id
       end
    
-      should_assign_to :ward
+      should_assign_to(:ward) { @ward }
       should_respond_with :success
       should_render_template :show
      
@@ -51,6 +66,21 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "a", :text => /Police neighbourhood team for #{@ward.name}/i, :count => 0
       end 
       
+    end
+    
+    context "with basic request and ward identified by snac_id" do
+      setup do
+        @ward.update_attribute(:snac_id, "AB12")
+        get :show, :snac_id => @ward.snac_id
+      end
+   
+      should_assign_to(:ward) { @ward }
+      should_respond_with :success
+      should_render_template :show
+     
+      should "show ward in title" do
+        assert_select "title", /#{@ward.title}/
+      end
     end
     
     context "with basic request when ward has additional attributes" do
