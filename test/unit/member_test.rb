@@ -18,39 +18,111 @@ class MemberTest < ActiveSupport::TestCase
     should_validate_uniqueness_of :uid, :scoped_to => :council_id
     should_validate_presence_of :uid
     should "include ScraperModel mixin" do
-      assert Member.respond_to?(:find_existing)
+      assert Member.respond_to?(:find_all_existing)
     end
-                
+    
+    context "should overwrite orphan_records_callback and" do
+      setup do
+        @another_member = Factory(:member, :council => @existing_member.council)
+        @vacancy = Factory.create(:member, :full_name => "Vacancy", :council => @existing_member.council)
+      end
+      
+      should "notify Hoptoad of orphan records" do
+        HoptoadNotifier.expects(:notify).with(has_entries(:error_class => "OrphanRecords", :error_message => regexp_matches(/2 orphan Member records/)))
+        Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
+      end       
+
+      should "not notify Hoptoad of orphan records if not saving results" do
+        HoptoadNotifier.expects(:notify).never
+        Member.send(:orphan_records_callback, [@existing_member, @another_member])
+      end       
+
+      should "not mark orphan members as ex_members if not saving results" do      
+        Member.send(:orphan_records_callback, [@existing_member, @another_member])
+        assert !@existing_member.reload.ex_member?
+        assert !@another_member.reload.ex_member?
+      end
+      
+      should "not delete vacancies if not saving results" do      
+        Member.send(:orphan_records_callback, [@existing_member, @vacancy])
+        assert !@existing_member.reload.ex_member?
+        assert Member.find_by_id(@vacancy.id)
+      end
+      
+      should "not notify Hoptoad of orphan records if there are none" do
+        HoptoadNotifier.expects(:notify).never
+        Member.send(:orphan_records_callback, [], :save_results => true)
+      end   
+
+      should "not notify Hoptoad of orphan records if members already marked as ex_members" do
+        @existing_member.update_attribute(:date_left, 3.days.ago)
+        @another_member.update_attribute(:date_left, 5.days.ago)
+        HoptoadNotifier.expects(:notify).never
+        Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
+      end  
+           
+      should "notify Hoptoad of orphan records if some members not marked as ex_member" do
+        @existing_member.update_attribute(:date_left, 3.days.ago)
+        
+        HoptoadNotifier.expects(:notify).with(has_entries(:error_message => regexp_matches(/1 orphan Member records/)))
+        Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
+      end   
+          
+      should "mark orphan members as ex_members" do
+        Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
+        assert @existing_member.reload.ex_member?
+        assert @another_member.reload.ex_member?
+        assert_equal Date.today, @existing_member.date_left
+      end  
+           
+      should "delete records that are vacancies" do
+        Member.send(:orphan_records_callback, [@existing_member, @vacancy], :save_results => true)
+        assert_nil Member.find_by_id(@vacancy.id)
+        assert @existing_member.reload.ex_member?
+      end       
+    end   
+      
   end
   
   context "A Member instance" do
     setup do
-      NameParser.stubs(:parse).returns(:first_name => "Fred", :last_name => "Scuttle", :name_title => "Prof", :qualifications => "PhD")
       @member = new_member(:full_name => "Fred Scuttle")
     end
     
-    should "return full name" do
-      assert_equal "Fred Scuttle", @member.full_name
-    end
-    
-    should "should extract first name from full name" do
-      assert_equal "Fred", @member.first_name
-    end
-    
-    should "extract last name from full name" do
-      assert_equal "Scuttle", @member.last_name
-    end
-    
-    should "extract name_title from full name" do
-      assert_equal "Prof", @member.name_title
-    end
-    
-    should "extract qualifications from full name" do
-      assert_equal "PhD", @member.qualifications
-    end
-    
-    should "alias full_name as title" do
-      assert_equal @member.full_name, @member.title
+    context "when parsing name" do
+      setup do
+        NameParser.stubs(:parse).returns(:first_name => "Fred", :last_name => "Scuttle", :name_title => "Prof", :qualifications => "PhD")
+        @named_member = new_member(:full_name => "Fred Scuttle")
+      end
+
+      should "send name to parser" do
+        NameParser.expects(:parse).with("Fred Scuttleman").returns(stub_everything)
+        new_member(:full_name => "Fred Scuttleman")
+      end
+
+      should "return full name" do
+        assert_equal "Fred Scuttle", @named_member.full_name
+      end
+
+      should "should extract first name from full name" do
+        assert_equal "Fred", @named_member.first_name
+      end
+
+      should "extract last name from full name" do
+        assert_equal "Scuttle", @named_member.last_name
+      end
+
+      should "extract name_title from full name" do
+        assert_equal "Prof", @named_member.name_title
+      end
+
+      should "extract qualifications from full name" do
+        assert_equal "PhD", @named_member.qualifications
+      end
+
+      should "alias full_name as title" do
+        assert_equal @member.full_name, @named_member.title
+      end
     end
     
     should "be ex_member if has left office" do
@@ -59,6 +131,20 @@ class MemberTest < ActiveSupport::TestCase
     
     should "not be ex_member if has not left office" do
       assert !new_member.ex_member?
+    end
+    
+    should "return status of member" do
+      member = Factory(:member)
+      assert_nil member.status
+      member.update_attribute(:date_left, 3.days.ago)
+      assert_equal "ex_member", member.status
+      member.update_attribute(:full_name, "Vacancy")
+      assert_equal "vacancy", member.status
+    end
+    
+    should "return whether member is a vacancy" do
+      assert new_member(:full_name => "Vacancy").vacancy?
+      assert new_member(:full_name => "Vacant Seat").vacancy?
     end
     
     context "when assigning party" do
@@ -142,6 +228,21 @@ class MemberTest < ActiveSupport::TestCase
         Delayed::Job.expects(:enqueue).with(kind_of(Tweeter)).never
         Factory(:member, :council => member.council)
       end
+    end
+    
+    context "when marking as ex_member" do
+      should "set date_left to current date" do
+        member = Factory(:member)
+        member.mark_as_ex_member
+        assert_equal Date.today, member.reload.date_left
+      end 
+      
+      should "not update date_left if already set" do
+        member = Factory(:member, :date_left => 3.days.ago)
+        member.mark_as_ex_member
+        assert_equal 3.days.ago.to_date, member.reload.date_left
+      end  
+       
     end
     
     context "with committees" do

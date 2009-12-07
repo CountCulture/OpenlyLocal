@@ -23,7 +23,10 @@ class Council < ActiveRecord::Base
   has_many :meeting_documents, :through => :meetings, :source => :documents, :select => "documents.id, documents.title, documents.document_type, documents.document_owner_type, documents.document_owner_id, documents.created_at, documents.updated_at", :order => "documents.created_at DESC"
   has_many :past_meeting_documents, :through => :held_meetings, :source => :documents, :order => "documents.created_at DESC"
   has_many :services
+  belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
+  has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   belongs_to :portal_system
+  belongs_to :police_force
   validates_presence_of :name
   validates_uniqueness_of :name
   named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? {} : {:conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id"} }
@@ -71,8 +74,8 @@ class Council < ActiveRecord::Base
     read_attribute(:base_url).blank? ? url : read_attribute(:base_url)
   end
   
-  def dbpedia_url
-    wikipedia_url.gsub(/en\.wikipedia.org\/wiki/, "dbpedia.org/page") unless wikipedia_url.blank?
+  def dbpedia_resource
+    wikipedia_url.gsub(/en\.wikipedia.org\/wiki/, "dbpedia.org/resource") unless wikipedia_url.blank?
   end
   
   def foaf_telephone
@@ -85,6 +88,10 @@ class Council < ActiveRecord::Base
   
   def parsed?
     !members.blank?
+  end
+  
+  def police_force_url
+    self[:police_force_url].blank? ? police_force.try(:url) : self[:police_force_url]
   end
     
   def recent_activity

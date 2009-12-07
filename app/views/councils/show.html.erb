@@ -1,15 +1,28 @@
 <div id="data">
-  <h1 property="foaf:name rdfs:label"><%= @council.name %></h1>
+  <h1><%= @council.name %></h1>
   <%= render :partial => 'party_breakdown' unless @party_breakdown.blank? %>
-  <p class="attribute"><strong>website</strong> <%= link_to @council.url, @council.url, :class => :external, :rel => "foaf:homepage" %> <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %></p>
-  <p class="attribute" rel="rdf:type"><strong>Authority type</strong> <span about="[openlylocal:<%= @council.authority_type.gsub(/\s+/,'') %>Authority]"><%= @council.authority_type %></span> <%= help_link_to(@council.authority_type_help_url) %></p>
-  <p class="attribute"><strong>Address</strong> <span property="openlylocal:full-address"><%= @council.address %></span></p>
-  <p class="attribute" rel="foaf:phone"><strong>Telephone</strong> <%= content_tag(:span, @council.telephone, :about => @council.foaf_telephone) unless @council.telephone.blank? %></p>
-  <p class="attribute"><strong>Chief Executive</strong> <%= @council.chief_executive.try(:full_name) || "Not known" %></p>
-  <p class="attribute">
-    <strong>Population</strong> <%= @council.population ? number_with_delimiter(@council.population) : "not known" %> <span class="source attribution">(Source: <%= link_to "ONS Crown Copyright", "http://www.statistics.gov.uk/downloads/theme_population/Mid_2008_UK_England_&_Wales_Scotland_and_Northern_Ireland_27_08_09.zip", :class => "external" %>)</span>
-  </p>
-  <p class="attribute"><strong>Wikipedia page</strong> <%= link_to @council.wikipedia_url, @council.wikipedia_url, :class => 'external', :rel => "foaf:page" %></p>
+  <dl id="main_attributes" class="attributes">
+    <%- attribute_tag :website do -%>
+      <%= link_to @council.url, @council.url, :class => :external %> 
+      <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %>
+      <%= link_to("Twitter feed", "http://twitter.com/#{@council.twitter_account}", :class => "twitter feed") unless @council.twitter_account.blank? %>
+    <%- end -%>
+    <%- attribute_tag :authority_type do -%>
+      <%= @council.authority_type %> <%= help_link_to(@council.authority_type_help_url) %>
+    <%- end -%>
+    <div id="associated_councils">
+        <%= attribute_tag :district_councils, @council.child_authorities.collect{ |c| basic_link_for c }.join(", ") %>
+        <%= attribute_tag :county_council, basic_link_for(@council.parent_authority) %>
+    </div>
+    <%= attribute_tag :address, @council.address %>
+    <%= attribute_tag( :telephone, content_tag(:span, @council.telephone, :about => @council.foaf_telephone)) unless @council.telephone.blank? %>
+    <%= attribute_tag :chief_executive, @council.chief_executive.try(:full_name) %>
+    <%- attribute_tag :population do -%>
+      <%= @council.population ? number_with_delimiter(@council.population) : "not known" %> <span class="source attribution">(Source: <%= link_to "ONS Crown Copyright", "http://www.statistics.gov.uk/downloads/theme_population/Mid_2008_UK_England_&_Wales_Scotland_and_Northern_Ireland_27_08_09.zip", :class => "external" %>)</span>
+    <%- end -%>
+    <%= attribute_tag :police_force, basic_link_for(@council.police_force) %>
+    <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@council.wikipedia_url), @council.wikipedia_url, :class => 'external') unless @council.wikipedia_url.blank? %>
+  </dl>
   <div class="extra_info">
     <h3>Other info</h3>
     <div id="external_links" class="item_grouping">
@@ -18,26 +31,26 @@
         <%- unless @council.wdtk_name.blank? -%>
           <li><%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@council.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@council.wdtk_name}", :class => "feed" %>)</li>
         <%- end -%>
-        <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external', :rel => "foaf:page" %></li>
-        <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external', :rel => "foaf:page" %></li>
-        <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= @council.snac_id %> </li>
+        <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external' %></li>
+        <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external' %></li>
+        <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= link_to(@council.snac_id, "http://statistics.data.gov.uk/doc/local-authority/#{@council.snac_id}", :class => "external") unless @council.snac_id.blank? %> </li>
       </ul>
-      <%- unless @council.services.count < 10  -%>
-        <div id="council_services" class="item_grouping">
-          <h4><%= link_to "Online services", services_path(:council_id => @council.id) %></h4>
-          <%= render :partial => 'services/services_search' %>
-          <p><%= link_to "See full list", services_path(:council_id => @council.id) %></p>
-        </div>
-      <%- end -%>
     </div>
     <div id="statistics" class="item_grouping">
       <%= render :partial => 'datapoints' unless @datapoints.blank? %>
     </div>
+    <%- unless @council.services.count < 10  -%>
+      <div id="council_services" class="item_grouping">
+        <h4><%= link_to "Online services", services_path(:council_id => @council.id) %></h4>
+        <%= render :partial => 'services/services_search' %>
+        <p><%= link_to "See full list", services_path(:council_id => @council.id) %></p>
+      </div>
+    <%- end -%>
   </div>
 </div>
 
 <div id="members" class="item_grouping">
-  <h3>Current councillors</h3>
+  <h3><%= link_to "Current councillors", members_path(:council_id => @council.id) %></h3>
   <%= list_all @members %>
 </div>
 

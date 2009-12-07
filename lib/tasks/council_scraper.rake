@@ -180,3 +180,74 @@ task :enter_missing_ldg_ids => :environment do
   end
 end
 
+desc "Import OS Ids from SPARQL endpoint" 
+task :import_os_ids => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  
+  areas = { Ward => %w(UnitaryAuthorityWard DistrictWard LondonBoroughWard), Council => %w(Borough District County) }
+  base_url = "http://api.talis.com/stores/ordnance-survey/services/sparql?query="
+  path_template = "PREFIX+rdf%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+rdfs%3A++%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0D%0APREFIX+admingeo%3A+%3Chttp%3A%2F%2Fdata.ordnancesurvey.co.uk%2Fontology%2Fadmingeo%2F%3E%0D%0A%0D%0Aselect+%3Fa+%3Fname+%3Fcode%0D%0Awhere+%7B%3Fa+rdf%3Atype+admingeo%3A???+.%0D%0A+++++++%3Fa+rdfs%3Alabel+%3Fname+.%0D%0A+++++++%3Fa+admingeo%3AhasCensusCode+%3Fcode+.%7D"
+
+  areas.each do |area_type, area_subtypes|
+    area_subtypes.each do |area_subtype|
+      url = base_url + path_template.sub("???", area_subtype)
+      puts "===================\nAbout to get data from #{url}"
+      results = Hpricot.XML(open(url)).search('result')
+      puts "Retrieved #{results.size} results"
+      results.each do |result|
+        if ward = area_type.find_by_snac_id(result.search('literal').last.inner_text)
+          os_id = result.at('uri').inner_text.scan(/\d+$/).to_s
+          ward.update_attribute(:os_id, os_id)
+          puts "updated #{area_type.to_s.downcase} (#{ward.name}) with os_id: #{os_id}"
+        else
+          puts "Could not find #{area_type.to_s.downcase} for result: #{result.inner_html}"
+        end
+      end
+    end
+  end
+end
+
+desc "Import County-District relationship from SPARQL endpoint" 
+task :import_country_districts_relationships => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  Council.find_all_by_authority_type("County").each do |county|
+    begin
+      doc = Hpricot.XML(open("http://statistics.data.gov.uk/doc/county/#{county.snac_id}.rdf"))
+      districts = doc.search('administrative-geography:district').collect{ |d| d["rdf:resource"].scan(/local-authority-district\/(\w+)$/).to_s }
+      puts "Found #{districts.size} districts for #{county.name}"
+      districts.each do |snac_id|
+        Council.find_by_snac_id(snac_id).update_attribute(:parent_authority_id, county.id)
+      end
+    rescue Exception => e
+      puts "There was an error getting/processing info for #{county.name}: #{e.inspect}"
+    end    
+  end
+end
+
+desc "add council twitter ids"
+task :add_council_twitter_ids => :environment do
+  auth_data = YAML.load_file("#{RAILS_ROOT}/config/twitter.yml")["production"]
+  base_url = "http://api.twitter.com/1/Directgov/ukcouncils/members.xml?cursor="
+  cursor = "-1"
+  require 'hpricot'
+  require 'httpclient'
+  client = HTTPClient.new
+  client.set_auth(nil, auth_data["login"], auth_data["password"])
+  while cursor != '0' do
+    doc = Hpricot.XML(client.get_content(base_url+cursor))
+    cursor = doc.at('next_cursor').inner_text
+    doc.search('users>user').each do |member|
+      m_url = URI.parse(member.at('url').inner_text.strip).host
+      
+      m_id = member.at('screen_name').inner_text
+      if council = Council.find(:first, :conditions => ["url LIKE ?", "%#{m_url}%"])
+        puts "Found twitter url for #{council.name}: #{m_id}"
+        council.update_attribute(:twitter_account, m_id)
+      else
+        puts "Failed to find council with url: #{m_url}"
+      end
+    end
+  end
+end

@@ -79,16 +79,12 @@
     		
 		
     		<h2>Properties</h2>
-    		<div typeof="rdf:Property" id="full-address" about="#full-address">
-    			<h3><span property="rdfs:label">full address</span> (openlylocal:full-address)</h3>
-    			<p property="rdfs:comment">A string literal 
-    				providing the address of the entity. This 
-    				is intended as an unstructured alternative to 
-    				http://www.w3.org/2001/vcard-rdf/3.0#ADR. Use
-    				vcard:ADR if you have structured address data.
-    			</p>
-    		</div>
 
+    		<div typeof="rdf:Property" id="isParentAuthorityOf" about="#isParentAuthorityOf">
+    			<h3><span property="rdfs:label">Is Parent Authority</span> (openlylocal:isParentAuthorityOf)</h3>
+    			<p property="rdfs:comment">Links County Councils and DistrictCouncils. A <a rel="rdfs:domain" href="#CountyAuthority">CountyAuthority</a> is considered to be a parentAuthority to a <a rel="rdfs:domain" href="#DistrictAuthority">DistrictAuthority</a>, and is responsible for some of the services in the District's area</p>
+    		</div>
+    		
     		<div typeof="rdf:Property" id="foi-data" about="#foi-data">
     			<h3><span property="rdfs:label">FOI data</span> (openlylocal:foi-data)</h3>
     			<p property="rdfs:comment">Links the entity to a page containing 
@@ -128,6 +124,12 @@
     			<p>The minutes link connects an <a rel="rdfs:domain" href="http://www.w3.org/2002/12/cal#Vevent">Event</a> to a
     			<a rel="rdfs:range"  href="http://xmlns.com/foaf/0.1/Document">Document</a>.</p>
     		</div>
+    		
+    		<div typeof="rdf:Property" id="isPoliceForceFor" about="#isPoliceForceFor">
+    			<h3><span property="rdfs:label">Is Police Force For</span> (openlylocal:isPoliceForceFor)</h3>
+    			<p property="rdfs:comment">Links PoliceForces and Local Authorities. A <a rel="rdfs:domain" href="http://dbpedia.org/resource/Category:Police_forces_of_the_United_Kingdom">PoliceForce</a> is considered to be a the police force for a <a rel="rdfs:domain" href="#LocalAuthority">LocalAuthority</a>, and is responsible for the policing and law enforcement in the LocalAuthority's area</p>
+    		</div>
+    		
       </div>
       <%= render :partial => 'shared/footer' %>
 		</div>

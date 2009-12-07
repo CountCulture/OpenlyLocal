@@ -1,5 +1,15 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  
+  # Generates an attribute block
+  def attribute_tag(attrib_name=nil, attrib_value=nil, &block)
+    if block_given?
+      concat("<dt class=\"#{attrib_name}\">#{attrib_name.to_s.titleize}</dt> <dd>#{capture(&block)}</dd>")
+    else
+      "<dt class=\"#{attrib_name}\">#{attrib_name.to_s.titleize}</dt> <dd>#{attrib_value}</dd>" unless attrib_value.blank?
+    end
+  end
+  
   def council_page_for(obj, options={})
     return if obj.url.blank?
     link_to("official page", obj.url, {:class => "official_page external"}.merge(options))

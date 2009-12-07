@@ -139,6 +139,12 @@ class InfoScraperTest < ActiveSupport::TestCase
           assert !@scraper.reload.problematic?
         end
         
+        should "clear set problematic flag if no problems" do
+          @scraper.update_attribute(:problematic, true)
+          @scraper.process
+          assert !@scraper.reload.problematic?
+        end
+
       end
       
       context "with collection of objects" do
@@ -198,6 +204,12 @@ class InfoScraperTest < ActiveSupport::TestCase
           assert !@scraper.reload.problematic?
         end
         
+        should "clear set problematic flag if no problems" do
+          @scraper.update_attribute(:problematic, true)
+          @scraper.process
+          assert !@scraper.reload.problematic?
+        end
+
         should "not update last_scraped attribute when not saving" do
           @scraper.process
           assert_nil @scraper.reload.last_scraped

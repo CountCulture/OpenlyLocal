@@ -62,11 +62,9 @@ Factory.define :committee do |f|
 end
 
 Factory.define :meeting do |f|
-  # f.sequence(:uid) { |n| 122 + n }
   f.association :council
   f.association :committee
   f.sequence(:date_held){ |n| "20 September 2009".to_datetime - n.minutes }
-  f.sequence(:url) { |n| "http://www.anytown.gov.uk/meeting/#{122+n}" }
 end
 
 Factory.define :portal_system do |f|
@@ -156,4 +154,9 @@ Factory.define :ons_dataset do |f|
   f.sequence(:start_date) { |n| (2.years.ago - (n*5).days).to_date }
   f.sequence(:end_date) { |n| (2.years.ago - (n*5 - 2).days).to_date }
   f.association :ons_dataset_family
+end
+
+Factory.define :police_force do |f|
+  f.sequence(:name) { |n| "Force #{n}" }
+  f.sequence(:url) { |n|  "http://police.uk/force#{n}" }
 end

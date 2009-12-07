@@ -10,11 +10,6 @@ class Ward < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => :council_id
   alias_attribute :title, :name
 
-  # override standard find_existing from ScrapedModel to find by council and name, not UID
-  def self.find_existing(params)
-    find_by_council_id_and_name(params[:council_id], clean_name(params[:name]))
-  end
-  
   # This code inspire by Stef's code for BCCDIY'
   # def self.find_by_postcode(pcode)
   #   lookup_url = "http://www.neighbourhood.statistics.gov.uk/dissemination/LeadAreaSearch.do?a=7&r=1&i=1001&m=0&s=1255767609198&enc=1&areaSearchText=#{CGI::escape postcode }&areaSearchType=15&extendedList=true&searchAreas=
@@ -53,12 +48,17 @@ class Ward < ActiveRecord::Base
   #   end
   # end
   
+  # override standard matches_params from ScrapedModel to match against name if uid is blank
+  def matches_params(params={})
+    self[:name]==clean_name(params[:name]) || (!params[:uid].blank? && super )
+  end
+
   def name=(raw_name)
-    self[:name] = self.class.clean_name(raw_name)
+    self[:name] = clean_name(raw_name)
   end
   
   private
-  def self.clean_name(raw_name)
+  def clean_name(raw_name)
     raw_name.blank? ? raw_name : raw_name.sub(/ward\s*$/i, '').strip
   end
 end

@@ -45,6 +45,10 @@ class Member < ActiveRecord::Base
     "tel:+44-#{telephone.gsub(/^0/, '').gsub(/\s/, '-')}" unless telephone.blank?
   end
   
+  def mark_as_ex_member
+    update_attribute(:date_left, Date.today) if date_left.blank?
+  end
+  
   def party=(party_name)
     self[:party] = party_name.gsub(/party/i, '').sub(/^(The|the)/,'').gsub(/\302\240/,'').strip unless party_name.blank?
   end
@@ -53,9 +57,32 @@ class Member < ActiveRecord::Base
     Party.new(self[:party])
   end
   
+  def status
+    vacancy? ? 'vacancy' : (ex_member? ? 'ex_member' : nil)
+  end
+  
+  def vacancy?
+    full_name =~ /vacancy|vacant/i
+  end
+  
+  protected
+  # overwrites standard orphan_records_callback (defined in ScrapedModel mixin) to mark members as left and notify admin
+  def self.orphan_records_callback(recs=nil, options={})
+    return if recs.blank? || !options[:save_results] || recs.all?{ |r| r.ex_member? } #skip if no records or doing dry run, or if all records already marked
+    recs = recs.select{ |r| !r.ex_member? } #eleminate ex_members
+    logger.debug { "**** #{recs.size} orphan Member records: #{recs.inspect}" }
+    recs.delete_if{ |r| (r.full_name =~ /vacancy|vacant/i)&&r.destroy}
+    recs.each { |r| r.mark_as_ex_member }
+    HoptoadNotifier.notify(
+      :error_class => "OrphanRecords",
+      :error_message => "#{recs.size} orphan Member records found for : #{recs.first.council.name}.\n#{recs.inspect}",
+      :request => { :params => options }
+    )
+  end
+  
   private
   def tweet_about_it
-    Delayed::Job.enqueue Tweeter.new("#{@council.title.length > 60 ? @council.short_name : @council.title} has been added to OpenlyLocal #localdemocracy #opendata", :url => "http://openlylocal.com/councils/#{@council.to_param}") if council.members.count == 1
+    Delayed::Job.enqueue Tweeter.new("#{@council.title.length > 60 ? @council.short_name : @council.title} has been added to OpenlyLocal #localgov #opendata", :url => "http://openlylocal.com/councils/#{@council.to_param}") if council.members.count == 1
     true
   end
 end

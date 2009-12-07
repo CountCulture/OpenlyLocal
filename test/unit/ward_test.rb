@@ -17,28 +17,10 @@ class WardTest < ActiveSupport::TestCase
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url
+    should_have_db_column :police_neighbourhood_url
     
     should "include ScraperModel mixin" do
-      assert Ward.respond_to?(:find_existing)
-    end
-    
-    context "when finding existing member from params" do
-      setup do
-        @council = @ward.council
-      end
-
-      should "should override find_existing and instead return member which has given name and council" do
-        assert_equal @ward, Ward.find_existing(:name => @ward.name, :council_id => @council.id)
-      end
-      
-      should "should return nil when no record with given name and council" do
-        assert_nil Ward.find_existing(:name => "Bar", :council_id => @council.id)
-      end
-      
-      should "should clean up ward name" do
-        assert_equal @ward, Ward.find_existing(:name => " #{@ward.name} Ward ", :council_id => @council.id)
-      end
-      
+      assert Ward.respond_to?(:find_all_existing)
     end
     
     context "when finding by postcode" do
@@ -63,9 +45,6 @@ class WardTest < ActiveSupport::TestCase
         
       end
     end
-    # should "override find_existing to find by council_id and name" do
-    #   
-    # end
   end
   
   context "A Ward instance" do
@@ -86,6 +65,34 @@ class WardTest < ActiveSupport::TestCase
       assert_equal "Footon", Ward.new(:name => "Footon Ward").name
       assert_equal "Footon", Ward.new(:name => "Footon ward").name
       assert_equal "Footon", Ward.new(:name => "Footon ward  ").name
+    end
+    
+    context "when matching existing member against params should override default and" do
+      should "should match uid" do
+        assert !@ward.matches_params(:uid => 42)
+        @ward.uid = 42
+        assert !@ward.matches_params(:uid => nil)
+        assert !@ward.matches_params(:uid => 41)
+        assert !@ward.matches_params
+        assert @ward.matches_params(:uid => 42)
+      end
+      
+      should "should match given name" do
+        assert !@ward.matches_params(:name => "foo")
+        assert @ward.matches_params(:name => @ward.name)
+      end
+      
+      should "should match name in preference to uid" do
+        assert @ward.matches_params(:uid => 99, :name => @ward.name)
+      end
+      
+      should "should not match when no params" do
+        assert !@ward.matches_params
+      end
+      
+      should "should clean up ward name when matching" do
+        assert @ward.matches_params(:name => " #{@ward.name} Ward ")
+      end
     end
     
     context "with members" do

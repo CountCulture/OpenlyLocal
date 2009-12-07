@@ -10,6 +10,7 @@ class MeetingsControllerTest < ActionController::TestCase
     @meeting = Factory(:meeting, :council => @council, :committee => @committee)
     @future_meeting = Factory(:meeting, :date_held => 3.days.from_now.to_date, :council => @council, :committee => @committee)
     @other_committee_meeting = Factory(:meeting, :date_held => 4.days.from_now.to_date, :council => @council, :committee => @other_committee)
+    @cancelled_committee_meeting = Factory(:meeting, :date_held => 8.days.from_now.to_date, :council => @council, :committee => @other_committee, :status => "cancelled")
     @committee.members << @member
   end
   
@@ -42,7 +43,7 @@ class MeetingsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :include_past => true
       end
   
-      should_assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting] }
+      should_assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting, @cancelled_committee_meeting] }
       should_respond_with :success
       
       should "list all meetings" do
@@ -69,15 +70,38 @@ class MeetingsControllerTest < ActionController::TestCase
     # end
     
     context "with xml requested" do
-      setup do
-        get :index, :council_id => @council.id, :format => "xml"
+      context "in general" do
+        setup do
+          get :index, :council_id => @council.id, :format => "xml"
+        end
+        should_assign_to(:council) { @council } 
+        should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/xml'
+        should "show status of meeting" do
+          assert_select "meetings>meeting>status" do
+            assert_select "status", 2
+          end
+        end
       end
   
-      should_assign_to(:council) { @council } 
-      should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
-      should_respond_with :success
-      should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      context "and include_past meetings requested" do
+        setup do
+          get :index, :council_id => @council.id, :include_past => true, :format => "xml"
+        end
+        should_assign_to(:council) { @council } 
+        should_assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting, @cancelled_committee_meeting]}
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/xml'
+        should "show status of meeting" do
+          assert_select "meetings>meeting>status" do
+            assert_select "status", :text => /cancelled/, :count => 1
+          end
+        end
+      end
+  
     end
     
     context "with json requested" do
@@ -160,15 +184,32 @@ class MeetingsControllerTest < ActionController::TestCase
       end
     end
     
-    context "with xml request" do
-      setup do
-        get :show, :id => @meeting.id, :format => "xml"
+    context "when meeting is cancelled" do
+      should "show alert" do
+        @meeting.update_attribute(:status, "cancelled")
+        get :show, :id => @meeting.id
+        assert_select "h4.alert", /cancelled/i
       end
+    end
     
-      should_assign_to :meeting
-      should_respond_with :success
-      should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+    context "with xml request" do
+      context "in general" do
+        setup do
+          get :show, :id => @meeting.id, :format => "xml"
+        end
+
+        should_assign_to :meeting
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/xml'
+      end
+      context "when meeting is cancelled" do
+        should "show status is cancelled if meeting is cancelled" do
+          @meeting.update_attribute(:status, "cancelled")
+          get :show, :id => @meeting.id, :format => "xml"
+          assert_select "meeting status", /cancelled/
+        end
+      end
     end
     
     context "with json request" do

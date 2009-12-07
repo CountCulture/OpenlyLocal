@@ -8,13 +8,13 @@ class ScrapedObjectResultTest < Test::Unit::TestCase
     context "when initializing from base object" do
       setup do
         @mock_errors = stub_everything
-        base_obj = stub_everything( :attributes => 
+        @base_obj = stub_everything( :attributes => 
                                       { "id" => 42, "url" => "http://foo.com", "foo1" => "bar1"},
                                     :title => "foo", 
                                     :changes => { :foo => "bar" },
                                     :errors => @mock_errors
                                   )
-        @scr_obj = ScrapedObjectResult.new(base_obj)
+        @scr_obj = ScrapedObjectResult.new(@base_obj)
       end
       
       should "record object's class" do
@@ -40,6 +40,13 @@ class ScrapedObjectResultTest < Test::Unit::TestCase
       
       should "keep object's errors" do
         assert_equal @mock_errors, @scr_obj.errors
+      end
+      
+      should "equal another ScrapedObjectResult if it refers to same object with same class and id" do
+        params = { :attributes => { "id" => 42 }, :title => "bar", :changes => {}, :errors => []}
+        assert_equal ScrapedObjectResult.new(@base_obj), ScrapedObjectResult.new(@base_obj)
+        assert_equal ScrapedObjectResult.new(@base_obj), ScrapedObjectResult.new(stub_everything(params))
+        assert_not_equal ScrapedObjectResult.new(@base_obj), ScrapedObjectResult.new(stub_everything(params.merge(:attributes => { "id" => 41 })))
       end
     end
     

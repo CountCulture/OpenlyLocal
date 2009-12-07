@@ -5,12 +5,64 @@ class MembersControllerTest < ActionController::TestCase
   def setup
     @member = Factory(:member)
     @council = @member.council
+    @ex_member = Factory(:member, :council => @council, :date_left => 1.month.ago)
     @ward = Factory(:ward, :council => @council)
     @ward.members << @member
     @committee = Factory(:committee, :council => @council)
     @member.committees << @committee
     @forthcoming_meeting = Factory(:meeting, :council => @council, :committee => @committee, :date_held => 2.days.from_now)
   end
+  
+  # index test
+  context "on GET to :index" do
+    
+    context "with basic request and council_id" do
+      setup do
+        get :index, :council_id => @council.id
+      end
+      
+      should_assign_to(:members) { [@member] } # current members
+      should_assign_to(:council) { @council }
+      should_respond_with :success
+      
+      should "show title" do
+        assert_select "title", /current members/i
+      end
+      
+      should "list current members" do
+        assert_select ".members li a", @member.full_name
+      end
+      
+      should "show link to include ex_members" do
+        assert_select "a[href*=include_ex_members]"
+      end
+    end
+    
+    context "with basic request and council_id and ex-members included" do
+      setup do
+        get :index, :council_id => @council.id, :include_ex_members => true
+      end
+      
+      should_assign_to(:members) { [@member, @ex_member] } # current members
+      should_assign_to(:council) { @council }
+      should_respond_with :success
+      
+      should "show title" do
+        assert_select "title", /all members/i
+      end
+      
+      should "list all members" do
+        assert_select ".members li a", @member.full_name
+        assert_select ".members li a", @ex_member.full_name
+      end
+      
+      should "not show link to include ex_members" do
+        assert_select "a[href*=include_ex_members]", false
+      end
+    end
+
+  end
+  
   # show test
    context "on GET to :show" do
 
@@ -41,22 +93,6 @@ class MembersControllerTest < ActionController::TestCase
        
        should "show link to resource uri in head" do
          assert_select "link[rel*='primarytopic'][href*='/id/members/#{@member.id}']"
-       end
-
-       should "show rdfa typeof" do
-         assert_select "div[typeof*='openlylocal:LocalAuthorityMember']"
-       end
-
-       should "use member name as foaf:name" do
-         assert_select "h1 span[property*='foaf:name']", @member.full_name
-       end
-
-       should "show rdfa attributes for committees" do
-         assert_select "#committees li a[rev*='foaf:member']"
-       end
-       
-       should "show foaf attributes for meetings" do
-         assert_select "#meetings li[rel*='openlylocal:meeting']"
        end
        
        should "show canonical url" do
@@ -100,7 +136,7 @@ class MembersControllerTest < ActionController::TestCase
          assert_match /committees.+committee/, @response.body
        end
        should "include meetings" do
-         assert_match /meetings.+meeting/, @response.body
+         assert_match /forthcoming_meetings.+id\":#{@forthcoming_meeting.id}/, @response.body
        end
        should "include ward info" do
          assert_match %r(ward.+name.+#{@ward.name}), @response.body
@@ -121,7 +157,7 @@ class MembersControllerTest < ActionController::TestCase
      context "with rdf request" do
        context "for member with full personal details" do
          setup do
-           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof")
+           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof", :party => "Labour")
            get :show, :id => @member.id, :format => "rdf"
          end
 
@@ -144,6 +180,7 @@ class MembersControllerTest < ActionController::TestCase
            assert_match /rdf:Description.+rdf:about.+\/id\/members\/#{@member.id}/, @response.body
            assert_match /rdf:Description.+rdfs:label>#{@member.title}/m, @response.body
            assert_match /rdf:type.+openlylocal:LocalAuthorityMember/m, @response.body
+           assert_match /foaf:page.+#{Regexp.escape(@member.url)}/m, @response.body
          end
 
          should "show personal info for member with info" do
@@ -152,6 +189,7 @@ class MembersControllerTest < ActionController::TestCase
            assert_match /rdf:Description.+foaf:title.+#{@member.name_title}/m, @response.body
            assert_match /rdf:Description.+foaf:phone.+#{Regexp.escape(@member.foaf_telephone)}/m, @response.body
            assert_match /rdf:Description.+foaf:mbox.+mailto:#{@member.email}/m, @response.body
+           assert_match /rdf:Description.+dbpedia-owl:party.+#{Regexp.escape(@member.party.dbpedia_uri)}/m, @response.body
          end
          
          should "show address for member as vCard" do
@@ -191,15 +229,15 @@ class MembersControllerTest < ActionController::TestCase
            assert_no_match /rdf:Description.+foaf:title/m, @response.body
            assert_no_match /rdf:Description.+foaf:phone/m, @response.body
            assert_no_match /rdf:Description.+foaf:mbox/m, @response.body
+           assert_no_match /rdf:Description.+dbpedia\-owl:party/m, @response.body
          end
-         should "show not address for member" do
+         should "not show address for member" do
            assert_no_match /rdf:Description.+vCard:ADR/m, @response.body
          end
          
          should "show council membership" do
            assert_match /rdf:Description.+\/councils\/#{@council.id}.+foaf:member.+\/members\/#{@member.id}/m, @response.body
          end
-
        end
      end
    end  

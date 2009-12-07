@@ -3,8 +3,9 @@ require 'test_helper'
 class PartyTest < Test::Unit::TestCase
   DUMMY_RAW_DATA = [
     [ ["Conservative", "Con", "Cons" ], "#0281AA" ],
-    [ ["Labour", "Lab"], "#AA0000" ],
-    [ ["Liberal Democrat","LDem", "LibDem" ], "#F3A63C" ],
+    [ ["Labour", "Lab"], "#AA0000", "Labour_Party_(UK)" ],
+    [ ["Liberal Democrat","LDem", "LibDem" ], nil, "Liberal_Democrats" ],
+    [ [ "Scottish National", "SNP" ] ],
     [ ["Green"], "#73A533" ]
     ] 
   
@@ -25,10 +26,10 @@ class PartyTest < Test::Unit::TestCase
       Party.stubs(:raw_data).returns(DUMMY_RAW_DATA)
     end
         
-    should "have name and colour accessors" do
+    should "have name, colour, dbpedia_link accessors" do
       assert Party.new("foo").respond_to?(:name)
       assert Party.new("foo").respond_to?(:colour)
-      # assert @party.respond_to?(:dbpedia_link)
+      assert Party.new("foo").respond_to?(:dbpedia_uri)
     end
     
     should "be equal to another party instance with the same name" do
@@ -50,6 +51,10 @@ class PartyTest < Test::Unit::TestCase
         should "assign appropriate colour to colour" do
           assert_equal "#AA0000", Party.new("Labour").colour
         end
+        
+        should "assign appropriate uri to dbpedia_uri" do
+          assert_equal "http://dbpedia.org/resource/Labour_Party_(UK)", Party.new("Lab").dbpedia_uri
+        end
       end
       
       context "and string is alias of party" do
@@ -60,6 +65,10 @@ class PartyTest < Test::Unit::TestCase
         should "assign appropriate colour to colour" do
           assert_equal "#AA0000", Party.new("Lab").colour
         end
+        
+        should "assign appropriate uri to dbpedia_uri" do
+          assert_equal "http://dbpedia.org/resource/Labour_Party_(UK)", Party.new("Lab").dbpedia_uri
+        end
       end
       
       context "and string is not a party name" do
@@ -69,6 +78,10 @@ class PartyTest < Test::Unit::TestCase
         
         should "return nil as colour" do
           assert_nil Party.new("Foo").colour
+        end
+        
+        should "return nil as dbpedia_uri" do
+          assert_nil Party.new("Foo").dbpedia_uri
         end
       end
       
@@ -82,6 +95,20 @@ class PartyTest < Test::Unit::TestCase
         should "return nil for name" do
           assert_nil Party.new("").name
         end
+      end
+    end
+    
+    context "when returning colour" do
+      should "return nil if no colour" do
+        assert_nil Party.new("Scottish National").colour
+      end
+      
+      should "return nil if colour nil" do
+        assert_nil Party.new("Liberal Democrat").colour
+      end
+      
+      should "return colour if colour set" do
+        assert_equal "#0281AA", Party.new("Conservative").colour
       end
     end
     

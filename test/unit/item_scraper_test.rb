@@ -81,6 +81,13 @@ class ItemScraperTest < ActiveSupport::TestCase
           @scraper.process
           assert !@scraper.reload.problematic?
         end
+        
+        should "clear set problematic flag if no problems" do
+          @scraper.update_attribute(:problematic, true)
+          @scraper.process
+          assert !@scraper.reload.problematic?
+        end
+
       end
 
       context "and problem getting data" do
@@ -110,40 +117,48 @@ class ItemScraperTest < ActiveSupport::TestCase
           @scraper.process
           assert @scraper.reload.problematic?
         end
-      end
-
-      context "and non-ScraperError occurs" do
-        setup do
-          @parser.expects(:results).raises(ActiveRecord::UnknownAttributeError, "unknown attribute foo")
-        end
-
-        should "catch exception" do
-          assert_nothing_raised(Exception) { @scraper.process }
-        end
         
-        should "add details to scraper errors" do
+        should "not clear set problematic flag" do
+          @scraper.update_attribute(:problematic, true)
           @scraper.process
-          assert_match /unknown attribute foo/, @scraper.errors[:base]
-        end
-        
-        should "return self" do
-          assert_equal @scraper, @scraper.process
-        end
-        
-        should "mark scraper as problematic if saving results" do
-          @scraper.process(:save_results => true)
           assert @scraper.reload.problematic?
         end
-        
-        should "not update last_scraped if saving results" do
-          @scraper.process
-          assert_nil @scraper.last_scraped
-        end
+
       end
+
+      # DEPRECATED: We shouldn't have non-ScraperError as parsing errors are caught by parser
+      # 
+      # context "and non-ScraperError occurs" do
+      #   setup do
+      #     @parser.expects(:results).raises(ActiveRecord::UnknownAttributeError, "unknown attribute foo")
+      #   end
+      # 
+      #   should "catch exception" do
+      #     assert_nothing_raised(Exception) { @scraper.process }
+      #   end
+      #   
+      #   should "add details to scraper errors" do
+      #     @scraper.process
+      #     assert_match /unknown attribute foo/, @scraper.errors[:base]
+      #   end
+      #   
+      #   should "return self" do
+      #     assert_equal @scraper, @scraper.process
+      #   end
+      #   
+      #   should "mark scraper as problematic if saving results" do
+      #     @scraper.process(:save_results => true)
+      #     assert @scraper.reload.problematic?
+      #   end
+      #   
+      #   should "not update last_scraped if saving results" do
+      #     @scraper.process
+      #     assert_nil @scraper.last_scraped
+      #   end
+      # end
       
       context "item_scraper with related_model" do
         setup do
-          # @scraper.parser.update_attribute(:related_model, "Committee")
           @scraper.parser.update_attributes(:result_model => "Meeting", :related_model => "Committee")
           
           @committee_1 = Factory(:committee, :council => @scraper.council)
@@ -176,6 +191,22 @@ class ItemScraperTest < ActiveSupport::TestCase
             @parser.expects(:process).twice.with(anything, @scraper).returns(stub_everything(:results => []))
             @scraper.process
           end
+          
+          should "store all instances of scraped_object_result in results" do
+            Parser.any_instance.stubs(:process).returns(stub_everything(:results => [{:date_held => 3.days.ago, :uid => 42}]))
+            
+            dummy_members = (1..3).collect{ |i|  Meeting.new(:date_held => i.days.ago, :committee_id => @committee_1.id, :venue => "Venue #{i}") }
+            Meeting.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_members[0])]).then.returns([ScrapedObjectResult.new(dummy_members[1]), ScrapedObjectResult.new(dummy_members[2])])
+            
+            results = @scraper.process.results
+            assert_equal 3, results.size
+            assert_kind_of ScrapedObjectResult, results.first
+            assert_match /new/, results.first.status
+            assert_equal "Meeting", results.first.base_object_klass
+            assert_equal "#{@committee_1.title} meeting", results.first.title
+          end
+
+          
           
           should "not update last_scraped attribute if not saving results" do
             assert_nil @scraper.process.last_scraped
@@ -228,6 +259,12 @@ class ItemScraperTest < ActiveSupport::TestCase
             assert !@scraper.reload.problematic?
           end
           
+          should "clear set problematic flag if no problems" do
+            @scraper.update_attribute(:problematic, true)
+            @scraper.process
+            assert !@scraper.reload.problematic?
+          end
+
           context "and problem parsing" do
             setup do
               @parser.update_attribute(:item_parser, "foo")
@@ -242,14 +279,35 @@ class ItemScraperTest < ActiveSupport::TestCase
               @scraper.process
               assert @scraper.reload.problematic?
             end
+            
+            should "not clear set problematic flag" do
+              @scraper.update_attribute(:problematic, true)
+              @scraper.process
+              assert @scraper.reload.problematic?
+            end
+
           end
           
+        end
+        
+        context "and blank url" do
+          setup do
+            @scraper.update_attribute(:url, "")
+          end
+
+          should "get data from each related_object's url" do
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_1.uid}")
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_2.uid}")
+            @scraper.process
+          end
+
         end
         
         context "and problem getting data" do
 
           setup do
-            @scraper.expects(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
+            @scraper.update_attribute(:url, nil)
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_1.uid}").raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
           end
 
           should "not raise exception" do
@@ -264,11 +322,23 @@ class ItemScraperTest < ActiveSupport::TestCase
           should "return self" do
             assert_equal @scraper, @scraper.process
           end
+          
+          should "get data from other page" do
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_2.uid}")
+            @scraper.process
+          end
 
           should "mark scraper as problematic" do
             @scraper.process
             assert @scraper.reload.problematic?
           end
+          
+          should "not clear set problematic flag" do
+            @scraper.update_attribute(:problematic, true)
+            @scraper.process
+            assert @scraper.reload.problematic?
+          end
+
         end
       end
             

@@ -5,7 +5,8 @@ class MeetingTest < ActiveSupport::TestCase
   context "The Meeting Class" do
     setup do
       @committee = Factory(:committee)
-      @meeting = Factory(:meeting, :committee => @committee, :council => @committee.council)
+      @council = @committee.council
+      @meeting = Factory(:meeting, :committee => @committee, :council => @council)
    end
 
     should_belong_to :committee
@@ -16,6 +17,7 @@ class MeetingTest < ActiveSupport::TestCase
     should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
     should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
     should_have_db_columns :venue
+    should_have_db_columns :status
     should_validate_uniqueness_of :date_held, :scoped_to => [:council_id, :committee_id]
     should "validate uniqueness of uid scoped to council_id" do
       #shoulda macros can't allow for nil values
@@ -31,14 +33,6 @@ class MeetingTest < ActiveSupport::TestCase
       assert_nil new_meet.errors[:uid]
     end
     
-    should "validate presence either of uid or url" do
-      assert new_meeting(:uid => 42).valid?
-      assert new_meeting(:url => "foo.com").valid?
-      nm = new_meeting
-      assert !nm.valid?
-      assert_equal "either uid or url must be present", nm.errors[:base]
-    end
-
     should "validate uniqueness of url if uid is blank?" do
      @meeting.update_attribute(:url, "foo.com")
       nm = new_meeting(:url => "foo.com", :council_id => @meeting.council_id)
@@ -46,33 +40,94 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "must be unique", nm.errors[:url]
     end
     
-    should "not validate uniqueness of url if uid is blank?" do
+    should "not validate uniqueness of url if uid is not blank?" do
       nm = new_meeting(:url => "foo.com", :uid => 43, :council_id => @meeting.council_id)
       assert nm.valid?
     end
 
-
     should "include ScraperModel mixin" do
-      assert Meeting.respond_to?(:find_existing)
+      assert Meeting.respond_to?(:find_all_existing)
     end
     
-    should "have forthcoming named scope" do
-      expected_options = {:conditions => ["date_held >= ?", Time.now], :order => "date_held" }
-      assert_equal expected_options[:order], Meeting.forthcoming.proxy_options[:order]
-      assert_equal expected_options[:conditions].first, Meeting.forthcoming.proxy_options[:conditions].first
-      assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
+    context "with forthcoming named scope" do
+      setup do
+        @future_meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 5.days.from_now)
+        @future_cancelled_meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 6.days.from_now, :status => "cancelled")
+      end
+      
+      should "fetch only meetings in the future" do
+        expected_options = {:conditions => ["date_held >= ? AND (status IS NULL OR status NOT LIKE 'cancelled')", Time.now], :order => "date_held" }
+        assert_equal expected_options[:order], Meeting.forthcoming.proxy_options[:order]
+        assert_equal expected_options[:conditions].first, Meeting.forthcoming.proxy_options[:conditions].first
+        assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
+      end
+      
+      should "not return meetings in the past" do
+        assert !Meeting.forthcoming.include?(@meeting)
+      end
+      
+      should "return meetings in the future" do
+        assert Meeting.forthcoming.include?(@future_meeting)
+      end
+      
+      should "not include cancelled meetings" do
+        assert !Meeting.forthcoming.include?(@future_cancelled_meeting)
+      end
     end
     
-    should "find_existing from uid if uid exists" do
-      @meeting.update_attribute(:uid, 42)
-      assert_equal @meeting, Meeting.find_existing(:uid => 42, :council_id => @meeting.council_id)
+    context "should overwrite find_all_existing and" do
+      setup do
+        another_committee = Factory(:committee, :council => @council)
+        another_committee_meeting = Factory(:meeting, :committee => another_committee, :council => @council)
+        another_council = Factory(:another_council)
+        another_council_committee = Factory(:committee, :council => another_council, :uid => @committee.uid) # same uid, diff council
+        another_council_meeting = Factory(:meeting, :committee => another_council_committee, :council => another_council)
+      end
+      
+      should "find only those meetings that are for the same committee and council" do
+        assert_equal [@meeting], Meeting.find_all_existing(:council_id => @council.id, :committee_id => @committee.id)
+      end
+      
+      should "raise exception if no council_id in params" do
+        assert_raise(ArgumentError) { Meeting.find_all_existing({:council_id => @council.id}) }
+      end
+      
+      should "raise exception if no committee_id in params" do
+        assert_raise(ArgumentError) { Meeting.find_all_existing({:committee_id => @committee.id}) }
+      end
     end
+  
+    context "should overwrite orphan_records_callback and" do
+      setup do
+        @future_meeting = Factory(:meeting, :committee => @committee, :council => @committee.council, :date_held => 5.days.from_now)
+        @meeting_with_no_time = Factory(:meeting, :committee => @committee, :council => @committee.council, :date_held => 5.days.from_now.to_date)
+      end
 
-    should "find existing from council, committee and url if uid is blank" do
-      another_meeting = Factory(:meeting, :council => @meeting.council, :date_held => 3.days.from_now, :committee => @meeting.committee, :url => "bar.com/meeting")
-      @meeting.update_attribute(:url, "foo.com/meeting")
-      assert_equal another_meeting, Meeting.find_existing(:uid => nil, :council_id => @meeting.council_id, :committee_id => @meeting.committee_id, :url => another_meeting.url)
-    end
+      should "not delete orphan_record if not saving results" do      
+        Meeting.send(:orphan_records_callback, [@meeting, @future_meeting])
+        assert Meeting.find_by_id(@meeting.id)
+        assert Meeting.find_by_id(@future_meeting.id)
+      end
+
+      should "not fail if the are no orphan records" do
+        assert_nothing_raised(Exception) { Meeting.send(:orphan_records_callback, [], :save_results => true) }
+      end   
+
+      should "delete orphan meetings in the future" do
+        Meeting.send(:orphan_records_callback, [@meeting, @future_meeting], :save_results => true)
+        assert_nil Meeting.find_by_id(@future_meeting.id)
+      end  
+
+      should "delete orphan meetings in the future when time is not known" do
+        Meeting.send(:orphan_records_callback, [@meeting, @meeting_with_no_time], :save_results => true)
+        assert_nil Meeting.find_by_id(@meeting_with_no_time.id)
+      end  
+
+      should "not delete orphan meetings in the past" do
+        Meeting.send(:orphan_records_callback, [@meeting, @future_meeting], :save_results => true)
+        assert Meeting.find_by_id(@meeting.id)
+      end       
+    end       
   end
   
 
@@ -113,6 +168,13 @@ class MeetingTest < ActiveSupport::TestCase
     
     should "return formatted date as formatted date with extra spaces removed" do
       assert_equal "Nov 6 2008, 7.30PM", @meeting.formatted_date
+    end
+    
+    should "mark as cancelled if status is cancelled" do
+      assert !new_meeting.cancelled?
+      assert !new_meeting(:status => "foo").cancelled?
+      assert new_meeting(:status => "cancelled").cancelled?
+      assert new_meeting(:status => "Cancelled").cancelled?
     end
     
     should "have polymorphic Meeting type document as minutes" do
@@ -156,15 +218,31 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "#{@meeting.created_at.strftime("%Y%m%dT%H%M%S")}-meeting-#{@meeting.id}@twfylocal", @meeting.event_uid
     end
     
-    should "return status of meeting" do
+  context "when returning status" do
+    
+    should "return lower case version of status attribute" do
+      assert_equal "cancelled", new_meeting(:status => "Cancelled", :date_held => nil).status
+    end
+    
+    should "return nil if no status attribute or date_held time" do
+      assert_nil new_meeting(:date_held => nil).status
+    end
+    
+    should "return status of meeting if date_held" do
       assert_equal "past", new_meeting.status
       assert_equal "future", new_meeting(:date_held => 1.hour.from_now).status
     end
     
-    should "return status of meeting with no time set" do
+    should "add status of meeting with no time set" do
       assert_equal "past", new_meeting(:date_held => "3 November 2007").status
       assert_equal "future", new_meeting(:date_held => "3 November 2020").status
     end
+    
+    should "return lower case version of status attribute and time status of meeting with date_held" do
+      assert_equal "cancelled past", new_meeting(:status => "Cancelled").status
+      assert_equal "cancelled future", new_meeting(:date_held => "3 November 2020", :status => "Cancelled").status
+    end
+  end
     
     context "when converting meeting to_xml" do
       should "include openlylocal_url" do
@@ -178,6 +256,42 @@ class MeetingTest < ActiveSupport::TestCase
       should "include title" do
         assert_match %r(<title), @meeting.to_xml
       end
+    end
+    
+    context "when matching existing member against params should override default and" do
+      should "should match uid if it exists" do
+        meeting_with_uid = Factory(:meeting, :council => @meeting.council, :date_held => 3.days.from_now, :committee => @meeting.committee, :url => "bar.com/meeting")
+        assert !@meeting.matches_params(:uid => 42)
+        @meeting.uid = 42
+        assert !@meeting.matches_params(:uid => nil)
+        assert !@meeting.matches_params(:uid => 41)
+        assert !@meeting.matches_params
+        assert @meeting.matches_params(:uid => 42)
+        assert @meeting.matches_params(:uid => 42, :url => "bar.com/foo") #ignore that url is different
+        assert @meeting.matches_params(:uid => 42, :date_held => 4.days.from_now) #ignore that date_held is different
+      end
+      
+      should "should match committee_id and url if uid is blank" do
+        meeting_with_url = Factory(:meeting, :council => @meeting.council, :date_held => 3.days.from_now, :committee => @meeting.committee, :url => "bar.com/meeting")
+        assert meeting_with_url.matches_params(:committee_id => meeting_with_url.committee_id, :url => meeting_with_url.url)
+        assert meeting_with_url.matches_params(:committee_id => meeting_with_url.committee_id, :url => meeting_with_url.url, :date_held => 4.days.from_now) #ignore that date_held is different
+        assert !meeting_with_url.matches_params(:url => meeting_with_url.url)
+        assert !meeting_with_url.matches_params(:committee_id => nil, :url => meeting_with_url.url)
+      end
+      
+      should "should match committee_id and date_held if uid and url are blank" do
+        date_held = 3.days.from_now
+        meeting_with_date_held = Factory(:meeting, :council => @meeting.council, :date_held => date_held, :committee => @meeting.committee) #no uid
+        assert meeting_with_date_held.matches_params(:committee_id => meeting_with_date_held.committee_id, :date_held => date_held)
+        assert !meeting_with_date_held.matches_params(:date_held => date_held)
+        assert !meeting_with_date_held.matches_params(:committee_id => nil, :date_held => date_held)
+      end
+      
+      should "should not match when no params" do
+        assert !@meeting.matches_params
+        assert Meeting.new.matches_params
+      end
+      
     end
     
     context "when calling minutes_document_body setter" do

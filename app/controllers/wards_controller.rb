@@ -1,11 +1,11 @@
 class WardsController < ApplicationController
   before_filter :authenticate, :except => [:show]
+  before_filter :find_ward
   before_filter :linked_data_available, :only => :show
   
   def show
-    @ward = Ward.find(params[:id])
     @council = @ward.council
-    @members = @ward.members
+    @members = @ward.members.current
     @committees = @ward.committees
     @title = "#{@ward.name} ward"
     respond_to do |format|
@@ -17,21 +17,23 @@ class WardsController < ApplicationController
   end
   
   def edit
-    @ward = Ward.find(params[:id])
   end
   
   def update
-    @ward = Ward.find(params[:id])
     @ward.update_attributes!(params[:ward])
     flash[:notice] = "Successfully updated ward"
     redirect_to ward_url(@ward)
   end
   
   def destroy
-    @ward = Ward.find(params[:id])
     @council = @ward.council
     @ward.destroy
     flash[:notice] = "Successfully destroyed ward"
     redirect_to council_url(@council)
+  end
+  
+  private
+  def find_ward
+    @ward = params[:id] ? Ward.find(params[:id]) : Ward.find_by_snac_id(params[:snac_id])
   end
 end

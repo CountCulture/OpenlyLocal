@@ -1,6 +1,6 @@
 <h1><%= basic_link_for @council %> <%= @title %></h1>
 
-<%= params[:include_inactive] ? "<strong>Inactive committees in grey</strong> (#{link_to('Restrict to active committees', params.except(:include_inactive))})" : link_to("Include inactive commities", params.merge(:include_inactive => true)) %>
+<%= params[:include_inactive] ? "<strong>Inactive committees in grey</strong> (#{link_to('Restrict to active committees', params.except(:include_inactive))})" : link_to("Include inactive committees", params.merge(:include_inactive => true)) %>
 <p class="extra_info">
   <%= link_for @council %> 
 </p>

@@ -18,10 +18,13 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :wards
     should_have_many :officers
     should_have_many :services
-    should_have_one :chief_executive
+    should_have_many :child_authorities
     should_have_many :meeting_documents, :through => :meetings
     should_have_many :past_meeting_documents, :through => :held_meetings
+    should_have_one :chief_executive
+    should_belong_to :parent_authority
     should_belong_to :portal_system
+    should_belong_to :police_force
     should_have_db_column :notes
     should_have_db_column :wikipedia_url
     should_have_db_column :ons_url
@@ -35,6 +38,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_db_column :population
     should_have_db_column :twitter_account
     should_have_db_column :ldg_id
+    should_have_db_column :police_force_url
     
     should "mixin PartyBreakdownSummary module" do
       assert Council.new.respond_to?(:party_breakdown)
@@ -237,15 +241,15 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
-    context "when returning dbpedia_url" do
+    context "when returning dbpedia_resource" do
 
       should "return nil if wikipedia_url blank" do
-        assert_nil @council.dbpedia_url
+        assert_nil @council.dbpedia_resource
       end
       
       should "return dbpedia url" do
         @council.wikipedia_url = "http://en.wikipedia.org/wiki/Herefordshire"
-        assert_equal "http://dbpedia.org/page/Herefordshire", @council.dbpedia_url
+        assert_equal "http://dbpedia.org/resource/Herefordshire", @council.dbpedia_resource
       end
     end
     
@@ -287,6 +291,32 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning police_force_url" do
+      setup do
+        @force = Factory(:police_force)
+      end
+      
+      should "return police_force_url if set and police_force is not" do
+        @council.update_attribute(:police_force_url, "http://police.com/anytown")
+        assert_equal "http://police.com/anytown", @council.police_force_url
+      end
+      
+      should "return police_force_url if set and police_force is" do
+        @council.update_attribute(:police_force_url, "http://police.com/anytown")
+        @council.update_attribute(:police_force_id, @force.id)
+        assert_equal "http://police.com/anytown", @council.police_force_url
+      end
+      
+      should "return assoc police_force url if police_force_url blank" do
+        @council.update_attribute(:police_force_id, @force.id)
+        assert_equal @force.url, @council.police_force_url
+      end
+      
+      should "return nil if no assoc police_force and police_force_url blank" do
+        assert_nil @council.police_force_url
+      end
+    end
+    
     context "when getting active_committees" do
       setup do
         @committee = Factory(:committee, :council => @council)
@@ -313,7 +343,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
 
-    context "when caclulating whether council has active committees" do
+    context "when calculating whether council has active committees" do
       setup do
         @committee = Factory(:committee, :council => @council)
         @another_committee = Factory(:committee, :council => @council)

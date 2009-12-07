@@ -6,6 +6,7 @@ class CouncilsControllerTest < ActionController::TestCase
     @council = Factory(:council, :authority_type => "London Borough", :snac_id => "snac_1")
     @member = Factory(:member, :council => @council)
     @old_member = Factory(:member, :council => @council)
+    @ex_member = Factory(:member, :council => @council, :date_left => 1.month.ago)
     @another_council = Factory(:another_council)
     @committee = Factory(:committee, :council => @council)
     @past_meeting = Factory(:meeting, :committee => @committee, :council => @council)
@@ -180,6 +181,7 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "with basic request" do
       setup do
+        Council.any_instance.stubs(:party_breakdown => [])
         get :show, :id => @council.id
       end
 
@@ -189,8 +191,9 @@ class CouncilsControllerTest < ActionController::TestCase
       should_assign_to(:members) { @council.members.current }
       should_assign_to(:committees) { [@committee] }
 
-      should "list all members" do
+      should "list all active members" do
         assert_select "#members li", @council.members.current.size
+        assert_select "#members a", :text => /#{@ex_member.title}/, :count => 0
       end
       
       should "list all active committees" do
@@ -219,6 +222,10 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "a.calendar[href*='meetings.ics?council_id=#{@council.id}']"
       end
       
+      should "not show link to police url" do
+        assert_select "extra info a", :text => /police/, :count => 0
+      end
+      
       should "list documents" do
         assert_equal [@past_document], assigns(:documents)
         assert_select "#documents li", @past_document.extended_title
@@ -228,22 +235,6 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "link[rel*='primarytopic'][href*='/id/councils/#{@council.id}']" # uri based on controller
       end
 
-      should "show rdfa local authority" do
-        assert_select "#data span[about='[openlylocal:LondonBoroughAuthority]']"
-      end
-      
-      should "use council name as foaf:name" do
-        assert_select "h1[property*='foaf:name']", @council.title
-      end
-      
-      should "show foaf attributes for members" do
-        assert_select "#members li a[rel*='foaf:member']"
-      end
-      
-      should "show rdfa attributes for committees" do
-        assert_select "#committees li a[rel*='openlylocal:committee']"
-      end
-      
       should "show links to services if there are 10 or more", :before => lambda { 11.times { Factory(:service, :council => @council) } } do
         assert_select "#council_services"
       end
@@ -252,8 +243,20 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "#council_services", false
       end
       
+      should "not show child councils if there is none" do
+        assert_select "#child_councils", false
+      end
+      
+      should "not show parent council if there is none" do
+        assert_select "#associated_councils", :text => /county/i, :count => 0
+      end
+      
+      should "not show party breakdown" do
+        assert_select "#party_breakdown", false
+      end
+      
     end
-          
+    
     context "with xml requested" do
       setup do
         get :show, :id => @council.id, :format => "xml"
@@ -282,6 +285,10 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should "show associated wards" do
         assert_select "council>wards>ward>url", @ward.url
+      end
+      
+      should "show twtter id" do
+        assert_select "council>twitter-account"
       end
     end
     
@@ -313,9 +320,9 @@ class CouncilsControllerTest < ActionController::TestCase
     
     end
     
-    context "with rdf request" do
+    context "with rdf requested" do
       setup do
-        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk")
+        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk", :os_id => "7000123", :parent_authority_id => @another_council.id, :twitter_account => "anytown_twitter")
         get :show, :id => @council.id, :format => "rdf"
       end
      
@@ -355,13 +362,14 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should "show council is same as other resources" do
         assert_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
-        assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_url)}/, @response.body
+        assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_resource)}/, @response.body
+        assert_match /owl:sameAs.+rdf:resource.+data.ordnancesurvey.co.uk\/id\/#{@council.os_id}/, @response.body
       end
       
       should "show details of council" do
-        assert_match /foaf:address.+#{Regexp.escape(@council.address)}/, @response.body
         assert_match /foaf:phone.+#{Regexp.escape(@council.foaf_telephone)}/, @response.body
         assert_match /foaf:homepage.+#{Regexp.escape(@council.url)}/, @response.body
+        assert_match /vCard:Extadd.+#{Regexp.escape(@council.address)}/, @response.body
       end
       
       should "show address for member as vCard" do
@@ -381,6 +389,42 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show members" do
         assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/id\/members\/#{@member.id}/, @response.body
         assert_match /rdf:Description.+\/id\/members\/#{@member.id}/, @response.body
+      end
+      
+      should "show relationship with parent authority" do
+        assert_match /rdf:Description.+\/id\/councils\/#{@another_council.id}.+openlylocal:isParentAuthorityOf.+\/id\/councils\/#{@council.id}/m, @response.body
+      end
+      
+      should "show twitter details" do
+        get :show, :id => @council.id, :format => "rdf"
+        assert_match /rdf:Description.+foaf:OnlineAccount.+twitter\.com/m, @response.body
+      end
+      
+      should "show police force details" do
+        @police_force = Factory(:police_force)
+        @police_force.councils << @council
+        get :show, :id => @council.id, :format => "rdf"
+        assert_match /rdf:Description.+\/id\/police_forces\/#{@police_force.id}.+openlylocal:isPoliceForceFor.+\/id\/councils\/#{@council.id}/m, @response.body
+      end
+    end
+
+    context "with rdf requested and child authorities" do
+      setup do
+        @council.child_authorities << @another_council
+        get :show, :id => @council.id, :format => "rdf"
+      end
+     
+      should_assign_to :council
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/rdf+xml'
+     
+      should "show relationship with child authorities" do
+        assert_match /rdf:Description.+\/id\/councils\/#{@council.id}.+openlylocal:isParentAuthorityOf.+\/id\/councils\/#{@another_council.id}/m, @response.body
+      end
+      
+      should "show child authorities" do    
+        assert_match /rdf:Description.+\/id\/councils\/#{@another_council.id}/, @response.body
       end
     end
 
@@ -405,6 +449,7 @@ class CouncilsControllerTest < ActionController::TestCase
         get :show, :id => @council.id, :format => "rdf"
         assert_no_match /owl:sameas.+rdf:resource.+statistics.data.gov.uk/, @response.body
         assert_no_match /owl:sameas.+rdf:resource.+dbpedia/, @response.body
+        assert_no_match /owl:sameAs.+rdf:resource.+data.ordnancesurvey.co.uk/, @response.body
       end
       
       should "not show missing details of council" do
@@ -413,16 +458,39 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_no_match /foaf:telephone/, @response.body
       end
       
+      should "not show twitter details" do
+        get :show, :id => @council.id, :format => "rdf"
+        assert_no_match /foaf:OnlineAccount/, @response.body
+        assert_no_match /twitter\.com/, @response.body
+      end
     end
 
-    context "when council has datapoints" do
+    context "with basic request and council has optional attributes" do
       setup do
         @datapoint = Factory(:datapoint, :council => @council)
         @dataset = @datapoint.dataset
         Council.any_instance.stubs(:datapoints).returns([@datapoint, @datapoint])
+        Council.any_instance.stubs(:party_breakdown => [[Party.new("Conservative"), 4], [Party.new("Labour"), 3]])
+        @council.child_authorities << @another_council # add parent/child relationship
       end
       
-      context "with summary" do
+      should "show party breakdown" do
+        get :show, :id => @council.id
+        assert_select "#party_breakdown"
+      end
+
+      should "show child district authorities when they exist" do
+        @council.child_authorities << @another_council
+        get :show, :id => @council.id
+        assert_select "#associated_councils a", /#{@another_council.name}/
+      end
+
+      should "show parent country authority if it exists" do
+        get :show, :id => @another_council.id
+        assert_select "#associated_councils a", /#{@council.name}/
+      end
+
+      context "with datapoint summary" do
         setup do
           @datapoint.stubs(:summary => ["heading_1", "data_1"])
           get :show, :id => @council.id
@@ -445,7 +513,7 @@ class CouncilsControllerTest < ActionController::TestCase
         end
       end
             
-      context "without summary" do
+      context "without datapoint summary" do
         setup do
           @datapoint.stubs(:summary)
           get :show, :id => @council.id
@@ -479,30 +547,7 @@ class CouncilsControllerTest < ActionController::TestCase
           assert_match /dataset.+#{@datapoint.dataset.title}/, @response.body
         end
       end
-    end
-    
-    context "and party_breakdown is available" do
-      setup do
-        Council.any_instance.stubs(:party_breakdown => [[Party.new("Conservative"), 4], [Party.new("Labour"), 3]])
-        get :show, :id => @council.id
-      end
-      
-      should "show party breakdown" do
-        assert_select "#party_breakdown"
-      end
-    end
-    
-    context "and party_breakdown has no data" do
-      setup do
-        Council.any_instance.stubs(:party_breakdown => [])
-        get :show, :id => @council.id
-      end
-
-      should "not show party breakdown" do
-        assert_select "#party_breakdown", false
-      end
-    end
-    
+    end    
     
   end  
 

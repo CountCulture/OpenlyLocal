@@ -49,22 +49,6 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "link[rel='primarytopic'][href*='/id/committees/#{@committee.id}']"
        end
 
-       should "show rdfa typeof" do
-         assert_select "div[typeof*='openlylocal:LocalAuthorityCommittee']"
-       end
-
-       should "use member name as foaf:name" do
-         assert_select "h1 span[property*='foaf:name']", @committee.title
-       end
-
-       should "show rdfa attributes for members" do
-         assert_select "#members li a[rel*='foaf:member']"
-       end
-       
-       should "show foaf attributes for meetings" do
-         assert_select "#meetings li[rel*='openlylocal:meeting']"
-       end
-       
        should "not show link to ward" do
          assert_select ".extra_info a", :text => /ward committee/i, :count => 0
        end
@@ -166,13 +150,10 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should "show members" do
          assert_match /foaf:member.+rdf:resource.+\/members\/#{@member.id}/, @response.body
-         # assert_match /rdf:Description.+\/members\/#{@member.id}/, @response.body
        end
        
        should "show meetings" do
          assert_match /openlylocal:meeting.+rdf:resource.+\/meetings\/#{@meeting.id}/, @response.body
-         # assert_match /openlylocal:LocalAuthorityMember.+rdf:resource.+\/members\/#{@member.id}/, @response.body
-         # assert_match /rdf:Description.+\/members\/#{@member.id}/, @response.body
        end
        
        should "show council relationship" do
@@ -189,6 +170,7 @@ class CommitteesControllerTest < ActionController::TestCase
        setup do
          @another_active_committee = Factory(:committee, :council => @council)
          @meeting_in_past_for_another_active_committee = Factory(:meeting, :council => @council, :committee => @another_active_committee)
+         @inactive_committee = Factory(:committee, :council => @council)
          get :index, :council_id => @council.id
        end
 
@@ -201,9 +183,10 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "title", /#{@council.title}/
        end
 
-       should "should list committees for council" do
+       should "should list active committees for council" do
          assert_select "#committees li", 2 do #active committees by default
            assert_select "a", @committee.title
+           assert_select "a", :text => @inactive_committee.title, :count => 0
          end
        end
        
@@ -219,13 +202,14 @@ class CommitteesControllerTest < ActionController::TestCase
          assert_select "div#documents li a", @document.extended_title
        end
        
-       should "show link to inclue inactive committees" do
+       should "show link to include inactive committees" do
          assert_select "a[href*=include_inactive]", /include inactive/i
        end
      end
 
      context "when inactive included" do
        setup do
+         @inactive_committee = Factory(:committee, :council => @council)
          get :index, :council_id => @council.id, :include_inactive => true
        end
 
@@ -234,13 +218,14 @@ class CommitteesControllerTest < ActionController::TestCase
        should_respond_with :success
        should_render_template :index
 
-       should "not show link to inclue inactive committees" do
+       should "not show link to include inactive committees" do
          assert_select "a[href*=include_inactive]", :text =>/include inactive/i, :count =>0
        end
  
-       should "should list committees for council" do
-         assert_select "#committees li", 2 do #active committees by default
-           assert_select "a", @committee.title
+       should "should include list committees for council" do
+         assert_select "#committees li", 3 do #active committees by default
+           assert_select "a.active", @committee.title
+           assert_select "a.inactive", @inactive_committee.title
          end
        end
        

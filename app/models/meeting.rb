@@ -7,9 +7,9 @@ class Meeting < ActiveRecord::Base
   has_many :documents, :as => "document_owner"
   validates_presence_of :date_held, :committee_id, :council_id
   validates_uniqueness_of :uid, :scope => :council_id, :allow_nil => true
-  validates_uniqueness_of :url, :scope => :council_id, :if => Proc.new { |meeting| meeting.uid.blank? }, :message => "must be unique"
+  validates_uniqueness_of :url, :scope => :council_id, :allow_nil => true, :if => Proc.new { |meeting| meeting.uid.blank? }, :message => "must be unique"
   validates_uniqueness_of :date_held, :scope => [:council_id, :committee_id]
-  named_scope :forthcoming, lambda { { :conditions => ["date_held >= ?", Time.now], :order => "date_held" } }
+  named_scope :forthcoming, lambda { { :conditions => ["date_held >= ? AND (status IS NULL OR status NOT LIKE 'cancelled')", Time.now], :order => "date_held" } }
   default_scope :order => "date_held"
   
   # alias attributes with names IcalUtilities wants to encode Vevents
@@ -20,18 +20,18 @@ class Meeting < ActiveRecord::Base
   alias_attribute :last_modified, :updated_at
   alias_method :old_to_xml, :to_xml
 
-  def validate
-    errors.add_to_base("either uid or url must be present") if uid.blank?&&url.blank?
+  # Overwrite existing find_all_existing from scraped_model so only return meetings with council_id and same committee_id from params
+  def self.find_all_existing(params)
+    raise ArgumentError, ":committee_id or :council_id is missing from submitted params" if params[:council_id].blank? || params[:committee_id].blank? 
+    find_all_by_council_id_and_committee_id(params[:council_id], params[:committee_id])
   end
-
-  # overwrite base find_existing so we can find by committee and url if uid is blank?
-  def self.find_existing(params)
-    params[:uid].blank? ? find_by_council_id_and_committee_id_and_url(params[:council_id], params[:committee_id], params[:url]) : 
-      find_by_council_id_and_uid(params[:council_id], params[:uid])
-  end
-
+  
   def title
     "#{committee.title} meeting"
+  end
+  
+  def cancelled?
+    self[:status]=~/cancelled/i
   end
   
   # return date as plain date, not datetime if meeting is at midnight
@@ -56,6 +56,15 @@ class Meeting < ActiveRecord::Base
     create_document_body(doc_body, :minutes)
   end
   
+  # overwrite base matches_params so we can find by committee and url or committee and date_held if uid is blank?
+  def matches_params(params={})
+    if params[:uid].blank?
+      self[:committee_id] == params[:committee_id] && (self[:url]==params[:url] || self[:date_held]==params[:date_held])
+    else
+      super 
+    end
+  end
+
   # Formats the contact details in a way the IcalUtilities can use
   def organizer
     { :cn => committee.title, :uri => committee.url }
@@ -66,11 +75,25 @@ class Meeting < ActiveRecord::Base
   end
   
   def status
-    date_held.to_time > Time.now ? "future" : "past"
+    return unless self[:date_held] || self[:status]
+    st = []
+    st << self[:status].downcase unless self[:status].blank?
+    st << (self[:date_held] > Time.now ? "future" : "past") unless self[:date_held].blank?
+    st.join(" ")
   end
   
   def to_xml(options={}, &block)
     old_to_xml({:methods => [:formatted_date, :openlylocal_url, :title] }.merge(options), &block)
+  end
+  
+  protected
+  # overwrites standard orphan_records_callback (defined in ScrapedModel mixin) to delete meetings not yet happened
+  def self.orphan_records_callback(recs=nil, options={})
+    return if recs.blank? || !options[:save_results] # skip if no records or doing dry run
+    recs.select{ |r| r[:date_held] > Time.now }.each do |r| # check vs attribute, not method, which turns into date if time is not known (i.e. midnight)
+      r.destroy
+      logger.debug { "Destroyed orphan record: #{r.inspect}" }
+    end #delete orphan meetings that have not yet happened
   end
   
   private

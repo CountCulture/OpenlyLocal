@@ -45,7 +45,7 @@
   </style>
 </head>
 <body>
-  <h1><%= link_for @scraper %></h1>
+  <h1><%= link_to @scraper.title, scraper_url(@scraper) %></h1>
     <%= error_messages_for :scraper, :header_message => "Problems processing this scraper" %>
     <%= error_messages_for :parser, :header_message => "Problem parsing scraped page", :message => "The following problems occurred:" %>
 
