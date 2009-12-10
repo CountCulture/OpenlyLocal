@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091205145753) do
+ActiveRecord::Schema.define(:version => 20091210100442) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(:version => 20091205145753) do
     t.integer  "parent_authority_id"
     t.string   "police_force_url"
     t.integer  "police_force_id"
+    t.string   "ness_id"
   end
 
   add_index "councils", ["parent_authority_id"], :name => "index_councils_on_parent_authority_id"
@@ -205,15 +206,23 @@ ActiveRecord::Schema.define(:version => 20091205145753) do
 
   create_table "ons_dataset_families", :force => true do |t|
     t.string   "title"
-    t.integer  "ons_subject_id"
+    t.integer  "ons_uid"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ons_uid"
+    t.integer  "ons_subject_id"
   end
 
   create_table "ons_dataset_families_ons_subjects", :id => false, :force => true do |t|
     t.integer "ons_subject_id"
     t.integer "ons_dataset_family_id"
+  end
+
+  create_table "ons_dataset_topics", :force => true do |t|
+    t.string   "title"
+    t.integer  "ons_uid"
+    t.integer  "ons_dataset_family_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "ons_datasets", :force => true do |t|
@@ -319,6 +328,7 @@ ActiveRecord::Schema.define(:version => 20091205145753) do
     t.string   "url"
     t.string   "os_id"
     t.string   "police_neighbourhood_url"
+    t.string   "ness_id"
   end
 
   add_index "wards", ["council_id"], :name => "index_wards_on_council_id"

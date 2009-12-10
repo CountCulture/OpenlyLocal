@@ -10,5 +10,6 @@ class OnsDatasetFamilyTest < ActiveSupport::TestCase
     should_validate_presence_of :ons_uid
     should_have_and_belong_to_many :ons_subjects
     should_have_many :ons_datasets
+    should_have_many :ons_dataset_topics
   end 
 end

@@ -160,3 +160,10 @@ Factory.define :police_force do |f|
   f.sequence(:name) { |n| "Force #{n}" }
   f.sequence(:url) { |n|  "http://police.uk/force#{n}" }
 end
+
+Factory.define :ons_dataset_topic do |f|
+  f.sequence(:title) { |n| "Ons topic #{n}" }
+  f.sequence(:ons_uid) { |n| 21+n }
+  f.association :ons_dataset_family
+end
+
