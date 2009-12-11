@@ -5,6 +5,9 @@ require 'soap/wsdlDriver'
 require 'soap/header/simplehandler'
 # require 'wsse_authentication.rb'
 module NessUtilities
+  Muids = { 1 => ['Count'],
+            2 => ['Percentage', "%.1f%"],
+            9 => ['Pounds Sterling', "£%d"]}
 
   class DiscoveryClient < ::SOAP::RPC::Driver
     Endpoint = "https://www.neighbourhood.statistics.gov.uk/interop/NeSSDiscoveryBindingPort?WSDL"
