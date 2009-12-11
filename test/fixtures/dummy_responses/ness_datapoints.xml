@@ -8,22 +8,35 @@
          <lgdx:Datasets xmlns:lgdx="http://schema.esd.org.uk/LGDX">
             <lgdx:Dataset>
                <lgdx:DatasetDetails>
-                  <lgdx:DatasetCode>129</lgdx:DatasetCode>
+                  <lgdx:DatasetCode>0</lgdx:DatasetCode>
                   <lgdx:DatasetMetadata>
                      <lgdx:Creator>Office for National Statistics</lgdx:Creator>
-                     <lgdx:Date>2009-12-10</lgdx:Date>
-                     <lgdx:Description/>
+                     <lgdx:Date>2009-12-11</lgdx:Date>
+                     <lgdx:Description>Pick and Mix</lgdx:Description>
                      <lgdx:Subject.Category/>
-                     <lgdx:Title>Accommodation Type - People (UV42)</lgdx:Title>
+                     <lgdx:Title>Custom</lgdx:Title>
                   </lgdx:DatasetMetadata>
                </lgdx:DatasetDetails>
                <lgdx:Topics>
+                  <lgdx:Topic>
+                     <lgdx:TopicId>1</lgdx:TopicId>
+                     <lgdx:TopicCode>63</lgdx:TopicCode>
+                     <lgdx:TopicMetadata>
+                        <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                        <lgdx:Date>2009-12-11</lgdx:Date>
+                        <lgdx:Description>Mean age of usually resident population of area at the time of the 2001 Census. Mean age is calculated by dividing the sum of each person's age last birthday (in single year counts) by the number of people.</lgdx:Description>
+                        <lgdx:Identifier>276</lgdx:Identifier>
+                        <lgdx:Subject.Category/>
+                        <lgdx:Title>Mean age of population in the area</lgdx:Title>
+                        <lgdx:Coinage.Unit>Years</lgdx:Coinage.Unit>
+                     </lgdx:TopicMetadata>
+                  </lgdx:Topic>
                   <lgdx:Topic>
                      <lgdx:TopicId>2</lgdx:TopicId>
                      <lgdx:TopicCode>2329</lgdx:TopicCode>
                      <lgdx:TopicMetadata>
                         <lgdx:Creator>Office for National Statistics</lgdx:Creator>
-                        <lgdx:Date>2009-12-10</lgdx:Date>
+                        <lgdx:Date>2009-12-11</lgdx:Date>
                         <lgdx:Description>All people living in households, who were usually resident in the area at the time of the 2001 Census.</lgdx:Description>
                         <lgdx:Identifier>129</lgdx:Identifier>
                         <lgdx:Subject.Category/>
@@ -39,7 +52,7 @@
                      <lgdx:BoundaryMetadata>
                         <lgdx:Coverage.Spatial.Location>526249:163612:528447:165210</lgdx:Coverage.Spatial.Location>
                         <lgdx:Creator>Office for National Statistics</lgdx:Creator>
-                        <lgdx:Date>2009-12-10</lgdx:Date>
+                        <lgdx:Date>2009-12-11</lgdx:Date>
                         <lgdx:Identifier>6114141</lgdx:Identifier>
                         <lgdx:Subject.Category/>
                         <lgdx:Title>Carshalton Central</lgdx:Title>
@@ -59,55 +72,6 @@
                      <lgdx:PeriodId>1</lgdx:PeriodId>
                      <lgdx:Value>9709</lgdx:Value>
                   </lgdx:DatasetItem>
-               </lgdx:DatasetItems>
-            </lgdx:Dataset>
-            <lgdx:Dataset>
-               <lgdx:DatasetDetails>
-                  <lgdx:DatasetCode>276</lgdx:DatasetCode>
-                  <lgdx:DatasetMetadata>
-                     <lgdx:Creator>Office for National Statistics</lgdx:Creator>
-                     <lgdx:Date>2009-12-10</lgdx:Date>
-                     <lgdx:Description/>
-                     <lgdx:Subject.Category/>
-                     <lgdx:Title>Age Structure (KS02)</lgdx:Title>
-                  </lgdx:DatasetMetadata>
-               </lgdx:DatasetDetails>
-               <lgdx:Topics>
-                  <lgdx:Topic>
-                     <lgdx:TopicId>1</lgdx:TopicId>
-                     <lgdx:TopicCode>63</lgdx:TopicCode>
-                     <lgdx:TopicMetadata>
-                        <lgdx:Creator>Office for National Statistics</lgdx:Creator>
-                        <lgdx:Date>2009-12-10</lgdx:Date>
-                        <lgdx:Description>Mean age of usually resident population of area at the time of the 2001 Census. Mean age is calculated by dividing the sum of each person's age last birthday (in single year counts) by the number of people.</lgdx:Description>
-                        <lgdx:Identifier>276</lgdx:Identifier>
-                        <lgdx:Subject.Category/>
-                        <lgdx:Title>Mean age of population in the area</lgdx:Title>
-                        <lgdx:Coinage.Unit>Years</lgdx:Coinage.Unit>
-                     </lgdx:TopicMetadata>
-                  </lgdx:Topic>
-               </lgdx:Topics>
-               <lgdx:Boundaries>
-                  <lgdx:Boundary>
-                     <lgdx:BoundaryId>1</lgdx:BoundaryId>
-                     <lgdx:BoundaryCode>00BFGF</lgdx:BoundaryCode>
-                     <lgdx:BoundaryMetadata>
-                        <lgdx:Coverage.Spatial.Location>526249:163612:528447:165210</lgdx:Coverage.Spatial.Location>
-                        <lgdx:Creator>Office for National Statistics</lgdx:Creator>
-                        <lgdx:Date>2009-12-10</lgdx:Date>
-                        <lgdx:Identifier>6114141</lgdx:Identifier>
-                        <lgdx:Subject.Category/>
-                        <lgdx:Title>Carshalton Central</lgdx:Title>
-                     </lgdx:BoundaryMetadata>
-                  </lgdx:Boundary>
-               </lgdx:Boundaries>
-               <lgdx:Periods>
-                  <lgdx:Period>
-                     <lgdx:PeriodId>1</lgdx:PeriodId>
-                     <lgdx:Date>2001-04-29</lgdx:Date>
-                  </lgdx:Period>
-               </lgdx:Periods>
-               <lgdx:DatasetItems>
                   <lgdx:DatasetItem>
                      <lgdx:TopicId>1</lgdx:TopicId>
                      <lgdx:BoundaryId>1</lgdx:BoundaryId>

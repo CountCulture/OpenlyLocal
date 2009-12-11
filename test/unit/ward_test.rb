@@ -177,11 +177,11 @@ class WardTest < ActiveSupport::TestCase
 
       context "and datapoints don't exist" do
         setup do
-          NessUtilities::RawClient.any_instance.stubs(:_http_get).returns(dummy_xml_response(:ness_datapoints))
+          NessUtilities::RawClient.any_instance.stubs(:_http_post).returns(dummy_xml_response(:ness_datapoints))
         end
 
         should "request info from Ness for topics for ward" do
-          NessUtilities::RawClient.expects(:new).with('Tables', 'Areas'=>@ward.ness_id, 'Variables'=>[6,11]).returns(stub(:process_and_extract_datapoints=>[]))
+          NessUtilities::RawClient.expects(:new).with('Tables', [['Areas', @ward.ness_id], ['Variables',[6,11]]]).returns(stub(:process_and_extract_datapoints=>[]))
           @ward.datapoints_for_topics([6,11])
         end
 

@@ -27,59 +27,65 @@ module NessUtilities
 
   class RawClient
     # class RequestError < Standard Error;end
-    attr_reader :request_method, :params
-    def initialize(req_meth, req_params={})
+    attr_reader :request_method, :params, :ness_ns, :ness_service, :ns_path
+
+    def initialize(req_meth, params_array=[])
       @request_method = req_meth
-      @params = req_params
-      if params.delete(:service).to_s=='delivery'
-        @ness_service, @ness_ns, @ns_path = 'deliveryservice', 'del', '/interop/NeSSDeliveryBindingPort'
-      else
-        @ness_service, @ness_ns, @ns_path = 'discoverystructs', 'dis', '/interop/NeSSDiscoveryBindingPort'
-      end
+      @params = params_array
+      @ness_service, @ness_ns, @ns_path = 'discoverystructs', 'dis', '/interop/NeSSDiscoveryBindingPort'
     end
 
-    def process
-      req_data = build_request
-      Nokogiri.XML(_http_get(req_data))
+    def process(extra_options=[])
+      req_data = build_request(extra_options)
+      Nokogiri.XML(_http_post(req_data))
     end
 
     def process_and_extract_datapoints
-      extract_datapoints(process)
+      self.service = 'delivery'
+      extract_datapoints(process([['GroupByDataset', 'No']]))
+    end
+
+    # set service to 'delivery' to change namespact, endpoints etc
+    def service=(serv_name)
+      if serv_name.to_s == 'delivery'
+        @ness_service, @ness_ns, @ns_path = 'deliveryservice', 'del', '/interop/NeSSDeliveryBindingPort'
+      end
     end
 
     protected
-    def _http_get(req_data)
+    def _http_post(req_data)
       return if RAILS_ENV=='test' # don't make calls in test env
       http = Net::HTTP.new('www.neighbourhood.statistics.gov.uk', 443)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       headers = {'Content-Type' => 'text/xml'}
+      RAILS_DEFAULT_LOGGER.debug {"***Submitting SOAP request to Ness:\n#{req_data}"}
       resp, data = http.post(@ns_path, req_data, headers)
+      RAILS_DEFAULT_LOGGER.debug {"*** SOAP response from Ness:\n#{data}"}
       data
     end
 
     def extract_datapoints(resp=nil)
     return if resp.blank?
       res = []
-      resp.search('lgdx|Dataset', 'lgdx' => "http://schema.esd.org.uk/LGDX").each do |dataset|
-        topics = dataset.search('lgdx|Topic', 'lgdx' => "http://schema.esd.org.uk/LGDX")
-        datapoints = dataset.search('lgdx|DatasetItem', 'lgdx' => "http://schema.esd.org.uk/LGDX")
+      raw_datapoints = resp.search('lgdx|DatasetItem', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |d| {:value => lgdx_attrib('Value', d), :topic_id => lgdx_attrib('TopicId', d), :area_id => lgdx_attrib('BoundaryId', d)} }
+      topics = resp.search('lgdx|Topic', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |t| {:id => lgdx_attrib('TopicId', t), :ness_topic_id => lgdx_attrib('TopicCode', t)} }
+      areas = resp.search('lgdx|Boundary', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |a| {:id => lgdx_attrib('BoundaryId', a), :ness_area_id => lgdx_attrib('Identifier', a)} }
 
-        topics.each_with_index do |topic, i|
-          topic_id = topics[i].at('lgdx|TopicCode', 'lgdx' => "http://schema.esd.org.uk/LGDX").inner_text
-          value = datapoints[i].at('lgdx|Value', 'lgdx' => "http://schema.esd.org.uk/LGDX").inner_text
-          res << { :ons_dataset_topic_id => topic_id,
-                   :value => value } # pair up topics and datapoints
-        end
+      # merge datapoints with ness topic and area ids, replacing response ids
+      raw_datapoints.collect do |dp|
+        { :value => dp[:value],
+          :ness_topic_id => topics.detect{|t| t[:id] == dp[:topic_id]}[:ness_topic_id],
+          :ness_area_id => areas.detect{|a| a[:id] == dp[:area_id]}[:ness_area_id]
+          }
       end
-      res
     end
 
-    def build_request
+    def build_request(extra_terms=[])
       xml = Builder::XmlMarkup.new(:indent => 2, :margin => 3 )
       req_body = xml.tag!("#{@ness_ns}:#{request_method}Element") do
-        params.each do |key, value|
-          xml.tag!(key, value)
+        (params+extra_terms).each do |key, value|
+          xml.tag!("#{@ness_ns}:#{key}", (value.kind_of?(Array) ? value.join(',') : value))
         end
       end
 
@@ -92,6 +98,10 @@ module NessUtilities
 </soapenv:Envelope>
 EOF
 
+    end
+
+    def lgdx_attrib(key, obj)
+      obj.at("lgdx|#{key}", 'lgdx' => "http://schema.esd.org.uk/LGDX").inner_text
     end
   end
 

@@ -62,8 +62,8 @@ class Ward < ActiveRecord::Base
     return [] if topic_ids.blank? || ness_id.blank?
     datapoints = ons_datapoints.all(:conditions => {:ons_dataset_topic_id => topic_ids})
     if datapoints.empty?
-      raw_datapoints = NessUtilities::RawClient.new('Tables', 'Areas' => ness_id, 'Variables' => topic_ids).process_and_extract_datapoints
-      datapoints = raw_datapoints.collect { |rd| ons_datapoints.create!(rd)}
+      raw_datapoints = NessUtilities::RawClient.new('Tables', [['Areas', ness_id], ['Variables', topic_ids]]).process_and_extract_datapoints
+      datapoints = raw_datapoints.collect { |rd| ons_datapoints.create!(:ons_dataset_topic_id => rd[:ness_topic_id], :value=>rd[:value])}
     end
     datapoints
   end
