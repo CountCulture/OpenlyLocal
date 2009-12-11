@@ -6,7 +6,7 @@ class WardTest < ActiveSupport::TestCase
     setup do
       @ward = Factory(:ward)
     end
-    
+
     should_validate_presence_of :name
     should_validate_uniqueness_of :name, :scoped_to => :council_id
     should_belong_to :council
@@ -14,39 +14,40 @@ class WardTest < ActiveSupport::TestCase
     should_have_many :members
     should_have_many :committees
     should_have_many :meetings, :through => :committees
+    should_have_many :ons_datapoints
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url
     should_have_db_column :police_neighbourhood_url
-    
+
     should "include ScraperModel mixin" do
       assert Ward.respond_to?(:find_all_existing)
     end
-    
+
     context "when finding by postcode" do
       setup do
-        
+
       end
-      
+
       should "query ons site" do
         # Net:Http.expects(:get).with(match("ab1+cd2"))
         # Ward.find_by_postcode("ab1 cd2")
       end
-      
+
       should "parser response" do
-        
+
       end
-      
+
       should "raise exception if no postocde found" do
-        
+
       end
-      
+
       should "raise exeption if bad response" do
-        
+
       end
     end
   end
-  
+
   context "A Ward instance" do
     setup do
       @ward = Factory.create(:ward)
@@ -56,17 +57,17 @@ class WardTest < ActiveSupport::TestCase
     should "alias name as title" do
       assert_equal @ward.name, @ward.title
     end
-    
+
     should "store name" do
       assert_equal "Footon", Ward.new(:name => "Footon").name
     end
-    
+
     should "discard 'Ward' from given ward name" do
       assert_equal "Footon", Ward.new(:name => "Footon Ward").name
       assert_equal "Footon", Ward.new(:name => "Footon ward").name
       assert_equal "Footon", Ward.new(:name => "Footon ward  ").name
     end
-    
+
     context "when matching existing member against params should override default and" do
       should "should match uid" do
         assert !@ward.matches_params(:uid => 42)
@@ -76,25 +77,25 @@ class WardTest < ActiveSupport::TestCase
         assert !@ward.matches_params
         assert @ward.matches_params(:uid => 42)
       end
-      
+
       should "should match given name" do
         assert !@ward.matches_params(:name => "foo")
         assert @ward.matches_params(:name => @ward.name)
       end
-      
+
       should "should match name in preference to uid" do
         assert @ward.matches_params(:uid => 99, :name => @ward.name)
       end
-      
+
       should "should not match when no params" do
         assert !@ward.matches_params
       end
-      
+
       should "should clean up ward name when matching" do
         assert @ward.matches_params(:name => " #{@ward.name} Ward ")
       end
     end
-    
+
     context "with members" do
       # this part mainly regression test that old functionality of UidAssociation extension in continued with allows_access_to
       setup do
@@ -108,19 +109,19 @@ class WardTest < ActiveSupport::TestCase
       should "return member uids" do
         assert_equal [@old_member.uid], @ward.member_uids
       end
-      
+
       should "replace existing members with ones with given uids" do
         @ward.member_uids = [@member.uid]
         assert_equal [@member], @ward.members
       end
-      
+
       should "not add members that don't exist for council" do
         @ward.member_uids = [@another_council_member.uid]
         assert_equal [], @ward.members
       end
 
     end
-    
+
     context "with committees" do
       # this part mainly regression test that old functionality of UidAssociation extension in continued with allows_access_to
        setup do
@@ -134,12 +135,12 @@ class WardTest < ActiveSupport::TestCase
       should "return committee uids" do
         assert_equal [@old_committee.uid], @ward.committee_uids
       end
-      
+
       should "replace existing committees with ones with given uids" do
         @ward.committee_uids = [@committee.uid]
         assert_equal [@committee], @ward.committees
       end
-      
+
       should "not add members that don't exist for council" do
         @ward.committee_uids = [@another_council_committee.uid]
         assert_equal [], @ward.committees
@@ -148,6 +149,62 @@ class WardTest < ActiveSupport::TestCase
       should "allow_access_to committees via normalised_title" do
         assert_equal [@old_committee.normalised_title], @ward.committee_normalised_titles
       end
+    end
+
+    context "when getting datapoints for topics" do
+      setup do
+        @another_ward = Factory(:ward, :name => "Another ward", :council => @ward.council)
+        @ward_dp = Factory(:ons_datapoint, :ward => @ward)
+        @another_ward_dp = Factory(:ons_datapoint, :ward => @ward)
+        @wrong_ward_dp = Factory(:ons_datapoint, :ward => @another_ward)
+        @ward.update_attribute(:ness_id, 1234)
+      end
+
+      should "return datapoints for ward with given topic ids" do
+        dps = @ward.datapoints_for_topics([@ward_dp.ons_dataset_topic.id, @another_ward_dp.ons_dataset_topic.id])
+        assert_equal [@ward_dp, @another_ward_dp], dps
+      end
+
+      should "return empty array if no given topic ids" do
+        assert_equal [], @ward.datapoints_for_topics([])
+        assert_equal [], @ward.datapoints_for_topics()
+      end
+
+      should "return empty array if no ness_id" do
+        @ward.update_attribute(:ness_id, nil)
+        assert_equal [], @ward.datapoints_for_topics([@ward_dp.ons_dataset_topic.id])
+      end
+
+      context "and datapoints don't exist" do
+        setup do
+          NessUtilities::RawClient.any_instance.stubs(:_http_get).returns(dummy_xml_response(:ness_datapoints))
+        end
+
+        should "request info from Ness for topics for ward" do
+          NessUtilities::RawClient.expects(:new).with('Tables', 'Areas'=>@ward.ness_id, 'Variables'=>[6,11]).returns(stub(:process_and_extract_datapoints=>[]))
+          @ward.datapoints_for_topics([6,11])
+        end
+
+        should "save results of Ness query as datapoints" do
+          assert_difference('OnsDatapoint.count', 2) do
+            @ward.datapoints_for_topics([6,11])
+          end
+        end
+
+        should "return newly saved datapoints" do
+          dps = @ward.datapoints_for_topics([6,11])
+          assert_equal 2, dps.size
+          assert_kind_of OnsDatapoint, dps.first
+        end
+
+        should "store data from Ness query in datapoints" do
+          dp = @ward.datapoints_for_topics([6,11]).first
+          assert_equal @ward, dp.ward
+          assert_equal 2329, dp.ons_dataset_topic_id #takes topic id from response, not query
+          assert_equal '9709', dp.value
+        end
+      end
+
     end
   end
 end

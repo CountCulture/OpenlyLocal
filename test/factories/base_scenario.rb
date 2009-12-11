@@ -140,6 +140,11 @@ Factory.define :service do |f|
   f.association :ldg_service
 end
 
+Factory.define :police_force do |f|
+  f.sequence(:name) { |n| "Force #{n}" }
+  f.sequence(:url) { |n|  "http://police.uk/force#{n}" }
+end
+
 Factory.define :ons_dataset_family do |f|
   f.sequence(:title) { |n| "Ons Dataset #{n}" }
   f.sequence(:ons_uid) { |n| n }
@@ -156,14 +161,15 @@ Factory.define :ons_dataset do |f|
   f.association :ons_dataset_family
 end
 
-Factory.define :police_force do |f|
-  f.sequence(:name) { |n| "Force #{n}" }
-  f.sequence(:url) { |n|  "http://police.uk/force#{n}" }
-end
-
 Factory.define :ons_dataset_topic do |f|
   f.sequence(:title) { |n| "Ons topic #{n}" }
   f.sequence(:ons_uid) { |n| 21+n }
   f.association :ons_dataset_family
+end
+
+Factory.define :ons_datapoint do |f|
+  f.sequence(:value) { |n| 21+n }
+  f.association :ons_dataset_topic
+  f.association :ward
 end
 

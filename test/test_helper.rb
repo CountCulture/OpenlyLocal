@@ -16,7 +16,7 @@ class ActiveSupport::TestCase
   # don't care one way or the other, switching from MyISAM to InnoDB tables
   # is recommended.
   #
-  # The only drawback to using transactional fixtures is when you actually 
+  # The only drawback to using transactional fixtures is when you actually
   # need to test transactions.  Since your test is bracketed by a transaction,
   # any transactions started in your code will be automatically rolled back.
   self.use_transactional_fixtures = true
@@ -40,9 +40,13 @@ class ActiveSupport::TestCase
   def stub_authentication
     @controller.stubs(:authenticate).returns(true)
   end
-  
+
   def dummy_html_response(response_name)
     IO.read(File.join([RAILS_ROOT + "/test/fixtures/dummy_responses/#{response_name}.html"]))
   end
-  
+
+  def dummy_xml_response(response_name)
+    IO.read(File.join([RAILS_ROOT + "/test/fixtures/dummy_responses/#{response_name}.xml"]))
+  end
+
 end

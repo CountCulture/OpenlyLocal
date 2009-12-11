@@ -5,7 +5,7 @@ require 'soap/wsdlDriver'
 require 'soap/header/simplehandler'
 # require 'wsse_authentication.rb'
 module NessUtilities
-  
+
   class DiscoveryClient < ::SOAP::RPC::Driver
     Endpoint = "https://www.neighbourhood.statistics.gov.uk/interop/NeSSDiscoveryBindingPort?WSDL"
     MappingRegistry = ::SOAP::Mapping::Registry.new
@@ -40,19 +40,39 @@ module NessUtilities
 
     def process
       req_data = build_request
-#      puts req_data
-      resp, data = _http_get(req_data)
-#      p data,resp
-      Nokogiri.XML(data)
+      Nokogiri.XML(_http_get(req_data))
     end
 
-    private
+    def process_and_extract_datapoints
+      extract_datapoints(process)
+    end
+
+    protected
     def _http_get(req_data)
+      return if RAILS_ENV=='test' # don't make calls in test env
       http = Net::HTTP.new('www.neighbourhood.statistics.gov.uk', 443)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       headers = {'Content-Type' => 'text/xml'}
-      http.post(@ns_path, req_data, headers)
+      resp, data = http.post(@ns_path, req_data, headers)
+      data
+    end
+
+    def extract_datapoints(resp=nil)
+    return if resp.blank?
+      res = []
+      resp.search('lgdx|Dataset', 'lgdx' => "http://schema.esd.org.uk/LGDX").each do |dataset|
+        topics = dataset.search('lgdx|Topic', 'lgdx' => "http://schema.esd.org.uk/LGDX")
+        datapoints = dataset.search('lgdx|DatasetItem', 'lgdx' => "http://schema.esd.org.uk/LGDX")
+
+        topics.each_with_index do |topic, i|
+          topic_id = topics[i].at('lgdx|TopicCode', 'lgdx' => "http://schema.esd.org.uk/LGDX").inner_text
+          value = datapoints[i].at('lgdx|Value', 'lgdx' => "http://schema.esd.org.uk/LGDX").inner_text
+          res << { :ons_dataset_topic_id => topic_id,
+                   :value => value } # pair up topics and datapoints
+        end
+      end
+      res
     end
 
     def build_request
@@ -86,5 +106,5 @@ EOF
     def on_simple_outbound
       {"UsernameToken" => {"Username" => NESS_USERNAME, "Password" => NESS_PASSWORD}}
     end
-  end  
+  end
 end
