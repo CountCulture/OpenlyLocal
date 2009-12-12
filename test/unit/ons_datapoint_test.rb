@@ -6,9 +6,13 @@ class OnsDatapointTest < ActiveSupport::TestCase
     setup do
       @ons_datapoint = Factory(:ons_datapoint)
     end
+
     should_validate_presence_of :value, :ons_dataset_topic_id, :ward_id
     should_belong_to :ons_dataset_topic
     should_belong_to :ward
+    should "belong_to ons_dataset_family through ons_dataset_topic" do
+      assert_equal @ons_datapoint.ons_dataset_topic.ons_dataset_family, @ons_datapoint.ons_dataset_family
+    end
   end
 
   context "an OnsDatapoint instance" do

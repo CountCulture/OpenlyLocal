@@ -4,6 +4,11 @@ class OnsDatapoint < ActiveRecord::Base
   validates_presence_of :ward_id
   belongs_to :ons_dataset_topic
   belongs_to :ward
+  default_scope :include => {:ons_dataset_topic => :ons_dataset_family}
+
+  def ons_dataset_family
+    ons_dataset_topic.ons_dataset_family
+  end
 
   def title
     "#{ons_dataset_topic.title} (#{@ward.name})"

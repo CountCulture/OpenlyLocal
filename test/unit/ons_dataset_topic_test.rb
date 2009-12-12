@@ -14,11 +14,17 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
   end
 
   context "An OnsDatasetTopic instance" do
-    context "when returning muid_format" do
       setup do
         @ons_dataset_topic = Factory(:ons_dataset_topic)
       end
 
+    context "when returning extended_title" do
+      should "join dataset_family title to topic title" do
+        assert_equal "#{@ons_dataset_topic.ons_dataset_family.title} #{@ons_dataset_topic.title}", @ons_dataset_topic.extended_title
+      end
+    end
+
+    context "when returning muid_format" do
       should "return nil if muid is blank" do
         assert_nil Factory.build(:ons_dataset_topic).muid_format
         assert_nil Factory.build(:ons_dataset_topic, :muid => 99).muid_format
