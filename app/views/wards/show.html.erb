@@ -30,7 +30,7 @@
     <h3>About this ward</h3>
     <dl>
     <%- @ward.ons_datapoints.each do |dp| -%>
-      <dt><%= dp.ons_dataset_topic.extended_title %></dt><dd><%= dp.value %></dd>
+      <dt><%= extended_link_for dp %></dt><dd><%= dp.value %></dd>
     <%- end -%>
     </dl>
   </div>

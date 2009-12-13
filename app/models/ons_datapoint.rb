@@ -21,4 +21,7 @@ class OnsDatapoint < ActiveRecord::Base
   def related_datapoints
     ons_dataset_topic.ons_datapoints.all(:conditions => {:ward_id => ward.siblings.collect(&:id)})
   end
+
+  def status
+  end
 end

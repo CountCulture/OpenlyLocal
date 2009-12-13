@@ -15,9 +15,9 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
   end
 
   context "An OnsDatasetTopic instance" do
-      setup do
-        @ons_dataset_topic = Factory(:ons_dataset_topic)
-      end
+    setup do
+      @ons_dataset_topic = Factory(:ons_dataset_topic)
+    end
 
     context "when returning extended_title" do
       should "join dataset_family title to topic title" do
@@ -30,6 +30,59 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         assert_nil Factory.build(:ons_dataset_topic).muid_format
         assert_nil Factory.build(:ons_dataset_topic, :muid => 99).muid_format
         assert_equal "%.1f%", Factory.build(:ons_dataset_topic, :muid => 2).muid_format
+      end
+    end
+
+    context "when updating datapoints for council" do
+      setup do
+        @council = Factory(:council)
+        @council.update_attribute(:ness_id, 42)
+        @ward1 = Factory(:ward, :name => 'ward1', :ness_id => 211, :council => @council)
+        @ward2 = Factory(:ward, :name => 'ward2', :ness_id => 215, :council => @council)
+        dummy_response = [ { :ness_area_id => '215', :value => '42', :ness_topic_id => '123'},
+                           { :ness_area_id => '211', :value => '51', :ness_topic_id => '123'}]
+        NessUtilities::RawClient.stubs(:new).returns(stub(:process_and_extract_datapoints => dummy_response))
+      end
+
+      should "should fetch data from Ness database" do
+        NessUtilities::RawClient.expects(:new).with('ChildAreaTables', [['ParentAreaId', @council.ness_id], ['Variables', @ons_dataset_topic.ons_uid], ['LevelTypeId', '14']]).returns(stub(:process_and_extract_datapoints=>[]))
+        @ons_dataset_topic.update_datapoints(@council)
+      end
+
+      should "not fetch data from Ness database when council has no ness_id" do
+        @council.update_attribute(:ness_id, nil)
+        NessUtilities::RawClient.expects(:new).never
+        @ons_dataset_topic.update_datapoints(@council)
+      end
+
+      should "save datapoints" do
+        assert_difference 'OnsDatapoint.count', 2 do
+          @ons_dataset_topic.update_datapoints(@council)
+        end
+      end
+
+      should "associate datapoints with correct wards" do
+        @ons_dataset_topic.update_datapoints(@council)
+        assert_equal '51', @ward1.ons_datapoints.first[:value]
+        assert_equal '42', @ward2.ons_datapoints.first[:value]
+      end
+
+      should "return datapoints" do
+        assert_kind_of Array, dps = @ons_dataset_topic.update_datapoints(@council)
+        assert_equal 2, dps.size
+        assert_kind_of OnsDatapoint, dps.first
+      end
+
+      should "update existing datapoints" do
+        @existing_datapoint = @ward2.ons_datapoints.create(:ons_dataset_topic_id => @ons_dataset_topic.id, :value => '99')
+        assert_difference 'OnsDatapoint.count', 1 do
+          @ons_dataset_topic.update_datapoints(@council)
+        end
+        assert_equal '42', @existing_datapoint.reload[:value]
+      end
+
+      should "update topic description" do
+
       end
 
     end
