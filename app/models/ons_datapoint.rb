@@ -11,10 +11,14 @@ class OnsDatapoint < ActiveRecord::Base
   end
 
   def title
-    "#{ons_dataset_topic.title} (#{@ward.name})"
+    "#{ons_dataset_topic.title} (#{ward.name})"
   end
 
   def value
     ons_dataset_topic.muid_format ? sprintf(ons_dataset_topic.muid_format, self[:value]) : self[:value]
+  end
+
+  def related_datapoints
+    ons_dataset_topic.ons_datapoints.all(:conditions => {:ward_id => ward.siblings.collect(&:id)})
   end
 end

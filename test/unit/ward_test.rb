@@ -94,6 +94,12 @@ class WardTest < ActiveSupport::TestCase
       should "should clean up ward name when matching" do
         assert @ward.matches_params(:name => " #{@ward.name} Ward ")
       end
+
+      should "have sibling wards" do
+        @sibling_ward = Factory(:ward, :name => 'sibling ward', :council => @council)
+        @unrelated_ward = Factory(:ward, :name => 'unrelated ward', :council => Factory(:another_council))
+        assert_equal [@sibling_ward], @ward.siblings
+      end
     end
 
     context "with members" do
@@ -177,31 +183,36 @@ class WardTest < ActiveSupport::TestCase
 
       context "and datapoints don't exist" do
         setup do
+          @ons_topic_1 = Factory(:ons_dataset_topic, :ons_uid => 63)
+          @ons_topic_2 = Factory(:ons_dataset_topic, :ons_uid => 2329)
           NessUtilities::RawClient.any_instance.stubs(:_http_post).returns(dummy_xml_response(:ness_datapoints))
         end
 
         should "request info from Ness for topics for ward" do
-          NessUtilities::RawClient.expects(:new).with('Tables', [['Areas', @ward.ness_id], ['Variables',[6,11]]]).returns(stub(:process_and_extract_datapoints=>[]))
-          @ward.datapoints_for_topics([6,11])
+          NessUtilities::RawClient.expects(:new).with('Tables', [['Areas', @ward.ness_id], ['Variables',[@ons_topic_1.ons_uid,@ons_topic_2.ons_uid]]]).returns(stub(:process_and_extract_datapoints=>[]))
+          @ward.datapoints_for_topics([@ons_topic_1.id, @ons_topic_2.id])
         end
 
         should "save results of Ness query as datapoints" do
           assert_difference('OnsDatapoint.count', 2) do
-            @ward.datapoints_for_topics([6,11])
+            @ward.datapoints_for_topics([@ons_topic_1.id,@ons_topic_2.id])
           end
         end
 
         should "return newly saved datapoints" do
-          dps = @ward.datapoints_for_topics([6,11])
+          dps = @ward.datapoints_for_topics([@ons_topic_1.id,@ons_topic_2.id])
           assert_equal 2, dps.size
           assert_kind_of OnsDatapoint, dps.first
         end
 
-        should "store data from Ness query in datapoints" do
-          dp = @ward.datapoints_for_topics([6,11]).first
-          assert_equal @ward, dp.ward
-          assert_equal 2329, dp.ons_dataset_topic_id #takes topic id from response, not query
-          assert_equal '9709', dp.value
+        should "store data returned from Ness query in datapoints" do
+          dps = @ward.datapoints_for_topics([@ons_topic_1.id,@ons_topic_2.id])
+          dp1 = dps.detect{ |dp| dp.ons_dataset_topic_id == @ons_topic_1.id}
+          dp2 = dps.detect{ |dp| dp.ons_dataset_topic_id == @ons_topic_2.id}
+          assert_equal @ward, dp1.ward
+          assert_equal '37.9', dp1.value
+          assert_equal @ward, dp2.ward
+          assert_equal '9709', dp2.value
         end
       end
 

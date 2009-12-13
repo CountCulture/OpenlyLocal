@@ -62,10 +62,18 @@ class Ward < ActiveRecord::Base
     return [] if topic_ids.blank? || ness_id.blank?
     datapoints = ons_datapoints.all(:conditions => {:ons_dataset_topic_id => topic_ids})
     if datapoints.empty?
-      raw_datapoints = NessUtilities::RawClient.new('Tables', [['Areas', ness_id], ['Variables', topic_ids]]).process_and_extract_datapoints
-      datapoints = raw_datapoints.collect { |rd| ons_datapoints.create!(:ons_dataset_topic_id => rd[:ness_topic_id], :value=>rd[:value])}
+      topic_uids = [OnsDatasetTopic.find(topic_ids)].flatten.collect(&:ons_uid) # if only single topic is passed in, only single item will be returned. Turn into array on 1
+      raw_datapoints = NessUtilities::RawClient.new('Tables', [['Areas', ness_id], ['Variables', topic_uids]]).process_and_extract_datapoints
+      datapoints = raw_datapoints.collect do |rd|
+        topic = OnsDatasetTopic.find_by_ons_uid(rd[:ness_topic_id])
+        ons_datapoints.create!(:ons_dataset_topic => topic, :value=>rd[:value])
+      end
     end
     datapoints
+  end
+
+  def siblings
+    council.wards - [self]
   end
 
   private

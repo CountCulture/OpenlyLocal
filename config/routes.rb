@@ -6,12 +6,12 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :scrapers
   map.resources :item_scrapers, :controller => "scrapers"
   map.resources :info_scrapers, :controller => "scrapers"
-  
+
   map.connect 'councils/all', :controller => "councils", :action => "index", :include_unparsed => true
   map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
-  
-  map.resources :committees, :documents, :meetings, :members, :parsers, :portal_systems, :police_forces, :services, :wards
+
+  map.resources :committees, :documents, :meetings, :members, :ons_datapoints, :parsers, :portal_systems, :police_forces, :services, :wards
   map.resources :councils
   map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}, :only => [:show]}) do |restype|
     restype.resources :councils
@@ -24,7 +24,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'wards/snac_id/:snac_id.:format', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/ }
   map.connect 'wards/snac_id/:snac_id', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/ }
-  
+
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
@@ -38,7 +38,7 @@ ActionController::Routing::Routes.draw do |map|
   # This route can be invoked with purchase_url(:id => product.id)
 
   map.admin 'admin', :controller => 'admin', :action => 'index'
-  
+
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   map.resources :products
 
@@ -47,13 +47,13 @@ ActionController::Routing::Routes.draw do |map|
 
   # Sample resource route with sub-resources:
   #   map.resources :products, :has_many => [ :comments, :sales ], :has_one => :seller
-  
+
   # Sample resource route with more complex sub-resources
   #   map.resources :products do |products|
   #     products.resources :comments
   #     products.resources :sales, :collection => { :recent => :get }
   #   end
-  
+
   # Sample resource route within a namespace:
   #   map.namespace :admin do |admin|
   #     # Directs /admin/products/* to Admin::ProductsController (app/controllers/admin/products_controller.rb)

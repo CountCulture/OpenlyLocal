@@ -1,0 +1,11 @@
+<h1><%= @title %></h1>
+<div id="ons_statistics">
+  <dl class='datapoints'>
+    <dt class='ward selected'><%= basic_link_for @ons_datapoint.ward %></dt><dd><%= @ons_datapoint.value %></dd>
+  </dl>
+  <%- @related_datapoints.each do |datapoint| -%>
+    <dl class='datapoints'>
+      <dt class='ward '><%= basic_link_for datapoint.ward %></dt><dd><%= datapoint.value %></dd>
+    </dl>
+  <%- end -%>
+</div>
