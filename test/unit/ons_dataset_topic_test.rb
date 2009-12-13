@@ -11,7 +11,7 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
     should_validate_presence_of :ons_dataset_family_id
     should_belong_to :ons_dataset_family
     should_have_many :ons_datapoints
-    should_have_db_column :muid
+    should_have_db_column :muid, :description, :data_date
   end
 
   context "An OnsDatasetTopic instance" do

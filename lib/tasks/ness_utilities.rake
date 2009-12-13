@@ -65,8 +65,9 @@ task :get_ness_dataset_topics => :environment do
         ons_uid = topic.at('VarFamilyId').inner_text
         title = topic.at('Name').inner_text
         muid = topic.at('MUId').inner_text
+        data_date = topic.at('EndDate').inner_text
         topic_record = dataset.ons_dataset_topics.find_or_initialize_by_ons_uid(ons_uid)
-        topic_record.update_attributes(:title => title, :muid => muid)
+        topic_record.update_attributes(:title => title, :muid => muid, :data_date => data_date)
         puts "Found/Updated #{title} (ons_uid: #{ons_uid}, muid: #{muid})"
       end
     rescue Exception => e
