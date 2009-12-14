@@ -20,7 +20,7 @@
   <h3>Topics</h3>
   <ul>
     <%- @ons_dataset_family.ons_dataset_topics.each do |topic| -%>
-      <li><%= topic.title %></li>
+      <li><%= link_for topic %></li>
     <%- end -%>
   </ul>
 </div>
