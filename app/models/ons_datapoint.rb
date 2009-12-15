@@ -4,7 +4,8 @@ class OnsDatapoint < ActiveRecord::Base
   validates_presence_of :ward_id
   belongs_to :ons_dataset_topic
   belongs_to :ward
-  default_scope :include => {:ons_dataset_topic => :ons_dataset_family}
+#  default_scope :include => {:ons_dataset_topic => :ons_dataset_family}
+  named_scope :with_topic_uids, lambda { |ons_uids| {:conditions => ["ons_datapoints.ons_dataset_topic_id = ons_dataset_topics.id AND ons_dataset_topics.ons_uid in (?)", ons_uids], :joins => "INNER JOIN ons_dataset_topics", :group => 'ons_datapoints.id'} }
 
   def ons_dataset_family
     ons_dataset_topic.ons_dataset_family

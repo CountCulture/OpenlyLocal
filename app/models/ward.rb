@@ -58,6 +58,13 @@ class Ward < ActiveRecord::Base
     self[:name] = clean_name(raw_name)
   end
 
+  def grouped_datapoints
+    selected_dps = ons_datapoints.with_topic_uids(NessSelectedTopics.values.flatten)
+    res = {}
+    NessSelectedTopics.each{|k,v| res[k] = v.collect{ |uid| selected_dps.detect{ |dp| dp.ons_dataset_topic.ons_uid == uid} }.compact }
+    res
+  end
+
   def datapoints_for_topics(topic_ids=nil)
     return [] if topic_ids.blank? || ness_id.blank?
     datapoints = ons_datapoints.all(:conditions => {:ons_dataset_topic_id => topic_ids})

@@ -11,13 +11,17 @@ PARTIES = [
   [ [ "Green", "Green", "Greens", "GREEN" ], "73A533" ],
   [ [ "British National Party", "BNP" ], nil, "British_National_Party" ]
   ]
-  
+
 DefaultDomain = "openlylocal.com"
 BlogFeedUrl = "http://countculture.wordpress.com/feed/"
 
-ResourceRepresentations = { :rdf => "application/rdf+xml", 
+ResourceRepresentations = { :rdf => "application/rdf+xml",
                             :json  => "application/json",
                             :xml  => "application/xml",
                             :html => "text/html" }
-                            
+
 GoogleGadgetAnalyticsId = "UA-9440277-2"
+
+NessSelectedTopics = { :demographics => [63],
+                       :economic => [5023, 2028],
+                       :religion => [2006] }

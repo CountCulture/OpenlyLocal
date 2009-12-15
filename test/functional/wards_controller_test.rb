@@ -66,6 +66,9 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "a", :text => /Police neighbourhood team for #{@ward.name}/i, :count => 0
       end
 
+      should "not show statistics" do
+        assert_select "#ons_statistics", false
+      end
     end
 
     context "with basic request and ward identified by snac_id" do
@@ -89,6 +92,8 @@ class WardsControllerTest < ActionController::TestCase
         @ward.committees << @committee = Factory(:committee, :council => @council)
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
         @datapoint = Factory(:ons_datapoint, :ward => @ward)
+        @another_datapoint = Factory(:ons_datapoint, :ward => @ward)
+        Ward.any_instance.stubs(:grouped_datapoints).returns(:demographics => [@datapoint], :misc => [@another_datapoint], :foo => [])
         get :show, :id => @ward.id
       end
 
@@ -106,8 +111,20 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "a", /Police neighbourhood team for #{@ward.name}/i
       end
 
-      should "show datapoints" do
-        assert_select "#ons_statistics", /#{@datapoint.ons_dataset_topic.title}/
+      should "show statistics" do
+        assert_select "#ons_statistics"
+      end
+
+      context "when showing statistics" do
+        should "show datapoints grouped by topic group" do
+          assert_select "#ons_statistics" do
+            assert_select ".demographics a", @datapoint.title
+            assert_select ".misc a", @another_datapoint.title
+          end
+        end
+        should "not show datapoint groups with no data" do
+          assert_select "#ons_statistics .foo", false
+        end
       end
 
     end

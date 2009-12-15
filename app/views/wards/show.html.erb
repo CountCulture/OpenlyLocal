@@ -25,16 +25,7 @@
     <%= list_all @ward.meetings %>
   </div>
 <%- end -%>
-<%- unless @ward.ons_datapoints.blank? -%>
-  <div id="ons_statistics" class="item_grouping">
-    <h3>About this ward</h3>
-    <dl>
-    <%- @ward.ons_datapoints.each do |dp| -%>
-      <dt><%= extended_link_for dp %></dt><dd><%= dp.value %></dd>
-    <%- end -%>
-    </dl>
-  </div>
-<%- end -%>
+<%= render :partial => 'ons_statistics', :object => @ward.grouped_datapoints %>
 <%= render :partial => '/shared/api_info' %>
 
 <%= timestamp_data_for @ward %>

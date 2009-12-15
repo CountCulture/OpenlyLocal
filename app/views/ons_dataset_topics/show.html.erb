@@ -1,8 +1,9 @@
 <h1><%= @title %></h1>
 
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :dataset_family, link_for(@ons_dataset_topic.ons_dataset_family) %>
   <%= attribute_tag :description, @ons_dataset_topic.description %>
+  <%= attribute_tag :dataset_family, link_for(@ons_dataset_topic.ons_dataset_family) %>
+  <%= attribute_tag :measurement_unit, NessUtilities::Muids[@ons_dataset_topic.muid].try(:first) %>
   <%= attribute_tag :dataset_date, @ons_dataset_topic.data_date %>
   <%= attribute_tag :ness_id, @ons_dataset_topic.ons_uid %>
   <%= attribute_tag :subjects, @ons_dataset_topic.ons_dataset_family.ons_subjects.collect { |sub| link_to sub.title, ons_dataset_families_path(:anchor => dom_id(sub)) }.join(', ') %>

@@ -157,6 +157,36 @@ class WardTest < ActiveSupport::TestCase
       end
     end
 
+    context "when getting grouped datapoints" do
+      setup do
+        @another_ward = Factory(:ward, :name => "Another ward", :council => @ward.council)
+        selected_topic_uids = NessSelectedTopics.values.flatten
+        @selected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.first)
+        @unselected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.sum+1) # need ons_uid that defo isn't a selected one
+        @selected_dp = Factory(:ons_datapoint, :ward => @ward, :ons_dataset_topic => @selected_topic)
+        @unselected_dp = Factory(:ons_datapoint, :ward => @ward, :ons_dataset_topic => @unselected_topic)
+        @wrong_ward_dp = Factory(:ons_datapoint, :ward => @another_ward, :ons_dataset_topic => @selected_topic)
+        @ward.update_attribute(:ness_id, 1234)
+      end
+
+      should "return hash of arrays" do
+        assert_kind_of Hash, @ward.grouped_datapoints
+        assert_kind_of Array, @ward.grouped_datapoints.values.first
+      end
+
+      should "use datapoint group names as keys" do
+        assert @ward.grouped_datapoints[:demographics]
+      end
+
+      should "return datapoints for topics in NessSelectedTopics" do
+        assert @ward.grouped_datapoints.values.flatten.include?(@selected_dp)
+      end
+
+      should "not return datapoints with topics in not NessSelectedTopics" do
+        assert !@ward.grouped_datapoints.values.flatten.include?(@unselected_dp)
+      end
+    end
+
     context "when getting datapoints for topics" do
       setup do
         @another_ward = Factory(:ward, :name => "Another ward", :council => @ward.council)

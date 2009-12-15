@@ -1,0 +1,23 @@
+<%- unless ons_statistics.blank? || ons_statistics.values.flatten.compact.empty? -%>
+
+  <div id="ons_statistics" class="item_grouping">
+    <h3>About this ward</h3>
+    <%- ons_statistics.each do |group, datapoints| -%>
+      <%- next if datapoints.blank? -%>
+      <%- content_tag :table, :class => group do -%>
+        <caption><%= group %></caption>
+        <tr>
+            <th>Description</th>
+            <th>Value</th>
+        </tr>
+
+        <%- for datapoint in datapoints -%>
+          <tr>
+            <td><%= link_for datapoint %></td>
+            <td><%= datapoint.value %></td>
+          </tr>
+        <%- end -%>
+      <%- end -%>
+    <%- end -%>
+  </div>
+<%- end -%>

@@ -3,11 +3,6 @@ require 'test_helper'
 class OnsDatasetTopicsControllerTest < ActionController::TestCase
 
   def setup
-#    @ons_subject = Factory(:ons_subject)
-#    @ons_subject_2 = Factory(:ons_subject)
-#    @ons_dataset = Factory(:ons_dataset)
-#    @ons_dataset_family = @ons_dataset.ons_dataset_family
-#    @ons_dataset_family.ons_subjects << [@ons_subject, @ons_subject_2]
     @ons_dataset_topic = Factory(:ons_dataset_topic)
   end
 
@@ -32,7 +27,7 @@ class OnsDatasetTopicsControllerTest < ActionController::TestCase
       end
 
       should "list subjects for dataset family" do
-        assert_select ".ons_subjects a", /#{@ons_subject.title}/
+        assert_select ".ons_subjects a", /#{@ons_dataset_topic.ons_subjects.first.title}/
       end
 
       should "list topic attributes" do

@@ -13,6 +13,16 @@ class OnsDatapointTest < ActiveSupport::TestCase
     should "belong_to ons_dataset_family through ons_dataset_topic" do
       assert_equal @ons_datapoint.ons_dataset_topic.ons_dataset_family, @ons_datapoint.ons_dataset_family
     end
+
+    should "restrict to given ness topic ids" do
+      @ward = @ons_datapoint.ward
+      ons_datapoint_1 = Factory(:ons_datapoint, :ward => @ward)
+      ons_datapoint_2 = Factory(:ons_datapoint, :ward => @ward)
+      ons_datapoint_3 = Factory(:ons_datapoint, :ward => @ward)
+      topic_uids = [ ons_datapoint_2.ons_dataset_topic.ons_uid,
+                     ons_datapoint_3.ons_dataset_topic.ons_uid]
+      assert_equal [ons_datapoint_2, ons_datapoint_3], OnsDatapoint.with_topic_uids(topic_uids)
+    end
   end
 
   context "an OnsDatapoint instance" do
