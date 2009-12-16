@@ -5,6 +5,4 @@ class OnsDatasetFamily < ActiveRecord::Base
   validates_presence_of :title
   validates_presence_of :ons_uid
 
-  def status
-  end
 end

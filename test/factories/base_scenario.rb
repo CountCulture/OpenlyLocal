@@ -42,7 +42,7 @@ Factory.define :tricky_council, :class => :council do |f|
 end
 
 Factory.define :member do |f|
-  f.sequence(:full_name) { |n| "Bob Wilson#{n}" } 
+  f.sequence(:full_name) { |n| "Bob Wilson#{n}" }
   f.sequence(:uid) { |n| (76 + n).to_s }
   f.sequence(:url) { |n| "http://www.anytown.gov.uk/members/bob#{n}" }
   f.association :council
@@ -145,13 +145,13 @@ Factory.define :police_force do |f|
   f.sequence(:url) { |n|  "http://police.uk/force#{n}" }
 end
 
-Factory.define :ons_dataset_family do |f|
-  f.sequence(:title) { |n| "Ons Dataset #{n}" }
+Factory.define :ons_subject do |f|
+  f.sequence(:title) { |n| "Ons Subject #{n}" }
   f.sequence(:ons_uid) { |n| n }
 end
 
-Factory.define :ons_subject do |f|
-  f.sequence(:title) { |n| "Ons Subject #{n}" }
+Factory.define :ons_dataset_family do |f|
+  f.sequence(:title) { |n| "Ons Dataset #{n}" }
   f.sequence(:ons_uid) { |n| n }
 end
 
@@ -172,4 +172,3 @@ Factory.define :ons_datapoint do |f|
   f.association :ons_dataset_topic
   f.association :ward
 end
-

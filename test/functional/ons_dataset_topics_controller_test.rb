@@ -26,12 +26,8 @@ class OnsDatasetTopicsControllerTest < ActionController::TestCase
         assert_select 'a', @ons_dataset_topic.ons_dataset_family.title
       end
 
-      should "list subjects for dataset family" do
-        assert_select ".ons_subjects a", /#{@ons_dataset_topic.ons_subjects.first.title}/
-      end
-
       should "list topic attributes" do
-        assert_select '.attribute .data', @ons_dataset_topic.ons_uid
+        assert_select '.attributes dd', /#{@ons_dataset_topic.ons_uid}/
       end
 
 #      should "list ons dataset topics for dataset family" do

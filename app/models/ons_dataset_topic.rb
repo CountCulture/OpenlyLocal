@@ -25,6 +25,4 @@ class OnsDatasetTopic < ActiveRecord::Base
     end
   end
 
-  def status
-  end
 end
