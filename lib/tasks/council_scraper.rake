@@ -1,4 +1,4 @@
-desc "Quick and dirty scraper to get basic info about councils from eGR page" 
+desc "Quick and dirty scraper to get basic info about councils from eGR page"
 task :scrape_egr_for_councils => :environment do
   BASE_URL = "http://www.brent.gov.uk"
   require 'hpricot'
@@ -51,7 +51,7 @@ task :scrape_egr_for_councils => :environment do
   error_urls.each { |e| puts e }
 end
 
-desc "Scrape WhatDoTheyKnow.com to get WDTK name" 
+desc "Scrape WhatDoTheyKnow.com to get WDTK name"
 task :scrape_wdtk_for_names => :environment do
   require 'hpricot'
   require 'open-uri'
@@ -68,13 +68,13 @@ task :scrape_wdtk_for_names => :environment do
       puts "Failed to find entry for #{council.name}"
     end
   end
-  
+
 end
 
-desc "Scraper council urls to get feed_url from auto discovery tag" 
+desc "Scraper council urls to get feed_url from auto discovery tag"
 task :scrape_councils_for_feeds => :environment do
   require 'hpricot'
-  require 'open-uri'  
+  require 'open-uri'
   Council.find(:all, :conditions => 'feed_url IS NULL').each do |council|
     next if council.url.blank?
     puts "=======================\nChecking #{council.title} (#{council.url})"
@@ -87,10 +87,10 @@ task :scrape_councils_for_feeds => :environment do
       puts "****** Exception raised: #{e.inspect}"
     end
   end
-  
+
 end
 
-desc "Import ONS SNAC codes into Wards table" 
+desc "Import ONS SNAC codes into Wards table"
 task :import_ward_snac_ids => :environment do
   csv_file = ENV['FILE']
   rows = FasterCSV.read(File.join(RAILS_ROOT, "db/ons_data/#{csv_file}"), :headers => true).to_a
@@ -104,7 +104,7 @@ task :import_ward_snac_ids => :environment do
     else
       council_group.each do |ward_data|
         if ward = council.wards.find_by_name(ward_data[1])
-          ward.snac_id.blank? ? ward.update_attribute(:snac_id, ward_data[0])&&puts("Successfully updated #{ward_data[1]} ward (#{ward_data[0]}) for #{council.name}") : 
+          ward.snac_id.blank? ? ward.update_attribute(:snac_id, ward_data[0])&&puts("Successfully updated #{ward_data[1]} ward (#{ward_data[0]}) for #{council.name}") :
                                 puts("SNAC id already set for #{ward_data[1]} ward (#{ward_data[0]}) for #{council.name}")
         else
           "ALERT: ward (#{ward_data[1]}) missing for #{council.name}"
@@ -112,7 +112,7 @@ task :import_ward_snac_ids => :environment do
       end
     end
   end
-  
+
 end
 
 desc "Enter missing Ward SNAC ids"
@@ -120,7 +120,7 @@ task :enter_missing_snac_ids => :environment do
   csv_file = ENV['FILE'] || "WD08_LAD08_EW_LU.csv"
   rows = FasterCSV.read(File.join(RAILS_ROOT, "db/ons_data/#{csv_file}"), :headers => true).to_a
   snac_codes = rows[1..-1].group_by{|r| r[2]} # group by council SNAC id
-  
+
   Ward.find_all_by_snac_id(nil, :include => :council).each do |ward|
     next unless poss_snac_codes = snac_codes[ward.council.snac_id]
     puts "\n====================\n#{ward.name} (#{ward.council.name})\n"
@@ -146,11 +146,11 @@ task :enter_missing_snac_ids => :environment do
   end
 end
 
-desc "Import Council Officers from CLG CSV file" 
+desc "Import Council Officers from CLG CSV file"
 task :import_council_officers => :environment do
   rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/KeyContactscurrenttocurrent.csv"), :headers => true).to_a
   headings = rows.shift
-  
+
   rows.each do |row| # group by council SNAC id
     next unless council = Council.find_by_snac_id(row[1])
     council.officers.delete_all # clear current officers
@@ -161,15 +161,15 @@ task :import_council_officers => :environment do
       names.each do |name|
         curr_officers << officer = council.officers.create(:position => position.sub(/ Current$/, ''), :full_name => name)
         puts "#{officer.full_name}, #{position} for #{council.name}"
-      end  
+      end
     end
   end
-  
+
 end
 
 desc "Enter missing Council LDG ids"
 task :enter_missing_ldg_ids => :environment do
-  
+
   Council.all(nil, :conditions => "ldg_id IS NULL AND (country='England' OR country='Wales')").each do |council|
     puts "\n====================\n#{council.name} (#{council.authority_type})\n"
     puts "Please enter LDG id (type q to quit n to skip this council): "
@@ -180,11 +180,11 @@ task :enter_missing_ldg_ids => :environment do
   end
 end
 
-desc "Import OS Ids from SPARQL endpoint" 
+desc "Import OS Ids from SPARQL endpoint"
 task :import_os_ids => :environment do
   require 'hpricot'
   require 'open-uri'
-  
+
   areas = { Ward => %w(UnitaryAuthorityWard DistrictWard LondonBoroughWard), Council => %w(Borough District County) }
   base_url = "http://api.talis.com/stores/ordnance-survey/services/sparql?query="
   path_template = "PREFIX+rdf%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+rdfs%3A++%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0D%0APREFIX+admingeo%3A+%3Chttp%3A%2F%2Fdata.ordnancesurvey.co.uk%2Fontology%2Fadmingeo%2F%3E%0D%0A%0D%0Aselect+%3Fa+%3Fname+%3Fcode%0D%0Awhere+%7B%3Fa+rdf%3Atype+admingeo%3A???+.%0D%0A+++++++%3Fa+rdfs%3Alabel+%3Fname+.%0D%0A+++++++%3Fa+admingeo%3AhasCensusCode+%3Fcode+.%7D"
@@ -208,7 +208,7 @@ task :import_os_ids => :environment do
   end
 end
 
-desc "Import County-District relationship from SPARQL endpoint" 
+desc "Import County-District relationship from SPARQL endpoint"
 task :import_country_districts_relationships => :environment do
   require 'hpricot'
   require 'open-uri'
@@ -222,7 +222,7 @@ task :import_country_districts_relationships => :environment do
       end
     rescue Exception => e
       puts "There was an error getting/processing info for #{county.name}: #{e.inspect}"
-    end    
+    end
   end
 end
 
@@ -240,13 +240,27 @@ task :add_council_twitter_ids => :environment do
     cursor = doc.at('next_cursor').inner_text
     doc.search('users>user').each do |member|
       m_url = URI.parse(member.at('url').inner_text.strip).host
-      
+
       m_id = member.at('screen_name').inner_text
       if council = Council.find(:first, :conditions => ["url LIKE ?", "%#{m_url}%"])
         puts "Found twitter url for #{council.name}: #{m_id}"
         council.update_attribute(:twitter_account, m_id)
       else
         puts "Failed to find council with url: #{m_url}"
+      end
+    end
+  end
+end
+
+desc "export sameAs relationships"
+task :export_sameas_relationships => :environment do
+  FasterCSV.open(File.join(RAILS_ROOT, "db/csv_data/same_as_export.csv"), "w") do |csv|
+    Council.all(:conditions => "snac_id IS NOT NULL").each do |council|
+      csv << ["http://openlylocal/id/councils/#{council.id}", "http://statistics.data.gov.uk/id/local-authority/#{council.snac_id}", council.os_id&&"http://data.ordnancesurvey.co.uk/id/#{council.os_id}"]
+    end
+    Ward.find_in_batches(:conditions => "snac_id IS NOT NULL") do |batch|
+      batch.each do |ward|
+        csv << ["http://openlylocal/id/wards/#{ward.id}", "http://statistics.data.gov.uk/id/local-authority/#{ward.snac_id}", ward.os_id&&"http://data.ordnancesurvey.co.uk/id/#{ward.os_id}"]
       end
     end
   end
