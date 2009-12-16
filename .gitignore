@@ -17,3 +17,4 @@ config/nginx_production.conf
 config/deploy
 Capfile
 public/cache
+*~
