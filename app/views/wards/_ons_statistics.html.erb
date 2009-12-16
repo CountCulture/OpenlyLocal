@@ -2,22 +2,28 @@
 
   <div id="ons_statistics" class="item_grouping">
     <h3>About this ward</h3>
-    <%- ons_statistics.each do |group, datapoints| -%>
+    <%- ons_statistics.except(:religion).each do |group, datapoints| -%>
       <%- next if datapoints.blank? -%>
       <%- content_tag :table, :class => group do -%>
-        <caption><%= group %></caption>
+        <caption><%= group.to_s.titleize %></caption>
         <tr>
             <th>Description</th>
-            <th>Value</th>
+            <th class="value">Value</th>
         </tr>
 
         <%- for datapoint in datapoints -%>
           <tr>
-            <td><%= link_for datapoint %></td>
-            <td><%= datapoint.value %></td>
+            <td class="description"><%= basic_link_for datapoint %></td>
+            <td class="value"><%= datapoint.value %></td>
           </tr>
         <%- end -%>
       <%- end -%>
+    <%- end -%>
+    <%- unless ons_statistics[:religion].blank? -%>
+      <div id="religion_graph" class="graph">
+        <h4>Religion</h4>
+        <%= ons_statistics_graph(:religion => ons_statistics[:religion]) %>
+      </div>
     <%- end -%>
   </div>
 <%- end -%>

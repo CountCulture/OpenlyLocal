@@ -32,8 +32,12 @@ class OnsDatapointTest < ActiveSupport::TestCase
       @ward = @ons_datapoint.ward
     end
 
-    should "include ward and topic id in title" do
-      assert_equal "#{@ons_dataset_topic.title} (#{@ward.name})", @ons_datapoint.title
+    should "include topic id in title" do
+      assert_equal "#{@ons_dataset_topic.title}", @ons_datapoint.title
+    end
+
+    should "include ward and topic in extended title" do
+      assert_equal "#{@ons_dataset_topic.title} (#{@ward.name})", @ons_datapoint.extended_title
     end
 
     should "format value depending on muid" do

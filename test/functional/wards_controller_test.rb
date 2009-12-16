@@ -122,6 +122,7 @@ class WardsControllerTest < ActionController::TestCase
             assert_select ".misc a", @another_datapoint.title
           end
         end
+
         should "not show datapoint groups with no data" do
           assert_select "#ons_statistics .foo", false
         end

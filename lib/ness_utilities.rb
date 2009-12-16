@@ -7,7 +7,8 @@ require 'soap/header/simplehandler'
 module NessUtilities
   Muids = { 1 => ['Count'],
             2 => ['Percentage', "%.1f%"],
-            9 => ['Pounds Sterling', "£%d"]}
+            9 => ['Pounds Sterling', "£%d"],
+            14 => ['Years', "%.1f"]}
 
   class DiscoveryClient < ::SOAP::RPC::Driver
     Endpoint = "https://www.neighbourhood.statistics.gov.uk/interop/NeSSDiscoveryBindingPort?WSDL"

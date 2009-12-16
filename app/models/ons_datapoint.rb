@@ -12,6 +12,10 @@ class OnsDatapoint < ActiveRecord::Base
   end
 
   def title
+    ons_dataset_topic.title
+  end
+
+  def extended_title
     "#{ons_dataset_topic.title} (#{ward.name})"
   end
 
