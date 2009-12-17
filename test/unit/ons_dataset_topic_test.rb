@@ -105,10 +105,25 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         assert_equal '42', @existing_datapoint.reload[:value]
       end
 
-      should "update topic description" do
+    end
 
+    context "when processing" do
+      setup do
+        @council = Factory(:council, :ness_id => 211)
+        @another_council = Factory(:another_council, :ness_id => 242)
+        @no_ness_council = Factory(:tricky_council)
+        @ons_dataset_topic.stubs(:update_datapoints)
       end
 
+      should "update datapoints for councils with ness_id" do
+        @ons_dataset_topic.expects(:update_datapoints).twice.with(){|council| [@council.id, @another_council.id].include?(council.id)}
+        @ons_dataset_topic.process
+      end
+
+      should "not update datapoints for councils without ness_id" do
+        @ons_dataset_topic.expects(:update_datapoints).with(){|council| @no_ness_council.id == council.id }.never
+        @ons_dataset_topic.process
+      end
     end
   end
 end

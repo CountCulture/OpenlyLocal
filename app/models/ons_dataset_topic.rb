@@ -19,6 +19,13 @@ class OnsDatasetTopic < ActiveRecord::Base
     muid_entry[0]
   end
 
+  # Updates datapoints for all councils with ness_id. NB called proess so can be easily run by delayed job
+  def process
+    Council.all(:conditions => "ness_id IS NOT NULL").each do |council|
+      update_datapoints(council)
+    end
+  end
+
   def short_title
     self[:short_title].blank? ? title : self[:short_title]
   end

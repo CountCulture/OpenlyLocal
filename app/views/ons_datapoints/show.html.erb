@@ -1,6 +1,7 @@
 <div class="ons_dataset_family"><%= basic_link_for @ons_datapoint.ons_dataset_topic.ons_dataset_family %></div>
-<h1><%= basic_link_for @ons_datapoint.ons_dataset_topic %></h1>
+<h1><%= basic_link_for @ons_datapoint.ons_dataset_topic %>: <%= basic_link_for @ward %></h1>
 <div id="ons_statistics">
+  <h3><%= basic_link_for @council %></h3>
   <dl class='datapoints'>
     <dt class='ward selected'><%= basic_link_for @ons_datapoint.ward %></dt><dd><%= @ons_datapoint.value %></dd>
   <%- @related_datapoints.each do |datapoint| -%>

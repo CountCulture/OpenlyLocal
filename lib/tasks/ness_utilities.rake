@@ -13,7 +13,6 @@ task :get_ness_subject_and_datasets => :environment do
     puts "about to add #{datasets.size} datasets for this subject"
     datasets.each do |dataset_data|
       p dataset_data
-      # begin
         dsf = OnsDatasetFamily.find_or_create_by_ons_uid(:ons_uid => dataset_data.dSFamilyId, :title => dataset_data.name)
         subj.ons_dataset_families << dsf unless subj.ons_dataset_families.include?(dsf)
         puts "successfully added/found dataset_family #{dsf.title} (#{dsf.ons_uid})"
@@ -22,20 +21,13 @@ task :get_ness_subject_and_datasets => :environment do
           dataset = dsf.ons_datasets.find_or_create_by_start_date(:end_date => date_range.endDate, :start_date => date_range.startDate)
           puts "successfully added/found dataset for #{dsf.title}: #{dataset.start_date}-#{dataset.end_date}"
         end
-        # ds = subj.ons_datasets.create!( :title => dataset_data.name,
-        #                               :ons_uid => dataset_data.dSFamilyId,
-        #                               :start_date => dataset_data.dateRange.startDate,
-        #                               :end_date => dataset_data.dateRange.endDate)
-      # rescue Exception => e
-        # "problem creating dataset #{e.inspect}"
-      # end
     end
   end
 end
 
 desc "Get Ness Ids for Councils"
 task :get_ness_ids => :environment do
-  councils = Council.all(:conditions => 'snac_id IS NOT cdNULL')
+  councils = Council.all(:conditions => 'snac_id IS NOT NULL')
   wards = Ward.all(:conditions => 'snac_id IS NOT NULL')
 
   puts "About to get Ness IDs for #{councils.size} councils and #{wards.size} wards\n==========="

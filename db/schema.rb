@@ -214,10 +214,10 @@ ActiveRecord::Schema.define(:version => 20091216232245) do
 
   create_table "ons_dataset_families", :force => true do |t|
     t.string   "title"
-    t.integer  "ons_uid"
+    t.integer  "ons_subject_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ons_subject_id"
+    t.integer  "ons_uid"
   end
 
   create_table "ons_dataset_families_ons_subjects", :id => false, :force => true do |t|

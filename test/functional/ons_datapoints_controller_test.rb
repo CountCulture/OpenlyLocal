@@ -25,6 +25,18 @@ class OnsDatapointsControllerTest < ActionController::TestCase
         assert_select 'h1', /#{@datapoint.ons_dataset_topic.title}/
       end
 
+      should "show link to ward name in title" do
+        assert_select 'title', /#{@ward.name}/
+      end
+
+      should "show link to council for datapoint ward" do
+        assert_select 'a', /#{@ward.council.name}/
+      end
+
+      should "show show council name in title" do
+        assert_select 'title', /#{@ward.council.name}/
+      end
+
       should "list datapoints" do
         assert_select "dl.datapoints" do
           assert_select '.ward', /#{@datapoint.ward.name}/
