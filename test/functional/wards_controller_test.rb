@@ -119,7 +119,7 @@ class WardsControllerTest < ActionController::TestCase
         should "show datapoints grouped by topic group" do
           assert_select "#ons_statistics" do
             assert_select ".demographics a", @datapoint.title
-            assert_select ".misc a", @another_datapoint.title
+            assert_select ".stats_in_words a", @another_datapoint.title
           end
         end
 

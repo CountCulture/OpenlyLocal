@@ -6,6 +6,7 @@ class OnsDatapoint < ActiveRecord::Base
   belongs_to :ward
 #  default_scope :include => {:ons_dataset_topic => :ons_dataset_family}
   named_scope :with_topic_uids, lambda { |ons_uids| {:conditions => ["ons_datapoints.ons_dataset_topic_id = ons_dataset_topics.id AND ons_dataset_topics.ons_uid in (?)", ons_uids], :joins => "INNER JOIN ons_dataset_topics", :group => 'ons_datapoints.id'} }
+  delegate :muid_format, :muid_type, :short_title, :to => :ons_dataset_topic
 
   def ons_dataset_family
     ons_dataset_topic.ons_dataset_family
@@ -17,10 +18,6 @@ class OnsDatapoint < ActiveRecord::Base
 
   def extended_title
     "#{ons_dataset_topic.title} (#{ward.name})"
-  end
-
-  def value
-    ons_dataset_topic.muid_format ? sprintf(ons_dataset_topic.muid_format, self[:value]) : self[:value]
   end
 
   def related_datapoints

@@ -13,6 +13,16 @@ class OnsDatasetTopic < ActiveRecord::Base
     muid_entry[1]
   end
 
+  def muid_type
+    muid_entry = NessUtilities::Muids[muid]
+    return if muid_entry.blank?
+    muid_entry[0]
+  end
+
+  def short_title
+    self[:short_title].blank? ? title : self[:short_title]
+  end
+
   def update_datapoints(council)
     return if council.ness_id.blank?
     wards = council.wards

@@ -372,6 +372,9 @@ padding: 0;
 #ons_statistics td.value, #ons_statistics th.value {
 text-align:right;
 }
+#ons_statistics .stats_in_words {
+font-size: 1.2em;
+}
 
 /*Misc formatting*/
 #api_info {

@@ -2,7 +2,7 @@
 
   <div id="ons_statistics" class="item_grouping">
     <h3>About this ward</h3>
-    <%- ons_statistics.except(:religion).each do |group, datapoints| -%>
+    <%- ons_statistics.except(:religion, :misc).each do |group, datapoints| -%>
       <%- next if datapoints.blank? -%>
       <%- content_tag :table, :class => group do -%>
         <caption><%= group.to_s.titleize %></caption>
@@ -14,10 +14,15 @@
         <%- for datapoint in datapoints -%>
           <tr>
             <td class="description"><%= basic_link_for datapoint %></td>
-            <td class="value"><%= datapoint.value %></td>
+            <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
           </tr>
         <%- end -%>
       <%- end -%>
+    <%- end -%>
+    <%- unless ons_statistics[:misc].blank? -%>
+      <div id="misc" class="stats_in_words">
+        <%= ons_statistics_in_words(:misc => ons_statistics[:misc]) %>
+      </div>
     <%- end -%>
     <%- unless ons_statistics[:religion].blank? -%>
       <div id="religion_graph" class="graph">

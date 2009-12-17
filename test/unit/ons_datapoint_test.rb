@@ -27,8 +27,8 @@ class OnsDatapointTest < ActiveSupport::TestCase
 
   context "an OnsDatapoint instance" do
     setup do
-      @ons_datapoint = Factory(:ons_datapoint)
-      @ons_dataset_topic = @ons_datapoint.ons_dataset_topic
+      @ons_dataset_topic = Factory(:ons_dataset_topic, :muid => 1)
+      @ons_datapoint = Factory(:ons_datapoint, :ons_dataset_topic => @ons_dataset_topic)
       @ward = @ons_datapoint.ward
     end
 
@@ -40,11 +40,19 @@ class OnsDatapointTest < ActiveSupport::TestCase
       assert_equal "#{@ons_dataset_topic.title} (#{@ward.name})", @ons_datapoint.extended_title
     end
 
-    should "format value depending on muid" do
-      assert_equal '345', OnsDatapoint.new(:value => '345', :ons_dataset_topic => Factory(:ons_dataset_topic, :muid => nil)).value
-      assert_equal '345', OnsDatapoint.new(:value => '345', :ons_dataset_topic => Factory(:ons_dataset_topic, :muid => 1)).value
-      assert_equal '£345', OnsDatapoint.new(:value => '345', :ons_dataset_topic => Factory(:ons_dataset_topic, :muid => 9)).value
-      assert_equal '24.6%', OnsDatapoint.new(:value => '24.62', :ons_dataset_topic => Factory(:ons_dataset_topic, :muid => 2)).value
+    should "delegate muid_format to ons_dataset_topic" do
+      @ons_dataset_topic.stubs(:muid_format).returns('%1f')
+      assert_equal '%1f', @ons_datapoint.muid_format
+    end
+
+    should "delegate muid_type to ons_dataset_topic" do
+      @ons_dataset_topic.stubs(:muid_type).returns('foo')
+      assert_equal 'foo', @ons_datapoint.muid_type
+    end
+
+    should "delegate short_title to ons_dataset_topic" do
+      @ons_dataset_topic.stubs(:short_title).returns('short titl')
+      assert_equal 'short titl', @ons_datapoint.short_title
     end
 
     context "when returning related datapoints" do

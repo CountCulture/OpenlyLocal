@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091213175738) do
+ActiveRecord::Schema.define(:version => 20091216232245) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -234,6 +234,7 @@ ActiveRecord::Schema.define(:version => 20091213175738) do
     t.integer  "muid"
     t.text     "description"
     t.date     "data_date"
+    t.string   "short_title"
   end
 
   create_table "ons_datasets", :force => true do |t|

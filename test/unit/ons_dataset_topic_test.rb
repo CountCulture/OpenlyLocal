@@ -11,7 +11,7 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
     should_validate_presence_of :ons_dataset_family_id
     should_belong_to :ons_dataset_family
     should_have_many :ons_datapoints
-    should_have_db_column :muid, :description, :data_date
+    should_have_db_column :muid, :description, :data_date, :short_title
   end
 
   context "An OnsDatasetTopic instance" do
@@ -25,11 +25,35 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
       end
     end
 
+    context "when returning short_title" do
+      should "return title if :short_title attribute is blank" do
+        assert_equal 'foo', OnsDatasetTopic.new(:title => 'foo').short_title
+      end
+
+      should "return short_title attribute if set" do
+        assert_equal 'bar', OnsDatasetTopic.new(:title => 'foo', :short_title => 'bar').short_title
+      end
+    end
+
     context "when returning muid_format" do
       should "return nil if muid is blank" do
         assert_nil Factory.build(:ons_dataset_topic).muid_format
         assert_nil Factory.build(:ons_dataset_topic, :muid => 99).muid_format
+      end
+
+      should "return format when set" do
         assert_equal "%.1f%", Factory.build(:ons_dataset_topic, :muid => 2).muid_format
+      end
+    end
+
+    context "when returning muid_type" do
+      should "return nil if muid is blank" do
+        assert_nil Factory.build(:ons_dataset_topic).muid_type
+        assert_nil Factory.build(:ons_dataset_topic, :muid => 99).muid_type
+      end
+
+      should "return type when set" do
+        assert_equal "Percentage", Factory.build(:ons_dataset_topic, :muid => 2).muid_type
       end
     end
 
@@ -45,7 +69,7 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
       end
 
       should "should fetch data from Ness database" do
-        NessUtilities::RawClient.expects(:new).with('ChildAreaTables', [['ParentAreaId', @council.ness_id], ['Variables', @ons_dataset_topic.ons_uid], ['LevelTypeId', '14']]).returns(stub(:process_and_extract_datapoints=>[]))
+        NessUtilities::RawClient.expects(:new).with('ChildAreaTables', [['ParentAreaId', @council.ness_id], ['LevelTypeId', '14'], ['Variables', @ons_dataset_topic.ons_uid]]).returns(stub(:process_and_extract_datapoints=>[]))
         @ons_dataset_topic.update_datapoints(@council)
       end
 
