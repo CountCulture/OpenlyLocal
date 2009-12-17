@@ -21,7 +21,7 @@ class OnsDatapoint < ActiveRecord::Base
   end
 
   def related_datapoints
-    ons_dataset_topic.ons_datapoints.all(:conditions => {:ward_id => ward.siblings.collect(&:id)})
+    ons_dataset_topic.ons_datapoints.all(:conditions => {:ward_id => ward.council.wards.collect(&:id)}).sort_by{ |dp| dp.ward.title }
   end
 
 end

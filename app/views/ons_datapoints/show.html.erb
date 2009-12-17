@@ -1,11 +1,19 @@
 <div class="ons_dataset_family"><%= basic_link_for @ons_datapoint.ons_dataset_topic.ons_dataset_family %></div>
 <h1><%= basic_link_for @ons_datapoint.ons_dataset_topic %>: <%= basic_link_for @ward %></h1>
 <div id="ons_statistics">
-  <h3><%= basic_link_for @council %></h3>
-  <dl class='datapoints'>
-    <dt class='ward selected'><%= basic_link_for @ons_datapoint.ward %></dt><dd><%= @ons_datapoint.value %></dd>
-  <%- @related_datapoints.each do |datapoint| -%>
-    <dt class='ward '><%= basic_link_for datapoint.ward %></dt><dd><%= datapoint.value %></dd>
+  <%- content_tag :table, :class => "datapoints" do -%>
+    <caption>All wards in <%= basic_link_for @council %>></caption>
+    <tr>
+      <th>Ward</th>
+      <th class="value">Value</th>
+    </tr>
+
+    <%- @datapoints.each do |datapoint| -%>
+      <tr>
+        <td class='ward <%= datapoint == @ons_datapoint ? "selected" : "" %>'><%= basic_link_for datapoint.ward %></td>
+        <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
+      </tr>
+    <%- end -%>
   <%- end -%>
-  </dl>
+
 </div>

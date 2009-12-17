@@ -57,16 +57,33 @@ class OnsDatapointTest < ActiveSupport::TestCase
 
     context "when returning related datapoints" do
       setup do
-        @sibling_ward = Factory(:ward, :name => 'sibling ward', :council => @ward.council)
+        @sibling_ward = Factory(:ward, :name => 'A sibling ward', :council => @ward.council)
         @unrelated_ward = Factory(:ward, :name => 'unrelated ward', :council => Factory(:another_council))
         @same_topic_sibling_ward_dp = Factory(:ons_datapoint, :ons_dataset_topic => @ons_dataset_topic, :ward => @sibling_ward)
         @same_topic_unrelated_ward_dp = Factory(:ons_datapoint, :ons_dataset_topic => @ons_dataset_topic, :ward => @unrelated_ward)
         @different_topic_and_sibling_ward_dp = Factory(:ons_datapoint, :ward => @sibling_ward)
       end
 
-      should "return only datapoints for same topic from sibling wards" do
-        assert_equal [@same_topic_sibling_ward_dp], @ons_datapoint.related_datapoints
+      should "include datapoints for same topic from sibling wards" do
+        assert @ons_datapoint.related_datapoints.include?(@same_topic_sibling_ward_dp)
       end
+
+      should "include original datapoint" do
+        assert @ons_datapoint.related_datapoints.include?(@ons_datapoint)
+      end
+
+      should "not include datapoints for same topic from other wards" do
+        assert !@ons_datapoint.related_datapoints.include?(@same_topic_unrelated_ward_dp)
+      end
+
+      should "not include datapoints for same ward from other topics" do
+        assert !@ons_datapoint.related_datapoints.include?(@different_topic_and_sibling_ward_dp)
+      end
+
+      should "return datapoints in alphabetical order on wards" do
+        assert_equal @same_topic_sibling_ward_dp, @ons_datapoint.related_datapoints.first
+      end
+
     end
   end
 end

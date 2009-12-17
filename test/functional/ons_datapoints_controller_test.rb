@@ -7,7 +7,7 @@ class OnsDatapointsControllerTest < ActionController::TestCase
   setup do
     @datapoint = Factory(:ons_datapoint)
     @ward = @datapoint.ward
-    @another_ward = Factory(:ward, :name => 'another ward', :council => @ward.council)
+    @another_ward = Factory(:ward, :name => 'Another Ward', :council => @ward.council)
     @datapoint_for_another_ward = Factory(:ons_datapoint, :ward => @another_ward, :ons_dataset_topic => @datapoint.ons_dataset_topic)
   end
 
@@ -16,8 +16,7 @@ class OnsDatapointsControllerTest < ActionController::TestCase
         get :show, :id => @datapoint.id
       end
 
-      should_assign_to(:ons_datapoint) {@ons_datapoint}
-      should_assign_to(:related_datapoints) { [@datapoint_for_another_ward] }
+      should_assign_to(:datapoints) { [@datapoint_for_another_ward, @datapoint] }
       should_respond_with :success
       should_render_template :show
 
@@ -38,14 +37,18 @@ class OnsDatapointsControllerTest < ActionController::TestCase
       end
 
       should "list datapoints" do
-        assert_select "dl.datapoints" do
-          assert_select '.ward', /#{@datapoint.ward.name}/
-          assert_select '.ward', /#{@datapoint_for_another_ward.ward.name}/
+        assert_select ".datapoints" do
+          assert_select '.ward', /#{@ward.name}/
+          assert_select '.ward', /#{@another_ward.name}/
         end
       end
 
-      should "indentify ward for given datapoint" do
-        assert_select "dl.datapoints .selected", /#{@datapoint.ward.name}/
+      should "list datapoints in alpha order" do
+        assert_select ".datapoints", /#{@another_ward.name}.+#{@ward.name}/m
+      end
+
+      should "identify given datapoint" do
+        assert_select ".datapoints .selected", /#{@ward.name}/
       end
     end
   end
