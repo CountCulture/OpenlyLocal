@@ -189,6 +189,7 @@ body {
 .attributes dt {
 	float: left;
 	width: 10em;
+	clear: left;
 }
 .attributes dd {
 	margin-left: 11em;
@@ -211,13 +212,15 @@ div.item_grouping h3 {
 	float:right;
 	width:450px;
 	height:200px;
-	position: relative;
 	margin-bottom: 0.75em;
 }
 #party_breakdown img {
 	position:absolute;
 }
-#party_breakdown table {
+.graphed_datapoints {
+	position: relative;
+}
+.graphed_datapoints table {
 	position:absolute;
 	left:-1000px;
 }

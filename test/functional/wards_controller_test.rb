@@ -93,7 +93,9 @@ class WardsControllerTest < ActionController::TestCase
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
         @datapoint = Factory(:ons_datapoint, :ward => @ward)
         @another_datapoint = Factory(:ons_datapoint, :ward => @ward)
-        Ward.any_instance.stubs(:grouped_datapoints).returns(:demographics => [@datapoint], :misc => [@another_datapoint], :foo => [])
+        @graphed_datapoint = Factory(:ons_datapoint, :ward => @ward)
+        @graphed_datapoint_topic = @graphed_datapoint.ons_dataset_topic
+        Ward.any_instance.stubs(:grouped_datapoints).returns(:demographics => [@datapoint], :misc => [@another_datapoint], :foo => [], :religion => [@graphed_datapoint])
         get :show, :id => @ward.id
       end
 
@@ -125,6 +127,14 @@ class WardsControllerTest < ActionController::TestCase
 
         should "not show datapoint groups with no data" do
           assert_select "#ons_statistics .foo", false
+        end
+
+        should "show graphs for those groups that should be graphed" do
+          assert_select "#ons_statistics .graphed_datapoints #religion_graph"
+        end
+
+        should "show data in table with graphed_table class for groups that should be graphed" do
+          assert_select "#ons_statistics .religion.graphed_datapoints"
         end
       end
 

@@ -3,10 +3,11 @@ module ApplicationHelper
 
   # Generates an attribute block
   def attribute_tag(attrib_name=nil, attrib_value=nil, &block)
+    return if attrib_value.blank?
     if block_given?
       concat("<dt class=\"#{attrib_name}\">#{attrib_name.to_s.titleize}</dt> <dd>#{capture(&block)}</dd>")
     else
-      "<dt class=\"#{attrib_name}\">#{attrib_name.to_s.titleize}</dt> <dd>#{attrib_value}</dd>" unless attrib_value.blank?
+      "<dt class=\"#{attrib_name}\">#{attrib_name.to_s.titleize}</dt> <dd>#{attrib_value}</dd>"
     end
   end
 

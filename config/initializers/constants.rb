@@ -26,3 +26,4 @@ NessSelectedTopics = { :demographics => [54, 55,  56, 57 ], # pecentage populati
                        :economic => [5023, 2028],
                        :religion => (2006..2014).to_a, # count of religions
                        :misc => [627, 63] } # population, mean age of population
+DisplayOnsDatapoints = { :religion => :graph }

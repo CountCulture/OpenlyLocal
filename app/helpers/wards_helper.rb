@@ -4,7 +4,7 @@ module WardsHelper
     return if stats_group.blank?
     data = stats_group.values.first.collect{|dp| dp.value.to_f } # google charts library requires numbers, not strings. convert to floats because some numbers will be decimals, not integers
     legend = stats_group.values.first.collect{|dp| dp.title}
-    image_tag(Gchart.pie(:data => data, :legend => legend, :size => "300x100"), :class => "chart", :alt => "#{stats_group.keys.first.to_s.titleize} graph")
+    image_tag(Gchart.pie(:data => data, :legend => legend, :size => "290x120"), :class => "chart", :alt => "#{stats_group.keys.first.to_s.titleize} graph")
   end
 
   def ons_statistics_in_words(stats_group)

@@ -2,33 +2,35 @@
 
   <div id="ons_statistics" class="item_grouping">
     <h3>About this ward</h3>
-    <%- ons_statistics.except(:religion, :misc).each do |group, datapoints| -%>
-      <%- next if datapoints.blank? -%>
-      <%- content_tag :table, :class => group do -%>
-        <caption><%= group.to_s.titleize %></caption>
-        <tr>
-            <th>Description</th>
-            <th class="value">Value</th>
-        </tr>
-
-        <%- for datapoint in datapoints -%>
-          <tr>
-            <td class="description"><%= basic_link_for datapoint %></td>
-            <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
-          </tr>
-        <%- end -%>
-      <%- end -%>
-    <%- end -%>
     <%- unless ons_statistics[:misc].blank? -%>
       <div id="misc" class="stats_in_words">
         <%= ons_statistics_in_words(:misc => ons_statistics[:misc]) %>
       </div>
     <%- end -%>
-    <%- unless ons_statistics[:religion].blank? -%>
-      <div id="religion_graph" class="graph">
-        <h4>Religion</h4>
-        <%= ons_statistics_graph(:religion => ons_statistics[:religion]) %>
-      </div>
+    <%- ons_statistics.except(:misc).each do |group, datapoints| -%>
+      <%- next if datapoints.blank? -%>
+      <%- content_tag :div, :class => "datapoint_grouping #{group} #{DisplayOnsDatapoints[group]&&'graphed_datapoints'}" do -%>
+        <%- content_tag :table do -%>
+          <caption><%= group.to_s.titleize %></caption>
+          <tr>
+              <th>Description</th>
+              <th class="value">Value</th>
+          </tr>
+
+          <%- for datapoint in datapoints -%>
+            <tr>
+              <td class="description"><%= basic_link_for datapoint %></td>
+              <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
+            </tr>
+          <%- end -%>
+        <%- end -%>
+        <%- if DisplayOnsDatapoints[group] -%>
+          <div id="religion_graph" class="graph">
+            <h4>Religion</h4>
+            <%= ons_statistics_graph(group => datapoints) %>
+          </div>
+        <%- end -%>
+      <%- end -%>
     <%- end -%>
   </div>
 <%- end -%>
