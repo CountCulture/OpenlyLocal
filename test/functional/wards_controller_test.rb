@@ -289,7 +289,7 @@ class WardsControllerTest < ActionController::TestCase
    end
 
    # edit tests
-   context "on get to :edit a scraper without auth" do
+   context "on get to :edit a ward without auth" do
      setup do
        get :edit, :id => @ward.id
      end
@@ -297,7 +297,7 @@ class WardsControllerTest < ActionController::TestCase
      should_respond_with 401
    end
 
-   context "on get to :edit a scraper" do
+   context "on get to :edit a topic" do
      setup do
        stub_authentication
        get :edit, :id => @ward.id
