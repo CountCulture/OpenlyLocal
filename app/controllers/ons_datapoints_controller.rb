@@ -1,4 +1,5 @@
 class OnsDatapointsController < ApplicationController
+  helper :wards
   def show
     @ons_datapoint = OnsDatapoint.find(params[:id])
     @ward = @ons_datapoint.ward

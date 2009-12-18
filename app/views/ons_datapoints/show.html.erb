@@ -2,15 +2,15 @@
 <h1><%= basic_link_for @ons_datapoint.ons_dataset_topic %>: <%= basic_link_for @ward %></h1>
 <div id="ons_statistics">
   <%- content_tag :table, :class => "datapoints" do -%>
-    <caption>All wards in <%= basic_link_for @council %>></caption>
+    <caption>All wards in <%= basic_link_for @council %></caption>
     <tr>
       <th>Ward</th>
       <th class="value">Value</th>
     </tr>
-
+    <%- max_value = @datapoints.collect{|dp| dp.value.to_f }.max -%>
     <%- @datapoints.each do |datapoint| -%>
-      <tr>
-        <td class='ward <%= datapoint == @ons_datapoint ? "selected" : "" %>'><%= basic_link_for datapoint.ward %></td>
+      <tr class='<%= datapoint == @ons_datapoint ? "selected" : "" %>'>
+        <td class='ward' style="background-position: <%= (100.0/max_value)*8*datapoint.value.to_f %>px;"><%= basic_link_for datapoint.ward %></td>
         <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
       </tr>
     <%- end -%>

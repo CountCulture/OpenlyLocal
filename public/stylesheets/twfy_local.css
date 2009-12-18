@@ -363,11 +363,25 @@ div#dataset_data table {
 #ons_statistics dd {
 	margin-left: 21em;
 }
+#ons_statistics table {
+background-color: #eee;
+}
+#ons_statistics td {
+	border-bottom: 1px solid #fff;
+}
+#ons_statistics .selected td{
+	font-weight: bold;
+}
+#ons_statistics table th {
+	background-color: #bcd;
+}
+#ons_statistics table caption {
+	background-color: #fff;
+}
 #ons_statistics table caption, #ons_statistics h4 {
-background-color: #fff;
 border-bottom: 1px solid #ddd;
 font-size: 1.2em;
-padding: 0;
+font-weight:bold;
 }
 #ons_statistics td.value, #ons_statistics th.value {
 text-align:right;
@@ -375,7 +389,22 @@ text-align:right;
 #ons_statistics .stats_in_words {
 font-size: 1.2em;
 }
-
+body.ons_datapoints table.datapoints {
+	width: 900px;
+}
+body.ons_datapoints table.datapoints td.value {
+	width: 80px;
+}
+body.ons_datapoints #ons_statistics td.ward {
+	background: #fcd;
+	background-image:url(/images/datapoint_bar.png);
+	background-repeat: repeat-y;
+}
+body.ons_datapoints #ons_statistics td.ward {
+	background: #fcd;
+	background-image:url(/images/datapoint_bar.png);
+	background-repeat: repeat-y;
+}
 /*Misc formatting*/
 #api_info {
 	clear: both;
