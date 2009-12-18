@@ -52,12 +52,13 @@ class OnsDatapointsControllerTest < ActionController::TestCase
       end
 
       should "show use background-position to make graph" do
-
         expected_position = 8*(100.0/@datapoint_for_another_ward.value.to_f)*@datapoint.value.to_f #full length is 800px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
-        puts  css_select( ".selected td.ward")
         actual_position = css_select( ".selected td.ward").first.to_s.scan(/background-position: ([\d\.]+)px/).to_s
-        puts expected_position, actual_position
         assert_in_delta(expected_position, actual_position, 0.1)
+      end
+
+      should "show source of data" do
+        assert_select ".source a", @datapoint.ons_dataset_topic.title
       end
     end
   end
