@@ -80,7 +80,7 @@ class OnsDatasetTopicsControllerTest < ActionController::TestCase
 
     should_assign_to :ons_dataset_topic
     should_redirect_to( "the show page for ons_dataset_topic") { ons_dataset_topic_path(@ons_dataset_topic.reload) }
-    should_set_the_flash_to "Successfully updated ons_dataset_topic"
+    should_set_the_flash_to "Successfully updated OnsDatasetTopic"
 
     should "update ons_dataset_topic" do
       assert_equal "New title", @ons_dataset_topic.reload.short_title

@@ -7,7 +7,9 @@ class OnsDatapointTest < ActiveSupport::TestCase
       @ons_datapoint = Factory(:ons_datapoint)
     end
 
-    should_validate_presence_of :value, :ons_dataset_topic_id, :ward_id
+    should_validate_presence_of :value
+    should_validate_presence_of :ons_dataset_topic_id
+    should_validate_presence_of :ward_id
     should_belong_to :ons_dataset_topic
     should_belong_to :ward
     should "belong_to ons_dataset_family through ons_dataset_topic" do

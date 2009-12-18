@@ -1,6 +1,7 @@
 <%- unless ons_statistics.blank? || ons_statistics.values.flatten.compact.empty? -%>
 
   <div id="ons_statistics" class="item_grouping">
+<%= render :partial => 'shared/experimental_flash' %>
     <h3>About this ward</h3>
     <%- unless ons_statistics[:misc].blank? -%>
       <div id="misc" class="stats_in_words">

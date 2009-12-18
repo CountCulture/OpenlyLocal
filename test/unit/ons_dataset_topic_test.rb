@@ -105,6 +105,48 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         assert_equal '42', @existing_datapoint.reload[:value]
       end
 
+      context "and empty values returned by Ness client" do
+        setup do
+          dummy_bad_response = [ { :ness_area_id => '215', :value => '', :ness_topic_id => '123'},
+                             { :ness_area_id => '211', :value => nil, :ness_topic_id => '123'}]
+          NessUtilities::RawClient.expects(:new).returns(stub(:process_and_extract_datapoints => dummy_bad_response)) #expects overrides stubbing
+        end
+
+        should "not add datapoints" do
+          assert_no_difference 'OnsDatapoint.count' do
+            @ons_dataset_topic.update_datapoints(@council)
+          end
+        end
+      end
+
+      context "and datapoint ness_id can't be matched by ward (e.g. ward might not have ness_id)" do
+        setup do
+          @ward1.update_attribute(:ness_id, 999)
+        end
+
+        should "not raise exception" do
+          assert_nothing_raised(Exception) { @ons_dataset_topic.update_datapoints(@council) }
+        end
+
+        should "add matched datapoint" do
+          @ons_dataset_topic.update_datapoints(@council)
+          assert @ward1.ons_datapoints.empty?
+          assert_equal '42', @ward2.ons_datapoints.first[:value]
+        end
+
+        should "not add unmatched datapoint" do
+          assert_difference 'OnsDatapoint.count', 1 do
+            @ons_dataset_topic.update_datapoints(@council)
+          end
+        end
+
+        should "update matching datapoint" do
+          @existing_datapoint = @ward2.ons_datapoints.create(:ons_dataset_topic_id => @ons_dataset_topic.id, :value => '99')
+          @ons_dataset_topic.update_datapoints(@council)
+          assert_equal '42', @existing_datapoint.reload[:value]
+        end
+      end
+
     end
 
     context "when processing" do
