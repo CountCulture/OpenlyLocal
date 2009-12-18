@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091216232245) do
+ActiveRecord::Schema.define(:version => 20091218185553) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(:version => 20091216232245) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "cached_postcodes", ["output_area_id"], :name => "index_cached_postcodes_on_output_area_id"
 
   create_table "committees", :force => true do |t|
     t.string   "title"
@@ -212,6 +214,9 @@ ActiveRecord::Schema.define(:version => 20091216232245) do
     t.datetime "updated_at"
   end
 
+  add_index "ons_datapoints", ["ons_dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
+  add_index "ons_datapoints", ["ward_id"], :name => "index_ons_datapoints_on_ward_id"
+
   create_table "ons_dataset_families", :force => true do |t|
     t.string   "title"
     t.integer  "ons_subject_id"
@@ -225,6 +230,9 @@ ActiveRecord::Schema.define(:version => 20091216232245) do
     t.integer "ons_dataset_family_id"
   end
 
+  add_index "ons_dataset_families_ons_subjects", ["ons_dataset_family_id", "ons_subject_id"], :name => "ons_subjects_families_join_index"
+  add_index "ons_dataset_families_ons_subjects", ["ons_subject_id", "ons_dataset_family_id"], :name => "ons_families_subjects_join_index"
+
   create_table "ons_dataset_topics", :force => true do |t|
     t.string   "title"
     t.integer  "ons_uid"
@@ -237,6 +245,8 @@ ActiveRecord::Schema.define(:version => 20091216232245) do
     t.string   "short_title"
   end
 
+  add_index "ons_dataset_topics", ["ons_dataset_family_id"], :name => "index_ons_dataset_topics_on_ons_dataset_family_id"
+
   create_table "ons_datasets", :force => true do |t|
     t.date     "start_date"
     t.date     "end_date"
@@ -244,6 +254,8 @@ ActiveRecord::Schema.define(:version => 20091216232245) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "ons_datasets", ["ons_dataset_family_id"], :name => "index_ons_datasets_on_ons_dataset_family_id"
 
   create_table "ons_subjects", :force => true do |t|
     t.string   "title"
@@ -259,6 +271,8 @@ ActiveRecord::Schema.define(:version => 20091216232245) do
     t.integer "ward_id"
     t.string  "ward_snac_id"
   end
+
+  add_index "output_areas", ["ward_id"], :name => "index_output_areas_on_ward_id"
 
   create_table "parsers", :force => true do |t|
     t.string   "description"
