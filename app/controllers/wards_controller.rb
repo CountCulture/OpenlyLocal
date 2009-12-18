@@ -3,6 +3,7 @@ class WardsController < ApplicationController
   before_filter :find_ward
   before_filter :linked_data_available, :only => :show
   helper :ons_datapoints
+  caches_action :show
   
   def show
     @council = @ward.council
