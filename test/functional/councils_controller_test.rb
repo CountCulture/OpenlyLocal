@@ -533,7 +533,7 @@ class CouncilsControllerTest < ActionController::TestCase
         end
 
         should "show associated datasets" do
-          assert_select "council>datasets>dataset>id", @datapoint.dataset.id
+          assert_select "council>datasets>dataset>id", @datapoint.dataset.id.to_s
         end
       end
       

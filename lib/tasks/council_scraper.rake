@@ -265,3 +265,17 @@ task :export_sameas_relationships => :environment do
     end
   end
 end
+
+desc "geocode council offices"
+task :geocode_councils => :environment do
+  include Geokit::Geocoders
+  Council.find_all_by_lat(nil).each do |council|
+    loc=MultiGeocoder.geocode(council.address)
+    if loc.success
+      council.update_attributes(:lat => loc.lat, :lng => loc.lng)
+      puts "Geocoded #{council.name} (#{council.address}):\nlat, lng: #{loc.lat}, #{loc.lng} (#{loc.full_address})"
+    else
+      puts "Problem Geocoding #{council.name}"
+    end
+  end
+end

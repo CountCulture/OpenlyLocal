@@ -27,8 +27,8 @@ end
 
 desc "Get Ness Ids for Councils"
 task :get_ness_ids => :environment do
-  councils = Council.all(:conditions => 'snac_id IS NOT NULL')
-  wards = Ward.all(:conditions => 'snac_id IS NOT NULL')
+  councils = Council.all(:conditions => 'snac_id IS NOT NULL AND ness_id IS NULL')
+  wards = Ward.all(:conditions => 'snac_id IS NOT NULL AND ness_id IS NULL')
 
   puts "About to get Ness IDs for #{councils.size} councils and #{wards.size} wards\n==========="
   (councils+wards).each do |area|

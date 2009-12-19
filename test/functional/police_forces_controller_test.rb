@@ -105,7 +105,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
     
     should "include councils and basic council data in response" do
       assert_select "police-force council name", @council.name
-      assert_select "police-force council id", @council.id
+      assert_select "police-force council id", @council.id.to_s
       assert_select "police-force council url", @council.url
       assert_select "police-force council openlylocal-url", @council.openlylocal_url
     end

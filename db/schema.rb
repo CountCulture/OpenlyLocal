@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091218185553) do
+ActiveRecord::Schema.define(:version => 20091218221036) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -63,6 +63,9 @@ ActiveRecord::Schema.define(:version => 20091218185553) do
     t.string   "police_force_url"
     t.integer  "police_force_id"
     t.string   "ness_id"
+    t.float    "lat"
+    t.float    "lng"
+    t.float    "distance"
   end
 
   add_index "councils", ["parent_authority_id"], :name => "index_councils_on_parent_authority_id"
