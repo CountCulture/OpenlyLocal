@@ -1,15 +1,22 @@
 class Tweeter
-  attr_accessor :message, :url
+  attr_accessor :message, :url, :options
   def initialize(message, options={})
     @message = message
-    @url = options[:url]
+    @url = options.delete(:url)
+    @options = options
   end
 
   def perform
-    config_file = File.join(RAILS_ROOT, 'config', 'twitter.yml')
-    twitter = Twitter::Client.from_config(config_file, RAILS_ENV)
+    auth_details = YAML.load_file(File.join(RAILS_ROOT, 'config', 'twitter.yml'))[RAILS_ENV]
+    auth = Twitter::HTTPAuth.new(auth_details['login'], auth_details['password'])
+    
+    # config = ConfigStore.new("#{ENV['HOME']}/.twitter")
+    # oauth = Twitter::OAuth.new(config['token'], config['secret'])
+    # oauth.authorize_from_access(config['atoken'], config['asecret'])
+    # 
+    client = Twitter::Base.new(auth)
     @message += " " + shorten_url(url) unless url.blank?
-    twitter.status(:post, message)
+    client.update(message)
     RAILS_DEFAULT_LOGGER.debug "Tweeted message: #{message}"
   end
   

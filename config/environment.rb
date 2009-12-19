@@ -30,7 +30,7 @@ Rails::Initializer.run do |config|
   config.gem 'fastercsv'
   config.gem 'mattetti-googlecharts', :lib => "gchart", :source => 'http://gems.github.com'
   config.gem "newrelic_rpm"
-  config.gem "twitter4r", :lib => "twitter"
+  config.gem "twitter"
   config.gem "httpclient"
   config.gem "soap4r", :lib => false
   config.gem "pauldix-feedzirra", :lib => "feedzirra", :source => 'http://gems.github.com'
