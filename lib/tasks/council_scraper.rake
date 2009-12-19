@@ -269,9 +269,11 @@ end
 desc "geocode council offices"
 task :geocode_councils => :environment do
   include Geokit::Geocoders
-  Council.find_all_by_lat(nil).each do |council|
+  Council.all[0..10].each do |council|
     loc=MultiGeocoder.geocode(council.address)
-    if loc.success
+    if loc.success && loc.accuracy < 5
+      puts "Could not accurately geocode #{council.name} (#{council.address}):\nlat, lng: #{loc.lat}, #{loc.lng} (#{loc.full_address})\n Accuracy: #{loc.accuracy}"
+    elsif loc.success
       council.update_attributes(:lat => loc.lat, :lng => loc.lng)
       puts "Geocoded #{council.name} (#{council.address}):\nlat, lng: #{loc.lat}, #{loc.lng} (#{loc.full_address})"
     else
