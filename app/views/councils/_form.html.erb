@@ -45,6 +45,7 @@
   <p>
     <%= f.label :lat, "Latitude" %>
     <%= f.text_field :lat %>
+    <%= link_to("Show location", "http://maps.google.co.uk/maps?q=#{@council.lat},+#{@council.lng}+(#{URI.escape(@council.name+', '+ @council.address)})&iwloc=A&hl=en", :target => "blank", :class => "external") unless @council.lat.blank? %>
   </p>
   
   <p>
