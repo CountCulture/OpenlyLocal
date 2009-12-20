@@ -16,8 +16,9 @@ class Tweeter
     # 
     client = Twitter::Base.new(auth)
     @message += " " + shorten_url(url) unless url.blank?
-    client.update(message)
-    RAILS_DEFAULT_LOGGER.debug "Tweeted message: #{message}"
+    response = client.update(message)
+    RAILS_DEFAULT_LOGGER.info "Tweeted message: #{message}\n response: #{response.inspect}"
+    response
   end
   
   private

@@ -216,9 +216,56 @@ class MemberTest < ActiveSupport::TestCase
     end
     
     context "when creating first member for council" do
+      setup do
+        @council = Factory(:council)
+        @dummy_tweeter = Tweeter.new('foo')
+      end
+      
       should "Tweet about council being added" do
         Delayed::Job.expects(:enqueue).with(kind_of(Tweeter))
-        member = Factory(:member)
+        Factory(:member, :council => @council)
+      end
+      
+      context "and when tweeting" do
+        should "message about new parsed council" do
+          Tweeter.expects(:new).with(regexp_matches(/#{@council.name} has been added to OpenlyLocal/), anything).returns(@dummy_tweeter)
+          Factory(:member, :council => @council)
+        end
+
+        should "include openlylocal url of council" do
+          Tweeter.expects(:new).with(anything, has_entry(:url, "http://openlylocal.com/councils/#{@council.to_param}")).returns(@dummy_tweeter)
+          Factory(:member, :council => @council)
+        end
+        
+        should "include council twitter_account in message if it exists" do
+          @council.update_attribute(:twitter_account, "anycouncil")
+          Tweeter.expects(:new).with(regexp_matches(/@anycouncil/), anything).returns(@dummy_tweeter)
+          Factory(:member, :council => @council)
+        end
+
+        should "not include council twitter_account in message if it has none" do
+          Tweeter.stubs(:new).returns(@dummy_tweeter)
+          Tweeter.expects(:new).with(regexp_matches(/@/), anything).never
+          
+          Factory(:member, :council => @council)
+        end
+
+        should "include council location in message if it is known" do
+          @council.update_attributes(:lng => 45, :lat => 0.123)
+          Tweeter.stubs(:new).returns(@dummy_tweeter)
+          Tweeter.expects(:new).with(anything, has_entries(:lat => 0.123, :long => 45)).never
+          
+          Factory(:member, :council => @council)
+        end
+        
+        should "not include council location in message if it has none" do
+          Tweeter.stubs(:new).returns(@dummy_tweeter)
+          Tweeter.expects(:new).with(anything, has_key(:lat)).never
+          Tweeter.expects(:new).with(anything, has_key(:long)).never
+          
+          Factory(:member, :council => @council)
+        end
+
       end
     end
     

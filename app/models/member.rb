@@ -82,7 +82,11 @@ class Member < ActiveRecord::Base
   
   private
   def tweet_about_it
-    Delayed::Job.enqueue Tweeter.new("#{@council.title.length > 60 ? @council.short_name : @council.title} has been added to OpenlyLocal #localgov #opendata", :url => "http://openlylocal.com/councils/#{@council.to_param}") if council.members.count == 1
+    if council.members.count == 1
+      options = {}# council.at.blank? ? {} : {:lat => council.lat, :long => council.long}
+      message = (council.title.length > 60 ? council.short_name : council.title) + " has been added to OpenlyLocal #localgov #opendata " +( council.twitter_account.blank? ? '' : "@#{council.twitter_account}")
+      Delayed::Job.enqueue(Tweeter.new(message, {:url => "http://openlylocal.com/councils/#{council.to_param}"}.merge(options)))
+    end
     true
   end
 end
