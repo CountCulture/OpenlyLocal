@@ -167,5 +167,26 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         @ons_dataset_topic.process
       end
     end
+    
+    context "when running perform method" do
+      setup do
+        @council = Factory(:council, :ness_id => 211)
+        @another_council = Factory(:another_council, :ness_id => 242)
+        @no_ness_council = Factory(:tricky_council)
+        @ons_dataset_topic.stubs(:update_datapoints)
+      end
+
+      should "process topic" do
+        @ons_dataset_topic.expects(:process)
+        @ons_dataset_topic.perform
+      end
+
+      should "email results" do
+        @ons_dataset_topic.perform
+        assert_sent_email do |email|
+          email.subject =~ /ONS Dataset Topic updated/ && email.body =~ /#{@ons_dataset_topic.title}/m
+        end
+      end
+    end
   end
 end

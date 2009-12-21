@@ -18,6 +18,12 @@ class OnsDatasetTopic < ActiveRecord::Base
     return if muid_entry.blank?
     muid_entry[0]
   end
+  
+  # updates datapoints for all councils and emails results. NB Is used by Delayed::Job
+  def perform
+    results = process
+    AdminMailer.deliver_admin_alert!(:title => "ONS Dataset Topic updated", :details => "Successfully process ONS Dataset Topic: #{title} (id: #{id})")
+  end
 
   # Updates datapoints for all councils with ness_id. NB called proess so can be easily run by delayed job
   def process
