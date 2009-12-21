@@ -22,7 +22,7 @@ ResourceRepresentations = { :rdf => "application/rdf+xml",
 
 GoogleGadgetAnalyticsId = "UA-9440277-2"
 
-NessSelectedTopics = { :demographics => [54, 55,  56, 57 ], # pecentage population 20-24, 30-44, 45-59
+NessSelectedTopics = { :demographics => [(47..62).to_a ], # pecentage population 20-24, 30-44, 45-59
                        :economic => [5023, 2028],
                        :religion => (2006..2014).to_a, # count of religions
                        :misc => [627, 63] } # population, mean age of population

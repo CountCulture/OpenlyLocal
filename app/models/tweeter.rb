@@ -15,7 +15,6 @@ class Tweeter
     # oauth.authorize_from_access(config['atoken'], config['asecret'])
     # 
     client = Twitter::Base.new(auth)
-    debugger
     @message += " " + shorten_url(url) unless url.blank?
     response = client.update(message, options)
     RAILS_DEFAULT_LOGGER.info "Tweeted message: #{message}\n response: #{response.inspect}"

@@ -63,7 +63,7 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should "not show link to police neighbourhood team" do
-        assert_select "a", :text => /Police neighbourhood team for #{@ward.name}/i, :count => 0
+        assert_select "dd", :text => /Police neighbourhood team/i, :count => 0
       end
 
       should "not show statistics" do
@@ -110,7 +110,7 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should "show link to police neighbourhood team" do
-        assert_select "a", /Police neighbourhood team for #{@ward.name}/i
+        assert_select "dt", /Police neighbourhood team/i
       end
 
       should "show statistics" do

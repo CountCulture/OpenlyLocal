@@ -1,12 +1,11 @@
 <h1><%= basic_link_for @council %>: <%= @title %> <em><%= council_page_for @ward %></em></h1>
-<div id="data">
-  <%- unless @ward.police_neighbourhood_url.blank? -%>
-    <p class="attribute"><strong><%= link_to "Police neighbourhood team for #{@ward.name}", @ward.police_neighbourhood_url, :class => 'external' %></strong></p>
-  <%- end -%>
-  <p class="attribute"><strong><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/lookups/index.html", :class => 'external' %></strong> <%= @ward.snac_id %></p>
-  <p class="attribute"><strong>Ordnance Survey ID</strong> <%= @ward.os_id || 'Not known' %></p>
-</div>
-
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag( :police_neighbourhood_team, link_to( @ward.police_neighbourhood_url, @ward.police_neighbourhood_url, :class => 'external')) unless @ward.police_neighbourhood_url.blank? %>
+  <%= attribute_tag( :ons_snac_ref, @ward.snac_id)  %>
+  <%= attribute_tag( :ordnance_survey_ref, @ward.os_id ) %>
+</dl>
+<br class='clear'/>
+<br />
 <div id="members" class="item_grouping">
   <h3>Councillors for this ward</h3>
   <%= list_all @members %>

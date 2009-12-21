@@ -188,11 +188,12 @@ body {
 	}
 .attributes dt {
 	float: left;
-	width: 10em;
+	width: 11em;
 	clear: left;
+	text-align:right;
 }
 .attributes dd {
-	margin-left: 11em;
+	float:left;
 }
 .extra_info  {
 	clear: both;

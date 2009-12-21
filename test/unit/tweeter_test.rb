@@ -19,6 +19,7 @@ class TweeterTest < Test::Unit::TestCase
     context "on perform" do
       setup do
         @tweeter = Tweeter.new("some message")
+        @tweeter_with_options = Tweeter.new("some message", :foo => "bar")
         @dummy_client = stub_everything
         Twitter::Base.stubs(:new).returns @dummy_client
         YAML.stubs(:load_file).returns('test' => {'login' => 'foouser', 'password' => 'foopass'})
@@ -40,8 +41,13 @@ class TweeterTest < Test::Unit::TestCase
       end
 
       should "send given message to twitter" do
-        @dummy_client.expects(:update).with("some message")
+        @dummy_client.expects(:update).with("some message", anything)
         @tweeter.perform
+      end
+      
+      should "send given options to twitter" do
+        @dummy_client.expects(:update).with("some message", :foo => "bar")
+        @tweeter_with_options.perform
       end
       
       should "add get short url from url" do
@@ -52,7 +58,7 @@ class TweeterTest < Test::Unit::TestCase
       
       should "add short url when url given" do
         Tweeter.any_instance.stubs(:shorten_url).returns("http:://bit.ly/foo")
-        @dummy_client.expects(:update).with("another message http:://bit.ly/foo")
+        @dummy_client.expects(:update).with("another message http:://bit.ly/foo", anything)
         Tweeter.new("another message", :url => "http://foo.com").perform
       end
       
