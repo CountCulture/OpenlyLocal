@@ -6,21 +6,23 @@
 
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :ness_id, @ons_dataset_family.ons_uid %>
-</dl
-<div id='ons_datasets' class='item_grouping'>
-  <h3>Possible datasets (time periods)</h3>
-  <ul>
-    <%- @ons_dataset_family.ons_datasets.each do |dataset| -%>
-      <li><%= dataset.title %></li>
-    <%- end -%>
-  </ul>
-</div>
+</dl>
+<div id="relationships">
+  <div id='ons_datasets' class='item_grouping'>
+    <h3>Possible datasets (time periods)</h3>
+    <ul>
+      <%- @ons_dataset_family.ons_datasets.each do |dataset| -%>
+        <li><%= dataset.title %></li>
+      <%- end -%>
+    </ul>
+  </div>
 
-<div id='ons_dataset_topics' class='item_grouping'>
-  <h3>Topics</h3>
-  <ul>
-    <%- @ons_dataset_family.ons_dataset_topics.each do |topic| -%>
-      <li><%= link_for topic %></li>
-    <%- end -%>
-  </ul>
+  <div id='ons_dataset_topics' class='item_grouping'>
+    <h3>Topics</h3>
+    <ul>
+      <%- @ons_dataset_family.ons_dataset_topics.each do |topic| -%>
+        <li><%= link_for topic %></li>
+      <%- end -%>
+    </ul>
+  </div>
 </div>

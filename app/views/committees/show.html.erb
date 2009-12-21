@@ -6,20 +6,24 @@
     <%= " :: This is a ward committee for #{link_for @committee.ward}" if @committee.ward %>
   </p>
   <%= content_tag(:div, simple_format(@committee.description), :class => "description intro") unless @committee.description.blank? %>
-  <div id="members" class="item_grouping">
-    <h3>Members</h3>
-    <%= list_all @committee.members %>
-  </div>
+  
+  <div id="relationships">
+    <div id="members" class="item_grouping">
+      <h3>Members</h3>
+      <%= list_all @committee.members %>
+    </div>
 
-  <div id="meetings" class="item_grouping">
-    <h3>Meetings</h3>
-    <p><%= link_to_calendar %></p>
-    <%= list_all @meetings %>
+    <div id="meetings" class="item_grouping">
+      <h3>Meetings</h3>
+      <p><%= link_to_calendar %></p>
+      <%= list_all @meetings %>
+    </div>
+    <div id="documents" class="item_grouping">
+      <h3>Documents for this committee</h3>
+      <%= list_all @documents, :extended => true %>
+    </div>
   </div>
-  <div id="documents" class="item_grouping">
-    <h3>Documents for this committee</h3>
-    <%= list_all @documents, :extended => true %>
-  </div>
+  
   <%= render :partial => '/shared/api_info' %>
   <%= timestamp_data_for @committee %>
 <%- end -%>

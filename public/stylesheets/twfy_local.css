@@ -168,7 +168,8 @@ body {
 	font-size: 1.4em;}
 .document_body p {
 	margin: 0;}
-/*Council formatting*/
+	
+/*General resource formatting - councils, members, committees, etc*/
 .extra_info {
 	border: 1px solid #ddd;
 	background-color: #f3f3f3;
@@ -176,6 +177,35 @@ body {
 	padding:4px;
 	overflow: auto;
 }
+.extra_info  {
+	clear: both;
+}
+.extra_info .notes h4 {
+	float: left;
+	width: 5em;
+}
+.attributes dt {
+	float: left;
+	width: 11em;
+	clear: left;
+	text-align:right;
+}
+.attributes dd {
+	float:left;
+}
+div.item_grouping {
+float: left;
+width: 290px;
+padding-right: 20px;}
+div.item_grouping h3 {
+	border-bottom: 1px solid #036;
+	margin-bottom: 0.5em;
+}
+div#relationships {
+	clear:left;
+	padding-top:1em;
+}
+/*Council formatting*/
 #data {
 	overflow:auto;
 	}
@@ -186,29 +216,6 @@ body {
 	clear:left;
 	margin-bottom: 0.75em;
 	}
-.attributes dt {
-	float: left;
-	width: 11em;
-	clear: left;
-	text-align:right;
-}
-.attributes dd {
-	float:left;
-}
-.extra_info  {
-	clear: both;
-}
-.extra_info .notes h4 {
-	float: left;
-	width: 5em;
-}
-div.item_grouping {
-float: left;
-width: 290px;
-padding-right: 20px;}
-div.item_grouping h3 {
-	border-bottom: 1px solid #036;
-}
 #party_breakdown {
 	float:right;
 	width:450px;
@@ -223,7 +230,7 @@ div.item_grouping h3 {
 }
 .graphed_datapoints table {
 	position:absolute;
-	left:-1000px;
+	left:-2000px;
 }
 #members li a {
 	font-weight: bold;
@@ -293,6 +300,7 @@ span.changed {
 	background-color:#514721; }
 span.error, span.errors {
 	background-color:#8a1f11; }
+	
 /*Scraper-specific formatting*/
 a.new_scraper_link {
 	color:#9e9e9e; }
@@ -319,6 +327,12 @@ a.new_scraper_link {
 }
 #councils #without_scrapers .council p{
 	margin: 0;
+}
+
+/*Ward-specific formatting*/
+body.wards .ward {
+	float:left;
+	width: 630px;
 }
 
 /*Dataset specific formatting*/
@@ -359,6 +373,10 @@ div#dataset_data table {
 }
 
 /*Ness Statistics formatting*/
+#ons_statistics {
+	float: right;
+	padding-right:0px;
+}
 #ons_statistics dt {
   clear:left;
 	float: left;

@@ -1,4 +1,4 @@
-<%- unless true || ons_statistics.blank? || ons_statistics.values.flatten.compact.empty? -%>
+<%- unless ons_statistics.blank? || ons_statistics.values.flatten.compact.empty? -%>
 
   <div id="ons_statistics" class="item_grouping">
     <h3>About this ward</h3>
@@ -20,7 +20,7 @@
 
           <%- for datapoint in datapoints -%>
             <tr>
-              <td class="description"><%= basic_link_for datapoint %></td>
+              <td class="description"><%= link_to(datapoint.short_title, datapoint) %></td>
               <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
             </tr>
           <%- end -%>

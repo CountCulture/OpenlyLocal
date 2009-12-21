@@ -49,30 +49,32 @@
   </div>
 </div>
 
-<div id="members" class="item_grouping">
-  <h3><%= link_to "Current councillors", members_path(:council_id => @council.id) %></h3>
-  <%= list_all @members %>
-</div>
+<div id="relationships">
+  <div id="members" class="item_grouping">
+    <h3><%= link_to "Current councillors", members_path(:council_id => @council.id) %></h3>
+    <%= list_all @members %>
+  </div>
 
-<div id="committees" class="item_grouping">
-  <h3><%= link_to "Council Committees", committees_path(:council_id => @council.id) %></h3>
-  <p>Showing only currently active committees. <em><%= link_to "Include inactive committees", committees_path(:council_id => @council.id, :include_inactive => true) %></em></p>
-  <%= list_all @committees, :rel => "openlylocal:committee" %>
-</div>
-<div id="wards" class="item_grouping">
-  <h3><%= "Wards" %></h3>
-  <%= list_all @wards %>
-</div>
-<div id="meetings" class="item_grouping">
-  <h3><%= link_to "Forthcoming Committee Meetings", meetings_path(:council_id => @council.id) %></h3>
-  <p><%= link_to_calendar(:controller => "meetings", :council_id => @council.id) %></p>
-  <%= list_all @meetings[0..9] %>
-  <%= content_tag(:p, link_to("See more", meetings_path(:council_id => @council.id)), :class => "more_info") if @meetings.size > 10 %>
-</div>
-<div id="documents" class="item_grouping">
-  <h3><%= link_to "Committee Documents", documents_path(:council_id => @council.id) %></h3>
-  <%= list_all @documents[0..9], :rel => "openlylocal:committee", :extended => true %>
-  <%= content_tag(:p, link_to("See more", documents_path(:council_id => @council.id)), :class => "more_info") if @documents.size > 10 %>
+  <div id="committees" class="item_grouping">
+    <h3><%= link_to "Council Committees", committees_path(:council_id => @council.id) %></h3>
+    <p>Showing only currently active committees. <em><%= link_to "Include inactive committees", committees_path(:council_id => @council.id, :include_inactive => true) %></em></p>
+    <%= list_all @committees, :rel => "openlylocal:committee" %>
+  </div>
+  <div id="wards" class="item_grouping">
+    <h3><%= "Wards" %></h3>
+    <%= list_all @wards %>
+  </div>
+  <div id="meetings" class="item_grouping">
+    <h3><%= link_to "Forthcoming Committee Meetings", meetings_path(:council_id => @council.id) %></h3>
+    <p><%= link_to_calendar(:controller => "meetings", :council_id => @council.id) %></p>
+    <%= list_all @meetings[0..9] %>
+    <%= content_tag(:p, link_to("See more", meetings_path(:council_id => @council.id)), :class => "more_info") if @meetings.size > 10 %>
+  </div>
+  <div id="documents" class="item_grouping">
+    <h3><%= link_to "Committee Documents", documents_path(:council_id => @council.id) %></h3>
+    <%= list_all @documents[0..9], :rel => "openlylocal:committee", :extended => true %>
+    <%= content_tag(:p, link_to("See more", documents_path(:council_id => @council.id)), :class => "more_info") if @documents.size > 10 %>
+  </div>
 </div>
 <%= render :partial => '/shared/api_info' %>
 <%= content_tag(:p, auto_link("Data sourced from #{@council.data_source_url} provided by #{@council.data_source_name}"), :class => "attribution") unless @council.data_source_url.blank? %>

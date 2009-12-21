@@ -17,14 +17,18 @@
       </div>
     </div>
   <%- end -%>
-  <div id="committee_members" class="item_grouping" about="<%= committee_path(@committee) %>">
-    <h3>Members of this committee</h3>
-    <%= list_all @committee.members %>
+  
+  <div id="relationships">
+    <div id="committee_members" class="item_grouping" about="<%= committee_path(@committee) %>">
+      <h3>Members of this committee</h3>
+      <%= list_all @committee.members %>
+    </div>
+    <div id="other_meetings" class="item_grouping">
+      <h3>Other meetings of this committee</h3>
+      <%= list_all @other_meetings, :rel => "openlylocal:meeting" %>
+    </div>
   </div>
-  <div id="other_meetings" class="item_grouping">
-    <h3>Other meetings of this committee</h3>
-    <%= list_all @other_meetings, :rel => "openlylocal:meeting" %>
-  </div>
+  
   <%= render :partial => '/shared/api_info' %>
   <%= timestamp_data_for @meeting %>
 <%- end -%>

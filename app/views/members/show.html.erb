@@ -12,19 +12,19 @@
     <%= attribute_tag(:date_left, "#{@member.date_left.to_s(:custom_short)} (approx)") unless @member.date_left.blank? %>
     <%= attribute_tag :register_of_interests, (@member.register_of_interests ? link_to(@member.register_of_interests, @member.register_of_interests, :class => "external") : 'not known') %>
   </dl>
-  <br class='clear'/>
-  <br />
 
-  <div id="committees" class="item_grouping">
-    <h3>Committee Memberships</h3>
-    <%= list_all @committees %>
-    <%= content_tag(:p, "#{@committees.size} committees in total. Average for this council: " + ("%.1f" % @council.average_membership_count), :class => "notes") unless @committees.blank? %>
-  </div>
+  <div id="relationships">
+    <div id="committees" class="item_grouping">
+      <h3>Committee Memberships</h3>
+      <%= list_all @committees %>
+      <%= content_tag(:p, "#{@committees.size} committees in total. Average for this council: " + ("%.1f" % @council.average_membership_count), :class => "notes") unless @committees.blank? %>
+    </div>
 
-  <div id="meetings" class="item_grouping">
-    <h3>Forthcoming meetings</h3>
-    <p><%= link_to_calendar %></p>
-    <%= list_all @forthcoming_meetings %>
+    <div id="meetings" class="item_grouping">
+      <h3>Forthcoming meetings</h3>
+      <p><%= link_to_calendar %></p>
+      <%= list_all @forthcoming_meetings %>
+    </div>
   </div>
 
   <%= render :partial => '/shared/api_info' %>
