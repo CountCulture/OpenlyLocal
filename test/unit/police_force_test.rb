@@ -9,6 +9,7 @@ class PoliceForceTest < ActiveSupport::TestCase
     end
     
     should_have_many :councils 
+    should_have_one :police_authority 
     should_validate_presence_of :name
     should_validate_uniqueness_of :name
     should_validate_presence_of :url

@@ -4,6 +4,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
   def setup
     @police_force = Factory(:police_force)
     @council = Factory(:council, :police_force_id => @police_force.id)
+    @police_authority = Factory(:police_authority, :police_force => @police_force)
   end
   
   # index test
@@ -31,6 +32,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
       should 'show title' do
         assert_select "title", /police forces/i
       end
+      
     end
     
     context "with xml request" do
@@ -77,6 +79,10 @@ class PoliceForcesControllerTest < ActionController::TestCase
     
     should "show police_force in title" do
       assert_select "title", /#{@police_force.name}/
+    end
+    
+    should 'show associated police_authority' do
+      assert_select ".attributes a", @police_authority.name
     end
     
     should "show share block" do

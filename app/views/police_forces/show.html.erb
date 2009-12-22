@@ -5,6 +5,7 @@
   <%= attribute_tag :telephone, @police_force.telephone %>
   <%= attribute_tag :website, link_to(@police_force.url, @police_force.url, :class => "external") %>
   <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@police_force.wikipedia_url), @police_force.wikipedia_url, :class => 'external') unless @police_force.wikipedia_url.blank? %>
+  <%= attribute_tag :police_authority, link_for(@police_force.police_authority) %>
 </dl>
 <div class="extra_info">
   <h3>Other info</h3>
@@ -12,9 +13,11 @@
     <%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@police_force.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@police_force.wdtk_name}", :class => "feed" %>)
   <%- end -%>
 </div>
-<div id="councils">
-  <h4>Responsible for policing in areas governed by</h4>
-  <%= list_all @police_force.councils, :basic => true %>
+<div id="relationships">
+  <div id="councils">
+    <h4>Responsible for policing in areas governed by</h4>
+    <%= list_all @police_force.councils, :basic => true %>
+  </div>
 </div>
 
 <%= render :partial => '/shared/api_info' %>
