@@ -12,7 +12,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :committees, :documents, :meetings, :members, :ons_datapoints, :ons_dataset_families, :parsers, :portal_systems, :police_forces, :services, :wards
   map.resources :ons_dataset_topics, :except => [:new, :destroy, :index], :member => { :populate => :post }
-  # map.resources :ons_dataset_topics, :member => { :process => :post }
+
   map.resources :councils
   map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}, :only => [:show]}) do |restype|
     restype.resources :councils

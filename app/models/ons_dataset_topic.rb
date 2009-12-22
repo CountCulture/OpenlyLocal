@@ -31,9 +31,13 @@ class OnsDatasetTopic < ActiveRecord::Base
       update_datapoints(council)
     end
   end
+  
+  def title
+    muid_type ? "#{self[:title]} (#{muid_type})" : self[:title]
+  end
 
   def short_title
-    self[:short_title].blank? ? title : self[:short_title]
+    self[:short_title].blank? ? self[:title] : self[:short_title]
   end
 
   def update_datapoints(council)

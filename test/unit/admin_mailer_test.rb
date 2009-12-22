@@ -8,7 +8,7 @@ class AdminMailerTest < ActionMailer::TestCase
     end
     should "send email" do
       assert_sent_email  do |email|
-        email.subject =~ /Something has happened/ && email.to.include?('countculture@email.com')
+        email.subject =~ /Something has happened/ && email.to.include?('countculture@gmail.com')
       end
     end
   end

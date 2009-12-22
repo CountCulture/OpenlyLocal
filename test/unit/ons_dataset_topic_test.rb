@@ -25,8 +25,20 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
       end
     end
 
+    context "when returning title" do
+      should "return title attribute including muid type if set" do
+        topic = OnsDatasetTopic.new(:title => 'foo')
+        topic.stubs(:muid_type => "Percentage")
+        assert_equal 'foo (Percentage)', topic.title
+      end
+      
+      should "return title attribute by default" do
+        assert_equal 'foo', OnsDatasetTopic.new(:title => 'foo').title
+      end
+    end
+
     context "when returning short_title" do
-      should "return title if :short_title attribute is blank" do
+      should "return title attribute if :short_title attribute is blank" do
         assert_equal 'foo', OnsDatasetTopic.new(:title => 'foo').short_title
       end
 
