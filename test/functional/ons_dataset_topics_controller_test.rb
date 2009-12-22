@@ -56,8 +56,8 @@ class OnsDatasetTopicsControllerTest < ActionController::TestCase
      assert_select "form#edit_ons_dataset_topic_#{@ons_dataset_topic.id}"
     end
 
-    should_eventually "show button to process ons_dataset_topic" do
-      assert_select "form.button-to[action='/ons_dataset_topic/#{@ons_dataset_topic.to_param}']"
+    should "show button to process ons_dataset_topic" do
+      assert_select "form.button-to[action='/ons_dataset_topics/#{@ons_dataset_topic.to_param}/populate']"
     end
   end
 
@@ -84,6 +84,30 @@ class OnsDatasetTopicsControllerTest < ActionController::TestCase
 
     should "update ons_dataset_topic" do
       assert_equal "New title", @ons_dataset_topic.reload.short_title
+    end
+  end
+
+  # populate tests
+  context "on POST to :populate without auth" do
+    setup do
+      post :populate, :id => @ons_dataset_topic.id
+    end
+  
+    should_respond_with 401
+  end
+
+  context "on POST to :populate with auth" do
+    setup do
+      stub_authentication
+      post :populate, {:id => @ons_dataset_topic.id}
+    end
+  
+    should_assign_to :ons_dataset_topic
+    should_redirect_to( "the show page for ons_dataset_topic") {:show}
+    should_set_the_flash_to /Successfully queued Topic/
+    
+    before_should "queue up topic to be populated" do
+      Delayed::Job.expects(:enqueue).with(instance_of(OnsDatasetTopic))
     end
   end
 

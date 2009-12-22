@@ -7,7 +7,13 @@ class OnsDatasetTopicsController < ApplicationController
 
   def edit
   end
-
+  
+  def populate
+    Delayed::Job.enqueue @ons_dataset_topic
+    flash[:notice] = "Successfully queued Topic to be populated for all councils. You will be emailed when this has finished"
+    redirect_to ons_dataset_topic_url(@ons_dataset_topic)
+  end
+  
   def update
     @ons_dataset_topic.update_attributes!(params[:ons_dataset_topic])
     flash[:notice] = "Successfully updated OnsDatasetTopic"
