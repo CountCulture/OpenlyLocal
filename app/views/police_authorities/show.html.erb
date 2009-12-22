@@ -13,9 +13,11 @@
     <%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@police_authority.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@police_authority.wdtk_name}", :class => "feed" %>)
   </div>
   <%- end -%>
-<div id="councils">
-  <h4>Responsible for the force (<%= link_for(@police_authority.police_force) %>) that polices in areas governed by</h4>
-  <%= list_all @police_authority.councils, :basic => true %>
+<div id="relationships">
+  <div id="councils">
+    <h4>Responsible for the force (<%= link_for(@police_authority.police_force) %>) that polices in areas governed by</h4>
+    <%= list_all @police_authority.councils, :basic => true %>
+  </div>
 </div>
 
 <%= render :partial => '/shared/api_info' %>

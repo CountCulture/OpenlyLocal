@@ -1,0 +1,9 @@
+<h1><%= @title %></h1>
+
+<ul>
+  <% for authority in @police_authorities %>
+      <li><strong><%= link_for authority %></strong> <%= [authority.address, "Tel: #{authority.telephone}", link_to(authority.url, authority.url, :class => "external")].join(", ") %></li>
+  <% end %>
+</ul>
+
+<%= render :partial => '/shared/api_info' %>
