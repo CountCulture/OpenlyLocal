@@ -76,6 +76,11 @@
     			<p>Wards are <a href="http://dbpedia.org/class/yago/SubdivisionsOfTheUnitedKingdom" rel="rdfs:subClassOf">subdivisions of the United Kingdom</a> 
     			<a href="http://dbpedia.org/resource/Wards_of_the_United_Kingdom" rel="rdfs:seeAlso">DBpedia</a>.</p>
     		</div>
+    		<div typeof="rdfs:Class" id="PoliceAuthority" about="#PoliceAuthority">
+    			<h3><span property="rdfs:label">Police Authority</span> (openlylocal:PoliceAuthority)</h3>
+    			<p property="rdfs:comment">Represents the class of Police Authorities.</p>
+    			<p>A Police Authority is the <a href="http://xmlns.com/foaf/0.1/Organization" rel="rdfs:subClassOf">organisation</a> that governs a Police of the United Kingdom (excluding Scotland).</p>
+    		</div>
     		
 		
     		<h2>Properties</h2>
@@ -127,7 +132,12 @@
     		
     		<div typeof="rdf:Property" id="isPoliceForceFor" about="#isPoliceForceFor">
     			<h3><span property="rdfs:label">Is Police Force For</span> (openlylocal:isPoliceForceFor)</h3>
-    			<p property="rdfs:comment">Links PoliceForces and Local Authorities. A <a rel="rdfs:domain" href="http://dbpedia.org/resource/Category:Police_forces_of_the_United_Kingdom">PoliceForce</a> is considered to be a the police force for a <a rel="rdfs:domain" href="#LocalAuthority">LocalAuthority</a>, and is responsible for the policing and law enforcement in the LocalAuthority's area</p>
+    			<p property="rdfs:comment">Links PoliceForces and Local Authorities. A <a rel="rdfs:domain" href="http://dbpedia.org/resource/Category:Police_forces_of_the_United_Kingdom">PoliceForce</a> is considered to be the police force for a <a rel="rdfs:domain" href="#LocalAuthority">Local Authority</a>, and is responsible for the policing and law enforcement in the LocalAuthority's area</p>
+    		</div>
+    		
+    		<div typeof="rdf:Property" id="isPoliceAuthorityFor" about="#isPoliceForceFor">
+    			<h3><span property="rdfs:label">Is Police Authority For</span> (openlylocal:isPoliceAuthorityFor)</h3>
+    			<p property="rdfs:comment">Links PoliceAuthorities and Police Forces. A <a rel="rdfs:domain" href="#PoliceAuthority">PoliceAuthority</a> is considered to be governing body for a <a rel="rdfs:domain" href="http://dbpedia.org/resource/Category:Police_forces_of_the_United_Kingdom">Police Force</a></p>
     		</div>
     		
       </div>

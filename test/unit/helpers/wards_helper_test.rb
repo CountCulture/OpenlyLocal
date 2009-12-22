@@ -5,9 +5,9 @@ class WardsHelperTest < ActionView::TestCase
 
   context "ons_statistics_graph helper method" do
     setup do
-      datapoint_1 = stub_everything(:value => 53, :title => '0-17')
-      datapoint_2 = stub_everything(:value => 42.3, :title => '18-25')
-      datapoint_3 = stub_everything(:value => 61, :title => '26-35')
+      datapoint_1 = stub_everything(:value => 53, :short_title => '0-17')
+      datapoint_2 = stub_everything(:value => 42.3, :short_title => '18-25')
+      datapoint_3 = stub_everything(:value => 61, :short_title => '26-35')
       @statistics_group = {:demographics => [datapoint_1, datapoint_2, datapoint_3]}
     end
 

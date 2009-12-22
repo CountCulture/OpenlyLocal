@@ -10,7 +10,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
 
-  map.resources :committees, :documents, :meetings, :members, :ons_datapoints, :ons_dataset_families, :parsers, :portal_systems, :police_forces, :services, :wards
+  map.resources :committees, :documents, :meetings, :members, :ons_datapoints, :ons_dataset_families, :parsers, :portal_systems, :police_forces, :police_authorities, :services, :wards
   map.resources :ons_dataset_topics, :except => [:new, :destroy, :index], :member => { :populate => :post }
 
   map.resources :councils
@@ -21,6 +21,7 @@ ActionController::Routing::Routes.draw do |map|
     restype.resources :wards
     restype.resources :meetings
     restype.resources :police_forces
+    restype.resources :police_authorities
   end
 
   map.connect 'wards/snac_id/:snac_id.:format', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/ }

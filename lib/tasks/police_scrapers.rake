@@ -112,3 +112,32 @@ task :get_police_force_wdtk_ids  => :environment do
     end
   end
 end
+
+desc "Get info for Police Athorities" 
+task :get_police_authority_info => :environment do
+  require 'hpricot'
+  doc = Hpricot(open("http://www.apa.police.uk/APA/About+Police+Authorities/Police+Authority+Addresses/"))
+  authorities = doc.search('.innertables td[a]')
+  authorities.each do |auth|
+    begin
+      url = auth.at('a')[:href]
+      el, title = [], []
+      #messy but only way given HTML is such as mess
+      auth.traverse_all_element{|e| el<<e if e.kind_of?(Hpricot::Text) || e.respond_to?(:children)&&e.children.blank?}
+      el = el.compact.collect{ |e| e.inner_text.gsub(/ /, '').squish }.delete_if{ |e| e.blank? }
+      title << el.shift
+      title << el.shift if el.first=~/authority/i
+      title = title.join(" ").squish.titleize
+      telephone = el.pop.scan(/[\d\s]+$/).to_s.strip
+      postcode = el.last.slice!(/\w*\d*\s\w*\d*$/)
+      address = el.join(', ').titleize
+      force = PoliceForce.first(:conditions => ["name LIKE ?", "%#{title.gsub(/Police|Authority/,'').strip}%"])
+      puts title, url, address.titleize, postcode, telephone, force, "===="
+      PoliceAuthority.create!(:title => title, :telephone => telephone, :police_force => force, :url => url, :address => [address, postcode].join(" "))
+    rescue Exception => e
+      puts "Problem parsing #{auth.inner_text}t\n#{e.inspect}"
+    end
+    
+  end
+end
+

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091218221036) do
+ActiveRecord::Schema.define(:version => 20091222130436) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -291,6 +291,18 @@ ActiveRecord::Schema.define(:version => 20091218221036) do
   end
 
   add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"
+
+  create_table "police_authorities", :force => true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.text     "address"
+    t.string   "telephone"
+    t.string   "wdtk_name"
+    t.string   "wikipedia_url"
+    t.integer  "police_force_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "police_forces", :force => true do |t|
     t.string   "name"

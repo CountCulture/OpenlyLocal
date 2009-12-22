@@ -145,6 +145,12 @@ Factory.define :police_force do |f|
   f.sequence(:url) { |n|  "http://police.uk/force#{n}" }
 end
 
+Factory.define :police_authority do |f|
+  f.sequence(:name) { |n| "Police Authority #{n}" }
+  f.sequence(:url) { |n|  "http://policeauthority.uk/force#{n}" }
+  f.association :police_force
+end
+
 Factory.define :ons_subject do |f|
   f.sequence(:title) { |n| "Ons Subject #{n}" }
   f.sequence(:ons_uid) { |n| n }
