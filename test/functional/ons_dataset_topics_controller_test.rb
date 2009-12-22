@@ -103,7 +103,7 @@ class OnsDatasetTopicsControllerTest < ActionController::TestCase
     end
   
     should_assign_to :ons_dataset_topic
-    should_redirect_to( "the show page for ons_dataset_topic") {:show}
+    should_redirect_to( "the show page for ons_dataset_topic") { ons_dataset_topic_path(@ons_dataset_topic) }
     should_set_the_flash_to /Successfully queued Topic/
     
     before_should "queue up topic to be populated" do
