@@ -1,13 +1,25 @@
 class HyperlocalSitesController < ApplicationController
   before_filter :authenticate, :except => [:show]
-  before_filter :find_hyperlocal_site
+  before_filter :find_hyperlocal_site, :except => [:new, :create]
   
   def show
     @title = @hyperlocal_site.title
   end
   
+  def new
+    @hyperlocal_site = HyperlocalSite.new
+  end
+  
+  def create
+    @hyperlocal_site = HyperlocalSite.new(params[:hyperlocal_site])
+    @hyperlocal_site.save!
+    flash[:notice] = "Successfully created hyperlocal site"
+    redirect_to hyperlocal_site_url(@hyperlocal_site)
+  rescue
+    render :action => "new"
+  end
+  
   def edit
-    
   end
   
   def update

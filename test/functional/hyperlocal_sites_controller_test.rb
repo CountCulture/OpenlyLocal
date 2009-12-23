@@ -24,10 +24,84 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should "list hyperlocal site attributes" do
         assert_select '.attributes dd', /#{@hyperlocal_site.url}/
       end
-
+    end
+    
+    context "when hyperlocal_site belongs to hyperlocal_group" do
+      setup do
+        @hyperlocal_group = Factory(:hyperlocal_group)
+        @hyperlocal_group.hyperlocal_sites << @hyperlocal_site
+        get :show, :id => @hyperlocal_site.id
+      end
+      
+      should "list hyperlocal group" do
+        assert_select '.attributes dd a', @hyperlocal_group.title
+      end
+      
     end
   end
 
+  # new test
+  context "on GET to :new without auth" do
+    setup do
+      get :new
+    end
+  
+    should_respond_with 401
+  end
+
+  context "on GET to :new" do
+    setup do
+      stub_authentication
+      get :new
+    end
+  
+    should_assign_to(:hyperlocal_site)
+    should_respond_with :success
+    should_render_template :new
+  
+    should "show form" do
+      assert_select "form#new_hyperlocal_site"
+    end
+  end  
+  
+  # create test
+   context "on POST to :create" do
+    
+     context "without auth" do
+       setup do
+         post :create, :hyperlocal_site => {:title => "New Hyperlocal Site", :url => "http:://hyperlocal_site.com"}
+       end
+
+       should_respond_with 401
+     end
+
+     context "with valid params" do
+       setup do
+         stub_authentication
+         post :create, :hyperlocal_site => {:title => "New Hyperlocal Site", :url => "http:://hyperlocal_group.com"}
+       end
+     
+       should_change "HyperlocalSite.count", :by => 1
+       should_assign_to :hyperlocal_site
+       should_redirect_to( "the show page for hyperlocal_site") { hyperlocal_site_url(assigns(:hyperlocal_site)) }
+       should_set_the_flash_to /Successfully created/
+     
+     end
+     
+     context "with invalid params" do
+       setup do
+         stub_authentication
+         post :create, :hyperlocal_site => {:title => "New Hyperlocal Site"}
+       end
+     
+       should_not_change "HyperlocalSite.count"
+       should_assign_to :hyperlocal_site
+       should_render_template :new
+       should_not_set_the_flash
+     end
+  
+   end  
+  
   # edit tests
   context "on get to :edit a hyperlocal site without auth" do
     setup do

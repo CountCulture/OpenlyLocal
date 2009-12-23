@@ -1,0 +1,13 @@
+<h1><%= @title %></h1>
+
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :url, link_to(@hyperlocal_group.url, @hyperlocal_group.url, :class => "external") %>
+</dl>
+
+<div id="relationships">
+  <div id="hyperlocal_sites" class="item_grouping">
+    <h3>Hyperlocal sites in this group</h3>
+    <%= list_all @hyperlocal_group.hyperlocal_sites %>
+  </div>
+</div>
+<%= timestamp_data_for @hyperlocal_group %>

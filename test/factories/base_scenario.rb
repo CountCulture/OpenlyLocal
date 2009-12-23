@@ -183,3 +183,7 @@ Factory.define :hyperlocal_site do |f|
   f.sequence(:title) { |n| "Hyperlocal #{n}" }
   f.sequence(:url) { |n| "http://hyperlocal.co.uk/site_#{n}" }
 end
+
+Factory.define :hyperlocal_group do |f|
+  f.sequence(:title) { |n| "Hyperlocal Group #{n}" }
+end
