@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :hyperlocal_sites
+
 
   map.resources :datasets, :member => { :data => :get }
 
