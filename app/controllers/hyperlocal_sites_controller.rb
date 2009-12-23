@@ -1,6 +1,11 @@
 class HyperlocalSitesController < ApplicationController
-  before_filter :authenticate, :except => [:show]
-  before_filter :find_hyperlocal_site, :except => [:new, :create]
+  before_filter :authenticate, :except => [:index, :show]
+  before_filter :find_hyperlocal_site, :except => [:index, :new, :create]
+  
+  def index
+    @title = "UK Hyperlocal Sites"
+    @hyperlocal_sites = HyperlocalSite.all
+  end
   
   def show
     @title = @hyperlocal_site.title

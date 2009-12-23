@@ -1,6 +1,11 @@
 class HyperlocalGroupsController < ApplicationController
-  before_filter :authenticate, :except => [:show]
-  before_filter :find_hyperlocal_group, :except => [:new, :create]
+  before_filter :authenticate, :except => [:index, :show]
+  before_filter :find_hyperlocal_group, :except => [:index, :new, :create]
+  
+  def index
+    @title = "UK Hyperlocal Groups"
+    @hyperlocal_groups = HyperlocalGroup.all
+  end
   
   def show
     @title = @hyperlocal_group.title

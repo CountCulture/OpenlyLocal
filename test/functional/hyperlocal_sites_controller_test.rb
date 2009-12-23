@@ -5,6 +5,35 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     @hyperlocal_site = Factory(:hyperlocal_site)
   end
 
+  # index test
+  context "on GET to :index" do
+    context "with basic request" do
+      setup do
+        get :index
+      end
+
+      should_assign_to(:hyperlocal_sites) { HyperlocalSite.find(:all)}
+      should_respond_with :success
+      should_render_template :index
+      should "list hyperlocal sites" do
+        assert_select "li a", @hyperlocal_site.title
+      end
+
+      should "show share block" do
+        assert_select "#share_block"
+      end
+
+      should_eventually "show api block" do
+        assert_select "#api_info"
+      end
+      
+      should 'show title' do
+        assert_select "title", /Hyperlocal Sites/i
+      end
+      
+    end
+  end
+    
   # show test
   context "on GET to :show" do
 
