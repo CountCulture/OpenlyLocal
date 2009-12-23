@@ -253,7 +253,7 @@ class MemberTest < ActiveSupport::TestCase
         should "include council location in message if it is known" do
           @council.update_attributes(:lng => 45, :lat => 0.123)
           Tweeter.stubs(:new).returns(@dummy_tweeter)
-          Tweeter.expects(:new).with(anything, has_entries(:lat => 0.123, :long => 45)).never
+          Tweeter.expects(:new).with(anything, has_entries(:lat => 0.123, :long => 45)).returns(@dummy_tweeter)
           
           Factory(:member, :council => @council)
         end

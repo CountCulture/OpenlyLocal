@@ -53,6 +53,11 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
     end
   end
 
+  # add police_forces
+  PoliceForce.all.each do |force|
+    sitemap.add police_force_path(force), :lastmod => force.updated_at
+  end
+
   sitemap.add '/info/about_us', :priority => 0.7
   sitemap.add '/info/api', :priority => 0.7
   

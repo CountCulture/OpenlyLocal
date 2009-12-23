@@ -246,7 +246,7 @@ class ParsersControllerTest < ActionController::TestCase
         should_not_change "@parser.reload.result_model"
         should_assign_to :parser
         should_render_template :edit
-        should_not_set_the_flash
+        should_set_the_flash_to /Problem/
       end
 
   end  

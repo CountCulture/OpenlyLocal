@@ -1,6 +1,7 @@
 class ParsersController < ApplicationController
   before_filter :authenticate
   skip_before_filter :share_this
+  newrelic_ignore
 
   def show
     @parser = Parser.find(params[:id])
@@ -30,7 +31,9 @@ class ParsersController < ApplicationController
     @parser.update_attributes!(params[:parser])
     flash[:notice] = "Successfully updated parser"
     redirect_to parser_url(@parser)
-  rescue
+  rescue Exception => e
+    flash[:notice] = "Problem updating parser"
+    logger.debug { "Problem updating parser: #{e.inspect}\n #{e.backtrace}" }
     render :action => "edit"
   end
   

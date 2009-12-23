@@ -1,6 +1,7 @@
 class PoliceForcesController < ApplicationController
   before_filter :authenticate, :except => [:index, :show]
   before_filter :linked_data_available, :only => [:show]
+  before_filter :find_police_force, :except => [:index, :new, :create]
   
   def index
     @police_forces = PoliceForce.find(:all)
@@ -13,7 +14,6 @@ class PoliceForcesController < ApplicationController
   end
   
   def show
-    @police_force = PoliceForce.find(params[:id])
     @title = @police_force.name
     respond_to do |format|
       includes = {:councils => {:only => [:id, :name, :url], :methods => :openlylocal_url}}
@@ -38,11 +38,9 @@ class PoliceForcesController < ApplicationController
   end
   
   def edit
-    @police_force = PoliceForce.find(params[:id])
   end
   
   def update
-    @police_force = PoliceForce.find(params[:id])
     @police_force.update_attributes!(params[:police_force])
     flash[:notice] = "Successfully updated police force"
     redirect_to police_force_path(@police_force)
@@ -50,4 +48,8 @@ class PoliceForcesController < ApplicationController
     render :action => "edit"
   end
   
+  private
+  def find_police_force
+    @police_force = PoliceForce.find(params[:id])
+  end
 end

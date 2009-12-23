@@ -22,18 +22,13 @@ xml.tag! "rdf:RDF",
       end
     end
     
-    # show related councils
-    @police_authority.councils.each do |council|    
-      xml.tag! "openlylocal:isPoliceAuthorityFor", "rdf:resource" => resource_uri_for(council)
-    end
-
+    # show related police_force
+    xml.tag! "openlylocal:isPoliceAuthorityFor", "rdf:resource" => resource_uri_for(@police_authority.police_force)
   end
   
-  # show info on related councils
-  @police_authority.councils.each do |council|
-    xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(council) do
-      xml.tag! "rdfs:label", council.title
-    end
+  # show info on related police_force
+  xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@police_authority.police_force) do
+    xml.tag! "rdfs:label", @police_authority.police_force.name
   end
   
   # basic info about this page

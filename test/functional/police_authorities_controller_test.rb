@@ -162,9 +162,9 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
       assert_match /owl:sameAs.+rdf:resource.+dbpedia.+SomeForce/, @response.body
     end
     
-    should "show associated councils" do
-      assert_match /openlylocal:isPoliceAuthorityFor.+rdf:resource.+\/id\/councils\/#{@council.id}/, @response.body
-      assert_match /rdf:Description.+\/id\/councils\/#{@council.id}/, @response.body
+    should "show associated police force" do
+      assert_match /openlylocal:isPoliceAuthorityFor.+rdf:resource.+\/id\/police_forces\/#{@police_force.id}/, @response.body
+      assert_match /rdf:Description.+\/id\/police_forces\/#{@police_force.id}/, @response.body
     end
   
   end
@@ -193,7 +193,58 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
      should "not include non-essential council data in response" do
        assert_no_match %r(council\":.+police_authority_id), @response.body
        assert_no_match %r(council\":.+wdtk_name), @response.body
-     end
-    
+     end   
    end
+   
+   # edit tests
+   context "on get to :edit a ward without auth" do
+     setup do
+       get :edit, :id => @police_authority.id
+     end
+
+     should_respond_with 401
+   end
+
+   context "on get to :edit a topic" do
+     setup do
+       stub_authentication
+       get :edit, :id => @police_authority.id
+     end
+
+     should_assign_to :police_authority
+     should_respond_with :success
+     should_render_template :edit
+     should_not_set_the_flash
+     should "display a form" do
+      assert_select "form#edit_police_authority_#{@police_authority.id}"
+     end
+
+   end
+
+   # update tests
+   context "on PUT to :update without auth" do
+     setup do
+       put :update, { :id => @police_authority.id,
+                      :police_authority => { :name => "New name"}}
+     end
+
+     should_respond_with 401
+   end
+
+   context "on PUT to :update" do
+     setup do
+       stub_authentication
+       put :update, { :id => @police_authority.id,
+                      :police_authority => { :name => "New name"}}
+     end
+
+     should_assign_to :police_authority
+     should_redirect_to( "the show page for police_authority") { police_authority_path(@police_authority.reload) }
+     should_set_the_flash_to "Successfully updated police authority"
+
+     should "update police_authority" do
+       assert_equal "New name", @police_authority.reload.name
+     end
+   end
+   
 end

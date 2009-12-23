@@ -137,7 +137,25 @@ task :get_police_authority_info => :environment do
     rescue Exception => e
       puts "Problem parsing #{auth.inner_text}t\n#{e.inspect}"
     end
-    
   end
 end
+
+desc "Get WDTK ids for Police Authorities"
+task :get_police_authority_wdtk_ids  => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  doc = Hpricot(open("http://www.whatdotheyknow.com/body/list/police_authority"))
+  auth_links = doc.search('.body_listing a')
+  PoliceAuthority.all.each do |auth|
+    short_name = auth.name.gsub(/Police|Authority/,'').sub("&", "and").sub(/ \- .+$/,'').sub('-',' ').strip.downcase
+    if a=auth_links.detect{ |al| al.inner_text.sub("&", "and").downcase =~ /#{short_name}/ }
+      wdtk_name = a[:href].scan(/body\/(.+)/).to_s
+      puts "Found entry for #{short_name}: #{a.inner_text} (WDTK name = #{wdtk_name})"
+      auth.update_attribute(:wdtk_name, wdtk_name)
+    else
+      puts "Couldn't match force (#{short_name})"
+    end
+  end
+end
+
 
