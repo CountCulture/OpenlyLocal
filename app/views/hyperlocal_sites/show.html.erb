@@ -1,0 +1,11 @@
+<h1><%= @title %></h1>
+
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :url, link_to(@hyperlocal_site.url, @hyperlocal_site.url, :class => "external") %>
+  <%= attribute_tag :twitter_account, @hyperlocal_site.twitter_account %>
+  <%= attribute_tag :feed_url, @hyperlocal_site.feed_url %>
+  <%= attribute_tag :group, link_for(@hyperlocal_site.hyperlocal_group) %>
+</dl>
+
+
+<%= timestamp_data_for @hyperlocal_site %>

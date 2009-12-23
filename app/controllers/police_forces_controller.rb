@@ -32,7 +32,7 @@ class PoliceForcesController < ApplicationController
     @police_force = PoliceForce.new(params[:police_force])
     @police_force.save!
     flash[:notice] = "Successfully created police force"
-    redirect_to police_force_path(@police_force)
+    redirect_to police_force_url(@police_force)
   rescue
     render :action => "new"
   end
@@ -43,7 +43,7 @@ class PoliceForcesController < ApplicationController
   def update
     @police_force.update_attributes!(params[:police_force])
     flash[:notice] = "Successfully updated police force"
-    redirect_to police_force_path(@police_force)
+    redirect_to police_force_url(@police_force)
   rescue
     render :action => "edit"
   end

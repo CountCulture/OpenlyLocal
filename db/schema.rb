@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091222130436) do
+ActiveRecord::Schema.define(:version => 20091223160242) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -132,6 +132,28 @@ ActiveRecord::Schema.define(:version => 20091222130436) do
     t.string   "guid"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "hyperlocal_groups", :force => true do |t|
+    t.string   "title"
+    t.string   "url"
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "hyperlocal_sites", :force => true do |t|
+    t.string   "title"
+    t.string   "url"
+    t.string   "email"
+    t.string   "twitter_account"
+    t.string   "feed_url"
+    t.float    "lat"
+    t.float    "lng"
+    t.float    "distance"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "hyperlocal_group_id"
   end
 
   create_table "ldg_services", :force => true do |t|

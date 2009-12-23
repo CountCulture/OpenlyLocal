@@ -1,0 +1,39 @@
+<%= error_messages_for :hyperlocal_site %>
+
+<% form_for @hyperlocal_site do |f| -%>
+  <p>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :url %>
+    <%= f.text_field :url %>
+  </p>
+  <p>
+    <%= f.label :feed_url %>
+    <%= f.text_field :feed_url %>
+  </p>
+  <p>
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </p>
+  <p>
+    <%= f.label :twitter_account %>
+    <%= f.text_field :twitter_account %>
+  </p>
+  <p>
+    <%= f.label :lat, "Latitude" %>
+    <%= f.text_field :lat %>
+  </p>
+  <p>
+    <%= f.label :lng, "Longitude" %>
+    <%= f.text_field :lng %>
+  </p>
+  <p>
+    <%= f.label :distance, "Distance from centre point covered" %>
+    <%= f.text_field :distance %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>

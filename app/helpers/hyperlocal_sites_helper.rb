@@ -1,0 +1,2 @@
+module HyperlocalSitesHelper
+end
