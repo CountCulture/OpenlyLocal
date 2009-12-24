@@ -22,6 +22,14 @@
     <%= f.text_field :twitter_account %>
   </p>
   <p>
+    <%= f.label :hyperlocal_group_id %>
+    <%= f.select :hyperlocal_group_id, HyperlocalGroup.all.collect{ |g|[g.title, g.id] }, { :include_blank => true } %>
+  </p>
+  <p>
+    <%= f.label :platform %>
+    <%= f.select :platform, HyperlocalSite::PossiblePlatforms, { :include_blank => true } %>
+  </p>
+  <p>
     <%= f.label :lat, "Latitude" %>
     <%= f.text_field :lat %>
   </p>

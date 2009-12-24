@@ -13,6 +13,8 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_validate_presence_of :url
     should_validate_uniqueness_of :url
     should_belong_to :hyperlocal_group
+    should_allow_values_for :platform, "Ning"
+    should_not_allow_values_for :platform, "foo"
     
     should_have_db_column :email
     should_have_db_column :lat
@@ -20,6 +22,7 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_have_db_column :distance
     should_have_db_column :twitter_account
     should_have_db_column :feed_url
+    should_have_db_column :platform
         
   end
   

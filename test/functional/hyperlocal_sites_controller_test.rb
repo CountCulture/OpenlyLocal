@@ -91,6 +91,14 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     should "show form" do
       assert_select "form#new_hyperlocal_site"
     end
+    
+    should "show possible hyperlocal groups in select box" do
+      assert_select "select#hyperlocal_site_hyperlocal_group_id"
+    end
+    
+    should "show possible platforms in select box" do
+      assert_select "select#hyperlocal_site_platform"
+    end
   end  
   
   # create test
