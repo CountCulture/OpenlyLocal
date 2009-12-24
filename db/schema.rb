@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091224100354) do
+ActiveRecord::Schema.define(:version => 20091224160521) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(:version => 20091224100354) do
     t.datetime "updated_at"
     t.integer  "hyperlocal_group_id"
     t.string   "platform"
+    t.text     "description"
   end
 
   create_table "ldg_services", :force => true do |t|

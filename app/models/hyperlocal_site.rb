@@ -1,5 +1,5 @@
 class HyperlocalSite < ActiveRecord::Base
-  PossiblePlatforms = %w(Ning Wordpress Blogger)
+  PossiblePlatforms = %w(Ning Wordpress Blogger/Blogspot)
   belongs_to :hyperlocal_group
   validates_presence_of :title, :url
   validates_uniqueness_of :title

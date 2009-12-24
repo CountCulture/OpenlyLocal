@@ -1,4 +1,5 @@
 <h1><%= @title %></h1>
+<p class="more_info"><%= link_to "All Hyperlocal Groups", hyperlocal_groups_path %></p>
 
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :url, link_to(@hyperlocal_group.url, @hyperlocal_group.url, :class => "external") %>

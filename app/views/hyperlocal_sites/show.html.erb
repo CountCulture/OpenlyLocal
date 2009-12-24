@@ -1,10 +1,14 @@
 <h1><%= @title %></h1>
+<p class="more_info"><%= link_to "All HyperLocal Sites", hyperlocal_sites_path %></p>
 
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :url, link_to(@hyperlocal_site.url, @hyperlocal_site.url, :class => "external") %>
-  <%= attribute_tag :twitter_account, @hyperlocal_site.twitter_account %>
-  <%= attribute_tag :feed_url, @hyperlocal_site.feed_url %>
+  <%- attribute_tag :url do -%>
+    <%= link_to(@hyperlocal_site.url, @hyperlocal_site.url, :class => "external") %>
+    <%= link_to("News feed", @hyperlocal_site.feed_url, :class => "feed") unless @hyperlocal_site.feed_url.blank? %>
+    <%= link_to("Twitter feed", "http://twitter.com/#{@hyperlocal_site.twitter_account}", :class => "twitter feed") unless @hyperlocal_site.twitter_account.blank? %>
+  <%- end -%>
   <%= attribute_tag :group, link_for(@hyperlocal_site.hyperlocal_group) %>
+  <%= attribute_tag :platform, @hyperlocal_site.platform %>
 </dl>
 
 

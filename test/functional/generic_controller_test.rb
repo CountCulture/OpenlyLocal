@@ -6,6 +6,7 @@ class GenericController < ApplicationController
   before_filter :linked_data_available, :only => :show
   before_filter :show_rss_link, :only => :index
   def index
+    @enable_google_maps = true
     render :text => "index text", :layout => true
   end
   
@@ -47,6 +48,10 @@ class GenericControllerTest < ActionController::TestCase
     should "show rss auto discovery link" do
       assert_select "link[rel='alternate'][type='application/rss+xml'][href='http://test.host/generic?format=rss']"
     end
+    
+    should "load google maps javascript if @enable_google_maps true" do
+      assert_select "script", /google\.load\(\"maps/
+    end
   end
   
   # show tests
@@ -69,6 +74,10 @@ class GenericControllerTest < ActionController::TestCase
     
     should "not show rss auto discovery link" do
       assert_select "link[rel='alternate'][type='application/rss+xml']", false
+    end
+    
+    should "not load google maps javascript if @enable_google_maps not true" do
+      assert_select "script", :text => /google\.load\(\"maps/, :count => 0
     end
   end
   

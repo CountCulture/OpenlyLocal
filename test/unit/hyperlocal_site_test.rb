@@ -17,13 +17,13 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_not_allow_values_for :platform, "foo"
     
     should_have_db_column :email
+    should_have_db_column :description
     should_have_db_column :lat
     should_have_db_column :lng
     should_have_db_column :distance
     should_have_db_column :twitter_account
     should_have_db_column :feed_url
-    should_have_db_column :platform
-        
+    should_have_db_column :platform        
   end
   
   context "A HyperlocalSite instance" do
