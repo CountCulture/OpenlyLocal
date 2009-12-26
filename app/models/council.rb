@@ -111,7 +111,8 @@ class Council < ActiveRecord::Base
   end
   
   def short_name
-    name.gsub(/Borough|City|Royal|London|of|Council/, '').strip
+    return name if name =~ /City of London|Greater London Authority/
+    name.gsub(/&| and|Metropolitan|Borough of|Borough|District|City of|City|County of|County|Royal|Council of the|London|Council|\([\w\s]+\)/, '').squish
   end
   
   def status

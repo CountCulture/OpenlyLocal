@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091224160521) do
+ActiveRecord::Schema.define(:version => 20091224164141) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(:version => 20091224160521) do
     t.float    "lat"
     t.float    "lng"
     t.float    "distance"
+    t.string   "cipfa_code"
   end
 
   add_index "councils", ["parent_authority_id"], :name => "index_councils_on_parent_authority_id"
@@ -246,10 +247,10 @@ ActiveRecord::Schema.define(:version => 20091224160521) do
 
   create_table "ons_dataset_families", :force => true do |t|
     t.string   "title"
-    t.integer  "ons_subject_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "ons_uid"
+    t.string   "source_type"
   end
 
   create_table "ons_dataset_families_ons_subjects", :id => false, :force => true do |t|

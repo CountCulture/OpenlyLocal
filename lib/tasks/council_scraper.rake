@@ -281,3 +281,24 @@ task :geocode_councils => :environment do
     end
   end
 end
+
+desc "Import CIPFA codes for councils"
+task :import_council_cipfa_codes => :environment do
+  require 'pp'
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/council_cipfa_codes.csv"), :headers => false).to_a
+  headings = rows.shift
+  councils=Council.all.each do |council|
+    if row = rows.detect{ |r| r.first.gsub(/&| and/, '').squish.match(/#{council.short_name}/i) }
+      puts "========\nFound match for #{council.name} (#{council.short_name}): #{row.first}"
+      council.update_attribute(:cipfa_code, row.last)
+      puts "Updated #{council.name} with cipfa_code: #{row.last}"
+      rows.delete(row)
+    else
+      puts "***Couldn't find match for #{council.name} (#{council.short_name})"
+    end
+  end
+  puts "========\nThe following rows were unmatched:"
+  pp rows
+
+end
+

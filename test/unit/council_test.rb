@@ -516,6 +516,21 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal "Westminster", Council.new(:name => "City of Westminster").short_name
       assert_equal "Leeds", Council.new(:name => "Leeds City Council").short_name
       assert_equal "Kingston upon Thames", Council.new(:name => "Royal Borough of Kingston upon Thames").short_name
+      assert_equal "Wolverhampton", Council.new(:name => "Wolverhampton Metropolitan Borough Council").short_name
+      assert_equal "City of London", Council.new(:name => "City of London").short_name
+      assert_equal "Greater London Authority", Council.new(:name => "Greater London Authority").short_name
+      assert_equal "Greater London Authority", Council.new(:name => "Greater London Authority").short_name
+      assert_equal "Vale of White Horse", Council.new(:name => "Vale of White Horse District Council").short_name
+      assert_equal "Wrexham", Council.new(:name => "Wrexham County Borough Council").short_name
+      assert_equal "Comhairle nan Eilean Siar", Council.new(:name => "Comhairle nan Eilean Siar (Western Isles Council)").short_name
+      assert_equal "Swansea", Council.new(:name => "City & County of Swansea").short_name
+      assert_equal "Kensington Chelsea", Council.new(:name => "Royal Borough of Kensington & Chelsea").short_name
+      assert_equal "Tonbridge Malling", Council.new(:name => "Tonbridge and Malling Borough Council").short_name
+      assert_equal "Fenland", Council.new(:name => "Fenland District Council").short_name
+      assert_equal "Isles of Scilly", Council.new(:name => "Council of the Isles of Scilly").short_name
+      
+      
+      flunk
     end
 
     context "when returning average committee memberships" do
@@ -548,4 +563,5 @@ class CouncilTest < ActiveSupport::TestCase
     rec.update_attributes(:created_at => 2.months.ago, :updated_at => 2.months.ago)
     rec.class.record_timestamps = true
   end
+  
 end
