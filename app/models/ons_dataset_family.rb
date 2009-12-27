@@ -3,6 +3,6 @@ class OnsDatasetFamily < ActiveRecord::Base
   has_many :ons_datasets
   has_many :ons_dataset_topics
   validates_presence_of :title
-  validates_presence_of :ons_uid
+  validates_presence_of :source_type
 
 end

@@ -4,7 +4,7 @@ class Ward < ActiveRecord::Base
   has_many :members
   has_many :committees
   has_many :meetings, :through => :committees
-  has_many :ons_datapoints
+  has_many :ons_datapoints, :as => :area
   allow_access_to :members, :via => :uid
   allow_access_to :committees, :via => [:uid, :normalised_title]
   validates_presence_of :name, :council_id
@@ -78,7 +78,13 @@ class Ward < ActiveRecord::Base
     end
     datapoints
   end
-
+  
+  # Returns all wards (including self) in council area
+  def related
+    council.wards
+  end
+  
+  # DEPRECATED. Not actually used at the moment
   def siblings
     council.wards - [self]
   end

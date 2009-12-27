@@ -2,10 +2,10 @@ class OnsDatapointsController < ApplicationController
   helper :wards
   def show
     @ons_datapoint = OnsDatapoint.find(params[:id])
-    @ward = @ons_datapoint.ward
-    @council = @ward.council
+    @area = @ons_datapoint.area
+    @council = @area.council if @area.is_a?(Ward)
     @datapoints = @ons_datapoint.related_datapoints
-    @title = "#{@ward.title} :: #{@ons_datapoint.title}"
+    @title = "#{@area.title} :: #{@ons_datapoint.title}"
   end
 
 end

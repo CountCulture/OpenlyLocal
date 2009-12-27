@@ -101,7 +101,15 @@ class WardTest < ActiveSupport::TestCase
         assert_equal [@sibling_ward], @ward.siblings
       end
     end
-
+    
+    context "when returning related" do
+      should "return all wards in council area" do
+        @sibling_ward = Factory(:ward, :name => 'Sibling ward', :council => @council)
+        @unrelated_ward = Factory(:ward, :name => 'Unrelated ward', :council => Factory(:another_council))
+        assert_equal [@ward, @sibling_ward], @ward.related
+      end
+      
+    end
     context "with members" do
       # this part mainly regression test that old functionality of UidAssociation extension in continued with allows_access_to
       setup do
@@ -163,9 +171,9 @@ class WardTest < ActiveSupport::TestCase
         selected_topic_uids = NessSelectedTopics.values.flatten
         @selected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.first)
         @unselected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.sum+1) # need ons_uid that defo isn't a selected one
-        @selected_dp = Factory(:ons_datapoint, :ward => @ward, :ons_dataset_topic => @selected_topic)
-        @unselected_dp = Factory(:ons_datapoint, :ward => @ward, :ons_dataset_topic => @unselected_topic)
-        @wrong_ward_dp = Factory(:ons_datapoint, :ward => @another_ward, :ons_dataset_topic => @selected_topic)
+        @selected_dp = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @selected_topic)
+        @unselected_dp = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @unselected_topic)
+        @wrong_ward_dp = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @selected_topic)
         @ward.update_attribute(:ness_id, 1234)
       end
 
@@ -190,9 +198,9 @@ class WardTest < ActiveSupport::TestCase
     context "when getting datapoints for topics" do
       setup do
         @another_ward = Factory(:ward, :name => "Another ward", :council => @ward.council)
-        @ward_dp = Factory(:ons_datapoint, :ward => @ward)
-        @another_ward_dp = Factory(:ons_datapoint, :ward => @ward)
-        @wrong_ward_dp = Factory(:ons_datapoint, :ward => @another_ward)
+        @ward_dp = Factory(:ons_datapoint, :area => @ward)
+        @another_ward_dp = Factory(:ons_datapoint, :area => @ward)
+        @wrong_ward_dp = Factory(:ons_datapoint, :area => @another_ward)
         @ward.update_attribute(:ness_id, 1234)
       end
 
@@ -239,9 +247,9 @@ class WardTest < ActiveSupport::TestCase
           dps = @ward.datapoints_for_topics([@ons_topic_1.id,@ons_topic_2.id])
           dp1 = dps.detect{ |dp| dp.ons_dataset_topic_id == @ons_topic_1.id}
           dp2 = dps.detect{ |dp| dp.ons_dataset_topic_id == @ons_topic_2.id}
-          assert_equal @ward, dp1.ward
+          assert_equal @ward, dp1.area
           assert_equal '37.9', dp1.value
-          assert_equal @ward, dp2.ward
+          assert_equal @ward, dp2.area
           assert_equal '9709', dp2.value
         end
       end

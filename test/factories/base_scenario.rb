@@ -159,6 +159,7 @@ end
 Factory.define :ons_dataset_family do |f|
   f.sequence(:title) { |n| "Ons Dataset #{n}" }
   f.sequence(:ons_uid) { |n| n }
+  f.source_type "Ness"
 end
 
 Factory.define :ons_dataset do |f|
@@ -176,7 +177,7 @@ end
 Factory.define :ons_datapoint do |f|
   f.sequence(:value) { |n| 21+n }
   f.association :ons_dataset_topic
-  f.association :ward
+  f.association :area, :factory => :ward
 end
 
 Factory.define :hyperlocal_site do |f|

@@ -1,5 +1,5 @@
 <div class="ons_dataset_family"><%= basic_link_for @ons_datapoint.ons_dataset_topic.ons_dataset_family %></div>
-<h1><%= basic_link_for @ons_datapoint.ons_dataset_topic %>: <%= basic_link_for @ward %></h1>
+<h1><%= basic_link_for @ons_datapoint.ons_dataset_topic %>: <%= basic_link_for @area %></h1>
 <div id="ons_statistics">
   <%- content_tag :table, :class => "datapoints" do -%>
     <caption>All wards in <%= basic_link_for @council %></caption>
@@ -10,7 +10,7 @@
     <%- max_value = @datapoints.collect{|dp| dp.value.to_f }.max -%>
     <%- @datapoints.each do |datapoint| -%>
       <tr class='<%= datapoint == @ons_datapoint ? "selected" : "" %>'>
-        <td class='ward' style="background-position: <%= (100.0/max_value)*8*datapoint.value.to_f %>px;"><%= basic_link_for datapoint.ward %></td>
+        <td class='ward' style="background-position: <%= (100.0/max_value)*8*datapoint.value.to_f %>px;"><%= basic_link_for datapoint.area %></td>
         <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
       </tr>
     <%- end -%>

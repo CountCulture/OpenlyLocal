@@ -6,9 +6,9 @@ class OnsDatapointsControllerTest < ActionController::TestCase
   context "on GET to :show" do
   setup do
     @datapoint = Factory(:ons_datapoint)
-    @ward = @datapoint.ward
+    @ward = @datapoint.area
     @another_ward = Factory(:ward, :name => 'Another Ward', :council => @ward.council)
-    @datapoint_for_another_ward = Factory(:ons_datapoint, :ward => @another_ward, :ons_dataset_topic => @datapoint.ons_dataset_topic)
+    @datapoint_for_another_ward = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @datapoint.ons_dataset_topic)
   end
 
     context "with basic request" do
@@ -17,6 +17,7 @@ class OnsDatapointsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:datapoints) { [@datapoint_for_another_ward, @datapoint] }
+      should_assign_to(:area) { @ward }
       should_respond_with :success
       should_render_template :show
 

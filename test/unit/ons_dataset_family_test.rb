@@ -7,7 +7,7 @@ class OnsDatasetFamilyTest < ActiveSupport::TestCase
       @ons_dataset_family = Factory(:ons_dataset_family) 
     end
     should_validate_presence_of :title 
-    should_validate_presence_of :ons_uid
+    should_validate_presence_of :source_type
     should_have_and_belong_to_many :ons_subjects
     should_have_many :ons_datasets
     should_have_many :ons_dataset_topics

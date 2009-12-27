@@ -26,6 +26,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_belong_to :parent_authority
     should_belong_to :portal_system
     should_belong_to :police_force
+    should_have_many :ons_datapoints
     should_have_db_column :notes
     should_have_db_column :wikipedia_url
     should_have_db_column :ons_url
@@ -364,6 +365,16 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
 
+    context "when returning related" do
+      
+      should "return councils of same authority_type" do
+        @council.update_attribute(:authority_type, "District")
+        @related_council = Factory(:council, :name => "related_council", :authority_type => "District")
+        @unrelated_council = Factory(:council, :name => "unrelated_council", :authority_type => "Unitary")
+        assert_equal [@council, @related_council], @council.related
+      end
+    end
+    
     context "when getting recent activity" do
       setup do
         @member = Factory(:member, :council => @council)
@@ -528,9 +539,6 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal "Tonbridge Malling", Council.new(:name => "Tonbridge and Malling Borough Council").short_name
       assert_equal "Fenland", Council.new(:name => "Fenland District Council").short_name
       assert_equal "Isles of Scilly", Council.new(:name => "Council of the Isles of Scilly").short_name
-      
-      
-      flunk
     end
 
     context "when returning average committee memberships" do

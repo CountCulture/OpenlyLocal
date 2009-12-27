@@ -7,7 +7,7 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
       @ons_dataset_topic = Factory(:ons_dataset_topic)
     end
     should_validate_presence_of :title
-    should_validate_presence_of :ons_uid
+    # should_validate_presence_of :ons_uid
     should_validate_presence_of :ons_dataset_family_id
     should_belong_to :ons_dataset_family
     should_have_many :ons_datapoints

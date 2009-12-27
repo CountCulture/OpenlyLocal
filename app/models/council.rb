@@ -24,6 +24,7 @@ class Council < ActiveRecord::Base
   has_many :meeting_documents, :through => :meetings, :source => :documents, :select => "documents.id, documents.title, documents.document_type, documents.document_owner_type, documents.document_owner_id, documents.created_at, documents.updated_at", :order => "documents.created_at DESC"
   has_many :past_meeting_documents, :through => :held_meetings, :source => :documents, :order => "documents.created_at DESC"
   has_many :services
+  has_many :ons_datapoints, :as => :area
   belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
   has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   belongs_to :portal_system
@@ -101,6 +102,11 @@ class Council < ActiveRecord::Base
       :committees => committees.all(:conditions => conditions),
       :meetings => meetings.all(:conditions => conditions),
       :documents => meeting_documents.all(:conditions => ["documents.updated_at > ?", 7.days.ago])}
+  end
+  
+  # returns related councils, i.e. those of same authority type
+  def related
+    self.class.all(:conditions => {:authority_type => authority_type})
   end
   
   def potential_services(options={})

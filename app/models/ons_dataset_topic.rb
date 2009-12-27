@@ -1,7 +1,7 @@
 class OnsDatasetTopic < ActiveRecord::Base
   belongs_to :ons_dataset_family
   has_many :ons_datapoints
-  validates_presence_of :title, :ons_uid, :ons_dataset_family_id
+  validates_presence_of :title, :ons_dataset_family_id#, :ons_uid
 
   def extended_title
     "#{ons_dataset_family.title} #{title}"
@@ -47,7 +47,7 @@ class OnsDatasetTopic < ActiveRecord::Base
     logger.debug { "Found #{raw_datapoints.size} raw datapoints for #{council.name} wards:\n #{raw_datapoints.inspect}" }
     raw_datapoints.collect do |rdp|
       next unless ward = wards.detect{|w| w.ness_id == rdp[:ness_area_id]}
-      dp = ons_datapoints.find_or_initialize_by_ward_id(ward.id )
+      dp = ons_datapoints.find_or_initialize_by_area_type_and_area_id('Ward', ward.id)
       dp.update_attributes(:value => rdp[:value])
       dp
     end

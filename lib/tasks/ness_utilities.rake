@@ -67,3 +67,35 @@ task :get_ness_dataset_topics => :environment do
     end
   end
 end
+
+desc "Import Local Spending 2006-2007"
+task :import_local_spending => :environment do
+  require 'pp'
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/spending_report_2006_07_raw_data.csv")).to_a[1..-1] # skip first row for the moment
+  families = rows.shift[2..-1]
+  topics = rows.shift[2..-1]
+  p families, topics
+  ons_families = families.collect{ |f| OnsDatasetFamily.find_or_create_by_title_and_source_type(f.strip, "Spending") }
+  ons_topics = []
+  
+  topics.each_with_index{ |t,i| ons_topics << ons_families[i].ons_dataset_topics.find_or_create_by_title(:title => t.strip, :muid => 9, :data_date => "2007-04-04") }
+
+  pp ons_families, ons_topics
+  
+  rows.each do |row|
+    if council = Council.find_by_cipfa_code(row[0])
+      row[2..-1].each_with_index do |raw_dp, i|
+        # p ons_topics[i]
+        dp = council.ons_datapoints.find_or_initialize_by_ons_dataset_topic_id(:ons_dataset_topic_id => ons_topics[i].id, :value => raw_dp.to_i*1000)
+        begin
+          dp.save!
+        rescue Exception => e
+          puts "Problem saving: #{dp.inspect}"
+        end  
+      end
+      puts "Finished adding datapoints for #{council.name}"
+    else
+      puts "Could not find entry for #{row[1]} (cipfa_code #{row[0]})"
+    end
+  end
+end
