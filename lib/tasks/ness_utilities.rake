@@ -85,7 +85,6 @@ task :import_local_spending => :environment do
   rows.each do |row|
     if council = Council.find_by_cipfa_code(row[0])
       row[2..-1].each_with_index do |raw_dp, i|
-        # p ons_topics[i]
         dp = council.ons_datapoints.find_or_initialize_by_ons_dataset_topic_id(:ons_dataset_topic_id => ons_topics[i].id, :value => raw_dp.to_i*1000)
         begin
           dp.save!

@@ -2,14 +2,19 @@ require 'test_helper'
 
 class OnsDatapointsControllerTest < ActionController::TestCase
 
-  # index test
+  # show test
   context "on GET to :show" do
-  setup do
-    @datapoint = Factory(:ons_datapoint)
-    @ward = @datapoint.area
-    @another_ward = Factory(:ward, :name => 'Another Ward', :council => @ward.council)
-    @datapoint_for_another_ward = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @datapoint.ons_dataset_topic)
-  end
+    setup do
+      @council = Factory(:council, :authority_type => "District")
+      @related_council = Factory(:council, :name => "Related council", :authority_type => "District")
+      @ward = Factory(:ward, :council => @council)
+      @another_ward = Factory(:ward, :name => 'Another Ward', :council => @council)
+      
+      @datapoint = Factory(:ons_datapoint, :area => @ward)
+      @datapoint_for_another_ward = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @datapoint.ons_dataset_topic)
+      @council_datapoint = Factory(:ons_datapoint, :area => @council)
+      @related_council_datapoint = Factory(:ons_datapoint, :area => @related_council, :ons_dataset_topic => @council_datapoint.ons_dataset_topic)
+    end
 
     context "with basic request" do
       setup do
@@ -35,6 +40,10 @@ class OnsDatapointsControllerTest < ActionController::TestCase
 
       should "show show council name in title" do
         assert_select 'title', /#{@ward.council.name}/
+      end
+      
+      should "explain datapoint grouping in table caption" do
+        assert_select "table.datapoints caption", /comparison.+wards in.+#{@council.name}/i
       end
 
       should "list datapoints" do
@@ -62,5 +71,33 @@ class OnsDatapointsControllerTest < ActionController::TestCase
         assert_select ".source a", @datapoint.ons_dataset_topic.title
       end
     end
+    
+    context "with basic request for council datapoint" do
+      setup do
+        get :show, :id => @council_datapoint.id
+      end
+
+      should_assign_to(:datapoints) { [@council_datapoint, @related_council_datapoint] }
+      should_assign_to(:area) { @council }
+      should_respond_with :success
+      should_render_template :show
+
+      should "show details for datapoint" do
+        assert_select 'h1', /#{@council_datapoint.ons_dataset_topic.title}/
+      end
+      
+      should "show show council name in title" do
+        assert_select 'title', /#{@council.name}/
+      end
+      
+      should "explain datapoint grouping in table caption" do
+        assert_select "table.datapoints caption", /comparison.+district councils/i
+      end
+
+      should "identify given datapoint" do
+        assert_select ".datapoints .selected", /#{@council.name}/
+      end
+    end
+    
   end
 end

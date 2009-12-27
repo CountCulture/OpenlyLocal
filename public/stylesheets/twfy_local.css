@@ -415,7 +415,7 @@ body.ons_datapoints table.datapoints {
 	width: 900px;
 }
 body.ons_datapoints table.datapoints td.value {
-	width: 80px;
+	width: 85px;
 }
 body.ons_datapoints #ons_statistics td.ward {
 	background: #fcd;
