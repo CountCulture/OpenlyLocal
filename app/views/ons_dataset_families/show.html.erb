@@ -7,22 +7,40 @@
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :ons_reference, @ons_dataset_family.ons_uid %>
 </dl>
+
 <div id="relationships">
-  <div id='ons_datasets' class='item_grouping'>
-    <h3>Possible datasets (time periods)</h3>
-    <ul>
-      <%- @ons_dataset_family.ons_datasets.each do |dataset| -%>
-        <li><%= dataset.title %></li>
-      <%- end -%>
-    </ul>
+  <%- unless @ons_dataset_family.ons_datasets.blank? -%>
+    <div id='ons_datasets' class='item_grouping'>
+      <h3>Possible datasets (time periods)</h3>
+      <ul>
+        <%- @ons_dataset_family.ons_datasets.each do |dataset| -%>
+          <li><%= dataset.title %></li>
+        <%- end -%>
+      </ul>
+    </div>
+  <%- end -%>
+</div>
+
+
+<%- if @datapoints.blank? -%>
+
+    <div id='ons_dataset_topics' class='item_grouping'>
+      <h3>Topics</h3>
+      <ul>
+        <%- @ons_dataset_family.ons_dataset_topics.each do |topic| -%>
+          <li><%= link_for topic %></li>
+        <%- end -%>
+      </ul>
+    </div>
+  
+<%- else -%>
+
+  <div id="ons_statistics">
+    <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @ons_dataset_family.title, :subject => :ons_dataset_topic} %>
+    <div class="source attribution">
+      <strong>Source</strong> <cite title="Office For National Statistics">ONS</cite> :: <%= basic_link_for @ons_dataset_family %>
+    </div>
   </div>
 
-  <div id='ons_dataset_topics' class='item_grouping'>
-    <h3>Topics</h3>
-    <ul>
-      <%- @ons_dataset_family.ons_dataset_topics.each do |topic| -%>
-        <li><%= link_for topic %></li>
-      <%- end -%>
-    </ul>
-  </div>
-</div>
+  
+<%- end -%>

@@ -1,0 +1,14 @@
+<%- content_tag :table, :class => "datapoints statistics_table" do -%>
+  <caption><%= statistics_table[:caption] %></caption>
+  <tr>
+    <th><%= statistics_table[:subject].to_s.titleize %></th>
+    <th class="value">Value</th>
+  </tr>
+  <%- max_value = statistics_table[:datapoints].collect{|dp| dp.value.to_f }.max -%>
+  <%- statistics_table[:datapoints].each do |datapoint| -%>
+    <tr class='<%= datapoint == statistics_table[:selected] ? "selected datapoint" : "datapoint" %>'>
+      <td class='description <%= statistics_table[:subject] %>' style="background-position: <%= (100.0/max_value)*8*datapoint.value.to_f %>px;"><%= basic_link_for datapoint.send(statistics_table[:subject]) %></td>
+      <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
+    </tr>
+  <%- end -%>
+<%- end -%>

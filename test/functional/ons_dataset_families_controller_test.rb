@@ -70,4 +70,43 @@ class OnsDatasetFamiliesControllerTest < ActionController::TestCase
       end
     end
   end
+  
+  context "on GET to :show with given area" do
+
+    context "with basic request" do
+      setup do
+        @council = Factory(:council)
+        @another_dataset_topic = Factory(:ons_dataset_topic, :ons_dataset_family => @ons_dataset_family)
+        @datapoint = Factory(:ons_datapoint, :area =>@council, :ons_dataset_topic => @ons_dataset_topic)
+        @datapoint_for_another_topic = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @another_dataset_topic)
+        
+        get :show, :id => @ons_dataset_family.id, :area_type => "Council", :area_id => @council.id
+      end
+
+      should_assign_to :ons_dataset_family
+      should_assign_to(:area) { @council }
+      should_assign_to(:datapoints) { [@datapoint, @datapoint_for_another_topic] }
+      should_respond_with :success
+      should_render_template :show
+
+      should "include ons dataset family in page title" do
+        assert_select "title", /#{@ons_dataset_family.title}/
+      end
+
+      should "include area in page title" do
+        assert_select "title", /#{@council.name}/
+      end
+
+      should "list datapoints" do
+        assert_select ".datapoints" do
+          assert_select '.ons_dataset_topic', /#{@ons_dataset_topic.title}/
+          assert_select '.ons_dataset_topic', /#{@another_dataset_topic.title}/
+        end
+      end
+
+
+    end
+  end
+
+  
 end

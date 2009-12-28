@@ -1,22 +1,8 @@
 <div class="ons_dataset_family"><%= basic_link_for @ons_datapoint.ons_dataset_topic.ons_dataset_family %></div>
 <h1><%= basic_link_for @ons_datapoint.ons_dataset_topic %>: <%= basic_link_for @area %></h1>
 <div id="ons_statistics">
-  <%- content_tag :table, :class => "datapoints" do -%>
-    <caption>Comparison against other <%= @area.is_a?(Ward) ? "wards in #{basic_link_for @council}" : "#{@area.authority_type} Councils" %></caption>
-    <tr>
-      <th>Ward</th>
-      <th class="value">Value</th>
-    </tr>
-    <%- max_value = @datapoints.collect{|dp| dp.value.to_f }.max -%>
-    <%- @datapoints.each do |datapoint| -%>
-      <tr class='<%= datapoint == @ons_datapoint ? "selected" : "" %>'>
-        <td class='ward' style="background-position: <%= (100.0/max_value)*8*datapoint.value.to_f %>px;"><%= basic_link_for datapoint.area %></td>
-        <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
-      </tr>
-    <%- end -%>
-  <%- end -%>
+  <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @table_caption, :subject => :area, :selected => @ons_datapoint } %>
   <div class="source attribution">
-    <strong>Source</strong> <cite title="Office For National Statistics">ONS</cite> :: <%= basic_link_for @ons_datapoint.ons_dataset_topic.ons_dataset_family %> :: <%= basic_link_for @ons_datapoint.ons_dataset_topic %> :: <%= @ons_datapoint.ons_dataset_topic.data_date %>
+    <strong>Source</strong> <cite title="Office For National Statistics">ONS</cite> :: <%= link_to @ons_datapoint.ons_dataset_topic.ons_dataset_family.title, ons_dataset_family_path(@ons_datapoint.ons_dataset_topic.ons_dataset_family, :area_id => @area.id, :area_type => @area.class.to_s) %> :: <%= basic_link_for @ons_datapoint.ons_dataset_topic %> :: <%= @ons_datapoint.ons_dataset_topic.data_date %>
   </div>
-
 </div>

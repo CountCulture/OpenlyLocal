@@ -90,7 +90,7 @@ module ApplicationHelper
   def help_link_to(url)
     return if url.blank?
     link_to(image_tag("help.png"), url, :class => "help", :alt => "help")
-  end
+  end  
 
   def wikipedia_link_for(subject, options={})
     return if subject.blank?

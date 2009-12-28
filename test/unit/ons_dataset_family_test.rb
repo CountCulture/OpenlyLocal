@@ -11,5 +11,6 @@ class OnsDatasetFamilyTest < ActiveSupport::TestCase
     should_have_and_belong_to_many :ons_subjects
     should_have_many :ons_datasets
     should_have_many :ons_dataset_topics
+    should_have_many :ons_datapoints, :through => :ons_dataset_topics
   end 
 end

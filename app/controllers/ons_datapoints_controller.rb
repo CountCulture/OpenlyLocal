@@ -6,6 +6,7 @@ class OnsDatapointsController < ApplicationController
     @council = @area.council if @area.is_a?(Ward)
     @datapoints = @ons_datapoint.related_datapoints
     @title = "#{@area.title} :: #{@ons_datapoint.title}"
+    @table_caption = "Comparison against other " + (@area.is_a?(Ward) ? "wards in #{@council.name}" : "#{@area.authority_type} Councils")
   end
 
 end

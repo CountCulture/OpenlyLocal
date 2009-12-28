@@ -152,6 +152,7 @@ body {
 	float:left;
 }
 #share_block {
+	clear:both;
 	text-align:right;}
 
 /*Council document formatting*/
@@ -411,21 +412,20 @@ text-align:right;
 #ons_statistics .stats_in_words {
 font-size: 1.2em;
 }
-body.ons_datapoints table.datapoints {
+table.datapoints {
 	width: 900px;
 }
-body.ons_datapoints table.datapoints td.value {
+table.datapoints td.value {
 	width: 85px;
 }
-body.ons_datapoints #ons_statistics td.ward {
+table.datapoints td.description {
 	background: #fcd;
 	background-image:url(/images/datapoint_bar.png);
 	background-repeat: repeat-y;
 }
-body.ons_datapoints #ons_statistics td.ward {
-	background: #fcd;
-	background-image:url(/images/datapoint_bar.png);
-	background-repeat: repeat-y;
+table.datapoints .datapoint {
+	float:none;
+	width:100%;
 }
 /*Misc formatting*/
 #api_info {
