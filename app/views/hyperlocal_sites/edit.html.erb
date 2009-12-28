@@ -1,3 +1,5 @@
 <h1>Editing Hyperlocal Site: <%= @hyperlocal_site.title %></h1>
 
 <%= render :partial => 'form' %>
+
+<%= button_to "Delete Site", hyperlocal_site_path(@hyperlocal_site), :confirm => "Are you sure?", :method => :delete %>

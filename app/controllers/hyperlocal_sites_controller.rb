@@ -34,6 +34,12 @@ class HyperlocalSitesController < ApplicationController
     redirect_to hyperlocal_site_url(@hyperlocal_site)
   end
   
+  def destroy
+    @hyperlocal_site.destroy
+    flash[:notice] = "Successfully destroyed HyperLocal site"
+    redirect_to hyperlocal_sites_url
+  end
+  
   private
   def find_hyperlocal_site
     @hyperlocal_site = HyperlocalSite.find(params[:id])
