@@ -71,11 +71,15 @@ end
 desc "Import Local Spending 2006-2007"
 task :import_local_spending => :environment do
   require 'pp'
+  spending_dataset = StatisticalDataset.create!(  :title => "Local Spending Report England 2006-07", 
+                                                  :url => "http://www.communities.gov.uk/publications/corporate/statistics/localspendingreports200607", 
+                                                  :originator => "Department of Communities and Local Government", 
+                                                  :originator_url => "http://www.communities.gov.uk/")
   rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/spending_report_2006_07_raw_data.csv")).to_a[1..-1] # skip first row for the moment
   families = rows.shift[2..-1]
   topics = rows.shift[2..-1]
   p families, topics
-  ons_families = families.collect{ |f| OnsDatasetFamily.find_or_create_by_title_and_source_type(f.strip, "Spending") }
+  ons_families = families.collect{ |f| OnsDatasetFamily.find_or_create_by_title_and_source_type(f.strip, "Spending", :statistical_dataset => spending_dataset) }
   ons_topics = []
   
   topics.each_with_index{ |t,i| ons_topics << ons_families[i].ons_dataset_topics.find_or_create_by_title(:title => t.strip, :muid => 9, :data_date => "2007-04-04") }
@@ -97,4 +101,13 @@ task :import_local_spending => :environment do
       puts "Could not find entry for #{row[1]} (cipfa_code #{row[0]})"
     end
   end
+end
+
+desc "Add Dataset relationships"
+task :add_dataset_relationships => :environment do
+  ness_dataset = StatisticalDataset.create!(  :title => "ONS Neighbourhood Statistics", 
+                                              :url => "http://www.neighbourhood.statistics.gov.uk/", 
+                                              :originator => "Office for National Statistics", 
+                                              :originator_url => "http://www.statistics.gov.uk/")
+  OnsDatasetFamily.update_all("statistical_dataset_id = #{ness_dataset.id}", "source_type = 'Ness'")
 end

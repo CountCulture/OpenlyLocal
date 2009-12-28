@@ -156,10 +156,16 @@ Factory.define :ons_subject do |f|
   f.sequence(:ons_uid) { |n| n }
 end
 
+Factory.define :statistical_dataset do |f|
+  f.sequence(:title) { |n| "Dataset #{n}" }
+  f.originator "ONS"
+end
+
 Factory.define :ons_dataset_family do |f|
   f.sequence(:title) { |n| "Ons Dataset #{n}" }
   f.sequence(:ons_uid) { |n| n }
   f.source_type "Ness"
+  f.association :statistical_dataset
 end
 
 Factory.define :ons_dataset do |f|
