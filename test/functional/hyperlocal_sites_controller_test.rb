@@ -189,4 +189,27 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       assert_equal "New title", @hyperlocal_site.reload.title
     end
   end
+  
+  # delete tests
+  context "on delete to :destroy a hyperlocal_site without auth" do
+    setup do
+      delete :destroy, :id => @hyperlocal_site.id
+    end
+
+    should_respond_with 401
+  end
+
+  context "on delete to :destroy a hyperlocal_site" do
+
+    setup do
+      stub_authentication
+      delete :destroy, :id => @hyperlocal_site.id
+    end
+
+    should "destroy hyperlocal_site" do
+      assert_nil HyperlocalSite.find_by_id(@hyperlocal_site.id)
+    end
+    should_redirect_to ( "the hyperlocal_sites index page") { hyperlocal_sites_url }
+    should_set_the_flash_to /Successfully destroyed/
+  end
 end
