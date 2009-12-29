@@ -1,0 +1,15 @@
+<%= error_messages_for :dataset_topic_grouping %>
+
+<% form_for @dataset_topic_grouping do |f| -%>
+  <p>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :display_as, "Display as (leave blank to show as table)" %>
+    <%= f.select :display_as, DatasetTopicGrouping::DisplayOptions, :include_blank => true %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>

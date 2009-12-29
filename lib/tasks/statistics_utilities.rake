@@ -111,3 +111,12 @@ task :add_dataset_relationships => :environment do
                                               :originator_url => "http://www.statistics.gov.uk/")
   OnsDatasetFamily.update_all("statistical_dataset_id = #{ness_dataset.id}", "source_type = 'Ness'")
 end
+
+desc "Convert NessSelectedTopics top topic_groupings"
+task :convert_ness_selected_topics_to_groupings => :environment do
+  NessSelectedTopics.each do |key, value|
+    grouping = DatasetTopicGrouping.find_or_create_by_title(key.to_s, :display_as => DisplayOnsDatapoints[key])
+    grouping.ons_dataset_topics << OnsDatasetTopic.find_all_by_ons_uid(value)
+    p grouping.ons_dataset_topics
+  end
+end

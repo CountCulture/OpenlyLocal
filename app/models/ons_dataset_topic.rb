@@ -1,5 +1,6 @@
 class OnsDatasetTopic < ActiveRecord::Base
   belongs_to :ons_dataset_family
+  belongs_to :dataset_topic_grouping
   has_many :ons_datapoints
   validates_presence_of :title, :ons_dataset_family_id#, :ons_uid
 

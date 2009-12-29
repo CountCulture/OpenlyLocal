@@ -25,6 +25,7 @@ class Council < ActiveRecord::Base
   has_many :past_meeting_documents, :through => :held_meetings, :source => :documents, :order => "documents.created_at DESC"
   has_many :services
   has_many :ons_datapoints, :as => :area
+  has_many :ons_dataset_topics, :through => :ons_datapoints
   belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
   has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   belongs_to :portal_system

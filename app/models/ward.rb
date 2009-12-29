@@ -5,6 +5,7 @@ class Ward < ActiveRecord::Base
   has_many :committees
   has_many :meetings, :through => :committees
   has_many :ons_datapoints, :as => :area
+  has_many :ons_dataset_topics, :through => :ons_datapoints
   allow_access_to :members, :via => :uid
   allow_access_to :committees, :via => [:uid, :normalised_title]
   validates_presence_of :name, :council_id
@@ -59,10 +60,11 @@ class Ward < ActiveRecord::Base
   end
 
   def grouped_datapoints
-    selected_dps = ons_datapoints.with_topic_uids(NessSelectedTopics.values.flatten)
-    res = {}
-    NessSelectedTopics.each{|k,v| res[k] = v.collect{ |uid| selected_dps.detect{ |dp| dp.ons_dataset_topic.ons_uid == uid} }.compact }
-    res
+    selected_dps = ons_datapoints.with_topic_grouping.group_by{ |dp| dp.ons_dataset_topic.dataset_topic_grouping.title.to_sym }
+    # selected_dps = ons_datapoints.with_topic_uids(NessSelectedTopics.values.flatten)
+    # res = {}
+    # NessSelectedTopics.each{|k,v| res[k] = v.collect{ |uid| selected_dps.detect{ |dp| dp.ons_dataset_topic.ons_uid == uid} }.compact }
+    # res
   end
 
   def datapoints_for_topics(topic_ids=nil)

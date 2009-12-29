@@ -15,6 +15,7 @@ class WardTest < ActiveSupport::TestCase
     should_have_many :committees
     should_have_many :meetings, :through => :committees
     should_have_many :ons_datapoints
+    should_have_many :ons_dataset_topics, :through => :ons_datapoints
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url
@@ -167,14 +168,26 @@ class WardTest < ActiveSupport::TestCase
 
     context "when getting grouped datapoints" do
       setup do
+        
+        # @another_ward = Factory(:ward, :name => "Another ward", :council => @ward.council)
+        # selected_topic_uids = NessSelectedTopics.values.flatten
+        # @selected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.first)
+        # @unselected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.sum+1) # need ons_uid that defo isn't a selected one
+        # @selected_dp = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @selected_topic)
+        # @unselected_dp = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @unselected_topic)
+        # @wrong_ward_dp = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @selected_topic)
+        # @ward.update_attribute(:ness_id, 1234)
+        # 
+        
+        @data_grouping = Factory(:dataset_topic_grouping, :title => "demographics")
+        @another_data_grouping = Factory(:dataset_topic_grouping, :title => "foo")
+        
         @another_ward = Factory(:ward, :name => "Another ward", :council => @ward.council)
-        selected_topic_uids = NessSelectedTopics.values.flatten
-        @selected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.first)
-        @unselected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.sum+1) # need ons_uid that defo isn't a selected one
+        @selected_topic = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping)
+        @unselected_topic = Factory(:ons_dataset_topic)
         @selected_dp = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @selected_topic)
         @unselected_dp = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @unselected_topic)
         @wrong_ward_dp = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @selected_topic)
-        @ward.update_attribute(:ness_id, 1234)
       end
 
       should "return hash of arrays" do
@@ -186,11 +199,11 @@ class WardTest < ActiveSupport::TestCase
         assert @ward.grouped_datapoints[:demographics]
       end
 
-      should "return datapoints for topics in NessSelectedTopics" do
+      should "return datapoints for topics in groupings" do
         assert @ward.grouped_datapoints.values.flatten.include?(@selected_dp)
       end
 
-      should "not return datapoints with topics in not NessSelectedTopics" do
+      should "not return datapoints with topics not in groupings" do
         assert !@ward.grouped_datapoints.values.flatten.include?(@unselected_dp)
       end
     end

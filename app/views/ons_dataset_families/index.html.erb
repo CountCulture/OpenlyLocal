@@ -1,15 +1,15 @@
 <h1>ONS Datasets</h1>
 
-<ul id="ons_subjects">
-  <%- @ons_subjects.each do |subject| -%>
-    <li><%= link_to subject.title, :anchor => dom_id(subject) %></li>
+<ul id="statistical_datasets">
+  <%- @statistical_datasets.each do |statistical_dataset| -%>
+    <li><%= link_to statistical_dataset.title, :anchor => dom_id(statistical_dataset) %></li>
   <%- end %>
 </ul>
 
-<%- @ons_subjects.each do |subject| -%>
-  <%- div_for subject do -%>
-    <a name='<%= dom_id(subject) %>'></a>
-    <h3><%= subject.title %></h3>
-    <%= list_all subject.ons_dataset_families %>
+<%- @statistical_datasets.each do |statistical_dataset| -%>
+  <%- div_for statistical_dataset do -%>
+    <a name='<%= dom_id(statistical_dataset) %>'></a>
+    <h3><%= statistical_dataset.title %></h3>
+    <%= list_all statistical_dataset.ons_dataset_families %>
   <%- end %>
 <%- end %>

@@ -26,6 +26,32 @@ class OnsDatapointTest < ActiveSupport::TestCase
                      ons_datapoint_3.ons_dataset_topic.ons_uid]
       assert_equal [ons_datapoint_2, ons_datapoint_3], OnsDatapoint.with_topic_uids(topic_uids)
     end
+    
+    context "when limiting to those whose topics are in a topic_grouping" do
+      setup do
+        @ward = @ons_datapoint.area
+        @ons_datapoint_1 = Factory(:ons_datapoint, :area => @ward)
+        @ons_datapoint_2 = Factory(:ons_datapoint, :area => @ward)
+        @ons_datapoint_3 = Factory(:ons_datapoint, :area => @ward)
+        
+        @ward = @ons_datapoint.area
+        @grouping = Factory(:dataset_topic_grouping)
+        @another_grouping = Factory(:dataset_topic_grouping)
+        @grouping.ons_dataset_topics << [@ons_datapoint.ons_dataset_topic, @ons_datapoint_2.ons_dataset_topic]
+        @another_grouping.ons_dataset_topics << [@ons_datapoint_3.ons_dataset_topic]
+      end
+      
+      should "return only those datapoints with topics in topic grouping" do
+        assert_equal [@ons_datapoint, @ons_datapoint_2, @ons_datapoint_3], OnsDatapoint.with_topic_grouping
+      end
+
+    end
+    
+    context "when limiting to given restrictions" do
+      should_eventually "return empty array if no restrictions" do
+        assert_equal [], OnsDatapoint.limited_to
+      end
+    end
   end
 
   context "an OnsDatapoint instance" do

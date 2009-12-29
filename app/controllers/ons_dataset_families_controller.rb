@@ -1,6 +1,6 @@
 class OnsDatasetFamiliesController < ApplicationController
   def index
-    @ons_subjects = OnsSubject.all(:include => [:ons_dataset_families])
+    @statistical_datasets = StatisticalDataset.all(:include => [:ons_dataset_families])
   end
 
   def show

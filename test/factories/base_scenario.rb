@@ -186,6 +186,10 @@ Factory.define :ons_datapoint do |f|
   f.association :area, :factory => :ward
 end
 
+Factory.define :dataset_topic_grouping do |f|
+  f.sequence(:title) { |n| "grouping_#{n}" }
+end
+
 Factory.define :hyperlocal_site do |f|
   f.sequence(:title) { |n| "Hyperlocal #{n}" }
   f.sequence(:url) { |n| "http://hyperlocal.co.uk/site_#{n}" }

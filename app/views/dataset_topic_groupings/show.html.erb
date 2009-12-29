@@ -1,0 +1,11 @@
+<h1><%= @dataset_topic_grouping.title %></h1>
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :display_as, @dataset_topic_grouping.display_as %>
+</dl>
+
+<div id="relationships">
+  <div id="ons_dataset_topics" class="item_grouping">
+    <h3>Topics in this grouping</h3>
+    <%= list_all @dataset_topic_grouping.ons_dataset_topics %>  
+  </div>
+</div>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091228175019) do
+ActiveRecord::Schema.define(:version => 20091229140842) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -83,6 +83,13 @@ ActiveRecord::Schema.define(:version => 20091228175019) do
 
   add_index "datapoints", ["council_id"], :name => "index_datapoints_on_council_id"
   add_index "datapoints", ["dataset_id"], :name => "index_datapoints_on_dataset_id"
+
+  create_table "dataset_topic_groupings", :force => true do |t|
+    t.string   "title"
+    t.string   "display_as"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "datasets", :force => true do |t|
     t.string   "title"
@@ -273,6 +280,7 @@ ActiveRecord::Schema.define(:version => 20091228175019) do
     t.text     "description"
     t.date     "data_date"
     t.string   "short_title"
+    t.integer  "dataset_topic_grouping_id"
   end
 
   add_index "ons_dataset_topics", ["ons_dataset_family_id"], :name => "index_ons_dataset_topics_on_ons_dataset_family_id"

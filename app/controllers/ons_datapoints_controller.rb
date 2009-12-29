@@ -1,5 +1,11 @@
 class OnsDatapointsController < ApplicationController
   helper :wards
+  
+  def index
+    @ons_dataset_topic = OnsDatasetTopic.find(params[:ons_dataset_topic_id])
+    # @ons_dataset_topic.ons_datapoints.limited_to(params.only(:group, :group_id))
+  end
+  
   def show
     @ons_datapoint = OnsDatapoint.find(params[:id])
     @area = @ons_datapoint.area

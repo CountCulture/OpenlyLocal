@@ -2,11 +2,9 @@ require 'test_helper'
 
 class OnsDatasetFamiliesControllerTest < ActionController::TestCase
   def setup
-    @ons_subject = Factory(:ons_subject)
-    @ons_subject_2 = Factory(:ons_subject)
-    @ons_dataset = Factory(:ons_dataset)
-    @ons_dataset_family = @ons_dataset.ons_dataset_family
-    @ons_dataset_family.ons_subjects << [@ons_subject, @ons_subject_2]
+    @statistical_dataset = Factory(:statistical_dataset)
+    @ons_dataset_family = Factory(:ons_dataset_family, :statistical_dataset => @statistical_dataset)
+    @another_dataset_family = Factory(:ons_dataset_family, :statistical_dataset => @statistical_dataset)
     @ons_dataset_topic = Factory(:ons_dataset_topic, :ons_dataset_family => @ons_dataset_family)
   end
 
@@ -18,18 +16,12 @@ class OnsDatasetFamiliesControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to :ons_subjects
+      should_assign_to :statistical_datasets
       should_respond_with :success
       should_render_template :index
 
-      should "list ons dataset subjects" do
-        assert_select "#ons_subjects li", 2 do
-          @ons_subject.title
-        end
-      end
-
-      should "list ons dataset families grouped by subject" do
-        assert_select "div#ons_subject_#{@ons_subject.id}" do
+      should "list ons dataset families grouped by statistical_dataset" do
+        assert_select "div#statistical_dataset_#{@statistical_dataset.id}" do
           assert_select 'li', @ons_dataset_family.title
         end
       end
@@ -53,20 +45,22 @@ class OnsDatasetFamiliesControllerTest < ActionController::TestCase
         assert_select "title", /#{@ons_dataset_family.title}/
       end
 
-      should "list ons datasets for dataset family" do
-        assert_select "#ons_datasets" do
-          assert_select 'li', @ons_dataset.title
-        end
-      end
-
-      should "list subjects for dataset family" do
-        assert_select ".ons_subjects a", /#{@ons_subject.title}/
-      end
-
       should "list ons dataset topics for dataset family" do
         assert_select "#ons_dataset_topics" do
           assert_select 'li', @ons_dataset_topic.title
         end
+      end
+    end
+    
+    context "and dataset_family has ons_subjects" do
+      setup do
+        @ons_subject = Factory(:ons_subject)
+        @ons_subject.ons_dataset_families << @ons_dataset_family
+        get :show, :id => @ons_dataset_family.id
+      end
+      
+      should "list subjects for dataset family" do
+        assert_select ".ons_subjects a", /#{@ons_subject.title}/
       end
     end
   end

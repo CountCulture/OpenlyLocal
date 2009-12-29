@@ -1,20 +1,52 @@
 require 'test_helper'
 
 class OnsDatapointsControllerTest < ActionController::TestCase
+  def setup
+    @council = Factory(:council, :authority_type => "District")
+    @related_council = Factory(:council, :name => "Related council", :authority_type => "District")
+    @ward = Factory(:ward, :council => @council)
+    @another_ward = Factory(:ward, :name => 'Another Ward', :council => @council)
+    
+    @datapoint = Factory(:ons_datapoint, :area => @ward)
+    @ons_dataset_topic = @datapoint.ons_dataset_topic
+    @datapoint_for_another_ward = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @ons_dataset_topic)
+    @council_datapoint = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @ons_dataset_topic)
+    @related_council_datapoint = Factory(:ons_datapoint, :area => @related_council, :ons_dataset_topic => @ons_dataset_topic)
+  end
+
+  # index tests
+  # context "with basic request without params" do
+  #   should "raise exception" do
+  #     assert_raise(ActiveRecord::RecordNotFound) { get :index }
+  #   end
+  # end
+  # 
+  # context "with basic request with ons_dataset_topic but no other grouping" do
+  #   should "raise exception" do
+  #     assert_raise(ActiveRecord::RecordNotFound) { get :index, :ons_dataset_topic_id => @ons_dataset_topic.id }
+  #   end
+  # end
+  # 
+  # context "with basic request with grouping but not ons_dataset_topic" do
+  #   should "raise exception" do
+  #     assert_raise(ActiveRecord::RecordNotFound) { get :index, :group_type => "authority_type", :group_id => "District" }
+  #   end
+  # end
+
+  context "with basic request with grouping and ons_dataset_topic" do
+    # should do
+    #   get :index, :ons_dataset_topic_id => @ons_dataset_topic.id, :group_type => "authority_type", :group_id => "District"
+    # end
+    
+    # should_assign_to(:datapoints) { [@council_datapoint, @related_council_datapoint] }
+    # should_assign_to(:ons_dataset_topic) { @ons_dataset_topic }
+    # # should_assign_to(:area) { @ward }
+    # should_respond_with :success
+    # should_render_template :index
+  end
 
   # show test
   context "on GET to :show" do
-    setup do
-      @council = Factory(:council, :authority_type => "District")
-      @related_council = Factory(:council, :name => "Related council", :authority_type => "District")
-      @ward = Factory(:ward, :council => @council)
-      @another_ward = Factory(:ward, :name => 'Another Ward', :council => @council)
-      
-      @datapoint = Factory(:ons_datapoint, :area => @ward)
-      @datapoint_for_another_ward = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @datapoint.ons_dataset_topic)
-      @council_datapoint = Factory(:ons_datapoint, :area => @council)
-      @related_council_datapoint = Factory(:ons_datapoint, :area => @related_council, :ons_dataset_topic => @council_datapoint.ons_dataset_topic)
-    end
 
     context "with basic request" do
       setup do

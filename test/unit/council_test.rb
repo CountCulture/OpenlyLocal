@@ -27,6 +27,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_belong_to :portal_system
     should_belong_to :police_force
     should_have_many :ons_datapoints
+    should_have_many :ons_dataset_topics, :through => :ons_datapoints
     should_have_db_column :notes
     should_have_db_column :wikipedia_url
     should_have_db_column :ons_url
