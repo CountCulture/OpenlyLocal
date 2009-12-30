@@ -3,6 +3,7 @@ class OnsDatasetTopicsController < ApplicationController
   before_filter :find_ons_dataset_topic
   def show
     @title = @ons_dataset_topic.title
+    @datapoints = @ons_dataset_topic.ons_datapoints.all(:conditions => {"area_type" => "Council"}, :limit => 10, :include => [:area], :order => "(ons_datapoints.value + 0) DESC")
   end
 
   def edit

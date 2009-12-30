@@ -3,7 +3,16 @@ require 'test_helper'
 class OnsDatasetTopicsControllerTest < ActionController::TestCase
 
   def setup
+    @council_1 = Factory(:council)
+    @council_2 = Factory(:council, :name => "Second Council")
+    @council_3 = Factory(:council, :name => "Third Council")
     @ons_dataset_topic = Factory(:ons_dataset_topic)
+    @datapoint_1 = Factory(:ons_datapoint, :ons_dataset_topic => @ons_dataset_topic, :area => @council_1, :value => "9999")
+    @datapoint_2 = Factory(:ons_datapoint, :ons_dataset_topic => @ons_dataset_topic, :area => @council_2)
+    @datapoint_3 = Factory(:ons_datapoint, :ons_dataset_topic => @ons_dataset_topic, :area => @council_2, :value => "123456")
+    10.times do |i|
+      Factory(:ons_datapoint, :ons_dataset_topic => @ons_dataset_topic, :area => Factory(:council, :name => "Council #{i}"))
+    end
   end
 
   # show test
@@ -15,9 +24,18 @@ class OnsDatasetTopicsControllerTest < ActionController::TestCase
       end
 
       should_assign_to :ons_dataset_topic
+      should_assign_to :datapoints
       should_respond_with :success
       should_render_template :show
 
+      should "return max 10 datapoints" do
+        assert_equal 10, assigns(:datapoints).size
+      end
+      
+      should "sort datapoints in descending order" do
+        assert_equal @datapoint_3, assigns(:datapoints).first
+      end
+      
       should "include ons dataset topic in page title" do
         assert_select "title", /#{@ons_dataset_topic.title}/
       end
@@ -29,7 +47,18 @@ class OnsDatasetTopicsControllerTest < ActionController::TestCase
       should "list topic attributes" do
         assert_select '.attributes dd', /#{@ons_dataset_topic.ons_uid}/
       end
-
+      
+      should "list datapoints for councils" do
+        assert_select ".statistics_table" do
+          assert_select ".datapoint", 10
+        end
+      end
+      
+      should "show council name for datapoints for councils" do
+        assert_select ".statistics_table .datapoint" do
+          assert_select "a", /#{@council_1.title}/
+        end
+      end
     end
   end
 
