@@ -193,6 +193,7 @@ body {
 }
 .attributes dd {
 	float:left;
+	max-width:700px;
 }
 div.item_grouping {
 float: left;
@@ -354,7 +355,6 @@ div#dataset_data th {
 div#dataset_data table {
 	width:auto;} /*override blueprint*/
 .datapoint {
-	width:280px;
 	float:left;
 	margin-right:20px;
 	margin-bottom: 1em;
@@ -430,7 +430,6 @@ table.datapoints td.description {
 }
 table.datapoints .datapoint {
 	float:none;
-	width:100%;
 }
 /*Misc formatting*/
 #api_info {

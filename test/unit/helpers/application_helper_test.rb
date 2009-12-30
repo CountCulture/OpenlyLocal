@@ -416,6 +416,26 @@ class ApplicationHelperTest < ActionView::TestCase
       # assert_equal "http://test.com/id/committees/#{@obj.id}", resource_uri_for(@obj)
     end
   end
+  
+  context "breadcrumbs helper method" do
+    setup do
+      @obj1 = Factory(:council)
+      @obj2 = Factory(:committee, :council => @obj1)
+    end
+    
+    should "show basic link to given item in breadcrumb div" do  
+      assert_equal content_tag(:span, basic_link_for(@obj1), :class => "breadcrumbs"), breadcrumbs([@obj1])
+    end
+    
+    should "return nil if no items basic links to given item" do  
+      assert_nil breadcrumbs([])
+      assert_nil breadcrumbs(nil)
+    end
+    
+    should "show basic links to items separated by '>'" do
+      assert_equal content_tag(:span, "#{basic_link_for @obj2} > #{basic_link_for @obj1}", :class => "breadcrumbs"), breadcrumbs([@obj2, @obj1])
+    end
+  end
 
   private
   def stale_factory_object(name, options={})

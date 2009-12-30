@@ -15,4 +15,16 @@ class OnsDatasetFamilyTest < ActiveSupport::TestCase
     should_have_many :ons_datapoints, :through => :ons_dataset_topics
     should_belong_to :statistical_dataset
   end 
+  
+  
+  context "An OnsDatasetFamily instance" do
+    setup do
+      @ons_dataset_family = Factory(:ons_dataset_family) 
+    end
+
+    should "return statistical dataset in array as parents" do
+      assert_equal [@ons_dataset_family.statistical_dataset], @ons_dataset_family.parents
+    end
+  end
+  
 end

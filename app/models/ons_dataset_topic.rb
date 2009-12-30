@@ -20,6 +20,11 @@ class OnsDatasetTopic < ActiveRecord::Base
     muid_entry[0]
   end
   
+  # returns all ancestors, furthest away first, to allow breadcrumbs to be built
+  def parents
+    [ons_dataset_family.statistical_dataset, ons_dataset_family]
+  end
+
   # updates datapoints for all councils and emails results. NB Is used by Delayed::Job
   def perform
     results = process

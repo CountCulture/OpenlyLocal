@@ -83,6 +83,11 @@ class OnsDatapointTest < ActiveSupport::TestCase
       @ons_dataset_topic.stubs(:short_title).returns('short titl')
       assert_equal 'short titl', @ons_datapoint.short_title
     end
+    
+    should "return statistical dataset, family and topic as parents" do
+      expected_parents = [@ons_datapoint.ons_dataset_topic.ons_dataset_family.statistical_dataset, @ons_datapoint.ons_dataset_topic.ons_dataset_family, @ons_datapoint.ons_dataset_topic]
+      assert_equal expected_parents, @ons_datapoint.parents
+    end
 
     context "when returning related datapoints" do
       context "and area is a ward" do

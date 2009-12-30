@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :statistical_datasets
+
   map.resources :dataset_topic_groupings
 
   map.resources :hyperlocal_groups

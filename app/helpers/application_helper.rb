@@ -29,6 +29,11 @@ module ApplicationHelper
     text = options[:text] || obj.title
     obj.new_record? ? h(text) : link_to(h(text), obj, options.except(:text).merge({ :class => css_class }))
   end
+  
+  def breadcrumbs(obj_arr=nil)
+    return if obj_arr.blank?
+    content_tag(:span, obj_arr.collect{ |o| basic_link_for(o) }.join(" > "), :class => "breadcrumbs")
+  end
 
   # http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.htm
   def canonical_link_tag

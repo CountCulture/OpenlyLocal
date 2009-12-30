@@ -8,4 +8,8 @@ class OnsDatasetFamily < ActiveRecord::Base
   validates_presence_of :source_type
   validates_presence_of :statistical_dataset_id
 
+  def parents
+    [statistical_dataset]
+  end
+
 end

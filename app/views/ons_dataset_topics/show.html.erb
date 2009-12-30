@@ -1,8 +1,8 @@
+<div class="source attribution"><%= breadcrumbs(@ons_dataset_topic.parents) %></div>
 <h1><%= @title %></h1>
 
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :description, @ons_dataset_topic.description %>
-  <%= attribute_tag :dataset_family, link_for(@ons_dataset_topic.ons_dataset_family) %>
   <%= attribute_tag :measurement_unit, NessUtilities::Muids[@ons_dataset_topic.muid].try(:first) %>
   <%= attribute_tag :dataset_date, @ons_dataset_topic.data_date %>
   <%= attribute_tag :ness_id, @ons_dataset_topic.ons_uid %>
@@ -12,5 +12,6 @@
 <%#= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @table_caption, :subject => :area, :selected => @ons_datapoint } %>
 
 <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => "Top 10 Councils", :subject => :area } %>  
+<div class="source attribution"><strong>Source</strong> <%= breadcrumbs(@ons_dataset_topic.parents) %></div>
 
-
+<%= timestamp_data_for @ons_dataset_topic %>

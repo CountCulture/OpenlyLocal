@@ -22,6 +22,11 @@ class OnsDatapoint < ActiveRecord::Base
   def extended_title
     "#{ons_dataset_topic.title} (#{area.name})"
   end
+  
+  # returns all ancestors, furthest away first, to allow breadcrumbs to be built
+  def parents
+    [ons_dataset_family.statistical_dataset, ons_dataset_family, ons_dataset_topic]
+  end
 
   def related_datapoints
     related_areas = area.related

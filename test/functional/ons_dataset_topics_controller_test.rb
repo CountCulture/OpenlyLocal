@@ -49,13 +49,13 @@ class OnsDatasetTopicsControllerTest < ActionController::TestCase
       end
       
       should "list datapoints for councils" do
-        assert_select ".statistics_table" do
+        assert_select "table.statistics" do
           assert_select ".datapoint", 10
         end
       end
       
       should "show council name for datapoints for councils" do
-        assert_select ".statistics_table .datapoint" do
+        assert_select "table.statistics .datapoint" do
           assert_select "a", /#{@council_1.title}/
         end
       end

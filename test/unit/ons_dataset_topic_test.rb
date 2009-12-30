@@ -70,6 +70,11 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
       end
     end
 
+    should "return statistical dataset and family as parents" do
+      expected_parents = [@ons_dataset_topic.ons_dataset_family.statistical_dataset, @ons_dataset_topic.ons_dataset_family]
+      assert_equal expected_parents, @ons_dataset_topic.parents
+    end
+
     context "when updating datapoints for council" do
       setup do
         @council = Factory(:council)
