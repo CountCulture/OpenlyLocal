@@ -120,3 +120,20 @@ task :convert_ness_selected_topics_to_groupings => :environment do
     p grouping.ons_dataset_topics
   end
 end
+
+desc "get NessSelectedTopic info for councils"
+task :get_ness_selected_topic_info_for_councils => :environment do
+  topic_ids = NessSelectedTopics.values.flatten
+  
+  Council.find_in_batches(:conditions => "ness_id IS NOT NULL", :batch_size => 10) do |councils|
+    puts "About to query Ness server for info on #{councils.size} councils and the following topics: #{topic_ids.inspect}"
+    raw_datapoints = NessUtilities::RawClient.new('Tables', [['Areas', councils.collect(&:ness_id)], ['Variables', topic_ids]]).process_and_extract_datapoints
+    puts "Found #{raw_datapoints.size} raw datapoints for councils"
+    raw_datapoints.each do |rdp|
+      next unless council = councils.detect{|c| c.ness_id == rdp[:ness_area_id]}
+      dp = OnsDatasetTopic.find_by_ons_uid(rdp[:ness_topic_id]).ons_datapoints.find_or_initialize_by_area_type_and_area_id('Council', council.id)
+      dp.update_attributes(:value => rdp[:value])
+      p dp
+    end
+  end
+end

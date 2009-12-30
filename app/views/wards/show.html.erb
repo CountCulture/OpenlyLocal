@@ -26,7 +26,7 @@
     <%- end -%>
   </div>
 <%- end -%>
-<%= render :partial => 'ons_statistics', :object => @ward.grouped_datapoints %>
-<%= render :partial => '/shared/api_info' %>
+<%= render :partial => 'shared/ons_statistics', :object => @ward.grouped_datapoints %>
+<%= render :partial => 'shared/api_info' %>
 
 <%= timestamp_data_for @ward %>

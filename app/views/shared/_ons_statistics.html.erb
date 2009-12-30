@@ -1,7 +1,7 @@
 <%- unless ons_statistics.blank? || ons_statistics.values.flatten.compact.empty? -%>
 
   <div id="ons_statistics" class="item_grouping">
-    <h3>About this ward</h3>
+    <h3>About this area</h3>
     <%= render :partial => 'shared/experimental_flash' %>
     <%- unless ons_statistics[:misc].blank? -%>
       <div id="misc" class="stats_in_words">
@@ -19,7 +19,7 @@
           </tr>
 
           <%- for datapoint in datapoints -%>
-            <tr>
+            <tr class="datapoint">
               <td class="description"><%= link_to(datapoint.short_title, datapoint) %></td>
               <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
             </tr>

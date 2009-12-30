@@ -60,11 +60,7 @@ class Ward < ActiveRecord::Base
   end
 
   def grouped_datapoints
-    selected_dps = ons_datapoints.with_topic_grouping.group_by{ |dp| dp.ons_dataset_topic.dataset_topic_grouping.title.to_sym }
-    # selected_dps = ons_datapoints.with_topic_uids(NessSelectedTopics.values.flatten)
-    # res = {}
-    # NessSelectedTopics.each{|k,v| res[k] = v.collect{ |uid| selected_dps.detect{ |dp| dp.ons_dataset_topic.ons_uid == uid} }.compact }
-    # res
+    ons_datapoints.with_topic_grouping.group_by{ |dp| dp.ons_dataset_topic.dataset_topic_grouping.title.to_sym }
   end
 
   def datapoints_for_topics(topic_ids=nil)

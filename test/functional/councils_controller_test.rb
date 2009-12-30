@@ -467,8 +467,10 @@ class CouncilsControllerTest < ActionController::TestCase
 
     context "with basic request and council has optional attributes" do
       setup do
-        @datapoint = Factory(:datapoint, :council => @council)
-        @dataset = @datapoint.dataset
+        @datapoint = Factory(:ons_datapoint, :area => @council)
+        @dataset_topic_grouping = Factory(:dataset_topic_grouping)
+        @dataset_topic_grouping.ons_dataset_topics << @datapoint.ons_dataset_topic
+
         Council.any_instance.stubs(:datapoints).returns([@datapoint, @datapoint])
         Council.any_instance.stubs(:party_breakdown => [[Party.new("Conservative"), 4], [Party.new("Labour"), 3]])
         @council.child_authorities << @another_council # add parent/child relationship
@@ -492,48 +494,28 @@ class CouncilsControllerTest < ActionController::TestCase
 
       context "with datapoint summary" do
         setup do
-          @datapoint.stubs(:summary => ["heading_1", "data_1"])
           get :show, :id => @council.id
         end
-        
-        should_assign_to :datapoints
-        
+                
         should "show datapoint data" do
-          assert_select "#datapoints" do
-            assert_select ".datapoint", 2 do
-              assert_select "div", /data_1/
-            end
-          end
+          assert_select "#ons_statistics .datapoint", /#{@datapoint.title}/
         end
 
-        should "show links to full datapoint data" do
-          assert_select "#datapoints" do
-            assert_select "a.more_info[href*='datasets/#{@dataset.id}/data']"
-          end
-        end
+        # should "show links to full datapoint data" do
+        #   assert_select "#ons_statistics" do
+        #     assert_select "a.more_info[href*='datasets/#{@dataset.id}/data']"
+        #   end
+        # end
       end
             
-      context "without datapoint summary" do
-        setup do
-          @datapoint.stubs(:summary)
-          get :show, :id => @council.id
-        end
-        
-        should_assign_to(:datapoints) {[]}
-        
-        should "not show datapoint data" do
-          assert_select "#datapoints", false
-        end
-      end
-
       context "with xml requested" do
         setup do
           @datapoint.stubs(:summary => ["heading_1", "data_1"])
           get :show, :id => @council.id, :format => "xml"
         end
 
-        should "show associated datasets" do
-          assert_select "council>datasets>dataset>id", @datapoint.dataset.id.to_s
+        should_eventually "show associated datasets" do
+          assert_select "council>datasets>dataset>id", @datapoint.ons_dataset_topic.ons_dataset_family.statistical_dataset.id.to_s
         end
       end
       
@@ -543,8 +525,8 @@ class CouncilsControllerTest < ActionController::TestCase
           get :show, :id => @council.id, :format => "json"
         end
 
-        should "show associated datasets" do
-          assert_match /dataset.+#{@datapoint.dataset.title}/, @response.body
+        should_eventually "show associated datasets" do
+          assert_match /dataset.+#{@datapoint.ons_dataset_topic.ons_dataset_family.statistical_dataset.title}/, @response.body
         end
       end
     end    

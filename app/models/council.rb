@@ -85,6 +85,10 @@ class Council < ActiveRecord::Base
     "tel:+44-#{telephone.gsub(/^0/, '').gsub(/\s/, '-')}" unless telephone.blank?
   end
   
+  def grouped_datapoints
+    ons_datapoints.with_topic_grouping.group_by{ |dp| dp.ons_dataset_topic.dataset_topic_grouping.title.to_sym }
+  end
+
   def openlylocal_url
     "http://#{DefaultDomain}/councils/#{to_param}"
   end

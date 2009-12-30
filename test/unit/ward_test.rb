@@ -168,17 +168,6 @@ class WardTest < ActiveSupport::TestCase
 
     context "when getting grouped datapoints" do
       setup do
-        
-        # @another_ward = Factory(:ward, :name => "Another ward", :council => @ward.council)
-        # selected_topic_uids = NessSelectedTopics.values.flatten
-        # @selected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.first)
-        # @unselected_topic = Factory(:ons_dataset_topic, :ons_uid => selected_topic_uids.sum+1) # need ons_uid that defo isn't a selected one
-        # @selected_dp = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @selected_topic)
-        # @unselected_dp = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @unselected_topic)
-        # @wrong_ward_dp = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @selected_topic)
-        # @ward.update_attribute(:ness_id, 1234)
-        # 
-        
         @data_grouping = Factory(:dataset_topic_grouping, :title => "demographics")
         @another_data_grouping = Factory(:dataset_topic_grouping, :title => "foo")
         

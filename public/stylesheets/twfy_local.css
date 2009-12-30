@@ -179,7 +179,7 @@ body {
 	overflow: auto;
 }
 .extra_info  {
-	clear: both;
+	clear: left;
 }
 .extra_info .notes h4 {
 	float: left;
@@ -207,6 +207,10 @@ div#relationships {
 	padding-top:1em;
 }
 /*Council formatting*/
+body.councils h1 {
+	float:left;}
+body.councils .extra_info {
+	width:620px;}
 #data {
 	overflow:auto;
 	}
@@ -375,6 +379,7 @@ div#dataset_data table {
 
 /*Ness Statistics formatting*/
 #ons_statistics {
+	clear:both;
 	float: right;
 	padding-right:0px;
 }

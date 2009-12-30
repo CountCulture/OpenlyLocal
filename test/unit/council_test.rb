@@ -202,6 +202,38 @@ class CouncilTest < ActiveSupport::TestCase
       #   assert_equal [@service, @full_service, @unitary_service], @council.services(:term => "service") # case insensitive
       # end
     end
+    
+    context "when getting grouped datapoints" do
+      setup do
+        @data_grouping = Factory(:dataset_topic_grouping, :title => "demographics")
+        @another_data_grouping = Factory(:dataset_topic_grouping, :title => "foo")
+        
+        @another_council = Factory(:council, :name => "Another council")
+        @selected_topic = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping)
+        @unselected_topic = Factory(:ons_dataset_topic)
+        @selected_dp = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic)
+        @unselected_dp = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @unselected_topic)
+        @wrong_ward_dp = Factory(:ons_datapoint, :area => @another_council, :ons_dataset_topic => @selected_topic)
+      end
+
+      should "return hash of arrays" do
+        assert_kind_of Hash, @council.grouped_datapoints
+        assert_kind_of Array, @council.grouped_datapoints.values.first
+      end
+
+      should "use datapoint group names as keys" do
+        assert @council.grouped_datapoints[:demographics]
+      end
+
+      should "return datapoints for topics in groupings" do
+        assert @council.grouped_datapoints.values.flatten.include?(@selected_dp)
+      end
+
+      should "not return datapoints with topics not in groupings" do
+        assert !@council.grouped_datapoints.values.flatten.include?(@unselected_dp)
+      end
+    end
+
   end
 
   context "A Council instance" do
