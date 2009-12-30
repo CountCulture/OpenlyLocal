@@ -185,7 +185,7 @@ class WardTest < ActiveSupport::TestCase
       end
 
       should "use datapoint group names as keys" do
-        assert @ward.grouped_datapoints[:demographics]
+        assert @ward.grouped_datapoints.keys.include?(@data_grouping)
       end
 
       should "return datapoints for topics in groupings" do

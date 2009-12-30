@@ -3,33 +3,37 @@
   <div id="ons_statistics" class="item_grouping">
     <h3>About this area</h3>
     <%= render :partial => 'shared/experimental_flash' %>
-    <%- unless ons_statistics[:misc].blank? -%>
-      <div id="misc" class="stats_in_words">
-        <%= ons_statistics_in_words(:misc => ons_statistics[:misc]) %>
-      </div>
-    <%- end -%>
-    <%- ons_statistics.except(:misc).each do |group, datapoints| -%>
+    
+    <%- ons_statistics.each do |group, datapoints| -%>
       <%- next if datapoints.blank? -%>
-      <%- content_tag :div, :class => "datapoint_grouping #{group} #{DisplayOnsDatapoints[group]&&'graphed_datapoints'}" do -%>
-        <%- content_tag :table do -%>
-          <caption><%= group.to_s.titleize %></caption>
-          <tr>
-              <th>Description</th>
-              <th class="value">Value</th>
-          </tr>
-
-          <%- for datapoint in datapoints -%>
-            <tr class="datapoint">
-              <td class="description"><%= link_to(datapoint.short_title, datapoint) %></td>
-              <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
+      
+      <%- if group.display_as == "in_words" -%>
+        <div id="misc" class="stats_in_words">
+          <%= ons_statistics_in_words(:misc => datapoints) %>
+        </div>
+      <%- else -%>
+        <%- content_tag :div, :class => "datapoint_grouping #{group} #{(group.display_as=="graph") ? 'graphed_datapoints' : ''}" do -%>
+          <%- content_tag :table do -%>
+            <caption><%= group.title.titleize %></caption>
+            <tr>
+                <th>Description</th>
+                <th class="value">Value</th>
             </tr>
+
+            <%- for datapoint in datapoints -%>
+              <tr class="datapoint">
+                <td class="description"><%= link_to(datapoint.short_title, datapoint) %></td>
+                <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
+              </tr>
+            <%- end -%>
+          
           <%- end -%>
-        <%- end -%>
-        <%- if DisplayOnsDatapoints[group] -%>
-          <div id="religion_graph" class="graph">
-            <h4>Religion</h4>
-            <%= ons_statistics_graph(group => datapoints) %>
-          </div>
+          <%- if group.display_as == "graph" -%>
+            <div id="religion_graph" class="graph">
+              <h4>Religion</h4>
+              <%= ons_statistics_graph(group => datapoints) %>
+            </div>
+          <%- end -%>
         <%- end -%>
       <%- end -%>
     <%- end -%>

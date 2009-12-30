@@ -1,8 +1,5 @@
-<div class="ons_dataset_family"><%= basic_link_for @ons_datapoint.ons_dataset_topic.ons_dataset_family %></div>
+<div class="source attribution"><%= breadcrumbs(@ons_datapoint.parents) %></div>
 <h1><%= basic_link_for @ons_datapoint.ons_dataset_topic %>: <%= basic_link_for @area %></h1>
-<div id="ons_statistics">
-  <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @table_caption, :subject => :area, :selected => @ons_datapoint } %>
-  <div class="source attribution">
-    <strong>Source</strong> <cite title="Office For National Statistics">ONS</cite> :: <%= link_to @ons_datapoint.ons_dataset_topic.ons_dataset_family.title, ons_dataset_family_path(@ons_datapoint.ons_dataset_topic.ons_dataset_family, :area_id => @area.id, :area_type => @area.class.to_s) %> :: <%= basic_link_for @ons_datapoint.ons_dataset_topic %> :: <%= @ons_datapoint.ons_dataset_topic.data_date %>
-  </div>
-</div>
+
+<%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @table_caption, :subject => :area, :selected => @ons_datapoint } %>
+<div class="source attribution"><strong>Source</strong> <%= breadcrumbs(@ons_datapoint.parents) %></div>

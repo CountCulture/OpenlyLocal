@@ -221,8 +221,8 @@ class CouncilTest < ActiveSupport::TestCase
         assert_kind_of Array, @council.grouped_datapoints.values.first
       end
 
-      should "use datapoint group names as keys" do
-        assert @council.grouped_datapoints[:demographics]
+      should "use data groupings as keys" do
+        assert @council.grouped_datapoints.keys.include?(@data_grouping)
       end
 
       should "return datapoints for topics in groupings" do

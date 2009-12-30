@@ -60,7 +60,7 @@ class Ward < ActiveRecord::Base
   end
 
   def grouped_datapoints
-    ons_datapoints.with_topic_grouping.group_by{ |dp| dp.ons_dataset_topic.dataset_topic_grouping.title.to_sym }
+    ons_datapoints.with_topic_grouping.group_by{ |dp| dp.ons_dataset_topic.dataset_topic_grouping }
   end
 
   def datapoints_for_topics(topic_ids=nil)
