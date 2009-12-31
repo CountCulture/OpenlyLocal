@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091230182648) do
+ActiveRecord::Schema.define(:version => 20091231153133) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -243,7 +243,7 @@ ActiveRecord::Schema.define(:version => 20091230182648) do
   add_index "officers", ["council_id"], :name => "index_officers_on_council_id"
 
   create_table "ons_datapoints", :force => true do |t|
-    t.string   "value"
+    t.float    "value"
     t.integer  "ons_dataset_topic_id"
     t.integer  "area_id"
     t.datetime "created_at"
