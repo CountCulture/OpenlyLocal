@@ -21,16 +21,10 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
     end
 
     context "when returning extended_title" do
-      should "join dataset_family title to topic title" do
-        assert_equal "#{@ons_dataset_topic.ons_dataset_family.title} #{@ons_dataset_topic.title}", @ons_dataset_topic.extended_title
-      end
-    end
-
-    context "when returning title" do
       should "return title attribute including muid type if set" do
         topic = OnsDatasetTopic.new(:title => 'foo')
         topic.stubs(:muid_type => "Percentage")
-        assert_equal 'foo (Percentage)', topic.title
+        assert_equal 'foo (Percentage)', topic.extended_title
       end
       
       should "return title attribute by default" do

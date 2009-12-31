@@ -5,7 +5,7 @@ class OnsDatasetTopic < ActiveRecord::Base
   validates_presence_of :title, :ons_dataset_family_id#, :ons_uid
 
   def extended_title
-    "#{ons_dataset_family.title} #{title}"
+    muid_type ? "#{title} (#{muid_type})" : title
   end
 
   def muid_format
@@ -38,10 +38,6 @@ class OnsDatasetTopic < ActiveRecord::Base
     end
   end
   
-  def title
-    muid_type ? "#{self[:title]} (#{muid_type})" : self[:title]
-  end
-
   def short_title
     self[:short_title].blank? ? self[:title] : self[:short_title]
   end
