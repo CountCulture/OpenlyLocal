@@ -99,8 +99,8 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
 
       should "associate datapoints with correct wards" do
         @ons_dataset_topic.update_datapoints(@council)
-        assert_equal '51', @ward1.ons_datapoints.first[:value]
-        assert_equal '42', @ward2.ons_datapoints.first[:value]
+        assert_equal 51.0, @ward1.ons_datapoints.first[:value]
+        assert_equal 42.0, @ward2.ons_datapoints.first[:value]
       end
 
       should "return datapoints" do
@@ -114,7 +114,7 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         assert_difference 'OnsDatapoint.count', 1 do
           @ons_dataset_topic.update_datapoints(@council)
         end
-        assert_equal '42', @existing_datapoint.reload[:value]
+        assert_equal 42.0, @existing_datapoint.reload[:value]
       end
 
       context "and empty values returned by Ness client" do
