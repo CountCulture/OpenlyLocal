@@ -79,6 +79,11 @@ class OnsDatapointTest < ActiveSupport::TestCase
       assert_equal 'foo', @ons_datapoint.muid_type
     end
 
+    should "delegate ons_uid to ons_dataset_topic" do
+      @ons_dataset_topic.stubs(:ons_uid).returns(456)
+      assert_equal 456, @ons_datapoint.ons_uid
+    end
+
     should "delegate short_title to ons_dataset_topic" do
       @ons_dataset_topic.stubs(:short_title).returns('short titl')
       assert_equal 'short titl', @ons_datapoint.short_title

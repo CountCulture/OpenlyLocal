@@ -10,6 +10,10 @@
     <%= f.select :display_as, DatasetTopicGrouping::DisplayOptions, :include_blank => true %>
   </p>
   <p>
+    <%= f.label :sort_by, "Method to sort by (leave blank to sort by topic short_title)" %>
+    <%= f.text_field :sort_by %>
+  </p>
+  <p>
     <%= f.submit "Submit" %>
   </p>
 <% end -%>

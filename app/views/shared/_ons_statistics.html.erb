@@ -12,7 +12,7 @@
           <%= ons_statistics_in_words(:misc => datapoints) %>
         </div>
       <%- else -%>
-        <%- content_tag :div, :class => "datapoint_grouping #{group} #{(group.display_as=="graph") ? 'graphed_datapoints' : ''}" do -%>
+        <%- content_tag :div, :class => "datapoint_grouping #{group.title} #{(group.display_as=="graph") ? 'graphed_datapoints' : ''}" do -%>
           <%- content_tag :table do -%>
             <caption><%= group.title.titleize %></caption>
             <tr>

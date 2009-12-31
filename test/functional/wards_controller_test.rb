@@ -94,8 +94,13 @@ class WardsControllerTest < ActionController::TestCase
         @datapoint = Factory(:ons_datapoint, :area => @ward)
         @another_datapoint = Factory(:ons_datapoint, :area => @ward)
         @graphed_datapoint = Factory(:ons_datapoint, :area => @ward)
-        @graphed_datapoint_topic = @graphed_datapoint.ons_dataset_topic
-        Ward.any_instance.stubs(:grouped_datapoints).returns(:demographics => [@datapoint], :misc => [@another_datapoint], :foo => [], :religion => [@graphed_datapoint])
+        @graphed_datapoint_topic = @graphed_datapoint.ons_dataset_topic       
+        dummy_grouped_datapoints = { stub_everything(:title => "demographics") => [@datapoint], 
+                                     stub_everything(:title => "misc", :display_as => "in_words") => [@another_datapoint], 
+                                     stub_everything(:title => "religion", :display_as => "graph") => [@graphed_datapoint]
+                                    }
+
+        Ward.any_instance.stubs(:grouped_datapoints).returns(dummy_grouped_datapoints)
         get :show, :id => @ward.id
       end
 

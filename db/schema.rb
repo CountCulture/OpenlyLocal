@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091229140842) do
+ActiveRecord::Schema.define(:version => 20091230182648) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(:version => 20091229140842) do
     t.string   "display_as"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "sort_by"
   end
 
   create_table "datasets", :force => true do |t|

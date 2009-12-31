@@ -9,6 +9,7 @@ class Council < ActiveRecord::Base
     "Metropolitan Borough" => "http://en.wikipedia.org/wiki/Metropolitan_borough"
   }
   include PartyBreakdown
+  include AreaStatisticMethods
   has_many :members, :order => "last_name"
   has_many :committees, :order => "title"
   has_many :memberships, :through => :members
@@ -85,10 +86,6 @@ class Council < ActiveRecord::Base
     "tel:+44-#{telephone.gsub(/^0/, '').gsub(/\s/, '-')}" unless telephone.blank?
   end
   
-  def grouped_datapoints
-    ons_datapoints.with_topic_grouping.group_by{ |dp| dp.ons_dataset_topic.dataset_topic_grouping }
-  end
-
   def openlylocal_url
     "http://#{DefaultDomain}/councils/#{to_param}"
   end
