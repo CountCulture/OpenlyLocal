@@ -121,7 +121,7 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         setup do
           dummy_bad_response = [ { :ness_area_id => '215', :value => '', :ness_topic_id => '123'},
                              { :ness_area_id => '211', :value => nil, :ness_topic_id => '123'}]
-          NessUtilities::RawClient.expects(:new).returns(stub(:process_and_extract_datapoints => dummy_bad_response)) #expects overrides stubbing
+          NessUtilities::RawClient.expects(:new).returns(stub(:process_and_extract_datapoints => dummy_bad_response)) # expects overrides stubbing
         end
 
         should "not add datapoints" do

@@ -267,9 +267,9 @@ class WardTest < ActiveSupport::TestCase
           dp1 = dps.detect{ |dp| dp.ons_dataset_topic_id == @ons_topic_1.id}
           dp2 = dps.detect{ |dp| dp.ons_dataset_topic_id == @ons_topic_2.id}
           assert_equal @ward, dp1.area
-          assert_equal '37.9', dp1.value
+          assert_equal '37.9', dp1[:value] # we're just checking stored value, not value after it's been typecast
           assert_equal @ward, dp2.area
-          assert_equal '9709', dp2.value
+          assert_equal '9709', dp2[:value]
         end
       end
 

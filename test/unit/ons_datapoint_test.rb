@@ -16,7 +16,7 @@ class OnsDatapointTest < ActiveSupport::TestCase
     should "belong_to ons_dataset_family through ons_dataset_topic" do
       assert_equal @ons_datapoint.ons_dataset_topic.ons_dataset_family, @ons_datapoint.ons_dataset_family
     end
-
+    
     should "restrict to given ness topic ids" do
       @ward = @ons_datapoint.area
       ons_datapoint_1 = Factory(:ons_datapoint, :area => @ward)
@@ -92,6 +92,32 @@ class OnsDatapointTest < ActiveSupport::TestCase
     should "return statistical dataset, family and topic as parents" do
       expected_parents = [@ons_datapoint.ons_dataset_topic.ons_dataset_family.statistical_dataset, @ons_datapoint.ons_dataset_topic.ons_dataset_family, @ons_datapoint.ons_dataset_topic]
       assert_equal expected_parents, @ons_datapoint.parents
+    end
+    
+    context "when returning value" do
+      # Muids = { 1 => ['Count'],
+      #           2 => ['Percentage', "%.1f%"],
+      #           9 => ['Pounds Sterling', "£%d"],
+      #           14 => ['Years', "%.1f"]}
+
+      should "return as integer by default" do
+        @ons_dataset_topic.update_attribute(:muid, nil)
+        assert_kind_of Integer, @ons_datapoint.reload.value # reload to get 'cast' value, not value it was given on instantiation
+      end
+      
+      should "return as integer when muid is Count" do
+        assert_kind_of Integer, @ons_datapoint.reload.value
+      end
+      
+      should "return as float when muid is Percentage" do
+        @ons_dataset_topic.update_attribute(:muid, 2)
+        assert_kind_of Float, @ons_datapoint.reload.value
+      end
+      
+      should "return as float when muid is Years" do
+        @ons_dataset_topic.update_attribute(:muid, 14)
+        assert_kind_of Float, @ons_datapoint.reload.value
+      end
     end
 
     context "when returning related datapoints" do
