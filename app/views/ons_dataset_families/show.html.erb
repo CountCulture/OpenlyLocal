@@ -2,6 +2,7 @@
   <%= @ons_dataset_family.ons_subjects.collect { |sub| link_to sub.title, ons_dataset_families_path(:anchor => dom_id(sub)) }.join(' :: ') %>
 </div>
 
+<div class="source attribution"><%= breadcrumbs(@ons_dataset_family.parents) %></div>
 <h1><%= @title %></h1>
 
 <dl id="main_attributes" class="attributes">
@@ -19,26 +20,17 @@
       </ul>
     </div>
   <%- end -%>
-</div>
-
-
-<%- if @datapoints.blank? -%>
-
-    <div id='ons_dataset_topics' class='item_grouping'>
-      <h3>Topics</h3>
-      <ul>
-        <%- @ons_dataset_family.ons_dataset_topics.each do |topic| -%>
-          <li><%= link_for topic %></li>
-        <%- end -%>
-      </ul>
-    </div>
   
-<%- else -%>
-
-  <div id="ons_statistics">
-    <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @ons_dataset_family.title, :subject => @statistics_table_subject} %>
-    <div class="source attribution"><strong>Source</strong> <%= breadcrumbs(@ons_dataset_family.parents) %></div>
+  <div id='ons_dataset_topics' class='item_grouping'>
+    <h3>Topics</h3>
+    <ul>
+      <%- @ons_dataset_family.ons_dataset_topics.each do |topic| -%>
+        <li><%= link_for topic %></li>
+      <%- end -%>
+    </ul>
   </div>
-
+</div>
   
+<%- unless @datapoints.blank? -%>
+  <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @ons_dataset_family.title, :subject => @statistics_table_subject, :source =>@ons_dataset_family.parents } %>
 <%- end -%>

@@ -1,5 +1,4 @@
 <div class="source attribution"><%= breadcrumbs(@ons_datapoint.parents) %></div>
 <h1><%= basic_link_for @ons_datapoint.ons_dataset_topic %>: <%= basic_link_for @area %></h1>
 
-<%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @table_caption, :subject => :area, :selected => @ons_datapoint } %>
-<div class="source attribution"><strong>Source</strong> <%= breadcrumbs(@ons_datapoint.parents) %></div>
+<%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @table_caption, :subject => :area, :selected => @ons_datapoint, :source => @ons_datapoint.parents } %>
