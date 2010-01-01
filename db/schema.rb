@@ -249,6 +249,7 @@ ActiveRecord::Schema.define(:version => 20091231153133) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "area_type"
+    t.float    "dummy"
   end
 
   add_index "ons_datapoints", ["area_id"], :name => "index_ons_datapoints_on_ward_id"

@@ -143,7 +143,7 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         should "add matched datapoint" do
           @ons_dataset_topic.update_datapoints(@council)
           assert @ward1.ons_datapoints.empty?
-          assert_equal '42', @ward2.ons_datapoints.first[:value]
+          assert_equal 42.0, @ward2.ons_datapoints.first[:value]
         end
 
         should "not add unmatched datapoint" do
@@ -155,7 +155,7 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         should "update matching datapoint" do
           @existing_datapoint = @ward2.ons_datapoints.create(:ons_dataset_topic_id => @ons_dataset_topic.id, :value => '99')
           @ons_dataset_topic.update_datapoints(@council)
-          assert_equal '42', @existing_datapoint.reload[:value]
+          assert_equal 42.0, @existing_datapoint.reload[:value]
         end
       end
 

@@ -109,6 +109,11 @@ class OnsDatapointTest < ActiveSupport::TestCase
         assert_kind_of Integer, @ons_datapoint.reload.value
       end
       
+      should "return as correct integer without losing precision when value is very large" do
+        @ons_datapoint.update_attribute(:value, 1234567890123)
+        assert_equal 1234567890123, @ons_datapoint.reload.value
+      end
+      
       should "return as float when muid is Percentage" do
         @ons_dataset_topic.update_attribute(:muid, 2)
         assert_kind_of Float, @ons_datapoint.reload.value

@@ -25,6 +25,7 @@ class HyperlocalSitesController < ApplicationController
   end
   
   def edit
+    @enable_google_maps = true
   end
   
   def update
