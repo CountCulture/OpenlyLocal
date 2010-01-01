@@ -36,10 +36,8 @@
 <%- else -%>
 
   <div id="ons_statistics">
-    <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @ons_dataset_family.title, :subject => :ons_dataset_topic} %>
-    <div class="source attribution">
-      <strong>Source</strong> <cite title="Office For National Statistics">ONS</cite> :: <%= basic_link_for @ons_dataset_family %>
-    </div>
+    <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @ons_dataset_family.title, :subject => @statistics_table_subject} %>
+    <div class="source attribution"><strong>Source</strong> <%= breadcrumbs(@ons_dataset_family.parents) %></div>
   </div>
 
   

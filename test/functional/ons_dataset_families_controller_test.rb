@@ -25,7 +25,6 @@ class OnsDatasetFamiliesControllerTest < ActionController::TestCase
           assert_select 'li', @ons_dataset_family.title
         end
       end
-
     end
   end
 
@@ -62,6 +61,28 @@ class OnsDatasetFamiliesControllerTest < ActionController::TestCase
       should "list subjects for dataset family" do
         assert_select ".ons_subjects a", /#{@ons_subject.title}/
       end
+    end
+
+    context "with family that has calculated_datapoints_for_councils" do
+      setup do
+        @council_1, @council_2 = Factory(:council, :name => "Council 1"), Factory(:council, :name => "Council 2")
+        dummy_datapoints = [BareDatapoint.new(:area => @council_1, :value => 123), BareDatapoint.new(:area => @council_2, :value => 456)]
+        OnsDatasetFamily.any_instance.expects(:calculated_datapoints_for_councils).returns(dummy_datapoints)
+        get :show, :id => @ons_dataset_family.id
+      end
+
+      should_assign_to :ons_dataset_family
+      should_assign_to :datapoints
+      should_respond_with :success
+      should_render_template :show
+      
+      should "show datapoints in table" do
+        assert_select "table tr" do
+          assert_select ".description", /#{@council_1.name}/
+          assert_select ".value", /123/
+        end
+      end
+      
     end
   end
   

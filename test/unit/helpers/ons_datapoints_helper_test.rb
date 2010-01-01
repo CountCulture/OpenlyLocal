@@ -16,9 +16,11 @@ class OnsDatapointsHelperTest < ActionView::TestCase
     
     should "format with pound sign and delimiter if muid_type is Pounds Sterling" do
       assert_equal '£345', formatted_datapoint_value(stub_everything(:value => 345, :muid_type => "Pounds Sterling")).to_s #we only care about how it looks as a string
+      assert_equal '£345', formatted_datapoint_value(stub_everything(:value => 345.0, :muid_type => "Pounds Sterling")).to_s #we only care about how it looks as a string
       assert_equal '£345', formatted_datapoint_value(stub_everything(:value => 345, :muid_format => "%.1f%", :muid_type => "Pounds Sterling")).to_s
       assert_equal '£0', formatted_datapoint_value(stub_everything(:value => 0, :muid_format => "%.1f%", :muid_type => "Pounds Sterling")).to_s
       assert_equal '£345,123,456', formatted_datapoint_value(stub_everything(:value => 345123456, :muid_type => "Pounds Sterling")).to_s
+      assert_equal '£345,123,456', formatted_datapoint_value(stub_everything(:value => 345123456.0, :muid_type => "Pounds Sterling")).to_s
       assert_nil formatted_datapoint_value(stub_everything(:value => "", :muid_type => "Pounds Sterling"))
     end
   end

@@ -79,7 +79,7 @@ task :import_local_spending => :environment do
   families = rows.shift[2..-1]
   topics = rows.shift[2..-1]
   p families, topics
-  ons_families = families.collect{ |f| OnsDatasetFamily.find_or_create_by_title_and_source_type("#{f.strip} spending", "Spending", :statistical_dataset => spending_dataset) }
+  ons_families = families.collect{ |f| OnsDatasetFamily.find_or_create_by_title_and_source_type("#{f.strip} spending", "Spending", :statistical_dataset => spending_dataset, :calculation_method => "sum") }
   ons_topics = []
   
   topics.each_with_index{ |t,i| ons_topics << ons_families[i].ons_dataset_topics.find_or_create_by_title(:title => "#{t.strip} spending", :muid => 9, :data_date => "2007-04-04") }

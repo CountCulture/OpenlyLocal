@@ -14,6 +14,7 @@ class OnsDatasetFamilyTest < ActiveSupport::TestCase
     should_have_many :ons_dataset_topics
     should_have_many :ons_datapoints, :through => :ons_dataset_topics
     should_belong_to :statistical_dataset
+    should_have_db_column :calculation_method
   end 
   
   
@@ -28,32 +29,51 @@ class OnsDatasetFamilyTest < ActiveSupport::TestCase
     
     context "when returning calculated_datapoints_for_councils" do
       setup do
+        @ons_dataset_family.update_attribute(:calculation_method, "sum")
         @council_1 = Factory(:council)
         @council_2 = Factory(:council, :name => "Council 2")
         @council_3 = Factory(:council, :name => "Council 3")
+        @council_4 = Factory(:council, :name => "Council 4")
         4.times do |i|
-          topic = Factory(:ons_dataset_topic, :ons_dataset_family => @ons_dataset_family)
-          Factory(:ons_datapoint, :ons_dataset_topic => topic, :area => @council_1, :value => i*2) # 0,2,4,6 => sum = 12
-          Factory(:ons_datapoint, :ons_dataset_topic => topic, :area => @council_2, :value => i*4) # 0,4,6,8 => sum = 24
-          Factory(:ons_datapoint, :ons_dataset_topic => topic, :area => @council_3, :value => i*3) # 0,3,6,9 => sum = 16
+          @topic = Factory(:ons_dataset_topic, :ons_dataset_family => @ons_dataset_family, :muid => 1)
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_1, :value => i*2) # 0,2,4,6 => sum = 12
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_2, :value => i*4) # 0,4,6,8 => sum = 24
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_3, :value => i*3) # 0,3,6,9 => sum = 16
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_4, :value => 0) # 0,0,0,0 => sum = 0
         end
       end
       
-      should "return array of arrays" do
-        assert_kind_of ActiveSupport::OrderedHash, dps = @ons_dataset_family.calculated_datapoints_for_councils
-        assert_kind_of Array, dps.first
+      should "return array of BareDapoints" do
+        assert_kind_of Array, dps = @ons_dataset_family.calculated_datapoints_for_councils
+        assert_kind_of BareDatapoint, dps.first
       end
       
-      should "return council and sums as element of arrays" do
-        dp = @ons_dataset_family.calculated_datapoints_for_councils.first
-        assert_kind_of Council, dp.first
-        assert_kind_of Float, dp.last
+      should "assign ons_dataset_topic muid_format and muid_type to BareDapoints" do
+        dps = @ons_dataset_family.calculated_datapoints_for_councils
+        assert_equal @topic.muid_format, dps.first.muid_format
+        assert_equal @topic.muid_format, dps.last.muid_format
+        assert_equal @topic.muid_type, dps.first.muid_type
+        assert_equal @topic.muid_type, dps.last.muid_type
       end
       
       should "return sorted_by value, largest first" do
         dp = @ons_dataset_family.calculated_datapoints_for_councils.first
-        assert_equal @council_2, dp.first
-        assert_equal 24.0, dp.last
+        assert_equal @council_2, dp.area
+        assert_equal 24.0, dp.value
+      end
+      
+      should "not return entries with zero value" do
+        dps = @ons_dataset_family.calculated_datapoints_for_councils
+        assert !dps.any?{ |dp| dp.area == @council_4 }
+      end
+      
+      should "return nil if no matching datapoints" do
+        assert_nil Factory(:ons_dataset_family).calculated_datapoints_for_councils
+      end
+      
+      should "return nil if calculation_method is blank" do
+        @ons_dataset_family.update_attribute(:calculation_method, "")
+        assert_nil @ons_dataset_family.calculated_datapoints_for_councils
       end
     end
   end
