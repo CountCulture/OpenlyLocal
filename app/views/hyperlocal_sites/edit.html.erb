@@ -1,4 +1,33 @@
+<script type="text/javascript" charset="utf-8">
+  function initMap() {
+    if (GBrowserIsCompatible()) {
+      var map = new GMap2(document.getElementById("map_canvas"));
+      var center = new GLatLng(<%= (@hyperlocal_site.lat||51.5).to_f %>, <%=  @hyperlocal_site.lng.to_f %>);
+      
+      
+      
+      map.setCenter(center, 8);
+
+      var marker = new GMarker(center, {draggable: true});
+
+      GEvent.addListener(marker, "dragstart", function() {
+        map.closeInfoWindow();
+      });
+
+      GEvent.addListener(marker, "dragend", function() {
+        marker.openInfoWindowHtml("Just bouncing along...");
+      });
+
+      map.addOverlay(marker);
+
+    }
+  }​
+</script>
+
 <h1>Editing Hyperlocal Site: <%= @hyperlocal_site.title %></h1>
+<div id="map_canvas" style="width:450px; height:350px; float:right;">
+  
+</div>
 
 <%= render :partial => 'form' %>
 

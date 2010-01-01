@@ -52,6 +52,14 @@ class GenericControllerTest < ActionController::TestCase
     should "load google maps javascript if @enable_google_maps true" do
       assert_select "script", /google\.load\(\"maps/
     end
+    
+    should "load google maps javascript if @enable_google_maps true" do
+      assert_select "script", /google\.load\(\"maps/
+    end
+    
+    should "initialize map onload if @enable_google_maps true" do
+      assert_select "body[onload='initMap()']"
+    end
   end
   
   # show tests
@@ -78,6 +86,10 @@ class GenericControllerTest < ActionController::TestCase
     
     should "not load google maps javascript if @enable_google_maps not true" do
       assert_select "script", :text => /google\.load\(\"maps/, :count => 0
+    end
+    
+    should "not initialize map onload if @enable_google_maps not true" do
+      assert_select "body[onload='initMap()']", false
     end
   end
   
