@@ -205,28 +205,34 @@ class CouncilTest < ActiveSupport::TestCase
     
     context "when getting grouped datapoints" do
       setup do
-        @data_grouping = Factory(:dataset_topic_grouping, :title => "demographics")
-        @another_data_grouping = Factory(:dataset_topic_grouping, :title => "foo")
+        @data_grouping_in_words = Factory(:dataset_topic_grouping, :title => "misc", :display_as => "in_words")
+        @data_grouping_as_graph = Factory(:dataset_topic_grouping, :title => "demographics", :display_as => "graph")
+        @basic_data_grouping = Factory(:dataset_topic_grouping, :title => "spending")
+        @unused_data_grouping = Factory(:dataset_topic_grouping, :title => "foo")
         @another_council = Factory(:council, :name => "Another council")
         
-        @selected_topic_1 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "b title")
-        @selected_topic_2 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "a title")
-        @selected_topic_3 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "c title")
+        @selected_topic_1 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @basic_data_grouping, :title => "b title")
+        @selected_topic_2 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @basic_data_grouping, :title => "a title")
+        @selected_topic_3 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @basic_data_grouping, :title => "c title")
+        @selected_topic_4 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping_in_words)
+        @selected_topic_5 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping_as_graph)
         @unselected_topic = Factory(:ons_dataset_topic)
         @selected_dp_1 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_1, :value => "3.99")
         @selected_dp_2 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_2, :value => "4.99")
         @selected_dp_3 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_3, :value => "2.99")
+        @selected_dp_4 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_4)
+        @selected_dp_5 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_5)
         @unselected_dp = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @unselected_topic)
         @wrong_council_dp = Factory(:ons_datapoint, :area => @another_council, :ons_dataset_topic => @selected_topic_1)
       end
 
       should "return hash of arrays" do
-        assert_kind_of Hash, @council.grouped_datapoints
+        assert_kind_of ActiveSupport::OrderedHash, @council.grouped_datapoints
         assert_kind_of Array, @council.grouped_datapoints.values.first
       end
 
       should "use data groupings as keys" do
-        assert @council.grouped_datapoints.keys.include?(@data_grouping)
+        assert @council.grouped_datapoints.keys.include?(@basic_data_grouping)
       end
 
       should "return datapoints for topics in groupings" do
@@ -237,18 +243,35 @@ class CouncilTest < ActiveSupport::TestCase
         assert !@council.grouped_datapoints.values.flatten.include?(@unselected_dp)
       end
       
+      should "return in_words groupings first" do
+        assert_equal @data_grouping_in_words, @council.grouped_datapoints.keys.first
+      end
+      
+      should "return graph groupings next" do
+        assert_equal @data_grouping_as_graph, @council.grouped_datapoints.keys[1]
+      end
+      
+      should "return other groupings last" do
+        assert_equal @basic_data_grouping, @council.grouped_datapoints.keys.last
+      end
+      
+      should "not return groupings with no data" do
+        assert_nil @council.grouped_datapoints[@unused_data_grouping]
+      end
+      
       should "not return datapoints for different areas" do
         assert !@council.grouped_datapoints.values.flatten.include?(@wrong_council_dp)
       end
       
       should "sort by associated topic order by default" do
-        assert_equal @selected_dp_2, @council.grouped_datapoints[@data_grouping].first
+        assert_equal @selected_dp_2, @council.grouped_datapoints[@basic_data_grouping].first
       end
       
       should "return sorted if data_grouping has sort_by set" do
         @data_grouping.update_attribute(:sort_by, "value")
-        assert_equal @selected_dp_3, @council.grouped_datapoints[@data_grouping].first
+        assert_equal @selected_dp_3, @council.grouped_datapoints[@basic_data_grouping].first
       end
+      
     end
 
   end
