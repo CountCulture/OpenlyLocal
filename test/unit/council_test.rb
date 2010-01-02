@@ -268,7 +268,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "return sorted if data_grouping has sort_by set" do
-        @data_grouping.update_attribute(:sort_by, "value")
+        @basic_data_grouping.update_attribute(:sort_by, "value")
         assert_equal @selected_dp_3, @council.grouped_datapoints[@basic_data_grouping].first
       end
       
