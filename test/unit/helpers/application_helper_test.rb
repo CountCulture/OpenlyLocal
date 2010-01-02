@@ -61,6 +61,14 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link foostatus bar"), link_for(obj, :class => "bar")
     end
 
+    should "not fail if object doesn't respond_to? status" do
+      self.stubs(:mocha_mock_path).returns('/')
+      obj1 = stub_everything(:title => 'object') # so will return false to respond_to? and new_record? methods
+      obj1.stubs(:respond_to?).with(:status).returns(false)
+      obj1.stubs(:status).raises(NoMethodError) # shouldn't be called
+      assert_nothing_raised(Exception) {link_for(obj1, :class => "bar")}
+    end
+
     should "add 'new' class and flash if it has recently been created" do
       obj = Factory(:committee)
       assert_dom_equal image_tag("new_flash.gif", :alt => "new", :class => "icon") + link_to(obj.title, obj, :class => "committee_link new"), link_for(obj)
@@ -153,20 +161,6 @@ class ApplicationHelperTest < ActionView::TestCase
     should "add given class to object class" do
       obj = stale_factory_object(:committee, :title => "something & nothing... which <needs> escaping" )
       assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link bar"), basic_link_for(obj, :class => "bar")
-    end
-
-    should "add object's status of object to class" do
-      obj = stale_factory_object(:committee, :title => "something & nothing" )
-      obj.stubs(:status).returns("foostatus")
-      assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link foostatus bar"), basic_link_for(obj, :class => "bar")
-    end
-
-    should "not fail if object doesn't respond_to? status" do
-      self.stubs(:mocha_mock_path).returns('/')
-      obj1 = stub_everything(:title => 'object') #so will return false to respond_to? and new_record? methods
-      obj1.stubs(:respond_to?).with(:status).returns(false)
-      obj1.stubs(:status).raises(NoMethodError) # shouldn't be called
-      assert_nothing_raised(Exception) {basic_link_for(obj1, :class => "bar")}
     end
 
     should "not add new class if it has recently been created" do
