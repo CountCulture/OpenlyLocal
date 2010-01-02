@@ -273,7 +273,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
     end
-
+    
   end
 
   context "A Council instance" do

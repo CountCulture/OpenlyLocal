@@ -8,6 +8,10 @@ class OnsDatasetFamily < ActiveRecord::Base
   validates_presence_of :source_type
   validates_presence_of :statistical_dataset_id
 
+  # Returns Array of Datapoints (strictly BareDatapoints, which are sort of composite 
+  # datapoints created when there isn't a real datapoint we can use), each representing 
+  # the aggrated value of all datapoints for the datasetfamily, grouped by councils.
+  # See also StatisticalDataset#calculated_datapoints_for_councils
   def calculated_datapoints_for_councils
     return if calculation_method.blank?
     raw_results = ons_datapoints.sum(:value, :group => :area_id, :conditions => {:area_type => 'Council'}, :order => "sum_value DESC").to_a #for some reason we can't group by polymorphic belongs_to

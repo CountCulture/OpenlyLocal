@@ -37,8 +37,8 @@ class OnsDatasetFamilyTest < ActiveSupport::TestCase
         4.times do |i|
           @topic = Factory(:ons_dataset_topic, :ons_dataset_family => @ons_dataset_family, :muid => 1)
           Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_1, :value => i*2) # 0,2,4,6 => sum = 12
-          Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_2, :value => i*4) # 0,4,6,8 => sum = 24
-          Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_3, :value => i*3) # 0,3,6,9 => sum = 16
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_2, :value => i*4) # 0,4,8,12 => sum = 24
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_3, :value => i*3) # 0,3,6,9 => sum = 18
           Factory(:ons_datapoint, :ons_dataset_topic => @topic, :area => @council_4, :value => 0) # 0,0,0,0 => sum = 0
         end
       end

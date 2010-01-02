@@ -13,6 +13,7 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
     should_belong_to :dataset_topic_grouping
     should_have_many :ons_datapoints
     should_have_db_column :muid, :description, :data_date, :short_title
+    
   end
 
   context "An OnsDatasetTopic instance" do

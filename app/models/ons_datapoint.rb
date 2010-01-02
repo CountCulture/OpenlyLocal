@@ -6,8 +6,11 @@ class OnsDatapoint < ActiveRecord::Base
   belongs_to :ons_dataset_topic
   belongs_to :area, :polymorphic => true
 #  default_scope :include => {:ons_dataset_topic => :ons_dataset_family}
-  named_scope :with_topic_uids, lambda { |ons_uids| {:conditions => ["ons_datapoints.ons_dataset_topic_id = ons_dataset_topics.id AND ons_dataset_topics.ons_uid in (?)", ons_uids], :joins => "INNER JOIN ons_dataset_topics", :group => 'ons_datapoints.id'} }
+  named_scope :with_topic_uids, lambda { |ons_uids| { :conditions => ["ons_datapoints.ons_dataset_topic_id = ons_dataset_topics.id AND ons_dataset_topics.ons_uid in (?)", ons_uids], :joins => "INNER JOIN ons_dataset_topics", :group => 'ons_datapoints.id'} }
   named_scope :with_topic_grouping, { :conditions => "ons_datapoints.ons_dataset_topic_id = ons_dataset_topics.id AND ons_dataset_topics.dataset_topic_grouping_id IS NOT NULL", :joins => "INNER JOIN ons_dataset_topics", :group => 'ons_datapoints.id'}
+  named_scope :in_statistical_dataset, lambda { |dataset| { :conditions => ["ons_datapoints.ons_dataset_topic_id = ons_dataset_topics.id AND ons_dataset_topics.ons_dataset_family_id in (?)", dataset.ons_dataset_families.collect(&:id)], 
+                                                            :joins => "INNER JOIN ons_dataset_topics", 
+                                                            :group => 'ons_datapoints.id' } }
   # named_scope :limited_to, :conditions => []
   delegate :muid_format, :muid_type, :ons_uid, :short_title, :to => :ons_dataset_topic
   

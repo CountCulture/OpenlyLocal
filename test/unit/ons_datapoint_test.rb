@@ -34,7 +34,6 @@ class OnsDatapointTest < ActiveSupport::TestCase
         @ons_datapoint_2 = Factory(:ons_datapoint, :area => @ward)
         @ons_datapoint_3 = Factory(:ons_datapoint, :area => @ward)
         
-        @ward = @ons_datapoint.area
         @grouping = Factory(:dataset_topic_grouping)
         @another_grouping = Factory(:dataset_topic_grouping)
         @grouping.ons_dataset_topics << [@ons_datapoint.ons_dataset_topic, @ons_datapoint_2.ons_dataset_topic]
@@ -47,6 +46,31 @@ class OnsDatapointTest < ActiveSupport::TestCase
 
     end
     
+    context "when limiting to those whose topics are in a statistical_dataset" do
+      setup do
+        @ward = @ons_datapoint.area
+        @ons_datapoint_1 = Factory(:ons_datapoint, :area => @ward)
+        @ons_dataset_topic_1 = @ons_datapoint_1.ons_dataset_topic
+        @ons_dataset_family_1 = @ons_dataset_topic_1.ons_dataset_family
+        @statistical_dataset = @ons_dataset_family_1.statistical_dataset
+        @ons_dataset_family_2 = Factory(:ons_dataset_family, :statistical_dataset => @statistical_dataset)
+        @ons_dataset_topic_2 = Factory(:ons_dataset_topic, :ons_dataset_family => @ons_dataset_family_2)
+
+        @ons_datapoint_2 = Factory(:ons_datapoint, :area => @ward) #different topic, family, dataset
+        @ons_datapoint_3 = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @ons_dataset_topic_2)
+        
+        # @grouping = Factory(:dataset_topic_grouping)
+        # @another_grouping = Factory(:dataset_topic_grouping)
+        # @grouping.ons_dataset_topics << [@ons_datapoint.ons_dataset_topic, @ons_datapoint_2.ons_dataset_topic]
+        # @another_grouping.ons_dataset_topics << [@ons_datapoint_3.ons_dataset_topic]
+      end
+      
+      should "return only those datapoints with dataset_families in given dataset" do
+        assert_equal [@ons_datapoint_1, @ons_datapoint_3], OnsDatapoint.in_statistical_dataset(@statistical_dataset)
+      end
+
+    end
+
     context "when limiting to given restrictions" do
       should_eventually "return empty array if no restrictions" do
         assert_equal [], OnsDatapoint.limited_to
