@@ -106,7 +106,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     
      context "without auth" do
        setup do
-         post :create, :hyperlocal_site => {:title => "New Hyperlocal Site", :url => "http:://hyperlocal_site.com"}
+         post :create, :hyperlocal_site => Factory.attributes_for(:hyperlocal_site)
        end
 
        should_respond_with 401
@@ -115,7 +115,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
      context "with valid params" do
        setup do
          stub_authentication
-         post :create, :hyperlocal_site => {:title => "New Hyperlocal Site", :url => "http:://hyperlocal_group.com"}
+         post :create, :hyperlocal_site => Factory.attributes_for(:hyperlocal_site)
        end
      
        should_change "HyperlocalSite.count", :by => 1
