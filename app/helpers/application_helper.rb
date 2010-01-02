@@ -17,15 +17,16 @@ module ApplicationHelper
 
   def link_for(obj=nil, options={})
     return if obj.blank?
+    status = obj.respond_to?(:status) ? obj.status : nil
     freshness = options[:basic] ? nil : (obj.created_at > 7.days.ago ? "new" : (obj.updated_at > 7.days.ago ? "updated" : nil) )
+    css_class = [freshness, status, options[:class]].compact
     text = options[:extended]&&obj.respond_to?(:extended_title)&&obj.extended_title
-    (freshness&&image_tag("#{freshness}_flash.gif", :alt => freshness, :class => "icon")).to_s + basic_link_for(obj, { :freshness => freshness, :text => text }.merge(options.except(:basic, :extended)))
+    (freshness&&image_tag("#{freshness}_flash.gif", :alt => freshness, :class => "icon")).to_s + basic_link_for(obj, { :text => text, :class => css_class }.merge(options.except(:basic, :extended, :class)))
   end
 
   def basic_link_for(obj=nil, options={})
     return if obj.blank?
-    status = obj.respond_to?(:status) ? obj.status : nil
-    css_class = ["#{obj.class.to_s.downcase}_link", options.delete(:freshness), status, options[:class]].compact.join(" ")
+    css_class = ["#{obj.class.to_s.downcase}_link", options[:class]].flatten.compact.join(" ")
     text = options[:text] || obj.title
     obj.new_record? ? h(text) : link_to(h(text), obj, options.except(:text).merge({ :class => css_class }))
   end
