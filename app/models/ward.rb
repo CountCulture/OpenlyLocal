@@ -5,8 +5,8 @@ class Ward < ActiveRecord::Base
   has_many :members
   has_many :committees
   has_many :meetings, :through => :committees
-  has_many :ons_datapoints, :as => :area
-  has_many :ons_dataset_topics, :through => :ons_datapoints
+  has_many :datapoints, :as => :area
+  has_many :dataset_topics, :through => :datapoints
   allow_access_to :members, :via => :uid
   allow_access_to :committees, :via => [:uid, :normalised_title]
   validates_presence_of :name, :council_id
@@ -62,16 +62,16 @@ class Ward < ActiveRecord::Base
 
   def datapoints_for_topics(topic_ids=nil)
     return [] if topic_ids.blank? || ness_id.blank?
-    datapoints = ons_datapoints.all(:conditions => {:ons_dataset_topic_id => topic_ids})
-    if datapoints.empty?
-      topic_uids = [OnsDatasetTopic.find(topic_ids)].flatten.collect(&:ons_uid) # if only single topic is passed in, only single item will be returned. Turn into array on 1
+    dps = datapoints.all(:conditions => {:dataset_topic_id => topic_ids})
+    if dps.empty?
+      topic_uids = [DatasetTopic.find(topic_ids)].flatten.collect(&:ons_uid) # if only single topic is passed in, only single item will be returned. Turn into array on 1
       raw_datapoints = NessUtilities::RawClient.new('Tables', [['Areas', ness_id], ['Variables', topic_uids]]).process_and_extract_datapoints
-      datapoints = raw_datapoints.collect do |rd|
-        topic = OnsDatasetTopic.find_by_ons_uid(rd[:ness_topic_id])
-        ons_datapoints.create!(:ons_dataset_topic => topic, :value=>rd[:value])
+      dps = raw_datapoints.collect do |rd|
+        topic = DatasetTopic.find_by_ons_uid(rd[:ness_topic_id])
+        datapoints.create!(:dataset_topic => topic, :value=>rd[:value])
       end
     end
-    datapoints
+    dps
   end
   
   # Returns all wards (including self) in council area

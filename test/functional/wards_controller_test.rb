@@ -91,10 +91,10 @@ class WardsControllerTest < ActionController::TestCase
         @ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
         @ward.committees << @committee = Factory(:committee, :council => @council)
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
-        @datapoint = Factory(:ons_datapoint, :area => @ward)
-        @another_datapoint = Factory(:ons_datapoint, :area => @ward)
-        @graphed_datapoint = Factory(:ons_datapoint, :area => @ward)
-        @graphed_datapoint_topic = @graphed_datapoint.ons_dataset_topic       
+        @datapoint = Factory(:datapoint, :area => @ward)
+        @another_datapoint = Factory(:datapoint, :area => @ward)
+        @graphed_datapoint = Factory(:datapoint, :area => @ward)
+        @graphed_datapoint_topic = @graphed_datapoint.dataset_topic       
         dummy_grouped_datapoints = { stub_everything(:title => "demographics") => [@datapoint], 
                                      stub_everything(:title => "misc", :display_as => "in_words") => [@another_datapoint], 
                                      stub_everything(:title => "religion", :display_as => "graph") => [@graphed_datapoint]

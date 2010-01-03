@@ -1,0 +1,22 @@
+<h1>Edit Ons Dataset Topic: <%= @dataset_topic.title %></h1>
+<p><strong>Ness Id</strong> <%= @dataset_topic.ons_uid %></p>
+
+<%= error_messages_for :dataset_topic %>
+
+<% form_for @dataset_topic do |f| -%>
+  <p>
+    <%= f.label :short_title %>
+    <%= f.text_field :short_title %>
+  </p>
+
+  <p>
+    <%= f.label :dataset_topic_grouping_id %>
+    <%= f.select :dataset_topic_grouping_id, DatasetTopicGrouping.all.collect{ |g| [g.title, g.id] }, :include_blank => true %>
+  </p>
+
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>
+
+<%= button_to "Populate with data", populate_dataset_topic_path(@dataset_topic), :confirm => "Are you sure?", :method => :post %>

@@ -53,10 +53,6 @@ class GenericControllerTest < ActionController::TestCase
       assert_select "script", /google\.load\(\"maps/
     end
     
-    should "load google maps javascript if @enable_google_maps true" do
-      assert_select "script", /google\.load\(\"maps/
-    end
-    
     should "initialize map onload if @enable_google_maps true" do
       assert_select "body[onload='initMap()']"
     end

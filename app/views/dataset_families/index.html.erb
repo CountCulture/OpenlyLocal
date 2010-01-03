@@ -1,0 +1,15 @@
+<h1>ONS Datasets</h1>
+
+<ul id="datasets">
+  <%- @datasets.each do |dataset| -%>
+    <li><%= link_to dataset.title, :anchor => dom_id(dataset) %></li>
+  <%- end %>
+</ul>
+
+<%- @datasets.each do |dataset| -%>
+  <%- div_for dataset do -%>
+    <a name='<%= dom_id(dataset) %>'></a>
+    <h3><%= dataset.title %></h3>
+    <%= list_all dataset.dataset_families %>
+  <%- end %>
+<%- end %>

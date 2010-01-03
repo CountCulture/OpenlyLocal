@@ -1,5 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :statistical_datasets
+  map.resources :datasets
 
   map.resources :dataset_topic_groupings
 
@@ -8,7 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :hyperlocal_sites
 
 
-  map.resources :datasets, :member => { :data => :get }
+  map.resources :old_datasets, :member => { :data => :get }
 
   map.resources :scrapers
   map.resources :item_scrapers, :controller => "scrapers"
@@ -18,8 +18,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
 
-  map.resources :committees, :documents, :meetings, :members, :ons_datapoints, :ons_dataset_families, :parsers, :portal_systems, :police_forces, :police_authorities, :services, :wards
-  map.resources :ons_dataset_topics, :except => [:new, :destroy, :index], :member => { :populate => :post }
+  map.resources :committees, :documents, :meetings, :members, :datapoints, :dataset_families, :parsers, :portal_systems, :police_forces, :police_authorities, :services, :wards
+  map.resources :dataset_topics, :except => [:new, :destroy, :index], :member => { :populate => :post }
 
   map.resources :councils
   map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}, :only => [:show]}) do |restype|

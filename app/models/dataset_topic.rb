@@ -1,8 +1,8 @@
-class OnsDatasetTopic < ActiveRecord::Base
-  belongs_to :ons_dataset_family
+class DatasetTopic < ActiveRecord::Base
+  belongs_to :dataset_family
   belongs_to :dataset_topic_grouping
-  has_many :ons_datapoints, :dependent => :destroy
-  validates_presence_of :title, :ons_dataset_family_id#, :ons_uid
+  has_many :datapoints, :dependent => :destroy
+  validates_presence_of :title, :dataset_family_id#, :ons_uid
 
   def extended_title
     muid_type ? "#{title} (#{muid_type})" : title
@@ -22,7 +22,7 @@ class OnsDatasetTopic < ActiveRecord::Base
   
   # returns all ancestors, furthest away first, to allow breadcrumbs to be built
   def parents
-    [ons_dataset_family.statistical_dataset, ons_dataset_family]
+    [dataset_family.dataset, dataset_family]
   end
 
   # updates datapoints for all councils and emails results. NB Is used by Delayed::Job
@@ -49,7 +49,7 @@ class OnsDatasetTopic < ActiveRecord::Base
     logger.debug { "Found #{raw_datapoints.size} raw datapoints for #{council.name} wards:\n #{raw_datapoints.inspect}" }
     raw_datapoints.collect do |rdp|
       next unless ward = wards.detect{|w| w.ness_id == rdp[:ness_area_id]}
-      dp = ons_datapoints.find_or_initialize_by_area_type_and_area_id('Ward', ward.id)
+      dp = datapoints.find_or_initialize_by_area_type_and_area_id('Ward', ward.id)
       dp.update_attributes(:value => rdp[:value])
       dp
     end

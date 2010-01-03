@@ -14,8 +14,8 @@ class WardTest < ActiveSupport::TestCase
     should_have_many :members
     should_have_many :committees
     should_have_many :meetings, :through => :committees
-    should_have_many :ons_datapoints
-    should_have_many :ons_dataset_topics, :through => :ons_datapoints
+    should_have_many :datapoints
+    should_have_many :dataset_topics, :through => :datapoints
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url
@@ -172,15 +172,15 @@ class WardTest < ActiveSupport::TestCase
         @another_data_grouping = Factory(:dataset_topic_grouping, :title => "foo")
         @another_ward = Factory(:ward, :name => "another ward", :council => @council)
 
-        @selected_topic_1 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "b title")
-        @selected_topic_2 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "a title")
-        @selected_topic_3 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "c title")
-        @unselected_topic = Factory(:ons_dataset_topic)
-        @selected_dp_1 = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @selected_topic_1, :value => "3.99")
-        @selected_dp_2 = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @selected_topic_2, :value => "4.99")
-        @selected_dp_3 = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @selected_topic_3, :value => "2.99")
-        @unselected_dp = Factory(:ons_datapoint, :area => @ward, :ons_dataset_topic => @unselected_topic)
-        @wrong_ward_dp = Factory(:ons_datapoint, :area => @another_ward, :ons_dataset_topic => @selected_topic_1)
+        @selected_topic_1 = Factory(:dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "b title")
+        @selected_topic_2 = Factory(:dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "a title")
+        @selected_topic_3 = Factory(:dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "c title")
+        @unselected_topic = Factory(:dataset_topic)
+        @selected_dp_1 = Factory(:datapoint, :area => @ward, :dataset_topic => @selected_topic_1, :value => "3.99")
+        @selected_dp_2 = Factory(:datapoint, :area => @ward, :dataset_topic => @selected_topic_2, :value => "4.99")
+        @selected_dp_3 = Factory(:datapoint, :area => @ward, :dataset_topic => @selected_topic_3, :value => "2.99")
+        @unselected_dp = Factory(:datapoint, :area => @ward, :dataset_topic => @unselected_topic)
+        @wrong_ward_dp = Factory(:datapoint, :area => @another_ward, :dataset_topic => @selected_topic_1)
       end
 
       should "return hash of arrays" do
@@ -217,14 +217,14 @@ class WardTest < ActiveSupport::TestCase
     context "when getting datapoints for topics" do
       setup do
         @another_ward = Factory(:ward, :name => "Another ward", :council => @ward.council)
-        @ward_dp = Factory(:ons_datapoint, :area => @ward)
-        @another_ward_dp = Factory(:ons_datapoint, :area => @ward)
-        @wrong_ward_dp = Factory(:ons_datapoint, :area => @another_ward)
+        @ward_dp = Factory(:datapoint, :area => @ward)
+        @another_ward_dp = Factory(:datapoint, :area => @ward)
+        @wrong_ward_dp = Factory(:datapoint, :area => @another_ward)
         @ward.update_attribute(:ness_id, 1234)
       end
 
       should "return datapoints for ward with given topic ids" do
-        dps = @ward.datapoints_for_topics([@ward_dp.ons_dataset_topic.id, @another_ward_dp.ons_dataset_topic.id])
+        dps = @ward.datapoints_for_topics([@ward_dp.dataset_topic.id, @another_ward_dp.dataset_topic.id])
         assert_equal [@ward_dp, @another_ward_dp], dps
       end
 
@@ -235,13 +235,13 @@ class WardTest < ActiveSupport::TestCase
 
       should "return empty array if no ness_id" do
         @ward.update_attribute(:ness_id, nil)
-        assert_equal [], @ward.datapoints_for_topics([@ward_dp.ons_dataset_topic.id])
+        assert_equal [], @ward.datapoints_for_topics([@ward_dp.dataset_topic.id])
       end
 
       context "and datapoints don't exist" do
         setup do
-          @ons_topic_1 = Factory(:ons_dataset_topic, :ons_uid => 63)
-          @ons_topic_2 = Factory(:ons_dataset_topic, :ons_uid => 2329)
+          @ons_topic_1 = Factory(:dataset_topic, :ons_uid => 63)
+          @ons_topic_2 = Factory(:dataset_topic, :ons_uid => 2329)
           NessUtilities::RawClient.any_instance.stubs(:_http_post).returns(dummy_xml_response(:ness_datapoints))
         end
 
@@ -251,7 +251,7 @@ class WardTest < ActiveSupport::TestCase
         end
 
         should "save results of Ness query as datapoints" do
-          assert_difference('OnsDatapoint.count', 2) do
+          assert_difference('Datapoint.count', 2) do
             @ward.datapoints_for_topics([@ons_topic_1.id,@ons_topic_2.id])
           end
         end
@@ -259,13 +259,13 @@ class WardTest < ActiveSupport::TestCase
         should "return newly saved datapoints" do
           dps = @ward.datapoints_for_topics([@ons_topic_1.id,@ons_topic_2.id])
           assert_equal 2, dps.size
-          assert_kind_of OnsDatapoint, dps.first
+          assert_kind_of Datapoint, dps.first
         end
 
         should "store data returned from Ness query in datapoints" do
           dps = @ward.datapoints_for_topics([@ons_topic_1.id,@ons_topic_2.id])
-          dp1 = dps.detect{ |dp| dp.ons_dataset_topic_id == @ons_topic_1.id}
-          dp2 = dps.detect{ |dp| dp.ons_dataset_topic_id == @ons_topic_2.id}
+          dp1 = dps.detect{ |dp| dp.dataset_topic_id == @ons_topic_1.id}
+          dp2 = dps.detect{ |dp| dp.dataset_topic_id == @ons_topic_2.id}
           assert_equal @ward, dp1.area
           assert_equal 37.9, dp1[:value] # we're just checking stored value, not value after it's been typecast
           assert_equal @ward, dp2.area

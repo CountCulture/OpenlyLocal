@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class OnsDatapointsHelperTest < ActionView::TestCase
+class DatapointsHelperTest < ActionView::TestCase
   context "the formatted_datapoint_value helper method" do
     should "return nil if value blank" do
       assert_nil formatted_datapoint_value(stub_everything)

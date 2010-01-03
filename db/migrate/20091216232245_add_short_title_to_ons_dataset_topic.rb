@@ -1,4 +1,4 @@
-class AddShortTitleToOnsDatasetTopic < ActiveRecord::Migration
+class AddShortTitleToDatasetTopic < ActiveRecord::Migration
   def self.up
     add_column :ons_dataset_topics, :short_title, :string
   end

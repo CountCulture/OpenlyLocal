@@ -8,7 +8,7 @@ class DatasetTopicGroupingTest < ActiveSupport::TestCase
     end
 
     should_validate_presence_of :title
-    should_have_many :ons_dataset_topics
+    should_have_many :dataset_topics
     should_have_db_columns :display_as, :sort_by
   end
 end

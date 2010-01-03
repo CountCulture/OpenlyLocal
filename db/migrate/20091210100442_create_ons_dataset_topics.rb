@@ -1,4 +1,4 @@
-class CreateOnsDatasetTopics < ActiveRecord::Migration
+class CreateDatasetTopics < ActiveRecord::Migration
   def self.up
     create_table :ons_dataset_topics do |t|
       t.string :title

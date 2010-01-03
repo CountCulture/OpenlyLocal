@@ -13,8 +13,8 @@ task :get_ness_subject_and_datasets => :environment do
     puts "about to add #{datasets.size} datasets for this subject"
     datasets.each do |dataset_data|
       p dataset_data
-        dsf = OnsDatasetFamily.find_or_create_by_ons_uid(:ons_uid => dataset_data.dSFamilyId, :title => dataset_data.name)
-        subj.ons_dataset_families << dsf unless subj.ons_dataset_families.include?(dsf)
+        dsf = DatasetFamily.find_or_create_by_ons_uid(:ons_uid => dataset_data.dSFamilyId, :title => dataset_data.name)
+        subj.dataset_families << dsf unless subj.dataset_families.include?(dsf)
         puts "successfully added/found dataset_family #{dsf.title} (#{dsf.ons_uid})"
         data_ranges = [dataset_data.dateRange].flatten #could be single date_range or array of them
         data_ranges.each do |date_range|
@@ -46,7 +46,7 @@ end
 
 desc "Get Ness Dataset topics"
 task :get_ness_dataset_topics => :environment do
-  datasets = OnsDatasetFamily.all
+  datasets = DatasetFamily.all
   datasets.each do |dataset|
     client = NessUtilities::RawClient.new('VariableFamilies', [['DSFamilyId', dataset.ons_uid]])
     begin
@@ -58,7 +58,7 @@ task :get_ness_dataset_topics => :environment do
         title = topic.at('Name').inner_text
         muid = topic.at('MUId').inner_text
         data_date = topic.at('EndDate').inner_text
-        topic_record = dataset.ons_dataset_topics.find_or_initialize_by_ons_uid(ons_uid)
+        topic_record = dataset.dataset_topics.find_or_initialize_by_ons_uid(ons_uid)
         topic_record.update_attributes(:title => title, :muid => muid, :data_date => data_date)
         puts "Found/Updated #{title} (ons_uid: #{ons_uid}, muid: #{muid}, data_date: #{data_date})"
       end
@@ -71,7 +71,7 @@ end
 desc "Import Local Spending 2006-2007"
 task :import_local_spending => :environment do
   require 'pp'
-  spending_dataset = StatisticalDataset.create!(  :title => "Local Spending Report England 2006-07", 
+  spending_dataset = Dataset.create!(  :title => "Local Spending Report England 2006-07", 
                                                   :url => "http://www.communities.gov.uk/publications/corporate/statistics/localspendingreports200607", 
                                                   :originator => "Department of Communities and Local Government", 
                                                   :originator_url => "http://www.communities.gov.uk/")
@@ -79,17 +79,17 @@ task :import_local_spending => :environment do
   families = rows.shift[2..-1]
   topics = rows.shift[2..-1]
   p families, topics
-  ons_families = families.collect{ |f| OnsDatasetFamily.find_or_create_by_title_and_source_type(:title => "#{f.strip} spending", :source_type => "Spending", :statistical_dataset => spending_dataset, :calculation_method => "sum") }
+  ons_families = families.collect{ |f| DatasetFamily.find_or_create_by_title_and_source_type(:title => "#{f.strip} spending", :source_type => "Spending", :dataset => spending_dataset, :calculation_method => "sum") }
   ons_topics = []
   
-  topics.each_with_index{ |t,i| ons_topics << ons_families[i].ons_dataset_topics.find_or_create_by_title(:title => "#{t.strip} spending", :muid => 9, :data_date => "2007-04-04") }
+  topics.each_with_index{ |t,i| ons_topics << ons_families[i].dataset_topics.find_or_create_by_title(:title => "#{t.strip} spending", :muid => 9, :data_date => "2007-04-04") }
 
   pp ons_families, ons_topics
   
   rows.each do |row|
     if council = Council.find_by_cipfa_code(row[0])
       row[2..-1].each_with_index do |raw_dp, i|
-        dp = council.ons_datapoints.find_or_initialize_by_ons_dataset_topic_id(:ons_dataset_topic_id => ons_topics[i].id, :value => raw_dp.to_i*1000)
+        dp = council.datapoints.find_or_initialize_by_dataset_topic_id(:dataset_topic_id => ons_topics[i].id, :value => raw_dp.to_i*1000)
         begin
           dp.save!
         rescue Exception => e
@@ -105,19 +105,19 @@ end
 
 desc "Add Dataset relationships"
 task :add_dataset_relationships => :environment do
-  ness_dataset = StatisticalDataset.create!(  :title => "ONS Neighbourhood Statistics", 
+  ness_dataset = Dataset.create!(  :title => "ONS Neighbourhood Statistics", 
                                               :url => "http://www.neighbourhood.statistics.gov.uk/", 
                                               :originator => "Office for National Statistics", 
                                               :originator_url => "http://www.statistics.gov.uk/")
-  OnsDatasetFamily.update_all("statistical_dataset_id = #{ness_dataset.id}", "source_type = 'Ness'")
+  DatasetFamily.update_all("dataset_id = #{ness_dataset.id}", "source_type = 'Ness'")
 end
 
 desc "Convert NessSelectedTopics top topic_groupings"
 task :convert_ness_selected_topics_to_groupings => :environment do
   NessSelectedTopics.each do |key, value|
-    grouping = DatasetTopicGrouping.find_or_create_by_title(key.to_s, :display_as => DisplayOnsDatapoints[key])
-    grouping.ons_dataset_topics << OnsDatasetTopic.find_all_by_ons_uid(value)
-    p grouping.ons_dataset_topics
+    grouping = DatasetTopicGrouping.find_or_create_by_title(key.to_s, :display_as => DisplayDatapoints[key])
+    grouping.dataset_topics << DatasetTopic.find_all_by_ons_uid(value)
+    p grouping.dataset_topics
   end
 end
 
@@ -131,7 +131,7 @@ task :get_ness_selected_topic_info_for_councils => :environment do
     puts "Found #{raw_datapoints.size} raw datapoints for councils"
     raw_datapoints.each do |rdp|
       next unless council = councils.detect{|c| c.ness_id == rdp[:ness_area_id]}
-      dp = OnsDatasetTopic.find_by_ons_uid(rdp[:ness_topic_id]).ons_datapoints.find_or_initialize_by_area_type_and_area_id('Council', council.id)
+      dp = DatasetTopic.find_by_ons_uid(rdp[:ness_topic_id]).datapoints.find_or_initialize_by_area_type_and_area_id('Council', council.id)
       dp.update_attributes(:value => rdp[:value])
       p dp
     end

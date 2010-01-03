@@ -1,73 +1,73 @@
 require 'test_helper'
 
-class OnsDatasetTopicTest < ActiveSupport::TestCase
-  subject { @ons_dataset_topic }
-  context "The OnsDatasetTopic class" do
+class DatasetTopicTest < ActiveSupport::TestCase
+  subject { @dataset_topic }
+  context "The DatasetTopic class" do
     setup do
-      @ons_dataset_topic = Factory(:ons_dataset_topic)
+      @dataset_topic = Factory(:dataset_topic)
     end
     should_validate_presence_of :title
     # should_validate_presence_of :ons_uid
-    should_validate_presence_of :ons_dataset_family_id
-    should_belong_to :ons_dataset_family
+    should_validate_presence_of :dataset_family_id
+    should_belong_to :dataset_family
     should_belong_to :dataset_topic_grouping
-    should_have_many :ons_datapoints
+    should_have_many :datapoints
     should_have_db_column :muid, :description, :data_date, :short_title
     
   end
 
-  context "An OnsDatasetTopic instance" do
+  context "An DatasetTopic instance" do
     setup do
-      @ons_dataset_topic = Factory(:ons_dataset_topic)
+      @dataset_topic = Factory(:dataset_topic)
     end
 
     context "when returning extended_title" do
       should "return title attribute including muid type if set" do
-        topic = OnsDatasetTopic.new(:title => 'foo')
+        topic = DatasetTopic.new(:title => 'foo')
         topic.stubs(:muid_type => "Percentage")
         assert_equal 'foo (Percentage)', topic.extended_title
       end
       
       should "return title attribute by default" do
-        assert_equal 'foo', OnsDatasetTopic.new(:title => 'foo').title
+        assert_equal 'foo', DatasetTopic.new(:title => 'foo').title
       end
     end
 
     context "when returning short_title" do
       should "return title attribute if :short_title attribute is blank" do
-        assert_equal 'foo', OnsDatasetTopic.new(:title => 'foo').short_title
+        assert_equal 'foo', DatasetTopic.new(:title => 'foo').short_title
       end
 
       should "return short_title attribute if set" do
-        assert_equal 'bar', OnsDatasetTopic.new(:title => 'foo', :short_title => 'bar').short_title
+        assert_equal 'bar', DatasetTopic.new(:title => 'foo', :short_title => 'bar').short_title
       end
     end
 
     context "when returning muid_format" do
       should "return nil if muid is blank" do
-        assert_nil Factory.build(:ons_dataset_topic).muid_format
-        assert_nil Factory.build(:ons_dataset_topic, :muid => 99).muid_format
+        assert_nil Factory.build(:dataset_topic).muid_format
+        assert_nil Factory.build(:dataset_topic, :muid => 99).muid_format
       end
 
       should "return format when set" do
-        assert_equal "%.1f%", Factory.build(:ons_dataset_topic, :muid => 2).muid_format
+        assert_equal "%.1f%", Factory.build(:dataset_topic, :muid => 2).muid_format
       end
     end
 
     context "when returning muid_type" do
       should "return nil if muid is blank" do
-        assert_nil Factory.build(:ons_dataset_topic).muid_type
-        assert_nil Factory.build(:ons_dataset_topic, :muid => 99).muid_type
+        assert_nil Factory.build(:dataset_topic).muid_type
+        assert_nil Factory.build(:dataset_topic, :muid => 99).muid_type
       end
 
       should "return type when set" do
-        assert_equal "Percentage", Factory.build(:ons_dataset_topic, :muid => 2).muid_type
+        assert_equal "Percentage", Factory.build(:dataset_topic, :muid => 2).muid_type
       end
     end
 
     should "return statistical dataset and family as parents" do
-      expected_parents = [@ons_dataset_topic.ons_dataset_family.statistical_dataset, @ons_dataset_topic.ons_dataset_family]
-      assert_equal expected_parents, @ons_dataset_topic.parents
+      expected_parents = [@dataset_topic.dataset_family.dataset, @dataset_topic.dataset_family]
+      assert_equal expected_parents, @dataset_topic.parents
     end
 
     context "when updating datapoints for council" do
@@ -82,38 +82,38 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
       end
 
       should "should fetch data from Ness database" do
-        NessUtilities::RawClient.expects(:new).with('ChildAreaTables', [['ParentAreaId', @council.ness_id], ['LevelTypeId', '14'], ['Variables', @ons_dataset_topic.ons_uid]]).returns(stub(:process_and_extract_datapoints=>[]))
-        @ons_dataset_topic.update_datapoints(@council)
+        NessUtilities::RawClient.expects(:new).with('ChildAreaTables', [['ParentAreaId', @council.ness_id], ['LevelTypeId', '14'], ['Variables', @dataset_topic.ons_uid]]).returns(stub(:process_and_extract_datapoints=>[]))
+        @dataset_topic.update_datapoints(@council)
       end
 
       should "not fetch data from Ness database when council has no ness_id" do
         @council.update_attribute(:ness_id, nil)
         NessUtilities::RawClient.expects(:new).never
-        @ons_dataset_topic.update_datapoints(@council)
+        @dataset_topic.update_datapoints(@council)
       end
 
       should "save datapoints" do
-        assert_difference 'OnsDatapoint.count', 2 do
-          @ons_dataset_topic.update_datapoints(@council)
+        assert_difference 'Datapoint.count', 2 do
+          @dataset_topic.update_datapoints(@council)
         end
       end
 
       should "associate datapoints with correct wards" do
-        @ons_dataset_topic.update_datapoints(@council)
-        assert_equal 51.0, @ward1.ons_datapoints.first[:value]
-        assert_equal 42.0, @ward2.ons_datapoints.first[:value]
+        @dataset_topic.update_datapoints(@council)
+        assert_equal 51.0, @ward1.datapoints.first[:value]
+        assert_equal 42.0, @ward2.datapoints.first[:value]
       end
 
       should "return datapoints" do
-        assert_kind_of Array, dps = @ons_dataset_topic.update_datapoints(@council)
+        assert_kind_of Array, dps = @dataset_topic.update_datapoints(@council)
         assert_equal 2, dps.size
-        assert_kind_of OnsDatapoint, dps.first
+        assert_kind_of Datapoint, dps.first
       end
 
       should "update existing datapoints" do
-        @existing_datapoint = @ward2.ons_datapoints.create(:ons_dataset_topic_id => @ons_dataset_topic.id, :value => '99')
-        assert_difference 'OnsDatapoint.count', 1 do
-          @ons_dataset_topic.update_datapoints(@council)
+        @existing_datapoint = @ward2.datapoints.create(:dataset_topic_id => @dataset_topic.id, :value => '99')
+        assert_difference 'Datapoint.count', 1 do
+          @dataset_topic.update_datapoints(@council)
         end
         assert_equal 42.0, @existing_datapoint.reload[:value]
       end
@@ -126,8 +126,8 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         end
 
         should "not add datapoints" do
-          assert_no_difference 'OnsDatapoint.count' do
-            @ons_dataset_topic.update_datapoints(@council)
+          assert_no_difference 'Datapoint.count' do
+            @dataset_topic.update_datapoints(@council)
           end
         end
       end
@@ -138,24 +138,24 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         end
 
         should "not raise exception" do
-          assert_nothing_raised(Exception) { @ons_dataset_topic.update_datapoints(@council) }
+          assert_nothing_raised(Exception) { @dataset_topic.update_datapoints(@council) }
         end
 
         should "add matched datapoint" do
-          @ons_dataset_topic.update_datapoints(@council)
-          assert @ward1.ons_datapoints.empty?
-          assert_equal 42.0, @ward2.ons_datapoints.first[:value]
+          @dataset_topic.update_datapoints(@council)
+          assert @ward1.datapoints.empty?
+          assert_equal 42.0, @ward2.datapoints.first[:value]
         end
 
         should "not add unmatched datapoint" do
-          assert_difference 'OnsDatapoint.count', 1 do
-            @ons_dataset_topic.update_datapoints(@council)
+          assert_difference 'Datapoint.count', 1 do
+            @dataset_topic.update_datapoints(@council)
           end
         end
 
         should "update matching datapoint" do
-          @existing_datapoint = @ward2.ons_datapoints.create(:ons_dataset_topic_id => @ons_dataset_topic.id, :value => '99')
-          @ons_dataset_topic.update_datapoints(@council)
+          @existing_datapoint = @ward2.datapoints.create(:dataset_topic_id => @dataset_topic.id, :value => '99')
+          @dataset_topic.update_datapoints(@council)
           assert_equal 42.0, @existing_datapoint.reload[:value]
         end
       end
@@ -167,17 +167,17 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         @council = Factory(:council, :ness_id => 211)
         @another_council = Factory(:another_council, :ness_id => 242)
         @no_ness_council = Factory(:tricky_council)
-        @ons_dataset_topic.stubs(:update_datapoints)
+        @dataset_topic.stubs(:update_datapoints)
       end
 
       should "update datapoints for councils with ness_id" do
-        @ons_dataset_topic.expects(:update_datapoints).twice.with(){|council| [@council.id, @another_council.id].include?(council.id)}
-        @ons_dataset_topic.process
+        @dataset_topic.expects(:update_datapoints).twice.with(){|council| [@council.id, @another_council.id].include?(council.id)}
+        @dataset_topic.process
       end
 
       should "not update datapoints for councils without ness_id" do
-        @ons_dataset_topic.expects(:update_datapoints).with(){|council| @no_ness_council.id == council.id }.never
-        @ons_dataset_topic.process
+        @dataset_topic.expects(:update_datapoints).with(){|council| @no_ness_council.id == council.id }.never
+        @dataset_topic.process
       end
     end
     
@@ -186,18 +186,18 @@ class OnsDatasetTopicTest < ActiveSupport::TestCase
         @council = Factory(:council, :ness_id => 211)
         @another_council = Factory(:another_council, :ness_id => 242)
         @no_ness_council = Factory(:tricky_council)
-        @ons_dataset_topic.stubs(:update_datapoints)
+        @dataset_topic.stubs(:update_datapoints)
       end
 
       should "process topic" do
-        @ons_dataset_topic.expects(:process)
-        @ons_dataset_topic.perform
+        @dataset_topic.expects(:process)
+        @dataset_topic.perform
       end
 
       should "email results" do
-        @ons_dataset_topic.perform
+        @dataset_topic.perform
         assert_sent_email do |email|
-          email.subject =~ /ONS Dataset Topic updated/ && email.body =~ /#{@ons_dataset_topic.title}/m
+          email.subject =~ /ONS Dataset Topic updated/ && email.body =~ /#{@dataset_topic.title}/m
         end
       end
     end

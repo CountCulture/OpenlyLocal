@@ -9,7 +9,7 @@
       
       <%- if group.display_as == "in_words" -%>
         <div id="misc" class="stats_in_words">
-          <%= ons_statistics_in_words(:misc => datapoints) %>
+          <%= statistics_in_words(:misc => datapoints) %>
         </div>
       <%- else -%>
         <%- content_tag :div, :class => "datapoint_grouping #{group.title} #{(group.display_as=="graph") ? 'graphed_datapoints' : ''}" do -%>
@@ -31,7 +31,7 @@
           <%- if group.display_as == "graph" -%>
             <div id="religion_graph" class="graph">
               <h4>Religion</h4>
-              <%= ons_statistics_graph(group => datapoints) %>
+              <%= statistics_graph(group => datapoints) %>
             </div>
           <%- end -%>
         <%- end -%>

@@ -13,14 +13,14 @@ class BareDatapointTest < Test::Unit::TestCase
       assert_equal 123, BareDatapoint.new(:value => 123).value
     end
     
-    should "store given ons_dataset_topic as ons_dataset_topic" do
+    should "store given dataset_topic as dataset_topic" do
       dummy_topic = stub
-      assert_equal dummy_topic, BareDatapoint.new(:ons_dataset_topic => dummy_topic).ons_dataset_topic
+      assert_equal dummy_topic, BareDatapoint.new(:dataset_topic => dummy_topic).dataset_topic
     end
     
-    should "store given ons_dataset_family as ons_dataset_family" do
+    should "store given dataset_family as dataset_family" do
       dummy_family = stub
-      assert_equal dummy_family, BareDatapoint.new(:ons_dataset_family => dummy_family).ons_dataset_family
+      assert_equal dummy_family, BareDatapoint.new(:dataset_family => dummy_family).dataset_family
     end
     
     should "store given muid_type as muid_type" do

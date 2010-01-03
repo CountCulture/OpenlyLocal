@@ -20,13 +20,13 @@ class Council < ActiveRecord::Base
   has_many :officers
   has_one  :chief_executive, :class_name => "Officer", :conditions => {:position => "Chief Executive"}
   has_one  :police_authority, :through => :police_force
-  has_many :datapoints
-  has_many :datasets, :through => :datapoints
+  has_many :old_datapoints
+  has_many :old_datasets, :through => :old_datapoints
   has_many :meeting_documents, :through => :meetings, :source => :documents, :select => "documents.id, documents.title, documents.document_type, documents.document_owner_type, documents.document_owner_id, documents.created_at, documents.updated_at", :order => "documents.created_at DESC"
   has_many :past_meeting_documents, :through => :held_meetings, :source => :documents, :order => "documents.created_at DESC"
   has_many :services
-  has_many :ons_datapoints, :as => :area
-  has_many :ons_dataset_topics, :through => :ons_datapoints
+  has_many :datapoints, :as => :area
+  has_many :dataset_topics, :through => :datapoints
   belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
   has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   belongs_to :portal_system
@@ -137,7 +137,6 @@ class Council < ActiveRecord::Base
   
   def to_detailed_xml(options={})
     includes = {:members => {:only => [:id, :first_name, :last_name, :party, :url]}, :wards => {}}
-    [:datasets].each{ |a| includes[a] = { :only => [ :id, :title, :url ] } }
     to_xml({:include => includes}.merge(options)) do |builder|
       builder<<active_committees.to_xml(:skip_instruct => true, :root => "committees", :only => [ :id, :title, :url ], :methods => [:openlylocal_url])
       builder<<meetings.forthcoming.to_xml(:skip_instruct => true, :root => "meetings", :methods => [:title, :formatted_date])

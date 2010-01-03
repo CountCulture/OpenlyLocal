@@ -1,4 +1,4 @@
-module OnsDatapointsHelper
+module DatapointsHelper
   def formatted_datapoint_value(datapoint)
     return if datapoint.value.blank?
     if datapoint.muid_type == "Pounds Sterling"

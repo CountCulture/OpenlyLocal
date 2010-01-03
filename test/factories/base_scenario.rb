@@ -78,15 +78,15 @@ Factory.define :document do |f|
   f.body "This is a document. It goes " + "on and on and on"*10
 end
 
-Factory.define :dataset do |f|
+Factory.define :old_dataset do |f|
   f.key "abc123"
   f.title "Dummy dataset"
   f.query "some query"
 end
 
-Factory.define :datapoint do |f|
+Factory.define :old_datapoint do |f|
   f.association :council
-  f.association :dataset
+  f.association :old_dataset
   f.data        "some data"
 end
 
@@ -156,33 +156,33 @@ Factory.define :ons_subject do |f|
   f.sequence(:ons_uid) { |n| n }
 end
 
-Factory.define :statistical_dataset do |f|
+Factory.define :dataset do |f|
   f.sequence(:title) { |n| "Dataset #{n}" }
   f.originator "ONS"
 end
 
-Factory.define :ons_dataset_family do |f|
+Factory.define :dataset_family do |f|
   f.sequence(:title) { |n| "Ons Dataset #{n}" }
   f.sequence(:ons_uid) { |n| n }
   f.source_type "Ness"
-  f.association :statistical_dataset
+  f.association :dataset
 end
 
 Factory.define :ons_dataset do |f|
   f.sequence(:start_date) { |n| (2.years.ago - (n*5).days).to_date }
   f.sequence(:end_date) { |n| (2.years.ago - (n*5 - 2).days).to_date }
-  f.association :ons_dataset_family
+  f.association :dataset_family
 end
 
-Factory.define :ons_dataset_topic do |f|
+Factory.define :dataset_topic do |f|
   f.sequence(:title) { |n| "Ons topic #{n}" }
   f.sequence(:ons_uid) { |n| 21+n }
-  f.association :ons_dataset_family
+  f.association :dataset_family
 end
 
-Factory.define :ons_datapoint do |f|
+Factory.define :datapoint do |f|
   f.sequence(:value) { |n| 21+n }
-  f.association :ons_dataset_topic
+  f.association :dataset_topic
   f.association :area, :factory => :ward
 end
 

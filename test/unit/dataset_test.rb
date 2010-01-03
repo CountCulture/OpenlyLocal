@@ -1,167 +1,133 @@
 require 'test_helper'
 
 class DatasetTest < ActiveSupport::TestCase
-  subject { @dataset }
   
+  subject { @dataset }
   context "The Dataset class" do
+    setup do
+      @dataset = Factory(:dataset)
+    end
+
+    should_have_db_columns :title, :description, :url, :originator, :originator_url
+    should_validate_presence_of :title, :originator
+    should_validate_uniqueness_of :title
+    should_have_many :dataset_families
+    should_have_many :dataset_topics, :through => :dataset_families
+
+  end
+
+  context "A Dataset instance" do
     setup do
       @dataset = Factory(:dataset) 
     end
-
-    should_have_db_columns :title, :source, :key, :query, :description, :originator, :originator_url, :summary_column, :last_checked
-    should_validate_presence_of :title, :key, :query
-    should_have_many :datapoints
-
-    should "have base_url" do
-      assert_match /spreadsheets.google/, Dataset::BASE_URL
-    end
     
-    should "should return stale datasets" do
-      @fresh_dataset = Factory(:dataset, :key => "foo123", :last_checked => 6.days.ago)
-      @stale_dataset = Factory(:dataset, :key => "bar456", :last_checked => 8.days.ago)
-      stale_datasets = Dataset.stale
-      
-      assert_equal 2, stale_datasets.size
-      
-      assert stale_datasets.include?(@stale_dataset)
-      assert stale_datasets.include?(@dataset)
-      assert !stale_datasets.include?(@fresh_dataset)
-    end
-    
-  end
-  
-  context "A Dataset instance" do
-    setup do
-      @dataset = Factory.create(:dataset, :query => "select A,B,C,D,E,F,G")
-      @council = Factory(:council)
-      @another_council = Factory(:another_council)
-    end
-
-    should_validate_uniqueness_of :key
-    
-    should "constuct public_url from key" do
-      assert_equal "http://spreadsheets.google.com/pub?key=abc123", @dataset.public_url
-    end
-    
-    should "build query_url from query, key when no council given" do
-      @council.stubs(:short_name).returns("Foo bar")
-      assert_equal 'http://spreadsheets.google.com/tq?tqx=out:csv&tq=select+A%2CB%2CC%2CD%2CE%2CF%2CG&key=abc123', @dataset.query_url
-    end
-    
-    should "build query_url from query, key and council short title" do
-      @council.stubs(:short_name).returns("Foo bar")
-      assert_equal 'http://spreadsheets.google.com/tq?tqx=out:csv&tq=select+A%2CB%2CC%2CD%2CE%2CF%2CG+where+A+contains+%27Foo+bar%27&key=abc123', @dataset.query_url(@council)
-    end
-    
-    context "when processing" do
+    context "when returning calculated_datapoints_for_councils" do
       setup do
-        @csv_response = "\"LOCAL AUTHORITY\",\"Authority Type\"\n\"Bristol City \",\"UA\"\n\"Anytown Council\",\"LB\""
-        @dataset.stubs(:query_url).returns("some_url")
-        @dataset.stubs(:_http_get).returns(@csv_response)
-      end
+        @dataset_family_1 = Factory(:dataset_family, :dataset => @dataset)
+        @dataset_family_1.update_attribute(:calculation_method, "sum")
+        @dataset_family_2 = Factory(:dataset_family, :dataset => @dataset)
+        @dataset_family_2.update_attribute(:calculation_method, "sum")
 
-      should "build query_url" do
-        @dataset.expects(:query_url)
-        @dataset.process
-      end
-      
-      should "get data from query_url" do
-        @dataset.expects(:_http_get).with("some_url").returns(@csv_response)
-        @dataset.process
-      end
-      
-      should "parse csv data" do
-        FasterCSV.expects(:parse).with(@csv_response, anything).returns([["LOCAL AUTHORITY"],["Anytown Council"]])
-        @dataset.process
-      end
-      
-      should "return nil if no data found" do
-        @dataset.expects(:_http_get).returns(nil) # using expects overrides stubbing
-        assert_nil @dataset.process
-      end
-      
-      should "save data as datapoints for matching councils" do
-        old_count = Datapoint.count
-        @dataset.process
-        assert_equal old_count+1, Datapoint.count
-      end
-      
-      should "associate datapoint with council" do
-        @dataset.process
-        assert_equal @council, Datapoint.find(:first, :order => "id DESC").council
-      end
-      
-      should "associate datapoint with dataset" do
-        @dataset.process
-        assert_equal @dataset, Datapoint.find(:first, :order => "id DESC").dataset
-      end
-      
-      should "save data as datapoint data for council" do
-        @dataset.process
-        assert_equal [["LOCAL AUTHORITY", "Authority Type"], ["Anytown Council", "LB"]], @council.datapoints.find(:first, :order => "id DESC").data
-      end
-      
-      should "update last_checked timestamp" do
-        @dataset.process
-        assert_in_delta Time.now, @dataset.reload.last_checked, 2
-      end
-      
-      should "not update updated_at timestamp" do
-        Dataset.record_timestamps = false # update timestamp without triggering callbacks
-        @dataset.update_attribute(:updated_at, 2.hours.ago)
-        Dataset.record_timestamps = true 
-        
-        @dataset.process
-        assert_in_delta 2.hours.ago, @dataset.updated_at, 2
-        
-      end
-      
-      context "and datapoint already exists for council and dataset" do
-        setup do
-          @old_datapoint = Factory(:datapoint, :council => @council, :dataset => @dataset)
-        end
-        
-        should "not create new datapoint" do
-          old_count = Datapoint.count
-          @dataset.process
-          assert_equal old_count, Datapoint.count
-        end
-
-        should "update data for datapoint" do
-          @dataset.process
-          assert_equal [["LOCAL AUTHORITY", "Authority Type"], ["Anytown Council", "LB"]], @old_datapoint.reload.data
+        @council_1 = Factory(:council)
+        @council_2 = Factory(:council, :name => "Council 2")
+        @council_3 = Factory(:council, :name => "Council 3")
+        4.times do |i|
+          @topic_1 = Factory(:dataset_topic, :dataset_family => @dataset_family_1, :muid => 1)
+          @topic_2 = Factory(:dataset_topic, :dataset_family => @dataset_family_2, :muid => 1)
+          Factory(:datapoint, :dataset_topic => @topic_1, :area => @council_1, :value => i*2) # 0,2,4,6 => sum = 12
+          Factory(:datapoint, :dataset_topic => @topic_2, :area => @council_2, :value => i*4) # 0,4,8,12 => sum = 24
+          Factory(:datapoint, :dataset_topic => @topic_2, :area => @council_2, :value => i*3) # 0,3,6,9 => sum = 18
+          Factory(:datapoint, :dataset_topic => @topic_2, :area => @council_3, :value => 0) # 0,0,0,0 => sum = 0
         end
       end
       
+      should "return array of BareDapoints" do
+        assert_kind_of Array, dps = @dataset.calculated_datapoints_for_councils
+        assert_kind_of BareDatapoint, dps.first
+      end
+      
+      should "assign dataset_topic muid_format and muid_type to BareDapoints" do
+        dps = @dataset.calculated_datapoints_for_councils
+        assert_equal @topic_1.muid_format, dps.first.muid_format
+        assert_equal @topic_1.muid_format, dps.last.muid_format
+        assert_equal @topic_1.muid_type, dps.first.muid_type
+        assert_equal @topic_1.muid_type, dps.last.muid_type
+      end
+      
+      should "return sorted_by value, largest first" do
+        dp = @dataset.calculated_datapoints_for_councils.first
+        assert_equal @council_2, dp.area
+        assert_equal 42.0, dp.value #sum of all datapoints for council_2
+      end
+      
+      should "not return entries with zero value" do
+        dps = @dataset.calculated_datapoints_for_councils
+        assert !dps.any?{ |dp| dp.area == @council_3 }
+      end
+      
+      should "return nil if no matching datapoints" do
+        assert_nil Factory(:dataset).calculated_datapoints_for_councils
+      end
+      
+      should "return nil if calculation_method is blank on any family" do
+        @dataset_family_2.update_attribute(:calculation_method, "")
+        assert_nil @dataset.calculated_datapoints_for_councils
+      end
     end
     
-    context "when getting data for council" do
+    context "when returning calculated_datapoints_for a council" do
       setup do
-        @csv_response = "\"LOCAL AUTHORITY\",\"Authority Type\"\n\"Bristol City \",\"UA\""
-        @dataset.stubs(:query_url).returns("some_url")
-        @dataset.stubs(:_http_get).returns(@csv_response)
-      end
+        @dataset_family_1 = Factory(:dataset_family, :dataset => @dataset)
+        @dataset_family_1.update_attribute(:calculation_method, "sum")
+        @dataset_family_2 = Factory(:dataset_family, :dataset => @dataset)
+        @dataset_family_2.update_attribute(:calculation_method, "sum")
 
-      should "build query_url using council" do
-        @dataset.expects(:query_url).with(@council)
-        @dataset.data_for(@council)
+        @council_1 = Factory(:council)
+        @council_2 = Factory(:council, :name => "Council 2")
+        @council_3 = Factory(:council, :name => "Council 3")
+        4.times do |i|
+          @topic_1 = Factory(:dataset_topic, :dataset_family => @dataset_family_1, :muid => 1)
+          @topic_2 = Factory(:dataset_topic, :dataset_family => @dataset_family_2, :muid => 1)
+          Factory(:datapoint, :dataset_topic => @topic_1, :area => @council_1, :value => i*2) # 0,2,4,6 => sum = 12
+          Factory(:datapoint, :dataset_topic => @topic_1, :area => @council_2, :value => i*3) # 0,3,6,9 => sum = 18
+          Factory(:datapoint, :dataset_topic => @topic_2, :area => @council_2, :value => i*4) # 0,4,8,12 => sum = 24
+          Factory(:datapoint, :dataset_topic => @topic_2, :area => @council_3, :value => 0) # 0,0,0,0 => sum = 0
+        end
       end
       
-      should "get data from query_url" do
-        @dataset.expects(:_http_get).with("some_url").returns(@csv_response)
-        @dataset.data_for(@council)
+      should "return array of BareDapoints" do
+        assert_kind_of Array, dps = @dataset.calculated_datapoints_for(@council_2)
+        assert_kind_of BareDatapoint, dps.first
       end
       
-      should "parse csv data into ruby array" do
-        parsed_response = [["LOCAL AUTHORITY", "Bristol City "], ["Authority Type", "UA"]]
-        assert_equal parsed_response, @dataset.data_for(@council)
+      should "assign dataset_topic muid_format and muid_type to BareDapoints" do
+        dps = @dataset.calculated_datapoints_for(@council_2)
+        assert_equal @topic_1.muid_format, dps.first.muid_format
+        assert_equal @topic_1.muid_format, dps.last.muid_format
+        assert_equal @topic_1.muid_type, dps.first.muid_type
+        assert_equal @topic_1.muid_type, dps.last.muid_type
       end
       
-      should "return nil if no data found" do
-        @dataset.expects(:_http_get).returns(nil) # using expects overrides stubbing
-        assert_nil @dataset.data_for(@council)
+      should "return sorted_by value, largest first" do
+        dp = @dataset.calculated_datapoints_for(@council_2).first
+        assert_equal @dataset_family_2, dp.dataset_family
+        assert_equal 24.0, dp.value # sum of all datapoints for council_2 for dataset_family_2
+      end
+      
+      should_eventually "not return entries with zero value" do
+        #think about this. Might be good to show zero values
+      end
+      
+      should "return nil if no matching datapoints" do
+        assert_nil Factory(:dataset).calculated_datapoints_for(@council_2)
+      end
+      
+      should "return nil if calculation_method is blank on any family" do
+        @dataset_family_2.update_attribute(:calculation_method, "")
+        assert_nil @dataset.calculated_datapoints_for(@council_2)
       end
     end
-    
   end
+
+
 end

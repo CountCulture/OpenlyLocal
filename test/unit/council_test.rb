@@ -14,7 +14,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :memberships
     should_have_many :scrapers
     should_have_many :meetings
-    should_have_many :datapoints
+    should_have_many :old_datapoints
     should_have_many :wards
     should_have_many :officers
     should_have_many :services
@@ -26,8 +26,8 @@ class CouncilTest < ActiveSupport::TestCase
     should_belong_to :parent_authority
     should_belong_to :portal_system
     should_belong_to :police_force
-    should_have_many :ons_datapoints
-    should_have_many :ons_dataset_topics, :through => :ons_datapoints
+    should_have_many :datapoints
+    should_have_many :dataset_topics, :through => :datapoints
     should_have_db_column :notes
     should_have_db_column :wikipedia_url
     should_have_db_column :ons_url
@@ -67,9 +67,9 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
 
-    should "have many datasets through datapoints" do
-      @datapoint = Factory(:datapoint, :council => @council)
-      assert_equal [@datapoint.dataset], @council.datasets
+    should "have many old_datasets through old_datapoints" do
+      @datapoint = Factory(:old_datapoint, :council => @council)
+      assert_equal [@datapoint.old_dataset], @council.old_datasets
     end
 
     should "have many memberships through members" do
@@ -211,19 +211,19 @@ class CouncilTest < ActiveSupport::TestCase
         @unused_data_grouping = Factory(:dataset_topic_grouping, :title => "foo")
         @another_council = Factory(:council, :name => "Another council")
         
-        @selected_topic_1 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @basic_data_grouping, :title => "b title")
-        @selected_topic_2 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @basic_data_grouping, :title => "a title")
-        @selected_topic_3 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @basic_data_grouping, :title => "c title")
-        @selected_topic_4 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping_in_words)
-        @selected_topic_5 = Factory(:ons_dataset_topic, :dataset_topic_grouping => @data_grouping_as_graph)
-        @unselected_topic = Factory(:ons_dataset_topic)
-        @selected_dp_1 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_1, :value => "3.99")
-        @selected_dp_2 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_2, :value => "4.99")
-        @selected_dp_3 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_3, :value => "2.99")
-        @selected_dp_4 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_4)
-        @selected_dp_5 = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @selected_topic_5)
-        @unselected_dp = Factory(:ons_datapoint, :area => @council, :ons_dataset_topic => @unselected_topic)
-        @wrong_council_dp = Factory(:ons_datapoint, :area => @another_council, :ons_dataset_topic => @selected_topic_1)
+        @selected_topic_1 = Factory(:dataset_topic, :dataset_topic_grouping => @basic_data_grouping, :title => "b title")
+        @selected_topic_2 = Factory(:dataset_topic, :dataset_topic_grouping => @basic_data_grouping, :title => "a title")
+        @selected_topic_3 = Factory(:dataset_topic, :dataset_topic_grouping => @basic_data_grouping, :title => "c title")
+        @selected_topic_4 = Factory(:dataset_topic, :dataset_topic_grouping => @data_grouping_in_words)
+        @selected_topic_5 = Factory(:dataset_topic, :dataset_topic_grouping => @data_grouping_as_graph)
+        @unselected_topic = Factory(:dataset_topic)
+        @selected_dp_1 = Factory(:datapoint, :area => @council, :dataset_topic => @selected_topic_1, :value => "3.99")
+        @selected_dp_2 = Factory(:datapoint, :area => @council, :dataset_topic => @selected_topic_2, :value => "4.99")
+        @selected_dp_3 = Factory(:datapoint, :area => @council, :dataset_topic => @selected_topic_3, :value => "2.99")
+        @selected_dp_4 = Factory(:datapoint, :area => @council, :dataset_topic => @selected_topic_4)
+        @selected_dp_5 = Factory(:datapoint, :area => @council, :dataset_topic => @selected_topic_5)
+        @unselected_dp = Factory(:datapoint, :area => @council, :dataset_topic => @unselected_topic)
+        @wrong_council_dp = Factory(:datapoint, :area => @another_council, :dataset_topic => @selected_topic_1)
       end
 
       should "return hash of arrays" do
@@ -509,7 +509,7 @@ class CouncilTest < ActiveSupport::TestCase
     context "when converting council to_detailed_xml" do
       setup do
         @member = Factory(:member, :council => @council, :party => "foobar")
-        datapoint = Factory(:datapoint, :council => @council)
+        datapoint = Factory(:old_datapoint, :council => @council)
         @committee = Factory(:committee, :council => @council)
         mark_as_stale(@committee)
         @updated_committee = Factory(:committee, :council => @council)
@@ -553,10 +553,6 @@ class CouncilTest < ActiveSupport::TestCase
 
       should "not include member emails" do
         assert_no_match %r(<member.+<email>#{@old_member.email}.+</member)m, @council.to_detailed_xml
-      end
-
-      should "include dataset ids" do
-        assert_match %r(<dataset.+<id.+</dataset)m, @council.to_detailed_xml
       end
 
       should "include committee ids" do

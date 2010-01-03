@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100101121552) do
+ActiveRecord::Schema.define(:version => 20100103142513) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -74,15 +74,35 @@ ActiveRecord::Schema.define(:version => 20100101121552) do
   add_index "councils", ["portal_system_id"], :name => "index_councils_on_portal_system_id"
 
   create_table "datapoints", :force => true do |t|
-    t.text     "data"
-    t.integer  "council_id"
-    t.integer  "dataset_id"
+    t.float    "value"
+    t.integer  "dataset_topic_id"
+    t.integer  "area_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "area_type"
+    t.float    "dummy"
   end
 
-  add_index "datapoints", ["council_id"], :name => "index_datapoints_on_council_id"
-  add_index "datapoints", ["dataset_id"], :name => "index_datapoints_on_dataset_id"
+  add_index "datapoints", ["area_id"], :name => "index_ons_datapoints_on_ward_id"
+  add_index "datapoints", ["dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
+
+  create_table "dataset_families", :force => true do |t|
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ons_uid"
+    t.string   "source_type"
+    t.integer  "dataset_id"
+    t.string   "calculation_method"
+  end
+
+  create_table "dataset_families_ons_subjects", :id => false, :force => true do |t|
+    t.integer "ons_subject_id"
+    t.integer "dataset_family_id"
+  end
+
+  add_index "dataset_families_ons_subjects", ["dataset_family_id", "ons_subject_id"], :name => "ons_subjects_families_join_index"
+  add_index "dataset_families_ons_subjects", ["ons_subject_id", "dataset_family_id"], :name => "ons_families_subjects_join_index"
 
   create_table "dataset_topic_groupings", :force => true do |t|
     t.string   "title"
@@ -92,18 +112,29 @@ ActiveRecord::Schema.define(:version => 20100101121552) do
     t.string   "sort_by"
   end
 
-  create_table "datasets", :force => true do |t|
+  create_table "dataset_topics", :force => true do |t|
     t.string   "title"
-    t.string   "key"
-    t.string   "source"
-    t.string   "query"
+    t.integer  "ons_uid"
+    t.integer  "dataset_family_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "muid"
     t.text     "description"
+    t.date     "data_date"
+    t.string   "short_title"
+    t.integer  "dataset_topic_grouping_id"
+  end
+
+  add_index "dataset_topics", ["dataset_family_id"], :name => "index_ons_dataset_topics_on_ons_dataset_family_id"
+
+  create_table "datasets", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.string   "url"
     t.string   "originator"
     t.string   "originator_url"
-    t.integer  "summary_column"
-    t.datetime "last_checked"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "delayed_jobs", :force => true do |t|
@@ -242,61 +273,40 @@ ActiveRecord::Schema.define(:version => 20100101121552) do
 
   add_index "officers", ["council_id"], :name => "index_officers_on_council_id"
 
-  create_table "ons_datapoints", :force => true do |t|
-    t.float    "value"
-    t.integer  "ons_dataset_topic_id"
-    t.integer  "area_id"
+  create_table "old_datapoints", :force => true do |t|
+    t.text     "data"
+    t.integer  "council_id"
+    t.integer  "old_dataset_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "area_type"
-    t.float    "dummy"
   end
 
-  add_index "ons_datapoints", ["area_id"], :name => "index_ons_datapoints_on_ward_id"
-  add_index "ons_datapoints", ["ons_dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
+  add_index "old_datapoints", ["council_id"], :name => "index_datapoints_on_council_id"
+  add_index "old_datapoints", ["old_dataset_id"], :name => "index_datapoints_on_dataset_id"
 
-  create_table "ons_dataset_families", :force => true do |t|
+  create_table "old_datasets", :force => true do |t|
     t.string   "title"
+    t.string   "key"
+    t.string   "source"
+    t.string   "query"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ons_uid"
-    t.string   "source_type"
-    t.integer  "statistical_dataset_id"
-    t.string   "calculation_method"
-  end
-
-  create_table "ons_dataset_families_ons_subjects", :id => false, :force => true do |t|
-    t.integer "ons_subject_id"
-    t.integer "ons_dataset_family_id"
-  end
-
-  add_index "ons_dataset_families_ons_subjects", ["ons_dataset_family_id", "ons_subject_id"], :name => "ons_subjects_families_join_index"
-  add_index "ons_dataset_families_ons_subjects", ["ons_subject_id", "ons_dataset_family_id"], :name => "ons_families_subjects_join_index"
-
-  create_table "ons_dataset_topics", :force => true do |t|
-    t.string   "title"
-    t.integer  "ons_uid"
-    t.integer  "ons_dataset_family_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "muid"
     t.text     "description"
-    t.date     "data_date"
-    t.string   "short_title"
-    t.integer  "dataset_topic_grouping_id"
+    t.string   "originator"
+    t.string   "originator_url"
+    t.integer  "summary_column"
+    t.datetime "last_checked"
   end
-
-  add_index "ons_dataset_topics", ["ons_dataset_family_id"], :name => "index_ons_dataset_topics_on_ons_dataset_family_id"
 
   create_table "ons_datasets", :force => true do |t|
     t.date     "start_date"
     t.date     "end_date"
-    t.integer  "ons_dataset_family_id"
+    t.integer  "dataset_family_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "ons_datasets", ["ons_dataset_family_id"], :name => "index_ons_datasets_on_ons_dataset_family_id"
+  add_index "ons_datasets", ["dataset_family_id"], :name => "index_ons_datasets_on_ons_dataset_family_id"
 
   create_table "ons_subjects", :force => true do |t|
     t.string   "title"
@@ -396,16 +406,6 @@ ActiveRecord::Schema.define(:version => 20100101121552) do
 
   add_index "services", ["council_id"], :name => "index_services_on_council_id"
   add_index "services", ["ldg_service_id"], :name => "index_services_on_ldg_service_id"
-
-  create_table "statistical_datasets", :force => true do |t|
-    t.string   "title"
-    t.text     "description"
-    t.string   "url"
-    t.string   "originator"
-    t.string   "originator_url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "wards", :force => true do |t|
     t.string   "name"

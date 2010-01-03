@@ -49,7 +49,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
     context "with basic request" do
       setup do
         stub_authentication
-        @ons_dataset_topic = Factory(:ons_dataset_topic, :dataset_topic_grouping => @dataset_topic_grouping)
+        @dataset_topic = Factory(:dataset_topic, :dataset_topic_grouping => @dataset_topic_grouping)
         get :show, :id => @dataset_topic_grouping.id
       end
 
@@ -62,7 +62,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
       end
 
       should "list associated dataset_topics" do
-        assert_select 'li a', @ons_dataset_topic.title
+        assert_select 'li a', @dataset_topic.title
       end
     end
   end

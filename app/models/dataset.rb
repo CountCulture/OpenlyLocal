@@ -1,59 +1,50 @@
 class Dataset < ActiveRecord::Base
-  BASE_URL = 'http://spreadsheets.google.com/'
-  has_many :datapoints
-  validates_presence_of :title, :key, :query
-  validates_uniqueness_of :key
-  
-  def data_for(council)
-    raw_response = _http_get(query_url(council))
-    _parse(raw_response).by_col.collect{|c| c.flatten} unless raw_response.blank?
-  end
-  
-  def process
-    raw_response = _http_get(query_url)
-    return if raw_response.blank?
-    update_last_scraped
-    rows = _parse(raw_response).to_a
-    header_row = rows.shift
-    all_councils = Council.find(:all)
-    all_councils.each do |council|
-      c_row = rows.detect { |row_data| row_data.first.match(council.short_name) }
-      if c_row
-        dp = council.datapoints.find_or_initialize_by_dataset_id(id)
-        dp.update_attributes(:data => [header_row, c_row])
-      end
+
+  has_many :dataset_families, :dependent => :destroy
+  has_many :dataset_topics, :through => :dataset_families
+  validates_presence_of :title, :originator
+  validates_uniqueness_of :title
+
+  # Returns Array of Datapoints (strictly BareDatapoints, which are sort of composite 
+  # datapoints created when there isn't a real datapoint we can use), each representing 
+  # the aggregated value of all datapoints for the whole statistical dataset, grouped 
+  # by councils.
+  # See also DatasetFamily#calculated_datapoints_for_councils
+  def calculated_datapoints_for_councils
+    return if dataset_families.any?{ |t| t.calculation_method.blank? }
+    raw_results = Datapoint.sum( :value, 
+                                    :group => :area_id, 
+                                    :conditions => { :area_type => 'Council', :dataset_topic_id => dataset_topics.collect(&:id)}, 
+                                    :order => "sum_value DESC").to_a
+    return if raw_results.blank?
+    raw_results = raw_results.select{ |r| r.last > 0.0 }.transpose
+    councils = Council.find(raw_results.first) # .. so we have to go through hoops if we want to return councils as keys to values, rather than council_ids. 
+    # There's also the the problem that default_scope on councils returns in named order, not order we asked for them in, and something funny going on with OrderedHash returned from
+    # sum, which means order is screwing up
+    res = []
+    muid_format, muid_type = dataset_topics.first.muid_format, dataset_topics.first.muid_type
+    raw_results.first.each_with_index do |council_id, i|
+      council = councils.detect{ |c| c.id == council_id }
+      res<< BareDatapoint.new(:area => council, :value => raw_results.last[i], :muid_format => muid_format, :muid_type => muid_type)
     end
+    res
   end
-  
-  def self.stale
-    find(:all, :conditions => ["last_checked < ? OR last_checked IS NULL", 7.days.ago], :order => "last_checked ASC")
-  end
-  
-  # This is the url where original datasheet in spreadsheet can be seen
-  def public_url
-    BASE_URL + "pub?key=#{key}"
-  end
-  
-  # This is the url for make a query through google visualization api
-  def query_url(council=nil)
-    BASE_URL + 'tq?tqx=out:csv&tq=' + CGI.escape(query + (council ? " where A contains '#{council.short_name}'" : '')) + "&key=#{key}"
-  end
-  
-  # Doesn't currently mixin ScrapedModel module, so add manually
-  def status
-  end
-  
-  protected
-  def _http_get(url)
-    return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
-    open(url)
-  end
-  
-  def _parse(response)
-    FasterCSV.parse(response, :headers => true)
-  end
-  
-  def update_last_scraped
-    self.class.update_all({:last_checked => Time.zone.now}, "id = #{id}")
+
+  # Returns Array of Datapoints (strictly BareDatapoints, which are sort of composite 
+  # datapoints created when there isn't a real datapoint we can use), each representing 
+  # the aggregated value of all datapoints for each child dataset family for a given council.
+  def calculated_datapoints_for(council)
+    return if dataset_families.any?{ |t| t.calculation_method.blank? }
+    raw_results = council.datapoints.in_dataset(self).sum(:value, :group => "dataset_topics.dataset_family_id", :order => "sum_value DESC").to_a
+    return if raw_results.blank?
+    raw_results = raw_results.transpose
+    dataset_families = DatasetFamily.find(raw_results.first) # .. so we have to go through hoops if we want to return dataset_families as keys to values, rather than dataset_families_ids. 
+    res = []
+    raw_results.first.each_with_index do |dataset_family_id, i|
+      dataset_family = dataset_families.detect{ |f| f.id == dataset_family_id.to_i } # NB because we are grouping by SQL (see above) id is not cast into integer
+      muid_format, muid_type = dataset_family.dataset_topics.first.muid_format, dataset_family.dataset_topics.first.muid_type
+      res<< BareDatapoint.new(:dataset_family => dataset_family, :value => raw_results.last[i], :muid_format => muid_format, :muid_type => muid_type)
+    end
+    res
   end
 end
