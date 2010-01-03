@@ -1,3 +1,4 @@
+<%= render :partial => 'shared/experimental_flash' %>
 <div class="ons_subjects">
   <%= @ons_dataset_family.ons_subjects.collect { |sub| link_to sub.title, ons_dataset_families_path(:anchor => dom_id(sub)) }.join(' :: ') %>
 </div>
