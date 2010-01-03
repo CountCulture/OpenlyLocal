@@ -7,7 +7,7 @@ module AreaStatisticMethods
     res = ActiveSupport::OrderedHash.new
     groups = ons_datapoints.with_topic_grouping.group_by{ |dp| dp.ons_dataset_topic.dataset_topic_grouping } #get the datapoints and group by topic_grouping
     groups = groups.to_a.sort{ |a,b| sort_order.index(b.first.display_as).to_i <=> sort_order.index(a.first.display_as).to_i } # sort into order accoding to given sort order
-    groups.each{ |a| res[a.first] = a.last.sort_by{ |e| e.send(a.first.sort_by || "short_title") } } #add to new ordered hash, sorting datapoints by grouping sort order or short_title if no sort_order
+    groups.each{ |a| res[a.first] = a.last.sort_by{ |e| e.send(a.first.sort_by.blank? ? "short_title" : a.first.sort_by) } } #add to new ordered hash, sorting datapoints by grouping sort order or short_title if no sort_order
     res
   end
 end
