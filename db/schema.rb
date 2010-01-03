@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100103142513) do
+ActiveRecord::Schema.define(:version => 20100103175217) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(:version => 20100103142513) do
     t.float    "dummy"
   end
 
-  add_index "datapoints", ["area_id"], :name => "index_ons_datapoints_on_ward_id"
+  add_index "datapoints", ["area_id", "area_type"], :name => "index_datapoints_on_area_id_and_area_type"
   add_index "datapoints", ["dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
 
   create_table "dataset_families", :force => true do |t|
@@ -95,6 +95,8 @@ ActiveRecord::Schema.define(:version => 20100103142513) do
     t.integer  "dataset_id"
     t.string   "calculation_method"
   end
+
+  add_index "dataset_families", ["dataset_id"], :name => "index_dataset_families_on_dataset_id"
 
   create_table "dataset_families_ons_subjects", :id => false, :force => true do |t|
     t.integer "ons_subject_id"
@@ -126,6 +128,7 @@ ActiveRecord::Schema.define(:version => 20100103142513) do
   end
 
   add_index "dataset_topics", ["dataset_family_id"], :name => "index_ons_dataset_topics_on_ons_dataset_family_id"
+  add_index "dataset_topics", ["dataset_topic_grouping_id"], :name => "index_dataset_topics_on_dataset_topic_grouping_id"
 
   create_table "datasets", :force => true do |t|
     t.string   "title"
@@ -197,6 +200,8 @@ ActiveRecord::Schema.define(:version => 20100103142513) do
     t.string   "platform"
     t.text     "description"
   end
+
+  add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"
 
   create_table "ldg_services", :force => true do |t|
     t.string   "category"
@@ -351,6 +356,8 @@ ActiveRecord::Schema.define(:version => 20100103142513) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "police_authorities", ["police_force_id"], :name => "index_police_authorities_on_police_force_id"
 
   create_table "police_forces", :force => true do |t|
     t.string   "name"
