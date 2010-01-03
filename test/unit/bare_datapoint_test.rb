@@ -13,9 +13,20 @@ class BareDatapointTest < Test::Unit::TestCase
       assert_equal 123, BareDatapoint.new(:value => 123).value
     end
     
+    should "store given ons_dataset_topic as ons_dataset_topic" do
+      dummy_topic = stub
+      assert_equal dummy_topic, BareDatapoint.new(:ons_dataset_topic => dummy_topic).ons_dataset_topic
+    end
+    
+    should "store given ons_dataset_family as ons_dataset_family" do
+      dummy_family = stub
+      assert_equal dummy_family, BareDatapoint.new(:ons_dataset_family => dummy_family).ons_dataset_family
+    end
+    
     should "store given muid_type as muid_type" do
       assert_equal 4, BareDatapoint.new(:muid_type => 4).muid_type
     end
+    
     should "store given muid_format as muid_format" do
       assert_equal "foo", BareDatapoint.new(:muid_format => "foo").muid_format
     end

@@ -75,6 +75,58 @@ class StatisticalDatasetTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning calculated_datapoints_for a council" do
+      setup do
+        @ons_dataset_family_1 = Factory(:ons_dataset_family, :statistical_dataset => @statistical_dataset)
+        @ons_dataset_family_1.update_attribute(:calculation_method, "sum")
+        @ons_dataset_family_2 = Factory(:ons_dataset_family, :statistical_dataset => @statistical_dataset)
+        @ons_dataset_family_2.update_attribute(:calculation_method, "sum")
+
+        @council_1 = Factory(:council)
+        @council_2 = Factory(:council, :name => "Council 2")
+        @council_3 = Factory(:council, :name => "Council 3")
+        4.times do |i|
+          @topic_1 = Factory(:ons_dataset_topic, :ons_dataset_family => @ons_dataset_family_1, :muid => 1)
+          @topic_2 = Factory(:ons_dataset_topic, :ons_dataset_family => @ons_dataset_family_2, :muid => 1)
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic_1, :area => @council_1, :value => i*2) # 0,2,4,6 => sum = 12
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic_1, :area => @council_2, :value => i*3) # 0,3,6,9 => sum = 18
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic_2, :area => @council_2, :value => i*4) # 0,4,8,12 => sum = 24
+          Factory(:ons_datapoint, :ons_dataset_topic => @topic_2, :area => @council_3, :value => 0) # 0,0,0,0 => sum = 0
+        end
+      end
+      
+      should "return array of BareDapoints" do
+        assert_kind_of Array, dps = @statistical_dataset.calculated_datapoints_for(@council_2)
+        assert_kind_of BareDatapoint, dps.first
+      end
+      
+      should "assign ons_dataset_topic muid_format and muid_type to BareDapoints" do
+        dps = @statistical_dataset.calculated_datapoints_for(@council_2)
+        assert_equal @topic_1.muid_format, dps.first.muid_format
+        assert_equal @topic_1.muid_format, dps.last.muid_format
+        assert_equal @topic_1.muid_type, dps.first.muid_type
+        assert_equal @topic_1.muid_type, dps.last.muid_type
+      end
+      
+      should "return sorted_by value, largest first" do
+        dp = @statistical_dataset.calculated_datapoints_for(@council_2).first
+        assert_equal @ons_dataset_family_2, dp.ons_dataset_family
+        assert_equal 24.0, dp.value # sum of all datapoints for council_2 for ons_dataset_family_2
+      end
+      
+      should_eventually "not return entries with zero value" do
+        #think about this. Might be good to show zero values
+      end
+      
+      should "return nil if no matching datapoints" do
+        assert_nil Factory(:statistical_dataset).calculated_datapoints_for(@council_2)
+      end
+      
+      should "return nil if calculation_method is blank on any family" do
+        @ons_dataset_family_2.update_attribute(:calculation_method, "")
+        assert_nil @statistical_dataset.calculated_datapoints_for(@council_2)
+      end
+    end
   end
 
 

@@ -32,5 +32,5 @@
 </div>
   
 <%- unless @datapoints.blank? -%>
-  <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @ons_dataset_family.title, :subject => @statistics_table_subject, :source =>@ons_dataset_family.parents } %>
+  <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @ons_dataset_family.title, :subject => @statistics_table_subject, :source => @ons_dataset_family.parents } %>
 <%- end -%>

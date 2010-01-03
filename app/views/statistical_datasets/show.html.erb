@@ -4,10 +4,14 @@
   <%= attribute_tag :originator, link_to(@statistical_dataset.originator, @statistical_dataset.originator_url) %>
   <%= attribute_tag :source, link_to(@statistical_dataset.url, @statistical_dataset.url) %>
 </dl>
-
-<div id="relationships">
-  <h3>Dataset Families</h3>
-  <%= list_all @statistical_dataset.ons_dataset_families %>
-</div>
+<%- unless @area -%>
+  <div id="relationships">
+    <h3>Dataset Families</h3>
+    <%= list_all @statistical_dataset.ons_dataset_families %>
+  </div>
+<%- end -%>
+<%- unless @datapoints.blank? -%>
+  <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @statistical_dataset.title, :subject => @statistics_table_subject, :source => [@statistical_dataset] } %>
+<%- end -%>
 
 <%= timestamp_data_for @statistical_dataset %>
