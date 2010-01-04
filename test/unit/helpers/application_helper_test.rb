@@ -507,7 +507,7 @@ class ApplicationHelperTest < ActionView::TestCase
     end
     
     should "style description background position based on value to make graph" do
-      expected_position = 7.6*(100.0/@dummy_datapoint_1.value.to_f)*@dummy_datapoint_2.value.to_f #full length is 800px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
+      expected_position = 7.7*(100.0/@dummy_datapoint_1.value.to_f)*@dummy_datapoint_2.value.to_f #full length is 770px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
       actual_position = @table.at(".selected td.description")["style"].scan(/([\d\.]+)px/).to_s
       assert_in_delta(expected_position, actual_position, 0.1)
     end
@@ -548,8 +548,8 @@ class ApplicationHelperTest < ActionView::TestCase
       end
       
       should "adjust multiplier when styling description background position to make graph" do
-        expected_position = 7*(100.0/@dummy_datapoint_1.value.to_f)*@dummy_datapoint_2.value.to_f #full length is 800px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
-        actual_position = @table.at(".selected td.description")["style"].scan(/([\d\.]+)px/).to_s
+        expected_position = 7.1*(100.0/@dummy_datapoint_1.value.to_f)*@dummy_datapoint_2.value.to_f #full length is 740px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
+        actual_position = @dt.at(".selected td.description")["style"].scan(/([\d\.]+)px/).to_s
         assert_in_delta(expected_position, actual_position, 0.1)
       end
 

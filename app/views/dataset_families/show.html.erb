@@ -10,23 +10,25 @@
   <%= attribute_tag :ons_reference, @dataset_family.ons_uid %>
 </dl>
 
-<div id="relationships">
-  <%- unless @dataset_family.ons_datasets.blank? -%>
-    <div id='ons_datasets' class='item_grouping'>
-      <h3>Possible sample periods</h3>
-      <ul>
-        <%- @dataset_family.ons_datasets.each do |dataset| -%>
-          <li><%= dataset.title %></li>
-        <%- end -%>
-      </ul>
-    </div>
-  <%- end -%>
+<%- unless @area -%>
+  <div id="relationships">
+    <%- unless @dataset_family.ons_datasets.blank? -%>
+      <div id='ons_datasets' class='item_grouping'>
+        <h3>Possible sample periods</h3>
+        <ul>
+          <%- @dataset_family.ons_datasets.each do |dataset| -%>
+            <li><%= dataset.title %></li>
+          <%- end -%>
+        </ul>
+      </div>
+    <%- end -%>
   
-  <div id='dataset_topics' class='item_grouping'>
-    <h3>Topics</h3>
-    <%= list_all @dataset_family.dataset_topics, :extended => true %>
+    <div id='dataset_topics' class='item_grouping'>
+      <h3>Topics</h3>
+      <%= list_all @dataset_family.dataset_topics, :extended => true %>
+    </div>
   </div>
-</div>
+<%- end -%>
   
 <%- unless @datapoints.blank? -%>
 <!-- <div class="alert">

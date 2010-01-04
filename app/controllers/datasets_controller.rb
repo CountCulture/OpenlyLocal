@@ -11,9 +11,11 @@ class DatasetsController < ApplicationController
     if @area
       @datapoints = @dataset.calculated_datapoints_for(@area)
       @statistics_table_description = :subject
+      @table_caption = "#{@dataset.title} <em>for #{@area.title}</em>"
     else
       @datapoints = @dataset.calculated_datapoints_for_councils
       @statistics_table_description = :area
+      @table_caption = "#{@dataset.title} <em>by council</em>"
     end
   end
 end

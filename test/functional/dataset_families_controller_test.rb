@@ -89,6 +89,11 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
         end
       end
       
+      should "list ons dataset topics with extended title for dataset family" do
+        assert_select "#dataset_topics" do
+          assert_select 'li', @dataset_topic.extended_title
+        end
+      end
     end
   end
   
@@ -125,6 +130,9 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
         end
       end
 
+      should "not list ons dataset topics with dataset family" do
+        assert_select "#dataset_topics", false
+      end
 
     end
   end

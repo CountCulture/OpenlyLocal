@@ -97,7 +97,7 @@ module ApplicationHelper
     total = BareDatapoint.new(:value => datapoints.inject(0.0){|sum, dp| sum + dp.value.to_f }, :muid_format => datapoints.first.muid_format, :muid_type => datapoints.first.muid_type)
     content = []
     show_more_info = (controller.controller_name == "datasets" ? true : nil)
-    bg_pos_multiplier = show_more_info ? 7.1 : 7.7 #width of description cell is either 700px or 760px + 5 pixels padding either side
+    bg_pos_multiplier = show_more_info ? 7.1 : 7.7 #width of description cell is either 700px or 760px + 5px padding either side
     
     content << content_tag(:caption, options[:caption])
     # header row
