@@ -9,10 +9,10 @@ class DatasetFamiliesController < ApplicationController
     @title = @area ? "#{@dataset_family.title} :: #{@area.title}" : @dataset_family.title
     if @area
       @datapoints = @dataset_family.datapoints.all(:conditions => {:area_type => params[:area_type], :area_id => params[:area_id] }).sort_by{ |d| d.dataset_topic.title }
-      @statistics_table_subject = :dataset_topic
+      @statistics_table_description = :dataset_topic
     else
       @datapoints = @dataset_family.calculated_datapoints_for_councils
-      @statistics_table_subject = :area
+      @statistics_table_description = :area
     end
   end
 

@@ -4,12 +4,12 @@
 
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :description, @dataset_topic.description %>
-  <%= attribute_tag :measurement_unit, NessUtilities::Muids[@dataset_topic.muid].try(:first) %>
+  <%= attribute_tag :measurement_unit, Muids[@dataset_topic.muid].try(:first) %>
   <%= attribute_tag :dataset_date, @dataset_topic.data_date %>
   <%= attribute_tag :ness_id, @dataset_topic.ons_uid %>
   <%= attribute_tag :subjects, @dataset_topic.dataset_family.ons_subjects.collect { |sub| link_to sub.title, dataset_families_path(:anchor => dom_id(sub)) }.join(', ') %>
 </dl>
 
-<%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => "Top 10 Councils", :subject => :area, :source => @dataset_topic.parents } %>  
+<%= statistics_table @datapoints, :caption => "Top 10 Councils", :description => :area, :source => @dataset_topic.parents %>  
 
 <%= timestamp_data_for @dataset_topic %>

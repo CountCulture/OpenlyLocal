@@ -132,8 +132,8 @@ class DatasetsControllerTest < ActionController::TestCase
 
         should "list datapoints" do
           assert_select ".datapoints" do
-            assert_select '.dataset_family', /#{@dataset_family.title}/
-            assert_select '.dataset_family', /#{@another_dataset_family.title}/
+            assert_select '.description', /#{@dataset_family.title}/
+            assert_select '.description', /#{@another_dataset_family.title}/
           end
         end
 

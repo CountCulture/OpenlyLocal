@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class WardsHelperTest < ActionView::TestCase
-  include DatapointsHelper
+  include ApplicationHelper
 
   context "statistics_graph helper method" do
     setup do

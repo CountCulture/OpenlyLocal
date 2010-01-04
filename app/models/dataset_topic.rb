@@ -9,13 +9,13 @@ class DatasetTopic < ActiveRecord::Base
   end
 
   def muid_format
-    muid_entry = NessUtilities::Muids[muid]
+    muid_entry = Muids[muid]
     return if muid_entry.blank?
     muid_entry[1]
   end
 
   def muid_type
-    muid_entry = NessUtilities::Muids[muid]
+    muid_entry = Muids[muid]
     return if muid_entry.blank?
     muid_entry[0]
   end

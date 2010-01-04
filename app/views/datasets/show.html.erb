@@ -12,7 +12,7 @@
   </div>
 <%- end -%>
 <%- unless @datapoints.blank? -%>
-  <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @dataset.title, :subject => @statistics_table_subject, :source => [@dataset] } %>
+  <%= statistics_table @datapoints, :caption => @dataset.title, :description => @statistics_table_description, :source => [@dataset] %>
 <%- end -%>
 
 <%= timestamp_data_for @dataset %>

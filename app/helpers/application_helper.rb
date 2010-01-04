@@ -78,6 +78,44 @@ module ApplicationHelper
   def resource_uri_for(obj)
     url_for(:id => obj.id, :only_path => false, :action => "show", :controller => obj.class.table_name, :redirect_from_resource => true)
   end
+  
+  def formatted_datapoint_value(datapoint)
+    return if datapoint.value.blank?
+    if datapoint.muid_type == "Pounds Sterling"
+      "£#{number_with_delimiter(datapoint.value.to_i)}"
+    elsif datapoint.value.to_i >= 1000
+      number_with_delimiter(datapoint.value)
+    else
+      datapoint.muid_format ? sprintf(datapoint.muid_format, datapoint.value) : datapoint.value
+    end
+  end
+
+  # Outputs statistics table. Expects to be passed an array of datapoints and various options
+  def statistics_table(datapoints=nil, options={})
+    return if datapoints.blank?
+    max_value = datapoints.collect{|dp| dp.value.to_f }.max
+    content = []
+    show_more_info = (controller.controller_name == "datasets" ? true : nil)
+    content << content_tag(:caption, options[:caption])
+    # header row
+    content << content_tag(:tr) do
+      content_tag(:th, options[:description].to_s.titleize) + 
+        content_tag(:th, 'Value', :class => "value") +
+        (show_more_info&&content_tag(:th, 'More info', :class => 'more_info')).to_s
+    end 
+    # table body
+    content << datapoints.collect do |datapoint|
+      css_class = (datapoint == options[:selected] ? 'selected datapoint' : 'datapoint')
+      bg_position = (100.0/max_value)*8*datapoint.value.to_f
+      content_tag :tr, :class => css_class do          
+        content_tag(:td, basic_link_for(datapoint.send(options[:description])), :class => 'description', :style => "background-position:#{bg_position}px") + 
+          content_tag(:td, formatted_datapoint_value(datapoint), :class => 'value') + 
+          (show_more_info&&content_tag(:td, link_to(image_tag('inspect.gif', :alt => 'See breakdown of this figure', :class => 'icon'), [datapoint.area, datapoint.subject].compact), :class => 'more_info')).to_s
+      end
+    end
+    content_tag(:table, :class => 'datapoints statistics') { content.flatten } +
+      content_tag(:div, "<strong>Source</strong> #{breadcrumbs(options[:source])}", :class => "source attribution")
+  end
 
   def timestamp_data_for(obj)
     content_tag(:p, "Last updated #{obj.updated_at.to_s(:short)} (#{time_ago_in_words(obj.updated_at)} ago)", :class => "attribution")

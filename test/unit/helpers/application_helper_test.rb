@@ -430,11 +430,120 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_equal content_tag(:span, "#{basic_link_for @obj2} > #{basic_link_for @obj1}", :class => "breadcrumbs"), breadcrumbs([@obj2, @obj1])
     end
   end
+  
+  context "the formatted_datapoint_value helper method" do
+    should "return nil if value blank" do
+      assert_nil formatted_datapoint_value(stub_everything)
+      assert_nil formatted_datapoint_value(stub_everything(:value => ""))
+    end
+
+    should "format value depending on muid by default" do
+      assert_equal '345', formatted_datapoint_value(stub_everything(:value => 345)).to_s #we only care about how it looks as a string
+      assert_equal '£345', formatted_datapoint_value(stub_everything(:value => 345, :muid_format => "£%d"))
+      assert_equal '24.6%', formatted_datapoint_value(stub_everything(:value => 24.62, :muid_format => "%.1f%"))
+      assert_equal '34,567', formatted_datapoint_value(stub_everything(:value => 34567))
+    end
+    
+    should "format with pound sign and delimiter if muid_type is Pounds Sterling" do
+      assert_equal '£345', formatted_datapoint_value(stub_everything(:value => 345, :muid_type => "Pounds Sterling")).to_s #we only care about how it looks as a string
+      assert_equal '£345', formatted_datapoint_value(stub_everything(:value => 345.0, :muid_type => "Pounds Sterling")).to_s #we only care about how it looks as a string
+      assert_equal '£345', formatted_datapoint_value(stub_everything(:value => 345, :muid_format => "%.1f%", :muid_type => "Pounds Sterling")).to_s
+      assert_equal '£0', formatted_datapoint_value(stub_everything(:value => 0, :muid_format => "%.1f%", :muid_type => "Pounds Sterling")).to_s
+      assert_equal '£345,123,456', formatted_datapoint_value(stub_everything(:value => 345123456, :muid_type => "Pounds Sterling")).to_s
+      assert_equal '£345,123,456', formatted_datapoint_value(stub_everything(:value => 345123456.0, :muid_type => "Pounds Sterling")).to_s
+      assert_nil formatted_datapoint_value(stub_everything(:value => "", :muid_type => "Pounds Sterling"))
+    end
+  end
+
+  context "statistics_table helper method" do
+    setup do
+      @area = Factory(:council)
+      @subject_1 = Factory(:dataset_family)
+      @subject_2 = Factory(:dataset_family)
+      @dummy_datapoint_1 = BareDatapoint.new(:value => 1234.0, :area => @area, :subject => @subject_1)
+      @dummy_datapoint_2 = BareDatapoint.new(:value => 93.53, :area => @area, :subject => @subject_2, :muid_type => 'Percentage', :muid_format => "%.1f%")
+      @table_options = { :description => "area", 
+                        :selected => @dummy_datapoint_2, 
+                        :caption => "Foo caption", 
+                        :source => [@subject_1.dataset]}
+      @table = parsed_stats_table([@dummy_datapoint_1, @dummy_datapoint_2], @table_options)
+    end
+    
+    should "return nil if no datapoints" do
+      assert_nil statistics_table(nil)
+    end
+    
+    should "return nil if datapoints empty" do
+      assert_nil statistics_table([])
+    end
+    
+    should "return table of datapoints" do
+      assert_equal 2, @table.search('table.statistics tr.datapoint').size
+    end
+    
+    should "use given caption for table caption" do
+      assert_equal "Foo caption", @table.at('caption').inner_text
+    end
+    
+    should "use given source for source breadcrumbs" do
+      assert_equal breadcrumbs([@subject_1.dataset]), @table.at('.breadcrumbs').to_s
+    end
+    
+    should "show formatted_value as datapoint value" do
+      assert @table.at('.datapoint td.value[text()="93.5%"]')
+    end
+    
+    should "link to datapoint attribute given in description option for description" do
+      assert_equal basic_link_for(@area), @table.at('.datapoint td.description a').to_s
+    end
+    
+    should "show headings for table based on description option" do
+      assert @table.at('table.statistics th[text()=Area]')
+      assert @table.at('table.statistics th[text()=Value]') #this doesn't change
+    end
+    
+    should "mark selected item as selected" do
+      assert @table.at('tr.selected td[text()="93.5%"]')
+    end
+    
+    should "style description background position based on value to make graph" do
+      expected_position = 8*(100.0/@dummy_datapoint_1.value.to_f)*@dummy_datapoint_2.value.to_f #full length is 800px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
+      actual_position = @table.at(".selected td.description")["style"].scan(/([\d\.]+)px/).to_s
+      assert_in_delta(expected_position, actual_position, 0.1)
+    end
+    
+    should "not show more_data column if controller is not datasets" do
+      self.stubs(:controller).returns(stub(:controller_name => "foo"))
+      assert_nil @table.at('th.more_info')
+      assert_nil @table.at('td.more_info')
+    end
+    
+    context "when controller is datasets" do
+      setup do
+        self.expects(:controller).returns(stub(:controller_name => "datasets"))
+        @dt = parsed_stats_table([@dummy_datapoint_1, @dummy_datapoint_2], @table_options)
+      end
+      
+      should "show more_data column if controller" do
+        assert @dt.at('th.more_info')
+        assert @dt.at('td.more_info')
+      end
+      
+      should "link to polymorphic url for datapoint area and subject" do
+        assert_dom_equal link_to(image_tag('inspect.gif', :alt => "See breakdown of this figure", :class => "icon"), [@area, @subject_1]), @dt.at('td.more_info a').to_s
+      end
+    end
+    
+  end
 
   private
   def stale_factory_object(name, options={})
     obj = Factory(name, options)
     obj.stubs(:created_at => 8.days.ago, :updated_at => 8.days.ago)
     obj
+  end
+  
+  def parsed_stats_table(datapoints=nil, options={})
+    Hpricot(statistics_table(datapoints, options))
   end
 end

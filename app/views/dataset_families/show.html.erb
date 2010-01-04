@@ -32,5 +32,5 @@
 <!-- <div class="alert">
   <%#= link_to "Test link to parent", [@area,@dataset_family.dataset] %>
 </div> -->
-  <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @dataset_family.title, :subject => @statistics_table_subject, :source => @dataset_family.parents } %>
+  <%= statistics_table @datapoints, :caption => @dataset_family.title, :description => @statistics_table_description, :source => @dataset_family.parents %>
 <%- end -%>
