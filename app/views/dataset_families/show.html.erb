@@ -1,19 +1,19 @@
 <%= render :partial => 'shared/experimental_flash' %>
-<div class="ons_subjects">
+<div class='ons_subjects'>
   <%= @dataset_family.ons_subjects.collect { |sub| link_to sub.title, dataset_families_path(:anchor => dom_id(sub)) }.join(' :: ') %>
 </div>
 
-<div class="source attribution"><%= breadcrumbs(@dataset_family.parents) %></div>
+<div class='source attribution'><%= breadcrumbs(@dataset_family.parents) %></div>
 <h1><%= @title %></h1>
 
-<dl id="main_attributes" class="attributes">
+<dl id='main_attributes' class='attributes'>
   <%= attribute_tag :ons_reference, @dataset_family.ons_uid %>
 </dl>
 
 <div id="relationships">
   <%- unless @dataset_family.ons_datasets.blank? -%>
     <div id='ons_datasets' class='item_grouping'>
-      <h3>Possible datasets (time periods)</h3>
+      <h3>Possible sample periods</h3>
       <ul>
         <%- @dataset_family.ons_datasets.each do |dataset| -%>
           <li><%= dataset.title %></li>
@@ -24,14 +24,13 @@
   
   <div id='dataset_topics' class='item_grouping'>
     <h3>Topics</h3>
-    <ul>
-      <%- @dataset_family.dataset_topics.each do |topic| -%>
-        <li><%= link_for topic %></li>
-      <%- end -%>
-    </ul>
+    <%= list_all @dataset_family.dataset_topics, :extended => true %>
   </div>
 </div>
   
 <%- unless @datapoints.blank? -%>
+<!-- <div class="alert">
+  <%#= link_to "Test link to parent", [@area,@dataset_family.dataset] %>
+</div> -->
   <%= render :partial => 'shared/statistics_table', :object => { :datapoints => @datapoints, :caption => @dataset_family.title, :subject => @statistics_table_subject, :source => @dataset_family.parents } %>
 <%- end -%>

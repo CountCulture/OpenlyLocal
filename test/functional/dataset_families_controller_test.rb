@@ -5,7 +5,7 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
     @dataset = Factory(:dataset)
     @dataset_family = Factory(:dataset_family, :dataset => @dataset)
     @another_dataset_family = Factory(:dataset_family, :dataset => @dataset)
-    @dataset_topic = Factory(:dataset_topic, :dataset_family => @dataset_family)
+    @dataset_topic = Factory(:dataset_topic, :dataset_family => @dataset_family, :muid => 1)
   end
 
   # routing tests
@@ -50,9 +50,9 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
         assert_select "title", /#{@dataset_family.title}/
       end
 
-      should "list ons dataset topics for dataset family" do
+      should "list ons dataset topics with extended title for dataset family" do
         assert_select "#dataset_topics" do
-          assert_select 'li', @dataset_topic.title
+          assert_select 'li', @dataset_topic.extended_title
         end
       end
     end

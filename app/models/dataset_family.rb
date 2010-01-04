@@ -1,7 +1,7 @@
 class DatasetFamily < ActiveRecord::Base
   has_and_belongs_to_many :ons_subjects
   has_many :ons_datasets
-  has_many :dataset_topics, :dependent => :destroy
+  has_many :dataset_topics, :dependent => :destroy, :order => "title"
   has_many :datapoints, :through => :dataset_topics
   belongs_to :dataset
   validates_presence_of :title
