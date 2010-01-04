@@ -8,6 +8,12 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
     @dataset_topic = Factory(:dataset_topic, :dataset_family => @dataset_family)
   end
 
+  # routing tests
+  should "route with council to show" do
+    @council = Factory(:council)
+    assert_routing("councils/42/dataset_families/123", {:controller => "dataset_families", :action => "show", :id => "123", :area_id => "42", :area_type => "Council"})
+  end
+  
   # index test
   context "on GET to :index" do
 

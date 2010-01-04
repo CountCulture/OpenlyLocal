@@ -7,9 +7,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :hyperlocal_sites
 
-
-  map.resources :old_datasets, :member => { :data => :get }
-
   map.resources :scrapers
   map.resources :item_scrapers, :controller => "scrapers"
   map.resources :info_scrapers, :controller => "scrapers"
@@ -21,7 +18,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :committees, :documents, :meetings, :members, :datapoints, :dataset_families, :parsers, :portal_systems, :police_forces, :police_authorities, :services, :wards
   map.resources :dataset_topics, :except => [:new, :destroy, :index], :member => { :populate => :post }
 
-  map.resources :councils
+  map.resources :councils do |councils|
+    councils.resources :datasets, :path_prefix => '/councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
+    councils.resources :dataset_families, :path_prefix => '/councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
+  end
   map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}, :only => [:show]}) do |restype|
     restype.resources :councils
     restype.resources :members

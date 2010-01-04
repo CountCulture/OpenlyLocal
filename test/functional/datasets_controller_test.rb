@@ -5,7 +5,13 @@ class DatasetsControllerTest < ActionController::TestCase
     @dataset = Factory(:dataset)
     @dataset_family = Factory(:dataset_family, :dataset => @dataset, :calculation_method => "sum")
   end
-
+  
+  # routing tests
+  should "route with council to show" do
+    @council = Factory(:council)
+    assert_routing("councils/42/datasets/123", {:controller => "datasets", :action => "show", :id => "123", :area_id => "42", :area_type => "Council"})
+  end
+  
   # index test
   context "on GET to :index" do
     context "with basic request" do
@@ -16,7 +22,7 @@ class DatasetsControllerTest < ActionController::TestCase
       should_assign_to(:datasets) { Dataset.all}
       should_respond_with :success
       should_render_template :index
-      should "list statistical datasets" do
+      should "list datasets" do
         assert_select "li a", @dataset.title
       end
       
