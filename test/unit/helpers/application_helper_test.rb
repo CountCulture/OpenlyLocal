@@ -507,7 +507,7 @@ class ApplicationHelperTest < ActionView::TestCase
     end
     
     should "style description background position based on value to make graph" do
-      expected_position = 8*(100.0/@dummy_datapoint_1.value.to_f)*@dummy_datapoint_2.value.to_f #full length is 800px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
+      expected_position = 7.6*(100.0/@dummy_datapoint_1.value.to_f)*@dummy_datapoint_2.value.to_f #full length is 800px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
       actual_position = @table.at(".selected td.description")["style"].scan(/([\d\.]+)px/).to_s
       assert_in_delta(expected_position, actual_position, 0.1)
     end
@@ -518,17 +518,41 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_nil @table.at('td.more_info')
     end
     
-    context "when controller is datasets" do
+    should "not show total by default" do
+      assert_nil @table.at('tf.total')
+    end
+    
+    context "when requested to show total" do
+      setup do
+        @tt = parsed_stats_table([@dummy_datapoint_1, @dummy_datapoint_2], @table_options.merge(:show_total => true))
+      end
+      
+      should "show total description in row with total class" do
+        assert @tt.at('tr.total td.description[text()="Total"]')
+      end
+      
+      should "show total in footer column" do
+        assert_equal "1,327.53", @tt.at('tr.total td.value').inner_text # formatted version of 1234.0 + 93.53
+      end
+    end
+    
+    context "when showing more_data" do
       setup do
         self.expects(:controller).returns(stub(:controller_name => "datasets"))
         @dt = parsed_stats_table([@dummy_datapoint_1, @dummy_datapoint_2], @table_options)
       end
       
-      should "show more_data column if controller" do
+      should "show more_data column" do
         assert @dt.at('th.more_info')
         assert @dt.at('td.more_info')
       end
       
+      should "adjust multiplier when styling description background position to make graph" do
+        expected_position = 7*(100.0/@dummy_datapoint_1.value.to_f)*@dummy_datapoint_2.value.to_f #full length is 800px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
+        actual_position = @table.at(".selected td.description")["style"].scan(/([\d\.]+)px/).to_s
+        assert_in_delta(expected_position, actual_position, 0.1)
+      end
+
       should "link to polymorphic url for datapoint area and subject" do
         assert_dom_equal link_to(image_tag('inspect.gif', :alt => "See breakdown of this figure", :class => "icon"), [@area, @subject_1]), @dt.at('td.more_info a').to_s
       end

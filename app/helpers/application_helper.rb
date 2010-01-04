@@ -94,8 +94,11 @@ module ApplicationHelper
   def statistics_table(datapoints=nil, options={})
     return if datapoints.blank?
     max_value = datapoints.collect{|dp| dp.value.to_f }.max
+    total = BareDatapoint.new(:value => datapoints.inject(0.0){|sum, dp| sum + dp.value.to_f }, :muid_format => datapoints.first.muid_format, :muid_type => datapoints.first.muid_type)
     content = []
     show_more_info = (controller.controller_name == "datasets" ? true : nil)
+    bg_pos_multiplier = show_more_info ? 7.1 : 7.7 #width of description cell is either 700px or 760px + 5 pixels padding either side
+    
     content << content_tag(:caption, options[:caption])
     # header row
     content << content_tag(:tr) do
@@ -106,14 +109,23 @@ module ApplicationHelper
     # table body
     content << datapoints.collect do |datapoint|
       css_class = (datapoint == options[:selected] ? 'selected datapoint' : 'datapoint')
-      bg_position = (100.0/max_value)*8*datapoint.value.to_f
+      bg_position = (100.0/max_value)*bg_pos_multiplier*datapoint.value.to_f
       content_tag :tr, :class => css_class do          
         content_tag(:td, basic_link_for(datapoint.send(options[:description])), :class => 'description', :style => "background-position:#{bg_position}px") + 
           content_tag(:td, formatted_datapoint_value(datapoint), :class => 'value') + 
           (show_more_info&&content_tag(:td, link_to(image_tag('inspect.gif', :alt => 'See breakdown of this figure', :class => 'icon'), [datapoint.area, datapoint.subject].compact), :class => 'more_info')).to_s
       end
     end
-    content_tag(:table, :class => 'datapoints statistics') { content.flatten } +
+    # optional total
+    if options[:show_total]
+      content << content_tag(:tr, :class => "total") do
+        content_tag(:td, "Total", :class => "description") +
+          content_tag(:td, formatted_datapoint_value(total), :class => "value") + 
+          (show_more_info&&content_tag(:td)).to_s
+      end
+    end
+    
+    content_tag(:table, :class => 'datapoints statistics') { content.flatten.compact } +
       content_tag(:div, "<strong>Source</strong> #{breadcrumbs(options[:source])}", :class => "source attribution")
   end
 

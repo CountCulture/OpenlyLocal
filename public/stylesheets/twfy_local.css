@@ -381,6 +381,7 @@ div#dataset_data table {
 	font-weight:bold;
 }
 */
+
 /*Ness Statistics formatting*/
 #ons_statistics {
 	clear:both;
@@ -395,13 +396,14 @@ div#dataset_data table {
 #ons_statistics dd {
 	margin-left: 21em;
 }
+
 #ons_statistics table, table.statistics {
 background-color: #eee;
 }
 #ons_statistics td, table.statistics td {
 	border-bottom: 1px solid #fff;
 }
-#ons_statistics .selected td, table.statistics .selected td {
+table.statistics .selected td {
 	font-weight: bold;
 }
 #ons_statistics table th, table.statistics th {
@@ -415,6 +417,9 @@ border-bottom: 1px solid #ddd;
 font-size: 1.2em;
 font-weight:bold;
 }
+table.statistics td, table.statistics th, table.statistics caption {
+	padding: 4px 5px;
+}
 #ons_statistics td.value, #ons_statistics th.value, table.statistics .value {
 text-align:right;
 }
@@ -425,7 +430,7 @@ table.datapoints {
 	width: 900px;
 }
 table.datapoints td.value {
-	width: 85px;
+	width: 120px;
 }
 table.datapoints td.description {
 	background: #fcd;
@@ -434,6 +439,16 @@ table.datapoints td.description {
 }
 table.datapoints .datapoint {
 	float:none;
+}
+table.datapoints tr.total td {
+	border-top:1px solid #036;
+	font-weight:bold;
+	text-align:right;
+	background-color:#bcd;
+	background-image:none;
+}
+table.datapoints td.more_info {
+	width: 50px;
 }
 /*Misc formatting*/
 #api_info {
