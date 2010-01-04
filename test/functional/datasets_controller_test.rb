@@ -7,6 +7,11 @@ class DatasetsControllerTest < ActionController::TestCase
   end
   
   # routing tests
+  should "route to show" do
+    @council = Factory(:council)
+    assert_routing("datasets/123", {:controller => "datasets", :action => "show", :id => "123"})
+  end
+  
   should "route with council to show" do
     @council = Factory(:council)
     assert_routing("councils/42/datasets/123", {:controller => "datasets", :action => "show", :id => "123", :area_id => "42", :area_type => "Council"})
@@ -56,12 +61,16 @@ class DatasetsControllerTest < ActionController::TestCase
       should "list associated dataset families" do
         assert_select 'li a', /#{@dataset_family.title}/
       end
+      
+      should "not show datapoint table" do
+        assert_select "table.statistics", false
+      end
     end
     
     context "with family that has calculated_datapoints_for_councils" do
       setup do
         @council_1, @council_2 = Factory(:council, :name => "Council 1"), Factory(:council, :name => "Council 2")
-        dummy_datapoints = [BareDatapoint.new(:area => @council_1, :value => 123), BareDatapoint.new(:area => @council_2, :value => 456)]
+        dummy_datapoints = [BareDatapoint.new(:area => @council_1, :value => 123, :subject => @dataset), BareDatapoint.new(:area => @council_2, :value => 456, :subject => @dataset)]
         Dataset.any_instance.stubs(:calculated_datapoints_for_councils).returns(dummy_datapoints)
         get :show, :id => @dataset.id
       end
@@ -71,12 +80,18 @@ class DatasetsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_template :show
       
-      should "show datapoints in table" do
-        assert_select "table tr" do
-          assert_select ".description", /#{@council_1.name}/
+      should "show council datapoints in table" do
+        assert_select "table.statistics tr", /#{@council_1.name}/ do
           assert_select ".value", /123/
         end
-      end     
+      end
+      
+      should "show link to show dataset just for council" do
+        assert_select "table.statistics tr", /#{@council_1.name}/ do
+          assert_select ".more_info a[href*=?]", "/councils/#{@council_1.to_param}/datasets/#{@dataset.id}"
+        end
+      end
+         
     end
 
     context "with given area" do
@@ -104,7 +119,7 @@ class DatasetsControllerTest < ActionController::TestCase
            assert_kind_of BareDatapoint, dps.first
            assert_equal 2, dps.size
            assert_equal @datapoint_for_another_topic.value, dps.first.value
-           assert_equal @datapoint_for_another_topic.dataset_family, dps.first.dataset_family
+           assert_equal @datapoint_for_another_topic.dataset_family, dps.first.subject
         end
 
         should "include dataset in page title" do

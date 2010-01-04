@@ -24,7 +24,7 @@ class DatasetFamily < ActiveRecord::Base
     muid_format, muid_type = dataset_topics.first.muid_format, dataset_topics.first.muid_type
     raw_results.first.each_with_index do |council_id, i|
       council = councils.detect{ |c| c.id == council_id }
-      res<< BareDatapoint.new(:area => council, :value => raw_results.last[i], :muid_format => muid_format, :muid_type => muid_type)
+      res<< BareDatapoint.new(:area => council, :subject => self, :value => raw_results.last[i], :muid_format => muid_format, :muid_type => muid_type)
     end
     res
   end

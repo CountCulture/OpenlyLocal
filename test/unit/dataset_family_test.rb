@@ -56,6 +56,12 @@ class DatasetFamilyTest < ActiveSupport::TestCase
         assert_equal @topic.muid_type, dps.last.muid_type
       end
       
+      should "assign dataset_family to BareDapoints as subject" do
+        dps = @dataset_family.calculated_datapoints_for_councils
+        assert_equal @dataset_family, dps.first.subject
+        assert_equal @dataset_family, dps.last.subject
+      end
+      
       should "return sorted_by value, largest first" do
         dp = @dataset_family.calculated_datapoints_for_councils.first
         assert_equal @council_2, dp.area

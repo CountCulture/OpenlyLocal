@@ -72,7 +72,7 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
     context "with family that has calculated_datapoints_for_councils" do
       setup do
         @council_1, @council_2 = Factory(:council, :name => "Council 1"), Factory(:council, :name => "Council 2")
-        dummy_datapoints = [BareDatapoint.new(:area => @council_1, :value => 123), BareDatapoint.new(:area => @council_2, :value => 456)]
+        dummy_datapoints = [BareDatapoint.new(:area => @council_1, :value => 123, :subject => @dataset_family), BareDatapoint.new(:area => @council_2, :value => 456, :subject => @dataset_family)]
         DatasetFamily.any_instance.expects(:calculated_datapoints_for_councils).returns(dummy_datapoints)
         get :show, :id => @dataset_family.id
       end

@@ -16,10 +16,11 @@ class Datapoint < ActiveRecord::Base
                                       :group => 'datapoints.id'}
 
   named_scope :in_dataset, lambda { |dataset| { :conditions => ["datapoints.dataset_topic_id = dataset_topics.id AND dataset_topics.dataset_family_id in (?)", dataset.dataset_families.collect(&:id)], 
-                                                            :joins => "INNER JOIN dataset_topics", 
-                                                            :group => 'datapoints.id' } }
+                                                :joins => "INNER JOIN dataset_topics", 
+                                                :group => 'datapoints.id' } }
 
   delegate :muid_format, :muid_type, :ons_uid, :short_title, :to => :dataset_topic
+  alias_attribute :subject, :dataset_topic
   
   def validate
     errors.add(:value, "can't be blank") if self[:value].blank? # validations test after typecasting so we have to test in this way

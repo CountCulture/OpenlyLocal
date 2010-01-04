@@ -46,6 +46,18 @@ class DatasetTest < ActiveSupport::TestCase
         assert_kind_of BareDatapoint, dps.first
       end
       
+      should "assign councils to BareDapoints as areas" do
+        dps = @dataset.calculated_datapoints_for_councils
+        assert_equal @council_2, dps.first.area
+        assert_equal @council_1, dps.last.area
+      end
+      
+      should "assign dataset to BareDapoints as subject" do
+        dps = @dataset.calculated_datapoints_for_councils
+        assert_equal @dataset, dps.first.subject
+        assert_equal @dataset, dps.last.subject
+      end
+      
       should "assign dataset_topic muid_format and muid_type to BareDapoints" do
         dps = @dataset.calculated_datapoints_for_councils
         assert_equal @topic_1.muid_format, dps.first.muid_format
@@ -108,9 +120,21 @@ class DatasetTest < ActiveSupport::TestCase
         assert_equal @topic_1.muid_type, dps.last.muid_type
       end
       
+      should "assign council to BareDapoints as area" do
+        dps = @dataset.calculated_datapoints_for(@council_2)
+        assert_equal @council_2, dps.first.area
+        assert_equal @council_2, dps.last.area
+      end
+      
+      should "assign dataset_families to BareDapoints as subject" do
+        dps = @dataset.calculated_datapoints_for(@council_2)
+        assert_equal @dataset_family_2, dps.first.subject
+        assert_equal @dataset_family_1, dps.last.subject
+      end
+      
       should "return sorted_by value, largest first" do
         dp = @dataset.calculated_datapoints_for(@council_2).first
-        assert_equal @dataset_family_2, dp.dataset_family
+        assert_equal @dataset_family_2, dp.subject
         assert_equal 24.0, dp.value # sum of all datapoints for council_2 for dataset_family_2
       end
       

@@ -10,7 +10,7 @@ class DatasetsController < ApplicationController
     @title = @area ? "#{@area.title} :: #{@dataset.title}" : @dataset.title
     if @area
       @datapoints = @dataset.calculated_datapoints_for(@area)
-      @statistics_table_subject = :dataset_family
+      @statistics_table_subject = :subject
     else
       @datapoints = @dataset.calculated_datapoints_for_councils
       @statistics_table_subject = :area

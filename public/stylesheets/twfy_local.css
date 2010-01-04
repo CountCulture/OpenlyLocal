@@ -89,6 +89,8 @@ margin-left:2em;
 
 .more_info a:after, a.more_info:after {
 	content: "»"; }
+td.more_info a:after {
+	content: normal; }
 .citation {
 	vertical-align: super;
 	font-size: 80%;
@@ -361,10 +363,10 @@ div#dataset_data table {
 	margin-right:20px;
 	margin-bottom: 1em;
 }*/
-.datapoint a.more_info {
+/*.datapoint a.more_info {
 	display:block;
 	float:right;
-}
+}*/
 /*.datapoint .data {
 	clear:both;
 	overflow:auto;

@@ -80,8 +80,8 @@ class DatapointsControllerTest < ActionController::TestCase
 
       should "list datapoints" do
         assert_select ".datapoints" do
-          assert_select '.area', /#{@ward.name}/
-          assert_select '.area', /#{@another_ward.name}/
+          assert_select '.description', /#{@ward.name}/
+          assert_select '.description', /#{@another_ward.name}/
         end
       end
 
@@ -95,7 +95,7 @@ class DatapointsControllerTest < ActionController::TestCase
 
       should "show use background-position to make graph" do
         expected_position = 8*(100.0/@datapoint_for_another_ward.value.to_f)*@datapoint.value.to_f #full length is 800px, scale so max value is 100%: (800/100)*(100.0/max_value)*datapoint.value.to_f
-        actual_position = css_select( ".selected td.area").first.to_s.scan(/background-position: ([\d\.]+)px/).to_s
+        actual_position = css_select( ".selected td.description").first.to_s.scan(/background-position: ([\d\.]+)px/).to_s
         assert_in_delta(expected_position, actual_position, 0.1)
       end
 

@@ -25,7 +25,7 @@ class Dataset < ActiveRecord::Base
     muid_format, muid_type = dataset_topics.first.muid_format, dataset_topics.first.muid_type
     raw_results.first.each_with_index do |council_id, i|
       council = councils.detect{ |c| c.id == council_id }
-      res<< BareDatapoint.new(:area => council, :value => raw_results.last[i], :muid_format => muid_format, :muid_type => muid_type)
+      res<< BareDatapoint.new(:area => council, :subject => self, :value => raw_results.last[i], :muid_format => muid_format, :muid_type => muid_type)
     end
     res
   end
@@ -43,7 +43,7 @@ class Dataset < ActiveRecord::Base
     raw_results.first.each_with_index do |dataset_family_id, i|
       dataset_family = dataset_families.detect{ |f| f.id == dataset_family_id.to_i } # NB because we are grouping by SQL (see above) id is not cast into integer
       muid_format, muid_type = dataset_family.dataset_topics.first.muid_format, dataset_family.dataset_topics.first.muid_type
-      res<< BareDatapoint.new(:dataset_family => dataset_family, :value => raw_results.last[i], :muid_format => muid_format, :muid_type => muid_type)
+      res<< BareDatapoint.new(:subject => dataset_family, :area => council, :value => raw_results.last[i], :muid_format => muid_format, :muid_type => muid_type)
     end
     res
   end

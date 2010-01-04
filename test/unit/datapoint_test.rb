@@ -17,6 +17,10 @@ class DatapointTest < ActiveSupport::TestCase
       assert_equal @datapoint.dataset_topic.dataset_family, @datapoint.dataset_family
     end
     
+    should "alias dataset_topic as subject" do
+      assert_equal @datapoint.dataset_topic, @datapoint.subject
+    end
+    
     should "restrict to given ness topic ids" do
       @ward = @datapoint.area
       datapoint_1 = Factory(:datapoint, :area => @ward)
