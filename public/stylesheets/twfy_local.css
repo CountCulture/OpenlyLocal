@@ -339,11 +339,11 @@ a.new_scraper_link {
 }
 
 /*Ward-specific formatting*/
-body.wards .ward {
+/*body.wards .ward {
 	float:left;
 	width: 630px;
 }
-
+*/
 /*Dataset specific formatting*/
 /*NB Much of this can be deleted when move to new style datasets is completed*/
 #statistics {

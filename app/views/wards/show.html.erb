@@ -5,6 +5,7 @@
     <%= attribute_tag( :ons_snac_ref, @ward.snac_id)  %>
     <%= attribute_tag( :ordnance_survey_ref, @ward.os_id ) %>
   </dl>
+  <%= render :partial => 'shared/ons_statistics', :object => @ward.grouped_datapoints %>
   <div id="relationships">
     <div id="members" class="item_grouping">
       <h3>Councillors for this ward</h3>
@@ -26,7 +27,6 @@
     <%- end -%>
   </div>
 <%- end -%>
-<%= render :partial => 'shared/ons_statistics', :object => @ward.grouped_datapoints %>
 <%= render :partial => 'shared/api_info' %>
 
 <%= timestamp_data_for @ward %>
