@@ -25,5 +25,10 @@ class BareDatapointTest < Test::Unit::TestCase
     should "store given muid_format as muid_format" do
       assert_equal "foo", BareDatapoint.new(:muid_format => "foo").muid_format
     end
+    
+    should "delegate short_title to subject" do
+      dummy_subject = stub(:short_title => 'short titl')
+      assert_equal 'short titl', BareDatapoint.new(:subject => dummy_subject).short_title
+    end
   end
 end

@@ -8,7 +8,7 @@
       <%- next if datapoints.blank? -%>
       
       <%- if group.display_as == "in_words" -%>
-        <div id="misc" class="stats_in_words">
+        <div id="<%= group.title %>" class="stats_in_words">
           <%= statistics_in_words(:misc => datapoints) %>
         </div>
       <%- else -%>
@@ -29,8 +29,8 @@
           
           <%- end -%>
           <%- if group.display_as == "graph" -%>
-            <div id="religion_graph" class="graph">
-              <h4>Religion</h4>
+            <div id="<%= group.title %>_graph" class="graph">
+              <h4><%= group.title.titleize %></h4>
               <%= statistics_graph(group => datapoints) %>
             </div>
           <%- end -%>

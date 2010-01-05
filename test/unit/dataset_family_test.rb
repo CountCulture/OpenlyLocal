@@ -81,6 +81,10 @@ class DatasetFamilyTest < ActiveSupport::TestCase
         @dataset_family.update_attribute(:calculation_method, "")
         assert_nil @dataset_family.calculated_datapoints_for_councils
       end
+      
+      should "alias title as short_title" do
+        assert_equal @dataset_family.title, @dataset_family.short_title
+      end
     end
   end
   

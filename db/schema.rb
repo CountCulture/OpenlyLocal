@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100103175217) do
+ActiveRecord::Schema.define(:version => 20100105111301) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(:version => 20100103175217) do
     t.string   "originator_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "dataset_topic_grouping_id"
   end
 
   create_table "delayed_jobs", :force => true do |t|

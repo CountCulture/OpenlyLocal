@@ -7,4 +7,8 @@ class BareDatapoint
     end
   end
   
+  def short_title
+    subject.short_title
+  end
+  
 end

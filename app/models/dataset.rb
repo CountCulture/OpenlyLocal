@@ -2,6 +2,8 @@ class Dataset < ActiveRecord::Base
 
   has_many :dataset_families, :dependent => :destroy
   has_many :dataset_topics, :through => :dataset_families
+  belongs_to :dataset_topic_grouping
+  named_scope :in_topic_grouping, :conditions => "datasets.dataset_topic_grouping_id IS NOT NULL"
   validates_presence_of :title, :originator
   validates_uniqueness_of :title
 

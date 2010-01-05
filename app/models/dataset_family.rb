@@ -33,4 +33,8 @@ class DatasetFamily < ActiveRecord::Base
     [dataset]
   end
   
+  # Useful if used as subject in BareDatapoint, so can show short_title in prefernce ot title if it's set, e.g. in dataset_topics
+  def short_title
+    title
+  end
 end
