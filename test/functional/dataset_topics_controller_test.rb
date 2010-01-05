@@ -37,8 +37,12 @@ class DatasetTopicsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_template :show
 
-      should "return max 10 datapoints" do
-        assert_equal 10, assigns(:datapoints).size
+      # should "return max 10 datapoints" do
+      #   assert_equal 10, assigns(:datapoints).size
+      # end
+      # 
+      should "return all datapoints" do
+        assert_equal 13, assigns(:datapoints).size
       end
       
       should "sort datapoints in descending order" do
