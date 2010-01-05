@@ -1,6 +1,8 @@
 class DatasetTopicsController < ApplicationController
   before_filter :authenticate, :except => [:show]
   before_filter :find_dataset_topic
+  caches_action :show
+
   def show
     if params[:area_type]&&params[:area_id]
       @area = params[:area_type].constantize.find(params[:area_id])
