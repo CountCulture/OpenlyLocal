@@ -7,8 +7,11 @@ module AreaStatisticMethods
     sort_order = (SortOrder + [nil]).reverse # make in to a form so that sorting by index will return first place when display_as is nil, or if isn't in list. This will be reversed to last place by reversing sort.
     res = ActiveSupport::OrderedHash.new
     groups = self.datapoints.with_topic_grouping.group_by{ |dp| dp.dataset_topic.dataset_topic_grouping }.to_a #get the datapoints and group by topic_grouping
-    dataset_groups = Dataset.in_topic_grouping.collect{ |ds| [ds.dataset_topic_grouping, ds.calculated_datapoints_for(self)] } #get groupings for datasets -- these are actually BareDatapoints
-    groups += dataset_groups
+    dataset_groups = Dataset.in_topic_grouping.collect do |ds|
+      dps = ds.calculated_datapoints_for(self)
+      [ds.dataset_topic_grouping, dps] if dps
+    end # get groupings for datasets -- these are actually BareDatapoints
+    groups += dataset_groups.compact
     groups = groups.sort{ |a,b| sort_order.index(b.first.display_as).to_i <=> sort_order.index(a.first.display_as).to_i } # sort into order accoding to given sort order
     groups.each{ |a| res[a.first] = a.last.sort_by{ |e| e.send(a.first.sort_by.blank? ? "short_title" : a.first.sort_by) } } #add to new ordered hash, sorting datapoints by grouping sort order or short_title if no sort_order
     res

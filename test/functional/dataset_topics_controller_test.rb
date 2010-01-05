@@ -63,7 +63,7 @@ class DatasetTopicsControllerTest < ActionController::TestCase
       
       should "list datapoints for councils" do
         assert_select "table.statistics" do
-          assert_select ".datapoint", 10
+          assert_select ".datapoint", 13
         end
       end
       

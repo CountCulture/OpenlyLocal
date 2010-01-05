@@ -206,6 +206,7 @@ class CouncilTest < ActiveSupport::TestCase
     context "when getting grouped datapoints" do
       setup do
         @another_council = Factory(:council, :name => "Another council")
+        @ward = Factory(:ward, :council => @council)
         
         @data_grouping_in_words = Factory(:dataset_topic_grouping, :title => "misc", :display_as => "in_words")
         @data_grouping_as_graph = Factory(:dataset_topic_grouping, :title => "demographics", :display_as => "graph")
@@ -305,6 +306,11 @@ class CouncilTest < ActiveSupport::TestCase
           assert_equal 18.0, @grouped_datapoints[@dataset_data_grouping].first.value
           assert_equal 24.0, @grouped_datapoints[@dataset_data_grouping].last.value
         end
+      end
+      
+      should "not raise exception if no datapoints for grouped dataset" do
+        # should arguably test this in Ward test, but for the moment keeping toge
+        assert_nothing_raised(Exception) { @another_council.grouped_datapoints }
       end
       
     end
