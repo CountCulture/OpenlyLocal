@@ -1,5 +1,5 @@
 class DatasetFamiliesController < ApplicationController
-  caches_action :show
+  # caches_action :show
 
   def index
     @datasets = Dataset.all(:include => [:dataset_families])
