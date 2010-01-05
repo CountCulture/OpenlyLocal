@@ -1,10 +1,10 @@
-<%- unless ons_statistics.blank? || ons_statistics.values.flatten.compact.empty? -%>
+<%- unless grouped_datapoints.blank? || grouped_datapoints.values.flatten.compact.empty? -%>
 
-  <div id="ons_statistics" class="item_grouping">
+  <div id="grouped_datapoints" class="item_grouping">
     <h3>About this area</h3>
     <%= render :partial => 'shared/experimental_flash' %>
     
-    <%- ons_statistics.each do |group, datapoints| -%>
+    <%- grouped_datapoints.each do |group, datapoints| -%>
       <%- next if datapoints.blank? -%>
       
       <%- if group.display_as == "in_words" -%>

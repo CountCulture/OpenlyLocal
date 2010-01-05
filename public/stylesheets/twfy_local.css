@@ -383,36 +383,36 @@ div#dataset_data table {
 */
 
 /*Ness Statistics formatting*/
-#ons_statistics {
+#grouped_datapoints {
 	clear:both;
 	float: right;
 	padding-right:0px;
 }
-#ons_statistics dt {
+#grouped_datapoints dt {
   clear:left;
 	float: left;
 	width: 20em;
 }
-#ons_statistics dd {
+#grouped_datapoints dd {
 	margin-left: 21em;
 }
 
-#ons_statistics table, table.statistics {
+#grouped_datapoints table, table.statistics {
 background-color: #eee;
 }
-#ons_statistics td, table.statistics td {
+#grouped_datapoints td, table.statistics td {
 	border-bottom: 1px solid #fff;
 }
 table.statistics .selected td {
 	font-weight: bold;
 }
-#ons_statistics table th, table.statistics th {
+#grouped_datapoints table th, table.statistics th {
 	background-color: #bcd;
 }
-#ons_statistics table caption, table.statistics caption {
+#grouped_datapoints table caption, table.statistics caption {
 	background-color: #fff;
 }
-#ons_statistics table caption, #ons_statistics h4, table.statistics caption {
+#grouped_datapoints table caption, #grouped_datapoints h4, table.statistics caption {
 border-bottom: 1px solid #ddd;
 font-size: 1.2em;
 font-weight:bold;
@@ -420,10 +420,10 @@ font-weight:bold;
 table.statistics td, table.statistics th, table.statistics caption {
 	padding: 4px 5px;
 }
-#ons_statistics td.value, #ons_statistics th.value, table.statistics .value {
+#grouped_datapoints td.value, #grouped_datapoints th.value, table.statistics .value {
 text-align:right;
 }
-#ons_statistics .stats_in_words {
+#grouped_datapoints .stats_in_words {
 font-size: 1.2em;
 }
 table.datapoints {

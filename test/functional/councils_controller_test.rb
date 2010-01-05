@@ -497,11 +497,11 @@ class CouncilsControllerTest < ActionController::TestCase
         end
                 
         should "show data" do
-          assert_select "#ons_statistics .datapoint", /#{@datapoint.title}/
+          assert_select "#grouped_datapoints .datapoint", /#{@datapoint.title}/
         end
         
         should "show link to more info on data" do
-          assert_select "#ons_statistics .datapoint a[href=?]", "/councils/#{@council.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
+          assert_select "#grouped_datapoints .datapoint a[href=?]", "/councils/#{@council.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
         end
 
       end

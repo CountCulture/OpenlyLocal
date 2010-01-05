@@ -23,7 +23,7 @@
   <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@council.wikipedia_url), @council.wikipedia_url, :class => 'external') unless @council.wikipedia_url.blank? %>
 </dl>
 
-<%= render :partial => 'shared/ons_statistics', :object => @council.grouped_datapoints %>
+<%= render :partial => 'shared/grouped_datapoints', :object => @council.grouped_datapoints %>
 
 <div class="extra_info">
   <h3>Other info</h3>

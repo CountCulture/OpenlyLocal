@@ -67,7 +67,7 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should "not show statistics" do
-        assert_select "#ons_statistics", false
+        assert_select "#grouped_datapoints", false
       end
     end
 
@@ -119,31 +119,31 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should "show statistics" do
-        assert_select "#ons_statistics"
+        assert_select "#grouped_datapoints"
       end
 
       context "when showing statistics" do
         should "show datapoints grouped by topic group" do
-          assert_select "#ons_statistics" do
+          assert_select "#grouped_datapoints" do
             assert_select ".demographics a", @datapoint.title
             assert_select ".stats_in_words a", @another_datapoint.title
           end
         end
 
         should "show link to more info on data" do
-          assert_select "#ons_statistics .datapoint a[href=?]", "/wards/#{@ward.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
+          assert_select "#grouped_datapoints .datapoint a[href=?]", "/wards/#{@ward.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
         end
         
         should "not show datapoint groups with no data" do
-          assert_select "#ons_statistics .foo", false
+          assert_select "#grouped_datapoints .foo", false
         end
 
         should "show graphs for those groups that should be graphed" do
-          assert_select "#ons_statistics .graphed_datapoints #religion_graph"
+          assert_select "#grouped_datapoints .graphed_datapoints #religion_graph"
         end
 
         should "show data in table with graphed_table class for groups that should be graphed" do
-          assert_select "#ons_statistics .religion.graphed_datapoints"
+          assert_select "#grouped_datapoints .religion.graphed_datapoints"
         end
       end
 
