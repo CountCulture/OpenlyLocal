@@ -10,6 +10,6 @@
   <%= attribute_tag :subjects, @dataset_topic.dataset_family.ons_subjects.collect { |sub| link_to sub.title, dataset_families_path(:anchor => dom_id(sub)) }.join(', ') %>
 </dl>
 
-<%= statistics_table @datapoints, :caption => "Top 10 Councils", :description => :area, :source => @dataset_topic.parents %>  
+<%= statistics_table @datapoints, :caption => @table_caption||"Top 10 Councils", :description => :area, :selected => @selected_datapoint, :source => @dataset_topic.parents %>  
 
 <%= timestamp_data_for @dataset_topic %>

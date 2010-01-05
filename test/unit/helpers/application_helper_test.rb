@@ -512,8 +512,7 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_in_delta(expected_position, actual_position, 0.1)
     end
     
-    should "not show more_data column if controller is not datasets" do
-      self.stubs(:controller).returns(stub(:controller_name => "foo"))
+    should "not show more_data column by default" do
       assert_nil @table.at('th.more_info')
       assert_nil @table.at('td.more_info')
     end
@@ -538,8 +537,7 @@ class ApplicationHelperTest < ActionView::TestCase
     
     context "when showing more_data" do
       setup do
-        self.expects(:controller).returns(stub(:controller_name => "datasets"))
-        @dt = parsed_stats_table([@dummy_datapoint_1, @dummy_datapoint_2], @table_options)
+        @dt = parsed_stats_table([@dummy_datapoint_1, @dummy_datapoint_2], @table_options.merge(:show_more_info => true))
       end
       
       should "show more_data column" do

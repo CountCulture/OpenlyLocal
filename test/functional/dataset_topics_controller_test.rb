@@ -3,7 +3,7 @@ require 'test_helper'
 class DatasetTopicsControllerTest < ActionController::TestCase
 
   def setup
-    @council_1 = Factory(:council)
+    @council_1 = Factory(:council, :authority_type => "District")
     @council_2 = Factory(:council, :name => "Second Council")
     @council_3 = Factory(:council, :name => "Third Council")
     @dataset_topic = Factory(:dataset_topic)
@@ -15,6 +15,15 @@ class DatasetTopicsControllerTest < ActionController::TestCase
     end
   end
 
+  # routing tests
+  should "route with council to show" do
+    assert_routing("councils/42/dataset_topics/123", {:controller => "dataset_topics", :action => "show", :id => "123", :area_id => "42", :area_type => "Council"})
+  end
+  
+  should "route with ward to show" do
+    assert_routing("wards/42/dataset_topics/123", {:controller => "dataset_topics", :action => "show", :id => "123", :area_id => "42", :area_type => "Ward"})
+  end
+  
   # show test
   context "on GET to :show" do
 
@@ -57,6 +66,90 @@ class DatasetTopicsControllerTest < ActionController::TestCase
       should "show council name for datapoints for councils" do
         assert_select "table.statistics .datapoint" do
           assert_select "a", /#{@council_1.title}/
+        end
+      end
+    end
+    
+    context "with given area" do
+      setup do
+        @related_council = Factory(:council, :name => "Related council", :authority_type => "District")
+        @ward = Factory(:ward, :council => @council_1)
+        @another_ward = Factory(:ward, :name => 'Another Ward', :council => @council_1)
+
+        @datapoint = Factory(:datapoint, :area => @ward)
+        @dataset_topic = @datapoint.dataset_topic
+        @datapoint_for_another_ward = Factory(:datapoint, :area => @another_ward, :dataset_topic => @dataset_topic)
+        @council_datapoint = Factory(:datapoint, :area => @council_1, :dataset_topic => @dataset_topic)
+        @related_council_datapoint = Factory(:datapoint, :area => @related_council, :dataset_topic => @dataset_topic)
+      end
+      
+      context "and area is a council" do
+        setup do
+          get :show, :id => @dataset_topic.id, :area_type => "Council", :area_id => @council_1.id
+        end
+
+        should_assign_to :dataset_topic
+        should_assign_to :datapoints
+        should_assign_to(:area) {@council_1}
+        should_respond_with :success
+        should_render_template :show
+      
+        should "show show council name in title" do
+          assert_select 'title', /#{@council_1.name}/
+        end
+      
+        should "explain datapoint grouping in table caption" do
+          assert_select "table.datapoints caption", /comparison.+district councils/i
+        end
+
+        should "identify given datapoint" do
+          assert_select ".datapoints .selected", /#{@council_1.name}/
+        end
+      end
+    
+      context "with given ward" do
+        setup do        
+          get :show, :id => @dataset_topic.id, :area_type => "Ward", :area_id => @ward.id
+        end
+
+        should_assign_to(:datapoints) { [@datapoint_for_another_ward, @datapoint] }
+        should_assign_to(:area) { @ward }
+        should_respond_with :success
+        should_render_template :show
+
+        should "show details for datapoint" do
+          assert_select 'h1', /#{@datapoint.dataset_topic.title}/
+        end
+
+        should "show link to ward name in title" do
+          assert_select 'title', /#{@ward.name}/
+        end
+
+        should_eventually "show link to council for datapoint ward" do
+          assert_select 'a', /#{@ward.council.name}/
+        end
+
+        should "show show council name in title" do
+          assert_select 'title', /#{@ward.council.name}/
+        end
+
+        should "explain datapoint grouping in table caption" do
+          assert_select "table.datapoints caption", /comparison.+wards in.+#{@council_1.name}/i
+        end
+
+        should "list datapoints" do
+          assert_select ".datapoints" do
+            assert_select '.description', /#{@ward.name}/
+            assert_select '.description', /#{@another_ward.name}/
+          end
+        end
+
+        should "list datapoints in alpha order" do
+          assert_select ".datapoints", /#{@another_ward.name}.+#{@ward.name}/m
+        end
+
+        should "identify given datapoint" do
+          assert_select ".datapoints .selected", /#{@ward.name}/
         end
       end
     end

@@ -10,7 +10,6 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
 
   # routing tests
   should "route with council to show" do
-    @council = Factory(:council)
     assert_routing("councils/42/dataset_families/123", {:controller => "dataset_families", :action => "show", :id => "123", :area_id => "42", :area_type => "Council"})
   end
   
@@ -94,6 +93,10 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
           assert_select 'li', @dataset_topic.extended_title
         end
       end
+
+      should "show links to more detailed data" do
+        assert_select ".more_info a[href*=?]", "/councils/#{@council_1.to_param}/dataset_families/#{@dataset_family.id}"
+      end
     end
   end
   
@@ -134,6 +137,9 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
         assert_select "#dataset_topics", false
       end
 
+      should "show links to more detailed data" do
+        assert_select ".more_info a[href*=?]", "/councils/#{@council.to_param}/dataset_topics/#{@dataset_topic.id}"
+      end
     end
   end
 

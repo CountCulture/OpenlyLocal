@@ -12,7 +12,7 @@
   </div>
 <%- end -%>
 <%- unless @datapoints.blank? -%>
-  <%= statistics_table @datapoints, :caption => @table_caption, :description => @statistics_table_description, :source => [@dataset], :show_total => true %>
+  <%= statistics_table @datapoints, :caption => @table_caption, :description => @statistics_table_description, :source => [@dataset], :show_more_info => true, :show_total => true %>
 <%- end -%>
 
 <%= timestamp_data_for @dataset %>

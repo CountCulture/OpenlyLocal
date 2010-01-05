@@ -21,7 +21,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :councils do |councils|
     councils.resources :datasets, :path_prefix => '/councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
     councils.resources :dataset_families, :path_prefix => '/councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
+    councils.resources :dataset_topics, :path_prefix => '/councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
   end
+
+  map.resources :wards do |wards|
+    wards.resources :dataset_topics, :path_prefix => '/wards/:area_id', :requirements => {:area_type => "Ward"}, :only => [:show]
+  end
+
   map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}, :only => [:show]}) do |restype|
     restype.resources :councils
     restype.resources :members

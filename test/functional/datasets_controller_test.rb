@@ -140,6 +140,10 @@ class DatasetsControllerTest < ActionController::TestCase
         should "not list associated dataset families" do
           assert_select '#relationships li', :text => /#{@dataset_family.title}/, :count => 0
         end
+        
+        should "show links to more detailed data" do
+          assert_select ".more_info a[href*=?]", "/councils/#{@council.to_param}/dataset_families/#{@dataset_family.id}"
+        end
       end
     end
 

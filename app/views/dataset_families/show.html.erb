@@ -34,5 +34,5 @@
 <!-- <div class="alert">
   <%#= link_to "Test link to parent", [@area,@dataset_family.dataset] %>
 </div> -->
-  <%= statistics_table @datapoints, :caption => @dataset_family.title, :description => @statistics_table_description, :source => @dataset_family.parents %>
+  <%= statistics_table @datapoints, :caption => @dataset_family.title, :description => @statistics_table_description, :source => @dataset_family.parents, :show_more_info => true %>
 <%- end -%>
