@@ -491,13 +491,17 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "#associated_councils a", /#{@council.name}/
       end
 
-      context "with datapoint summary" do
+      context "with grouped_data" do
         setup do
           get :show, :id => @council.id
         end
                 
-        should "show datapoint data" do
+        should "show data" do
           assert_select "#ons_statistics .datapoint", /#{@datapoint.title}/
+        end
+        
+        should "show link to more info on data" do
+          assert_select "#ons_statistics .datapoint a[href=?]", "/councils/#{@council.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
         end
 
       end

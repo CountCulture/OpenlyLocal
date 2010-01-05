@@ -130,6 +130,10 @@ class WardsControllerTest < ActionController::TestCase
           end
         end
 
+        should "show link to more info on data" do
+          assert_select "#ons_statistics .datapoint a[href=?]", "/wards/#{@ward.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
+        end
+        
         should "not show datapoint groups with no data" do
           assert_select "#ons_statistics .foo", false
         end

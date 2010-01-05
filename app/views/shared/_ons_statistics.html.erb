@@ -22,7 +22,7 @@
 
             <%- for datapoint in datapoints -%>
               <tr class="datapoint">
-                <td class="description"><%= link_to(datapoint.short_title, datapoint) %></td>
+                <td class="description"><%= link_to(datapoint.short_title, [datapoint.area, datapoint.subject]) %></td>
                 <td class="value"><%= formatted_datapoint_value(datapoint) %></td>
               </tr>
             <%- end -%>
