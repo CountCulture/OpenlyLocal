@@ -50,6 +50,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
       setup do
         stub_authentication
         @dataset_topic = Factory(:dataset_topic, :dataset_topic_grouping => @dataset_topic_grouping)
+        @dataset = Factory(:dataset, :dataset_topic_grouping => @dataset_topic_grouping)
         get :show, :id => @dataset_topic_grouping.id
       end
 
@@ -63,6 +64,9 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
 
       should "list associated dataset_topics" do
         assert_select 'li a', @dataset_topic.title
+      end
+      should "list associated datasets" do
+        assert_select 'li a', @dataset.title
       end
     end
   end

@@ -1,0 +1,15 @@
+<%= error_messages_for :dataset %>
+
+<% form_for @dataset do |f| -%>
+  <p>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :dataset_topic_grouping_id %>
+    <%= f.select :dataset_topic_grouping_id, DatasetTopicGrouping.all.collect{ |g| [g.title, g.id] }, :include_blank => true %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>

@@ -12,9 +12,9 @@ module WardsHelper
     stats_group.values.first.collect do |datapoint|
       case datapoint.muid_type
       when 'Age'
-        "#{link_to(datapoint.short_title, datapoint)} #{formatted_datapoint_value(datapoint)}"
+        "#{link_to(datapoint.short_title, [datapoint.area, datapoint.subject])} #{formatted_datapoint_value(datapoint)}"
       else
-        "#{formatted_datapoint_value(datapoint)} #{link_to(datapoint.short_title, datapoint)}"
+        "#{formatted_datapoint_value(datapoint)} #{link_to(datapoint.short_title, [datapoint.area, datapoint.subject])}"
       end
 
     end.join(', ')

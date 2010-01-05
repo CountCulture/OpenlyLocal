@@ -148,4 +148,57 @@ class DatasetsControllerTest < ActionController::TestCase
     end
 
   end
+
+  # edit tests
+  context "on get to :edit a Dataset without auth" do
+    setup do
+      get :edit, :id => @dataset.id
+    end
+
+    should_respond_with 401
+  end
+
+  context "on get to :edit a Dataset" do
+    setup do
+      stub_authentication
+      get :edit, :id => @dataset.id
+    end
+
+    should_assign_to :dataset
+    should_respond_with :success
+    should_render_template :edit
+    should_not_set_the_flash
+    should "display a form" do
+     assert_select "form#edit_dataset_#{@dataset.id}"
+    end
+
+  end
+
+  # update tests
+  context "on PUT to :update a Dataset without auth" do
+    setup do
+      put :update, { :id => @dataset.id,
+                     :dataset => { :title => "New title"}}
+    end
+
+    should_respond_with 401
+  end
+
+  context "on PUT to :update a Dataset" do
+    setup do
+      stub_authentication
+      put :update, { :id => @dataset.id,
+                     :dataset => { :title => "New title"}}
+    end
+
+    should_assign_to :dataset
+    should_redirect_to( "the show page for dataset") { dataset_url(@dataset.reload) }
+    should_set_the_flash_to /Successfully updated/
+
+    should "update dataset" do
+      assert_equal "New title", @dataset.reload.title
+    end
+  end
+
+
 end

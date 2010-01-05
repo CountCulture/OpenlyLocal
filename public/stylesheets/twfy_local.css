@@ -16,6 +16,9 @@ h1 em, h2 em, h3 em, h4 em, label em {
 	font-size: .6em;
 	vertical-align:top;
 	font-style: normal; }
+caption em {
+	color: #666;
+	font-style: normal;}
 input, textarea {
 	border:1px solid #515151;
 	margin-bottom:0.5em;

@@ -271,7 +271,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "return other groupings last" do
-        assert_equal @basic_data_grouping, @grouped_datapoints.keys.last
+        assert_nil @grouped_datapoints.keys.last.display_as
       end
       
       should "not return groupings with no data" do
