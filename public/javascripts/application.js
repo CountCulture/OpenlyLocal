@@ -39,4 +39,11 @@ $(document).ready( function() {
 				$('.item_attribute:last').clone().appendTo("#parser_attribute_parser");
 				event.preventDefault();					
 		});
+		
+		$('.graphed_datapoints img').click(function(event){
+				$(this).parents('div.graph').hide();
+				$(this).parents('.graphed_datapoints').removeClass('graphed_datapoints');
+				event.preventDefault();					
+		});
+		
 });
