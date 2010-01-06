@@ -49,11 +49,11 @@ class WardsHelperTest < ActionView::TestCase
       @dataset_topic_3 = Factory(:dataset_topic, :short_title => '26-35 years olds', :muid => 14)
       @dataset_topic_4 = Factory(:dataset_topic, :short_title => 'has a mean age of', :muid => 14)
       self.stubs(:mocha_mock_path).returns('/foo') #url in stats, so just stub out all calls to object's path
-      datapoint_1 = BareDatapoint.new(:value => 534, :subject => @dataset_topic_1, :area => @area)
-      datapoint_2 = BareDatapoint.new(:value => 42.2, :subject => @dataset_topic_2, :area => @area, :muid_type => 'Percentage', :muidformat => "%.1f%")
-      datapoint_3 = BareDatapoint.new(:value => 61, :subject => @dataset_topic_3, :area => @area)
-      datapoint_4 = BareDatapoint.new(:value => 75, :subject => @dataset_topic_4, :area => @area)
-      statistics_group = {:demographics => [datapoint_1, datapoint_2, datapoint_3, datapoint_4]}
+      @datapoint_1 = BareDatapoint.new(:value => 534, :subject => @dataset_topic_1, :area => @area)
+      @datapoint_2 = BareDatapoint.new(:value => 42.2, :subject => @dataset_topic_2, :area => @area, :muid_type => 'Percentage', :muid_format => "%.1f%")
+      @datapoint_3 = BareDatapoint.new(:value => 61, :subject => @dataset_topic_3, :area => @area)
+      @datapoint_4 = BareDatapoint.new(:value => 75, :subject => @dataset_topic_4, :area => @area)
+      statistics_group = {:demographics => [@datapoint_1, @datapoint_2, @datapoint_3, @datapoint_4]}
       @result = statistics_in_words(statistics_group)
     end
 
@@ -63,6 +63,7 @@ class WardsHelperTest < ActionView::TestCase
     end
 
     should "should use muid format for number" do
+      
       assert_match /42.2%.+of the population/, @result
     end
 
