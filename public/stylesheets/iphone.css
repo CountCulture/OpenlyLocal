@@ -4,3 +4,7 @@
 #slogan {
 display: inline-block;
 }
+
+#grouped_datapoints {
+	float:none;
+}

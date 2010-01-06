@@ -186,6 +186,7 @@ body {
 }
 .extra_info  {
 	clear: left;
+	float:left;
 }
 .extra_info .notes h4 {
 	float: left;
@@ -217,7 +218,7 @@ div#relationships {
 body.councils h1 {
 	float:left;}
 body.councils .extra_info {
-	width:620px;}
+	max-width:620px;}
 #data {
 	overflow:auto;
 	}

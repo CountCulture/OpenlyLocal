@@ -457,7 +457,7 @@ class ApplicationHelperTest < ActionView::TestCase
 
   context "statistics_table helper method" do
     setup do
-      @area = Factory(:council)
+      @area = Factory(:council, :name => "Council with statistics")
       @subject_1 = Factory(:dataset_family)
       @subject_2 = Factory(:dataset_family)
       @dummy_datapoint_1 = BareDatapoint.new(:value => 1234.0, :area => @area, :subject => @subject_1)

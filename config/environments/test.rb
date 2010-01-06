@@ -29,4 +29,4 @@ config.gem "thoughtbot-factory_girl",
              :source => "http://gems.github.com"
 
 # rotate logs before they get too big
-config.logger = Logger.new("#{RAILS_ROOT}/log/#{ENV['RAILS_ENV']}.log", 50, 1048576)
+config.logger = Logger.new("#{RAILS_ROOT}/log/#{ENV['RAILS_ENV']}.log", 20, 1048576)

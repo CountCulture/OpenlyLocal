@@ -14,36 +14,7 @@ class DatapointsControllerTest < ActionController::TestCase
     @related_council_datapoint = Factory(:datapoint, :area => @related_council, :dataset_topic => @dataset_topic)
   end
 
-  # index tests
-  # context "with basic request without params" do
-  #   should "raise exception" do
-  #     assert_raise(ActiveRecord::RecordNotFound) { get :index }
-  #   end
-  # end
-  # 
-  # context "with basic request with dataset_topic but no other grouping" do
-  #   should "raise exception" do
-  #     assert_raise(ActiveRecord::RecordNotFound) { get :index, :dataset_topic_id => @dataset_topic.id }
-  #   end
-  # end
-  # 
-  # context "with basic request with grouping but not dataset_topic" do
-  #   should "raise exception" do
-  #     assert_raise(ActiveRecord::RecordNotFound) { get :index, :group_type => "authority_type", :group_id => "District" }
-  #   end
-  # end
 
-  context "with basic request with grouping and dataset_topic" do
-    # should do
-    #   get :index, :dataset_topic_id => @dataset_topic.id, :group_type => "authority_type", :group_id => "District"
-    # end
-    
-    # should_assign_to(:datapoints) { [@council_datapoint, @related_council_datapoint] }
-    # should_assign_to(:dataset_topic) { @dataset_topic }
-    # # should_assign_to(:area) { @ward }
-    # should_respond_with :success
-    # should_render_template :index
-  end
 
   # show test
   context "on GET to :show" do

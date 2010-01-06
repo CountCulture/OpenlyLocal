@@ -26,6 +26,18 @@ class CouncilsControllerTest < ActionController::TestCase
       assert_routing("councils/all.json", {:controller => "councils", :action => "index", :include_unparsed => true , :format => "json" })
     end
     
+    should "route regular resource routes for index action" do
+      assert_routing("councils", {:controller => "councils", :action => "index"})
+      assert_routing("councils.xml", {:controller => "councils", :action => "index", :format => "xml" })
+      assert_routing("councils.json", {:controller => "councils", :action => "index", :format => "json" })
+    end
+    
+    should "route regular resource routes for show action" do
+      assert_routing("councils/23", {:controller => "councils", :action => "show", :id => "23"})
+      assert_routing("councils/23.xml", {:controller => "councils", :action => "show", :id => "23", :format => "xml" })
+      assert_routing("councils/23.json", {:controller => "councils", :action => "show", :id => "23", :format => "json" })
+    end
+    
     context "with basic request" do
       setup do
         get :index
