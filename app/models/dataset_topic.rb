@@ -33,23 +33,42 @@ class DatasetTopic < ActiveRecord::Base
 
   # Updates datapoints for all councils with ness_id. NB called proess so can be easily run by delayed job
   def process
+    update_council_datapoints
     Council.all(:conditions => "ness_id IS NOT NULL").each do |council|
-      update_datapoints(council)
+      update_ward_datapoints(council)
     end
   end
   
   def short_title
     self[:short_title].blank? ? self[:title] : self[:short_title]
   end
+  
+  def update_council_datapoints
+    councils = Council.all(:conditions => "ness_id IS NOT NULL")
+    raw_datapoints = NessUtilities::RawClient.new('Tables', [['Areas', councils.collect(&:ness_id)], ['Variables', ons_uid]]).process_and_extract_datapoints
+    logger.debug { "Found #{raw_datapoints.size} raw datapoints for #{title} councils:\n #{raw_datapoints.inspect}" }
+    create_datapoints_from(raw_datapoints, councils)
+  end
 
-  def update_datapoints(council)
+  def update_ward_datapoints(council)
     return if council.ness_id.blank?
     wards = council.wards
     raw_datapoints = NessUtilities::RawClient.new('ChildAreaTables', [['ParentAreaId', council.ness_id], ['LevelTypeId', '14'], ['Variables', ons_uid]]).process_and_extract_datapoints
     logger.debug { "Found #{raw_datapoints.size} raw datapoints for #{council.name} wards:\n #{raw_datapoints.inspect}" }
+    create_datapoints_from(raw_datapoints, wards)
+    # raw_datapoints.collect do |rdp|
+    #   next unless ward = wards.detect{|w| w.ness_id == rdp[:ness_area_id]}
+    #   dp = datapoints.find_or_initialize_by_area_type_and_area_id('Ward', ward.id)
+    #   dp.update_attributes(:value => rdp[:value])
+    #   dp
+    # end
+  end
+  
+  private
+  def create_datapoints_from(raw_datapoints, areas)
     raw_datapoints.collect do |rdp|
-      next unless ward = wards.detect{|w| w.ness_id == rdp[:ness_area_id]}
-      dp = datapoints.find_or_initialize_by_area_type_and_area_id('Ward', ward.id)
+      next unless area = areas.detect{|a| a.ness_id == rdp[:ness_area_id]}
+      dp = datapoints.find_or_initialize_by_area_type_and_area_id(area.class.to_s, area.id)
       dp.update_attributes(:value => rdp[:value])
       dp
     end

@@ -10,6 +10,11 @@
   </p>
 
   <p>
+    <%= f.label :muid %>
+    <%= f.text_field :muid %>
+  </p>
+
+  <p>
     <%= f.label :dataset_topic_grouping_id %>
     <%= f.select :dataset_topic_grouping_id, DatasetTopicGrouping.all.collect{ |g| [g.title, g.id] }, :include_blank => true %>
   </p>

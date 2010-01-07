@@ -69,51 +69,43 @@ class DatasetTopicTest < ActiveSupport::TestCase
       expected_parents = [@dataset_topic.dataset_family.dataset, @dataset_topic.dataset_family]
       assert_equal expected_parents, @dataset_topic.parents
     end
-
-    context "when updating datapoints for council" do
+    
+    context "when updating council datapoints" do
       setup do
-        @council = Factory(:council)
-        @council.update_attribute(:ness_id, 42)
-        @ward1 = Factory(:ward, :name => 'ward1', :ness_id => 211, :council => @council)
-        @ward2 = Factory(:ward, :name => 'ward2', :ness_id => 215, :council => @council)
-        dummy_response = [ { :ness_area_id => '215', :value => '42', :ness_topic_id => '123'},
-                           { :ness_area_id => '211', :value => '51', :ness_topic_id => '123'}]
+        @council_1 = Factory(:council, :ness_id => 12)
+        @council_2 = Factory(:council, :name => "Council 2", :ness_id => 35)
+        dummy_response = [ { :ness_area_id => '35', :value => '42', :ness_topic_id => '123'},
+                           { :ness_area_id => '12', :value => '51', :ness_topic_id => '123'}]
         NessUtilities::RawClient.stubs(:new).returns(stub(:process_and_extract_datapoints => dummy_response))
       end
 
       should "should fetch data from Ness database" do
-        NessUtilities::RawClient.expects(:new).with('ChildAreaTables', [['ParentAreaId', @council.ness_id], ['LevelTypeId', '14'], ['Variables', @dataset_topic.ons_uid]]).returns(stub(:process_and_extract_datapoints=>[]))
-        @dataset_topic.update_datapoints(@council)
-      end
-
-      should "not fetch data from Ness database when council has no ness_id" do
-        @council.update_attribute(:ness_id, nil)
-        NessUtilities::RawClient.expects(:new).never
-        @dataset_topic.update_datapoints(@council)
+        NessUtilities::RawClient.expects(:new).with('Tables', [['Areas', ["12","35"]],['Variables', @dataset_topic.ons_uid]]).returns(stub(:process_and_extract_datapoints=>[]))
+        @dataset_topic.update_council_datapoints
       end
 
       should "save datapoints" do
         assert_difference 'Datapoint.count', 2 do
-          @dataset_topic.update_datapoints(@council)
+          @dataset_topic.update_council_datapoints
         end
       end
 
-      should "associate datapoints with correct wards" do
-        @dataset_topic.update_datapoints(@council)
-        assert_equal 51.0, @ward1.datapoints.first[:value]
-        assert_equal 42.0, @ward2.datapoints.first[:value]
+      should "associate datapoints with correct councils" do
+        @dataset_topic.update_council_datapoints
+        assert_equal 51.0, @council_1.datapoints.first[:value]
+        assert_equal 42.0, @council_2.datapoints.first[:value]
       end
 
       should "return datapoints" do
-        assert_kind_of Array, dps = @dataset_topic.update_datapoints(@council)
+        assert_kind_of Array, dps = @dataset_topic.update_council_datapoints
         assert_equal 2, dps.size
         assert_kind_of Datapoint, dps.first
       end
 
       should "update existing datapoints" do
-        @existing_datapoint = @ward2.datapoints.create(:dataset_topic_id => @dataset_topic.id, :value => '99')
+        @existing_datapoint = @council_2.datapoints.create(:dataset_topic_id => @dataset_topic.id, :value => '99')
         assert_difference 'Datapoint.count', 1 do
-          @dataset_topic.update_datapoints(@council)
+          @dataset_topic.update_council_datapoints
         end
         assert_equal 42.0, @existing_datapoint.reload[:value]
       end
@@ -127,7 +119,88 @@ class DatasetTopicTest < ActiveSupport::TestCase
 
         should "not add datapoints" do
           assert_no_difference 'Datapoint.count' do
-            @dataset_topic.update_datapoints(@council)
+            @dataset_topic.update_council_datapoints
+          end
+        end
+      end
+
+      context "and datapoint ness_id can't be matched to council (e.g. might be for defunkt council)" do
+        setup do
+          @council_1.update_attribute(:ness_id, 999)
+        end
+
+        should "not raise exception" do
+          assert_nothing_raised(Exception) { @dataset_topic.update_council_datapoints }
+        end
+        
+        should "still add datapoint for council that does match raise exception" do
+          assert_difference 'Datapoint.count', 1 do
+            @dataset_topic.update_council_datapoints
+          end
+          assert_equal 42.0, @council_2.datapoints.first[:value]
+        end
+      end
+
+    end
+    
+    context "when updating ward datapoints for given council" do
+      setup do
+        @council = Factory(:council)
+        @council.update_attribute(:ness_id, 42)
+        @ward1 = Factory(:ward, :name => 'ward1', :ness_id => 211, :council => @council)
+        @ward2 = Factory(:ward, :name => 'ward2', :ness_id => 215, :council => @council)
+        dummy_response = [ { :ness_area_id => '215', :value => '42', :ness_topic_id => '123'},
+                           { :ness_area_id => '211', :value => '51', :ness_topic_id => '123'}]
+        NessUtilities::RawClient.stubs(:new).returns(stub(:process_and_extract_datapoints => dummy_response))
+      end
+
+      should "should fetch data from Ness database" do
+        NessUtilities::RawClient.expects(:new).with('ChildAreaTables', [['ParentAreaId', @council.ness_id], ['LevelTypeId', '14'], ['Variables', @dataset_topic.ons_uid]]).returns(stub(:process_and_extract_datapoints=>[]))
+        @dataset_topic.update_ward_datapoints(@council)
+      end
+
+      should "not fetch data from Ness database when council has no ness_id" do
+        @council.update_attribute(:ness_id, nil)
+        NessUtilities::RawClient.expects(:new).never
+        @dataset_topic.update_ward_datapoints(@council)
+      end
+
+      should "save datapoints" do
+        assert_difference 'Datapoint.count', 2 do
+          @dataset_topic.update_ward_datapoints(@council)
+        end
+      end
+
+      should "associate datapoints with correct wards" do
+        @dataset_topic.update_ward_datapoints(@council)
+        assert_equal 51.0, @ward1.datapoints.first[:value]
+        assert_equal 42.0, @ward2.datapoints.first[:value]
+      end
+
+      should "return datapoints" do
+        assert_kind_of Array, dps = @dataset_topic.update_ward_datapoints(@council)
+        assert_equal 2, dps.size
+        assert_kind_of Datapoint, dps.first
+      end
+
+      should "update existing datapoints" do
+        @existing_datapoint = @ward2.datapoints.create(:dataset_topic_id => @dataset_topic.id, :value => '99')
+        assert_difference 'Datapoint.count', 1 do
+          @dataset_topic.update_ward_datapoints(@council)
+        end
+        assert_equal 42.0, @existing_datapoint.reload[:value]
+      end
+
+      context "and empty values returned by Ness client" do
+        setup do
+          dummy_bad_response = [ { :ness_area_id => '215', :value => '', :ness_topic_id => '123'},
+                             { :ness_area_id => '211', :value => nil, :ness_topic_id => '123'}]
+          NessUtilities::RawClient.expects(:new).returns(stub(:process_and_extract_datapoints => dummy_bad_response)) # expects overrides stubbing
+        end
+
+        should "not add datapoints" do
+          assert_no_difference 'Datapoint.count' do
+            @dataset_topic.update_ward_datapoints(@council)
           end
         end
       end
@@ -138,24 +211,24 @@ class DatasetTopicTest < ActiveSupport::TestCase
         end
 
         should "not raise exception" do
-          assert_nothing_raised(Exception) { @dataset_topic.update_datapoints(@council) }
+          assert_nothing_raised(Exception) { @dataset_topic.update_ward_datapoints(@council) }
         end
 
         should "add matched datapoint" do
-          @dataset_topic.update_datapoints(@council)
+          @dataset_topic.update_ward_datapoints(@council)
           assert @ward1.datapoints.empty?
           assert_equal 42.0, @ward2.datapoints.first[:value]
         end
 
         should "not add unmatched datapoint" do
           assert_difference 'Datapoint.count', 1 do
-            @dataset_topic.update_datapoints(@council)
+            @dataset_topic.update_ward_datapoints(@council)
           end
         end
 
         should "update matching datapoint" do
           @existing_datapoint = @ward2.datapoints.create(:dataset_topic_id => @dataset_topic.id, :value => '99')
-          @dataset_topic.update_datapoints(@council)
+          @dataset_topic.update_ward_datapoints(@council)
           assert_equal 42.0, @existing_datapoint.reload[:value]
         end
       end
@@ -167,16 +240,21 @@ class DatasetTopicTest < ActiveSupport::TestCase
         @council = Factory(:council, :ness_id => 211)
         @another_council = Factory(:another_council, :ness_id => 242)
         @no_ness_council = Factory(:tricky_council)
-        @dataset_topic.stubs(:update_datapoints)
+        @dataset_topic.stubs(:update_ward_datapoints)
       end
-
-      should "update datapoints for councils with ness_id" do
-        @dataset_topic.expects(:update_datapoints).twice.with(){|council| [@council.id, @another_council.id].include?(council.id)}
+      
+      should "update council datapoints" do
+        @dataset_topic.expects(:update_council_datapoints)
+        @dataset_topic.process
+      end
+      
+      should "update ward datapoints for councils with ness_id" do
+        @dataset_topic.expects(:update_ward_datapoints).twice.with(){|council| [@council.id, @another_council.id].include?(council.id)}
         @dataset_topic.process
       end
 
-      should "not update datapoints for councils without ness_id" do
-        @dataset_topic.expects(:update_datapoints).with(){|council| @no_ness_council.id == council.id }.never
+      should "not update ward datapoints for councils without ness_id" do
+        @dataset_topic.expects(:update_ward_datapoints).with(){|council| @no_ness_council.id == council.id }.never
         @dataset_topic.process
       end
     end
@@ -186,7 +264,7 @@ class DatasetTopicTest < ActiveSupport::TestCase
         @council = Factory(:council, :ness_id => 211)
         @another_council = Factory(:another_council, :ness_id => 242)
         @no_ness_council = Factory(:tricky_council)
-        @dataset_topic.stubs(:update_datapoints)
+        @dataset_topic.stubs(:update_ward_datapoints)
       end
 
       should "process topic" do

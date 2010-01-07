@@ -7,6 +7,7 @@
   <%= attribute_tag :measurement_unit, Muids[@dataset_topic.muid].try(:first) %>
   <%= attribute_tag :dataset_date, @dataset_topic.data_date %>
   <%= attribute_tag :ness_id, @dataset_topic.ons_uid %>
+  <%= attribute_tag :muid_type, @dataset_topic.muid_type %>
   <%= attribute_tag :subjects, @dataset_topic.dataset_family.ons_subjects.collect { |sub| link_to sub.title, dataset_families_path(:anchor => dom_id(sub)) }.join(', ') %>
 </dl>
 
