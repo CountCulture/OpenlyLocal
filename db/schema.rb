@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100105111301) do
+ActiveRecord::Schema.define(:version => 20100106173048) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20100105111301) do
     t.float    "lng"
     t.float    "distance"
     t.string   "cipfa_code"
+    t.string   "region"
   end
 
   add_index "councils", ["parent_authority_id"], :name => "index_councils_on_parent_authority_id"

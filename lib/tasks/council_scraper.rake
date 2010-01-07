@@ -302,3 +302,26 @@ task :import_council_cipfa_codes => :environment do
 
 end
 
+desc "Import council regions"
+task :import_council_regions => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  
+  Regions.each do |region_name,values|
+    begin
+      doc = Hpricot.XML(open("http://statistics.data.gov.uk/doc/government-office-region/#{values.first}.rdf"))
+      region = doc.at('skos:prefLabel').inner_text
+      snac_ids = doc.search('administrative-geography:district|administrative-geography:county').collect{ |d| d["rdf:resource"].scan(/\/(\w+)$/).to_s }
+      puts "Found #{snac_ids.size} councils for region #{region} (#{values.first})"
+      snac_ids.each do |snac_id|
+        if council = Council.find_by_snac_id(snac_id)
+          council.update_attribute(:region, region)
+        end
+      end
+    rescue Exception => e
+      puts "There was an error getting/processing info for #{region}: #{e.inspect}"
+    end
+  end
+end
+
+

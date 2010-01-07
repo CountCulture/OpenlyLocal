@@ -32,3 +32,14 @@ Muids = { 1 => ['Count'],
           2 => ['Percentage', "%.1f%"],
           9 => ['Pounds Sterling', "£%d"],
           14 => ['Years', "%.1f"]}
+          
+Regions = { 'North East'                => ['A', 276700],
+            'North West'                => ['B', 276701],
+            'Yorkshire and The Humber'  => ['D', 276702],
+            'East Midlands'             => ['E', 276703],
+            'West Midlands'             => ['F', 276704],
+            'East of England'           => ['G', 276705],
+            'London'                    => ['H', 276706],
+            'South East'                => ['J', 276707],
+            'South West'                => ['K', 276708]
+}

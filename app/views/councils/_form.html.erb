@@ -43,6 +43,11 @@
   </p>
   
   <p>
+    <%= f.label :region %>
+    <%= f.select :region, Regions.keys, { :include_blank => true } %>
+  </p>
+  
+  <p>
     <%= f.label :lat, "Latitude" %>
     <%= f.text_field :lat %>
     <%= link_to("Show location", "http://maps.google.co.uk/maps?q=#{@council.lat},+#{@council.lng}+(#{URI.escape(@council.name+', '+ @council.address)})&iwloc=A&hl=en", :target => "blank", :class => "external") unless @council.lat.blank? %>
@@ -66,6 +71,11 @@
   <p>
     <%= f.label :cipfa_code %>
     <%= f.text_field :cipfa_code %>
+  </p>
+  
+  <p>
+    <%= f.label :ness_id %>
+    <%= f.text_field :ness_id %>
   </p>
   
   <p>
