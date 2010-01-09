@@ -4,6 +4,8 @@
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :originator, link_to(@dataset.originator, @dataset.originator_url, :class => 'external') %>
   <%= attribute_tag :source, link_to(@dataset.url, @dataset.url, :class => 'external') %>
+  <%= attribute_tag :description, @dataset.description %>
+  <%= attribute_tag :notes, @dataset.notes %>
 </dl>
 <%- unless @area -%>
   <div id="relationships">
