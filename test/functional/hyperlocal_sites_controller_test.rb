@@ -70,17 +70,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
   end
 
   # new test
-  context "on GET to :new without auth" do
-    setup do
-      get :new
-    end
-  
-    should_respond_with 401
-  end
-
   context "on GET to :new" do
     setup do
-      stub_authentication
       get :new
     end
   
@@ -99,30 +90,32 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     should "show possible platforms in select box" do
       assert_select "select#hyperlocal_site_platform"
     end
+    
+    should "not show approved tickbox" do
+      assert_select "#hyperlocal_site_approved", false
+    end
   end  
   
   # create test
    context "on POST to :create" do
-    
-     context "without auth" do
-       setup do
-         post :create, :hyperlocal_site => Factory.attributes_for(:hyperlocal_site)
-       end
-
-       should_respond_with 401
+     setup do
+       @attributes = Factory.attributes_for(:hyperlocal_site)
      end
-
-     context "with valid params" do
+    
+    context "with valid params" do
        setup do
          stub_authentication
-         post :create, :hyperlocal_site => Factory.attributes_for(:hyperlocal_site)
+         post :create, :hyperlocal_site => @attributes
        end
      
        should_change "HyperlocalSite.count", :by => 1
        should_assign_to :hyperlocal_site
-       should_redirect_to( "the show page for hyperlocal_site") { hyperlocal_site_url(assigns(:hyperlocal_site)) }
-       should_set_the_flash_to /Successfully created/
-     
+       should_redirect_to( "the hyperlocal_sites index page") { hyperlocal_sites_url }
+       should_set_the_flash_to /Successfully submitted/i
+        
+       should "set approved flag to false by default" do
+         assert !HyperlocalSite.find_by_title(@attributes[:title]).approved?
+       end
      end
      
      context "with invalid params" do
@@ -135,6 +128,17 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
        should_assign_to :hyperlocal_site
        should_render_template :new
        should_not_set_the_flash
+     end
+  
+     context "with approved_flag set to true" do
+       setup do
+         stub_authentication
+         post :create, :hyperlocal_site => @attributes.merge(:approved => "1")
+       end
+     
+       should "not set approved flag to true" do
+         assert !HyperlocalSite.find_by_title(@attributes[:title]).approved?
+       end
      end
   
    end  
@@ -162,6 +166,13 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
      assert_select "form#edit_hyperlocal_site_#{@hyperlocal_site.id}"
     end
 
+    should "show approved checkbox" do
+      assert_select "#hyperlocal_site_approved"
+    end
+    
+    should "show button to delete" do
+      assert_select "form.button-to[action='/hyperlocal_sites/#{@hyperlocal_site.to_param}']"
+    end
   end
 
   # update tests
@@ -175,18 +186,45 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
   end
 
   context "on PUT to :update" do
-    setup do
-      stub_authentication
-      put :update, { :id => @hyperlocal_site.id,
-                     :hyperlocal_site => { :title => "New title"}}
+    context "in general" do
+      setup do
+        stub_authentication
+        put :update, { :id => @hyperlocal_site.id,
+                       :hyperlocal_site => { :title => "New title"}}
+      end
+
+      should_assign_to :hyperlocal_site
+      should_redirect_to( "the show page for hyperlocal_site") { hyperlocal_site_url(@hyperlocal_site.reload) }
+      should_set_the_flash_to /Successfully updated/
+
+      should "update hyperlocal_site" do
+        assert_equal "New title", @hyperlocal_site.reload.title
+      end
     end
+    
+    context "when approved is set to true" do
+      setup do
+        stub_authentication
+        put :update, { :id => @hyperlocal_site.id,
+                       :hyperlocal_site => { :approved => "1"}}
+      end
 
-    should_assign_to :hyperlocal_site
-    should_redirect_to( "the show page for hyperlocal_site") { hyperlocal_site_url(@hyperlocal_site.reload) }
-    should_set_the_flash_to /Successfully updated/
+      should "approve hyperlocal_site" do
+        assert @hyperlocal_site.reload.approved?
+      end
+    end
+    
+    context "when approved is set to true" do
+      setup do
+        @hyperlocal_site.update_attribute(:approved, true)
+        stub_authentication
+        put :update, { :id => @hyperlocal_site.id,
+                       :hyperlocal_site => { :approved => "0"}}
+      end
 
-    should "update hyperlocal_site" do
-      assert_equal "New title", @hyperlocal_site.reload.title
+      should "disapprove hyperlocal_site" do
+        assert !@hyperlocal_site.reload.approved?
+      end
     end
   end
   

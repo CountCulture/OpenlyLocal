@@ -1,6 +1,12 @@
 <%= error_messages_for :hyperlocal_site %>
 
 <% form_for @hyperlocal_site do |f| -%>
+  <%- if action_name == "edit" -%>
+    <p>
+      <%= f.label :approved %>
+      <%= f.check_box :approved %>
+    </p>
+  <%- end -%>
   <p>
     <%= f.label :title %>
     <%= f.text_field :title %>
@@ -33,6 +39,7 @@
     <%= f.label :platform %>
     <%= f.select :platform, HyperlocalSite::PossiblePlatforms, { :include_blank => true } %>
   </p>
+  
   <fieldset id="hyperlocal_sites_location">
     <legend>Area covered by this site</legend>
     <p>

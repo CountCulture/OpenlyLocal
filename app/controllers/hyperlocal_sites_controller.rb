@@ -1,5 +1,5 @@
 class HyperlocalSitesController < ApplicationController
-  before_filter :authenticate, :except => [:index, :show]
+  before_filter :authenticate, :except => [:index, :show, :new, :create]
   before_filter :find_hyperlocal_site, :except => [:index, :new, :create]
   
   def index
@@ -18,8 +18,8 @@ class HyperlocalSitesController < ApplicationController
   def create
     @hyperlocal_site = HyperlocalSite.new(params[:hyperlocal_site])
     @hyperlocal_site.save!
-    flash[:notice] = "Successfully created hyperlocal site"
-    redirect_to hyperlocal_site_url(@hyperlocal_site)
+    flash[:notice] = "Hyperlocal site successfully submitted"
+    redirect_to hyperlocal_sites_url
   rescue
     render :action => "new"
   end
@@ -30,6 +30,7 @@ class HyperlocalSitesController < ApplicationController
   
   def update
     @hyperlocal_site.update_attributes!(params[:hyperlocal_site])
+    @hyperlocal_site.update_attribute(:approved, params[:hyperlocal_site][:approved])
     flash[:notice] = "Successfully updated HyperLocal site"
     
     redirect_to hyperlocal_site_url(@hyperlocal_site)

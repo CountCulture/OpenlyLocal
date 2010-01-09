@@ -16,6 +16,7 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_belong_to :council
     should_allow_values_for :platform, "Ning"
     should_not_allow_values_for :platform, "foo"
+    should_not_allow_mass_assignment_of :approved
     
     should_have_db_column :email
     should_have_db_column :description
@@ -27,6 +28,7 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_have_db_column :platform
     should_have_db_column :area_covered
     should_have_db_column :country
+    should_have_db_column :approved
     
     should "validate presence of lat on create" do
       h = Factory.build(:hyperlocal_site, :lat => nil)
