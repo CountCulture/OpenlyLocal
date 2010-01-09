@@ -18,6 +18,7 @@ class HyperlocalSitesController < ApplicationController
   
   def new
     @hyperlocal_site = HyperlocalSite.new
+    @enable_google_maps = true
   end
   
   def create

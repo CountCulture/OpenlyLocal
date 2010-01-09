@@ -1,3 +1,7 @@
+<div id="map_outer">
+  <div id="map_canvas"></div>
+</div>
+
 <%= error_messages_for :hyperlocal_site %>
 
 <% form_for @hyperlocal_site do |f| -%>
@@ -7,11 +11,11 @@
       <%= f.check_box :approved %>
     </p>
   <%- end -%>
-  <p>
+  <p class='required'>
     <%= f.label :title %>
     <%= f.text_field :title %>
   </p>
-  <p>
+  <p class='required'>
     <%= f.label :url %>
     <%= f.text_field :url %>
   </p>
@@ -24,8 +28,8 @@
     <%= f.text_field :email %>
   </p>
   <p>
-    <%= f.label :description %>
-    <%= f.text_area :description %>
+    <%= f.label :description, "Description <em>plain text only</em>" %>
+    <%= f.text_area :description, :rows => 5 %>
   </p>
   <p>
     <%= f.label :twitter_account %>
@@ -42,25 +46,25 @@
   
   <fieldset id="hyperlocal_sites_location">
     <legend>Area covered by this site</legend>
-    <p>
+    <p class='required'>
       <%= f.label :area_covered, "Area Covered <em>(in words - keep it short)</em>" %>
       <%= f.text_field :area_covered %>
     </p>
-    <p>
+    <p class='required'>
       <%= f.label :country %>
       <%= f.select :country, AllowedCountries, { :include_blank => true } %>
     </p>
-    <p>
+    <p class='required'>
       <%= f.label :lat, "Latitude" %>
       <%= f.text_field :lat %>
     </p>
-    <p>
+    <p class='required'>
       <%= f.label :lng, "Longitude" %>
       <%= f.text_field :lng %>
     </p>
     <p>
       <%= f.label :distance, "Distance from centre point covered (km)" %>
-      <%= f.text_field :distance %>
+      <%= f.text_field :distance, :value => 10 %>
     </p>
   </fieldset>
   <p>

@@ -6,7 +6,9 @@ a {
 	text-decoration: none;
 	color:#036;}
 a:hover {text-decoration: underline;}
-
+textarea {
+	height:auto; /*override blueprint*/
+}
 label {
 	float: left;
 	width: 12em;
@@ -454,6 +456,29 @@ table.datapoints tr.total td {
 }
 table.datapoints td.more_info {
 	width: 50px;
+}
+
+/*Hyperlocal formatting*/
+#new_hyperlocal_site label {
+	color:#666;
+}
+#new_hyperlocal_site .required label {
+	color:inherit;
+}
+#new_hyperlocal_site .required label:before {
+	content:"*";
+	color:#8a1f11;
+}
+#map_outer {
+	border:1px solid #999;
+	float:right;
+	height:350px;
+	padding:3px;
+	width:450px;
+}
+#map_canvas {
+	height:350px;
+	width:450px;
 }
 /*Misc formatting*/
 #api_info {

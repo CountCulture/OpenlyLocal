@@ -127,6 +127,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     should "not show approved tickbox" do
       assert_select "#hyperlocal_site_approved", false
     end
+    
+    should "enable google maps" do
+      assert assigns(:enable_google_maps)
+    end
   end  
   
   # create test
@@ -205,6 +209,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     
     should "show button to delete" do
       assert_select "form.button-to[action='/hyperlocal_sites/#{@hyperlocal_site.to_param}']"
+    end
+    
+    should "enable google maps" do
+      assert assigns(:enable_google_maps)
     end
   end
 
