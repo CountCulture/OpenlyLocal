@@ -193,6 +193,7 @@ end
 Factory.define :hyperlocal_site do |f|
   f.sequence(:title) { |n| "Hyperlocal #{n}" }
   f.sequence(:url) { |n| "http://hyperlocal.co.uk/site_#{n}" }
+  f.country 'England'
   f.lat 52
   f.lng -1
   f.distance 10

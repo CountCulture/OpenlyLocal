@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100109132307) do
+ActiveRecord::Schema.define(:version => 20100109135238) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -202,6 +202,9 @@ ActiveRecord::Schema.define(:version => 20100109132307) do
     t.integer  "hyperlocal_group_id"
     t.string   "platform"
     t.text     "description"
+    t.string   "area_covered"
+    t.string   "country"
+    t.integer  "council_id"
   end
 
   add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"

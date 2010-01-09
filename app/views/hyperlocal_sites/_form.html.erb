@@ -14,7 +14,7 @@
     <%= f.text_field :feed_url %>
   </p>
   <p>
-    <%= f.label :email %>
+    <%= f.label :email, "Email <em>we may need to contact you</em>" %>
     <%= f.text_field :email %>
   </p>
   <p>
@@ -36,6 +36,14 @@
   <fieldset id="hyperlocal_sites_location">
     <legend>Area covered by this site</legend>
     <p>
+      <%= f.label :area_covered, "Area Covered <em>(in words - keep it short)</em>" %>
+      <%= f.text_field :area_covered %>
+    </p>
+    <p>
+      <%= f.label :country %>
+      <%= f.select :country, AllowedCountries, { :include_blank => true } %>
+    </p>
+    <p>
       <%= f.label :lat, "Latitude" %>
       <%= f.text_field :lat %>
     </p>
@@ -44,7 +52,7 @@
       <%= f.text_field :lng %>
     </p>
     <p>
-      <%= f.label :distance, "Distance from centre point covered" %>
+      <%= f.label :distance, "Distance from centre point covered (km)" %>
       <%= f.text_field :distance %>
     </p>
   </fieldset>

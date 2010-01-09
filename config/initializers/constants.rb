@@ -46,3 +46,5 @@ Regions = { 'North East'                => ['A', 276700],
             'South East'                => ['J', 276707],
             'South West'                => ['K', 276708]
 }
+
+AllowedCountries = ['England', 'Northern Ireland', 'Scotland', 'Wales']
