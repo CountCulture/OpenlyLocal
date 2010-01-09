@@ -2,7 +2,8 @@ require 'test_helper'
 
 class HyperlocalSitesControllerTest < ActionController::TestCase
   def setup
-    @hyperlocal_site = Factory(:hyperlocal_site)
+    @hyperlocal_site = Factory(:approved_hyperlocal_site, :email => "info@hyperlocal.com")
+    @unapproved_hyperlocal_site = Factory(:hyperlocal_site)
   end
 
   # index test
@@ -12,25 +13,53 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:hyperlocal_sites) { HyperlocalSite.find(:all)}
+      should_assign_to(:hyperlocal_sites) { [@hyperlocal_site]}
       should_respond_with :success
       should_render_template :index
-      should "list hyperlocal sites" do
+      should "list only approved hyperlocal sites" do
         assert_select "li a", @hyperlocal_site.title
+        assert_select "li a", :text => @unapproved_hyperlocal_site.title, :count => 0
       end
 
       should "show share block" do
         assert_select "#share_block"
       end
 
-      should_eventually "show api block" do
+      should "show api block" do
         assert_select "#api_info"
       end
       
       should 'show title' do
         assert_select "title", /Hyperlocal Sites/i
+      end      
+    end
+    
+    context "with xml request" do
+      setup do
+        get :index, :format => "xml"
       end
-      
+
+      should_assign_to(:hyperlocal_sites) { [@hyperlocal_site] }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/xml'
+      should "not include email address" do
+        assert_select "email", false
+      end
+    end
+    
+    context "with json requested" do
+      setup do
+        get :index, :format => "json"
+      end
+  
+      should_assign_to(:hyperlocal_sites) {  [@hyperlocal_site] }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/json'
+      should "not include email address" do
+        assert_no_match /email\:/, @response.body
+      end
     end
   end
     
@@ -52,6 +81,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
 
       should "list hyperlocal site attributes" do
         assert_select '.attributes dd', /#{@hyperlocal_site.url}/
+      end
+      
+      should "not list email address" do
+        assert_select ".attributes", :text => /#{@hyperlocal_site.email}/, :count => 0
       end
     end
     

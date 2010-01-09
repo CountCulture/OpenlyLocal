@@ -199,6 +199,10 @@ Factory.define :hyperlocal_site do |f|
   f.distance 10
 end
 
+Factory.define :approved_hyperlocal_site, :parent => :hyperlocal_site do |hs|
+  hs.approved true
+end
+
 Factory.define :hyperlocal_group do |f|
   f.sequence(:title) { |n| "Hyperlocal Group #{n}" }
 end

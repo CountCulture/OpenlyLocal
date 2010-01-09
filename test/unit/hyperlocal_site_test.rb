@@ -52,7 +52,14 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       assert_equal "can't be blank", h.errors[:distance]
       @hyperlocal_site.update_attribute(:distance, nil)
       assert @hyperlocal_site.valid?
-    end   
+    end
+    
+    context "should have named_scope model that should" do
+      should "return only approved hyperlocal_sites" do
+        approved_site = Factory(:approved_hyperlocal_site)
+        assert_equal [approved_site], HyperlocalSite.approved
+      end
+    end
   end
   
   context "A HyperlocalSite instance" do

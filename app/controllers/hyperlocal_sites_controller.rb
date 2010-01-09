@@ -4,7 +4,12 @@ class HyperlocalSitesController < ApplicationController
   
   def index
     @title = "UK Hyperlocal Sites"
-    @hyperlocal_sites = HyperlocalSite.all
+    @hyperlocal_sites = HyperlocalSite.approved
+    respond_to do |format|
+      format.html
+      format.xml { render :xml => @hyperlocal_sites.to_xml(:except => [:email, :approved]) }
+      format.json { render :json => @hyperlocal_sites.to_json(:except => [:email, :approved]) }
+    end
   end
   
   def show

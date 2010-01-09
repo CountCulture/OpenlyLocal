@@ -9,4 +9,5 @@ class HyperlocalSite < ActiveRecord::Base
   validates_uniqueness_of :url
   validates_inclusion_of :platform, :in => PossiblePlatforms, :allow_blank => true
   validates_inclusion_of :country, :in => AllowedCountries
+  named_scope :approved, :conditions => {:approved => true}
 end
