@@ -1,5 +1,85 @@
+<script type="text/javascript" charset="utf-8">
+  var EARTH_RADIUS = 6378.137; //in kilometres
+  var circle;
+  var sites = <%= @hyperlocal_sites.to_json %>;
+  
+  function initMap() {
+    if (GBrowserIsCompatible()) {
+      var map = new GMap2(document.getElementById("map_canvas"));
+      // var lat = <%#= (@hyperlocal_site.lat||54).to_f %>;
+      // var lng = <%#=  @hyperlocal_site.lng.to_f %>;
+      // var distance = <%#= @hyperlocal_site.distance %>;
+      var center = new GLatLng(55.8, -2);
+      var first_view = true;
+      
+      map.setCenter(center, 5);
+      map.addControl(new GSmallMapControl());
+      map.addControl(new GMapTypeControl());
+      
+      for (var i=0; i < sites.length; i++) {
+        // var ll = new GLatLng(sites[i].hyperlocal_site.lat, sites[i].hyperlocal_site.lng);
+        map.addOverlay(createMarker(sites[i].hyperlocal_site, map));
+        // drawCircle(map, ll, sites[i].hyperlocal_site.distance);
+      };
+            
+    }
+  }
+  
+  // Map Geography Utility functions - see http://www.movable-type.co.uk/scripts/latlong.html#destPoint  
+  function getDestLatLng(latLng, bearing, distance) {
+   var lat1 = latLng.latRadians();
+   var lng1 = latLng.lngRadians();
+   var brng = bearing*Math.PI/180;
+   var dDivR = distance/EARTH_RADIUS;
+   var lat2 = Math.asin( Math.sin(lat1)*Math.cos(dDivR) + Math.cos(lat1)*Math.sin(dDivR)*Math.cos(brng) );
+   var lng2 = lng1 + Math.atan2(Math.sin(brng)*Math.sin(dDivR)*Math.cos(lat1), Math.cos(dDivR)-Math.sin(lat1)*Math.sin(lat2));
+   return new GLatLng(lat2/ Math.PI * 180, lng2/ Math.PI * 180);
+  }
+  
+  function drawCircle(curr_map, centrePt, rangeValue) {
+   if(circle){curr_map.removeOverlay(circle)};
+   var boundaries = getBoundaries(centrePt, rangeValue);
+   circle = new GGroundOverlay("http://openlylocal.com/images/circle_overlay.png", boundaries);
+   // console.info(circle); don't enable this in production
+   curr_map.addOverlay(circle);
+  }
+
+  function getBoundaries(centrePt, radius) {
+   var hypotenuse = Math.sqrt(2 * radius * radius);
+   var sw = getDestLatLng(centrePt, 225, hypotenuse);
+   var ne = getDestLatLng(centrePt, 45, hypotenuse);
+   return new GLatLngBounds(sw, ne);
+  }
+
+  function createMarker(site, map) {
+    var icon = new GIcon(G_DEFAULT_ICON);
+    var iconUrl = "http://chart.apis.google.com/chart?cht=mm&chs=20x20&chco=6699AAFF,336699FF,336699FF&ext=.png";
+    icon.image = iconUrl;
+    icon.iconSize = new GSize(20, 20);
+    icon.shadowSize = new GSize(32, 20);
+    icon.iconAnchor = new GPoint(10, 20);
+    icon.infoWindowAnchor = new GPoint(10, 1);
+    icon.printImage = iconUrl + "&chof=gif";
+    icon.mozPrintImage = iconUrl + "&chf=bg,s,ECECD8" + "&chof=gif";
+
+    var latlng = new GLatLng(site.lat, site.lng);
+    var marker = new GMarker(latlng, { icon:icon });
+    GEvent.addListener(marker,"click", function() {
+      var myHtml = "<h4>" + site.title + "</h4><p>" + site.description + "</p>";
+      map.openInfoWindowHtml(latlng, myHtml);
+    });
+    return marker;
+  }
+
+</script>
+
 <h1><%= @title %></h1>
-<p><%= link_to "Add your hyperlocal news site now", new_hyperlocal_site_path %></p>
+
+<div id="map_outer">
+  <div id="map_canvas"></div>
+</div>
+
+<p><strong><%= link_to "Add your hyperlocal news site now", new_hyperlocal_site_path %></strong></p>
   <ul id="hyperlocal_sites">
     <%- @hyperlocal_sites.group_by(&:country).each do |country, sites| -%>
       <li class="country">
