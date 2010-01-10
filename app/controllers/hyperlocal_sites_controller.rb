@@ -1,6 +1,7 @@
 class HyperlocalSitesController < ApplicationController
   before_filter :authenticate, :except => [:index, :show, :new, :create]
   before_filter :find_hyperlocal_site, :except => [:index, :new, :create]
+  before_filter :enable_google_maps, :except => [:update, :create, :destroy]
   
   def index
     @title = "UK Hyperlocal Sites"

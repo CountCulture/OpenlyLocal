@@ -477,9 +477,21 @@ table.datapoints td.more_info {
 	width:450px;
 }
 #map_canvas {
-	height:350px;
+	height:450px;
 	width:450px;
 }
+
+ul#hyperlocal_sites>li {
+	list-style:none;
+	font-weight: bold;
+	font-size: 1.2em;
+	text-transform: upper;
+} 
+ul#hyperlocal_sites li li{
+	font-weight: normal;
+	font-size: .9em;
+} 
+
 /*Misc formatting*/
 #api_info {
 	clear: both;

@@ -55,8 +55,8 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def share_this
-    @share_this = true
+  def enable_google_maps
+    @enable_google_maps = true
   end
   
   def linked_data_available
@@ -69,6 +69,10 @@ class ApplicationController < ActionController::Base
   
   def set_canonical_url
     @canonical_url = true
+  end
+  
+  def share_this
+    @share_this = true
   end
   
   def show_rss_link

@@ -1,5 +1,23 @@
 <h1><%= @title %></h1>
+<p><%= link_to "Add your hyperlocal news site now", new_hyperlocal_site_path %></p>
+  <ul id="hyperlocal_sites">
+    <%- @hyperlocal_sites.group_by(&:country).each do |country, sites| -%>
+      <li class="country">
+        <%= country %>
+        <ul>
+          <%- sites.each do |site| -%>
+            <li>
+              <span class="location"><%= site.area_covered %></span>
+              <strong><%= link_for site %></strong>
+              <%= link_to site.url, site.url, :class => :external %>
+              <%= link_to("News feed", site.feed_url, :class => "feed") if site.feed_url? %>
+              <%= link_to("Twitter feed", "http://twitter.com/#{site.twitter_account}", :class => "twitter feed") if site.twitter_account? %>       
+            </li>
+          <%- end -%>
+        </ul>
+      </li>
+    <%- end -%>
+  </ul>
 
-<%= list_all @hyperlocal_sites %>
 
 <%= render :partial => '/shared/api_info' %>

@@ -2,7 +2,8 @@ require 'test_helper'
 
 class HyperlocalSitesControllerTest < ActionController::TestCase
   def setup
-    @hyperlocal_site = Factory(:approved_hyperlocal_site, :email => "info@hyperlocal.com")
+    @hyperlocal_site = Factory(:approved_hyperlocal_site, :email => 'info@hyperlocal.com')
+    @another_hyperlocal_site = Factory(:approved_hyperlocal_site, :country => 'Scotland')
     @unapproved_hyperlocal_site = Factory(:hyperlocal_site)
   end
 
@@ -13,7 +14,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:hyperlocal_sites) { [@hyperlocal_site]}
+      should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site]}
       should_respond_with :success
       should_render_template :index
       should "list only approved hyperlocal sites" do
@@ -31,7 +32,17 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       
       should 'show title' do
         assert_select "title", /Hyperlocal Sites/i
-      end      
+      end
+      
+      should 'group by country' do
+        assert_select "li.country", /Scotland/ do
+          assert_select "ul li a", @another_hyperlocal_site.title
+        end
+      end
+      
+      should "enable google maps" do
+        assert assigns(:enable_google_maps)
+      end
     end
     
     context "with xml request" do
@@ -39,7 +50,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         get :index, :format => "xml"
       end
 
-      should_assign_to(:hyperlocal_sites) { [@hyperlocal_site] }
+      should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site] }
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/xml'
@@ -53,7 +64,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         get :index, :format => "json"
       end
   
-      should_assign_to(:hyperlocal_sites) {  [@hyperlocal_site] }
+      should_assign_to(:hyperlocal_sites) {  [@hyperlocal_site, @another_hyperlocal_site] }
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/json'

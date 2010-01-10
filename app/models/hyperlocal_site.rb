@@ -10,4 +10,5 @@ class HyperlocalSite < ActiveRecord::Base
   validates_inclusion_of :platform, :in => PossiblePlatforms, :allow_blank => true
   validates_inclusion_of :country, :in => AllowedCountries
   named_scope :approved, :conditions => {:approved => true}
+  default_scope :order => "title"
 end
