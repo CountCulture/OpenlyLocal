@@ -7,7 +7,7 @@
       var map = new GMap2(document.getElementById("map_canvas"));
       var lat = <%= (@hyperlocal_site.lat||54).to_f %>;
       var lng = <%=  @hyperlocal_site.lng.to_f %>;
-      var distance = <%= 10.0 %>;
+      var distance = <%= @hyperlocal_site.distance %>;
       var center = new GLatLng(lat, lng);
       var first_view = true;
       
@@ -53,7 +53,7 @@
    if(circle){curr_map.removeOverlay(circle)};
    var boundaries = getBoundaries(centrePt, rangeValue);
    circle = new GGroundOverlay("http://openlylocal.com/images/circle_overlay.png", boundaries);
-   console.info(circle)
+   // console.info(circle); don't enable this in production
    curr_map.addOverlay(circle);
   }
 
