@@ -20,17 +20,6 @@
     }
   }
   
-  // Map Geography Utility functions - see http://www.movable-type.co.uk/scripts/latlong.html#destPoint  
-  function getDestLatLng(latLng, bearing, distance) {
-   var lat1 = latLng.latRadians();
-   var lng1 = latLng.lngRadians();
-   var brng = bearing*Math.PI/180;
-   var dDivR = distance/EARTH_RADIUS;
-   var lat2 = Math.asin( Math.sin(lat1)*Math.cos(dDivR) + Math.cos(lat1)*Math.sin(dDivR)*Math.cos(brng) );
-   var lng2 = lng1 + Math.atan2(Math.sin(brng)*Math.sin(dDivR)*Math.cos(lat1), Math.cos(dDivR)-Math.sin(lat1)*Math.sin(lat2));
-   return new GLatLng(lat2/ Math.PI * 180, lng2/ Math.PI * 180);
-  }
-  
   function createMarker(site, map) {
     var icon = new GIcon(G_DEFAULT_ICON);
     var iconUrl = "http://chart.apis.google.com/chart?cht=mm&chs=20x20&chco=6699AAFF,336699FF,336699FF&ext=.png";

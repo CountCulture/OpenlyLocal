@@ -474,6 +474,7 @@ table.datapoints td.more_info {
 	float:right;
 	height:500px;
 	padding:3px;
+	margin-left: 1em;
 	width:450px;
 }
 #map_canvas {
@@ -497,6 +498,8 @@ ul#hyperlocal_sites li li{
 } 
 .hyperlocal_sites .area {
 	text-transform: uppercase;
+	color: #8a1f11;
+	font-size: 0.9em;
 }
 /*Misc formatting*/
 #api_info {
