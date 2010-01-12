@@ -29,7 +29,7 @@
     <%= javascript_include_tag "application" %>
     
     <% if @enable_google_maps %>
-      <script type="text/javascript" src="http://www.google.com/jsapi?key=<%#= GOOGLE_AJAX_API_KEY %>"></script>
+      <script type="text/javascript" src="http://www.google.com/jsapi?key=<%= GOOGLE_AJAX_API_KEY %>"></script>
       <script type="text/javascript">
         google.load("maps", "2",{"other_params":"sensor=false"});
       </script>

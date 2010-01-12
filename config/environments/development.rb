@@ -25,3 +25,5 @@ config.action_mailer.raise_delivery_errors = false
 
 # rotate logs before they get too big
 config.logger = Logger.new("#{RAILS_ROOT}/log/#{ENV['RAILS_ENV']}.log", 20, 1048576)
+
+GOOGLE_AJAX_API_KEY = "ABQIAAAAYhi-TEPJXOrUvUXuOYmKvBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxS7paT1EaRByac-3KQNBePyC9zQwA"
