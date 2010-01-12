@@ -15,7 +15,6 @@
       
       for (var i=0; i < sites.length; i++) {
         map.addOverlay(createMarker(sites[i].hyperlocal_site, map));
-        // drawCircle(map, new GLatLng(sites[i].hyperlocal_site.lat, sites[i].hyperlocal_site.lng), sites[i].hyperlocal_site.distance);
       };
             
     }
@@ -61,8 +60,10 @@
     var latlng = new GLatLng(site.lat, site.lng);
     var marker = new GMarker(latlng, { icon:icon });
     GEvent.addListener(marker,"click", function() {
-      var myHtml = "<h4>" + site.title + "</h4><p>" + site.description + "</p>";
-      map.openInfoWindowHtml(latlng, myHtml);
+      var infoCaption = "<div class='area'>" + site.area_covered + "</div><h4><a href='" + site.url + "' class='external'>" + site.title + "</a></h4>";
+      infoCaption += (site.description ? ("<p>" + site.description.slice(0,50) + "...") : '<p>');
+      infoCaption += "<a href='/hyperlocal_sites/" + site.id + "'>more info</a></p>";
+      map.openInfoWindowHtml(latlng, infoCaption);
     });
     return marker;
   }

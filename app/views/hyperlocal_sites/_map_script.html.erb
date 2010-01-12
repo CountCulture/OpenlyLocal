@@ -1,17 +1,18 @@
 <script type="text/javascript" charset="utf-8">
-  var EARTH_RADIUS = 6378.137; //in kilometres
+// var EARTH_RADIUS = 6378.137; //in kilometres
+  var EARTH_RADIUS = 3963.19; //in miles
   var circle;
   
   function initMap() {
     if (GBrowserIsCompatible()) {
       var map = new GMap2(document.getElementById("map_canvas"));
-      var lat = <%= (@hyperlocal_site.lat||54).to_f %>;
-      var lng = <%=  @hyperlocal_site.lng.to_f %>;
+      var lat = <%= (@hyperlocal_site.lat||53.8).to_f %>;
+      var lng = <%=  (@hyperlocal_site.lng||-3).to_f %>;
       var distance = <%= @hyperlocal_site.distance_covered %>;
       var center = new GLatLng(lat, lng);
       var first_view = true;
       
-      map.setCenter(center, 5);
+      map.setCenter(center, 6);
       map.addControl(new GSmallMapControl());
       map.addControl(new GMapTypeControl());
       
@@ -30,6 +31,11 @@
         		document.getElementById("hyperlocal_site_lng").value = point.lng();
         		distance = document.getElementById("hyperlocal_site_distance_covered").value;
             drawCircle(map, point, distance);
+      });
+      
+      GEvent.addDomListener(document.getElementById("hyperlocal_site_distance_covered"), "change", function() {
+        var point = marker.getPoint();
+        drawCircle(map, point, this.value);
       });
       
       map.addOverlay(marker);

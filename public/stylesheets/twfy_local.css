@@ -472,12 +472,12 @@ table.datapoints td.more_info {
 .map_outer {
 	border:1px solid #999;
 	float:right;
-	height:450px;
+	height:500px;
 	padding:3px;
 	width:450px;
 }
 #map_canvas {
-	height:450px;
+	height:500px;
 	width:450px;
 }
 #hyperlocal_list_map, #hyperlocal_list_map #map_canvas {

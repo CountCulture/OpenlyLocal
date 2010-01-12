@@ -1,14 +1,15 @@
 <%= render :partial => 'map_script' %>
 <h1>New Hyperlocal Site</h1>
-<p class ="intro">Thanks for submitting your UK hyperlocal site to the <strong>OpenlyLocal Hyperlocal Directory</strong></p>
+<p class ="intro">Thanks for submitting your UK hyperlocal site to the <strong><%= link_to "OpenlyLocal Hyperlocal Directory", hyperlocal_sites_path %></strong></p>
 
 <%= render :partial => 'form' %>
 
 <h3>Important notes</h3>
 <ul>
-  <li><strong>The directory is for both non-commercial and commercial hyperlocal news sites</strong> -- the news can be in the form of traditional news stories, blogs, or (if they're very good) forums with news content, but local shopping, housing or other listings sites won't be approved</li>
-  <li><strong>This directory is open data.</strong> We make this data in this directory for reuse by others without charge, and under an open licence. Therefore we need the information submitted (though only this information - we're not talking about any of the information on the site itself) to be legally unemcumbered, i.e. in the public domain (in the same way that Wikipedia does). So by submitting this form you agree that the data provided is in the public domain</li>
-  <li><strong>Much of the information is optional.</strong> But obviously the more info you give us the more we'll be able to show. We do need to know where the site is about so we can show it on a map, and also <em>(soon)</em> show it on the relevant council's page</li>
+  <li><strong>The directory is for both non-commercial and commercial hyperlocal news and community sites</strong> -- the news can be in the form of traditional news stories, blogs, or (if they're very good) forums with news content. Local shopping, housing or other pure listings sites won't be approved</li>
+  <li><strong>This directory is open data.</strong> We make this data in this directory for reuse by others without charge, and under an <a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons &mdash;
+        Attribution-Share Alike 3.0 Unported">open licence</a>. Therefore we need the information submitted (though only this information - we're not talking about any of the information on the site itself) to be legally unemcumbered, i.e. in the public domain (in the same way that Wikipedia does). So by submitting this form you agree that the data provided is in the public domain</li>
+  <li><strong>Much of the information is optional.</strong> But obviously the more info you give us the more we'll be able to show. We do need to know where the site is about so we can show it on a map, and also show it on the relevant council's page</li>
   <li>If you are part of a commercial group, and we've not listed the group as an option, contact us <em>(<%= mail_to "countculture@gmail.com", nil, :encode => "javascript" %>)</em> and we'll add the group</li>
   <li><strong>Sites behind a paywall are not eligible for the directory</strong></li>
   <li><strong>There is absolutely no charge for entry</strong></li>
