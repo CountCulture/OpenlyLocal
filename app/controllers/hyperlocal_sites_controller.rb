@@ -31,7 +31,7 @@ class HyperlocalSitesController < ApplicationController
   def create
     @hyperlocal_site = HyperlocalSite.new(params[:hyperlocal_site])
     @hyperlocal_site.save!
-    flash[:notice] = "Hyperlocal site successfully submitted"
+    flash[:notice] = "Hyperlocal site successfully submitted. We will review it ASAP and will <a href='http://twitter.com/OpenlyLocal'>tweet</a> when it is approved"
     redirect_to hyperlocal_sites_url
   rescue
     render :action => "new"

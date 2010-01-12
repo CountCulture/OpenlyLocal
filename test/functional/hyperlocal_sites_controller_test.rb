@@ -126,6 +126,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should "not list email address" do
         assert_select ".attributes", :text => /#{@hyperlocal_site.email}/, :count => 0
       end
+      
+      should "enable google maps" do
+        assert assigns(:enable_google_maps)
+      end
     end
     
     context "when hyperlocal_site belongs to hyperlocal_group" do

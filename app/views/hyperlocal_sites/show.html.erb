@@ -1,15 +1,45 @@
+<script type="text/javascript" charset="utf-8">
+  function initMap() {
+    if (GBrowserIsCompatible()) {
+      var map = new GMap2(document.getElementById("map_canvas"));
+      var lat = <%= (@hyperlocal_site.lat).to_f %>;
+      var lng = <%=  (@hyperlocal_site.lng).to_f %>;
+      var distance = <%= @hyperlocal_site.distance_covered %>;
+      var center = new GLatLng(lat, lng);
+      var first_view = true;
+      
+      map.setCenter(center, 9);
+      map.addControl(new GSmallMapControl());
+      map.addControl(new GMapTypeControl());
+      
+      var marker = new GMarker(center);
+            
+      map.addOverlay(marker);
+      drawCircle(map, center, distance);
+      
+    }
+  }
+  
+</script>
+<p class="breadcrumbs"><%= link_to "All HyperLocal Sites", hyperlocal_sites_path %></p>
 <h1><%= @title %></h1>
-<p class="more_info"><%= link_to "All HyperLocal Sites", hyperlocal_sites_path %></p>
+<div id="hyperlocal_site_map" class="map_outer">
+  <div id="map_canvas"></div>
+</div>
 
+<div id="description">
+  <%= simple_format(h(@hyperlocal_site.description)) %>
+</div>
 <dl id="main_attributes" class="attributes">
   <%- attribute_tag :url do -%>
     <%= link_to(@hyperlocal_site.url, @hyperlocal_site.url, :class => "external") %>
     <%= link_to("News feed", @hyperlocal_site.feed_url, :class => "feed") unless @hyperlocal_site.feed_url.blank? %>
-    <%= link_to("Twitter feed", "http://twitter.com/#{@hyperlocal_site.twitter_account}", :class => "twitter feed") unless @hyperlocal_site.twitter_account.blank? %>
+    <%= link_to("Twitter", "http://twitter.com/#{@hyperlocal_site.twitter_account}", :class => "twitter feed") unless @hyperlocal_site.twitter_account.blank? %>
   <%- end -%>
+  <%= attribute_tag :general_area_covered, @hyperlocal_site.area_covered %>
   <%= attribute_tag :group, link_for(@hyperlocal_site.hyperlocal_group) %>
   <%= attribute_tag :platform, @hyperlocal_site.platform %>
+  <%= attribute_tag :location, "Lat: #{@hyperlocal_site.lat}, Long: #{@hyperlocal_site.lng}" %>
 </dl>
-
 
 <%= timestamp_data_for @hyperlocal_site %>

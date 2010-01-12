@@ -21,8 +21,6 @@ class AdminControllerTest < ActionController::TestCase
       end
       
       should "list unapproved hyperlocal sites" do
-        # p HyperlocalSite.all
-        # puts css_select("#hyperlocal_sites")
         assert_select "#hyperlocal_sites li a", /#{@unapproved_site.title}/
       end
     end 

@@ -495,7 +495,9 @@ ul#hyperlocal_sites li li{
 	font-weight: normal;
 	font-size: .9em;
 } 
-
+.hyperlocal_sites .area {
+	text-transform: uppercase;
+}
 /*Misc formatting*/
 #api_info {
 	clear: both;
