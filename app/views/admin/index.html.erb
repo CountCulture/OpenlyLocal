@@ -1,6 +1,16 @@
 <h1>Admin area</h1>
-<h2>Common Actions</h2>
+<h3>Common Actions</h3>
 <ul>
   <li><%= link_to "All scrapers", scrapers_path %></li>
   <li><%= link_to "All councils (including unparsed)", councils_path(:include_unparsed => true) %></li>
+</ul>
+
+<h3>Unapproved <%= link_to "Hyperlocal Sites", hyperlocal_sites_path %></h3>
+
+<ul id="hyperlocal_sites">
+  <%- @hyperlocal_sites.each do |site| -%>
+    <li>
+      <%= link_for site %> <%= link_to "edit", edit_hyperlocal_site_path(site), :class => "edit button" %>
+    </li>
+  <%- end -%>
 </ul>

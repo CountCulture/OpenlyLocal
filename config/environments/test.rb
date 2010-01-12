@@ -30,3 +30,5 @@ config.gem "thoughtbot-factory_girl",
 
 # rotate logs before they get too big
 config.logger = Logger.new("#{RAILS_ROOT}/log/#{ENV['RAILS_ENV']}.log", 20, 1048576)
+
+GOOGLE_AJAX_API_KEY = ''
