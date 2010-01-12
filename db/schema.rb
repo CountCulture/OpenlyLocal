@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100109143912) do
+ActiveRecord::Schema.define(:version => 20100111130349) do
 
   create_table "cached_postcodes", :force => true do |t|
     t.string   "code"
@@ -65,7 +65,6 @@ ActiveRecord::Schema.define(:version => 20100109143912) do
     t.string   "ness_id"
     t.float    "lat"
     t.float    "lng"
-    t.float    "distance"
     t.string   "cipfa_code"
     t.string   "region"
   end
@@ -196,7 +195,7 @@ ActiveRecord::Schema.define(:version => 20100109143912) do
     t.string   "feed_url"
     t.float    "lat"
     t.float    "lng"
-    t.float    "distance"
+    t.float    "distance_covered"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "hyperlocal_group_id"

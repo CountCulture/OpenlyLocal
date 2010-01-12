@@ -45,6 +45,35 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
     end
     
+    context "with request with location" do
+      setup do
+        @hyperlocal_site.stubs(:distance).returns(5)
+        @another_hyperlocal_site.stubs(:distance).returns(9.2)
+        @sites = [@hyperlocal_site, @another_hyperlocal_site]
+        HyperlocalSite.stubs(:find).with(:all, :origin => '100 Spear st, San Francisco, CA', :order => "distance").returns(@sites)
+        
+        get :index, :location => '100 Spear st, San Francisco, CA'
+      end
+
+      should_assign_to(:hyperlocal_sites) { }
+      should_respond_with :success
+      should_render_template :index
+
+      should 'show location in title' do
+        assert_select "title", /100 Spear st, San Francisco, CA/i
+      end
+      
+      should 'show distance from location' do
+        assert_select "ul li", /#{@another_hyperlocal_site.title}/ do
+          assert_select "li", /9.2 miles/
+        end
+      end
+      
+      should "enable google maps" do
+        assert assigns(:enable_google_maps)
+      end
+    end
+
     context "with xml request" do
       setup do
         get :index, :format => "xml"

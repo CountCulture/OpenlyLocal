@@ -1,0 +1,8 @@
+<li>
+  <%= distance_of(hyperlocal_site) %>
+  <span class="area"><%= hyperlocal_site.area_covered %></span>
+  <strong><%= link_for hyperlocal_site %></strong>
+  <%= link_to hyperlocal_site.url, hyperlocal_site.url, :class => :external %>
+  <%= link_to("News feed", hyperlocal_site.feed_url, :class => "feed") if hyperlocal_site.feed_url? %>
+  <%= link_to("Twitter feed", "http://twitter.com/#{hyperlocal_site.twitter_account}", :class => "twitter feed") if hyperlocal_site.twitter_account? %> 
+</li>

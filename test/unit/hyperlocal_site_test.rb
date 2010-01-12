@@ -22,13 +22,17 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_have_db_column :description
     should_have_db_column :lat
     should_have_db_column :lng
-    should_have_db_column :distance
+    should_have_db_column :distance_covered
     should_have_db_column :twitter_account
     should_have_db_column :feed_url
     should_have_db_column :platform
     should_have_db_column :area_covered
     should_have_db_column :country
     should_have_db_column :approved
+    
+    should "act as mappable" do
+      assert HyperlocalSite.respond_to?(:find_closest)
+    end
     
     should "validate presence of lat on create" do
       h = Factory.build(:hyperlocal_site, :lat => nil)
@@ -45,15 +49,7 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       @hyperlocal_site.update_attribute(:lng, nil)
       assert @hyperlocal_site.valid?
     end   
-    
-    should "validate presence of distance on create" do
-      h = Factory.build(:hyperlocal_site, :distance => nil)
-      assert !h.valid?
-      assert_equal "can't be blank", h.errors[:distance]
-      @hyperlocal_site.update_attribute(:distance, nil)
-      assert @hyperlocal_site.valid?
-    end
-    
+        
     context "should have named_scope model that should" do
       should "return only approved hyperlocal_sites" do
         approved_site = Factory(:approved_hyperlocal_site)

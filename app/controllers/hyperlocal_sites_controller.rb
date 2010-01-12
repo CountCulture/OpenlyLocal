@@ -4,8 +4,14 @@ class HyperlocalSitesController < ApplicationController
   before_filter :enable_google_maps, :except => [:update, :create, :destroy]
   
   def index
-    @title = "UK Hyperlocal Sites"
-    @hyperlocal_sites = HyperlocalSite.approved
+    if params[:location]
+      @title = "UK Hyperlocal Sites nearest to #{params[:location]}"
+      @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => params[:location], :order => "distance")
+    else
+      @title = "UK Hyperlocal Sites"
+      @hyperlocal_sites = HyperlocalSite.approved
+    end
+    
     respond_to do |format|
       format.html
       format.xml { render :xml => @hyperlocal_sites.to_xml(:except => [:email, :approved]) }
@@ -18,7 +24,7 @@ class HyperlocalSitesController < ApplicationController
   end
   
   def new
-    @hyperlocal_site = HyperlocalSite.new(:distance => 10)
+    @hyperlocal_site = HyperlocalSite.new(:distance_covered => 10)
     @enable_google_maps = true
   end
   

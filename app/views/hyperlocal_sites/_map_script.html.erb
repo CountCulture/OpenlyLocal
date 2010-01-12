@@ -7,7 +7,7 @@
       var map = new GMap2(document.getElementById("map_canvas"));
       var lat = <%= (@hyperlocal_site.lat||54).to_f %>;
       var lng = <%=  @hyperlocal_site.lng.to_f %>;
-      var distance = <%= @hyperlocal_site.distance %>;
+      var distance = <%= @hyperlocal_site.distance_covered %>;
       var center = new GLatLng(lat, lng);
       var first_view = true;
       
@@ -28,7 +28,7 @@
             map.panTo(point);
         		document.getElementById("hyperlocal_site_lat").value = point.lat();
         		document.getElementById("hyperlocal_site_lng").value = point.lng();
-        		distance = document.getElementById("hyperlocal_site_distance").value;
+        		distance = document.getElementById("hyperlocal_site_distance_covered").value;
             drawCircle(map, point, distance);
       });
       

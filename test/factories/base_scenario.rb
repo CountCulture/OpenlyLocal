@@ -196,7 +196,6 @@ Factory.define :hyperlocal_site do |f|
   f.country 'England'
   f.lat 52
   f.lng -1
-  f.distance 10
 end
 
 Factory.define :approved_hyperlocal_site, :parent => :hyperlocal_site do |hs|

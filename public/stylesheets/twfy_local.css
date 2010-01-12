@@ -469,7 +469,7 @@ table.datapoints td.more_info {
 	content:"*";
 	color:#8a1f11;
 }
-#map_outer {
+.map_outer {
 	border:1px solid #999;
 	float:right;
 	height:450px;
@@ -480,8 +480,12 @@ table.datapoints td.more_info {
 	height:450px;
 	width:450px;
 }
+#hyperlocal_list_map, #hyperlocal_list_map #map_canvas {
+	height:650px;
+	width:500px;
+}
 
-ul#hyperlocal_sites>li {
+ul#hyperlocal_sites>li.country {
 	list-style:none;
 	font-weight: bold;
 	font-size: 1.2em;

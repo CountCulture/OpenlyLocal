@@ -6,20 +6,16 @@
   function initMap() {
     if (GBrowserIsCompatible()) {
       var map = new GMap2(document.getElementById("map_canvas"));
-      // var lat = <%#= (@hyperlocal_site.lat||54).to_f %>;
-      // var lng = <%#=  @hyperlocal_site.lng.to_f %>;
-      // var distance = <%#= @hyperlocal_site.distance %>;
-      var center = new GLatLng(55.8, -2);
+      var center = new GLatLng(54.3, -3);
       var first_view = true;
       
-      map.setCenter(center, 5);
+      map.setCenter(center, 6);
       map.addControl(new GSmallMapControl());
       map.addControl(new GMapTypeControl());
       
       for (var i=0; i < sites.length; i++) {
-        // var ll = new GLatLng(sites[i].hyperlocal_site.lat, sites[i].hyperlocal_site.lng);
         map.addOverlay(createMarker(sites[i].hyperlocal_site, map));
-        // drawCircle(map, ll, sites[i].hyperlocal_site.distance);
+        // drawCircle(map, new GLatLng(sites[i].hyperlocal_site.lat, sites[i].hyperlocal_site.lng), sites[i].hyperlocal_site.distance);
       };
             
     }
@@ -73,31 +69,33 @@
 
 </script>
 
+<p class='alert'><%= link_to "Add your hyperlocal site now", new_hyperlocal_site_path %></p>
 <h1><%= @title %></h1>
 
-<div id="map_outer">
+<div id="hyperlocal_list_map" class="map_outer">
   <div id="map_canvas"></div>
 </div>
 
-<p><strong><%= link_to "Add your hyperlocal news site now", new_hyperlocal_site_path %></strong></p>
-  <ul id="hyperlocal_sites">
+<%- form_tag hyperlocal_sites_path, :id => "location_search", :method => :get do -%>
+  <h3>Find hyperlocal sites closest to...</h3>
+  <%= text_field_tag :location, params[:location], :class => "location_search" %>
+  <%= submit_tag "Search", :disable_with => "Please wait..." %>
+<%- end -%>
+
+<ul id="hyperlocal_sites">
+  <%- if params[:location] -%>
+    <%= render :partial => 'hyperlocal_site', :collection => @hyperlocal_sites %>
+  <%- else -%>
     <%- @hyperlocal_sites.group_by(&:country).each do |country, sites| -%>
       <li class="country">
         <%= country %>
         <ul>
-          <%- sites.each do |site| -%>
-            <li>
-              <span class="location"><%= site.area_covered %></span>
-              <strong><%= link_for site %></strong>
-              <%= link_to site.url, site.url, :class => :external %>
-              <%= link_to("News feed", site.feed_url, :class => "feed") if site.feed_url? %>
-              <%= link_to("Twitter feed", "http://twitter.com/#{site.twitter_account}", :class => "twitter feed") if site.twitter_account? %>       
-            </li>
-          <%- end -%>
+          <%= render :partial => 'hyperlocal_site', :collection => sites %>
         </ul>
       </li>
     <%- end -%>
-  </ul>
+  <%- end -%>
+</ul>
 
 
 <%= render :partial => '/shared/api_info' %>
