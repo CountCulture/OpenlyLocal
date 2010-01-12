@@ -8,10 +8,10 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       @hyperlocal_site = Factory(:hyperlocal_site)
     end
     
-    should_validate_uniqueness_of :title
+    # should_validate_uniqueness_of :title
     should_validate_presence_of :title
     should_validate_presence_of :url
-    should_validate_uniqueness_of :url
+    # should_validate_uniqueness_of :url
     should_belong_to :hyperlocal_group
     should_belong_to :council
     should_allow_values_for :platform, "Ning"
