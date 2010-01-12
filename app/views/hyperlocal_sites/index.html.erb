@@ -37,7 +37,7 @@
       var infoCaption = "<div class='area'>" + site.area_covered + "</div><h4><a href='" + site.url + "' class='external'>" + site.title + "</a></h4>";
       infoCaption += (site.description ? ("<p>" + site.description.slice(0,90) + "...") : '<p>');
       infoCaption += "<a href='/hyperlocal_sites/" + site.id + "'>more info</a></p>";
-      map.openInfoWindowHtml(latlng, infoCaption);
+      map.openInfoWindowHtml(latlng, infoCaption, {maxWidth:200});
     });
     return marker;
   }
