@@ -31,20 +31,6 @@
    return new GLatLng(lat2/ Math.PI * 180, lng2/ Math.PI * 180);
   }
   
-  function drawCircle(curr_map, centrePt, rangeValue) {
-   if(circle){curr_map.removeOverlay(circle)};
-   var boundaries = getBoundaries(centrePt, rangeValue);
-   circle = new GGroundOverlay("http://openlylocal.com/images/circle_overlay.png", boundaries);
-   curr_map.addOverlay(circle);
-  }
-
-  function getBoundaries(centrePt, radius) {
-   var hypotenuse = Math.sqrt(2 * radius * radius);
-   var sw = getDestLatLng(centrePt, 225, hypotenuse);
-   var ne = getDestLatLng(centrePt, 45, hypotenuse);
-   return new GLatLngBounds(sw, ne);
-  }
-
   function createMarker(site, map) {
     var icon = new GIcon(G_DEFAULT_ICON);
     var iconUrl = "http://chart.apis.google.com/chart?cht=mm&chs=20x20&chco=6699AAFF,336699FF,336699FF&ext=.png";
