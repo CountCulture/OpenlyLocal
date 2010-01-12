@@ -40,6 +40,7 @@
   <%= attribute_tag :group, link_for(@hyperlocal_site.hyperlocal_group) %>
   <%= attribute_tag :platform, @hyperlocal_site.platform %>
   <%= attribute_tag :location, "Lat: #{@hyperlocal_site.lat}, Long: #{@hyperlocal_site.lng}" %>
+  <%= attribute_tag :local_authority_area, basic_link_for(@hyperlocal_site.council) %>
 </dl>
 
 <%= timestamp_data_for @hyperlocal_site %>

@@ -86,6 +86,13 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal [@held_meeting], @council.held_meetings
     end
 
+    should "have many hyperlocal sites" do
+      approved_site = Factory(:approved_hyperlocal_site, :council => @council)
+      approved_site_for_another_council = Factory(:approved_hyperlocal_site, :council => Factory(:another_council))
+      unapproved_site = Factory(:hyperlocal_site, :council => @council)
+      assert_equal [approved_site], @council.hyperlocal_sites
+    end
+
     context "when finding by parameters" do
       setup do
         @member = Factory(:member, :council => @council)

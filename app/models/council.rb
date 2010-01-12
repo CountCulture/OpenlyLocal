@@ -29,6 +29,7 @@ class Council < ActiveRecord::Base
   has_many :dataset_topics, :through => :datapoints
   belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
   has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
+  has_many :hyperlocal_sites, :conditions => {:approved => true}
   belongs_to :portal_system
   belongs_to :police_force
   validates_presence_of :name

@@ -482,6 +482,7 @@ class CouncilsControllerTest < ActionController::TestCase
         @datapoint = Factory(:datapoint, :area => @council)
         @dataset_topic_grouping = Factory(:dataset_topic_grouping)
         @dataset_topic_grouping.dataset_topics << @datapoint.dataset_topic
+        @hyperlocal_site = Factory(:approved_hyperlocal_site, :council => @council)
 
         Council.any_instance.stubs(:party_breakdown => [[Party.new("Conservative"), 4], [Party.new("Labour"), 3]])
         @council.child_authorities << @another_council # add parent/child relationship
@@ -501,6 +502,11 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show parent country authority if it exists" do
         get :show, :id => @another_council.id
         assert_select "#associated_councils a", /#{@council.name}/
+      end
+
+      should "show list hyperlocal_sites" do
+        get :show, :id => @council.id
+        assert_select "li a", /#{@hyperlocal_site.title}/
       end
 
       context "with grouped_data" do
