@@ -499,7 +499,7 @@ ul#hyperlocal_sites li li{
 .hyperlocal_sites .area {
 	text-transform: uppercase;
 	color: #8a1f11;
-	font-size: 0.9em;
+	font-size: 0.85em;
 	display:block;
 }
 .hyperlocal_sites .area .distance {
@@ -509,6 +509,10 @@ ul#hyperlocal_sites li li{
 .hyperlocal_sites .hyperlocalsite_link {
 	font-size:1.1em;
 }
+.hyperlocal_sites li a.external, .hyperlocal_sites li a.feed {
+	color:#666;
+}
+
 /*Misc formatting*/
 #api_info {
 	clear: both;
