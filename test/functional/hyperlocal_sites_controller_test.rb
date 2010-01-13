@@ -50,7 +50,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         @hyperlocal_site.stubs(:distance).returns(5)
         @another_hyperlocal_site.stubs(:distance).returns(9.2)
         @sites = [@hyperlocal_site, @another_hyperlocal_site]
-        HyperlocalSite.stubs(:find).with(:all, :origin => '100 Spear st, San Francisco, CA', :order => "distance").returns(@sites)
+        HyperlocalSite.stubs(:find).with(:all, :origin => '100 Spear st, San Francisco, CA', :order => "distance", :limit => 10).returns(@sites)
         
         get :index, :location => '100 Spear st, San Francisco, CA'
       end

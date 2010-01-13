@@ -6,7 +6,7 @@ class HyperlocalSitesController < ApplicationController
   def index
     if params[:location]
       @title = "UK Hyperlocal Sites nearest to #{params[:location]}"
-      @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => params[:location], :order => "distance")
+      @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => params[:location], :order => "distance", :limit => 10)
     else
       @title = "UK Hyperlocal Sites"
       @hyperlocal_sites = HyperlocalSite.approved
