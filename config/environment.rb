@@ -24,9 +24,9 @@ Rails::Initializer.run do |config|
   # They can then be installed with "rake gems:install" on new installations.
   # You have to specify the :lib option for libraries, where the Gem name (sqlite3-ruby) differs from the file itself (sqlite3)
   config.gem "geokit"
-  config.gem "hpricot", :source => "http://code.whytheluckystiff.net"
+  config.gem "hpricot"
   config.gem "openrain-action_mailer_tls", :lib => "smtp_tls.rb", :source => "http://gems.github.com"
-  config.gem 'javan-whenever', :lib => false, :source => 'http://gems.github.com'
+  config.gem 'javan-whenever', :lib => false, :source => 'http://gemcutter.org'
   config.gem 'fastercsv'
   config.gem 'mattetti-googlecharts', :lib => "gchart", :source => 'http://gems.github.com'
   config.gem "newrelic_rpm"
