@@ -13,8 +13,7 @@
 #   rake "some:great:rake:task"
 # end
 every 1.hours, :at => 30 do
-  command "rm -rf ~/sites/twfy_local/shared/cache/views"
-  command "/opt/ruby-enterprise-1.8.6/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'FeedEntry.update_from_feed(BlogFeedUrl)' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'FeedEntry.update_from_feed(BlogFeedUrl)' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
 end
 
 # every 30.minutes do
@@ -23,20 +22,20 @@ end
 # end
 
 every 3.hours do
-  command "/opt/ruby-enterprise-1.8.6/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Scraper.unproblematic.stale.find(:all, :limit => 30).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count == 0' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Scraper.unproblematic.stale.find(:all, :limit => 30).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count == 0' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
 end
 
-every 7.days do
-  runner "Dataset.stale.each(&:process)"
-end
+# every 7.days do
+#   runner "Dataset.stale.each(&:process)"
+# end
 
 every :sunday, :at => '3am' do
-  command "/opt/ruby-enterprise-1.8.6/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Service.refresh_all_urls' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Service.refresh_all_urls' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
 end
 
-every :sunday, :at => '1am' do
-  command "RAILS_ENV=production /opt/ruby-enterprise-1.8.6/bin/ruby /home/cculture/sites/twfy_local/current/script/rake import_council_officers"
-end
+# every :sunday, :at => '1am' do
+#   command "RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/rake import_council_officers"
+# end
 #
 # every 4.days do
 #   runner "AnotherModel.prune_old_records"
