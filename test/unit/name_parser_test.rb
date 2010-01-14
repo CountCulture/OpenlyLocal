@@ -15,6 +15,8 @@ class NameParserTest < Test::Unit::TestCase
     "County Councillor Fred Flintstone OBE" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "OBE"},
     "Fred Flintstone OBE CC" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "OBE"},
     "Councillor R.B. Flintstone, M.B.E." => {:first_name => "R B", :last_name => "Flintstone", :qualifications => "M.B.E."},
+    "Fred Flintstone Cert.Ed" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "Cert.Ed"},
+    "Fred Flintstone BSc FIMAREST,MIMMM CEng" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "CEng BSc"},
     "Councillor Fred Flintstone" => {:first_name => "Fred", :last_name => "Flintstone"}, #lose typos too
     "Councilllor WMJ Flintstone" => {:first_name => "WMJ", :last_name => "Flintstone"}, 
     "Mr Fred Flintstone" => {:name_title => "Mr", :first_name => "Fred", :last_name => "Flintstone"},
