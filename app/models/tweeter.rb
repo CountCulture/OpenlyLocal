@@ -15,7 +15,7 @@ class Tweeter
     # oauth.authorize_from_access(config['atoken'], config['asecret'])
     # 
     client = Twitter::Base.new(auth)
-    @message += " " + shorten_url(url) unless url.blank?
+    @message += " " + (shorten_url(url)||url) unless url.blank?
     response = client.update(message, options)
     RAILS_DEFAULT_LOGGER.info "Tweeted message: #{message}\n response: #{response.inspect}"
     response
@@ -24,6 +24,6 @@ class Tweeter
   private
   def shorten_url(link)
     return "" if link.blank?
-    short_link = open('http://bit.ly/api?url=' + link, "UserAgent" => "Ruby-ShortLinkCreator").read
+    UrlSquasher.new(link).result
   end
 end

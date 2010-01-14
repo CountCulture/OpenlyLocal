@@ -23,6 +23,7 @@ class TweeterTest < Test::Unit::TestCase
         @dummy_client = stub_everything
         Twitter::Base.stubs(:new).returns @dummy_client
         YAML.stubs(:load_file).returns('test' => {'login' => 'foouser', 'password' => 'foopass'})
+        UrlSquasher.any_instance.stubs(:result) # => returns nil
       end
       
       should "fetch login credentials from YAML file" do
@@ -50,15 +51,20 @@ class TweeterTest < Test::Unit::TestCase
         @tweeter_with_options.perform
       end
       
-      should "add get short url from url" do
+      should "get short url from url_squasher" do
         Twitter::Base.any_instance.stubs(:update)
-        Tweeter.any_instance.expects(:shorten_url).with("http://foo.com").returns("http:://bit.ly/foo")
+        UrlSquasher.expects(:new).with("http://foo.com").returns(stub_everything)
         Tweeter.new("some message", :url => "http://foo.com").perform
       end
       
       should "add short url when url given" do
-        Tweeter.any_instance.stubs(:shorten_url).returns("http:://bit.ly/foo")
+        UrlSquasher.any_instance.expects(:result).returns("http:://bit.ly/foo")
         @dummy_client.expects(:update).with("another message http:://bit.ly/foo", anything)
+        Tweeter.new("another message", :url => "http://foo.com").perform
+      end
+      
+      should "use unshortened URL if nil returned from url_squasher" do
+        @dummy_client.expects(:update).with("another message http://foo.com", anything)
         Tweeter.new("another message", :url => "http://foo.com").perform
       end
       
