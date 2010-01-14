@@ -3,7 +3,7 @@ require 'test_helper'
 class HyperlocalGroupsControllerTest < ActionController::TestCase
   def setup
     @hyperlocal_group = Factory(:hyperlocal_group, :url => "http://hyperlocal_group.com")
-    @hyperlocal_site = Factory(:hyperlocal_site, :hyperlocal_group => @hyperlocal_group)
+    @hyperlocal_site = Factory(:approved_hyperlocal_site, :hyperlocal_group => @hyperlocal_group)
   end
 
   # index test
