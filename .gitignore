@@ -8,6 +8,7 @@ doc/app
 db/*.sqlite3
 config/initializers/authentication_details.rb
 config/initializers/hoptoad.rb
+config/initializers/geokit_config.rb
 config/database.yml
 config/deploy.rb
 config/smtp_gmail.yml
