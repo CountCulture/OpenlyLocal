@@ -27,3 +27,10 @@ config.action_mailer.raise_delivery_errors = false
 config.logger = Logger.new("#{RAILS_ROOT}/log/#{ENV['RAILS_ENV']}.log", 20, 1048576)
 
 GOOGLE_AJAX_API_KEY = "ABQIAAAAYhi-TEPJXOrUvUXuOYmKvBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxS7paT1EaRByac-3KQNBePyC9zQwA"
+
+config.middleware.use "Rack::Bug",
+                      :secret_key => "Sysar9OsD+OAsolAIXLxtBV/vdJ4NXs6w9+k9sFULPPpI8ibpjdm8kAfSo3ZfwbF5LhYvNEHbqyaZqhthRZ7IQ==",
+                      :password   => "trib4L9"
+HoptoadNotifier.configure do |config|
+   config.environment_filters << 'rack-bug.*'
+ end

@@ -239,7 +239,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "list documents" do
-        assert_equal [@past_document], assigns(:documents)
+        assert_equal [@past_document, @document], assigns(:documents) #most recently created first
         assert_select "#documents li", @past_document.extended_title
       end
       

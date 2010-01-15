@@ -20,7 +20,7 @@ class CouncilsController < ApplicationController
     @members = @council.members.current
     @committees = @council.active_committees
     @meetings = @council.meetings.forthcoming.all(:limit => 11)
-    @documents = @council.past_meeting_documents.all(:limit => 11)
+    @documents = @council.meeting_documents.all(:limit => 11)
     @wards = @council.wards
     @party_breakdown = @council.party_breakdown
     respond_to do |format|

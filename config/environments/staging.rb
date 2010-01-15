@@ -25,3 +25,10 @@ ActionController::Base.cache_store = :file_store, "tmp/cache"
 # config.action_mailer.raise_delivery_errors = false
 
 GOOGLE_AJAX_API_KEY = "ABQIAAAAYhi-TEPJXOrUvUXuOYmKvBQ4D8-PNYlzqSn0AArojcHa2MjuiBQCc1j3ImPBGUOFsRz7rKOIl7LvLQ"
+
+config.middleware.use "Rack::Bug",
+                      :secret_key => "Sysar9OsD+OAsolAIXLxtBV/vdJ4NXs6w9+k9sFULPPpI8ibpjdm8kAfSo3ZfwbF5LhYvNEHbqyaZqhthRZ7IQ==",
+                      :password   => "trib4L9"
+HoptoadNotifier.configure do |config|
+   config.environment_filters << 'rack-bug.*'
+ end
