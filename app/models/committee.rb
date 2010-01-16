@@ -9,16 +9,17 @@ class Committee < ActiveRecord::Base
   has_many :meeting_documents, :through => :meetings, :source => :documents, :select => "documents.id, documents.title, documents.document_type, documents.document_owner_type, documents.document_owner_id, documents.created_at, documents.updated_at", :order => "meetings.date_held DESC"
   has_many :memberships, :primary_key => :uid
   has_many :members, :through => :memberships
-  has_one :next_meeting, :class_name => "Meeting", :conditions => 'meetings.date_held > \'#{Time.now.to_s(:db)}\'', :order => 'date_held'
+  has_one :next_meeting, :class_name => "Meeting", :conditions => 'date_held > \'#{Time.now.to_s(:db)}\'', :order => 'date_held'
   allow_access_to :members, :via => :uid
   before_save :normalise_title
 
   named_scope :active, lambda { {
               :select => "committees.*, COUNT(meetings.id) AS meeting_count",
               :conditions => ["meetings.date_held > ?", 1.year.ago],
-              :joins => "LEFT JOIN meetings ON meetings.committee_id = committees.id",
+              :joins => [:meetings],
               :group => "committees.id",
-              :order => "committees.title" } }
+              :order => "committees.title",
+              :include => [:next_meeting] } }
   
   named_scope :with_activity_status, lambda { {
               :select => "committees.*, (COUNT(meetings.id) > 0) AS active",
