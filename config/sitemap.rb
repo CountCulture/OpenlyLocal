@@ -20,8 +20,17 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
   # add '/councils'
   sitemap.add councils_path, :priority => 0.7, :changefreq => 'daily'
 
-  # add parsed councils
-  Council.parsed({}).each do |c|
+  # add '/hyperlocal_sites'
+  sitemap.add hyperlocal_sites_path, :priority => 0.7, :changefreq => 'daily'
+
+  # add '/police_forces'
+  sitemap.add police_forces_path, :priority => 0.7, :changefreq => 'daily'
+  
+  # add '/police_authorities'
+  sitemap.add police_authorities_path, :priority => 0.7, :changefreq => 'daily'
+  
+  # add all councils
+  Council.all.each do |c|
     sitemap.add council_path(c), :lastmod => c.updated_at
   end
 
@@ -56,6 +65,16 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
   # add police_forces
   PoliceForce.all.each do |force|
     sitemap.add police_force_path(force), :lastmod => force.updated_at
+  end
+
+  # add police_authorities
+  PoliceAuthority.all.each do |authority|
+    sitemap.add police_authority_path(authority), :lastmod => authority.updated_at
+  end
+
+  # add hyperlocal_sites
+  HyperlocalSite.all.each do |site|
+    sitemap.add hyperlocal_site_path(site), :lastmod => site.updated_at
   end
 
   sitemap.add '/info/about_us', :priority => 0.7
