@@ -185,9 +185,9 @@ body {
 	margin-bottom: 2em;
 	padding:4px;
 	overflow: auto;
-}
-.extra_info  {
 	clear: left;
+}
+body.councils .extra_info  {
 	float:left;
 }
 .extra_info .notes h4 {

@@ -11,6 +11,9 @@ config.cache_classes = true
 # Use a different logger for distributed setups
 # config.logger = SyslogLogger.new
 
+# rotate logs before they get too big
+config.logger = Logger.new("#{RAILS_ROOT}/log/#{ENV['RAILS_ENV']}.log", 20, 1048576)
+
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false
 config.action_controller.perform_caching             = true
@@ -32,5 +35,5 @@ config.middleware.use "Rack::Bug",
                       :ip_masks   => [IPAddr.new("127.0.0.1"), IPAddr.new("192.168.1.65")],
                       :password   => "trib4L9"
 HoptoadNotifier.configure do |config|
-   config.environment_filters << 'rack-bug.*'
- end
+  config.environment_filters << 'rack-bug.*'
+end
