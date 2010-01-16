@@ -63,64 +63,68 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       @hyperlocal_site = Factory(:hyperlocal_site)
     end
     
-  end
-  
-  context "when approved" do
-    setup do
-      @hyperlocal_site = Factory(:hyperlocal_site)
-      @dummy_tweeter = Tweeter.new('foo')
+    should "include title in to_param method" do
+      @hyperlocal_site.title = "some title-with/stuff"
+      assert_equal "#{@hyperlocal_site.id}-some-title-with-stuff", @hyperlocal_site.to_param
     end
-    
-    should "be tweeted about" do
-      Delayed::Job.expects(:enqueue).with(kind_of(Tweeter), anything)
-      @hyperlocal_site.update_attribute(:approved, true)
-    end
-    
-    should "run at a priority of 1" do
-      Delayed::Job.expects(:enqueue).with(anything, 1)
-      @hyperlocal_site.update_attribute(:approved, true)
-    end
-    
-    context "and when tweeting" do
-      should "message about new parsed hyperlocal_site" do
-        Tweeter.expects(:new).with(regexp_matches(/#{@hyperlocal_site.title} has been added to OpenlyLocal/), anything).returns(@dummy_tweeter)
-        @hyperlocal_site.update_attribute(:approved, true)
-      end
-    
-      should "include openlylocal url of site" do
-        Tweeter.expects(:new).with(anything, has_entry(:url, "http://openlylocal.com/hyperlocal_sites/#{@hyperlocal_site.to_param}")).returns(@dummy_tweeter)
-        @hyperlocal_site.update_attribute(:approved, true)
-      end
-      
-      should "use hyperlocal_site twitter_account in message if it exists" do
-        @hyperlocal_site.update_attribute(:twitter_account, "anyhyperlocal_site")
-        Tweeter.expects(:new).with(regexp_matches(/@anyhyperlocal_site has been added/), anything).returns(@dummy_tweeter)
-        @hyperlocal_site.update_attribute(:approved, true)
-      end
-    
-      should "not include hyperlocal_site twitter_account in message if it has none" do
-        Tweeter.stubs(:new).returns(@dummy_tweeter)
-        Tweeter.expects(:new).with(regexp_matches(/@/), anything).never
-        
-        @hyperlocal_site.update_attribute(:approved, true)
-      end
-    
-      should "include hyperlocal_site location in message" do
-        @hyperlocal_site.update_attributes(:lng => 45, :lat => 0.123)
-        Tweeter.stubs(:new).returns(@dummy_tweeter)
-        Tweeter.expects(:new).with(anything, has_entries(:lat => 0.123, :long => 45)).returns(@dummy_tweeter)
-        
-        @hyperlocal_site.update_attribute(:approved, true)
-      end
-       
-    end
-  end
-  
-  context "when creating unapproved hyperlocal_site" do
-    should "Not Tweet about it" do
-      Delayed::Job.expects(:enqueue).with(kind_of(Tweeter), anything).never
-      hyperlocal_site = Factory(:hyperlocal_site)
-    end
-  end
 
+    context "when approved" do
+      setup do
+        @dummy_tweeter = Tweeter.new('foo')
+      end
+
+      should "be tweeted about" do
+        Delayed::Job.expects(:enqueue).with(kind_of(Tweeter), anything)
+        @hyperlocal_site.update_attribute(:approved, true)
+      end
+
+      should "run at a priority of 1" do
+        Delayed::Job.expects(:enqueue).with(anything, 1)
+        @hyperlocal_site.update_attribute(:approved, true)
+      end
+
+      context "and when tweeting" do
+        should "message about new parsed hyperlocal_site" do
+          Tweeter.expects(:new).with(regexp_matches(/#{@hyperlocal_site.title} has been added to OpenlyLocal/), anything).returns(@dummy_tweeter)
+          @hyperlocal_site.update_attribute(:approved, true)
+        end
+
+        should "include openlylocal url of site" do
+          Tweeter.expects(:new).with(anything, has_entry(:url, "http://openlylocal.com/hyperlocal_sites/#{@hyperlocal_site.to_param}")).returns(@dummy_tweeter)
+          @hyperlocal_site.update_attribute(:approved, true)
+        end
+
+        should "use hyperlocal_site twitter_account in message if it exists" do
+          @hyperlocal_site.update_attribute(:twitter_account, "anyhyperlocal_site")
+          Tweeter.expects(:new).with(regexp_matches(/@anyhyperlocal_site has been added/), anything).returns(@dummy_tweeter)
+          @hyperlocal_site.update_attribute(:approved, true)
+        end
+
+        should "not include hyperlocal_site twitter_account in message if it has none" do
+          Tweeter.stubs(:new).returns(@dummy_tweeter)
+          Tweeter.expects(:new).with(regexp_matches(/@/), anything).never
+
+          @hyperlocal_site.update_attribute(:approved, true)
+        end
+
+        should "include hyperlocal_site location in message" do
+          @hyperlocal_site.update_attributes(:lng => 45, :lat => 0.123)
+          Tweeter.stubs(:new).returns(@dummy_tweeter)
+          Tweeter.expects(:new).with(anything, has_entries(:lat => 0.123, :long => 45)).returns(@dummy_tweeter)
+
+          @hyperlocal_site.update_attribute(:approved, true)
+        end
+
+      end
+    end
+
+    context "when creating unapproved hyperlocal_site" do
+      should "Not Tweet about it" do
+        Delayed::Job.expects(:enqueue).with(kind_of(Tweeter), anything).never
+        hyperlocal_site = Factory(:hyperlocal_site)
+      end
+    end
+    
+  end
+  
 end

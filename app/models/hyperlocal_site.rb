@@ -14,6 +14,10 @@ class HyperlocalSite < ActiveRecord::Base
   default_scope :order => "title"
   after_save :tweet_about_it
   
+  def to_param
+    id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
+  end
+  
   private
   def tweet_about_it
     if approved && !approved_was
