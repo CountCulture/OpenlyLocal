@@ -202,6 +202,10 @@ class CouncilsControllerTest < ActionController::TestCase
       should_render_template :show
       should_assign_to(:members) { @council.members.current }
       should_assign_to(:committees) { [@committee] }
+      
+      should "show council name in meta description" do
+        assert_select "meta[name=description][content*=?]", @council.title
+      end
 
       should "list all active members" do
         assert_select "#members li", @council.members.current.size

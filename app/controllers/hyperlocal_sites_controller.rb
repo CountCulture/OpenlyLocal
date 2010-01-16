@@ -20,7 +20,7 @@ class HyperlocalSitesController < ApplicationController
   end
   
   def show
-    @title = @hyperlocal_site.title
+    @title = "#{@hyperlocal_site.title} :: UK Hyperlocal Sites"
   end
   
   def new

@@ -119,6 +119,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         assert_select "title", /#{@hyperlocal_site.title}/
       end
 
+      should "include phrase 'hyperlocal sites' in page title" do
+        assert_select "title", /hyperlocal sites/i
+      end
+
       should "list hyperlocal site attributes" do
         assert_select '.attributes dd', /#{@hyperlocal_site.url}/
       end

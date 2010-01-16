@@ -23,6 +23,7 @@ class CouncilsController < ApplicationController
     @documents = @council.meeting_documents.all(:limit => 11)
     @wards = @council.wards
     @party_breakdown = @council.party_breakdown
+    @page_description = "Information and statistics about #{@council.title}"
     respond_to do |format|
       format.html
       format.xml { render :xml => @council.to_detailed_xml }
