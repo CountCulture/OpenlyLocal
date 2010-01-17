@@ -73,7 +73,7 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
   end
 
   # add hyperlocal_sites
-  HyperlocalSite.all.each do |site|
+  HyperlocalSite.approved.all.each do |site|
     sitemap.add hyperlocal_site_path(site), :lastmod => site.updated_at
   end
 

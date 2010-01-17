@@ -134,6 +134,20 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should "enable google maps" do
         assert assigns(:enable_google_maps)
       end
+      
+      should "not nofollow link to website" do
+        assert_select "a[rel=nofollow]", :text => @hyperlocal_site.url, :count => 0
+      end
+    end
+    
+    context "with unapproved site" do
+      setup do
+        get :show, :id => @unapproved_hyperlocal_site.id
+      end
+      
+      should "nofollow link to website" do
+        assert_select "a[rel=nofollow]", @unapproved_hyperlocal_site.url
+      end
     end
     
     context "when hyperlocal_site belongs to hyperlocal_group" do

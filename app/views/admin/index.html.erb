@@ -10,7 +10,7 @@
 <ul id="hyperlocal_sites">
   <%- @hyperlocal_sites.each do |site| -%>
     <li>
-      <%= link_for site %> <%= link_to "edit", edit_hyperlocal_site_path(site), :class => "edit button" %>
+      <strong><%= link_for site %></strong> <%= link_to site.url, site.url, :class => "external", :rel => 'nofollow' %> <%= link_to "edit", edit_hyperlocal_site_path(site), :class => "edit button" %>
     </li>
   <%- end -%>
 </ul>
