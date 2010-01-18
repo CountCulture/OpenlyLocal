@@ -137,3 +137,23 @@ task :get_ness_selected_topic_info_for_councils => :environment do
     end
   end
 end
+
+desc "get Bounding Boxes for councils"
+task :get_bounding_boxes_for_councils => :environment do
+  
+  Council.all(:conditions => "ness_id IS NOT NULL").each do |council|
+    begin
+      raw_data = NessUtilities::RawClient.new('AreaDetail', [['AreaId', council.ness_id]]).process
+      sw_e, sw_n, ne_e, ne_n = raw_data.at('Envelope').inner_text.split(":")
+    
+      sw, ne = OsCoordsUtilities.convert_os_to_wgs84(sw_e, sw_n), OsCoordsUtilities.convert_os_to_wgs84(ne_e, ne_n)
+      bounding_box = Polygon.from_coordinates([[[sw[1], sw[0]], [sw[1], ne[0]], [ne[1], ne[0]], [ne[1], sw[0]], [sw[1], sw[0]]]])
+      Boundary.create!(:area => council, :bounding_box=>bounding_box)
+      puts "created boundary for #{council.name}"
+    rescue Exception => e
+      puts "problem creating boundary for #{council.name}: #{e.inspect}"
+    end
+    
+  end
+end
+

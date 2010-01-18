@@ -47,4 +47,5 @@ Regions = { 'North East'                => ['A', 276700],
             'South West'                => ['K', 276708]
 }
 
+# NESS_IDS = {'England' => 276693, 'Northern Ireland' => 276696, 'Scotland' => 276694, 'Wales' => 276695}
 AllowedCountries = ['England', 'Northern Ireland', 'Scotland', 'Wales']

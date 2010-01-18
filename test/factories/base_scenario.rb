@@ -205,3 +205,8 @@ end
 Factory.define :hyperlocal_group do |f|
   f.sequence(:title) { |n| "Hyperlocal Group #{n}" }
 end
+
+Factory.define :boundary do |f|
+  f.association :area, :factory => :ward
+  f.sequence(:bounding_box) { |n| Polygon.from_coordinates([[[1.0+0.1*n, 52.0+0.1*n], [2.0+0.1*n, 52.0+0.1*n], [2.0+0.1*n, 54.0+0.1*n], [1.0+0.1*n, 54.0+0.1*n], [1.0+0.1*n, 52.0+0.1*n]]]) } 
+end
