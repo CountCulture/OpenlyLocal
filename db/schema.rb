@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100117122609) do
+ActiveRecord::Schema.define(:version => 20100118182729) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(:version => 20100117122609) do
     t.column "lng", :float
     t.column "cipfa_code", :string
     t.column "region", :string
+    t.column "signed_up_for_1010", :boolean
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"

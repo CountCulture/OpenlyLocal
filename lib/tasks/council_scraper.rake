@@ -324,4 +324,33 @@ task :import_council_regions => :environment do
   end
 end
 
+desc "Match 1010 councils"
+task :match_1010_councils => :environment do  
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/1010_councils_18-1-10.csv"))
+  FasterCSV.open(File.join(RAILS_ROOT, "db/csv_data/matched_1010_councils_18-1-10.csv"), "w") do |csv|
+    councils=Council.all.each do |council|
+      if row = rows.detect{ |r| r.first.gsub(/&| and/, '').squish.match(/#{council.short_name}\b/i) }
+        puts "========\nFound match for #{council.name} (#{council.short_name}): #{row.first}"
+        csv << [council.name, council.snac_id]
+        # council.update_attribute(:signed_up_for_1010, row.last)
+        puts "Matched #{council.name} with 1010 info"
+        rows.delete(row)
+      else
+        puts "***Couldn't find match for #{council.name} (#{council.short_name})"
+      end
+    end
+  end
+  p "Following entries were unmatched:", rows
+end
+
+desc "Import 1010 councils"
+task :import_1010_councils => :environment do  
+  snac_ids = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/matched_1010_councils_18-1-10.csv")).collect do |row|
+    row[1] #snac_ids
+  end
+  puts "Updating #{snac_ids.size} records"
+  Council.update_all("signed_up_for_1010='0'") #flush existing records
+  Council.update_all("signed_up_for_1010='1'", :snac_id => snac_ids)
+end
+
 

@@ -4,7 +4,7 @@ class HyperlocalSitesController < ApplicationController
   before_filter :enable_google_maps, :except => [:update, :create, :destroy]
   
   def index
-    if params[:location]
+    unless params[:location].blank?
       @title = "UK Hyperlocal Sites nearest to #{params[:location]}"
       @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => params[:location], :order => "distance", :limit => 10)
     else
