@@ -50,6 +50,22 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       assert @hyperlocal_site.valid?
     end   
         
+    should "validate presence of distance_covered on create" do
+      h = Factory.build(:hyperlocal_site, :distance_covered => nil)
+      assert !h.valid?
+      assert_equal "can't be blank", h.errors[:distance_covered]
+      @hyperlocal_site.update_attribute(:distance_covered, nil)
+      assert @hyperlocal_site.valid?
+    end   
+        
+    should "validate presence of description on create" do
+      h = Factory.build(:hyperlocal_site, :description => nil)
+      assert !h.valid?
+      assert_equal "can't be blank", h.errors[:description]
+      @hyperlocal_site.update_attribute(:description, nil)
+      assert @hyperlocal_site.valid?
+    end   
+        
     context "should have named_scope model that should" do
       should "return only approved hyperlocal_sites" do
         approved_site = Factory(:approved_hyperlocal_site)
