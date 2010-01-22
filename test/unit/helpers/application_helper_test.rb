@@ -12,6 +12,10 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal "<dt class=\"foo_bar\">Foo Bar</dt> <dd>some value</dd>", attribute_tag(:foo_bar, "some value")
     end
 
+    should "use supplied text for name if given" do
+      assert_dom_equal "<dt class=\"foo_bar\">Different name</dt> <dd>some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name")
+    end
+
     should "return nil if value is nil" do
       assert_nil attribute_tag(:foo_bar, nil)
     end
