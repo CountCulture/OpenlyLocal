@@ -56,6 +56,16 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
         assert_equal [approved_site], HyperlocalSite.approved
       end
     end
+    
+    should "delegate region to council" do
+      council = Factory(:council, :region => "London")
+      @hyperlocal_site.council = council
+      assert_equal "London", @hyperlocal_site.region
+    end
+    
+    should "return nil for region when no associated council" do
+      assert_nil @hyperlocal_site.region
+    end
   end
   
   context "A HyperlocalSite instance" do

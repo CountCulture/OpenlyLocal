@@ -2,21 +2,27 @@
   var EARTH_RADIUS = 6378.137; //in kilometres
   var circle;
   var sites = <%= @hyperlocal_sites.to_json %>;
+  var loc = <%= @location ? @location.hash.to_json : false %>;
   
   function initMap() {
     if (GBrowserIsCompatible()) {
       var map = new GMap2(document.getElementById("map_canvas"));
       var center = new GLatLng(54.3, -3);
-      var first_view = true;
+      map.setCenter(center, 6); //set default centre
       
-      map.setCenter(center, 6);
+      var first_view = true;
+      var bounds = new GLatLngBounds(); //set bounding area
       map.addControl(new GSmallMapControl());
       map.addControl(new GMapTypeControl());
-      
       for (var i=0; i < sites.length; i++) {
-        map.addOverlay(createMarker(sites[i].hyperlocal_site, map));
+        var m = createMarker(sites[i].hyperlocal_site, map);
+        map.addOverlay(m);
+        bounds.extend(m.getLatLng());
       };
-            
+      if(loc){
+        map.setZoom(map.getBoundsZoomLevel(bounds));
+        map.setCenter(bounds.getCenter());
+      };
     }
   }
   

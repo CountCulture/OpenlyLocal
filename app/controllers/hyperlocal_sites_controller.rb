@@ -7,7 +7,8 @@ class HyperlocalSitesController < ApplicationController
   def index
     unless params[:location].blank?
       @title = "UK Hyperlocal Sites nearest to #{params[:location]}"
-      @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => params[:location], :order => "distance", :limit => 10)
+      @location = Geokit::LatLng.normalize(params[:location])
+      @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => @location, :order => "distance", :limit => 10)
     else
       @title = "UK Hyperlocal Sites"
       @hyperlocal_sites = HyperlocalSite.approved

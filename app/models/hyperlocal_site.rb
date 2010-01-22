@@ -12,6 +12,7 @@ class HyperlocalSite < ActiveRecord::Base
   named_scope :approved, :conditions => {:approved => true}
   acts_as_mappable
   default_scope :order => "title"
+  delegate :region, :to => :council, :allow_nil => true
   after_save :tweet_about_it
   
   def to_param
