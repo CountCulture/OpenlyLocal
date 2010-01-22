@@ -2,6 +2,7 @@ class HyperlocalSitesController < ApplicationController
   before_filter :authenticate, :except => [:index, :show, :new, :create]
   before_filter :find_hyperlocal_site, :except => [:index, :new, :create]
   before_filter :enable_google_maps, :except => [:update, :create, :destroy]
+  before_filter :show_rss_link, :only => :index
   
   def index
     unless params[:location].blank?
@@ -16,6 +17,7 @@ class HyperlocalSitesController < ApplicationController
       format.html
       format.xml { render :xml => @hyperlocal_sites.to_xml(:except => [:email, :approved]) }
       format.json { render :json => @hyperlocal_sites.to_json(:except => [:email, :approved]) }
+      format.rss { render :layout => false }
     end
   end
   

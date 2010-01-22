@@ -19,7 +19,6 @@ class BoundaryTest < ActiveSupport::TestCase
     
     context "when storing bounding box" do
       should "store as Polygon" do
-        p @boundary
         assert_kind_of Polygon, @boundary.bounding_box
       end
     end

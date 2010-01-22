@@ -43,6 +43,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should "enable google maps" do
         assert assigns(:enable_google_maps)
       end
+      
+      should "show rss feed link" do
+        assert_select "link[rel='alternate'][type='application/rss+xml'][href='http://test.host/hyperlocal_sites.rss']"
+      end
     end
     
     context "with request with location" do
@@ -99,6 +103,34 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should_respond_with_content_type 'application/json'
       should "not include email address" do
         assert_no_match /email\:/, @response.body
+      end
+    end
+    
+    context "with rss requested" do
+      setup do
+        HyperlocalSite.record_timestamps = false # update timestamp without triggering callbacks
+        @hyperlocal_site.update_attributes(:distance_covered => 10.0, :created_at => 2.hours.ago)
+        HyperlocalSite.record_timestamps = true # update timestamp without triggering callbacks
+        get :index, :format => "rss"
+      end
+      
+      should_assign_to(:hyperlocal_sites) {  [@hyperlocal_site, @another_hyperlocal_site] }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/rss+xml'
+      should "have title " do
+        assert_select "title", "Latest UK Hyperlocal Sites"
+      end
+      should "list hyperlocal sites" do
+        assert_select "item", 2 do
+          assert_select "title", @hyperlocal_site.title
+          assert_select "link", "http://test.host/hyperlocal_sites/#{@hyperlocal_site.to_param}"
+          assert_match /georss:point>#{@hyperlocal_site.lat} #{@hyperlocal_site.lng}/, @response.body
+          assert_match /georss:radius>#{@hyperlocal_site.distance_covered*1604.34}/, @response.body
+        end
+      end
+      should "list newest hyperlocal site first" do
+        assert_match /#{@another_hyperlocal_site.title}.+#{@hyperlocal_site.title}/m, @response.body
       end
     end
   end
