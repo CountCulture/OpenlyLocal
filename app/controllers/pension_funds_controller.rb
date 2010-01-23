@@ -11,5 +11,6 @@ class PensionFundsController < ApplicationController
   
   def show
     @pension_fund = PensionFund.find(params[:id])
+    @title = @pension_fund.name
   end
 end

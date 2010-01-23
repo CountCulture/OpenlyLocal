@@ -332,7 +332,6 @@ task :match_1010_councils => :environment do
       if row = rows.detect{ |r| r.first.gsub(/&| and/, '').squish.match(/#{council.short_name}\b/i) }
         puts "========\nFound match for #{council.name} (#{council.short_name}): #{row.first}"
         csv << [council.name, council.snac_id]
-        # council.update_attribute(:signed_up_for_1010, row.last)
         puts "Matched #{council.name} with 1010 info"
         rows.delete(row)
       else
@@ -375,5 +374,4 @@ task :populate_pension_funds => :environment do
     p fund
   end 
 end
-
 

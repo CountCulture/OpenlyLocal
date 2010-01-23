@@ -68,6 +68,10 @@ class PensionFundsControllerTest < ActionController::TestCase
     should_render_template :show
     should_render_with_layout
   
+    should 'show title' do
+      assert_select "title", /#{@pension_fund.name}/i
+    end
+    
     should "list all associated councils" do
       assert_select "#councils li", @pension_fund.councils.size do
         assert_select "a", @council.title
