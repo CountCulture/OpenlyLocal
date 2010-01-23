@@ -151,6 +151,10 @@ Factory.define :police_authority do |f|
   f.association :police_force
 end
 
+Factory.define :pension_fund do |f|
+  f.sequence(:name) { |n| "Pension Fund #{n}" }
+end
+
 Factory.define :ons_subject do |f|
   f.sequence(:title) { |n| "Ons Subject #{n}" }
   f.sequence(:ons_uid) { |n| n }

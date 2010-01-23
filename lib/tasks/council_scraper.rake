@@ -353,4 +353,27 @@ task :import_1010_councils => :environment do
   Council.update_all("signed_up_for_1010='1'", :snac_id => snac_ids)
 end
 
+desc "Populate pension funds"
+task :populate_pension_funds => :environment do
+  require 'hpricot'
+  regions = Hpricot(open("http://www.lgps.org.uk/lge/core/page.do?pageId=99259")).search("#middle-col p a")
+  fund_links = regions.collect do |region_link|
+    Hpricot(open("http://www.lgps.org.uk/lge/" + region_link[:href])).search("#middle-col p a").collect{ |f| f[:href] }
+  end
+  fund_links.flatten.each do |link|
+    doc = Hpricot(open("http://www.lgps.org.uk/lge/" + link))
+    name = doc.at("title").inner_text
+    fund = PensionFund.find_or_create_by_name(name.match(/Pension/i) ? name : "#{name} Pension Fund")
+    attribs = {}
+    details = doc.at('.bodyContent')
+    attribs[:telephone] = details.at("th[text()*=Telephone]").nodes_at(2).first.try(:inner_text)
+    attribs[:url] = details.at("a[@href*=http]").try(:inner_text)
+    attribs[:email] = details.at("a[@href*=mailto]").try(:inner_text)
+    attribs[:fax] = details.at("th[text()*=Fax]").nodes_at(2).first.try(:inner_text)
+    attribs[:address] = details.at("th[text()*=Address]").nodes_at(2).first.try(:inner_html).to_s.gsub(/<.?p>/,'').gsub("<br />", ", ").strip
+    fund.update_attributes(attribs)
+    p fund
+  end 
+end
+
 

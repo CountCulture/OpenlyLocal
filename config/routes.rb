@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :pension_funds
+
 
   map.resources :scrapers
   map.resources :item_scrapers, :controller => "scrapers"

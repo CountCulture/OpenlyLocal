@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100118182729) do
+ActiveRecord::Schema.define(:version => 20100122185010) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(:version => 20100118182729) do
     t.column "cipfa_code", :string
     t.column "region", :string
     t.column "signed_up_for_1010", :boolean
+    t.column "pension_fund_id", :integer
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
@@ -360,6 +361,18 @@ ActiveRecord::Schema.define(:version => 20100118182729) do
   end
 
   add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"
+
+  create_table "pension_funds", :force => true do |t|
+    t.column "name", :string
+    t.column "url", :string
+    t.column "telephone", :string
+    t.column "email", :string
+    t.column "fax", :string
+    t.column "address", :text
+    t.column "wdtk_name", :string
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "police_authorities", :force => true do |t|
     t.column "name", :string

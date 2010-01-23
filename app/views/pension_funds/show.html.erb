@@ -1,0 +1,25 @@
+<h1><%= @title %></h1>
+
+<p class="more_info"><%= link_to "All Local Authority Pension Funds", pension_funds_path %></p>
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :address, @pension_fund.address %>
+  <%= attribute_tag :telephone, @pension_fund.telephone %>
+  <%= attribute_tag :website, link_to(@pension_fund.url, @pension_fund.url, :class => "external") %>
+  <%= attribute_tag :fax, @pension_fund.fax %>
+  <%= attribute_tag(:email, mail_to(@pension_fund.email, @pension_fund.email),:encode => "javascript") if @pension_fund.email? %>
+</dl>
+<div class="extra_info">
+  <h3>Other info</h3>
+  <%- unless @pension_fund.wdtk_name.blank? -%>
+    <%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@pension_fund.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@pension_fund.wdtk_name}", :class => "feed" %>)
+  <%- end -%>
+</div>
+<div id="relationships">
+  <div id="councils">
+    <h4>Penion Fund for</h4>
+    <%= list_all @pension_fund.councils, :basic => true %>
+  </div>
+</div>
+
+
+<%= timestamp_data_for @pension_fund %>
