@@ -366,7 +366,8 @@ task :populate_pension_funds => :environment do
     attribs = {}
     details = doc.at('.bodyContent')
     attribs[:telephone] = details.at("th[text()*=Telephone]").nodes_at(2).first.try(:inner_text)
-    attribs[:url] = details.at("a[@href*=http]").try(:inner_text)
+    raw_url = details.at("a[@href*=http]").try(:inner_text)
+    attribs[:url] = raw_url.to_s.match(/http:/) ? raw_url : raw_url&&"http://#{raw_url}"
     attribs[:email] = details.at("a[@href*=mailto]").try(:inner_text)
     attribs[:fax] = details.at("th[text()*=Fax]").nodes_at(2).first.try(:inner_text)
     attribs[:address] = details.at("th[text()*=Address]").nodes_at(2).first.try(:inner_html).to_s.gsub(/<.?p>/,'').gsub("<br />", ", ").strip
