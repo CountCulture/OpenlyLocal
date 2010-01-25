@@ -357,7 +357,8 @@ task :populate_pension_funds => :environment do
   require 'hpricot'
   regions = Hpricot(open("http://www.lgps.org.uk/lge/core/page.do?pageId=99259")).search("#middle-col p a")
   fund_links = regions.collect do |region_link|
-    Hpricot(open("http://www.lgps.org.uk/lge/" + region_link[:href])).search("#middle-col p a").collect{ |f| f[:href] }
+    puts "Getting funds from http://www.lgps.org.uk/lge/#{region_link[:href]}"
+    Hpricot(open("http://www.lgps.org.uk/lge/" + region_link[:href])).search(".bodyContent td:first-of-type a").collect{ |f| f[:href] }
   end
   fund_links.flatten.each do |link|
     doc = Hpricot(open("http://www.lgps.org.uk/lge/" + link))
@@ -374,5 +375,53 @@ task :populate_pension_funds => :environment do
     fund.update_attributes(attribs)
     p fund
   end 
+end
+
+desc "Associate councils and pension funds"
+task :associate_pension_funds => :environment do 
+  require 'pp'
+  ni_fund = PensionFund.find_or_initialize_by_name("NILGOSC")
+  ni_fund.update_attributes(:address => "411 Holywood Road, Belfast, BT4 2LP, Northern Ireland", :telephone => "0845 308 7345", :fax => "0845 308 7344", :email => "info@NILGOSC.org.uk", :url => "http://www.nilgosc.org.uk/")
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/las_to_pension_funds.csv"))
+  councils = Council.all
+  pension_funds = PensionFund.all
+  matched_funds = []
+  unmatched_councils = councils.dup
+  councils.each do |council|
+    if row = rows.detect{ |r| r.first.gsub(/&| and/, '').squish.match(/#{council.short_name}\b/i) }
+      puts "========\nFound match for #{council.name} (#{council.short_name}): #{row.first}"
+      fund_short_name = row.last.gsub(/Pension|Fund|Council|Authority|Scheme/i, '').squish
+      
+      if fund = PensionFund.first(:conditions => "name LIKE '%#{fund_short_name}%'")
+        council.update_attribute(:pension_fund, fund)
+        unmatched_councils.delete(council)
+        puts "Updated #{council.name} with pension fund: #{fund.name}"
+        rows.delete(row)
+        matched_funds << fund
+      else
+        puts "****Failed to find record for #{fund_name} (#{short_name})"
+      end
+    else
+      puts "***Couldn't find match for #{council.name} (#{council.short_name})"
+    end
+  end
+  unmatched_councils_2 = unmatched_councils.dup
+  unmatched_councils_2.each do |council|
+    if parent_council = council.parent_authority
+      council.update_attribute(:pension_fund, parent_council.pension_fund)
+      unmatched_councils.delete(council)
+      puts "Updated #{council.name} with pension fund: #{parent_council.pension_fund.name}"
+    elsif council.country == 'Northern Ireland'
+      council.update_attribute(:pension_fund, ni_fund)
+      unmatched_councils.delete(council)
+      puts "Updated #{council.name} with pension fund: #{ni_fund.name}"
+    else
+      puts "No parent authority for #{council.name}"
+    end
+  end
+  unmatched_funds = pension_funds - matched_funds
+  pp "Unmatched rows:", rows
+  pp "#{unmatched_councils.size} Unmatched councils:", unmatched_councils.collect(&:name)
+  pp "#{unmatched_funds.size} Unmatched funds:", unmatched_funds.collect(&:name)
 end
 

@@ -4,7 +4,7 @@
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :address, @pension_fund.address %>
   <%= attribute_tag :telephone, @pension_fund.telephone %>
-  <%= attribute_tag :website, link_to(@pension_fund.url, @pension_fund.url, :class => "external") %>
+  <%= attribute_tag :website, link_to(@pension_fund.url, @pension_fund.url, :class => "external") if @pension_fund.url? %>
   <%= attribute_tag :fax, @pension_fund.fax %>
   <%= attribute_tag(:email, mail_to(@pension_fund.email, @pension_fund.email),:encode => "javascript") if @pension_fund.email? %>
 </dl>

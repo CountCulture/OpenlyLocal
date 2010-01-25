@@ -1,4 +1,7 @@
 class PensionFundsController < ApplicationController
+  before_filter :authenticate, :except => [:index, :show]
+  before_filter :find_pension_fund, :except => :index
+  
   def index
     @pension_funds = PensionFund.all
     @title = 'Local Authority Pension Funds'
@@ -10,7 +13,22 @@ class PensionFundsController < ApplicationController
   end
   
   def show
-    @pension_fund = PensionFund.find(params[:id])
     @title = @pension_fund.name
+  end
+  
+  def edit
+  end
+  
+  def update
+    @pension_fund.update_attributes!(params[:pension_fund])
+    flash[:notice] = "Successfully updated pension fund"
+    redirect_to pension_fund_url(@pension_fund)
+  rescue
+    render :action => "edit"
+  end
+
+  private
+  def find_pension_fund
+    @pension_fund = PensionFund.find(params[:id])
   end
 end

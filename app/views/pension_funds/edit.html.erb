@@ -1,0 +1,37 @@
+<h1>Editing Pension Fund: <%= @pension_fund.name %></h1>
+
+<%= error_messages_for :pension_fund %>
+
+<% form_for @pension_fund do |f| -%>
+  <p>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :url %>
+    <%= f.text_field :url %>
+  </p>
+  <p>
+    <%= f.label :wdtk_name, "WhatDoTheyKnow name" %>
+    <%= f.text_field :wdtk_name %>
+  </p>
+  <p>
+    <%= f.label :address %>
+    <%= f.text_area :address %>
+  </p>
+  <p>
+    <%= f.label :telephone %>
+    <%= f.text_field :telephone %>
+  </p>
+  <p>
+    <%= f.label :fax %>
+    <%= f.text_field :fax %>
+  </p>
+  <p>
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>

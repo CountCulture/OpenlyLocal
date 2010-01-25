@@ -32,6 +32,7 @@ class Council < ActiveRecord::Base
   has_many :hyperlocal_sites, :conditions => {:approved => true}
   belongs_to :portal_system
   belongs_to :police_force
+  belongs_to :pension_fund
   validates_presence_of :name
   validates_uniqueness_of :name
   named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? {} : {:conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id"} }

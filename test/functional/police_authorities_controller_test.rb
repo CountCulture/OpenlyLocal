@@ -205,7 +205,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
      should_respond_with 401
    end
 
-   context "on get to :edit a topic" do
+   context "on get to :edit a police_authority" do
      setup do
        stub_authentication
        get :edit, :id => @police_authority.id
