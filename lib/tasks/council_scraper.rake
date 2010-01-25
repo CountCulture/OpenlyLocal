@@ -399,7 +399,7 @@ task :associate_pension_funds => :environment do
         rows.delete(row)
         matched_funds << fund
       else
-        puts "****Failed to find record for #{fund_name} (#{short_name})"
+        puts "****Failed to find record for #{row.last} (#{fund_short_name})"
       end
     else
       puts "***Couldn't find match for #{council.name} (#{council.short_name})"
