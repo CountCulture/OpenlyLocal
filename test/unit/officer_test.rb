@@ -25,6 +25,13 @@ class OfficerTest < ActiveSupport::TestCase
       non_ceo = Factory.build(:officer, :council => @council, :position => @officer.position)
       assert non_ceo.valid?
     end
+    
+    should "allow chief exec to be changed" do
+      # this is regression test
+      ce = Factory(:officer, :council => Factory(:another_council), :position => "Chief Executive")
+      ce.full_name = "Fred Flintstone"
+      assert ce.save
+    end
   end
   
   context "An Officer instance" do
@@ -55,5 +62,6 @@ class OfficerTest < ActiveSupport::TestCase
         assert_equal "PhD", @officer.qualifications
       end
     end
+    
   end
 end
