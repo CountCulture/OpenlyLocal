@@ -1,0 +1,26 @@
+<ans1:GetVariableDetailResponseElement xmlns:ans1="http://neighbourhood.statistics.gov.uk/nde/discoveryservice">
+   <ns0:VariableDetail xmlns:ns0="http://neighbourhood.statistics.gov.uk/nde/v1-0/discoverystructs">
+      <ns0:VarFamilyId>125</ns0:VarFamilyId>
+      <ns0:StatisticalUnit>
+         <ns0:SUId>1</ns0:SUId>
+         <ns0:Name>Persons</ns0:Name>
+      </ns0:StatisticalUnit>
+      <ns0:OptionalMetaData>The average number of hours worked by females aged 16 to 74 who were in employment at the time of the Census.The average is calculated by summing all the hours worked and dividing by the number of males aged 16 to 74 in employment.</ns0:OptionalMetaData>
+      <ns0:MeasurementUnit>
+         <ns0:Name>Hours</ns0:Name>
+         <ns0:MUId>16</ns0:MUId>
+      </ns0:MeasurementUnit>
+      <ns0:DateRange>
+         <ns0:StartDate>2001-04-29T00:00:00.000+01:00</ns0:StartDate>
+         <ns0:EndDate>2001-04-29T00:00:00.000+01:00</ns0:EndDate>
+      </ns0:DateRange>
+      <ns0:DSFamilyId>287</ns0:DSFamilyId>
+      <ns0:Name>Average (mean) hours worked: Female</ns0:Name>
+      <ns0:Periodicity>
+         <ns0:PeriodicityId>51</ns0:PeriodicityId>
+         <ns0:OptionalMetaData xsi:nil="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <ns0:MandatoryMetaData>Date</ns0:MandatoryMetaData>
+         <ns0:Name>DT</ns0:Name>
+      </ns0:Periodicity>
+   </ns0:VariableDetail>
+</ans1:GetVariableDetailResponseElement>

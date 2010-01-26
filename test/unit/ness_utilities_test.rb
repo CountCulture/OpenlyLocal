@@ -144,4 +144,123 @@ class NessUtilitiesTest < ActiveSupport::TestCase
     end
 
   end
+
+  context "A RestClient instance" do
+    setup do
+      @dummy_response = dummy_xml_response(:ness_rest_get_variable_details)
+      @base_url = NessUtilities::RestClient::BaseUrl
+      @client = NessUtilities::RestClient.new(:foo_method, :areas => ["foo", "bar"], :variables => "something else")
+      @client.stubs(:_http_get).returns(@dummy_response)
+    end
+
+    should "store given method as method_name" do
+      assert_equal :foo_method, @client.request_method
+    end
+
+    should "store given params as params" do
+      assert_equal( {:areas => ["foo", "bar"], :variables=>"something else"}, @client.params)
+    end
+    
+    should "return request_type" do
+      assert_equal "discovery", NessUtilities::RestClient.new(:foo_method).request_type
+      assert_equal "discovery", NessUtilities::RestClient.new(:get_subjects).request_type
+      assert_equal "discovery", NessUtilities::RestClient.new("GetSubjects").request_type
+      assert_equal "delivery", NessUtilities::RestClient.new(:get_tables).request_type
+      assert_equal "delivery", NessUtilities::RestClient.new(:get_child_area_tables).request_type
+    end
+    
+    context "when getting response" do
+      
+      should "build request url" do
+        @client.expects(:request_url).returns(@base_url)
+        @client.response
+      end
+      
+      should "make get request using url" do
+        @client.expects(:_http_get).with(regexp_matches(/#{@base_url}/)).returns(@dummy_response)
+        @client.response
+      end
+      
+      should "convert method name to Camelcase in request url" do
+        @client.expects(:_http_get).with(regexp_matches(/FooMethod/)).returns(@dummy_response)
+        @client.response
+      end
+      
+      should "convert method name to Camelcase with lowercase first letter in delivery request url" do
+        @client.stubs(:request_type).returns('delivery')
+        @client.expects(:_http_get).with(regexp_matches(/fooMethod/)).returns(@dummy_response)
+        @client.response
+      end
+      
+      should "use discovery path by default" do
+        @client.expects(:_http_get).with(regexp_matches(/Disco/)).returns(@dummy_response)
+        @client.response
+      end
+      
+      should "use delivery path for delivery request" do
+        @client.stubs(:request_type).returns('delivery')
+        @client.expects(:_http_get).with(regexp_matches(/Deli/)).returns(@dummy_response)
+        @client.response
+      end
+      
+      should "request response is not grouped by datasets for delivery requests" do
+        @client.stubs(:request_type).returns('delivery')
+        @client.expects(:_http_get).with(regexp_matches(/GroupByDataset=No/)).returns(@dummy_response)
+        @client.response
+      end
+      
+      should "separate array values by commas" do
+        @client.expects(:_http_get).with(regexp_matches(/Areas=foo,bar/)).returns(@dummy_response)
+        @client.response
+      end
+      
+      should "return a hashed version of response excluding root by default" do
+        response = @client.response
+        assert_kind_of Hash, response
+        assert response["VariableDetail"]
+      end
+
+      should "not extract datapoints if discovery request" do
+        @client.expects(:_http_get).returns(@dummy_response)
+        @client.stubs(:request_type).returns('discovery')
+        @client.expects(:_http_get).never
+        @client.response
+      end
+      
+      should "extract datapoints if delivery request" do
+        stubbed_datapoints = stub
+        @client.stubs(:request_type).returns('delivery')
+        @client.expects(:_http_get).returns(@dummy_response)
+        @client.expects(:extract_datapoints).returns(stubbed_datapoints)
+        assert_equal stubbed_datapoints, @client.response
+      end
+    end
+    
+    context "when extracting datapoints from raw XML response" do
+      setup do
+        @resp = dummy_xml_response(:ness_rest_get_tables)
+      end
+
+      should "return nil if blank response submitted" do
+        assert_nil @client.send(:extract_datapoints)
+        assert_nil @client.send(:extract_datapoints, '')
+      end
+
+      should "return an array of hashes" do
+        dps = @client.send(:extract_datapoints, @resp)
+        assert_kind_of Array, dps
+        assert_equal 8, dps.size
+        assert_kind_of Hash, dps.first
+      end
+
+      should "return data from response" do
+        dp = @client.send(:extract_datapoints, @resp).first
+        assert_equal '6850', dp[:ness_topic_id]
+        assert_equal '11203', dp[:value]
+      end
+    end
+    
+  end
+
+
 end

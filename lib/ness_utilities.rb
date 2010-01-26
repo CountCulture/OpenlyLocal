@@ -66,7 +66,7 @@ module NessUtilities
     end
 
     def extract_datapoints(resp=nil)
-    return if resp.blank?
+      return if resp.blank?
       res = []
       raw_datapoints = resp.search('lgdx|DatasetItem', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |d| {:value => lgdx_attrib('Value', d), :topic_id => lgdx_attrib('TopicId', d), :area_id => lgdx_attrib('BoundaryId', d)} }
       topics = resp.search('lgdx|Topic', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |t| {:id => lgdx_attrib('TopicId', t), :ness_topic_id => lgdx_attrib('TopicCode', t)} }
@@ -115,6 +115,62 @@ EOF
 
     def on_simple_outbound
       {"UsernameToken" => {"Username" => NESS_USERNAME, "Password" => NESS_PASSWORD}}
+    end
+  end
+  
+  class RestClient
+    BaseUrl = "http://212.58.231.244:7778/NDE2/"
+    DeliveryRequests = %w(GetTables GetChildAreaTables)
+    
+    # class RequestError < Standard Error;end
+    attr_reader :request_method, :params
+
+    def initialize(req_meth, params={})
+      @request_method = req_meth
+      @params = params
+    end
+    
+    def request_url
+      url_params = params.collect do |k,v|
+        "#{k.to_s.camelize}=#{[v].flatten.join(',')}"
+      end.join('&')
+      BaseUrl + (request_type == 'delivery' ? "Deli/#{request_method.to_s.camelize(:lower)}?GroupByDataset=No&" : "Disco/#{request_method.to_s.camelize}?") + url_params
+    end
+    
+    def request_type
+      DeliveryRequests.include?(request_method.to_s.camelize) ? 'delivery' : 'discovery'
+    end
+    
+    def response
+      raw_response = _http_get(request_url)
+      request_type == "delivery" ? extract_datapoints(raw_response) : Hash.from_xml(raw_response).values.first
+    end
+    
+    protected
+    def _http_get(url)
+      return if RAILS_ENV=='test' # don't make calls in test env
+      open(url).read
+    end
+    
+    def extract_datapoints(resp=nil)
+      return if resp.blank?
+      res = []
+      resp = Nokogiri.XML(resp)
+      raw_datapoints = resp.search('lgdx|DatasetItem', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |d| {:value => lgdx_attrib('Value', d), :topic_id => lgdx_attrib('TopicId', d), :area_id => lgdx_attrib('BoundaryId', d)} }
+      topics = resp.search('lgdx|Topic', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |t| {:id => lgdx_attrib('TopicId', t), :ness_topic_id => lgdx_attrib('TopicCode', t)} }
+      areas = resp.search('lgdx|Boundary', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |a| {:id => lgdx_attrib('BoundaryId', a), :ness_area_id => lgdx_attrib('Identifier', a)} }
+      
+      # merge datapoints with ness topic and area ids, replacing response ids
+      raw_datapoints.collect do |dp|
+        { :value => dp[:value],
+          :ness_topic_id => topics.detect{|t| t[:id] == dp[:topic_id]}[:ness_topic_id],
+          :ness_area_id => areas.detect{|a| a[:id] == dp[:area_id]}[:ness_area_id]
+          }
+      end
+    end
+
+    def lgdx_attrib(key, obj)
+      obj.at("lgdx|#{key}", 'lgdx' => "http://schema.esd.org.uk/LGDX").inner_text
     end
   end
 end

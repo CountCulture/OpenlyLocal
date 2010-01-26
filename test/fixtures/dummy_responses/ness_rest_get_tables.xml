@@ -1,0 +1,192 @@
+<ns0:getDataCubeResponseElement xmlns:ns0="http://neighbourhood.statistics.gov.uk/nde/v1-0/deliveryservice">
+   <lgdx:Datasets xmlns:lgdx="http://schema.esd.org.uk/LGDX">
+      <lgdx:Dataset>
+         <lgdx:DatasetDetails>
+            <lgdx:DatasetCode>0</lgdx:DatasetCode>
+            <lgdx:DatasetMetadata>
+               <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+               <lgdx:Date>2010-01-25</lgdx:Date>
+               <lgdx:Description>Pick and Mix</lgdx:Description>
+               <lgdx:Subject.Category/>
+               <lgdx:Title>Custom</lgdx:Title>
+            </lgdx:DatasetMetadata>
+         </lgdx:DatasetDetails>
+         <lgdx:Topics>
+            <lgdx:Topic>
+               <lgdx:TopicId>1</lgdx:TopicId>
+               <lgdx:TopicCode>6845</lgdx:TopicCode>
+               <lgdx:TopicMetadata>
+                  <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                  <lgdx:Date>2010-01-25</lgdx:Date>
+                  <lgdx:Description>Index of Multiple Deprivation Rank where 1 is the most deprived.</lgdx:Description>
+                  <lgdx:Identifier>1893</lgdx:Identifier>
+                  <lgdx:Subject.Category/>
+                  <lgdx:Title>Rank of Index of Multiple Deprivation Score</lgdx:Title>
+                  <lgdx:Coinage.Unit>Rank</lgdx:Coinage.Unit>
+               </lgdx:TopicMetadata>
+            </lgdx:Topic>
+            <lgdx:Topic>
+               <lgdx:TopicId>2</lgdx:TopicId>
+               <lgdx:TopicCode>6846</lgdx:TopicCode>
+               <lgdx:TopicMetadata>
+                  <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                  <lgdx:Date>2010-01-25</lgdx:Date>
+                  <lgdx:Description>Income Deprivation Domain Rank where 1 is the most deprived.</lgdx:Description>
+                  <lgdx:Identifier>1893</lgdx:Identifier>
+                  <lgdx:Subject.Category/>
+                  <lgdx:Title>Rank of Income Score</lgdx:Title>
+                  <lgdx:Coinage.Unit>Rank</lgdx:Coinage.Unit>
+               </lgdx:TopicMetadata>
+            </lgdx:Topic>
+            <lgdx:Topic>
+               <lgdx:TopicId>3</lgdx:TopicId>
+               <lgdx:TopicCode>6847</lgdx:TopicCode>
+               <lgdx:TopicMetadata>
+                  <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                  <lgdx:Date>2010-01-25</lgdx:Date>
+                  <lgdx:Description>Employment Deprivation Domain Rank where 1 is the most deprived.</lgdx:Description>
+                  <lgdx:Identifier>1893</lgdx:Identifier>
+                  <lgdx:Subject.Category/>
+                  <lgdx:Title>Rank of Employment Score</lgdx:Title>
+                  <lgdx:Coinage.Unit>Rank</lgdx:Coinage.Unit>
+               </lgdx:TopicMetadata>
+            </lgdx:Topic>
+            <lgdx:Topic>
+               <lgdx:TopicId>4</lgdx:TopicId>
+               <lgdx:TopicCode>6848</lgdx:TopicCode>
+               <lgdx:TopicMetadata>
+                  <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                  <lgdx:Date>2010-01-25</lgdx:Date>
+                  <lgdx:Description>Health Deprivation and Disability Domain Rank where 1 is the most deprived.</lgdx:Description>
+                  <lgdx:Identifier>1893</lgdx:Identifier>
+                  <lgdx:Subject.Category/>
+                  <lgdx:Title>Rank of Health Deprivation and Disability Score</lgdx:Title>
+                  <lgdx:Coinage.Unit>Rank</lgdx:Coinage.Unit>
+               </lgdx:TopicMetadata>
+            </lgdx:Topic>
+            <lgdx:Topic>
+               <lgdx:TopicId>5</lgdx:TopicId>
+               <lgdx:TopicCode>6849</lgdx:TopicCode>
+               <lgdx:TopicMetadata>
+                  <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                  <lgdx:Date>2010-01-25</lgdx:Date>
+                  <lgdx:Description>Education Skills and Training Domain Rank where 1 is the most deprived.</lgdx:Description>
+                  <lgdx:Identifier>1893</lgdx:Identifier>
+                  <lgdx:Subject.Category/>
+                  <lgdx:Title>Rank of Education Skills and Training Score</lgdx:Title>
+                  <lgdx:Coinage.Unit>Rank</lgdx:Coinage.Unit>
+               </lgdx:TopicMetadata>
+            </lgdx:Topic>
+            <lgdx:Topic>
+               <lgdx:TopicId>6</lgdx:TopicId>
+               <lgdx:TopicCode>6850</lgdx:TopicCode>
+               <lgdx:TopicMetadata>
+                  <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                  <lgdx:Date>2010-01-25</lgdx:Date>
+                  <lgdx:Description>Barriers to Housing and Services Domain Rank where 1 is the most deprived.</lgdx:Description>
+                  <lgdx:Identifier>1893</lgdx:Identifier>
+                  <lgdx:Subject.Category/>
+                  <lgdx:Title>Rank of Barriers to Housing and Services Score</lgdx:Title>
+                  <lgdx:Coinage.Unit>Rank</lgdx:Coinage.Unit>
+               </lgdx:TopicMetadata>
+            </lgdx:Topic>
+            <lgdx:Topic>
+               <lgdx:TopicId>7</lgdx:TopicId>
+               <lgdx:TopicCode>6851</lgdx:TopicCode>
+               <lgdx:TopicMetadata>
+                  <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                  <lgdx:Date>2010-01-25</lgdx:Date>
+                  <lgdx:Description>Crime Domain Rank where 1 is the most deprived.</lgdx:Description>
+                  <lgdx:Identifier>1893</lgdx:Identifier>
+                  <lgdx:Subject.Category/>
+                  <lgdx:Title>Rank of Crime Score</lgdx:Title>
+                  <lgdx:Coinage.Unit>Rank</lgdx:Coinage.Unit>
+               </lgdx:TopicMetadata>
+            </lgdx:Topic>
+            <lgdx:Topic>
+               <lgdx:TopicId>8</lgdx:TopicId>
+               <lgdx:TopicCode>6852</lgdx:TopicCode>
+               <lgdx:TopicMetadata>
+                  <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                  <lgdx:Date>2010-01-25</lgdx:Date>
+                  <lgdx:Description>Super Output Area population denominator, created specifically for the Indices of Deprivation 2007</lgdx:Description>
+                  <lgdx:Identifier>1893</lgdx:Identifier>
+                  <lgdx:Subject.Category/>
+                  <lgdx:Title>Index of Multiple Deprivation; SOA Population</lgdx:Title>
+                  <lgdx:Coinage.Unit>Count</lgdx:Coinage.Unit>
+               </lgdx:TopicMetadata>
+            </lgdx:Topic>
+         </lgdx:Topics>
+         <lgdx:Boundaries>
+            <lgdx:Boundary>
+               <lgdx:BoundaryId>1</lgdx:BoundaryId>
+               <lgdx:BoundaryCode>E01023690</lgdx:BoundaryCode>
+               <lgdx:BoundaryMetadata>
+                  <lgdx:Coverage.Spatial.Location>511803:214382:513431:216962</lgdx:Coverage.Spatial.Location>
+                  <lgdx:Creator>Office for National Statistics</lgdx:Creator>
+                  <lgdx:Date>2010-01-25</lgdx:Date>
+                  <lgdx:Identifier>308058</lgdx:Identifier>
+                  <lgdx:Subject.Category/>
+                  <lgdx:Title>St Albans 001A</lgdx:Title>
+               </lgdx:BoundaryMetadata>
+            </lgdx:Boundary>
+         </lgdx:Boundaries>
+         <lgdx:Periods>
+            <lgdx:Period>
+               <lgdx:PeriodId>1</lgdx:PeriodId>
+               <lgdx:Date>2007-01-01</lgdx:Date>
+            </lgdx:Period>
+         </lgdx:Periods>
+         <lgdx:DatasetItems>
+            <lgdx:DatasetItem>
+               <lgdx:TopicId>6</lgdx:TopicId>
+               <lgdx:BoundaryId>1</lgdx:BoundaryId>
+               <lgdx:PeriodId>1</lgdx:PeriodId>
+               <lgdx:Value>11203</lgdx:Value>
+            </lgdx:DatasetItem>
+            <lgdx:DatasetItem>
+               <lgdx:TopicId>7</lgdx:TopicId>
+               <lgdx:BoundaryId>1</lgdx:BoundaryId>
+               <lgdx:PeriodId>1</lgdx:PeriodId>
+               <lgdx:Value>26930</lgdx:Value>
+            </lgdx:DatasetItem>
+            <lgdx:DatasetItem>
+               <lgdx:TopicId>2</lgdx:TopicId>
+               <lgdx:BoundaryId>1</lgdx:BoundaryId>
+               <lgdx:PeriodId>1</lgdx:PeriodId>
+               <lgdx:Value>29935</lgdx:Value>
+            </lgdx:DatasetItem>
+            <lgdx:DatasetItem>
+               <lgdx:TopicId>1</lgdx:TopicId>
+               <lgdx:BoundaryId>1</lgdx:BoundaryId>
+               <lgdx:PeriodId>1</lgdx:PeriodId>
+               <lgdx:Value>31279</lgdx:Value>
+            </lgdx:DatasetItem>
+            <lgdx:DatasetItem>
+               <lgdx:TopicId>5</lgdx:TopicId>
+               <lgdx:BoundaryId>1</lgdx:BoundaryId>
+               <lgdx:PeriodId>1</lgdx:PeriodId>
+               <lgdx:Value>32223</lgdx:Value>
+            </lgdx:DatasetItem>
+            <lgdx:DatasetItem>
+               <lgdx:TopicId>8</lgdx:TopicId>
+               <lgdx:BoundaryId>1</lgdx:BoundaryId>
+               <lgdx:PeriodId>1</lgdx:PeriodId>
+               <lgdx:Value>1503</lgdx:Value>
+            </lgdx:DatasetItem>
+            <lgdx:DatasetItem>
+               <lgdx:TopicId>3</lgdx:TopicId>
+               <lgdx:BoundaryId>1</lgdx:BoundaryId>
+               <lgdx:PeriodId>1</lgdx:PeriodId>
+               <lgdx:Value>32226</lgdx:Value>
+            </lgdx:DatasetItem>
+            <lgdx:DatasetItem>
+               <lgdx:TopicId>4</lgdx:TopicId>
+               <lgdx:BoundaryId>1</lgdx:BoundaryId>
+               <lgdx:PeriodId>1</lgdx:PeriodId>
+               <lgdx:Value>31403</lgdx:Value>
+            </lgdx:DatasetItem>
+         </lgdx:DatasetItems>
+      </lgdx:Dataset>
+   </lgdx:Datasets>
+</ns0:getDataCubeResponseElement>
