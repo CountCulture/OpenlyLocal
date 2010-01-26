@@ -157,3 +157,19 @@ task :get_bounding_boxes_for_councils => :environment do
   end
 end
 
+desc "get descriptions for Ness topics"
+task :get_descriptions_for_ness_topics => :environment do
+  
+  DatasetTopic.all(:conditions => "ons_uid IS NOT NULL AND description IS NOT NULL").each do |topic|
+    begin
+      client = NessUtilities::RestClient.new(:getVariableDetail, :var_family_id => topic.ons_uid)
+      info = client.response
+    rescue Exception => e
+      puts "Problem getting/processing data from #{client.request_url}: #{e.inspect}"
+    end
+    if description = info["VariableDetail"]["OptionalMetaData"]
+      topic.update_attribute(:description, description)
+    end
+  end
+end
+

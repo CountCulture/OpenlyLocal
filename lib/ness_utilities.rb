@@ -131,10 +131,11 @@ EOF
     end
     
     def request_url
+      return @request_url if @request_url
       url_params = params.collect do |k,v|
         "#{k.to_s.camelize}=#{[v].flatten.join(',')}"
       end.join('&')
-      BaseUrl + (request_type == 'delivery' ? "Deli/#{request_method.to_s.camelize(:lower)}?GroupByDataset=No&" : "Disco/#{request_method.to_s.camelize}?") + url_params
+      @request_url = BaseUrl + (request_type == 'delivery' ? "Deli/#{request_method.to_s.camelize(:lower)}?GroupByDataset=No&" : "Disco/#{request_method.to_s.camelize}?") + url_params
     end
     
     def request_type
@@ -143,6 +144,7 @@ EOF
     
     def response
       raw_response = _http_get(request_url)
+      RAILS_DEFAULT_LOGGER.debug {"*** REST response from Ness (#{request_url}):\n#{raw_response}"}
       request_type == "delivery" ? extract_datapoints(raw_response) : Hash.from_xml(raw_response).values.first
     end
     
@@ -154,7 +156,6 @@ EOF
     
     def extract_datapoints(resp=nil)
       return if resp.blank?
-      res = []
       resp = Nokogiri.XML(resp)
       raw_datapoints = resp.search('lgdx|DatasetItem', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |d| {:value => lgdx_attrib('Value', d), :topic_id => lgdx_attrib('TopicId', d), :area_id => lgdx_attrib('BoundaryId', d)} }
       topics = resp.search('lgdx|Topic', 'lgdx' => "http://schema.esd.org.uk/LGDX").collect { |t| {:id => lgdx_attrib('TopicId', t), :ness_topic_id => lgdx_attrib('TopicCode', t)} }

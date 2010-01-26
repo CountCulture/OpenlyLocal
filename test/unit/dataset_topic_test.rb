@@ -76,11 +76,11 @@ class DatasetTopicTest < ActiveSupport::TestCase
         @council_2 = Factory(:council, :name => "Council 2", :ness_id => 35)
         dummy_response = [ { :ness_area_id => '35', :value => '42', :ness_topic_id => '123'},
                            { :ness_area_id => '12', :value => '51', :ness_topic_id => '123'}]
-        NessUtilities::RawClient.stubs(:new).returns(stub(:process_and_extract_datapoints => dummy_response))
+        NessUtilities::RestClient.stubs(:new).returns(stub(:response => dummy_response))
       end
 
       should "should fetch data from Ness database" do
-        NessUtilities::RawClient.expects(:new).with('Tables', [['Areas', ["12","35"]],['Variables', @dataset_topic.ons_uid]]).returns(stub(:process_and_extract_datapoints=>[]))
+        NessUtilities::RestClient.expects(:new).with(:get_tables, :areas => ['12','35'], :variables => @dataset_topic.ons_uid).returns(stub(:response=>[]))
         @dataset_topic.update_council_datapoints
       end
 
@@ -114,7 +114,7 @@ class DatasetTopicTest < ActiveSupport::TestCase
         setup do
           dummy_bad_response = [ { :ness_area_id => '215', :value => '', :ness_topic_id => '123'},
                              { :ness_area_id => '211', :value => nil, :ness_topic_id => '123'}]
-          NessUtilities::RawClient.expects(:new).returns(stub(:process_and_extract_datapoints => dummy_bad_response)) # expects overrides stubbing
+          NessUtilities::RestClient.expects(:new).returns(stub(:response => dummy_bad_response)) # expects overrides stubbing
         end
 
         should "not add datapoints" do
@@ -151,11 +151,11 @@ class DatasetTopicTest < ActiveSupport::TestCase
         @ward2 = Factory(:ward, :name => 'ward2', :ness_id => 215, :council => @council)
         dummy_response = [ { :ness_area_id => '215', :value => '42', :ness_topic_id => '123'},
                            { :ness_area_id => '211', :value => '51', :ness_topic_id => '123'}]
-        NessUtilities::RawClient.stubs(:new).returns(stub(:process_and_extract_datapoints => dummy_response))
+        NessUtilities::RestClient.stubs(:new).returns(stub(:response => dummy_response))
       end
 
       should "should fetch data from Ness database" do
-        NessUtilities::RawClient.expects(:new).with('ChildAreaTables', [['ParentAreaId', @council.ness_id], ['LevelTypeId', '14'], ['Variables', @dataset_topic.ons_uid]]).returns(stub(:process_and_extract_datapoints=>[]))
+        NessUtilities::RestClient.expects(:new).with(:get_child_area_tables, :parent_area_id => @council.ness_id, :level_type_id => 14, :variables =>  @dataset_topic.ons_uid).returns(stub(:response => []))
         @dataset_topic.update_ward_datapoints(@council)
       end
 
@@ -195,7 +195,7 @@ class DatasetTopicTest < ActiveSupport::TestCase
         setup do
           dummy_bad_response = [ { :ness_area_id => '215', :value => '', :ness_topic_id => '123'},
                              { :ness_area_id => '211', :value => nil, :ness_topic_id => '123'}]
-          NessUtilities::RawClient.expects(:new).returns(stub(:process_and_extract_datapoints => dummy_bad_response)) # expects overrides stubbing
+          NessUtilities::RestClient.expects(:new).returns(stub(:response => dummy_bad_response)) # expects overrides stubbing
         end
 
         should "not add datapoints" do

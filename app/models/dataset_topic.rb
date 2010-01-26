@@ -45,23 +45,23 @@ class DatasetTopic < ActiveRecord::Base
   
   def update_council_datapoints
     councils = Council.all(:conditions => "ness_id IS NOT NULL")
-    raw_datapoints = NessUtilities::RawClient.new('Tables', [['Areas', councils.collect(&:ness_id)], ['Variables', ons_uid]]).process_and_extract_datapoints
-    logger.debug { "Found #{raw_datapoints.size} raw datapoints for #{title} councils:\n #{raw_datapoints.inspect}" }
-    create_datapoints_from(raw_datapoints, councils)
+    if raw_datapoints = NessUtilities::RestClient.new(:get_tables, :areas => councils.collect(&:ness_id), :variables => ons_uid).response
+      logger.debug { "Found #{raw_datapoints.size} raw datapoints for #{title} councils:\n #{raw_datapoints.inspect}" }
+      create_datapoints_from(raw_datapoints, councils)
+    else
+      logger.debug { "No raw datapoints for #{title} council:\n #{raw_datapoints.inspect}" }
+    end
   end
 
   def update_ward_datapoints(council)
     return if council.ness_id.blank?
     wards = council.wards
-    raw_datapoints = NessUtilities::RawClient.new('ChildAreaTables', [['ParentAreaId', council.ness_id], ['LevelTypeId', '14'], ['Variables', ons_uid]]).process_and_extract_datapoints
-    logger.debug { "Found #{raw_datapoints.size} raw datapoints for #{council.name} wards:\n #{raw_datapoints.inspect}" }
-    create_datapoints_from(raw_datapoints, wards)
-    # raw_datapoints.collect do |rdp|
-    #   next unless ward = wards.detect{|w| w.ness_id == rdp[:ness_area_id]}
-    #   dp = datapoints.find_or_initialize_by_area_type_and_area_id('Ward', ward.id)
-    #   dp.update_attributes(:value => rdp[:value])
-    #   dp
-    # end
+    if raw_datapoints = NessUtilities::RestClient.new(:get_child_area_tables, :parent_area_id => council.ness_id, :level_type_id => 14, :variables => ons_uid).response
+      logger.debug { "Found #{raw_datapoints.size} raw datapoints for #{council.name} wards:\n #{raw_datapoints.inspect}" }
+      create_datapoints_from(raw_datapoints, wards)
+    else
+      logger.debug { "No raw datapoints for #{council.name} wards:\n #{raw_datapoints.inspect}" }
+    end
   end
   
   private
