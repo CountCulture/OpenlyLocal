@@ -137,7 +137,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
   end
     
   # custom_search tests for index action
-  context "on GET to :custom search" do |variable|
+  context "on GET to :custom search" do
     should "generate routing for custom search" do
       assert_routing("hyperlocal_sites/custom_search.xml", {:controller => "hyperlocal_sites", :action => "index", :custom_search => true, :format => "xml"})
     end
@@ -166,7 +166,26 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
     end
     
+    # custom_search_results tests
+    context "on GET to :custom_search_results" do
+      should "generate routing for custom_search_results" do
+        assert_routing("hyperlocal_sites/custom_search_results", {:controller => "hyperlocal_sites", :action => "custom_search_results"})
+      end
+
+      context "in general should" do
+        setup do
+          get :custom_search_results
+        end
+        
+        should_respond_with :success
+        should_render_with_layout
+        should "show div for results" do
+          assert_select "div#cse-search-results"
+        end  
+      end  
+    end
   end  
+  
   # show test
   context "on GET to :show" do
 

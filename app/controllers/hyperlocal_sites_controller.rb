@@ -1,6 +1,6 @@
 class HyperlocalSitesController < ApplicationController
-  before_filter :authenticate, :except => [:index, :show, :new, :create, :custom_search]
-  before_filter :find_hyperlocal_site, :except => [:index, :new, :create, :custom_search]
+  before_filter :authenticate, :except => [:index, :show, :new, :create, :custom_search, :custom_search_results]
+  before_filter :find_hyperlocal_site, :except => [:index, :new, :create, :custom_search, :custom_search_results]
   before_filter :enable_google_maps, :except => [:update, :create, :destroy]
   before_filter :show_rss_link, :only => :index
   

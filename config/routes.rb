@@ -9,6 +9,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
   
   map.connect 'hyperlocal_sites/custom_search.xml', :controller => "hyperlocal_sites", :action => "index", :custom_search => true, :format => "xml"
+  map.resources :hyperlocal_sites, :collection => { :custom_search_results => :get }
   
   map.resources :committees, :documents, :hyperlocal_groups, :hyperlocal_sites, :meetings, :members, :datapoints, :dataset_topic_groupings, :parsers, :pension_funds, :portal_systems, :police_forces, :police_authorities, :services, :wards
 
@@ -21,6 +22,7 @@ ActionController::Routing::Routes.draw do |map|
   # Important: these need to go after nested resources for caching to work
   map.resources :datasets, :dataset_families
   map.resources :dataset_topics, :except => [:new, :destroy, :index], :member => { :populate => :post }
+  
   
   map.resources :wards do |wards|
     wards.resources :dataset_topics, :path_prefix => '/wards/:area_id', :requirements => {:area_type => "Ward"}, :only => [:show]

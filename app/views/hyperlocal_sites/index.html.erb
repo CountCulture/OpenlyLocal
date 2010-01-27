@@ -78,5 +78,18 @@
   <%- end -%>
 </ul>
 
+<div id="hyperlocal_sites_google_cse_block" class="search_block">
+  <p>
+    <strong>Search hyperlocal sites</strong>
+      <form id="cref_iframe" action="/hyperlocal_sites/custom_search_results">
+      <input type="hidden" name="cref" value="http://openlylocal.com/hyperlocal_sites/custom_search.xml" />
+      <input type="hidden" name="cof" value="FORID:11" />
+      <input type="text" name="q" size="16" id="google_cse_input"/>
+      <input type="submit" name="sa" value="Search" />
+    </form>
+    <script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cref_iframe"></script>
+  </p>
+</div>
+
 
 <%= render :partial => '/shared/api_info' %>
