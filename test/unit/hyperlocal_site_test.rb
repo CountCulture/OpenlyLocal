@@ -93,6 +93,20 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       @hyperlocal_site.title = "some title-with/stuff"
       assert_equal "#{@hyperlocal_site.id}-some-title-with-stuff", @hyperlocal_site.to_param
     end
+    
+    context "when returning google_cse_url" do
+      should "return url with slash and asterix added if no slash on the end" do
+        assert_equal "http://foo.com/*", HyperlocalSite.new(:url => "http://foo.com").google_cse_url
+        assert_equal "http://foo.com/bar/*", HyperlocalSite.new(:url => "http://foo.com/bar").google_cse_url
+        assert_equal "http://foo.com/bar/baz/*", HyperlocalSite.new(:url => "http://foo.com/bar/baz").google_cse_url
+      end
+      
+      should "return url with asterix added if slash already on the end" do
+        assert_equal "http://foo.com/*", HyperlocalSite.new(:url => "http://foo.com/").google_cse_url
+        assert_equal "http://foo.com/bar/*", HyperlocalSite.new(:url => "http://foo.com/bar/").google_cse_url
+        assert_equal "http://foo.com/bar/baz/*", HyperlocalSite.new(:url => "http://foo.com/bar/baz/").google_cse_url
+      end
+    end
 
     context "when approved" do
       setup do

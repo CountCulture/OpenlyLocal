@@ -10,7 +10,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
 
-  map.resources :committees, :documents, :hyperlocal_groups, :hyperlocal_sites, :meetings, :members, :datapoints, :dataset_topic_groupings, :parsers, :portal_systems, :police_forces, :police_authorities, :services, :wards
+  map.resources :committees, :documents, :hyperlocal_groups, :meetings, :members, :datapoints, :dataset_topic_groupings, :parsers, :portal_systems, :police_forces, :police_authorities, :services, :wards
 
   map.resources :councils do |councils|
     councils.resources :datasets, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
@@ -25,6 +25,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :wards do |wards|
     wards.resources :dataset_topics, :path_prefix => '/wards/:area_id', :requirements => {:area_type => "Ward"}, :only => [:show]
   end
+  
+  map.resources :hyperlocal_sites, :collection => { :custom_search => :get }
 
   map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}, :only => [:show]}) do |restype|
     restype.resources :councils

@@ -386,4 +386,38 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     should_redirect_to ( "the hyperlocal_sites index page") { hyperlocal_sites_url }
     should_set_the_flash_to /Successfully destroyed/
   end
+  
+  # custom_search tests
+  context "on GET to :custom search" do |variable|
+    should "generate routing for custom search" do
+      assert_routing("hyperlocal_sites/custom_search", {:controller => "hyperlocal_sites", :action => "custom_search"})
+    end
+    
+    context "in general should" do
+      setup do
+        get :custom_search
+      end
+      
+      should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site] }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/xml'
+      
+      should "generate custom search title" do
+        assert_xml_select 'CustomSearchEngine>Title' do
+          assert_select "Title", /OpenlyLocal UK Hyperlocal/
+        end
+      end
+      
+      should "generate custom search info" do
+        assert_xml_select "Annotations>Annotation", 2 do
+          puts css_select( "Annotation")
+          assert_select "Annotation[about='#{@hyperlocal_site.url}/*']"
+          assert_select "Label[name='openlylocal_cse_hyperlocal_sites']"
+        end
+      end
+    end
+    
+  end  
+  
 end

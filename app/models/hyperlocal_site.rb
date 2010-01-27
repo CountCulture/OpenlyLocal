@@ -19,6 +19,10 @@ class HyperlocalSite < ActiveRecord::Base
     id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
   end
   
+  def google_cse_url
+    url =~ /\/$/ ? "#{url}*" : "#{url}/*"
+  end
+  
   private
   def tweet_about_it
     if approved && !approved_was
