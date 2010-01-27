@@ -16,7 +16,7 @@ xml.comment! "Specification file for Google Custom Search Engine for UK Hyperloc
     end
     xml.Annotations do
       @hyperlocal_sites.each do |site|
-        xml.Annotation(:about => "#{site.url}/*") do
+        xml.Annotation(:about => site.google_cse_url) do
           xml.Label(:name => @cse_label)
         end
       end

@@ -13,10 +13,11 @@ class HyperlocalSitesController < ApplicationController
       @title = "UK Hyperlocal Sites"
       @hyperlocal_sites = HyperlocalSite.approved
     end
-    
+    @cse_label = "openlylocal_cse_hyperlocal_sites"
+    xml_render_params = params[:custom_search] ? { :template => "hyperlocal_sites/custom_search.xml.builder" } : { :xml => @hyperlocal_sites.to_xml(:except => [:email, :approved]) }
     respond_to do |format|
       format.html
-      format.xml { render :xml => @hyperlocal_sites.to_xml(:except => [:email, :approved]) }
+      format.xml { render xml_render_params }
       format.json { render :json => @hyperlocal_sites.to_json(:except => [:email, :approved]) }
       format.rss { render :layout => false }
     end
@@ -56,12 +57,6 @@ class HyperlocalSitesController < ApplicationController
     @hyperlocal_site.destroy
     flash[:notice] = "Successfully destroyed HyperLocal site"
     redirect_to hyperlocal_sites_url
-  end
-  
-  def custom_search
-    @hyperlocal_sites = HyperlocalSite.approved
-    @cse_label = "openlylocal_cse_hyperlocal_sites"
-    render :template => "hyperlocal_sites/custom_search.xml.builder", :layout => false
   end
   
   private
