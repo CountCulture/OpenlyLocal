@@ -1,6 +1,6 @@
 class HyperlocalSitesController < ApplicationController
-  before_filter :authenticate, :except => [:index, :show, :new, :create, :custom_search, :custom_search_results]
-  before_filter :find_hyperlocal_site, :except => [:index, :new, :create, :custom_search, :custom_search_results]
+  before_filter :authenticate, :except => [:index, :show, :new, :create, :custom_search_results]
+  before_filter :find_hyperlocal_site, :except => [:index, :new, :create, :custom_search_results]
   before_filter :enable_google_maps, :except => [:update, :create, :destroy]
   before_filter :show_rss_link, :only => :index
   
@@ -13,7 +13,7 @@ class HyperlocalSitesController < ApplicationController
       @title = "UK Hyperlocal Sites"
       @hyperlocal_sites = HyperlocalSite.approved
     end
-    @cse_label = "openlylocal_cse_hyperlocal_sites"
+    @cse_label = "openlylocal_cse_hyperlocal_" + params[:location].to_s.gsub(/\W/,'').downcase
     xml_render_params = params[:custom_search] ? { :template => "hyperlocal_sites/custom_search.xml.builder" } : { :xml => @hyperlocal_sites.to_xml(:except => [:email, :approved]) }
     respond_to do |format|
       format.html
@@ -57,6 +57,10 @@ class HyperlocalSitesController < ApplicationController
     @hyperlocal_site.destroy
     flash[:notice] = "Successfully destroyed HyperLocal site"
     redirect_to hyperlocal_sites_url
+  end
+  
+  def custom_search_results
+    @title = "UK Hyperlocal Sites Search Results"
   end
   
   private

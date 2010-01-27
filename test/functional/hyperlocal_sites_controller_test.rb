@@ -161,7 +161,38 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should "generate custom search info" do
         assert_xml_select "Annotations>Annotation", 2 do
           assert_select "Annotation[about='#{@hyperlocal_site.url}/*']"
-          assert_select "Label[name='openlylocal_cse_hyperlocal_sites']"
+          assert_select "Label[name='openlylocal_cse_hyperlocal_']"
+        end
+      end
+    end
+    
+    context "with request with location" do
+      setup do
+        @hyperlocal_site.stubs(:distance).returns(5)
+        @another_hyperlocal_site.stubs(:distance).returns(9.2)
+        @sites = [@hyperlocal_site, @another_hyperlocal_site]
+        Geokit::LatLng.stubs(:normalize).returns(Geokit::LatLng.new)
+        HyperlocalSite.stubs(:find).returns(@sites)
+
+        get :index, :custom_search => true, :format => "xml", :location => '100 Spear st, San Francisco, CA'
+      end
+      
+      should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site] }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/xml'
+      
+      should "generate custom search title" do
+        assert_xml_select 'CustomSearchEngine>Title' do
+          assert_select "Title", /100 Spear st, San Francisco, CA/
+        end
+      end
+      
+      should "generate custom search info" do
+        assert_xml_select "Annotations>Annotation", 2 do
+          assert_select "Annotation[about='#{@hyperlocal_site.url}/*']"
+          puts css_select("Label")
+          assert_select "Label[name='openlylocal_cse_hyperlocal_100spearstsanfranciscoca']"
         end
       end
     end
@@ -179,6 +210,9 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         
         should_respond_with :success
         should_render_with_layout
+        should "have title " do
+          assert_select "title", /Hyperlocal Sites Search Results/i
+        end
         should "show div for results" do
           assert_select "div#cse-search-results"
         end  
