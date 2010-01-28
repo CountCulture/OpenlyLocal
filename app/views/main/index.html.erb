@@ -1,50 +1,60 @@
-<div class='intro'>
-  <div id="site_news">
-    <h2><%= link_to "Openly Local news", "http://countculture.wordpress.com" %> <%= link_to image_tag("feed_icon.gif", :alt => "RSS feed"), BlogFeedUrl %></h2>
-    <%- @news_items.each do |news_item| -%>
-      <div class="news_item">
-        <h4><%= link_to news_item.title, news_item.url %></h4>
-        <div class="info">
-          <%= truncate(news_item.summary, :length => 150) %>
-        </div>
+<div id="site_news">
+  <h2><%= link_to "Openly Local news", "http://countculture.wordpress.com" %> <%= link_to image_tag("feed_icon.gif", :alt => "RSS feed"), BlogFeedUrl %></h2>
+  <%- @news_items.each do |news_item| -%>
+    <div class="news_item">
+      <h4><%= link_to news_item.title, news_item.url %></h4>
+      <div class="info">
+        <%= truncate(news_item.summary, :length => 150) %>
       </div>
-    <%- end -%>
-  </div>
+    </div>
+  <%- end -%>
+</div>
+<div class='intro'>
   <p><strong>Openly Local</strong> is a new project to develop an open and unified way of accessing Local Government information.</p>
   <p>So far we have opened up data for over 90 local authorities, and more are being added every week, with more information being opened up too.</p>
   <p>
     <strong>We currently have information on:</strong>
   </p>
-  <ul>
-    <li><%= link_to "#{Council.parsed({}).all.size} councils", councils_path %></li>
-    <li><%= Member.count %> councillors</li>
-    <li><%= Committee.count %> committees</li>
-    <li><%= Meeting.count %> committee meetings</li>
-  </ul>
-  <p>The open-source code behind the site is visible for anyone to see at <%= link_to 'Github', 'http://github.com/CountCulture/twfy_local_parser', :class => "external" %></p>
-  <p>Most of the data is accessible as <%= link_to "XML", 'http://en.wikipedia.org/wiki/XML', :class => 'external' %> or <%= link_to "json", 'http://en.wikipedia.org/wiki/JSON', :class => 'external' %> data through a <%= link_to "simple API", :controller => "info", :action => "api" %> (basically add .xml or .json to the main part of the URL)</p>
+  <div id="council_data_count" class="item_grouping">
+    <ul>
+      <li><%= link_to "#{Council.parsed({}).all.size} councils", councils_path %></li>
+      <li><%= number_with_delimiter(Member.count) %> councillors</li>
+      <li><%= number_with_delimiter(Committee.count) %> committees</li>
+      <li><%= number_with_delimiter(Meeting.count) %> committee meetings</li>
+    </ul>
+  </div>
+  <div id="other_data_count" class="item_grouping">
+    <ul>
+      <li><%= link_to "#{HyperlocalSite.approved.size} hyperlocal sites", hyperlocal_sites_path %></li>
+      <li><%= number_with_delimiter(Document.count) %> documents</li>
+      <li>Over <%= number_with_delimiter(Datapoint.count) %> pieces of data</li>
+    </ul>
+  </div>
+  <p class="clear-left">Most of the data is accessible as <%= link_to "XML", 'http://en.wikipedia.org/wiki/XML', :class => 'external' %> or <%= link_to "json", 'http://en.wikipedia.org/wiki/JSON', :class => 'external' %> data through a <%= link_to "simple API", :controller => "info", :action => "api" %> (basically add .xml or .json to the main part of the URL). There is also a <a href="http://countculture.wordpress.com/2009/10/09/openlylocal-info-on-your-website-part-1-google-gadgets/" title="OpenlyLocal info on your website, Part 1: Google Gadgets &laquo;  countculture">Google Gadget</a> and an <a href="http://countculture.wordpress.com/2009/11/20/openlylocal-info-on-your-hyperlocal-website-part-2-ning-app/" title="OpenlyLocal info on your hyperlocal website, Part 2: Ning app &laquo;  countculture">app for Hyperlocal sites using Ning</a></p>
 </div>
 
-<div id="latest_councils"  class="item_grouping">
-  <h3>Most recently updated councils</h3>
-  <%= list_all @councils %>
-  <p class="more_info"><%= link_to "See all councils", councils_path %></p>
-</div>
+<div id="relationships">
+  <div id="latest_councils" class="item_grouping">
+    <h3>Most recently updated councils</h3>
+    <%= list_all @councils %>
+    <p class="more_info"><%= link_to "See all councils", councils_path %></p>
+  </div>
 
-<div id="latest_councillors"  class="item_grouping">
-  <h3>Latest councillors</h3>
-  <ul>
-    <% for councillor in @latest_councillors %>
-      <li><strong><%= basic_link_for councillor.council %></strong> <%= extended_link_for councillor %></li>
-    <% end %>
-  </ul>  
-</div>
+  <div id="latest_councillors" class="item_grouping">
+    <h3>Latest councillors</h3>
+    <ul>
+      <% for councillor in @latest_councillors %>
+        <li><strong><%= basic_link_for councillor.council %></strong> <%= extended_link_for councillor %></li>
+      <% end %>
+    </ul>  
+  </div>
 
-<div id="forthcoming_meetings"  class="item_grouping">
-  <h3>Forthcoming meetings</h3>
-  <ul>
-    <% for meeting in @forthcoming_meetings %>
-      <li><strong><%= basic_link_for meeting.council %></strong> <%= extended_link_for meeting %></li>
-    <% end %>
-  </ul>  
+  <div id="forthcoming_meetings" class="item_grouping">
+    <h3>Forthcoming meetings</h3>
+    <ul>
+      <% for meeting in @forthcoming_meetings %>
+        <li><strong><%= basic_link_for meeting.council %></strong> <%= extended_link_for meeting %></li>
+      <% end %>
+    </ul>  
+  </div>
 </div>

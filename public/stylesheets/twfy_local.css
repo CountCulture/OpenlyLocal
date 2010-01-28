@@ -163,6 +163,10 @@ body {
 	clear:both;
 	text-align:right;}
 
+/*Front page formatting*/
+body.main .intro {
+	font-size:120%;
+}
 /*Council document formatting*/
 .document_body {
 	border: 1px solid #ddd;
@@ -363,30 +367,7 @@ div#dataset_data th {
 	min-width:7em;
 	vertical-align:bottom;}
 div#dataset_data table {
-	width:auto;} /*override blueprint*/
-/*.datapoint {
-	float:left;
-	margin-right:20px;
-	margin-bottom: 1em;
-}*/
-/*.datapoint a.more_info {
-	display:block;
-	float:right;
-}*/
-/*.datapoint .data {
-	clear:both;
-	overflow:auto;
-	width:100%;
-}
-.datapoint .data .description {
-	float:left;
-	width: 70%;
-}
-.datapoint .data .value {
-	float:right;
-	font-weight:bold;
-}
-*/
+	width:auto;}
 
 /*Ness Statistics formatting*/
 #grouped_datapoints {
