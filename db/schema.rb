@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100122185010) do
+ActiveRecord::Schema.define(:version => 20100131134600) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -75,13 +75,23 @@ ActiveRecord::Schema.define(:version => 20100122185010) do
     t.column "lng", :float
     t.column "cipfa_code", :string
     t.column "region", :string
-    t.column "signed_up_for_1010", :boolean
+    t.column "signed_up_for_1010", :boolean, :default => false
     t.column "pension_fund_id", :integer
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
   add_index "councils", ["portal_system_id"], :name => "index_councils_on_portal_system_id"
   add_index "councils", ["parent_authority_id"], :name => "index_councils_on_parent_authority_id"
+
+  create_table "data_periods", :force => true do |t|
+    t.column "start_date", :date
+    t.column "end_date", :date
+  end
+
+  create_table "data_periods_dataset_families", :id => false, :force => true do |t|
+    t.column "data_period_id", :integer
+    t.column "dataset_family_id", :integer
+  end
 
   create_table "datapoints", :force => true do |t|
     t.column "value", :float
@@ -90,17 +100,30 @@ ActiveRecord::Schema.define(:version => 20100122185010) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "area_type", :string
-    t.column "dummy", :float
+    t.column "data_period_id", :integer
   end
 
   add_index "datapoints", ["dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
   add_index "datapoints", ["area_id", "area_type"], :name => "index_datapoints_on_area_id_and_area_type"
 
-  create_table "dataset_families", :force => true do |t|
-    t.column "title", :string
+  create_table "datapoints_copy", :force => true do |t|
+    t.column "value", :float
+    t.column "dataset_topic_id", :integer
+    t.column "area_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "area_type", :string
+    t.column "data_period_id", :integer
+  end
+
+  add_index "datapoints_copy", ["dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
+  add_index "datapoints_copy", ["area_id", "area_type"], :name => "index_datapoints_on_area_id_and_area_type"
+
+  create_table "dataset_families", :force => true do |t|
+    t.column "title", :string
     t.column "ons_uid", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
     t.column "source_type", :string
     t.column "dataset_id", :integer
     t.column "calculation_method", :string
@@ -212,9 +235,10 @@ ActiveRecord::Schema.define(:version => 20100122185010) do
     t.column "platform", :string
     t.column "description", :text
     t.column "area_covered", :string
-    t.column "country", :string
     t.column "council_id", :integer
+    t.column "country", :string
     t.column "approved", :boolean, :default => false
+    t.column "party_affiliation", :string
   end
 
   add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"
@@ -244,7 +268,6 @@ ActiveRecord::Schema.define(:version => 20100122185010) do
 
   add_index "meetings", ["council_id"], :name => "index_meetings_on_council_id"
   add_index "meetings", ["committee_id"], :name => "index_meetings_on_committee_id"
-  add_index "meetings", ["date_held"], :name => "index_meetings_on_date_held"
 
   create_table "members", :force => true do |t|
     t.column "first_name", :string

@@ -22,6 +22,10 @@
   
 </script>
 <p class="breadcrumbs"><%= link_to "All HyperLocal Sites", hyperlocal_sites_path %></p>
+<div id="general_location">
+  <%= content_tag(:span, "#{@hyperlocal_site.region}, ", :class => "region") if @hyperlocal_site.region %>
+  <%= content_tag(:span, @hyperlocal_site.country, :class => "country") %>
+</div>
 <h1><%= @hyperlocal_site.title %></h1>
 <div id="hyperlocal_site_map" class="map_outer">
   <div id="map_canvas"></div>
@@ -36,10 +40,9 @@
     <%= link_to("News feed", @hyperlocal_site.feed_url, :class => "feed") unless @hyperlocal_site.feed_url.blank? %>
     <%= link_to("Twitter", "http://twitter.com/#{@hyperlocal_site.twitter_account}", :class => "twitter feed") unless @hyperlocal_site.twitter_account.blank? %>
   <%- end -%>
-  <%= attribute_tag :general_area_covered, @hyperlocal_site.area_covered %>
+  <%= attribute_tag :area_covered, "#{@hyperlocal_site.area_covered} (within #{number_with_precision(@hyperlocal_site.distance_covered, :precision => 1)} miles of lat #{number_with_precision(@hyperlocal_site.lat, :precision => 2)}, long #{number_with_precision(@hyperlocal_site.lng, :precision => 2)})" %>
   <%= attribute_tag :group, link_for(@hyperlocal_site.hyperlocal_group) %>
   <%= attribute_tag :platform, @hyperlocal_site.platform %>
-  <%= attribute_tag :location, "Lat: #{@hyperlocal_site.lat}, Long: #{@hyperlocal_site.lng}" %>
   <%= attribute_tag :local_authority_area, basic_link_for(@hyperlocal_site.council) %>
 </dl>
 

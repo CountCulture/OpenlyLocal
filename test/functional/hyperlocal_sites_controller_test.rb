@@ -257,6 +257,27 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
     end
     
+    context "with basic request and assoc local authority" do
+      setup do
+        @council = Factory(:council, :region => "West Midlands", :country => "Scotland")
+        @hyperlocal_site.update_attribute(:council, @council)
+        get :show, :id => @hyperlocal_site.id
+      end
+
+      should_assign_to :hyperlocal_site
+      should_respond_with :success
+      should_render_template :show
+
+      should "show council region" do
+        assert_select ".region", /West Midlands/
+      end
+
+      should "show hyperlocal_site country" do
+        assert_select ".country", /England/
+      end
+
+    end
+    
     context "with unapproved site" do
       setup do
         get :show, :id => @unapproved_hyperlocal_site.id
@@ -467,7 +488,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     should "destroy hyperlocal_site" do
       assert_nil HyperlocalSite.find_by_id(@hyperlocal_site.id)
     end
-    should_redirect_to ( "the hyperlocal_sites index page") { hyperlocal_sites_url }
+    should_redirect_to ( "the admin page") { admin_url }
     should_set_the_flash_to /Successfully destroyed/
   end
     

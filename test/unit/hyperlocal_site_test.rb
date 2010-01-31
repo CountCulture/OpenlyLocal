@@ -29,6 +29,7 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_have_db_column :area_covered
     should_have_db_column :country
     should_have_db_column :approved
+    should_have_db_column :party_affiliation
     
     should "act as mappable" do
       assert HyperlocalSite.respond_to?(:find_closest)
@@ -107,7 +108,7 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
         assert_equal "http://foo.com/bar/baz/*", HyperlocalSite.new(:url => "http://foo.com/bar/baz/").google_cse_url
       end
     end
-
+    
     context "when approved" do
       setup do
         @dummy_tweeter = Tweeter.new('foo')

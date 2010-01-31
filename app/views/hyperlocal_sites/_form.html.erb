@@ -47,6 +47,10 @@
     <%= f.label :platform %>
     <%= f.select :platform, HyperlocalSite::PossiblePlatforms, { :include_blank => true } %>
   </p>
+  <p>
+    <%= f.label :party_affiliation, "Political Party affiliation<br /><em>Note: See below for extra restrictions for party-affiliated sites</em>" %>
+    <%= f.text_field :party_affiliation %>
+  </p>
   
   <fieldset id="hyperlocal_sites_location">
     <legend>Area covered by this site</legend>
