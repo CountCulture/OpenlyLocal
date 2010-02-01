@@ -78,6 +78,29 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         assert assigns(:enable_google_maps)
       end
     end
+    
+    context "with request for location that can't be geocoded" do
+      setup do
+        
+        @sites = [@hyperlocal_site, @another_hyperlocal_site]
+        Geokit::LatLng.stubs(:normalize).raises(Geokit::Geocoders::GeocodeError)
+        
+        get :index, :location => 'foo'
+      end
+      
+      should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site] }
+      should_respond_with :success
+      should_render_template :index
+
+      should 'show location in title' do
+        assert_select "title", /foo/i
+      end
+      
+      should 'show message' do
+        assert_select ".warning", /couldn't find location/i
+      end
+
+    end
 
     context "with xml request" do
       setup do

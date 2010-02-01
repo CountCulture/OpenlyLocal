@@ -7,17 +7,24 @@ class HyperlocalSitesController < ApplicationController
   def index
     unless params[:location].blank?
       @title = "UK Hyperlocal Sites nearest to #{params[:location]}"
-      @location = Geokit::LatLng.normalize(params[:location])
-      @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => @location, :order => "distance", :limit => 10)
+      begin
+        @location = Geokit::LatLng.normalize(params[:location])
+        @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => @location, :order => "distance", :limit => 10)
+      rescue Geokit::Geocoders::GeocodeError => e
+        @message = "Sorry, couldn't find location: #{params[:location]}"
+        @hyperlocal_sites = HyperlocalSite.approved
+      end
     else
       @title = "UK Hyperlocal Sites"
       @hyperlocal_sites = HyperlocalSite.approved
     end
     @cse_label = "openlylocal_cse_hyperlocal_" + params[:location].to_s.gsub(/\W/,'').downcase
-    xml_render_params = params[:custom_search] ? { :template => "hyperlocal_sites/custom_search.xml.builder" } : { :xml => @hyperlocal_sites.to_xml(:except => [:email, :approved]) }
     respond_to do |format|
       format.html
-      format.xml { render xml_render_params }
+      format.xml do
+        xml_render_params = params[:custom_search] ? { :template => "hyperlocal_sites/custom_search.xml.builder" } : { :xml => @hyperlocal_sites.to_xml(:except => [:email, :approved]) }
+        render xml_render_params
+      end
       format.json { render :json => @hyperlocal_sites.to_json(:except => [:email, :approved]) }
       format.rss { render :layout => false }
     end
