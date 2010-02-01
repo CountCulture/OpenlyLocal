@@ -35,6 +35,15 @@ class InfoControllerTest < ActionController::TestCase
     should_render_without_layout
   end
   
+  context "on GET to :licence_info" do
+    setup do
+      get :licence_info
+    end
+    should_respond_with :success
+    should_render_template :licence_info
+    should_render_with_layout
+  end
+  
   context "on GET to :api" do
     setup do
       Factory(:council)
