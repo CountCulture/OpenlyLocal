@@ -1,7 +1,9 @@
 class CouncilsController < ApplicationController
   before_filter :authenticate, :except => [:index, :show]
   before_filter :linked_data_available, :only => :show
+  before_filter :find_council, :except => [:index, :new, :create]
   caches_action :index, :show
+  
   def index
     @councils = Council.find_by_params(params.except(:controller, :action, :format))
     @title = params[:include_unparsed] ? "All UK Local Authorities/Councils" : "UK Local Authorities/Councils With Opened Up Data"
@@ -16,7 +18,6 @@ class CouncilsController < ApplicationController
   end
   
   def show
-    @council = Council.find(params[:id])
     @members = @council.members.current
     @committees = @council.active_committees
     @meetings = @council.meetings.forthcoming.all(:limit => 11)
@@ -46,16 +47,19 @@ class CouncilsController < ApplicationController
   end
   
   def edit
-    @council = Council.find(params[:id])
   end
   
   def update
-    @council = Council.find(params[:id])
     @council.update_attributes!(params[:council])
     flash[:notice] = "Successfully updated council"
     redirect_to council_path(@council)
   rescue
     render :action => "edit"
+  end
+  
+  private
+  def find_council
+    @council = params[:id] ? Council.find(params[:id]) : Council.find_by_snac_id(params[:snac_id])
   end
   
 end
