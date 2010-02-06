@@ -1,5 +1,5 @@
 class MeetingsController < ApplicationController
-  before_filter :linked_data_available
+  before_filter :linked_data_available, :only => [:show]
   
   def index
     @council = Council.find(params[:council_id]) 

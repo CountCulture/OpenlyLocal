@@ -14,6 +14,18 @@ class MeetingsControllerTest < ActionController::TestCase
     @committee.members << @member
   end
   
+  # routing tests
+  should "route with council to index" do
+    assert_routing("councils/42/meetings", {:controller => "meetings", :action => "index", :council_id => "42"})
+    assert_routing("councils/42/meetings.xml", {:controller => "meetings", :action => "index", :council_id => "42", :format => "xml"})
+    assert_recognizes( {:controller => "meetings", :action => "index"}, "meetings") # check existing route still works
+    assert_recognizes( {:controller => "meetings", :action => "index", :format => "xml"}, "meetings.xml") # check existing route still works
+  end
+  
+  should "route to show" do
+    assert_routing("meetings/42", {:controller => "meetings", :action => "show", :id => "42"})
+  end
+
   # index tests
   context "on GET to :index for council" do
     

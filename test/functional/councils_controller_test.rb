@@ -242,7 +242,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "show link to meeting calendar" do
-        assert_select "a.calendar[href*='meetings.ics?council_id=#{@council.id}']"
+        assert_select "a.calendar[href*='councils/#{@council.id}/meetings.ics']"
       end
       
       should "not show link to police url" do

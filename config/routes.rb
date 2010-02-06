@@ -8,19 +8,23 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
   
+  # map.connect 'meetings.:format', :controller => "meetings", :action => "index"
+  # map.connect 'meetings', :controller => "meetings", :action => "index"
+  
   map.connect 'hyperlocal_sites/custom_search.xml', :controller => "hyperlocal_sites", :action => "index", :custom_search => true, :format => "xml"
   map.resources :hyperlocal_sites, :collection => { :custom_search_results => :get }
   
-  map.resources :committees, :documents, :hyperlocal_groups, :hyperlocal_sites, :meetings, :members, :datapoints, :dataset_topic_groupings, :parsers, :pension_funds, :portal_systems, :police_forces, :police_authorities, :services, :wards
+  map.resources :committees, :documents, :hyperlocal_groups, :hyperlocal_sites, :members, :datapoints, :dataset_topic_groupings, :parsers, :pension_funds, :portal_systems, :police_forces, :police_authorities, :services, :wards
 
   map.resources :councils do |councils|
     councils.resources :datasets, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
     councils.resources :dataset_families, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
     councils.resources :dataset_topics, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
+    councils.resources :meetings, :shallow => true
   end
   
   # Important: these need to go after nested resources for caching to work
-  map.resources :datasets, :dataset_families
+  map.resources :datasets, :dataset_families, :meetings
   map.resources :dataset_topics, :except => [:new, :destroy, :index], :member => { :populate => :post }
   
   
