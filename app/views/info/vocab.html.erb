@@ -82,6 +82,17 @@
     			<p>A Police Authority is the <a href="http://xmlns.com/foaf/0.1/Organization" rel="rdfs:subClassOf">organisation</a> that governs a Police of the United Kingdom (excluding Scotland).</p>
     		</div>
     		
+    		<div typeof="rdfs:Class" id="Election" about="#Election">
+    			<h3><span property="rdfs:label">Election</span> (openlylocal:Election)</h3>
+    			<p property="rdfs:comment">Represents the class of Local Government Elections.</p>
+    			<p>An Election is an event that is held to democratically choose winners from possible candidates. An election may be for a particular electoral area, an elected position (such as Mayor), or, less frequently, as a non-area member of a body (such as the Greater London Authority)</p>
+    		</div>
+    		<div typeof="rdfs:Class" id="Candidate" about="#Candidate">
+    			<h3><span property="rdfs:label">Candidate</span> (openlylocal:Candidate)</h3>
+    			<p property="rdfs:comment">Represents the class of Candidates.</p>
+    			<p>A Candidate is a person who stands for election to a particular electoral area, a position (such as Mayor), or, less frequently, as a non-area member of a body (such as the Greater London Authority)</p>
+    		</div>
+    		
 		
     		<h2>Properties</h2>
 
@@ -140,6 +151,18 @@
     			<p property="rdfs:comment">Links PoliceAuthorities and Police Forces. A <a rel="rdfs:domain" href="#PoliceAuthority">PoliceAuthority</a> is considered to be governing body for a <a rel="rdfs:domain" href="http://dbpedia.org/resource/Category:Police_forces_of_the_United_Kingdom">Police Force</a></p>
     		</div>
     		
+    		<div typeof="rdf:Property" id="votes" about="#votes">
+    			<h3><span property="rdfs:label">votes</span> (openlylocal:votes)</h3>
+    			<p><span property="rdfs:comment">Links a candidate to the number of votes cast for that candidate in an election.</span>
+    			<span>The votes are an <a rel="rdfs:range" href="http://www.w3.org/2001/XMLSchema#integer">integer</a>.</span></p>
+    		</div>
+    		
+    		<div typeof="rdf:Property" id="electorate" about="#electorate">
+    			<h3><span property="rdfs:label">electorate</span> (openlylocal:electorate)</h3>
+    			<p><span property="rdfs:comment">Links an election to the total number of possible votes cast.</span>
+    			<span>The electorate is an <a rel="rdfs:range" href="http://www.w3.org/2001/XMLSchema#integer">integer</a>.</span></p>
+    		</div>
+		
       </div>
       <%= render :partial => 'shared/footer' %>
 		</div>
