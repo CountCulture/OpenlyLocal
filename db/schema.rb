@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100206183131) do
+ActiveRecord::Schema.define(:version => 20100207142708) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(:version => 20100206183131) do
     t.column "votes", :boolean
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "address", :text
   end
 
   create_table "committees", :force => true do |t|
@@ -217,6 +218,7 @@ ActiveRecord::Schema.define(:version => 20100206183131) do
   create_table "elections", :force => true do |t|
     t.column "date", :date
     t.column "ward_id", :integer
+    t.column "electorate", :integer
   end
 
   create_table "feed_entries", :force => true do |t|
