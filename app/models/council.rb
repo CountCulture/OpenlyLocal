@@ -35,8 +35,10 @@ class Council < ActiveRecord::Base
   belongs_to :pension_fund
   validates_presence_of :name
   validates_uniqueness_of :name
-  named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? {} : {:conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id"} }
-  default_scope :order => "name"
+  named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? 
+                      { :select => 'councils.*, COUNT(members.id) AS member_count', :joins =>'LEFT JOIN members ON members.council_id = councils.id', :group => "councils.id" } : 
+                      {:joins => :members, :group => "councils.id", :select => 'councils.*, COUNT(members.id) AS member_count'} }
+  default_scope :order => 'name'
   alias_attribute :title, :name
   alias_method :old_to_xml, :to_xml
   
@@ -92,8 +94,11 @@ class Council < ActiveRecord::Base
     "http://#{DefaultDomain}/councils/#{to_param}"
   end
   
+  # A council is considered to be parsed if it has members. Note it is very inefficient to check members 
+  # for each council, both on SQL queries and on member (including all members is not a good idea), so 
+  # when retruning list of councils we also return member_count attribute and we use this if poss
   def parsed?
-    !members.blank?
+    respond_to?(:member_count) ? member_count.to_i > 0 : !members.blank?
   end
   
   def police_force_url

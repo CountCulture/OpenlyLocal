@@ -96,20 +96,6 @@ class CouncilsControllerTest < ActionController::TestCase
       end
     end
     
-    context "with snac_id" do
-      setup do
-        @member = Factory(:member, :council => @another_council) # make another_council parsed
-        get :index, :snac_id => "snac_1"
-      end
-  
-      should_assign_to(:councils) { [@council] }
-      should_respond_with :success
-      should_render_template :index
-      should "have appropriate title" do
-        assert_select "title", /UK Local Authorities\/Councils With Opened Up Data With SNAC id \'snac_1\'/
-      end
-    end
-    
     context "with xml requested" do
       context "and basic request" do
         setup do

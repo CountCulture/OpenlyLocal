@@ -235,6 +235,19 @@ body.councils h1 {
 	float:left;}
 body.councils .extra_info {
 	max-width:620px;}
+
+body.councils .council {
+border-bottom:1px solid #ddd;
+margin-bottom:6px;
+}
+body.councils .council h4{
+margin-bottom:3px;
+}
+body.councils .council .area {
+	text-transform: uppercase;
+	color: #8a1f11;
+	font-size: 0.85em;
+}
 #data {
 	overflow:auto;
 	}

@@ -51,22 +51,28 @@ class CouncilTest < ActiveSupport::TestCase
     end
 
     context "parsed named_scope" do
-      should "pass on parsed conditions" do
-        expected_options = { :conditions => "members.council_id = councils.id", :joins => "INNER JOIN members", :group => "councils.id" }
-        assert_equal expected_options, Council.parsed({}).proxy_options
-      end
-
-      should "return councils with members as parsed" do
+      setup do
         @another_council = Factory(:another_council)
         @member = Factory(:member, :council => @another_council)
         @another_member = Factory(:old_member, :council => @another_council) # add two members to @another council, @council has none
+      end
+      
+      should "return councils with members as parsed" do
         assert_equal [@another_council], Council.parsed({})
       end
 
       should "include unparsed councils with parsed if requested" do
-        @another_council = Factory(:another_council)
-        @member = Factory(:member, :council => @another_council)
         assert_equal [@another_council, @council], Council.parsed(:include_unparsed => true)
+      end
+      
+      should "return count of parsed council members as member_count attribute" do
+        parsed_council = Council.parsed.first
+        assert_equal "2", parsed_council.member_count
+      end
+      
+      should "return zero as member_count attribute for unparsed councils" do
+        unparsed_council = Council.parsed(:include_unparsed => true).last
+        assert_equal "0", unparsed_council.member_count
       end
     end
 
@@ -395,14 +401,33 @@ class CouncilTest < ActiveSupport::TestCase
         assert_nil @council.authority_type_help_url
       end
     end
+    
+    context "when returning parsed status" do
+      should "return true if it has members" do
+        Factory(:member, :council => @council)
+        assert @council.parsed?
+      end
 
-    should "be considered parsed if it has members" do
-      Factory(:member, :council => @council)
-      assert @council.parsed?
-    end
+      should "return false if it has no members" do
+        assert !@council.parsed?
+      end
+      
+      should "return true if it responds to member_count and member_count is greater than 0" do
+        @council.stubs(:member_count => "3")
+        assert @council.parsed?
+      end
 
-    should "be considered unparsed if it has no members" do
-      assert !@council.parsed?
+      should "return true if it responds to member_count and member_count is 0" do
+        @council.stubs(:member_count => "0")
+        assert !@council.parsed?
+      end
+
+      should "not try to count members if it responds to member_count" do
+        @council.stubs(:member_count)
+        @council.expects(:members).never
+        @council.parsed?
+      end
+
     end
 
     should "return parsed status as status" do
