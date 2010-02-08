@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100207142708) do
+ActiveRecord::Schema.define(:version => 20100208081655) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -219,6 +219,8 @@ ActiveRecord::Schema.define(:version => 20100207142708) do
     t.column "date", :date
     t.column "ward_id", :integer
     t.column "electorate", :integer
+    t.column "uid", :string
+    t.column "url", :string
   end
 
   create_table "feed_entries", :force => true do |t|
