@@ -11,4 +11,12 @@ module PartyBreakdown
     party_groups.collect{|k,v| [Party.new(k), v.size]}.sort{ |x,y| y[1] <=> x[1]  }
   end
   
+  def party_in_control
+    pb = party_breakdown
+    return if pb.blank?
+    total_seats = pb.sum{ |a| a[1] }
+    main_party_info = pb.max{ |a,b| a[1] <=> b[1] }
+    main_party_info[1] > total_seats/2 ? main_party_info.first : 'No Overall'
+  end
+  
 end

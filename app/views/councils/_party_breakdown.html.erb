@@ -1,4 +1,5 @@
   <div id="party_breakdown" class="graphed_datapoints">
+    <p class="party_in_control"><span class="key"style ="background-color:<%= @council.party_in_control.is_a?(Party) ? "##{@council.party_in_control.colour}" : 'none' %>"></span><%= @council.party_in_control %> Control</p>
     <%= party_breakdown_graph(@party_breakdown) %>
     <table>
       <caption>Party Breakdown</caption>

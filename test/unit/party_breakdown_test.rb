@@ -45,8 +45,33 @@ class PartyBreakdownTest < ActiveSupport::TestCase
         assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 2]], @test_model.party_breakdown
       end
     end
+    
+    context "when returning party_in_control" do
       
-  end  
+      should "get party breakdown" do
+        @test_model.expects(:party_breakdown).returns([])
+        @test_model.party_in_control
+      end
+      
+      should "return nil if no members" do
+        @test_model.stubs(:party_breakdown).returns([])
+        assert_nil @test_model.party_in_control
+      end
+      
+      should "return party with majority" do
+        party_breakdown = [[Party.new("Labour"), 6], [Party.new("Conservative"), 3],[Party.new("Independent"), 1]]
+        @test_model.stubs(:party_breakdown).returns(party_breakdown)
+        assert_equal Party.new("Labour"), @test_model.party_in_control
+      end
+      
+      should "return 'No Overall' string if no majority party" do
+        party_breakdown = [[Party.new("Labour"), 2], [Party.new("Conservative"), 3],[Party.new("Independent"), 1]]
+        @test_model.stubs(:party_breakdown).returns(party_breakdown)
+        assert_equal "No Overall", @test_model.party_in_control
+      end
+    end
+      
+  end
   private
   def party_breakdown_array(hsh={})
     hsh.collect do |k,v|

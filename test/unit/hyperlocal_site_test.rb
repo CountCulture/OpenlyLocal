@@ -83,6 +83,24 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should "return nil for region when no associated council" do
       assert_nil @hyperlocal_site.region
     end
+    
+    # context "when finding by parameters" do
+    #   should "find all approved hyperlocal_sites by default" do
+    #     # assert_equal [@another_council, @council], Council.find_by_params
+    #   end
+    # 
+    #   should "find unapproved hyperlocal_sites by if requested" do
+    #     # assert_equal [@another_council, @council, @tricky_council], Council.find_by_params(:include_unparsed => true)
+    #   end
+    # 
+    #   # should "find councils whose region matches given region" do
+    #   #   assert_equal [@another_council], Council.find_by_params(:region => "London")
+    #   # end
+    # 
+    #   should "find councils whose country matches given country" do
+    #     # assert_equal [@council], Council.find_by_params(:country => "Wales")
+    #   end
+    # end
   end
   
   context "A HyperlocalSite instance" do
