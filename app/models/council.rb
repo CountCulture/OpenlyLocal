@@ -43,9 +43,9 @@ class Council < ActiveRecord::Base
   alias_method :old_to_xml, :to_xml
   
   def self.find_by_params(params={})
-    snac_id = params.delete(:snac_id)
-    conditions = params[:term] ? ["councils.name LIKE ?", "%#{params.delete(:term)}%"] : nil
-    conditions ||= snac_id ? ["councils.snac_id = ?", snac_id] : nil
+    country, region, term = params.delete(:country), params.delete(:region), params.delete(:term)
+    conditions = term ? ["councils.name LIKE ?", "%#{term}%"] : nil
+    conditions ||= {:country => country, :region => region}.delete_if{ |k,v| v.blank?  }
     parsed(:include_unparsed => params.delete(:include_unparsed)).all({:conditions => conditions}.merge(params))
   end
   

@@ -3,7 +3,7 @@ require 'test_helper'
 class CouncilsControllerTest < ActionController::TestCase
 
   def setup
-    @council = Factory(:council, :authority_type => "London Borough", :snac_id => "snac_1")
+    @council = Factory(:council, :authority_type => "London Borough", :snac_id => "snac_1", :country => "England", :region => "London")
     @member = Factory(:member, :council => @council)
     @old_member = Factory(:member, :council => @council)
     @ex_member = Factory(:member, :council => @council, :date_left => 1.month.ago)
@@ -49,6 +49,23 @@ class CouncilsControllerTest < ActionController::TestCase
       should "have appropriate title" do
         assert_select "title", /UK Local Authorities\/Councils With Opened Up Data/
       end
+      
+      should "list parsed councils" do
+        assert_select "#councils .council", Council.parsed.all.size
+        assert_select "#council_#{@council.id}"
+      end
+      
+      should "link to filter by country" do
+        assert_select "#council_#{@council.id}" do
+          assert_select ".area a[href*='country=England']", /England/
+        end
+      end
+      
+      should "link to filter by region" do
+        assert_select "#council_#{@council.id}" do
+          assert_select ".area a[href*='region=London']", /London/
+        end
+      end
     end
     
     context "including unparsed councils" do
@@ -80,7 +97,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_template :index
       should "have appropriate title" do
-        assert_select "title", /UK Local Authorities\/Councils With Opened Up Data With Term \'Any\'/
+        assert_select "title", /UK Local Authorities\/Councils With Opened Up Data With \'Any\'/i
       end
     end
     
@@ -92,7 +109,33 @@ class CouncilsControllerTest < ActionController::TestCase
       should_assign_to(:councils) { [@another_council] }
       should_respond_with :success
       should "have appropriate title" do
-        assert_select "title", /UK Local Authorities\/Councils With Term \'Anot\'/
+        assert_select "title", /UK Local Authorities\/Councils With \'Anot\'/i
+      end
+    end
+    
+    context "with no results" do
+      setup do
+        get :index, :term => "foobar"
+      end
+  
+      should_respond_with :success
+      should "show message" do
+        assert_select "p.alert", /No councils found/i
+      end
+    end
+    
+    context "restricted to region" do
+      setup do
+        @member = Factory(:member, :council => @another_council) # make another_council parsed
+        @another_council.update_attribute(:region, "North-West")
+        get :index, :region => "North-West"
+      end
+  
+      should_assign_to(:councils) { [@another_council] }
+      should_respond_with :success
+      should_render_template :index
+      should "have appropriate title" do
+        assert_select "title", /UK Local Authorities\/Councils in North-West/i
       end
     end
     
@@ -623,7 +666,7 @@ class CouncilsControllerTest < ActionController::TestCase
          post :create, :council => @council_params.except(:name)
        end
      
-       should_not_change "Council.count"
+       should_not_change( "Number of councils" ){"Council.count"}
        should_assign_to :council
        should_render_template :new
        should_not_set_the_flash

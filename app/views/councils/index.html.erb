@@ -1,9 +1,13 @@
 <h1><%= @title %></h1>
 <%- content_tag(:p, :class => 'more_info') do  -%>
-  <%= params[:include_unparsed] ? link_to('show only parsed councils', :include_unparsed => nil) : link_to('include unparsed councils', :include_unparsed => true) %>
+  <%= params[:include_unparsed] ? link_to('back to all parsed councils', :include_unparsed => nil) : link_to('include unparsed councils', params.merge(:include_unparsed => true)) %>
 <%- end -%>
 <div id='councils'>
-  <%= render :partial => 'council', :collection => @councils %>
+  <%- if @councils.blank? -%>
+    <p class="alert">No councils found</p>
+  <%- else -%>
+    <%= render :partial => 'council', :collection => @councils %>
+  <%- end -%>
 </div>
 
 <%= render :partial => '/shared/api_info' %>

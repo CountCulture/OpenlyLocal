@@ -240,10 +240,13 @@ body.councils .council {
 border-bottom:1px solid #ddd;
 margin-bottom:6px;
 }
-body.councils .council h4{
+body.councils .council h4 {
 margin-bottom:3px;
 }
-body.councils .council .area {
+body.councils .council h4 a.parsed {
+font-weight:bold;
+}
+body.councils .area a {
 	text-transform: uppercase;
 	color: #8a1f11;
 	font-size: 0.85em;

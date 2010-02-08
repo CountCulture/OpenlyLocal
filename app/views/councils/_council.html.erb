@@ -1,0 +1,11 @@
+    <%- div_for council do -%>
+      <div class='area'>
+        <%= council.region ? "#{link_to council.region, params.merge(:region => council.region) }, " : '' %><%= link_to council.country, params.merge(:country => council.country) %>
+      </div>
+      <h4><%= link_for council %></h4>
+      <div class='info'>
+        <span class="address"><%= council.address %></span>, <span class='telephone'><%= council.telephone %></span>, <%= link_to(council.url, council.url, :class => 'external') if council.url? %>
+        <%= link_to("News feed", council.feed_url, :class => "feed") if council.feed_url? %>
+        <%= link_to("Twitter", "http://twitter.com/#{council.twitter_account}", :class => "twitter feed") if council.twitter_account? %> 
+      </div>
+    <%- end -%>

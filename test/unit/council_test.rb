@@ -104,9 +104,10 @@ class CouncilTest < ActiveSupport::TestCase
     context "when finding by parameters" do
       setup do
         @member = Factory(:member, :council => @council)
-        @another_council = Factory(:another_council, :snac_id => "snac_1")
+        @another_council = Factory(:another_council, :region => "London", :country => "England")
         @another_member = Factory(:member, :council => @another_council)
-        @tricky_council = Factory(:tricky_council, :snac_id => "snac_2")
+        @council.update_attribute(:country, "Wales")
+        @tricky_council = Factory(:tricky_council, :country => "Wales")
       end
 
       should "find all parsed councils by default" do
@@ -126,13 +127,12 @@ class CouncilTest < ActiveSupport::TestCase
         assert_equal [@tricky_council], Council.find_by_params(:term => "Tricky", :include_unparsed => true)
       end
 
-      should "find parsed council whose snac_id matches given id" do
-        assert_equal [@another_council], Council.find_by_params(:snac_id => "snac_1")
+      should "find councils whose region matches given region" do
+        assert_equal [@another_council], Council.find_by_params(:region => "London")
       end
 
-      should "find unparsed council whose snac_id matches given id" do
-        assert_equal [@tricky_council], Council.find_by_params(:snac_id => "snac_2", :include_unparsed => true)
-        assert_equal [], Council.find_by_params(:snac_id => "snac_2")
+      should "find councils whose region matches given country" do
+        assert_equal [@council], Council.find_by_params(:country => "Wales")
       end
     end
 
