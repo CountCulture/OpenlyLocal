@@ -51,7 +51,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "list parsed councils" do
-        assert_select "#councils .council", Council.parsed.all.size
+        assert_select "#councils .council", Council.parsed({}).all.size
         assert_select "#council_#{@council.id}"
       end
       

@@ -66,7 +66,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "return count of parsed council members as member_count attribute" do
-        parsed_council = Council.parsed.first
+        parsed_council = Council.parsed({}).first
         assert_equal "2", parsed_council.member_count
       end
       

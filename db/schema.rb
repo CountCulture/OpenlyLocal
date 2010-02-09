@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100208081655) do
+ActiveRecord::Schema.define(:version => 20100209092340) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -231,6 +231,8 @@ ActiveRecord::Schema.define(:version => 20100208081655) do
     t.column "guid", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "feed_owner_type", :string
+    t.column "feed_owner_id", :integer
   end
 
   create_table "hyperlocal_groups", :force => true do |t|
