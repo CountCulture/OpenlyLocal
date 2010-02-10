@@ -127,6 +127,7 @@ body.councils li a.unparsed, body.committees li a.inactive, body.members a.ex_me
 form.button-to, form.button-to div {
 	display:inline;
 }
+.intro {font-weight:bold;}
 
 /*General template format*/
 body {
@@ -176,6 +177,7 @@ body {
 /*Front page formatting*/
 body.main .intro {
 	font-size:120%;
+	font-weight:normal;
 }
 /*Council document formatting*/
 .document_body {
@@ -201,6 +203,9 @@ body.main .intro {
 	overflow: auto;
 	clear: left;
 }
+.info {
+	overflow:auto;
+}
 body.councils .extra_info  {
 	float:left;
 }
@@ -222,7 +227,7 @@ div.item_grouping {
 float: left;
 width: 290px;
 padding-right: 20px;}
-div.item_grouping h3 {
+div.item_grouping h3, #feed_entries h3 {
 	border-bottom: 1px solid #036;
 	margin-bottom: 0.5em;
 }
@@ -494,6 +499,7 @@ table.datapoints td.more_info {
 	padding:3px;
 	margin-left: 1em;
 	width:450px;
+	background-color:#fff;
 }
 #map_canvas {
 	height:500px;
@@ -531,15 +537,18 @@ ul#hyperlocal_sites li li{
 	color:#666;
 }
 
-/*Misc formatting*/
-#api_info {
-	clear: both;
-	background-color: #f3f3f3;
-	border-top: 1px solid #ddd;
+/*Feed entries*/
+.feed_entries .feed_entry h4 {
+	margin-bottom:0;
+	margin-top:6px;
 }
-#api_info a {
-	font-weight: bold;
+.feed_entries .feed_entry {
+	font-size:90%;
 }
+#feed_entries {
+	clear:left;
+	margin-top: 1em;
+	}
 #site_news {
 	background-color:#F0F0F0;
 	border:1px solid #CCCCCC;
@@ -548,18 +557,22 @@ ul#hyperlocal_sites li li{
 	width:260px;
 	margin-left: 1em;
 	}
-#site_news h2 {
+#site_news h3 {
 	background-color:#ddd;
 	margin:-6px -6px 0;
 	padding:0 6px;
 	font-size: 1.4em;
 	}
-#site_news h4 {
-	margin-bottom:0;
-	margin-top:6px;
+
+
+/*Misc formatting*/
+#api_info {
+	clear: both;
+	background-color: #f3f3f3;
+	border-top: 1px solid #ddd;
 }
-#site_news div.news_item {
-	font-size:90%;
+#api_info a {
+	font-weight: bold;
 }
 #categories {
 	float: right;

@@ -31,32 +31,27 @@
   <div id="map_canvas"></div>
 </div>
 
-<div id="description">
+<div id="description" class="intro">
   <%= simple_format(h(@hyperlocal_site.description)) %>
 </div>
-<dl id="main_attributes" class="attributes">
-  <%- attribute_tag :url do -%>
-    <%= link_to(@hyperlocal_site.url, @hyperlocal_site.url, :class => "external", :rel => (@hyperlocal_site.approved ? nil : "nofollow")) %>
-    <%= link_to("News feed", @hyperlocal_site.feed_url, :class => "feed") unless @hyperlocal_site.feed_url.blank? %>
-    <%= link_to("Twitter", "http://twitter.com/#{@hyperlocal_site.twitter_account}", :class => "twitter feed") unless @hyperlocal_site.twitter_account.blank? %>
-  <%- end -%>
-  <%= attribute_tag :area_covered, "#{@hyperlocal_site.area_covered} (within #{number_with_precision(@hyperlocal_site.distance_covered, :precision => 1)} miles of lat #{number_with_precision(@hyperlocal_site.lat, :precision => 2)}, long #{number_with_precision(@hyperlocal_site.lng, :precision => 2)})" %>
-  <%= attribute_tag :group, link_for(@hyperlocal_site.hyperlocal_group) %>
-  <%= attribute_tag :platform, @hyperlocal_site.platform %>
-  <%= attribute_tag :local_authority_area, basic_link_for(@hyperlocal_site.council) %>
-</dl>
+<div class="info">
+  <dl id="main_attributes" class="attributes">
+    <%- attribute_tag :url do -%>
+      <%= link_to(@hyperlocal_site.url, @hyperlocal_site.url, :class => "external", :rel => (@hyperlocal_site.approved ? nil : "nofollow")) %>
+      <%= link_to("News feed", @hyperlocal_site.feed_url, :class => "feed") unless @hyperlocal_site.feed_url.blank? %>
+      <%= link_to("Twitter", "http://twitter.com/#{@hyperlocal_site.twitter_account}", :class => "twitter feed") unless @hyperlocal_site.twitter_account.blank? %>
+    <%- end -%>
+    <%= attribute_tag :area_covered, "#{@hyperlocal_site.area_covered} (within #{number_with_precision(@hyperlocal_site.distance_covered, :precision => 1)} miles of lat #{number_with_precision(@hyperlocal_site.lat, :precision => 2)}, long #{number_with_precision(@hyperlocal_site.lng, :precision => 2)})" %>
+    <%= attribute_tag :group, link_for(@hyperlocal_site.hyperlocal_group) %>
+    <%= attribute_tag :platform, @hyperlocal_site.platform %>
+    <%= attribute_tag :local_authority_area, basic_link_for(@hyperlocal_site.council) %>
+  </dl>
+</div>
 
 <%- unless @hyperlocal_site.feed_entries.blank? -%>
-  <div id="feed_entries" class= "item_grouping">
+  <div id="feed_entries" class="feed_entries">
     <h3>Latest Posts</h3>
-    <%- @hyperlocal_site.feed_entries.each do |feed_entry| -%>
-      <%- div_for feed_entry do -%>
-        <h4><%= link_to feed_entry.title, feed_entry.url %></h4>
-        <div class="info">
-          <%= truncate(feed_entry.summary, :length => 150) %>
-        </div>
-      <%- end -%>
-    <%- end -%>
+    <%= render :partial => 'shared/feed_entry', :collection => @hyperlocal_site.feed_entries %>
   </div>
 <%- end -%>
 

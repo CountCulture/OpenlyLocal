@@ -1,0 +1,6 @@
+      <%- div_for feed_entry do -%>
+        <h4><%= link_to feed_entry.title, feed_entry.url %></h4>
+        <div class="info">
+          <%= truncate(feed_entry.summary, :length => 150) %>
+        </div>
+      <%- end -%>
