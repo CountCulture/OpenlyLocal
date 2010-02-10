@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100209092340) do
+ActiveRecord::Schema.define(:version => 20100210140105) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -310,6 +310,8 @@ ActiveRecord::Schema.define(:version => 20100209092340) do
     t.column "register_of_interests", :string
     t.column "address", :text
     t.column "ward_id", :integer
+    t.column "twitter_account", :string
+    t.column "blog_url", :string
   end
 
   add_index "members", ["council_id"], :name => "index_members_on_council_id"
