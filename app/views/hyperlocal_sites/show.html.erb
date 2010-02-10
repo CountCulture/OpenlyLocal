@@ -46,4 +46,19 @@
   <%= attribute_tag :local_authority_area, basic_link_for(@hyperlocal_site.council) %>
 </dl>
 
+<%- unless @hyperlocal_site.feed_entries.blank? -%>
+  <div id="feed_entries" class= "item_grouping">
+    <h3>Latest Posts</h3>
+    <%- @hyperlocal_site.feed_entries.each do |feed_entry| -%>
+      <%- div_for feed_entry do -%>
+        <h4><%= link_to feed_entry.title, feed_entry.url %></h4>
+        <div class="info">
+          <%= truncate(feed_entry.summary, :length => 150) %>
+        </div>
+      <%- end -%>
+    <%- end -%>
+  </div>
+<%- end -%>
+
+
 <%= timestamp_data_for @hyperlocal_site %>

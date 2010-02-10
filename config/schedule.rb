@@ -12,8 +12,8 @@
 #   runner "MyModel.some_method"
 #   rake "some:great:rake:task"
 # end
-every 1.hours, :at => 30 do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'FeedEntry.update_from_feed(BlogFeedUrl)' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+every 2.hours, :at => 30 do
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'FeedEntry.perform' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
 end
 
 # every 30.minutes do

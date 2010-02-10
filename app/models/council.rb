@@ -30,6 +30,7 @@ class Council < ActiveRecord::Base
   belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
   has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   has_many :hyperlocal_sites, :conditions => {:approved => true}
+  has_many :feed_entries, :as => :feed_owner
   belongs_to :portal_system
   belongs_to :police_force
   belongs_to :pension_fund

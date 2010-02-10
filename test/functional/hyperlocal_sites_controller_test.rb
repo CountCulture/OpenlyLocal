@@ -323,6 +323,20 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
       
     end
+    
+    context "when hyperlocal_site with feed_entries" do
+      setup do
+        @feed_entry = Factory(:feed_entry, :feed_owner => @hyperlocal_site)
+        get :show, :id => @hyperlocal_site.id
+      end
+      
+      should "list latest feed items" do
+        assert_select '#feed_entries' do
+          assert_select "#feed_entry_#{@feed_entry.id}"
+        end
+      end
+      
+    end
   end
 
   # new test

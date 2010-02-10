@@ -3,6 +3,7 @@ class HyperlocalSite < ActiveRecord::Base
   attr_protected :approved
   belongs_to :hyperlocal_group
   belongs_to :council
+  has_many :feed_entries, :as => :feed_owner
   validates_presence_of :title, :url
   validates_presence_of :lat, :lng, :distance_covered, :description, :on => :create, :message => "can't be blank"
   # validates_uniqueness_of :title
