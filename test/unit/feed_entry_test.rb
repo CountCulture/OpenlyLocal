@@ -30,8 +30,9 @@ class FeedEntryTest < ActiveSupport::TestCase
 
     context "when updating feed" do
       setup do
+        html_content = "<p>News reaches us that the café at Rowheath<br />Pavilion\r\nwill now be open six<br><br>days a week<a href=\"http://togetherinmission.co.uk/\">Together in Mission</a> who are based at the Pavilion said:</p>\n<p>&lt;a href=&#x27;http://bournvillevillage.com/?p=682&#x27;&gt;hello&lt;/a&gt; world</p>"
         dummy_entry_1 = stub(:title => "Entry 1", :summary => "Entry 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1")
-        dummy_entry_2 = stub(:title => "Entry 2", :summary => "Entry 2 summary", :url => "foo.com/entry_2", :published => 5.days.ago, :id => "entry_2")
+        dummy_entry_2 = stub(:title => "Entry 2", :summary => nil, :content => html_content, :url => "foo.com/entry_2", :published => 5.days.ago, :id => "entry_2")
         Feedzirra::Feed.stubs(:fetch_and_parse).returns(stub(:entries => [dummy_entry_1, dummy_entry_2]))
       end
       
@@ -61,6 +62,43 @@ class FeedEntryTest < ActiveSupport::TestCase
           FeedEntry.update_from_feed("foo.com")
         end
         assert_equal "Orig title", @existing_entry.reload.title
+      end
+      
+      should "save content as summary if no summary" do
+        FeedEntry.update_from_feed("foo.com")
+        new_entry = FeedEntry.find_by_guid("entry_2")
+        
+        assert_match /News reaches us/, new_entry.summary
+      end
+      
+      should "strip tags from content for summary" do
+        FeedEntry.update_from_feed("foo.com")
+        new_entry = FeedEntry.find_by_guid("entry_2")
+        
+        assert_no_match /<p/, new_entry.summary
+      end
+      
+      should "convert new lines to spaces for summary" do
+        FeedEntry.update_from_feed("foo.com")
+        new_entry = FeedEntry.find_by_guid("entry_2")
+        
+        assert_match /Pavilion will/, new_entry.summary
+        assert_match /said: hello/, new_entry.summary
+      end
+      
+      should "convert line break tags to spaces for summary" do
+        FeedEntry.update_from_feed("foo.com")
+        new_entry = FeedEntry.find_by_guid("entry_2")
+        
+        assert_match /Rowheath Pavilion/, new_entry.summary
+        assert_match /six days/, new_entry.summary
+      end
+      
+      should "convert entities to html before stripping tags from content for summary" do
+        FeedEntry.update_from_feed("foo.com")
+        new_entry = FeedEntry.find_by_guid("entry_2")
+        
+        assert_match /hello world/, new_entry.summary
       end
       
       context "and asked to update from feed_owner" do
