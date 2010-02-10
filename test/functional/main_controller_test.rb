@@ -10,6 +10,7 @@ class MainControllerTest < ActionController::TestCase
       
       @meeting = Factory(:meeting, :council => @council1, :committee => @committee)
       @news_item = Factory(:feed_entry)
+      @council_news_item = Factory(:feed_entry, :feed_owner => @council1)
       @future_meeting = Factory(:meeting, :date_held => 3.days.from_now.to_date, :council => @council1, :committee => @committee)
 
       get :index
@@ -52,6 +53,10 @@ class MainControllerTest < ActionController::TestCase
       assert_select "#site_news" do
         assert_select "h4", /#{@news_item.title}/
       end
+    end
+    
+    should "not show other feed items" do
+      assert_select "#site_news h4", :text => /#{@council_news_item.title}/, :count => 0
     end
   end
 end
