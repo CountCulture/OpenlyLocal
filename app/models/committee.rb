@@ -26,6 +26,12 @@ class Committee < ActiveRecord::Base
               :joins => "LEFT JOIN meetings ON meetings.committee_id = committees.id AND meetings.date_held > '#{1.year.ago.to_s(:db)}'",
               :group => "committees.id",
               :order => "committees.title" }}
+  
+  # overload #normalise_title included from ScrapedModel module so 'committee' & aliases are removed
+  def self.normalise_title(raw_title)
+    semi_normed_title = raw_title.gsub(/committee|cttee/mi, '')
+    TitleNormaliser.normalise_title(semi_normed_title)
+  end
 
   def status
     return unless respond_to?(:active?)
@@ -34,6 +40,6 @@ class Committee < ActiveRecord::Base
 
   private
   def normalise_title
-    self.normalised_title = TitleNormaliser.normalise_title(title)
+    self.normalised_title = self.class.normalise_title(title)
   end
 end

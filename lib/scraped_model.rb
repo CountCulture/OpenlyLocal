@@ -70,6 +70,14 @@ module ScrapedModel
         results
       end
       
+      # Generic class method for normalising title. Calls TitleNormalizer.normalise by default but 
+      # can be overridden in individual models if something more is needed (e.g. to remove 'Committee' 
+      # from the name). Note this is public class method so that it can be easily called from rake 
+      # tasks etc
+      def normalise_title(raw_title)
+        TitleNormaliser.normalise_title(raw_title)
+      end
+      
       protected
       # stub method. Is called in build_or_update with those records that
       # are in db but that weren't returned by scraper/parser (for example old 

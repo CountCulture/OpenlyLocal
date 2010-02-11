@@ -2,17 +2,15 @@ require 'test_helper'
 
 class TitleNormaliserTest < Test::Unit::TestCase
   OriginalTitleAndNormalisedTitle = {
-    "Super  Important Committee" => "super important",
-    "Super  Important Cttee" => "super important",
-    " Less Important Sub-Committee" => "less important sub",
-    "multi\nline \t committee" => "multi line",
-    "Ways and Means committee" => "ways and means",
-    "The Ways and Means committee" => "ways and means",
-    "Ways & Means committee" => "ways and means",
-    "Ways&Means committee" => "ways and means",
-    "Important: another committee" => "important another",
-    "Children's committee" => "childrens",
-    "The Theatre committee" => "theatre"
+    "The Super  Important Thing" => "super important thing",
+    " Less-Important thing" => "less important thing",
+    "multi\nline \t thing" => "multi line thing",
+    "Ways and Means" => "ways and means",
+    "Ways & Means" => "ways and means",
+    "Ways&Means" => "ways and means",
+    "Important: another thing" => "important another thing",
+    "Children's thing" => "childrens thing",
+    "The Theatre thing" => "theatre thing"
   }
   
   context "The TitleNormaliser module" do

@@ -67,6 +67,30 @@ class CommitteeTest < ActiveSupport::TestCase
         assert_nil @committee.next_meeting
       end
     end
+    
+    context "when normalising title" do
+      setup do
+        @original_title_and_normalised_title = {
+          "Super  Important Committee" => "super important",
+          "Super  Important Cttee" => "super important",
+          " Less Important Sub-Committee" => "less important sub",
+          "multi\nline \t committee" => "multi line",
+          "Ways and Means committee" => "ways and means",
+          "The Ways and Means committee" => "ways and means",
+          "Ways & Means committee" => "ways and means",
+          "Ways&Means committee" => "ways and means",
+          "Important: another committee" => "important another",
+          "Children's committee" => "childrens",
+          "The Theatre committee" => "theatre"
+        }
+      end
+      
+      should "normalise title" do
+        @original_title_and_normalised_title.each do |orig_title, normalised_title|
+          assert_equal( normalised_title, Committee.normalise_title(orig_title), "failed for #{orig_title}")
+        end
+      end
+    end
   end
     
   context "A Committee instance" do

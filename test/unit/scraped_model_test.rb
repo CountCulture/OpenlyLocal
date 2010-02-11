@@ -40,7 +40,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
   context "A class that includes ScrapedModel Base mixin" do
     setup do
       TestModel.delete_all # doesn't seem to delete old records !?!
-      @test_model = TestModel.create!(:uid => 33, :council_id => 99, :title => "Foo  Committee", :normalised_title => "foo")
+      @test_model = TestModel.create!(:uid => 33, :council_id => 99, :title => "Foo  Committee", :normalised_title => "foo committee")
       @another_test_model = TestModel.create!(:uid => 34, :council_id => 99, :title => "Bar Committee")
       @params = {:uid => 2, :url => "http:/some.url"} # uid and council_id can be anything as we stub finding of existing member
     end
@@ -57,6 +57,15 @@ class ScrapedModelTest < ActiveSupport::TestCase
       assert_equal [:uid, :url], TestChildModel.association_extension_attributes
     end
     
+    should "have normalise_title class method" do
+      assert TestModel.respond_to?(:normalise_title)
+    end
+
+    should "by default use TitleNormalizer to normalize title" do
+      TitleNormaliser.expects(:normalise_title).with("foo").returns("bar")
+      assert_equal "bar", TestModel.normalise_title("foo")
+    end
+
     should "have allow_access_to class method" do
       assert TestModel.respond_to?(:allow_access_to)
     end
@@ -101,7 +110,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
         end
 
         should "normalise attributes when finding_them" do
-          @joined_model.test_model_normalised_titles = ["The Foo COmmittee"]
+          @joined_model.test_model_normalised_titles = ["THE Foo - COmmittee"]
           assert_equal [@test_model], @joined_model.test_models
         end
       end 

@@ -332,6 +332,34 @@ class CouncilTest < ActiveSupport::TestCase
       
     end
     
+    context "when normalising title" do
+      setup do
+        @original_title_and_normalised_title = {
+          "London Borough of Brent" => "brent",
+          "City of Westminster" => "westminster",
+          "Leeds City Council" => "leeds",
+          "Royal Borough of Kingston-upon Thames" => "kingston upon thames",
+          "Wolverhampton Metropolitan Borough Council" => "wolverhampton",
+          "City of London" => "city of london",
+          "Greater London Authority" => "greater london authority",
+          "Vale of White Horse District Council" => "vale of white horse",
+          "Wrexham County Borough Council" => "wrexham",
+          "Comhairle nan Eilean Siar (Western Isles Council)" => "comhairle nan eilean siar",
+          "City & County of Swansea" => "swansea",
+          "Royal Borough of Kensington & Chelsea" => "kensington and chelsea",
+          "Tonbridge and Malling Borough Council" => "tonbridge and malling",
+          "Fenland District Council" => "fenland",
+          "Council of the Isles of Scilly" => "isles of scilly"
+        }
+      end
+      
+      should "normalise title" do
+        @original_title_and_normalised_title.each do |orig_title, normalised_title|
+          assert_equal( normalised_title, Council.normalise_title(orig_title), "failed for #{orig_title}")
+        end
+      end
+    end
+
   end
 
   context "A Council instance" do
