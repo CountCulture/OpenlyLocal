@@ -157,7 +157,7 @@ class MembersControllerTest < ActionController::TestCase
      context "with rdf request" do
        context "for member with full personal details" do
          setup do
-           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof", :party => "Labour")
+           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof", :party => "Labour", :twitter_account => "foo")
            get :show, :id => @member.id, :format => "rdf"
          end
 
@@ -190,6 +190,7 @@ class MembersControllerTest < ActionController::TestCase
            assert_match /rdf:Description.+foaf:phone.+#{Regexp.escape(@member.foaf_telephone)}/m, @response.body
            assert_match /rdf:Description.+foaf:mbox.+mailto:#{@member.email}/m, @response.body
            assert_match /rdf:Description.+dbpedia-owl:party.+#{Regexp.escape(@member.party.dbpedia_uri)}/m, @response.body
+           assert_match /rdf:Description.+foaf:OnlineAccount.+twitter\.com/m, @response.body
          end
          
          should "show address for member as vCard" do

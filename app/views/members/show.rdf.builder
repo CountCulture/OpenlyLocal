@@ -25,6 +25,14 @@ xml.tag! "rdf:RDF",
         xml.tag! "vCard:Extadd", @member.address
       end
     end
+    unless @member.twitter_account.blank?
+      xml.tag! "foaf:holdsAccount" do
+        xml.tag! "foaf:OnlineAccount", "rdf:about" => "http://twitter.com/#{@member.twitter_account}" do
+          xml.tag! "foaf:accountServiceHomepage", "rdf:resource" => "http://twitter.com/"
+          xml.tag! "foaf:accountName", @member.twitter_account
+        end
+      end
+    end
     
     @committees.each do |committee|
       xml.tag! "openlylocal:Committee", "rdf:resource" => resource_uri_for(committee)

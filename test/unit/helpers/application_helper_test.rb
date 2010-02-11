@@ -257,6 +257,22 @@ class ApplicationHelperTest < ActionView::TestCase
 
   end
 
+  context "twitter_link_for helper method" do
+
+    should "return nil by default" do
+      assert_nil twitter_link_for
+      assert_nil twitter_link_for("")
+    end
+
+    should "return twitter link for twitter_account" do
+      assert_dom_equal link_to("Twitter", "http://twitter.com/foo", :class => "twitter feed", :title => "Twitter feed for foo"), twitter_link_for("foo")
+    end
+
+    should "return just twitter image tage instead of text if short requested" do
+      assert_dom_equal link_to(image_tag("twitter_icon.png", :alt => "twitter_feed for foo"), "http://twitter.com/foo"), twitter_link_for("foo", :short => true)
+    end
+  end
+  
   context "list_all helper method" do
     setup do
       @obj1 = Factory(:committee )
