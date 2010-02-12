@@ -425,3 +425,19 @@ task :associate_pension_funds => :environment do
   pp "#{unmatched_funds.size} Unmatched funds:", unmatched_funds.collect(&:name)
 end
 
+desc "Import ONS GSS codes into councils, wards tables"
+task :import_ons_gss_codes => :environment do
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/ons_data/gss_to_snac_ex_wales.csv")).to_a[1..-1] #skip header row
+  
+  areas = Council.all(:conditions => "snac_id IS NOT NULL") +  Ward.all(:conditions => "snac_id IS NOT NULL")
+  areas.each do |area|
+    if row = rows.detect{ |r| r[3] == area.snac_id }
+      area.update_attribute(:gss_code, row[0])
+      puts "Updated entry for #{area.title} (name in table: #{row[1]}). GSS code = #{row[0]}"
+    else
+      puts "**** Can't find entry for #{area.title} (snac_id: #{area.snac_id})"
+    end
+  end
+
+end
+

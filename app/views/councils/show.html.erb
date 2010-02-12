@@ -38,6 +38,7 @@
       <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external' %></li>
       <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external' %></li>
       <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= link_to(@council.snac_id, "http://statistics.data.gov.uk/doc/local-authority/#{@council.snac_id}", :class => "external") unless @council.snac_id.blank? %> </li>
+      <li><%= link_to "ONS GSS code", "http://www.ons.gov.uk/about-statistics/geography/policy/coding-and-naming-for-statistical-geographies/index.html", :class => 'external' %>: <%= @council.gss_code || "Not known" %> </li>      
       <li><strong><%= link_to "Hyperlocal news/community sites", hyperlocal_sites_path %></strong> <%= @council.hyperlocal_sites.blank? ? "None found. #{link_to 'Add yours now', new_hyperlocal_site_path}" : @council.hyperlocal_sites.collect{|s| link_for(s)}.join(", ") %></li>
     </ul>
   </div>

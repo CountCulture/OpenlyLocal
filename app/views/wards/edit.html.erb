@@ -7,8 +7,8 @@
     <%= f.text_field :name %>
   </p>
   <p>
-    <%#= f.label :url %>
-    <%#= f.text_field :url %>
+    <%= f.label :url %>
+    <%= f.text_field :url %>
   </p>
   <p>
     <%= f.label :uid %>
@@ -18,6 +18,12 @@
     <%= f.label :snac_id %>
     <%= f.text_field :snac_id %>
   </p>
+  
+  <p>
+    <%= f.label :gss_code, "ONS GSS code" %>
+    <%= f.text_field :gss_code %>
+  </p>
+  
   <p>
     <%= f.submit "Submit" %>
   </p>
