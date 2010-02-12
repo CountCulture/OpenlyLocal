@@ -62,8 +62,8 @@ module ApplicationHelper
   
   def twitter_link_for(twitter_account=nil, options={})
     return if twitter_account.blank?
-    options[:short] ? link_to(image_tag("twitter_icon.png", :alt => "twitter feed for #{twitter_account}"), "http://twitter.com/#{twitter_account}") : 
-                      link_to("Twitter", "http://twitter.com/#{twitter_account}", :class => "twitter feed", :title => "twitter feed for #{twitter_account}")
+    options[:short] ? link_to(image_tag("twitter_icon.png", :alt => "Twitter feed for #{twitter_account}"), "http://twitter.com/#{twitter_account}") : 
+                      link_to("Twitter", "http://twitter.com/#{twitter_account}", :class => "twitter feed", :title => "Twitter feed for #{twitter_account}")
   end
 
   def list_all(coll=nil, options={})
