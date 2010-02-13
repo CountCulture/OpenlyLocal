@@ -37,6 +37,7 @@ class HyperlocalSitesController < ApplicationController
   def new
     @hyperlocal_site = HyperlocalSite.new(:distance_covered => 3)
     @enable_google_maps = true
+    @title = "New Hyperlocal Site"
   end
   
   def create

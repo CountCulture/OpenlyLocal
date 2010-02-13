@@ -349,6 +349,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     should_respond_with :success
     should_render_template :new
   
+    should "show title" do
+      assert_select "title", /new hyperlocal site/i
+    end
+    
     should "show form" do
       assert_select "form#new_hyperlocal_site"
     end

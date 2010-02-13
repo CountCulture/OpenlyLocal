@@ -40,7 +40,7 @@ class FeedEntry < ActiveRecord::Base
       unless exists? :guid => entry.id
         create!(
           :title        => entry.title,
-          :summary      => entry.summary||summarize_content(entry.content),
+          :summary      => (entry.summary&&strip_tags_and_line_breaks(entry.summary))||summarize_content(entry.content),
           :url          => entry.url,
           :published_at => entry.published,
           :guid         => entry.id,
@@ -52,7 +52,11 @@ class FeedEntry < ActiveRecord::Base
   
   def self.summarize_content(content)
     h_content = CGI::unescapeHTML(content).gsub(/(<br[ \/]{0,2}>)+/, ' ')
-    ActionController::Base.helpers.strip_tags(h_content).gsub(/[\t\r\n]+/," ")
+    strip_tags_and_line_breaks(h_content)
+  end
+  
+  def self.strip_tags_and_line_breaks(html_content)
+    ActionController::Base.helpers.strip_tags(html_content).gsub(/[\t\r\n]+/," ")
   end
   
 end

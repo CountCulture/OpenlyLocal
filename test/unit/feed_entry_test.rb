@@ -31,7 +31,7 @@ class FeedEntryTest < ActiveSupport::TestCase
     context "when updating feed" do
       setup do
         html_content = "<p>News reaches us that the café at Rowheath<br />Pavilion\r\nwill now be open six<br><br>days a week<a href=\"http://togetherinmission.co.uk/\">Together in Mission</a> who are based at the Pavilion said:</p>\n<p>&lt;a href=&#x27;http://bournvillevillage.com/?p=682&#x27;&gt;hello&lt;/a&gt; world</p>"
-        dummy_entry_1 = stub(:title => "Entry 1", :summary => "Entry 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1")
+        dummy_entry_1 = stub(:title => "Entry 1", :summary => "<p>Entry</p> 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1")
         dummy_entry_2 = stub(:title => "Entry 2", :summary => nil, :content => html_content, :url => "foo.com/entry_2", :published => 5.days.ago, :id => "entry_2")
         Feedzirra::Feed.stubs(:fetch_and_parse).returns(stub(:entries => [dummy_entry_1, dummy_entry_2]))
       end
@@ -52,8 +52,12 @@ class FeedEntryTest < ActiveSupport::TestCase
         
         new_entry = FeedEntry.find_by_guid("entry_1")
         assert_equal "Entry 1", new_entry.title
-        assert_equal "Entry 1 summary", new_entry.summary
         assert_equal "foo.com/entry_1", new_entry.url
+      end
+      
+      should "strip_tags from summary" do
+        FeedEntry.update_from_feed("foo.com")
+        assert_equal "Entry 1 summary", FeedEntry.find_by_guid("entry_1").summary
       end
       
       should "not update entries already in db" do
