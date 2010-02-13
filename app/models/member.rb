@@ -24,7 +24,9 @@ class Member < ActiveRecord::Base
   allow_access_to :ward, :via => [:uid, :name]
   named_scope :current, :conditions => "date_left IS NULL"
   alias_attribute :title, :full_name
-  after_create :tweet_about_it   
+  after_create :tweet_about_it
+  after_save :add_to_twitter_list
+  after_save :remove_from_twitter_list
   
   def full_name=(full_name)
     names_hash = NameParser.parse(full_name)
@@ -89,4 +91,15 @@ class Member < ActiveRecord::Base
     end
     true
   end
+
+  def add_to_twitter_list
+    return unless twitter_account?
+    Delayed::Job.enqueue(Tweeter.new(:method => :add_to_list, :user => twitter_account, :list => 'ukcouncillors'))
+  end
+  
+  def remove_from_twitter_list
+    return unless old_twitter_account = changes['twitter_account'].try(:first)
+    Delayed::Job.enqueue(Tweeter.new(:method => :remove_from_list, :user => changes['twitter_account'].try(:first), :list => 'ukcouncillors'))
+  end
+  
 end

@@ -289,8 +289,82 @@ class MemberTest < ActiveSupport::TestCase
         member.mark_as_ex_member
         assert_equal 3.days.ago.to_date, member.reload.date_left
       end  
-       
     end
+        
+    context "in managing membership of ukcouncillors twitter list" do
+      setup do
+        member = Factory(:member) # add member so any we add aren't the first for the council
+        @council = member.council
+        @dummy_tweeter = Tweeter.new('foo')
+        Tweeter.stubs(:new).returns(@dummy_tweeter)
+      end
+      
+      context "when member is added" do
+
+        context "and member has twitter account" do
+          should "add to ukcouncillors twitter list" do
+            new_member = Factory.build(:member, :twitter_account => "foo", :council => @council)
+            Tweeter.expects(:new).with(:method => :add_to_list, :user => "foo", :list => "ukcouncillors").returns(@dummy_tweeter)
+
+            new_member.save
+          end
+        end 
+
+        context "and member does not have twitter account" do
+          should "not add to ukcouncillors twitter list" do
+            new_member = Factory.build(:member, :council => @council)
+            Tweeter.expects(:new).never
+            new_member.save
+          end
+        end 
+      end
+      
+      context "when member with existing twitter_account is saved" do
+        
+        context "and twitter account is not changed" do
+          
+          should "not add to twitter list" do
+            existing_member = Factory(:member, :twitter_account => "foo", :council => @council)
+            Tweeter.expects(:new).never
+            new_member.save
+          end
+        end
+        
+        context "and twitter account is changed" do
+          
+          should "remove old account from twitter list" do
+            existing_member = Factory(:member, :twitter_account => 'foo', :council => @council)
+            Tweeter.expects(:new).with(has_entries(:method => :remove_from_list, :user => 'foo', :list => 'ukcouncillors')).returns(Tweeter.new('foo'))
+            existing_member.update_attribute(:twitter_account, 'bar')
+          end
+          
+          should "add new account to twitter list" do
+            existing_member = Factory(:member, :twitter_account => 'foo', :council => @council)
+            Tweeter.expects(:new).with(has_entries(:method => :add_to_list, :user => 'bar', :list => 'ukcouncillors')).returns(Tweeter.new('foo'))
+            existing_member.update_attribute(:twitter_account, 'bar')
+          end
+        end
+      end
+
+      context "when existing member has twitter account added" do
+
+        should "add account to ukcouncillors twitter list" do
+          existing_member = Factory(:member, :council => @council)
+          Tweeter.expects(:new).with(has_entries(:method => :add_to_list, :user => 'foo', :list => 'ukcouncillors')).returns(Tweeter.new('foo'))
+          existing_member.update_attributes(:twitter_account => "foo")
+        end
+      end
+
+      context "when existing member has twitter account deleted" do
+
+        should "remove account from ukcouncillors twitter list" do
+          existing_member = Factory(:member, :twitter_account => "foo", :council => @council)
+          Tweeter.expects(:new).with(has_entries(:method => :remove_from_list, :user => 'foo', :list => 'ukcouncillors')).returns(Tweeter.new('foo'))
+          existing_member.update_attributes(:twitter_account => nil)
+        end
+      end
+    end
+    
     
     context "with committees" do
       # this part is mostly just regression test that allows_access_to works in same way to UidExtension
@@ -350,6 +424,7 @@ class MemberTest < ActiveSupport::TestCase
         @council.update_attributes(:updated_at => 2.days.ago) #... though thought from Rails 2.3 you could do this without turning off timestamps
         Council.record_timestamps = true
       end
+      
       context "when member is updated" do
         setup do
           @member.update_attribute(:last_name, "Wilson")
@@ -359,6 +434,7 @@ class MemberTest < ActiveSupport::TestCase
           assert_in_delta Time.now, @council.updated_at, 2
         end
       end
+      
       context "when member is deleted" do
         setup do
           @member.destroy
