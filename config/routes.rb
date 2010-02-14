@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :twitter_accounts
+
 
   map.resources :scrapers
   map.resources :item_scrapers, :controller => "scrapers"

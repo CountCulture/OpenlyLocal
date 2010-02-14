@@ -227,3 +227,9 @@ Factory.define :candidate do |f|
   # f.association :ward
   f.last_name "Flintstone"
 end
+
+Factory.define :twitter_account do |f|
+  f.sequence(:name) { |n| "user#{n}" }
+  f.association :user, :factory => :hyperlocal_site
+end
+
