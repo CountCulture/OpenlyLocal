@@ -9,10 +9,8 @@
   <%- attribute_tag :authority_type do -%>
     <%= @council.authority_type %> <%= help_link_to(@council.authority_type_help_url) %>
   <%- end -%>
-  <div id="associated_councils">
-      <%= attribute_tag :district_councils, @council.child_authorities.collect{ |c| basic_link_for c }.join(", ") %>
-      <%= attribute_tag :county_council, basic_link_for(@council.parent_authority) %>
-  </div>
+  <%= attribute_tag :district_councils, @council.child_authorities.collect{ |c| basic_link_for c }.join(", ") %>
+  <%= attribute_tag :county_council, basic_link_for(@council.parent_authority) %>
   <%= attribute_tag :address, @council.address %>
   <%= attribute_tag( :telephone, content_tag(:span, @council.telephone, :about => @council.foaf_telephone)) unless @council.telephone.blank? %>
   <%= attribute_tag :chief_executive, @council.chief_executive.try(:full_name) %>

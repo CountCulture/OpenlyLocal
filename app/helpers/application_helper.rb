@@ -5,9 +5,9 @@ module ApplicationHelper
   def attribute_tag(attrib_name=nil, attrib_value=nil, options={}, &block)
     text = options[:text]||attrib_name.to_s.titleize
     if block_given?
-      concat("<dt class=\"#{attrib_name}\">#{text}</dt> <dd>#{capture(&block)}</dd>")
+      concat("<dt class=\"#{attrib_name}\">#{text}</dt> <dd class=\"#{attrib_name}\">#{capture(&block)}</dd>")
     elsif !attrib_value.blank?
-      "<dt class=\"#{attrib_name}\">#{text}</dt> <dd>#{attrib_value}</dd>"
+      "<dt class=\"#{attrib_name}\">#{text}</dt> <dd class=\"#{attrib_name}\">#{attrib_value}</dd>"
     end
   end
 

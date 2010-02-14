@@ -9,11 +9,11 @@ class ApplicationHelperTest < ActionView::TestCase
     end
 
     should "return div tag using key as attrib name and value as value" do
-      assert_dom_equal "<dt class=\"foo_bar\">Foo Bar</dt> <dd>some value</dd>", attribute_tag(:foo_bar, "some value")
+      assert_dom_equal "<dt class=\"foo_bar\">Foo Bar</dt> <dd class=\"foo_bar\">some value</dd>", attribute_tag(:foo_bar, "some value")
     end
 
     should "use supplied text for name if given" do
-      assert_dom_equal "<dt class=\"foo_bar\">Different name</dt> <dd>some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name")
+      assert_dom_equal "<dt class=\"foo_bar\">Different name</dt> <dd class=\"foo_bar\">some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name")
     end
 
     should "return nil if value is nil" do

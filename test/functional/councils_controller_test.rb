@@ -551,12 +551,12 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show child district authorities when they exist" do
         @council.child_authorities << @another_council
         get :show, :id => @council.id
-        assert_select "#associated_councils a", /#{@another_council.name}/
+        assert_select "dd.district_councils a", /#{@another_council.name}/
       end
 
-      should "show parent country authority if it exists" do
+      should "show parent county authority if it exists" do
         get :show, :id => @another_council.id
-        assert_select "#associated_councils a", /#{@council.name}/
+        assert_select "dd.county_council a", /#{@council.name}/
       end
 
       should "show list hyperlocal_sites" do

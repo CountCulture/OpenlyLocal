@@ -207,11 +207,18 @@ body.main .intro {
 	overflow:auto;
 }
 body.councils .extra_info  {
-	float:left;
+/*	float:left;*/
 }
 .extra_info .notes h4 {
 	float: left;
 	width: 5em;
+}
+dl#main_attributes {
+	clear:left;
+	margin: 2em 0;
+	float:left;
+	max-width:600px;
+	
 }
 .attributes dt {
 	float: left;
@@ -220,7 +227,7 @@ body.councils .extra_info  {
 	text-align:right;
 }
 .attributes dd {
-	float:left;
+	margin-left: 10em;
 	max-width:350px;
 }
 div.item_grouping {
@@ -269,7 +276,7 @@ body.councils .area a {
 #party_breakdown {
 	float:right;
 	width:450px;
-	height:200px;
+	height:220px;
 	margin-bottom: 0.75em;
 }
 #party_breakdown img {
