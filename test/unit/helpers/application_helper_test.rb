@@ -405,7 +405,7 @@ class ApplicationHelperTest < ActionView::TestCase
     end
 
     should "return link to url using help icon" do
-      assert_equal link_to(image_tag("help.png"), "http://en.wikipedia.org/wiki/London_borough", :class => "help", :alt => "help"), help_link_to("http://en.wikipedia.org/wiki/London_borough")
+      assert_equal link_to(image_tag("help.png", :alt => "help"), "http://en.wikipedia.org/wiki/London_borough", :class => "help"), help_link_to("http://en.wikipedia.org/wiki/London_borough")
     end
   end
 
