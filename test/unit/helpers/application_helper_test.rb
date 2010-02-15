@@ -36,6 +36,11 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal link_to(obj.title, obj, :class => "committee_link"), link_for(obj)
     end
 
+    should "use underscore version of object class for link class" do
+      obj = stale_factory_object(:hyperlocal_site) # poss better way of testing this. obj can be any ActiveRecord obj
+      assert_dom_equal link_to(obj.title, obj, :class => "hyperlocal_site_link"), link_for(obj)
+    end
+
     should "escape object's title" do
       obj = stale_factory_object(:committee, :title => "something & nothing... which <needs> escaping" )
       assert_dom_equal link_to(h(obj.title), obj, :class => "committee_link"), link_for(obj)

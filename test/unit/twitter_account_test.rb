@@ -17,6 +17,10 @@ class TwitterAccountTest < ActiveSupport::TestCase
         user = Factory(:member)
         assert_equal user, Factory(:twitter_account, :user => user).reload.user
       end
+      
+      should "alias name as title" do
+        assert_equal "foo", Factory(:twitter_account, :name => "foo").title
+      end
 
     end
 end
