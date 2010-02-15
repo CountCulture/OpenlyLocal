@@ -34,6 +34,10 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       assert HyperlocalSite.respond_to?(:find_closest)
     end
     
+    should "include TwitterAccountMethods mixin" do
+      assert HyperlocalSite.new.respond_to?(:twitter_account_name)
+    end
+    
     should "validate presence of lat on create" do
       h = Factory.build(:hyperlocal_site, :lat => nil)
       assert !h.valid?

@@ -21,6 +21,10 @@ class MemberTest < ActiveSupport::TestCase
       assert Member.respond_to?(:find_all_existing)
     end
     
+    should "include TwitterAccountMethods mixin" do
+      assert Member.new.respond_to?(:twitter_account_name)
+    end
+    
     context "should overwrite orphan_records_callback and" do
       setup do
         @another_member = Factory(:member, :council => @existing_member.council)

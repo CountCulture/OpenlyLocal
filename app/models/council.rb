@@ -10,6 +10,7 @@ class Council < ActiveRecord::Base
   }
   include PartyBreakdown
   include AreaStatisticMethods
+  include TwitterAccountMethods
   has_many :members, :order => "last_name"
   has_many :committees, :order => "title"
   has_many :memberships, :through => :members

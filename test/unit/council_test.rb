@@ -51,6 +51,10 @@ class CouncilTest < ActiveSupport::TestCase
       assert Council.new.respond_to?(:party_breakdown)
     end
 
+    should "include TwitterAccountMethods mixin" do
+      assert Council.new.respond_to?(:twitter_account_name)
+    end
+    
     context "parsed named_scope" do
       setup do
         @another_council = Factory(:another_council)
