@@ -48,7 +48,7 @@ class Council < ActiveRecord::Base
     country, region, term = params.delete(:country), params.delete(:region), params.delete(:term)
     conditions = term ? ["councils.name LIKE ?", "%#{term}%"] : nil
     conditions ||= {:country => country, :region => region}.delete_if{ |k,v| v.blank?  }
-    parsed(:include_unparsed => params.delete(:include_unparsed)).all({:conditions => conditions}.merge(params))
+    parsed(:include_unparsed => params.delete(:include_unparsed)).all({:conditions => conditions, :include => [:new_twitter_account]}.merge(params))
   end
   
   def self.with_stale_services
