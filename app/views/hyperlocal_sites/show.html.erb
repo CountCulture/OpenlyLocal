@@ -39,7 +39,7 @@
     <%- attribute_tag :url do -%>
       <%= link_to(@hyperlocal_site.url, @hyperlocal_site.url, :class => "external", :rel => (@hyperlocal_site.approved ? nil : "nofollow")) %>
       <%= link_to("News feed", @hyperlocal_site.feed_url, :class => "feed") unless @hyperlocal_site.feed_url.blank? %>
-      <%= twitter_link_for(@hyperlocal_site.twitter_account) %>
+      <%= twitter_link_for(@hyperlocal_site.twitter_account_name) %>
     <%- end -%>
     <%= attribute_tag :area_covered, "#{@hyperlocal_site.area_covered} (within #{number_with_precision(@hyperlocal_site.distance_covered, :precision => 1)} miles of lat #{number_with_precision(@hyperlocal_site.lat, :precision => 2)}, long #{number_with_precision(@hyperlocal_site.lng, :precision => 2)})" %>
     <%= attribute_tag :group, link_for(@hyperlocal_site.hyperlocal_group) %>

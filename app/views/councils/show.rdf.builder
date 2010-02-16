@@ -27,11 +27,11 @@ xml.tag! "rdf:RDF",
         xml.tag! "vCard:Country", @council.country 
       end
     end
-    unless @council.twitter_account.blank?
+    unless @council.twitter_account_name.blank?
       xml.tag! "foaf:holdsAccount" do
-        xml.tag! "foaf:OnlineAccount", "rdf:about" => "http://twitter.com/#{@council.twitter_account}" do
+        xml.tag! "foaf:OnlineAccount", "rdf:about" => "http://twitter.com/#{@council.twitter_account_name}" do
           xml.tag! "foaf:accountServiceHomepage", "rdf:resource" => "http://twitter.com/"
-          xml.tag! "foaf:accountName", @council.twitter_account
+          xml.tag! "foaf:accountName", @council.twitter_account_name
         end
       end
     end

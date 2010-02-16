@@ -4,7 +4,7 @@
   <%- attribute_tag :website do -%>
     <%= link_to @council.url, @council.url, :class => :external %> 
     <%= link_to("News feed", @council.feed_url, :class => "feed") if @council.feed_url %>
-    <%= twitter_link_for(@council.twitter_account) %>
+    <%= twitter_link_for(@council.twitter_account_name) %>
   <%- end -%>
   <%- attribute_tag :authority_type do -%>
     <%= @council.authority_type %> <%= help_link_to(@council.authority_type_help_url) %>

@@ -39,8 +39,56 @@ class TwitterAccountMethodsTest < ActiveSupport::TestCase
  
   context "An instance of a class that includes TwitterAccountMethods mixin" do
     setup do
+      @test_model = TestTwitteringModel.create!
     end
+    
+    context "when calling twitter_account_name setter method" do
+      setup do
+      end
+      
+      should "create TwitterAccount" do
+        assert_difference "TwitterAccount.count", 1 do
+          @test_model.twitter_account_name = "foo"
+        end
+      end
+      
+      should "do nothing if name is blank" do
+        assert_no_difference "TwitterAccount.count" do
+          @test_model.twitter_account_name = ""
+          @test_model.twitter_account_name = nil
+        end
+      end
+      
+      should "associate twitter account with instance" do
+        @test_model.twitter_account_name = "foo"
+        assert_equal @test_model.new_twitter_account, TwitterAccount.find_by_name("foo")
+      end
+      
+      context "and instance already has associated twitter user" do
+        setup do
+          @test_model.twitter_account_name = "foo"
+        end
         
+        should "not create new TwitterAccount" do
+          assert_no_difference "TwitterAccount.count"do
+            @test_model.twitter_account_name = "bar"
+          end
+        end
+        
+        should "update existing twitter account with new name" do
+          @test_model.twitter_account_name = "bar"
+          assert_equal @test_model.reload.new_twitter_account, TwitterAccount.find_by_name("bar")
+        end
+      end
+      
+      should "have stub twitter_list_name" do
+        assert_nil @test_model.twitter_list_name
+        @test_model.twitter_account_name = "foo"
+        assert_nil @test_model.twitter_list_name
+      end
+      
+    end
+    
   end
   
 end

@@ -25,11 +25,11 @@ xml.tag! "rdf:RDF",
         xml.tag! "vCard:Extadd", @member.address
       end
     end
-    unless @member.twitter_account.blank?
+    unless @member.twitter_account_name.blank?
       xml.tag! "foaf:holdsAccount" do
-        xml.tag! "foaf:OnlineAccount", "rdf:about" => "http://twitter.com/#{@member.twitter_account}" do
+        xml.tag! "foaf:OnlineAccount", "rdf:about" => "http://twitter.com/#{@member.twitter_account_name}" do
           xml.tag! "foaf:accountServiceHomepage", "rdf:resource" => "http://twitter.com/"
-          xml.tag! "foaf:accountName", @member.twitter_account
+          xml.tag! "foaf:accountName", @member.twitter_account_name
         end
       end
     end

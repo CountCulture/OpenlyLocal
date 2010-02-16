@@ -3,5 +3,5 @@
   <strong><%= link_for hyperlocal_site %></strong>
   <%= link_to hyperlocal_site.url, hyperlocal_site.url, :class => :external %>
   <%= link_to("News feed", hyperlocal_site.feed_url, :class => "feed") if hyperlocal_site.feed_url? %>
-  <%= twitter_link_for(hyperlocal_site.twitter_account) %> 
+  <%= twitter_link_for(hyperlocal_site.twitter_account_name) %> 
 </li>

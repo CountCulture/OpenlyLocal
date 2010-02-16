@@ -157,7 +157,7 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
         end
 
         should "use hyperlocal_site twitter_account in message if it exists" do
-          @hyperlocal_site.update_attribute(:twitter_account, "anyhyperlocal_site")
+          @hyperlocal_site.update_attribute(:twitter_account_name, "anyhyperlocal_site")
           Tweeter.expects(:new).with(regexp_matches(/@anyhyperlocal_site has been added/), anything).returns(@dummy_tweeter)
           @hyperlocal_site.update_attribute(:approved, true)
         end

@@ -6,6 +6,6 @@
       <div class='info'>
         <span class="address"><%= council.address %></span>, <span class='telephone'><%= council.telephone %></span>, <%= link_to(council.url, council.url, :class => 'external') if council.url? %>
         <%= link_to("News feed", council.feed_url, :class => "feed") if council.feed_url? %>
-        <%= twitter_link_for(council.twitter_account) %> 
+        <%= twitter_link_for(council.twitter_account_name) %> 
       </div>
     <%- end -%>

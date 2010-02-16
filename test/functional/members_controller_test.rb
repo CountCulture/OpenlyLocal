@@ -157,7 +157,7 @@ class MembersControllerTest < ActionController::TestCase
      context "with rdf request" do
        context "for member with full personal details" do
          setup do
-           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof", :party => "Labour", :twitter_account => "foo")
+           @member.update_attributes(:telephone => "012 345 678", :email => "member@anytown.gov.uk", :address => "2 some street, anytown", :name_title => "Prof", :party => "Labour", :twitter_account_name => "foo")
            get :show, :id => @member.id, :format => "rdf"
          end
 

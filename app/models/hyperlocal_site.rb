@@ -28,7 +28,7 @@ class HyperlocalSite < ActiveRecord::Base
   private
   def tweet_about_it
     if approved && !approved_was
-      message = (twitter_account? ? "@#{twitter_account}" : title) + " has been added to OpenlyLocal #hyperlocal directory"
+      message = (twitter_account_name ? "@#{twitter_account_name}" : title) + " has been added to OpenlyLocal #hyperlocal directory"
       options = {}
       Delayed::Job.enqueue(Tweeter.new(message, {:url => "http://openlylocal.com/hyperlocal_sites/#{self.to_param}", :lat => lat, :long => lng}), 1)
     end

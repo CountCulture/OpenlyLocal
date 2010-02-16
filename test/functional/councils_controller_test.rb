@@ -389,7 +389,7 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "with rdf requested" do
       setup do
-        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk", :os_id => "7000123", :parent_authority_id => @another_council.id, :twitter_account => "anytown_twitter")
+        @council.update_attributes(:wikipedia_url => "http:/en.wikipedia.org/wiki/foo", :address => "47 some street, anytown AN1 3TN", :telephone => "012 345", :url => "http://anytown.gov.uk", :os_id => "7000123", :parent_authority_id => @another_council.id, :twitter_account_name => "anytown_twitter")
         get :show, :id => @council.id, :format => "rdf"
       end
      

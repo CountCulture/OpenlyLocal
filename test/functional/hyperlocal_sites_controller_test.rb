@@ -324,7 +324,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       
     end
     
-    context "when hyperlocal_site with feed_entries" do
+    context "when hyperlocal_site has feed_entries" do
       setup do
         @feed_entry = Factory(:feed_entry, :feed_owner => @hyperlocal_site)
         get :show, :id => @hyperlocal_site.id
@@ -334,6 +334,18 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         assert_select '#feed_entries' do
           assert_select "#feed_entry_#{@feed_entry.id}"
         end
+      end
+      
+    end
+    
+    context "when hyperlocal_site has twitter_account" do
+      setup do
+        @hyperlocal_site.twitter_account_name = "foo"
+        get :show, :id => @hyperlocal_site.id
+      end
+      
+      should "link to twitter feed" do
+        assert_select 'a.twitter[href*="twitter.com/foo"]'
       end
       
     end

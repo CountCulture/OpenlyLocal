@@ -242,7 +242,7 @@ class MemberTest < ActiveSupport::TestCase
         end
         
         should "include council twitter_account in message if it exists" do
-          @council.update_attribute(:twitter_account, "anycouncil")
+          @council.update_attribute(:twitter_account_name, "anycouncil")
           Tweeter.expects(:new).with(regexp_matches(/@anycouncil/), anything).returns(@dummy_tweeter)
           Factory(:member, :council => @council)
         end
@@ -294,7 +294,13 @@ class MemberTest < ActiveSupport::TestCase
         assert_equal 3.days.ago.to_date, member.reload.date_left
       end  
     end
-        
+    
+    #twitter stuff
+    should "override included twitter_list_name to return ukcouncillors" do
+      assert_equal "ukcouncillors", @member.twitter_list_name
+    end
+    
+    # NB This is not really necessary any more as all management of twitter lists is handle by TwitterAccount class
     context "in managing membership of ukcouncillors twitter list" do
       setup do
         member = Factory(:member) # add member so any we add aren't the first for the council
@@ -307,7 +313,7 @@ class MemberTest < ActiveSupport::TestCase
 
         context "and member has twitter account" do
           should "add to ukcouncillors twitter list" do
-            new_member = Factory.build(:member, :twitter_account => "foo", :council => @council)
+            new_member = Factory.build(:member, :twitter_account_name => "foo", :council => @council)
             Tweeter.expects(:new).with(:method => :add_to_list, :user => "foo", :list => "ukcouncillors").returns(@dummy_tweeter)
 
             new_member.save
@@ -328,7 +334,7 @@ class MemberTest < ActiveSupport::TestCase
         context "and twitter account is not changed" do
           
           should "not add to twitter list" do
-            existing_member = Factory(:member, :twitter_account => "foo", :council => @council)
+            existing_member = Factory(:member, :twitter_account_name => "foo", :council => @council)
             Tweeter.expects(:new).never
             new_member.save
           end
@@ -337,15 +343,15 @@ class MemberTest < ActiveSupport::TestCase
         context "and twitter account is changed" do
           
           should "remove old account from twitter list" do
-            existing_member = Factory(:member, :twitter_account => 'foo', :council => @council)
-            Tweeter.expects(:new).with(has_entries(:method => :remove_from_list, :user => 'foo', :list => 'ukcouncillors')).returns(Tweeter.new('foo'))
-            existing_member.update_attribute(:twitter_account, 'bar')
+            existing_member = Factory(:member, :twitter_account_name => 'foo', :council => @council)
+            Tweeter.expects(:new).with(has_entries(:method => :remove_from_list, :user => 'foo', :list => 'ukcouncillors')).returns(@dummy_tweeter)
+            existing_member.update_attribute(:twitter_account_name, 'bar')
           end
           
           should "add new account to twitter list" do
-            existing_member = Factory(:member, :twitter_account => 'foo', :council => @council)
-            Tweeter.expects(:new).with(has_entries(:method => :add_to_list, :user => 'bar', :list => 'ukcouncillors')).returns(Tweeter.new('foo'))
-            existing_member.update_attribute(:twitter_account, 'bar')
+            existing_member = Factory(:member, :twitter_account_name => 'foo', :council => @council)
+            Tweeter.expects(:new).with(has_entries(:method => :add_to_list, :user => 'bar', :list => 'ukcouncillors')).returns(@dummy_tweeter)
+            existing_member.update_attribute(:twitter_account_name, 'bar')
           end
         end
       end
@@ -354,17 +360,17 @@ class MemberTest < ActiveSupport::TestCase
 
         should "add account to ukcouncillors twitter list" do
           existing_member = Factory(:member, :council => @council)
-          Tweeter.expects(:new).with(has_entries(:method => :add_to_list, :user => 'foo', :list => 'ukcouncillors')).returns(Tweeter.new('foo'))
-          existing_member.update_attributes(:twitter_account => "foo")
+          Tweeter.expects(:new).with(has_entries(:method => :add_to_list, :user => 'foo', :list => 'ukcouncillors')).returns(@dummy_tweeter)
+          existing_member.update_attributes(:twitter_account_name => "foo")
         end
       end
 
       context "when existing member has twitter account deleted" do
 
         should "remove account from ukcouncillors twitter list" do
-          existing_member = Factory(:member, :twitter_account => "foo", :council => @council)
-          Tweeter.expects(:new).with(has_entries(:method => :remove_from_list, :user => 'foo', :list => 'ukcouncillors')).returns(Tweeter.new('foo'))
-          existing_member.update_attributes(:twitter_account => nil)
+          existing_member = Factory(:member, :twitter_account_name => "foo", :council => @council)
+          Tweeter.expects(:new).with(has_entries(:method => :remove_from_list, :user => 'foo', :list => 'ukcouncillors')).returns(@dummy_tweeter)
+          existing_member.new_twitter_account.destroy
         end
       end
     end

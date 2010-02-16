@@ -26,8 +26,6 @@ class Member < ActiveRecord::Base
   named_scope :current, :conditions => "date_left IS NULL"
   alias_attribute :title, :full_name
   after_create :tweet_about_it
-  after_save :add_to_twitter_list
-  after_save :remove_from_twitter_list
   
   def full_name=(full_name)
     names_hash = NameParser.parse(full_name)
@@ -46,6 +44,11 @@ class Member < ActiveRecord::Base
   
   def foaf_telephone
     "tel:+44-#{telephone.gsub(/^0/, '').gsub(/\s/, '-')}" unless telephone.blank?
+  end
+  
+  # overrides stub method from TwitterAccountMethods
+  def twitter_list_name
+    "ukcouncillors"
   end
   
   def mark_as_ex_member
@@ -87,20 +90,10 @@ class Member < ActiveRecord::Base
   def tweet_about_it
     if council.members.count == 1
       options = council.lat.blank? ? {} : {:lat => council.lat, :long => council.lng}
-      message = (council.title.length > 60 ? council.short_name : council.title) + " has been added to OpenlyLocal #localgov #opendata " + (council.twitter_account.blank? ? '' : "@#{council.twitter_account}")
+      message = (council.title.length > 60 ? council.short_name : council.title) + " has been added to OpenlyLocal #localgov #opendata " + (council.twitter_account_name.blank? ? '' : "@#{council.twitter_account_name}")
       Delayed::Job.enqueue(Tweeter.new(message, {:url => "http://openlylocal.com/councils/#{council.to_param}"}.merge(options)))
     end
     true
   end
 
-  def add_to_twitter_list
-    return unless twitter_account?
-    Delayed::Job.enqueue(Tweeter.new(:method => :add_to_list, :user => twitter_account, :list => 'ukcouncillors'))
-  end
-  
-  def remove_from_twitter_list
-    return unless old_twitter_account = changes['twitter_account'].try(:first)
-    Delayed::Job.enqueue(Tweeter.new(:method => :remove_from_list, :user => changes['twitter_account'].try(:first), :list => 'ukcouncillors'))
-  end
-  
 end
