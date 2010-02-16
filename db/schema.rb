@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100214164059) do
+ActiveRecord::Schema.define(:version => 20100216143858) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -77,7 +77,6 @@ ActiveRecord::Schema.define(:version => 20100214164059) do
     t.column "snac_id", :string
     t.column "country", :string
     t.column "population", :integer
-    t.column "twitter_account", :string
     t.column "ldg_id", :integer
     t.column "os_id", :string
     t.column "parent_authority_id", :integer
@@ -248,7 +247,6 @@ ActiveRecord::Schema.define(:version => 20100214164059) do
     t.column "title", :string
     t.column "url", :string
     t.column "email", :string
-    t.column "twitter_account", :string
     t.column "feed_url", :string
     t.column "lat", :float
     t.column "lng", :float
@@ -311,7 +309,6 @@ ActiveRecord::Schema.define(:version => 20100214164059) do
     t.column "register_of_interests", :string
     t.column "address", :text
     t.column "ward_id", :integer
-    t.column "twitter_account", :string
     t.column "blog_url", :string
   end
 

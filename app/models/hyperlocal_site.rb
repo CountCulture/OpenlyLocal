@@ -11,7 +11,7 @@ class HyperlocalSite < ActiveRecord::Base
   # validates_uniqueness_of :url
   validates_inclusion_of :platform, :in => PossiblePlatforms, :allow_blank => true
   validates_inclusion_of :country, :in => AllowedCountries
-  named_scope :approved, :conditions => {:approved => true}, :include => [:new_twitter_account]
+  named_scope :approved, :conditions => {:approved => true}, :include => [:twitter_account]
   acts_as_mappable
   default_scope :order => "title"
   delegate :region, :to => :council, :allow_nil => true

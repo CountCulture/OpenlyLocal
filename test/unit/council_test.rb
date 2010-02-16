@@ -41,7 +41,6 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_db_column :snac_id
     should_have_db_column :country
     should_have_db_column :population
-    should_have_db_column :twitter_account
     should_have_db_column :ldg_id
     should_have_db_column :police_force_url
     should_have_db_column :region
@@ -625,6 +624,7 @@ class CouncilTest < ActiveSupport::TestCase
         mark_as_stale(@future_meeting)
         @updated_past_meeting = Factory(:meeting, :council => @council, :committee => @committee)
         Factory(:ward, :council => @council)
+        @council.twitter_account_name = "twitter_foo"
       end
 
       should "not include base_url" do
@@ -695,9 +695,9 @@ class CouncilTest < ActiveSupport::TestCase
         assert_match %r(<recent-activity.+<meeting.+<formatted-date>#{@updated_past_meeting.formatted_date}.+</recent-activity)m, @council.to_detailed_xml
       end
 
-      # should "include status of member in recent activity" do
-      #   assert_match %r(<recent-activity.+<member.+<status.+</member.+</recent-activity)m, @council.to_detailed_xml
-      # end
+      should "include status of member in recent activity" do
+        assert_match %r(<twitter-account.+<name>twitter_foo)m, @council.to_detailed_xml
+      end
     end
 
     should "return name without Borough etc as short_name" do
@@ -738,6 +738,20 @@ class CouncilTest < ActiveSupport::TestCase
       #   @member_1.update_attribute(:date_left, 3.days.ago)
       #   assert_in_delta 5.0/2, @council.average_membership_count, 2 ** -20
       # end
+    end
+    
+    context "when updating_social_networking_info" do
+      should_eventually "call SocialNetwork::Finder with council url" do
+        
+      end
+      
+      should_eventually "update empty attributes with info returned from SocialNetwork::Finder" do
+        
+      end
+      
+      should_eventually "not update existing attributes with info returned from SocialNetwork::Finder" do
+        
+      end
     end
 
   end

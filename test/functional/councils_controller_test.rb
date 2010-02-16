@@ -354,9 +354,6 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_select "council>wards>ward>url", @ward.url
       end
       
-      should "show twtter id" do
-        assert_select "council>twitter-account"
-      end
     end
     
     context "with json requested" do

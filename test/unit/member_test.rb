@@ -7,7 +7,7 @@ class MemberTest < ActiveSupport::TestCase
   should_have_many :memberships
   should_have_many :committees, :through => :memberships
   should_have_named_scope :current, :conditions => "date_left IS NULL"
-  should_have_db_columns :address, :twitter_account, :blog_url
+  should_have_db_columns :address, :blog_url
   
   context "The Member class" do
     setup do
@@ -370,7 +370,7 @@ class MemberTest < ActiveSupport::TestCase
         should "remove account from ukcouncillors twitter list" do
           existing_member = Factory(:member, :twitter_account_name => "foo", :council => @council)
           Tweeter.expects(:new).with(has_entries(:method => :remove_from_list, :user => 'foo', :list => 'ukcouncillors')).returns(@dummy_tweeter)
-          existing_member.new_twitter_account.destroy
+          existing_member.twitter_account.destroy
         end
       end
     end

@@ -12,22 +12,22 @@ class TwitterAccountMethodsTest < ActiveSupport::TestCase
     
     setup do
       @test_model_with_twitter_account = TestTwitteringModel.create!
-      @new_twitter_account = Factory(:twitter_account, :user => @test_model_with_twitter_account)
+      @twitter_account = Factory(:twitter_account, :user => @test_model_with_twitter_account)
     end
     
-    should "have one new_twitter_account" do
-      assert_equal @new_twitter_account, @test_model_with_twitter_account.reload.new_twitter_account      
+    should "have one twitter_account" do
+      assert_equal @twitter_account, @test_model_with_twitter_account.reload.twitter_account      
     end
     
     should "destroy associated twitter_account when instance is destroyed" do
       assert_difference "TwitterAccount.count", -1 do
         @test_model_with_twitter_account.destroy
       end
-      assert_nil TwitterAccount.find_by_id(@new_twitter_account.id)
+      assert_nil TwitterAccount.find_by_id(@twitter_account.id)
     end
     
     should "delegate twitter_account_name to associated twitter_account" do
-      assert_equal @new_twitter_account.name, @test_model_with_twitter_account.twitter_account_name
+      assert_equal @twitter_account.name, @test_model_with_twitter_account.twitter_account_name
     end
     
     should "return nil for twitter_account_name if no associated twitter_account" do
@@ -35,7 +35,7 @@ class TwitterAccountMethodsTest < ActiveSupport::TestCase
     end
     
     should "delegate twitter_account_url to associated twitter_account" do
-      assert_equal @new_twitter_account.url, @test_model_with_twitter_account.twitter_account_url
+      assert_equal @twitter_account.url, @test_model_with_twitter_account.twitter_account_url
     end
     
     should "return nil for twitter_account_name if no associated twitter_account" do
@@ -67,14 +67,14 @@ class TwitterAccountMethodsTest < ActiveSupport::TestCase
 
         should "associate twitter account with instance" do
           @test_model.twitter_account_name = "foo"
-          assert_equal @test_model.new_twitter_account, TwitterAccount.find_by_name("foo")
+          assert_equal @test_model.twitter_account, TwitterAccount.find_by_name("foo")
         end
       end
       
       context "and instance already has associated twitter user" do
         setup do
           @test_model.twitter_account_name = "foo"
-          @twitter_account = @test_model.new_twitter_account
+          @twitter_account = @test_model.twitter_account
         end
         
         should "not create new TwitterAccount" do
@@ -85,7 +85,7 @@ class TwitterAccountMethodsTest < ActiveSupport::TestCase
         
         should "update existing twitter account with new name" do
           @test_model.twitter_account_name = "bar"
-          assert_equal @test_model.reload.new_twitter_account, TwitterAccount.find_by_name("bar")
+          assert_equal @test_model.reload.twitter_account, TwitterAccount.find_by_name("bar")
         end
         
         should "destroy twitter_account if name is empty string" do

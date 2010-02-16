@@ -22,7 +22,6 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_have_db_column :lat
     should_have_db_column :lng
     should_have_db_column :distance_covered
-    should_have_db_column :twitter_account
     should_have_db_column :feed_url
     should_have_db_column :platform
     should_have_db_column :area_covered

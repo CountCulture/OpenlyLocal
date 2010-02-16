@@ -1,16 +1,16 @@
  # Mixin with bunch of useful methods for models with twitter accounts
 module TwitterAccountMethods
   module ClassMethods
-    # delegate :name, :to => "new_twitter_account", :prefix => :twitter_account
+    # delegate :name, :to => "twitter_account", :prefix => :twitter_account
   end
   
   module InstanceMethods
     # convenience method for setting twitter account relationship. Allows us to set by parsing results
     def twitter_account_name=(name)
-      if ta = new_twitter_account 
+      if ta = twitter_account 
         name.blank? ? ta.destroy : ta.update_attributes(:name => name)
       else
-        create_new_twitter_account(:name => name)
+        create_twitter_account(:name => name)
       end
     end
     
@@ -25,8 +25,8 @@ module TwitterAccountMethods
   def self.included(receiver)
     receiver.extend         ClassMethods
     receiver.send :include, InstanceMethods
-    receiver.has_one :new_twitter_account, :class_name => "TwitterAccount", :as => :user, :dependent => :destroy
-    receiver.delegate :name, :to => "new_twitter_account", :prefix => :twitter_account, :allow_nil => true
-    receiver.delegate :url, :to => "new_twitter_account", :prefix => :twitter_account, :allow_nil => true
+    receiver.has_one :twitter_account, :as => :user, :dependent => :destroy
+    receiver.delegate :name, :to => "twitter_account", :prefix => true, :allow_nil => true
+    receiver.delegate :url, :to => "twitter_account", :prefix => true, :allow_nil => true
   end
 end

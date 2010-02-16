@@ -57,7 +57,7 @@ class TwitterAccountTest < ActiveSupport::TestCase
       should "remove from twitter list when twitter_account is deleted" do
         @user.twitter_account_name = "foo"
         Tweeter.expects(:new).with(has_entries(:method => :remove_from_list, :user => 'foo', :list => 'foo_list')).returns(@dummy_tweeter)
-        @user.reload.new_twitter_account.destroy
+        @user.reload.twitter_account.destroy
       end
 
       should "remove old account from twitter list when twitter_account name is changed" do
@@ -65,20 +65,20 @@ class TwitterAccountTest < ActiveSupport::TestCase
         Tweeter.stubs(:new).with(has_entries(:method => :add_to_list)).returns(@dummy_tweeter)
         
         Tweeter.expects(:new).with(has_entries(:method => :remove_from_list, :user => 'foo', :list => 'foo_list')).returns(@dummy_tweeter)
-        @user.new_twitter_account.update_attributes(:name => "bar")
+        @user.twitter_account.update_attributes(:name => "bar")
       end
 
       should "add new account to twitter list when twitter_account name is changed" do
         @user.twitter_account_name = "foo"
         Tweeter.stubs(:new).with(has_entries(:method => :remove_from_list)).returns(@dummy_tweeter)
         Tweeter.expects(:new).with(has_entries(:method => :add_to_list, :user => 'bar', :list => 'foo_list')).returns(@dummy_tweeter)
-        @user.new_twitter_account.update_attributes(:name => "bar")
+        @user.twitter_account.update_attributes(:name => "bar")
       end
       
       should "not add to twitter list when twitter_account is updated but name is same" do
         @user.twitter_account_name = "foo"
         Tweeter.expects(:new).never
-        @user.new_twitter_account.update_attributes(:following_count => 2)
+        @user.twitter_account.update_attributes(:following_count => 2)
       end
 
     end    
@@ -96,7 +96,7 @@ class TwitterAccountTest < ActiveSupport::TestCase
       should "not remove from twitter list when twitter_account is deleted" do
         @user.twitter_account_name = "foo"
         Tweeter.expects(:new).never
-        @user.new_twitter_account.destroy
+        @user.twitter_account.destroy
       end
 
       should "not remove or add old account from twitter list when twitter_account name is changed" do
