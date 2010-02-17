@@ -740,17 +740,137 @@ class CouncilTest < ActiveSupport::TestCase
       # end
     end
     
+    context "when updating_social_networking_info for Council class" do
+      setup do
+        dummy_response = { :twitter_account_name => "foo", :feed_url => "http://council.gov.uk/feed" }
+        SocialNetworkingUtilities::Finder.stubs(:new).returns(stub(:process => dummy_response))
+        Council.stubs(:all).returns([@council])
+      end
+      
+      should "get all councils" do
+        Council.expects(:all).returns([@council])
+        Council.update_social_networking_info
+      end
+      
+      should "updating_social_networking_info for councils" do
+        @council.expects(:update_social_networking_info).returns({})
+        Council.update_social_networking_info
+      end
+      
+      should "not raise exception if problems getting data" do
+        @council.expects(:update_social_networking_info).raises(StandardError, "OpenURI Error")
+        assert_nothing_raised() { Council.update_social_networking_info }
+      end
+      
+      should "email admin report" do
+        AdminMailer.expects(:deliver_admin_alert!)
+        Council.update_social_networking_info
+      end
+      
+      should "include exceptions raised in email admin report" do
+        @council.stubs(:update_social_networking_info).raises(StandardError, "OpenURI Error")
+        Council.update_social_networking_info
+        assert_sent_email do |email|
+          email.body =~ /Exception raised.+#{@council.title}.+OpenURI Error/i
+        end
+      end
+      
+      context "and when emailing admin report" do
+        setup do
+          @council.expects(:update_social_networking_info).returns({:updates => 2})
+          @error_message = "new twitter_account_name (foo) does not match old twitter_account_name (bar)"
+          @council.errors.add_to_base(@error_message)
+          Council.update_social_networking_info
+        end
+        
+        should "have subject" do
+          assert_sent_email do |email|
+            email.subject =~ /Council Social Networking Info Report/i
+          end
+        end
+        
+        should "include number of errors in subject" do
+          assert_sent_email do |email|
+            email.subject =~ /1 errors/i
+          end
+        end
+        
+        should "include number of updates in subject" do
+          assert_sent_email do |email|
+            email.subject =~ /2 updates/i
+          end
+        end
+        
+        should "list council and errors in report" do
+          assert_sent_email do |email|
+            email.body =~ /#{@council.title}.+#{Regexp.escape(@error_message)}/m
+          end
+        end
+        
+      end
+    end
+    
     context "when updating_social_networking_info" do
-      should_eventually "call SocialNetwork::Finder with council url" do
-        
+      setup do
+        dummy_response = { :twitter_account_name => "foo", :feed_url => "http://council.gov.uk/feed" }
+        SocialNetworkingUtilities::Finder.stubs(:new).returns(stub(:process => dummy_response))
       end
       
-      should_eventually "update empty attributes with info returned from SocialNetwork::Finder" do
-        
+      should "call SocialNetwork::Finder with council url" do
+        SocialNetworkingUtilities::Finder.expects(:new).with(@council.url).returns(stub(:process => {}))
+        @council.update_social_networking_info
       end
       
-      should_eventually "not update existing attributes with info returned from SocialNetwork::Finder" do
+      should "update empty attributes with info returned from SocialNetwork::Finder" do
+        @council.update_social_networking_info
+        assert_equal "foo", @council.reload.twitter_account_name
+        assert_equal "http://council.gov.uk/feed", @council.feed_url
+      end
+      
+      should "not update existing attributes with info returned from SocialNetwork::Finder" do
+        @council.update_attributes(:twitter_account_name => "bar", :feed_url => "http://council.gov.uk/old_feed")
+        @council.update_social_networking_info
+        assert_equal "bar", @council.reload.twitter_account_name
+        assert_equal "http://council.gov.uk/old_feed", @council.feed_url
+      end
+      
+      context "result of updating" do
+        setup do
+        end
         
+        should "return hash of info" do
+          assert_kind_of Hash, @council.update_social_networking_info
+        end
+        
+        should "not count as errors entries where no result returned but existing info" do
+          @council.update_attributes(:twitter_account_name => "bar")
+          SocialNetworkingUtilities::Finder.stubs(:new).returns(stub(:process => {:feed_url => "http://council.gov.uk/feed"})) # no twitter_account_name
+          @council.update_social_networking_info
+          assert_no_match %r(twitter_account_name), @council.errors[:base]
+        end
+        
+        should "not count as errors entries is same as existing info" do
+          @council.update_attributes(:twitter_account_name => "foo")
+          @council.update_social_networking_info
+          assert_no_match %r(twitter_account_name), @council.errors[:base]
+        end
+        
+        should "not count as errors entries is same as existing info but different case" do
+          @council.update_attributes(:twitter_account_name => "Foo")
+          @council.update_social_networking_info
+          assert_no_match %r(twitter_account_name), @council.errors[:base]
+        end
+        
+        should "add errors to council" do
+          @council.update_attributes(:twitter_account_name => "bar")
+          @council.update_social_networking_info
+          assert_equal "new twitter_account_name (foo) does not match old twitter_account_name (bar)", @council.errors[:base]
+        end
+        
+        should "list number of successful updates" do
+          @council.update_attributes(:twitter_account_name => "bar")
+          assert_equal 1, @council.update_social_networking_info[:updates]
+        end
       end
     end
 

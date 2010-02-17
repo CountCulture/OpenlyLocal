@@ -191,9 +191,9 @@ class FeedEntryTest < ActiveSupport::TestCase
         FeedEntry.stubs(:update_from_feed).returns(nil).then.raises
         FeedEntry.perform
         assert_sent_email do |email|
-          email.subject =~ /1 problems/m
-          email.subject =~ /1 successes/m
-          email.body =~ /1 problems/m
+          email.subject =~ /1 problems/m &&
+          email.subject =~ /1 successes/m &&
+          email.body =~ /1 problems/m &&
           email.body =~ /Error> raised.+ #{BlogFeedUrl}/m
         end
       end

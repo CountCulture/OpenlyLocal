@@ -60,7 +60,27 @@ class Council < ActiveRecord::Base
     return TitleNormaliser.normalise_title(raw_title) if raw_title =~ /City of London|Greater London Authority/
     semi_normed_title = raw_title.gsub(/Metropolitan|Borough of|Borough|District|City of|City &|City|County of|County|Royal|Council of the|London|Council|\([\w\s]+\)/, '')
     TitleNormaliser.normalise_title(semi_normed_title)
+  end
+  
+  def self.update_social_networking_info
+    report = ""
+    total_update_count, total_error_count = 0, 0
+    Council.all.each do |council|
+      begin
+        updating_results = council.update_social_networking_info
+        if council.errors[:base]
+          report += "========\nProblem updating social network info for #{council.title}: #{council.errors[:base]}\n"
+          total_error_count += 1
+        end
+        total_update_count += updating_results[:updates].to_i
+      rescue Exception => e
+        report += "========\nException raised getting info for #{council.title}: #{e.inspect}\n"
+        total_error_count += 1
+      end
     end
+    title = "Council Social Networking Info Report: #{total_error_count} errors, #{total_update_count} updates"
+    AdminMailer.deliver_admin_alert!( :title => title, :details => report )
+  end  
 
   # instance methods
   def authority_type_help_url
@@ -158,6 +178,19 @@ class Council < ActiveRecord::Base
       builder<<meetings.forthcoming.to_xml(:skip_instruct => true, :root => "meetings", :methods => [:title, :formatted_date])
       builder<<recent_activity.to_xml(:skip_instruct => true, :root => "recent-activity")
     end
+  end
+  
+  def update_social_networking_info
+    base_result = SocialNetworkingUtilities::Finder.new(url).process
+    update_count = 0
+    [:twitter_account_name, :feed_url].each do |attrib|
+      if send(attrib).blank?
+        (update_count +=1) && update_attribute(attrib, base_result[attrib]) unless base_result[attrib].blank?
+      else
+        errors.add_to_base("new #{attrib} (#{base_result[attrib]}) does not match old #{attrib} (#{send(attrib)})") unless base_result[attrib].blank? || (base_result[attrib].downcase == send(attrib).downcase)
+      end
+    end
+    { :updates => update_count }
   end
   
 end
