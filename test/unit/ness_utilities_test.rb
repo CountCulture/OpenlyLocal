@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'nokogiri'
 
-# Tests IcalUtilities::Calendar class. NB uses Mocha
 class NessUtilitiesTest < ActiveSupport::TestCase
 
   context "A RawClient instance" do

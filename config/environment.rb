@@ -31,6 +31,7 @@ Rails::Initializer.run do |config|
   config.gem "newrelic_rpm"
   config.gem "twitter"
   config.gem "httpclient"
+  config.gem 'crack'
   config.gem "soap4r", :lib => false
   config.gem "pauldix-feedzirra", :lib => "feedzirra", :source => 'http://gems.github.com'
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
