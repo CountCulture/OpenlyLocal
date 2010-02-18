@@ -1,0 +1,2 @@
+module UserSubmissionsHelper
+end

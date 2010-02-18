@@ -5,12 +5,28 @@
   <li><%= link_to "All councils (including unparsed)", councils_path(:include_unparsed => true) %></li>
 </ul>
 
-<h3>Unapproved <%= link_to "Hyperlocal Sites", hyperlocal_sites_path %></h3>
+<div id="user_submissions">
+  <h3>Twitter Account Submissions</h3>
+  <ul>
+    <%- @user_submissions.each do |submission| -%>
+      <li>
+        <strong><%= twitter_link_for(submission.twitter_account_name) %></strong>
+        <%= basic_link_for submission.council %>
+        <%= basic_link_for(submission.member) || submission.member_name %>
+        <%= button_to "Update member", user_submission_path(submission), :confirm => "Are you sure?", :method => :put %>
+      </li>
+    <%- end -%>
+  </ul>
+</div>
 
-<ul id="hyperlocal_sites">
-  <%- @hyperlocal_sites.each do |site| -%>
-    <li>
-      <strong><%= link_for site %></strong> <%= link_to site.url, site.url, :class => "external", :rel => 'nofollow' %> <%= link_to "edit", edit_hyperlocal_site_path(site), :class => "edit button" %> <%= button_to "Delete", hyperlocal_site_path(site), :confirm => "Are you sure?", :method => :delete %>
-    </li>
-  <%- end -%>
-</ul>
+<div id="hyperlocal_sites">
+  <h3>Unapproved <%= link_to "Hyperlocal Sites", hyperlocal_sites_path %></h3>
+
+  <ul id="hyperlocal_sites">
+    <%- @hyperlocal_sites.each do |site| -%>
+      <li>
+        <strong><%= link_for site %></strong> <%= link_to site.url, site.url, :class => "external", :rel => 'nofollow' %> <%= link_to "edit", edit_hyperlocal_site_path(site), :class => "edit button" %> <%= button_to "Delete", hyperlocal_site_path(site), :confirm => "Are you sure?", :method => :delete %>
+      </li>
+    <%- end -%>
+  </ul>
+</div>

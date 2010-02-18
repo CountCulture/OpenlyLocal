@@ -9,4 +9,5 @@ class TwitterAccountsController < ApplicationController
     @twitter_account = TwitterAccount.find(params[:id])
     @title = "Twitter account for #{@twitter_account.user.title} (#{@twitter_account.name})"
   end
+  
 end

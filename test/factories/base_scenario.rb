@@ -233,3 +233,7 @@ Factory.define :twitter_account do |f|
   f.association :user, :factory => :hyperlocal_site
 end
 
+Factory.define :user_submission do |f|
+  f.association :council
+end
+

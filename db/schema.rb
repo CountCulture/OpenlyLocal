@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100218104050) do
+ActiveRecord::Schema.define(:version => 20100218152525) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -310,6 +310,8 @@ ActiveRecord::Schema.define(:version => 20100218104050) do
     t.column "address", :text
     t.column "ward_id", :integer
     t.column "blog_url", :string
+    t.column "facebook_account_name", :string
+    t.column "linked_in_account_name", :string
   end
 
   add_index "members", ["council_id"], :name => "index_members_on_council_id"
@@ -500,6 +502,18 @@ ActiveRecord::Schema.define(:version => 20100218104050) do
     t.column "follower_count", :integer
     t.column "following_count", :integer
     t.column "last_tweet", :text
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
+
+  create_table "user_submissions", :force => true do |t|
+    t.column "twitter_account_name", :string
+    t.column "council_id", :integer
+    t.column "member_id", :integer
+    t.column "member_name", :string
+    t.column "blog_url", :string
+    t.column "facebook_account_name", :string
+    t.column "linked_in_account_name", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
   end

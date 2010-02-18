@@ -394,7 +394,6 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     
     context "with valid params" do
        setup do
-         stub_authentication
          post :create, :hyperlocal_site => @attributes
        end
      
@@ -410,7 +409,6 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
      
      context "with invalid params" do
        setup do
-         stub_authentication
          post :create, :hyperlocal_site => {:title => "New Hyperlocal Site"}
        end
      
@@ -422,7 +420,6 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
   
      context "with approved_flag set to true" do
        setup do
-         stub_authentication
          post :create, :hyperlocal_site => @attributes.merge(:approved => "1")
        end
      

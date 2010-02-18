@@ -67,6 +67,16 @@ class Member < ActiveRecord::Base
     vacancy? ? 'vacancy' : (ex_member? ? 'ex_member' : nil)
   end
   
+  #updates member from user submitted user_submission
+  def update_from_user_submission(submission=nil)
+    attribs = { :twitter_account_name => submission.twitter_account_name, 
+                :blog_url => submission.blog_url,
+                :facebook_account_name => submission.facebook_account_name }.delete_if { |k,v| v.blank? }
+    update_attributes(attribs)
+    submission.destroy
+    true
+  end
+  
   def vacancy?
     full_name =~ /vacancy|vacant/i
   end
