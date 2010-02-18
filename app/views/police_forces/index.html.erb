@@ -2,7 +2,11 @@
 
 <ul>
   <% for force in @police_forces %>
-      <li><strong><%= link_for force %></strong> <%= [force.address, "Tel: #{force.telephone}", link_to(force.url, force.url, :class => "external")].join(", ") %></li>
+      <li>
+        <strong><%= link_for force %></strong> 
+      <%= [force.address, "Tel: #{force.telephone}", link_to(force.url, force.url, :class => "external")].join(", ") %>
+      <%= twitter_link_for(force.twitter_account_name, :short => true) %> 
+      </li>
   <% end %>
 </ul>
 

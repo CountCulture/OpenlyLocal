@@ -4,7 +4,7 @@ class PoliceForcesController < ApplicationController
   before_filter :find_police_force, :except => [:index, :new, :create]
   
   def index
-    @police_forces = PoliceForce.find(:all)
+    @police_forces = PoliceForce.find(:all, :include => [:twitter_account])
     @title = "UK Police Forces"
     respond_to do |format|
       format.html

@@ -1,10 +1,11 @@
+<p class="breadcrumbs"><%= link_to "All Police Forces", police_forces_path %></p>
 <h1><%= h @police_force.name %></h1>
-<p class="more_info"><%= link_to "All Police Forces", police_forces_path %></p>
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :address, @police_force.address %>
   <%= attribute_tag :telephone, @police_force.telephone %>
   <%= attribute_tag :website, link_to(@police_force.url, @police_force.url, :class => "external") %>
   <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@police_force.wikipedia_url), @police_force.wikipedia_url, :class => 'external') unless @police_force.wikipedia_url.blank? %>
+  <%= attribute_tag :twitter, twitter_link_for(@police_force.twitter_account_name) %>
   <%= attribute_tag :police_authority, link_for(@police_force.police_authority) %>
 </dl>
 <div class="extra_info">
