@@ -8,10 +8,10 @@ class AddNpiaNameToPoliceForces < ActiveRecord::Migration
   end
 
   def self.down
-    # add_column :police_forces, :police_authority_url, :string
-    # remove_column :police_forces, :feed_url
-    # remove_column :police_forces, :facebook_account_name
-    # remove_column :police_forces, :youtube_account_name
+    add_column :police_forces, :police_authority_url, :string
+    remove_column :police_forces, :feed_url
+    remove_column :police_forces, :facebook_account_name
+    remove_column :police_forces, :youtube_account_name
     remove_column :police_forces, :npia_id
   end
 end

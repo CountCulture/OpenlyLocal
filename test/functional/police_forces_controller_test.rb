@@ -45,6 +45,9 @@ class PoliceForcesControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_without_layout
       should_respond_with_content_type 'application/xml'
+      should "not include npia_id" do
+        assert_no_match /<npia-id/, @response.body
+      end
     end
     
     context "with json requested" do
@@ -107,6 +110,10 @@ class PoliceForcesControllerTest < ActionController::TestCase
     
     should "include attributes in response" do
       assert_select "police-force>address"
+    end
+    
+    should "not include npia_id" do
+      assert_no_match /<npia-id/, @response.body
     end
     
     should "include councils and basic council data in response" do

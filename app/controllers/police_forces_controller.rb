@@ -8,8 +8,8 @@ class PoliceForcesController < ApplicationController
     @title = "UK Police Forces"
     respond_to do |format|
       format.html
-      format.xml { render :xml => @police_forces.to_xml }
-      format.json { render :json => @police_force.to_json }
+      format.xml { render :xml => @police_forces.to_xml( :except => :npia_id ) }
+      format.json { render :json => @police_force.to_json( :except => :npia_id ) }
     end
   end
   
@@ -18,9 +18,9 @@ class PoliceForcesController < ApplicationController
     respond_to do |format|
       includes = {:councils => {:only => [:id, :name, :url], :methods => :openlylocal_url}}
       format.html
-      format.xml { render :xml => @police_force.to_xml(:include => includes) }
+      format.xml { render :xml => @police_force.to_xml(:include => includes, :except => :npia_id) }
       format.rdf 
-      format.json { render :as_json => @police_force.to_xml(:include => includes) }
+      format.json { render :as_json => @police_force.to_xml(:include => includes, :except => :npia_id) }
     end
   end
   
