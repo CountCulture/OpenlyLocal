@@ -19,7 +19,14 @@ class PoliceForceTest < ActiveSupport::TestCase
     should_have_db_column :telephone
     should_have_db_column :address
     should_have_db_column :wdtk_name
-        
+    should_have_db_column :npia_id
+    should_have_db_column :facebook_account_name
+    should_have_db_column :youtube_account_name
+    should_have_db_column :feed_url
+    
+    should "include TwitterAccountMethods mixin" do
+      assert Member.new.respond_to?(:twitter_account_name)
+    end
   end
   
   context "A PoliceForce instance" do

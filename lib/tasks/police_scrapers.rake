@@ -1,7 +1,25 @@
+desc "Populate NPIA ids for police forces" 
+task :populate_npia_ids => :environment do
+  forces_info = NpiaUtilities::Client.new(:forces).response
+  police_forces = PoliceForce.all
+  forces_info["force"].each do |force_info|
+    force_url = force_info["url_force"]
+    engagement_method_urls = [force_info["engagement_methods"]["method"]].flatten.collect{ |m| m["url"] }
+    social_sites = SocialNetworkingUtilities::IdExtractor.extract_from(engagement_method_urls)
+    if police_force = PoliceForce.first(:conditions => "url LIKE '%#{URI.parse(force_url).host}%'")
+      police_force.update_attributes(social_sites.merge(:npia_id => force_info["id"]))
+      puts "Updated force matching #{force_info["name"]}: #{police_force.name} (social media sites = #{social_sites.inspect})"
+    else
+      puts "*** Could not find force matching #{force_info["name"]} (#{force_url})"
+    end
+  end
+end
+
+
 desc "Scrape Met Police for neighbourhoods" 
 task :import_met_police_neighbourhoods => :environment do
   require 'hpricot'
-  require 'open-uri'
+  require 'open-uri' 
   Council.find_all_by_authority_type("London Borough").each do |borough|
     if link = Hpricot(open("http://maps.met.police.uk/access.php?area=#{borough.snac_id}")).at('ul.related-links a[text()*=homepage]')
       borough.update_attribute(:police_force_url, link[:href])

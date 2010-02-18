@@ -1,8 +1,14 @@
 module SocialNetworkingUtilities
+  TwitterRegexp = /twitter\.com\/([^\/\s]+)\/?$/ #there may be links to timeline
+  FacebookRegexp = /facebook\.com\/([^\/\s\.]+)\/?$/
+  YoutubeRegexp = /youtube\.com\/([^\/\s]+)\/?$/ 
+  
+  Parsers = { :twitter_account_name => TwitterRegexp, 
+              :facebook_account_name => FacebookRegexp,
+              :youtube_account_name => YoutubeRegexp }
+              
   # Finds social networking, news_feeds on given page
   class Finder
-    TwitterRegexp = /twitter\.com\/([^\/\s]+)\/?$/ #there may be links to timeline
-    FacebookRegexp = /facebook\.com\/([^\/\s]+)\/?$/ #there may be links to timeline
     
     attr_reader :url
     def initialize(url)
@@ -34,6 +40,22 @@ module SocialNetworkingUtilities
     def extract_data(link, regex)
       return if link.blank?
       link[:href].scan(regex).to_s
+    end
+  end
+  
+  module IdExtractor
+    extend self
+    def extract_from(*urls)
+      urls = urls.flatten.compact
+      return {} if urls.blank?
+      result_hash = {}
+      urls.each do |url|
+        Parsers.each do |k,rx|
+          s_id = url.scan(rx).to_s
+          result_hash[k] = s_id unless s_id.blank?
+        end
+      end
+      result_hash
     end
   end
   

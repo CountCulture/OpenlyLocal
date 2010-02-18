@@ -1,5 +1,6 @@
 class PoliceForce < ActiveRecord::Base
   include ResourceMethods
+  include TwitterAccountMethods
   has_many :councils
   has_one :police_authority
   validates_presence_of :name, :url
