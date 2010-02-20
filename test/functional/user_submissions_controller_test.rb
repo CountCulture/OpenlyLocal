@@ -16,7 +16,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       should_render_with_layout
 
       should "show title" do
-        assert_select 'title', /new twitter/i
+        assert_select 'title', /new social networking info/i
       end
 
       should "show form" do
@@ -181,8 +181,45 @@ class UserSubmissionsControllerTest < ActionController::TestCase
     
    end
    
+   # edit test
+   context "on GET to :edit" do
+     setup do
+       @council = Factory(:council)
+       @user_submission = Factory(:user_submission, :council => @council, :twitter_account_name => "foo")
+     end
+
+     context "without auth" do
+       setup do
+         get :edit, :id => @user_submission.id
+       end
+
+       should_respond_with 401
+     end
+
+     context "in general" do
+       setup do
+         stub_authentication
+         get :edit, :id => @user_submission.id
+       end
+
+       should_assign_to(:user_submission) { @user_submission}
+       should_respond_with :success
+       should_render_template :edit
+       should_render_with_layout
+
+       should "show title" do
+         assert_select 'title', /edit submission/i
+       end
+
+       should "show form" do
+         assert_select "form#edit_user_submission_#{@user_submission.id}"
+       end
+
+     end
+   end
+   
    # update tests
-   context "on PUT to :update without auth" do
+   context "on PUT to :update" do
      setup do
        @member = Factory(:member)
        @user_submission = Factory(:user_submission, :council => @member.council, :member => @member, :twitter_account_name => "foo")
@@ -201,32 +238,50 @@ class UserSubmissionsControllerTest < ActionController::TestCase
        setup do
          stub_authentication
          put :update, { :id => @user_submission.id,
-                        :user_submission => { :approve => "true"}}
+                        :user_submission => { :twitter_account_name => "bar"}}
        end
 
        should_redirect_to( "the admin page") { admin_url }
-       should_set_the_flash_to /Successfully updated/
+       should_set_the_flash_to /Successfully updated submission/i
 
-       should "update member details" do
-         assert_equal "foo", @member.reload.twitter_account_name
+       should "update user submission" do
+         assert_equal "bar", @user_submission.reload.twitter_account_name
        end
      end
      
-     context "when no associated member in submission" do
-       setup do
-         stub_authentication
-         @user_submission.update_attribute(:member, nil)
-         put :update, { :id => @user_submission.id,
-                        :user_submission => { :approve => "true"}}
+     context "when approving" do
+       context "when associated member in submission" do
+         setup do
+           stub_authentication
+           put :update, { :id => @user_submission.id,
+                          :approve => "true"}
+         end
+
+         should_redirect_to( "the admin page") { admin_url }
+         should_set_the_flash_to /Successfully updated member/i
+
+         should "update member details" do
+           assert_equal "foo", @member.reload.twitter_account_name
+         end
        end
+       
+       context "when no associated member in submission" do
+         setup do
+           stub_authentication
+           @user_submission.update_attributes(:member => nil, :member_name => "Barney Rubble")
+           put :update, { :id => @user_submission.id,
+                          :approve => "true"}
+         end
 
-       should_redirect_to( "the admin page") { admin_url }
-       should_set_the_flash_to /Problem updating/
+         should_redirect_to( "the admin page") { admin_url }
+         should_set_the_flash_to %r(Can\'t find member)i
 
-       should "not update member details" do
-         assert_nil @member.reload.twitter_account_name
+         should "not update member details" do
+           assert_nil @member.reload.twitter_account_name
+         end
        end
      end
+     
    end
    
 end

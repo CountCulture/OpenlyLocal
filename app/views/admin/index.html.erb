@@ -13,6 +13,7 @@
         <strong><%= twitter_link_for(submission.twitter_account_name) %></strong>
         <%= basic_link_for submission.council %>
         <%= basic_link_for(submission.member) || submission.member_name %>
+        <%= link_to "edit", edit_user_submission_path(submission), :class => "edit button" %> 
         <%= button_to "Update member", user_submission_path(submission), :confirm => "Are you sure?", :method => :put %>
       </li>
     <%- end -%>
@@ -25,7 +26,10 @@
   <ul id="hyperlocal_sites">
     <%- @hyperlocal_sites.each do |site| -%>
       <li>
-        <strong><%= link_for site %></strong> <%= link_to site.url, site.url, :class => "external", :rel => 'nofollow' %> <%= link_to "edit", edit_hyperlocal_site_path(site), :class => "edit button" %> <%= button_to "Delete", hyperlocal_site_path(site), :confirm => "Are you sure?", :method => :delete %>
+        <strong><%= link_for site %></strong>
+        <%= link_to site.url, site.url, :class => "external", :rel => 'nofollow' %>
+        <%= link_to "edit", edit_hyperlocal_site_path(site), :class => "edit button" %>
+        <%= button_to "Delete", hyperlocal_site_path(site), :confirm => "Are you sure?", :method => :delete %>
       </li>
     <%- end -%>
   </ul>
