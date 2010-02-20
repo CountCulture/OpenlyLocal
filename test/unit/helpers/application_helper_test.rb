@@ -269,12 +269,28 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_nil twitter_link_for("")
     end
 
-    should "return twitter link for twitter_account" do
+    should "return link for twitter_account" do
       assert_dom_equal link_to("Twitter", "http://twitter.com/foo", :class => "twitter feed", :title => "Twitter feed for foo"), twitter_link_for("foo")
     end
 
     should "return just twitter image tage instead of text if short requested" do
       assert_dom_equal link_to(image_tag("twitter_icon.png", :alt => "Twitter feed for foo"), "http://twitter.com/foo"), twitter_link_for("foo", :short => true)
+    end
+  end
+  
+  context "facebook_link_for helper method" do
+
+    should "return nil by default" do
+      assert_nil facebook_link_for
+      assert_nil facebook_link_for("")
+    end
+
+    should "return link for facebook_accoun" do
+      assert_dom_equal link_to("Facebook", "http://facebook.com/foo", :class => "twitter feed", :title => "Facebook page for foo"), facebook_link_for("foo")
+    end
+
+    should "return just twitter image tage instead of text if short requested" do
+      assert_dom_equal link_to(image_tag("facebook_icon.png", :alt => "Facebook page for foo"), "http://facebook.com/foo"), facebook_link_for("foo", :short => true)
     end
   end
   
