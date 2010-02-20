@@ -235,5 +235,6 @@ end
 
 Factory.define :user_submission do |f|
   f.association :council
+  f.member_name "Fred Flintstone"
 end
 

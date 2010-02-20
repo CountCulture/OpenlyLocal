@@ -10,13 +10,20 @@
   <%- else -%>
     <p class='required'>
       <%= f.label :council_id %>
-      <%= f.select :council_id, Council.all.collect{ |c|[c.title, c.id] }, { :include_blank => true } %>
+      <%= f.select :council_id, Council.all.collect{ |c| [c.title, c.id] }, { :include_blank => true } %>
     </p>
-  
+    
+    <%- if @user_submission.council && @user_submission.council.members.size > 0 -%>
     <p class='required'>
-      <%= f.label :member_name %>
-      <%= f.text_field :member_name %>
+      <%= f.label :member_id %>
+      <%= f.select :member_id, @user_submission.council.members.all.collect{ |m| [m.title, m.id] }, { :include_blank => true } %>
     </p>
+    <%- else -%>
+      <p class='required'>
+        <%= f.label :member_name %>
+        <%= f.text_field :member_name %>
+      </p>
+    <%- end -%>
   <%- end -%>
   
   <p>

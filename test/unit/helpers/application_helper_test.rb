@@ -285,8 +285,8 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_nil facebook_link_for("")
     end
 
-    should "return link for facebook_accoun" do
-      assert_dom_equal link_to("Facebook", "http://facebook.com/foo", :class => "twitter feed", :title => "Facebook page for foo"), facebook_link_for("foo")
+    should "return link for facebook_account" do
+      assert_dom_equal link_to("Facebook", "http://facebook.com/foo", :class => "facebook", :title => "Facebook page for foo"), facebook_link_for("foo")
     end
 
     should "return just twitter image tage instead of text if short requested" do

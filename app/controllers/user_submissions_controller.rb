@@ -2,7 +2,7 @@ class UserSubmissionsController < ApplicationController
   before_filter :authenticate, :only => :update
   
   def new
-    @user_submission = UserSubmission.new(:member_id => params[:member_id])
+    @user_submission = UserSubmission.new(:council_id => params[:council_id], :member_id => params[:member_id])
     @title = "New twitter/blog etc details for councillor"
   end
   

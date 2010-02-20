@@ -26,6 +26,74 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       should "show all councils in select box" do
         assert_select "select#user_submission_council_id"
       end
+      
+      should "show text_field for member name" do
+        assert_select "input#user_submission_member_name"
+      end
+    end
+    
+    context "with council_id given" do
+      
+      setup do
+        @member = Factory(:member)
+        get :new, :council_id => @member.council.id
+      end
+      
+      should_assign_to(:user_submission) { @user_submission}
+      should_respond_with :success
+
+      should "associate council with user submission" do
+        assert_equal @member.council, assigns(:user_submission).council
+      end
+
+      should "select council in select box" do
+        assert_select "select#user_submission_council_id" do
+          assert_select "option", 2 do #1 for council, 1 for blank
+            assert_select "option[value=#{@member.council.id}]"
+          end
+        end
+      end
+      
+      should "show list of possible members in select box" do
+        assert_select "select#user_submission_member_id" do
+          assert_select "option", 2 do #1 for member, 1 for blank
+            assert_select "option[value=#{@member.id}]"
+          end
+        end
+      end
+      
+      should "not show text_field for member name" do
+        assert_select "input#user_submission_member_name", false
+      end
+    end
+    
+    context "with council_id given but no members for council" do
+      
+      setup do
+        @council = Factory(:council)
+        get :new, :council_id => @council.id
+      end
+      
+      should_assign_to(:user_submission) { @user_submission}
+      should_respond_with :success
+
+      should "associate council with user submission" do
+        assert_equal @council, assigns(:user_submission).council
+      end
+
+      should "select council in select box" do
+        assert_select "select#user_submission_council_id" do
+          assert_select "option[value=#{@council.id}]"
+        end
+      end
+      
+      should "not_show list of possible members in select box" do
+        assert_select "select#user_submission_member_id", false
+      end
+      
+      should "show text_field for member name" do
+        assert_select "input#user_submission_member_name"
+      end
     end
     
     context "with member_id given" do
