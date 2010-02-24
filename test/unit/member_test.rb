@@ -326,13 +326,6 @@ class MemberTest < ActiveSupport::TestCase
         assert @member.update_from_user_submission(@user_submission)
       end
       
-      should "destroy user_submission after updating" do
-        assert_difference "UserSubmission.count", -1 do
-          assert @member.update_from_user_submission(@user_submission)
-        end
-        assert_nil UserSubmission.find_by_id(@user_submission.id)
-      end
-      
       context "and attributes already set" do
         setup do
           @user_submission.update_attribute(:blog_url, "")

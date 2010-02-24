@@ -254,14 +254,18 @@ class UserSubmissionsControllerTest < ActionController::TestCase
          setup do
            stub_authentication
            put :update, { :id => @user_submission.id,
-                          :approve => "true"}
+                          :user_submission => { :approved => "true" }}
          end
 
          should_redirect_to( "the admin page") { admin_url }
-         should_set_the_flash_to /Successfully updated member/i
+         should_set_the_flash_to /Successfully updated/i
 
          should "update member details" do
-           assert_equal "foo", @member.reload.twitter_account_name
+            assert_equal "foo", @member.reload.twitter_account_name
+         end
+         
+         should "update user_submission to be approved" do
+           assert @user_submission.reload.approved?
          end
        end
        
@@ -269,15 +273,20 @@ class UserSubmissionsControllerTest < ActionController::TestCase
          setup do
            stub_authentication
            @user_submission.update_attributes(:member => nil, :member_name => "Barney Rubble")
+           
            put :update, { :id => @user_submission.id,
-                          :approve => "true"}
+                          :user_submission => { :approved => "true" }}
          end
 
-         should_redirect_to( "the admin page") { admin_url }
-         should_set_the_flash_to %r(Can\'t find member)i
+         should_redirect_to( "the edit page for the submission") { edit_user_submission_url(@user_submission) }
+         should_set_the_flash_to %r(Problem updating)i
 
          should "not update member details" do
            assert_nil @member.reload.twitter_account_name
+         end
+         
+         should "not destroy user_submission" do
+           assert UserSubmission.find_by_id(@user_submission.id)
          end
        end
      end

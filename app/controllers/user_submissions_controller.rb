@@ -24,15 +24,12 @@ class UserSubmissionsController < ApplicationController
   def update
     @user_submission = UserSubmission.find(params[:id])
     member = @user_submission.member
-    if params[:approve] && member
-      member.update_from_user_submission(@user_submission)
-      flash[:notice] = "Successfully updated member #{member.full_name} from user_submission"
-    elsif params[:approve] && !member
-      flash[:notice] = "Can't find member named #{@user_submission.member_name}"
-    else
-      @user_submission.update_attributes(params[:user_submission])
-      flash[:notice] = "Successfully updated submission"
-    end
+    @user_submission.approved = params[:user_submission][:approved]
+    @user_submission.update_attributes!(params[:user_submission])
+    flash[:notice] = "Successfully updated submission"
     redirect_to admin_url
+  rescue Exception => e
+    flash[:notice] = "Problem updating submission: #{e.inspect}"
+    redirect_to edit_user_submission_url(@user_submission) and return
   end
 end

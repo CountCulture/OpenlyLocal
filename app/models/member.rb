@@ -73,8 +73,6 @@ class Member < ActiveRecord::Base
                 :blog_url => submission.blog_url,
                 :facebook_account_name => submission.facebook_account_name }.delete_if { |k,v| v.blank? }
     update_attributes(attribs)
-    submission.destroy
-    true
   end
   
   def vacancy?

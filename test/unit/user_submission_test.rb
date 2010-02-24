@@ -11,7 +11,8 @@ class UserSubmissionTest < ActiveSupport::TestCase
     should_belong_to :council
     should_belong_to :member
     should_validate_presence_of :council_id
-    should_have_db_columns :twitter_account_name, :member_name, :blog_url, :facebook_account_name, :linked_in_account_name
+    should_have_db_columns :twitter_account_name, :member_name, :blog_url, :facebook_account_name, :linked_in_account_name, :approved
+    should_not_allow_mass_assignment_of :approved
     
     should "require either member_name or member_id" do
       council = Factory(:another_council)
@@ -37,5 +38,38 @@ class UserSubmissionTest < ActiveSupport::TestCase
       end
       
     end
+    
+    context "when approving" do
+      context "and member set" do
+        setup do
+          @member = Factory(:member, :council => @user_submission.council)
+          @user_submission.update_attribute(:member, @member)
+          @user_submission.approved = true
+        end
+        
+        should "should update member from user_submission" do
+          @member.expects(:update_from_user_submission).with(@user_submission)
+          @user_submission.save!
+        end
+      end
+      
+      context "and member not set" do
+        setup do
+          @user_submission.approved = true
+        end
+        
+        should "add errors to user submission" do
+          @user_submission.save
+          assert_match /Can\'t approve/, @user_submission.errors[:base]
+        end
+        
+        should "return raise exception for updating_attributes bang method" do
+          @user_submission.approved = true
+          assert_raise(ActiveRecord::RecordInvalid) {@user_submission.update_attributes!(:twitter_account_name => "foo")}
+        end
+      end
+      
+    end
+
   end
 end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100218152525) do
+ActiveRecord::Schema.define(:version => 20100222083147) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -516,6 +516,7 @@ ActiveRecord::Schema.define(:version => 20100218152525) do
     t.column "linked_in_account_name", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "approved", :boolean, :default => false
   end
 
   create_table "wards", :force => true do |t|
