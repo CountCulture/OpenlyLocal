@@ -226,11 +226,21 @@ class MemberTest < ActiveSupport::TestCase
       end
       
       should "Tweet about council being added" do
+        Factory(:committee, :council => @council)
         Delayed::Job.expects(:enqueue).with(kind_of(Tweeter))
         Factory(:member, :council => @council)
       end
       
+      should "not Tweet about council being added if councils has no committees" do
+        Delayed::Job.expects(:enqueue).never
+        Factory(:member, :council => @council)
+      end
+      
       context "and when tweeting" do
+        setup do
+          Factory(:committee, :council => @council)
+        end
+        
         should "message about new parsed council" do
           Tweeter.expects(:new).with(regexp_matches(/#{@council.name} has been added to OpenlyLocal/), anything).returns(@dummy_tweeter)
           Factory(:member, :council => @council)
