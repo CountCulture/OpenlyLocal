@@ -56,7 +56,8 @@ class Member < ActiveRecord::Base
   end
   
   def party=(party_name)
-    self[:party] = party_name.gsub(/party/i, '').sub(/^(The|the)/,'').gsub(/\302\240/,'').strip unless party_name.blank?
+    # self[:party] = party_name.blank? ? nil : party_name.gsub(/party/i, '').sub(/^(The|the)/,'').gsub(/\302\240/,'').strip unless party_name.blank?
+    self[:party] = Party.new(party_name).to_s
   end
   
   def party

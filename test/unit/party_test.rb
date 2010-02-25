@@ -43,6 +43,28 @@ class PartyTest < Test::Unit::TestCase
     
     context "when initializing from given string" do
 
+      should "discard 'Party' from given party name" do
+        assert_equal "Conservative", Party.new("Conservative Party").name
+        assert_equal "Conservative", Party.new("Conservative party").name
+      end
+
+      should "strip extraneous spaces from given party name" do
+        assert_equal "Conservative", Party.new("  Conservative ").name
+      end
+
+      should "strip extraneous spaces and 'Party' from given party name" do
+        assert_equal "Liberal Democrat", Party.new("  Liberal Democrat Party ").name
+      end
+      
+      should "strip UTF spaces from given party name" do
+        assert_equal "Labour", Party.new("Labour\302\240").name
+      end
+      
+      should "strip leading 'the' from given party name" do
+        assert_equal "Conservative", Party.new("the Conservative Party").name
+        assert_equal "Conservative", Party.new("The Conservative party").name
+      end
+
       context "and string is party name" do
         should "use string as name" do
           assert_equal "Labour", Party.new("Labour").name

@@ -1,4 +1,4 @@
-<h1>Editing Ward: <%= @member.full_name %></h1>
+<h1>Editing Member: <%= @member.full_name %></h1>
 <%= error_messages_for :member %>
 
 <% form_for @member do |f| -%>
@@ -21,6 +21,10 @@
   <p>
     <%= f.label :date_left %>
     <%= f.text_field :date_left %>
+  </p>
+  <p>
+    <%= f.label :party %>
+    <%= f.text_field :party %>
   </p>
   <p>
     <%= f.label :twitter_account_name %>

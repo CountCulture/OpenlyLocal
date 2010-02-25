@@ -12,7 +12,7 @@ class Party
       @colour = party_details[1]
       @dbpedia_uri = party_details[2] ? "http://dbpedia.org/resource/#{party_details[2]}" : nil
     else
-      @name = raw_name.blank? ? nil : raw_name # set to nil if empty string
+      @name = raw_name.blank? ? nil : raw_name.gsub(/party/i, '').sub(/^(The|the)/,'').gsub(/\302\240/,'').strip # set to nil if empty string
     end
   end
   
