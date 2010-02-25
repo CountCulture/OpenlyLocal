@@ -16,6 +16,11 @@ class Party
     end
   end
   
+  # Allows us to test whether it's blank?
+  def empty?
+    name.blank?
+  end
+  
   # Override to_s to we can treat as a string in views
   def to_s
     @name.to_s

@@ -112,6 +112,17 @@ class PartyTest < Test::Unit::TestCase
       end
     end
     
+    context "when returning empty?" do
+      should "return true if no party" do
+        assert Party.new("").empty?
+        assert Party.new(nil).empty?
+      end
+      
+      should "return false if party" do
+        assert !Party.new("foo").empty?
+      end
+    end
+    
     should "output party name when to_s called" do
       assert_equal "Labour", Party.new("Lab").to_s
     end
