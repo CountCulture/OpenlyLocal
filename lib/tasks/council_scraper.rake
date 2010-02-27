@@ -441,3 +441,17 @@ task :import_ons_gss_codes => :environment do
 
 end
 
+desc "Import missing council lat longs"
+task :import_missing_council_latlongs => :environment do
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/missing_council_latlongs.csv")).to_a
+  councils_without_lat_longs = Council.all(:conditions => {:lat => nil, :lng => nil}).each do |council|
+    if matched_row = rows.detect{|row| Council.normalise_title(row.first) == Council.normalise_title(council.name)}
+      lat, lng = matched_row.last.split(",")
+      council.update_attributes(:lat => lat.to_f, :lng => lng.to_f)
+      puts "Updated #{council.name} with lat_long for #{matched_row.first} (#{matched_row.last})"
+    else
+      puts "*** Failed to match #{council.title}"
+    end
+  end
+end
+
