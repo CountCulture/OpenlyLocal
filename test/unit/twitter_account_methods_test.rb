@@ -38,7 +38,7 @@ class TwitterAccountMethodsTest < ActiveSupport::TestCase
       assert_equal @twitter_account.url, @test_model_with_twitter_account.twitter_account_url
     end
     
-    should "return nil for twitter_account_name if no associated twitter_account" do
+    should "return nil for twitter_account_url if no associated twitter_account" do
       assert_nil TestTwitteringModel.new.twitter_account_url
     end
     

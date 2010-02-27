@@ -591,6 +591,9 @@ ul#hyperlocal_sites li li{
 #categories li {
 }
 
+.breadcrumbs {
+	margin-bottom: 0;
+}
 /*Autocomplete styling*/
 .ac_results {
 	padding: 0px;

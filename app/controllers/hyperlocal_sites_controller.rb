@@ -5,8 +5,10 @@ class HyperlocalSitesController < ApplicationController
   before_filter :show_rss_link, :only => :index
   
   def index
+    @title = params[:independent] ? "Independent " : ""
+    @title += "UK Hyperlocal Sites"
     unless params[:location].blank?
-      @title = "UK Hyperlocal Sites nearest to #{params[:location]}"
+      @title += " nearest to #{params[:location]}"
       begin
         @location = Geokit::LatLng.normalize(params[:location])
         @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => @location, :order => "distance", :limit => 10)
@@ -15,8 +17,7 @@ class HyperlocalSitesController < ApplicationController
         @hyperlocal_sites = HyperlocalSite.approved
       end
     else
-      @title = "UK Hyperlocal Sites"
-      @hyperlocal_sites = HyperlocalSite.approved
+      @hyperlocal_sites = HyperlocalSite.independent(params[:independent]).approved
     end
     @cse_label = "openlylocal_cse_hyperlocal_" + params[:location].to_s.gsub(/\W/,'').downcase
     respond_to do |format|

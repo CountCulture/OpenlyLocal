@@ -12,7 +12,8 @@ class HyperlocalSite < ActiveRecord::Base
   validates_inclusion_of :platform, :in => PossiblePlatforms, :allow_blank => true
   validates_inclusion_of :country, :in => AllowedCountries
   named_scope :approved, :conditions => {:approved => true}, :include => [:twitter_account]
-  named_scope :independent, :conditions => {:hyperlocal_group_id => nil}
+  named_scope :independent, lambda { |restriction| restriction ? {:conditions => {:hyperlocal_group_id => nil} } : {} }
+
   acts_as_mappable
   default_scope :order => "title"
   delegate :region, :to => :council, :allow_nil => true

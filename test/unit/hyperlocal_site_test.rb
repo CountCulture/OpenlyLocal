@@ -89,7 +89,12 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     context "when returning independent sites" do
       should "return those that don't belong to group" do
         group_hyperlocal_site = Factory(:hyperlocal_site, :hyperlocal_group => Factory(:hyperlocal_group))
-        assert_equal [@hyperlocal_site], HyperlocalSite.independent
+        assert_equal [@hyperlocal_site], HyperlocalSite.independent(true)
+      end
+      
+      should "return those that belong to group when false passed as parameter" do
+        group_hyperlocal_site = Factory(:hyperlocal_site, :hyperlocal_group => Factory(:hyperlocal_group))
+        assert_equal [@hyperlocal_site, group_hyperlocal_site], HyperlocalSite.independent(false)
       end
     
     end

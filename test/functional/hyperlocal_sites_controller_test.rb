@@ -3,7 +3,7 @@ require 'test_helper'
 class HyperlocalSitesControllerTest < ActionController::TestCase
   def setup
     @hyperlocal_site = Factory(:approved_hyperlocal_site, :email => 'info@hyperlocal.com')
-    @another_hyperlocal_site = Factory(:approved_hyperlocal_site, :country => 'Scotland', :title => "Second Hyperlocal Site")
+    @another_hyperlocal_site = Factory(:approved_hyperlocal_site, :country => 'Scotland', :title => "Second Hyperlocal Site", :hyperlocal_group => Factory(:hyperlocal_group))
     @unapproved_hyperlocal_site = Factory(:hyperlocal_site)
   end
 
@@ -40,6 +40,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         end
       end
       
+      should 'show link to restrict to independent sites' do
+        assert_select "a", /independent sites/i
+      end
+      
       should "enable google maps" do
         assert assigns(:enable_google_maps)
       end
@@ -47,6 +51,30 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should "show rss feed link" do
         assert_select "link[rel='alternate'][type='application/rss+xml'][href='http://test.host/hyperlocal_sites.rss']"
       end
+      should 'show link to restrict to independent sites' do
+        assert_select "title", /Hyperlocal Sites/i
+      end
+      
+    end
+    
+    context "with independent only requested" do
+      setup do
+        
+        get :index, :independent => true
+      end
+
+      should_assign_to(:hyperlocal_sites) {[@hyperlocal_site]}
+      should_respond_with :success
+      should_render_template :index
+      
+      should 'show restriction in title' do
+        assert_select "title", /independent UK hyperlocal/i
+      end
+      
+      should 'show link to restrict to independent sites' do
+        assert_select "a", /show all sites/i
+      end
+      
     end
     
     context "with request with location" do
