@@ -7,7 +7,7 @@ class CommitteesController < ApplicationController
     @documents = @council.meeting_documents.all(:limit => 11)
     @meetings = @council.meetings.forthcoming.all(:limit => 11)
     @title = "Committees"
-    includes = {:members => {:only => [:id, :first_name, :last_name, :party, :url, :uid], :methods => :openlylocal_url}}
+    includes = {:members => {:only => [:id, :first_name, :last_name, :party, :url, :uid], :methods => :openlylocal_url}, :council => {:only => [:id, :name, :url], :methods => :openlylocal_url}}
     respond_to do |format|
       format.html
       format.xml { render :xml => @committees.to_xml(:include => includes) }
