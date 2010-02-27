@@ -23,8 +23,8 @@ class CommitteesController < ApplicationController
     @documents = @committee.meeting_documents
     respond_to do |format|
       format.html
-      format.xml { render :xml => @committee.to_xml(:include => [:members, :meetings]) }
-      format.json { render :json => @committee.to_json(:include => [:members, :meetings]) }
+      format.xml { render :xml => @committee.to_xml(:include => [:council, :members, :meetings]) }
+      format.json { render :json => @committee.to_json(:include => [:council, :members, :meetings]) }
       format.rdf
       format.ics do
         @meetings.extend(IcalUtilities::ArrayExtensions)

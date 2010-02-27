@@ -87,6 +87,10 @@ class CommitteesControllerTest < ActionController::TestCase
        should "include meetings in response" do
          assert_select "committee meeting"
        end
+       
+       should "include council in response" do
+         assert_select "committee>council>name", @committee.council.name
+       end
      end
      
      context "with json request" do
@@ -102,8 +106,13 @@ class CommitteesControllerTest < ActionController::TestCase
        should "include members in response" do
          assert_match /committee\":.+members\":/, @response.body
        end
+       
        should "include meetings in response" do
          assert_match /committee\":.+meetings\":/, @response.body
+       end
+       
+       should "include council in response" do
+         assert_match /committee\":.+council\":/, @response.body
        end
      end
      
@@ -249,6 +258,7 @@ class CommitteesControllerTest < ActionController::TestCase
        should "list members of committees" do
          assert_select "committees>committee>members>member>first-name", @member.first_name
        end
+       
      end
 
      context "with json requested" do
