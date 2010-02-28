@@ -27,7 +27,7 @@ class Meeting < ActiveRecord::Base
   end
   
   def title
-    "#{committee.title} meeting"
+    committee ? "#{committee.title} meeting" : "meeting"
   end
   
   def cancelled?

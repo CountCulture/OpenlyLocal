@@ -162,6 +162,10 @@ class MeetingTest < ActiveSupport::TestCase
       assert_equal "Audit Group meeting", @meeting.title
     end
     
+    should "return meeting as title if no associated committee" do
+      assert_equal "meeting", Meeting.new.title
+    end
+    
     should "return committee name and date in extended title" do
       assert_equal "Audit Group meeting, #{@meeting.date_held.to_s(:event_date)}", @meeting.extended_title
     end
