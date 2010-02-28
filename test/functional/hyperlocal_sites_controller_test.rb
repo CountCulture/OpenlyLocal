@@ -51,15 +51,11 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should "show rss feed link" do
         assert_select "link[rel='alternate'][type='application/rss+xml'][href='http://test.host/hyperlocal_sites.rss']"
       end
-      should 'show link to restrict to independent sites' do
-        assert_select "title", /Hyperlocal Sites/i
-      end
       
     end
     
     context "with independent only requested" do
       setup do
-        
         get :index, :independent => true
       end
 
@@ -75,6 +71,44 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         assert_select "a", /show all sites/i
       end
       
+    end
+    
+    context 'when restricted to country' do
+      setup do
+        get :index, :country => 'Scotland'
+      end
+
+      should_assign_to(:hyperlocal_sites) {[@another_hyperlocal_site]}
+      should_respond_with :success
+      should_render_template :index
+      
+      should 'show restriction in title' do
+        assert_select "title", /hyperlocal sites in Scotland/i
+      end
+      
+      should 'show link to restrict to all sites' do
+        assert_select 'a', /show all sites/i
+      end
+    end
+    
+    context 'when restricted to region' do
+      setup do
+        council = Factory(:council, :region => 'West Midlands')
+        @west_midlands_site = Factory(:approved_hyperlocal_site, :council => council)
+        get :index, :region => 'West Midlands'
+      end
+      
+      should_assign_to(:hyperlocal_sites) {[@west_midlands_site]}
+      should_respond_with :success
+      should_render_template :index
+      
+      should 'show restriction in title' do
+        assert_select 'title', /hyperlocal sites in West Midlands/i
+      end
+      
+      should 'show link to restrict to all sites' do
+        assert_select 'a', /show all sites/i
+      end
     end
     
     context "with request with location" do

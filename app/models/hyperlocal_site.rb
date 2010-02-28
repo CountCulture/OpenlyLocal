@@ -13,8 +13,8 @@ class HyperlocalSite < ActiveRecord::Base
   validates_inclusion_of :country, :in => AllowedCountries
   named_scope :approved, :conditions => {:approved => true}, :include => [:twitter_account]
   named_scope :independent, lambda { |restriction| restriction ? {:conditions => {:hyperlocal_group_id => nil} } : {} }
-  named_scope :country, lambda { |country| { :conditions => {:country => country } } }
-  named_scope :region, lambda { |region| { :include => :council, :conditions => { :councils=>{ :region => region } } } }
+  named_scope :country, lambda { |country| country ? { :conditions => {:country => country } } : {} }
+  named_scope :region, lambda { |region| region ? { :include => :council, :conditions => { :councils=>{ :region => region } } } : {} }
 
   acts_as_mappable
   default_scope :order => "title"

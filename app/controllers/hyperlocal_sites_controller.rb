@@ -6,7 +6,7 @@ class HyperlocalSitesController < ApplicationController
   
   def index
     @title = params[:independent] ? "Independent " : ""
-    @title += "UK Hyperlocal Sites"
+    @title += "Hyperlocal Sites"
     unless params[:location].blank?
       @title += " nearest to #{params[:location]}"
       begin
@@ -17,7 +17,8 @@ class HyperlocalSitesController < ApplicationController
         @hyperlocal_sites = HyperlocalSite.approved
       end
     else
-      @hyperlocal_sites = HyperlocalSite.independent(params[:independent]).approved
+      @hyperlocal_sites = HyperlocalSite.country(params[:country]).region(params[:region]).independent(params[:independent]).approved
+      @title += " in #{(params[:region]||params[:country]||'UK')}"
     end
     @cse_label = "openlylocal_cse_hyperlocal_" + params[:location].to_s.gsub(/\W/,'').downcase
     respond_to do |format|

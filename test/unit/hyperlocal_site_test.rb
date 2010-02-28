@@ -110,12 +110,23 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       should "return those whose associated council has given region" do
         assert_equal [@site_with_region], HyperlocalSite.region("West Midlands")
       end
+      
+      should "return all when false passed as parameter" do
+        assert_equal [@hyperlocal_site, @site_with_region, @site_with_another_region], HyperlocalSite.region(false)
+      end
     end
     
     context "when returning sites restricted to country" do
+      setup do
+        @scottish_site = Factory(:hyperlocal_site, :country => "Scotland")
+      end
+      
       should "return those with given country" do
-        scottish_site = Factory(:hyperlocal_site, :country => "Scotland")
-        assert_equal [scottish_site], HyperlocalSite.country("Scotland")
+        assert_equal [@scottish_site], HyperlocalSite.country("Scotland")
+      end
+      
+      should 'return all countries when false passed as parameter' do
+        assert_equal [@hyperlocal_site, @scottish_site], HyperlocalSite.country(false)
       end
     end
   end
