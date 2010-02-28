@@ -98,6 +98,26 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       end
     
     end
+    
+    context "when returning sites restricted to region" do
+      setup do
+        council = Factory(:council, :region => "West Midlands")
+        another_council = Factory(:another_council, :region => "London")
+        @site_with_region = Factory(:hyperlocal_site, :council => council)
+        @site_with_another_region = Factory(:hyperlocal_site, :council => another_council)
+      end
+      
+      should "return those whose associated council has given region" do
+        assert_equal [@site_with_region], HyperlocalSite.region("West Midlands")
+      end
+    end
+    
+    context "when returning sites restricted to country" do
+      should "return those with given country" do
+        scottish_site = Factory(:hyperlocal_site, :country => "Scotland")
+        assert_equal [scottish_site], HyperlocalSite.country("Scotland")
+      end
+    end
   end
   
   context "A HyperlocalSite instance" do
