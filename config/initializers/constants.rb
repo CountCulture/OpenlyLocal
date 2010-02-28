@@ -33,7 +33,8 @@ Muids = { 1 => ['Count'],
           2 => ['Percentage', "%.1f%"],
           9 => ['Pounds Sterling', "£%d"],
           14 => ['Years', "%.1f"],
-          41 => ['Square metres (thousands)']
+          41 => ['Square metres (thousands)'],
+          100 => ['Yes/No']
           }
           
 Regions = { 'North East'                => ['A', 276700],

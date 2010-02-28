@@ -151,6 +151,18 @@ class DatapointTest < ActiveSupport::TestCase
         @dataset_topic.update_attribute(:muid, 14)
         assert_kind_of Float, @datapoint.reload.value
       end
+      
+      should "return 1 as Yes when muid is Yes/No" do
+        @dataset_topic.update_attribute(:muid, 100)
+        @datapoint.update_attribute(:value, 1)
+        assert_equal "Yes", @datapoint.reload.value
+      end
+      
+      should "return 0 as No when muid is Yes/No" do
+        @dataset_topic.update_attribute(:muid, 100)
+        @datapoint.update_attribute(:value, 0)
+        assert_equal "No", @datapoint.reload.value
+      end
     end
 
     context "when returning related datapoints" do

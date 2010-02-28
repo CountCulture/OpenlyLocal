@@ -173,3 +173,43 @@ task :get_descriptions_for_ness_topics => :environment do
   end
 end
 
+desc "Import SOCITM Better Connected Report 2010"
+task :import_socitm_bc10 => :environment do
+  require 'pp'
+  dataset = Dataset.find_or_initialize_by_title(  :title => "SOCITM Better Connected 2010 website assessment", 
+                              :url => "http://www.socitm.net/betterconnected", 
+                              :originator => "SOCITM Insight", 
+                              :originator_url => "http://www.socitm.net/")
+  dataset.save!
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/socitm_bc10_tidied_up.csv")).to_a[1..-1] # skip first row
+  families = rows.shift[5..-1]
+  raw_topics = rows.shift[5..-1]
+  muids = rows.shift[5..-1]
+  p families, raw_topics, muids
+  families = families.collect{ |f| DatasetFamily.find_or_create_by_title_and_dataset_id(:title => f.strip, :source_type => "Misc", :dataset_id => dataset.id) }
+  topics = []
+  
+  raw_topics.each_with_index{ |t,i| topics << families[i].dataset_topics.find_or_create_by_title(:title => t.strip, :data_date => "2010-03-01", :muid => muids[i]) }
+  
+  pp families, topics
+  all_councils = Council.all
+  value_match = {"y" => 1, "n" => 0, "n/a" => nil}
+  rows.each do |row|
+    if council = all_councils.detect{ |c| Council.normalise_title(c.name) == Council.normalise_title(row[1].gsub(/[A-Z]{2,}/, '')) }
+      puts "Matched #{row[1]} with #{council.name}"
+      row[5..-1].each_with_index do |raw_dp, i|
+        value = topics[i].muid == 100 ? value_match[raw_dp.downcase] : raw_dp.to_i
+        next unless value && dp = council.datapoints.find_or_initialize_by_dataset_topic_id(:dataset_topic_id => topics[i].id, :value => value)
+        begin
+          dp.save!
+        rescue Exception => e
+          puts "Problem saving: #{dp.inspect}"
+        end  
+      end
+      puts "Finished adding datapoints for #{council.name}"
+    else
+      puts "*** Could not find entry for #{row[1]}"
+    end
+  end
+end
+

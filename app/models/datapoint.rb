@@ -53,6 +53,8 @@ class Datapoint < ActiveRecord::Base
     case muid_type
     when 'Percentage', 'Years'
       self[:value].to_f
+    when 'Yes/No'
+      self[:value].to_i == 1 ? 'Yes' : 'No'
     else
       self[:value].to_i
     end 
