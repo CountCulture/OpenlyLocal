@@ -10,6 +10,7 @@ class TitleNormaliserTest < Test::Unit::TestCase
     "Ways&Means" => "ways and means",
     "Important: another thing" => "important another thing",
     "Children's thing" => "childrens thing",
+    "St. something" => "st something",
     "The Theatre thing" => "theatre thing"
   }
   
