@@ -64,7 +64,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should_render_template :index
       
       should 'show restriction in title' do
-        assert_select "title", /independent UK hyperlocal/i
+        assert_select "title", /independent hyperlocal sites in UK/i
       end
       
       should 'show link to restrict to independent sites' do
@@ -205,7 +205,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should_render_without_layout
       should_respond_with_content_type 'application/rss+xml'
       should "have title " do
-        assert_select "title", "Latest UK Hyperlocal Sites"
+        assert_select "title", "Latest Hyperlocal Sites in UK"
       end
       should "list hyperlocal sites" do
         assert_select "item", 2 do
@@ -239,7 +239,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       
       should "generate custom search title" do
         assert_xml_select 'CustomSearchEngine>Title' do
-          assert_select "Title", /OpenlyLocal UK Hyperlocal/
+          assert_select "Title", /OpenlyLocal Hyperlocal Sites in UK/
         end
       end
       
@@ -353,12 +353,12 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should_respond_with :success
       should_render_template :show
 
-      should "show council region" do
-        assert_select ".region", /West Midlands/
+      should "show link to hyperlocal_sites in council region" do
+        assert_select "a.region[href*='region=West+Midlands']", /West Midlands/
       end
 
-      should "show hyperlocal_site country" do
-        assert_select ".country", /England/
+      should "show link to hyperlocal_sites in country" do
+        assert_select "a.country[href*='country=England']", /England/
       end
 
     end

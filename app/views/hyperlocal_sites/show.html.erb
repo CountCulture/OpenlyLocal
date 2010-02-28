@@ -23,8 +23,8 @@
 </script>
 <p class="breadcrumbs"><%= link_to "All HyperLocal Sites", hyperlocal_sites_path %></p>
 <div id="general_location">
-  <%= content_tag(:span, "#{@hyperlocal_site.region}, ", :class => "region") if @hyperlocal_site.region %>
-  <%= content_tag(:span, @hyperlocal_site.country, :class => "country") %>
+  <%= "#{link_to(@hyperlocal_site.region, hyperlocal_sites_url(:region => @hyperlocal_site.region), :class => 'region')}, " if @hyperlocal_site.region %>
+  <%= link_to(@hyperlocal_site.country, hyperlocal_sites_url(:country => @hyperlocal_site.country), :class => 'country') %>
 </div>
 <h1><%= @hyperlocal_site.title %></h1>
 <div id="hyperlocal_site_map" class="map_outer">

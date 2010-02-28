@@ -69,7 +69,7 @@
   <%- else -%>
     <%- @hyperlocal_sites.group_by(&:country).each do |country, sites| -%>
       <li class="country">
-        <%= country %>
+        <%= link_to(country, hyperlocal_sites_url(:country => country), :class => 'country') %>
         <ul>
           <%= render :partial => 'hyperlocal_site', :collection => sites %>
         </ul>

@@ -3,7 +3,7 @@ xml.comment! "Specification file for Google Custom Search Engine for UK Hyperloc
   xml.GoogleCustomizations do
     
     xml.CustomSearchEngine do
-      xml.Title         "OpenlyLocal #{@title} search engine, powered by Google"
+      xml.Title         "Search engine for OpenlyLocal #{@title}, powered by Google"
       xml.Description   "Google Custom Search Engine searching UK Hyperlocal News and Community sites appearing on the OpenlyLocal UK Hyperlocal Directory"
       xml.Context do
         xml.BackgroundLabels do
