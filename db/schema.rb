@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100222083147) do
+ActiveRecord::Schema.define(:version => 20100301115605) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -186,6 +186,7 @@ ActiveRecord::Schema.define(:version => 20100222083147) do
     t.column "updated_at", :datetime
     t.column "dataset_topic_grouping_id", :integer
     t.column "notes", :text
+    t.column "licence", :string
   end
 
   create_table "delayed_jobs", :force => true do |t|

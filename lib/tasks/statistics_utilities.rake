@@ -185,7 +185,6 @@ task :import_socitm_bc10 => :environment do
   families = rows.shift[5..-1]
   raw_topics = rows.shift[5..-1]
   muids = rows.shift[5..-1]
-  p families, raw_topics, muids
   families = families.collect{ |f| DatasetFamily.find_or_create_by_title_and_dataset_id(:title => f.strip, :source_type => "Misc", :dataset_id => dataset.id) }
   topics = []
   
