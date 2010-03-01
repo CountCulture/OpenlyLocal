@@ -5,6 +5,7 @@
   <%= attribute_tag :originator, link_to(@dataset.originator, @dataset.originator_url, :class => 'external') %>
   <%= attribute_tag :source, link_to(@dataset.url, @dataset.url, :class => 'external') %>
   <%= attribute_tag :description, @dataset.description %>
+  <%= attribute_tag :licence, licence_link_for(@dataset.licence) %>
   <%= attribute_tag :notes, @dataset.notes %>
 </dl>
 <%- unless @area -%>

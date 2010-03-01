@@ -18,6 +18,10 @@
     <%= f.text_area :description %>
   </p>
   <p>
+    <%= f.label :licence %>
+    <%= f.select :licence, Licences.collect{ |k,v| [v.first, k] }, :include_blank => true %>
+  </p>
+  <p>
     <%= f.label :notes %>
     <%= f.text_area :notes %>
   </p>

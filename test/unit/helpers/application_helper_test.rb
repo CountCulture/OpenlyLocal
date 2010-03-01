@@ -443,6 +443,16 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_equal link_to("Foo Bar", "http://en.wikipedia.org/wiki/Bar_Foo_Baz", :class => "wikipedia_link external", :title => "Wikipedia page for 'Foo Bar'"), wikipedia_link_for("Foo Bar", :url => "http://en.wikipedia.org/wiki/Bar_Foo_Baz")
     end
   end
+  
+  context 'licence_link_for helper method' do
+    should "return nil by default" do
+      assert_nil licence_link_for(nil)
+    end
+
+    should "return link to licence page" do
+      assert_equal link_to(Licences['CC0'].first, Licences['CC0'].last, :class => "licence_link external", :title => "Licence details for #{Licences['CC0'].first}"), licence_link_for('CC0')
+    end
+  end
 
   context "resource_uri_for helper method" do
 
@@ -470,6 +480,11 @@ class ApplicationHelperTest < ActionView::TestCase
     should "show basic links to items separated by '>'" do
       assert_equal content_tag(:span, "#{basic_link_for @obj2} > #{basic_link_for @obj1}", :class => "breadcrumbs"), breadcrumbs([@obj2, @obj1])
     end
+    
+    should "show strings when objects" do
+      assert_equal content_tag(:span, "#{basic_link_for @obj2} > foo", :class => "breadcrumbs"), breadcrumbs([@obj2, "foo"])
+    end
+    
   end
   
   context "the formatted_datapoint_value helper method" do

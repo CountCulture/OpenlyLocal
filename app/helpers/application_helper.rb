@@ -34,7 +34,7 @@ module ApplicationHelper
   
   def breadcrumbs(obj_arr=nil)
     return if obj_arr.blank?
-    content_tag(:span, obj_arr.collect{ |o| basic_link_for(o) }.join(" > "), :class => "breadcrumbs")
+    content_tag(:span, obj_arr.collect{ |o| o.respond_to?(:title) ? basic_link_for(o) : o }.join(" > "), :class => "breadcrumbs")
   end
 
   # http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.htm
@@ -58,6 +58,11 @@ module ApplicationHelper
   def link_to_calendar(basic_url=nil)
     basic_url ||= params
     link_to "Subscribe to this calendar", url_for(basic_url.merge(:protocol => "webcal", :only_path => false, :format => "ics")), :class => "calendar feed"
+  end
+  
+  def licence_link_for(short_code)
+    return if short_code.blank?
+    link_to(Licences[short_code].first, Licences[short_code].last, :class => "licence_link external", :title => "Licence details for #{Licences[short_code].first}")
   end
   
   def twitter_link_for(twitter_account=nil, options={})
