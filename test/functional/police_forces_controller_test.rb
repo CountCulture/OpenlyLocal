@@ -66,6 +66,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
   # show test
   context "on GET to :show" do
     setup do
+      @police_team = Factory(:police_team, :police_force => @police_force)
       get :show, :id => @police_force.id
     end
   
@@ -77,6 +78,12 @@ class PoliceForcesControllerTest < ActionController::TestCase
     should "list all associated councils" do
       assert_select "#councils li", @police_force.councils.size do
         assert_select "a", @council.title
+      end
+    end
+    
+    should "list all associated police_teams" do
+      assert_select "#police_teams li", @police_force.police_teams.size do
+        assert_select "a", @police_team.title
       end
     end
     

@@ -2,6 +2,7 @@ class PoliceTeam < ActiveRecord::Base
 
   belongs_to :police_force
   validates_presence_of :name, :uid, :police_force_id
+  default_scope :order => 'name'
   alias_attribute :title, :name
   
   # Can be removed when resource_methods module mixed in

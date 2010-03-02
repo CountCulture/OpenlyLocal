@@ -1,3 +1,14 @@
+desc "Populate Police Teams from NPIA api"
+task :populate_police_teams => :environment do
+  police_forces = PoliceForce.all(:conditions => 'npia_id IS NOT NULL')
+  police_forces.each do |force|
+    teams = NpiaUtilities::Client.new(:teams, :force => force.npia_id).response
+    teams["team"].collect{|t| {:name => t["name"], :uid => t["id"]}}.each do |team|
+      force.police_teams.find_or_create_by_name_and_uid(team)
+    end
+  end
+end
+
 desc "Populate NPIA ids for police forces" 
 task :populate_npia_ids => :environment do
   forces_info = NpiaUtilities::Client.new(:forces).response
@@ -6,9 +17,11 @@ task :populate_npia_ids => :environment do
     force_url = force_info["url_force"]
     engagement_method_urls = [force_info["engagement_methods"]["method"]].flatten.collect{ |m| m["url"] }
     social_sites = SocialNetworkingUtilities::IdExtractor.extract_from(engagement_method_urls)
-    if police_force = PoliceForce.first(:conditions => "url LIKE '%#{URI.parse(force_url).host}%'")
-      police_force.update_attributes(social_sites.merge(:npia_id => force_info["id"]))
-      puts "Updated force matching #{force_info["name"]}: #{police_force.name} (social media sites = #{social_sites.inspect})"
+    if police_force = PoliceForce.first(:conditions => "url LIKE '%#{URI.parse(force_url).host||force_url}%'")
+      police_force.attributes = social_sites.merge(:npia_id => force_info["id"])
+      police_force.save!
+      # p police_force
+      puts "Updated force matching #{force_info["name"]}: #{police_force.name} (id = #{force_info['id']}, social media sites = #{social_sites.inspect})"
     else
       puts "*** Could not find force matching #{force_info["name"]} (#{force_url})"
     end

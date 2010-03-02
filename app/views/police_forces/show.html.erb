@@ -15,9 +15,13 @@
   <%- end -%>
 </div>
 <div id="relationships">
-  <div id="councils">
+  <div id="councils" class="item_grouping">
     <h4>Responsible for policing in areas governed by</h4>
     <%= list_all @police_force.councils, :basic => true %>
+  </div>
+  <div id="police_teams" class="item_grouping">
+    <h4>Neighbourhood Police Teams</h4>
+    <%= list_all @police_force.police_teams %>
   </div>
 </div>
 

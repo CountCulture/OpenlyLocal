@@ -8,7 +8,8 @@ class PoliceForceTest < ActiveSupport::TestCase
       @police_force = Factory(:police_force)
     end
     
-    should_have_many :councils 
+    should_have_many :councils
+    should_have_many :police_teams
     should_have_one :police_authority 
     should_validate_presence_of :name
     should_validate_uniqueness_of :name
