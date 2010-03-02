@@ -136,27 +136,77 @@ class MeetingTest < ActiveSupport::TestCase
       @committee = Committee.create!(:title => "Audit Group", :url => "some.url", :uid => 33, :council => Factory(:council))
       @meeting = Meeting.create!(:date_held => "6 November 2008 7:30pm", :committee => @committee, :uid => 22, :council_id => @committee.council_id, :url => "http//council.gov.uk/meeting/22")
     end
+    
+    # should "allow access to committee via uid" do
+    #   meeting = Meeting.create!(:date_held => "6 November 2008 7:30pm", :committee_uid => @committee.uid, :council_id => @committee.council_id, :url => "http//council.gov.uk/meeting/22")
+    #   assert_equal @committee, meeting.committee
+    # end
+    # 
+    context 'when returning date_held' do
+      should "convert date string to date" do
+        assert_equal DateTime.new(2008, 11, 6, 19, 30), @meeting.date_held
+      end
 
-    should "convert date string to date" do
-      assert_equal DateTime.new(2008, 11, 6, 19, 30), @meeting.date_held
+      should "convert datetime string to datetime" do
+        assert_equal DateTime.new(2009, 12, 30, 19, 30), Meeting.new(:date_held => "30-12-2009 7:30pm").date_held
+        assert_equal DateTime.new(2009, 12, 30, 19, 30), Meeting.new(:date_held => "12/30/2009 7:30pm").date_held # regression test for Ruby 1.9. Should fail for that
+      end
+
+      should "return date for date_held if time is midnight" do
+        assert_equal Date.new(2009, 12, 30), Factory(:meeting, :committee => @committee, :council_id => @committee.council_id, :date_held => "30-12-2009").reload.date_held
+      end
+
+      should "return date for date_held if time is midnight in BST" do
+        assert_equal Date.new(2010, 05, 11), Factory(:meeting, :committee => @committee, :council_id => @committee.council_id, :date_held => "2010-05-11T00:00:00+01:00").reload.date_held
+      end
+
+      should "return nil date_held if no date" do
+        assert_nil Meeting.new.date_held
+      end
     end
     
-    should "convert datetime string to datetime" do
-      assert_equal DateTime.new(2009, 12, 30, 19, 30), Meeting.new(:date_held => "30-12-2009 7:30pm").date_held
-      assert_equal DateTime.new(2009, 12, 30, 19, 30), Meeting.new(:date_held => "12/30/2009 7:30pm").date_held # regression test for Ruby 1.9. Should fail for that
+    context 'when assigning date_held_date' do
+      context 'and date_held is nil' do
+        should 'assign date' do
+          # can't use factory as it sets date_held
+          assert_equal Date.new(2010, 05, 11), Meeting.create!(:date_held_date => "11 May 2010", :committee => @committee, :uid => 23, :council_id => @committee.council_id).reload.date_held
+        end
+        
+        should 'assign datetime' do
+          assert_equal Time.zone.local(2010, 05, 11, 19, 30), Meeting.create!(:date_held_date => "11 May 2010, 7:30pm", :committee => @committee, :uid => 23, :council_id => @committee.council_id).reload.date_held
+        end
+        
+      end
+      
+      context 'and date_held returns date' do
+        setup do
+          @dh_meeting = Factory(:meeting, :committee => @committee, :council_id => @committee.council_id, :date_held => "11 May 2010")
+        end
+        
+        should 'override existing date date_held_date new date' do
+          @dh_meeting.update_attribute(:date_held_date, "13 May 2010")
+          assert_equal Date.new(2010, 05, 13), @dh_meeting.reload.date_held
+        end
+        
+        should 'override existing date with new datetime' do
+          @dh_meeting.update_attribute(:date_held_date, "13 May 2010, 7:30pm")
+          assert_equal Time.zone.local(2010, 05, 13, 19, 30), @dh_meeting.reload.date_held
+        end
+      end
+      
+      context 'and date_held returns datetime' do
+        setup do
+          @dh_meeting = Factory(:meeting, :committee => @committee, :council_id => @committee.council_id, :date_held => "11 May 2010 7:30pm")
+        end
+        
+        should 'not override existing datetime with new date' do
+          assert_equal Time.zone.local(2010, 05, 11, 19, 30), @dh_meeting.reload.date_held
+          @dh_meeting.update_attribute(:date_held_date, "13 May 2010")
+          assert_equal Time.zone.local(2010, 05, 11, 19, 30), @dh_meeting.reload.date_held
+        end
+      end
     end
     
-    should "return date for date_held if time is midnight" do
-      assert_equal Date.new(2009, 12, 30), Factory(:meeting, :committee => @committee, :council_id => @committee.council_id, :date_held => "30-12-2009").reload.date_held
-    end
-    
-    should "return date for date_held if time is midnight in BST" do
-      assert_equal Date.new(2010, 05, 11), Factory(:meeting, :committee => @committee, :council_id => @committee.council_id, :date_held => "2010-05-11T00:00:00+01:00").reload.date_held
-    end
-    
-    should "return nil date_held if no date" do
-      assert_nil Meeting.new.date_held
-    end
     
     should "return committee name in title" do
       assert_equal "Audit Group meeting", @meeting.title

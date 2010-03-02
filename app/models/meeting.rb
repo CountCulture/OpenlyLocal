@@ -34,10 +34,30 @@ class Meeting < ActiveRecord::Base
     self[:status]=~/cancelled/i
   end
   
+  # def committee_uid=(uid)
+  #   self[:committee_id] = 
+  # end
+  
   # return date as plain date, not datetime if meeting is at midnight
   def date_held
     return unless dh=self[:date_held]&&self[:date_held].in_time_zone
     (dh.hour==0 && dh.min==0) ? dh.to_date : dh
+  end
+
+  # assign date_held, but only override existing datetime with datetime, not date
+  def date_held_date=(rawdate)
+    return if rawdate.blank?
+    if self[:date_held].nil? || date_held.is_a?(Date)
+      self[:date_held] = Time.zone.parse(rawdate)
+    end
+  #   # self[:date_held] = Time.zone.parse(rawdate)
+  #     # return if rawdate.blank?
+  #     # 
+  #     #   self[:date_held] = rawdate
+  #     # elsif Time.zone.parse(rawdate).beginning_of_day != Time.zone.parse(rawdate)
+  #     #   p "****Got here"
+  #     #   self[:date_held] = rawdate
+  #     # end
   end
 
   def extended_title
