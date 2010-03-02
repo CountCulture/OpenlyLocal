@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :police_teams
+
   map.resources :user_submissions
 
   map.resources :twitter_accounts

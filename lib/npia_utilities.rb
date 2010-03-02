@@ -1,7 +1,7 @@
 module NpiaUtilities
   
   class Client
-    BaseUrl = 'http://policeapi.rkh.co.uk/'
+    BaseUrl = 'http://policeapi.rkh.co.uk/api/'
     
     attr_reader :request_method, :params
     

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100301115605) do
+ActiveRecord::Schema.define(:version => 20100302144554) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -450,6 +450,16 @@ ActiveRecord::Schema.define(:version => 20100301115605) do
     t.column "youtube_account_name", :string
     t.column "facebook_account_name", :string
     t.column "feed_url", :string
+  end
+
+  create_table "police_teams", :force => true do |t|
+    t.column "name", :string
+    t.column "uid", :string
+    t.column "description", :text
+    t.column "url", :string
+    t.column "police_force_id", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
   end
 
   create_table "portal_systems", :force => true do |t|

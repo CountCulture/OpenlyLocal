@@ -1,0 +1,8 @@
+<h1><%= h @title %></h1>
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :police_force, basic_link_for( @police_team.police_force) %>
+  <%= attribute_tag :web_page, link_to(@police_team.url, @police_team.url, :class => "external") %>
+  <%= attribute_tag :about_this_team, @police_team.description %>
+</dl>
+
+<%= timestamp_data_for @police_team %>

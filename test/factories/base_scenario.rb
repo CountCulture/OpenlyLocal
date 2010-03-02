@@ -151,6 +151,12 @@ Factory.define :police_authority do |f|
   f.association :police_force
 end
 
+Factory.define :police_team do |f|
+  f.sequence(:name) { |n| "Police Team #{n}" }
+  f.sequence(:uid) { |n|  "AB#{n}" }
+  f.association :police_force
+end
+
 Factory.define :pension_fund do |f|
   f.sequence(:name) { |n| "Pension Fund #{n}" }
 end
