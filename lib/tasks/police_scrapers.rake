@@ -1,6 +1,6 @@
 desc "Populate Police Teams from NPIA api"
 task :populate_police_team_info => :environment do
-  police_teams = PoliceTeam.find_each(:include => :police_force, :limit => 10) do |team|
+  police_teams = PoliceTeam.find_each(:include => :police_force, :conditions => {:description => nil}) do |team|
     team_details = NpiaUtilities::Client.new(:team, :force => team.police_force.npia_id, :team => team.uid).response
     team.update_attributes(:url => team_details["url_force"], :description => team_details["description"], :lat => team_details["latitude"], :lng => team_details["longitude"])
     puts "Updated #{team.extended_title}"

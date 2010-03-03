@@ -4,7 +4,7 @@ class NpiaUtilitiesTest < ActiveSupport::TestCase
 
   context "A Client instance" do
     setup do
-      @client = NpiaUtilities::Client.new(:foo_method, :foo => "bar", :foo_1 => "baz")
+      @client = NpiaUtilities::Client.new(:foo_method, :foo => "bar bam", :foo_1 => "baz")
     end
 
     should "store given method as method_name" do
@@ -12,7 +12,7 @@ class NpiaUtilitiesTest < ActiveSupport::TestCase
     end
 
     should "store given params as params" do
-      assert_equal( {:foo => "bar", :foo_1 => "baz"}, @client.params)
+      assert_equal( {:foo => "bar bam", :foo_1 => "baz"}, @client.params)
     end
     
     context "when building request_url" do
@@ -30,6 +30,10 @@ class NpiaUtilitiesTest < ActiveSupport::TestCase
       
       should "join query params with ampersand" do
         assert_match /&foo/, @client.request_url
+      end
+      
+      should "URL escape query params" do
+        assert_match /bar%20bam/, @client.request_url
       end
       
       should "use api_key as query param hyphenated version of params for query" do

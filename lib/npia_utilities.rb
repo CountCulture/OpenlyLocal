@@ -27,7 +27,7 @@ module NpiaUtilities
     
     def convert_to_query_params(h_params)
       "&" + h_params.collect do |k,v|
-        "#{k.to_s.dasherize}=#{v}"
+        "#{k.to_s.dasherize}=#{URI.escape(v)}"
       end.join('&')
     end
   end
