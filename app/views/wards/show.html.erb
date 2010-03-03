@@ -1,10 +1,10 @@
 <%- div_for @ward do -%>
   <h1><%= basic_link_for @council %>: <%= @title %> <em><%= council_page_for @ward %></em></h1>
   <dl id="main_attributes" class="attributes">
-    <%= attribute_tag( :neighbourhood_police_team, link_for(@ward.police_team) %>
-    <%= attribute_tag( :ons_snac_ref, @ward.snac_id) %>
-    <%= attribute_tag( :ons_gss_code, @ward.gss_code) %>
-    <%= attribute_tag( :ordnance_survey_ref, @ward.os_id ) %>
+    <%= attribute_tag :neighbourhood_police_team, link_for(@ward.police_team) %>
+    <%= attribute_tag :ons_snac_ref, @ward.snac_id %>
+    <%= attribute_tag :ons_gss_code, @ward.gss_code %>
+    <%= attribute_tag :ordnance_survey_ref, @ward.os_id  %>
   </dl>
   <%= render :partial => 'shared/grouped_datapoints', :object => @ward.grouped_datapoints %>
   <div id="relationships">
