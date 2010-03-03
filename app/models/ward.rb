@@ -2,6 +2,7 @@ class Ward < ActiveRecord::Base
   include ScrapedModel::Base
   include AreaStatisticMethods
   belongs_to :council
+  belongs_to :police_team
   has_many :members
   has_many :committees
   has_many :meetings, :through => :committees
