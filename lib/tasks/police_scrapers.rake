@@ -12,7 +12,7 @@ task :populate_police_teams => :environment do
   police_forces = PoliceForce.all(:conditions => 'npia_id IS NOT NULL')
   police_forces.each do |force|
     teams = NpiaUtilities::Client.new(:teams, :force => force.npia_id).response
-    teams["team"].collect{|t| {:name => t["name"], :uid => t["id"]}}.each do |team|
+    teams["team"].collect{|t| {:name => t["name"], :uid => t["id"], :crime_map => t["url_crimemapper"]}}.each do |team|
       force.police_teams.find_or_create_by_name_and_uid(team)
     end
   end
