@@ -1,6 +1,6 @@
 desc "Import councillor twitter ids"
 task :import_councillor_twitter_ids => :environment do
-  grouped_rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/councillor_tweeps.csv"), :headers => true).group_by{ |r| r["Council"] } # group by council
+  grouped_rows = FasterCSV.read(File.join(RAILS_ROOT, "../shared/csv_data/unmatched_councillor_tweeps.csv"), :headers => true).group_by{ |r| r["Council"] } # group by council
   councils = Council.all
   unmatched_rows = []
   grouped_rows.each do |council_name, rows|
@@ -27,7 +27,7 @@ task :import_councillor_twitter_ids => :environment do
   end
   
   puts "\n\nWriting #{unmatched_rows.size} unmatched records to file"
-  FasterCSV.open(File.join(RAILS_ROOT, "db/csv_data/unmatched_councillor_tweeps.csv"), "w") do |csv|
+  FasterCSV.open(File.join(RAILS_ROOT, "../shared/csv_data/unmatched_councillor_tweeps.csv"), "w") do |csv|
     csv << unmatched_rows.first.headers # write headers
     unmatched_rows.each do |row|
       csv << row
