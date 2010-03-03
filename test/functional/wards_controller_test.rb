@@ -88,7 +88,7 @@ class WardsControllerTest < ActionController::TestCase
 
     context "with basic request when ward has additional attributes" do
       setup do
-        @ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
+        @ward.update_attributes(:police_team => Factory(:police_team))
         @ward.committees << @committee = Factory(:committee, :council => @council)
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
         @datapoint = Factory(:datapoint, :area => @ward)
