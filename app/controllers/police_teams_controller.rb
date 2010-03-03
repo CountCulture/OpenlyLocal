@@ -1,6 +1,6 @@
 class PoliceTeamsController < ApplicationController
   def show
     @police_team = PoliceTeam.find(params[:id])
-    @title = @police_team.name
+    @title = @police_team.extended_title
   end
 end

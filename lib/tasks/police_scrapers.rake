@@ -1,4 +1,13 @@
 desc "Populate Police Teams from NPIA api"
+task :populate_police_team_info => :environment do
+  police_teams = PoliceTeam.find_each(:include => :police_force, :limit => 10) do |team|
+    team_details = NpiaUtilities::Client.new(:team, :force => team.police_force.npia_id, :team => team.uid).response
+    team.update_attributes(:url => team_details["url_force"], :description => team_details["description"], :lat => team_details["latitude"], :lng => team_details["longitude"])
+    puts "Updated #{team.extended_title}"
+  end
+end
+
+desc "Populate Police Teams from NPIA api"
 task :populate_police_teams => :environment do
   police_forces = PoliceForce.all(:conditions => 'npia_id IS NOT NULL')
   police_forces.each do |force|
@@ -20,7 +29,6 @@ task :populate_npia_ids => :environment do
     if police_force = PoliceForce.first(:conditions => "url LIKE '%#{URI.parse(force_url).host||force_url}%'")
       police_force.attributes = social_sites.merge(:npia_id => force_info["id"])
       police_force.save!
-      # p police_force
       puts "Updated force matching #{force_info["name"]}: #{police_force.name} (id = #{force_info['id']}, social media sites = #{social_sites.inspect})"
     else
       puts "*** Could not find force matching #{force_info["name"]} (#{force_url})"

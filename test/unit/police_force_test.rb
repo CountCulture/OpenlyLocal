@@ -24,6 +24,7 @@ class PoliceForceTest < ActiveSupport::TestCase
     should_have_db_column :facebook_account_name
     should_have_db_column :youtube_account_name
     should_have_db_column :feed_url
+    should_have_db_column :crime_map
     
     should "include TwitterAccountMethods mixin" do
       assert Member.new.respond_to?(:twitter_account_name)
