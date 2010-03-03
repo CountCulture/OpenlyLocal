@@ -72,6 +72,12 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
     sitemap.add police_authority_path(authority), :lastmod => authority.updated_at
   end
 
+  # add police_teams
+  PoliceTeam.find_in_batches(:batch_size => 500) do |teams|
+    teams.each do |t|
+      sitemap.add police_team_path(t), :lastmod => t.updated_at
+    end
+
   # add hyperlocal_sites
   HyperlocalSite.approved.all.each do |site|
     sitemap.add hyperlocal_site_path(site), :lastmod => site.updated_at
@@ -79,5 +85,6 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
 
   sitemap.add '/info/about_us', :priority => 0.7
   sitemap.add '/info/api', :priority => 0.7
+  sitemap.add '/info/licence_info', :priority => 0.7
   
 end
