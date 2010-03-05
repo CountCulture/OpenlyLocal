@@ -45,6 +45,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_db_column :police_force_url
     should_have_db_column :region
     should_have_db_column :signed_up_for_1010
+    should_have_db_column :annual_audit_letter
 
     should "mixin PartyBreakdownSummary module" do
       assert Council.new.respond_to?(:party_breakdown)
@@ -352,6 +353,7 @@ class CouncilTest < ActiveSupport::TestCase
           "Comhairle nan Eilean Siar (Western Isles Council)" => "comhairle nan eilean siar",
           "City & County of Swansea" => "swansea",
           "St. Albans" => "st albans",
+          "St Albans City and District Council" => "st albans",
           "Royal Borough of Kensington & Chelsea" => "kensington and chelsea",
           "Tonbridge and Malling Borough Council" => "tonbridge and malling",
           "Fenland District Council" => "fenland",

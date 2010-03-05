@@ -455,3 +455,23 @@ task :import_missing_council_latlongs => :environment do
   end
 end
 
+desc "Scrape annual audit letters"
+task :scrape_annual_audit_letters => :environment do
+  require 'hpricot'
+  base_url = 'http://www.audit-commission.gov.uk'
+  bodies = Council.all + PoliceAuthority.all
+  (1..5).each do |page_no|
+    download_pages = Hpricot(open(base_url + "/localgov/audit/annualauditletters/aal0809/Pages/list.aspx?ctype=ACAnnualAuditLetter&p=#{page_no}")).search("#midcolbox .document li a").collect{ |l| l[:href] }
+    download_pages.each do |dp|
+      pdf_link = Hpricot(open(base_url + dp)).at('#midcolbox .docdownload a')
+      raw_body = pdf_link.inner_text.gsub(/annual audit.+$/im,'')
+      if body = bodies.detect{|b| (b.name == raw_body) || (Council.normalise_title(raw_body) == Council.normalise_title(b.name)) }
+        body.update_attribute(:annual_audit_letter, base_url + pdf_link[:href])
+        puts "Updated #{body.name} with link to audit letter (#{raw_body}, #{base_url + pdf_link[:href]})"
+      else
+        puts "*** Could not found council matching #{raw_body}"
+      end
+    end
+  end
+end
+

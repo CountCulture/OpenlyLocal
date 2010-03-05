@@ -19,6 +19,7 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
     should_have_db_column :telephone
     should_have_db_column :address
     should_have_db_column :wdtk_name
+    should_have_db_column :annual_audit_letter
         
   end
   

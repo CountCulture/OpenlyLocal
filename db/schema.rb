@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100305125016) do
+ActiveRecord::Schema.define(:version => 20100305155442) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(:version => 20100305125016) do
     t.column "signed_up_for_1010", :boolean, :default => false
     t.column "pension_fund_id", :integer
     t.column "gss_code", :string
+    t.column "annual_audit_letter", :string
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
@@ -424,6 +425,7 @@ ActiveRecord::Schema.define(:version => 20100305125016) do
     t.column "police_force_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "annual_audit_letter", :string
   end
 
   add_index "police_authorities", ["police_force_id"], :name => "index_police_authorities_on_police_force_id"
