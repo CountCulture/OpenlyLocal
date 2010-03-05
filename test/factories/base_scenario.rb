@@ -244,3 +244,8 @@ Factory.define :user_submission do |f|
   f.member_name "Fred Flintstone"
 end
 
+Factory.define :poll do |f|
+  f.date_held 3.days.ago.to_date
+  f.association :area, :factory => :council
+end
+
