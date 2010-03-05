@@ -77,7 +77,8 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
     teams.each do |t|
       sitemap.add police_team_path(t), :lastmod => t.updated_at
     end
-
+  end
+  
   # add hyperlocal_sites
   HyperlocalSite.approved.all.each do |site|
     sitemap.add hyperlocal_site_path(site), :lastmod => site.updated_at
