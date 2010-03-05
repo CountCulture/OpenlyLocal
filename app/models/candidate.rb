@@ -1,5 +1,5 @@
 class Candidate < ActiveRecord::Base
-  belongs_to :election
-  validates_presence_of :election_id, :last_name
-  delegate :ward, :to => :election
+  belongs_to :poll
+  validates_presence_of :poll_id, :last_name
+  delegate :area, :to => :poll
 end

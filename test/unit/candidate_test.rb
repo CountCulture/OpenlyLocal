@@ -5,17 +5,17 @@ class CandidateTest < ActiveSupport::TestCase
 
   context "The Candidate class" do
     setup do
-      @election = Factory(:election)
-      @candidate = Factory(:candidate, :election => @election)
+      @poll = Factory(:poll)
+      @candidate = Factory(:candidate, :poll => @poll)
     end
 
-    should_belong_to :election
+    should_belong_to :poll
     should_have_db_columns :first_name, :last_name, :party, :elected, :votes, :address
-    should_validate_presence_of :election_id
+    should_validate_presence_of :poll_id
     should_validate_presence_of :last_name
     
-    should "delegate ward to election" do
-      assert_equal @election.ward, @candidate.ward
+    should "delegate area to poll" do
+      assert_equal @poll.area, @candidate.area
     end
 
   end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100305114836) do
+ActiveRecord::Schema.define(:version => 20100305125016) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -29,13 +29,12 @@ ActiveRecord::Schema.define(:version => 20100305114836) do
   add_index "cached_postcodes", ["output_area_id"], :name => "index_cached_postcodes_on_output_area_id"
 
   create_table "candidates", :force => true do |t|
-    t.column "ward_id", :integer
-    t.column "election_id", :integer
+    t.column "poll_id", :integer
     t.column "first_name", :string
     t.column "last_name", :string
     t.column "party", :string
     t.column "elected", :boolean
-    t.column "votes", :boolean
+    t.column "votes", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "address", :text
@@ -215,14 +214,6 @@ ActiveRecord::Schema.define(:version => 20100305114836) do
   end
 
   add_index "documents", ["document_owner_type", "document_owner_id"], :name => "index_documents_on_document_owner_type_and_document_owner_id"
-
-  create_table "elections", :force => true do |t|
-    t.column "date", :date
-    t.column "ward_id", :integer
-    t.column "electorate", :integer
-    t.column "uid", :string
-    t.column "url", :string
-  end
 
   create_table "feed_entries", :force => true do |t|
     t.column "title", :string

@@ -223,14 +223,8 @@ Factory.define :boundary do |f|
   f.sequence(:bounding_box) { |n| Polygon.from_coordinates([[[1.0+0.1*n, 52.0+0.1*n], [2.0+0.1*n, 52.0+0.1*n], [2.0+0.1*n, 54.0+0.1*n], [1.0+0.1*n, 54.0+0.1*n], [1.0+0.1*n, 52.0+0.1*n]]]) } 
 end
 
-Factory.define :election do |f|
-  f.association :ward
-  f.sequence(:date) { |n| n.days.from_now } 
-end
-
 Factory.define :candidate do |f|
-  f.association :election
-  # f.association :ward
+  f.association :poll
   f.last_name "Flintstone"
 end
 
