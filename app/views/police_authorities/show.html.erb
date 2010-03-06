@@ -5,6 +5,7 @@
   <%= attribute_tag :address, @police_authority.address %>
   <%= attribute_tag :telephone, @police_authority.telephone %>
   <%= attribute_tag :website, link_to(@police_authority.url, @police_authority.url, :class => "external") %>
+  <%= attribute_tag :annual_audit_letter, link_to(@police_authority.annual_audit_letter, :class => 'external') if @police_authority.annual_audit_letter? %>
   <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@police_authority.wikipedia_url), @police_authority.wikipedia_url, :class => 'external') unless @police_authority.wikipedia_url.blank? %>
 </dl>
   <%- unless @police_authority.wdtk_name.blank? -%>

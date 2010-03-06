@@ -228,6 +228,16 @@ Factory.define :candidate do |f|
   f.last_name "Flintstone"
 end
 
+Factory.define :poll do |f|
+  f.date_held 3.days.ago.to_date
+  f.association :area, :factory => :council
+end
+
+Factory.define :political_party do |f|
+  f.sequence(:name) { |n| "Political Party #{n}" }
+  f.sequence(:electoral_commission_uid) { |n| n + 22 }
+end
+
 Factory.define :twitter_account do |f|
   f.sequence(:name) { |n| "user#{n}" }
   f.association :user, :factory => :hyperlocal_site
@@ -236,10 +246,5 @@ end
 Factory.define :user_submission do |f|
   f.association :council
   f.member_name "Fred Flintstone"
-end
-
-Factory.define :poll do |f|
-  f.date_held 3.days.ago.to_date
-  f.association :area, :factory => :council
 end
 
