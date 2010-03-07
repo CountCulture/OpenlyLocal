@@ -69,3 +69,17 @@ task :scrape_electoral_commission_party_list => :environment do
     end
   end
 end
+
+desc "Get details for Political Parties on Electoral Commission list"
+task :get_details_for_electoral_commission_parties => :environment do
+  require 'hpricot'
+  PoliticalParty.all.each do |party|
+    alternative_names = []
+    data = Hpricot(open(party.electoral_commission_url)).at('table.datatable')
+    alternative_names << data.at('tr[text()*="Other name"] td:last-of-type').try(:inner_text)
+    alternative_names += data.search('tr[text()*="Party description"]~tr>td:not([strong|table])').collect{ |d| d.inner_text.to_s.gsub(/\302\240/, '').strip }
+    alternative_names = alternative_names.delete_if { |n| n.blank? }.uniq - [party.name]
+    party.update_attribute(:alternative_names, alternative_names) unless alternative_names.blank?
+    puts "Added alternative_names to #{party.name}: #{alternative_names.inspect}"
+  end
+end
