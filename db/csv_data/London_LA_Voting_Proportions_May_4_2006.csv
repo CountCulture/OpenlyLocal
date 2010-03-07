@@ -1,0 +1,657 @@
+"Boro.","Const.","Ward","Borough","WardName","Electorate","VotesInPerson","PostalVotes","a","b","c","d","RejectedBallots","PartRejectedBallots"
+1,,1,"Barking and Dagenham","Abbey","7,379",1948,255,0,9,1,65,75,0
+1,,2,"Barking and Dagenham","Alibon","6,721",2487,272,0,1,1,6,8,0
+1,,3,"Barking and Dagenham","Becontree","7,578",2111,343,0,0,0,81,81,0
+1,,4,"Barking and Dagenham","Chadwell Heath","6,972",2168,355,0,1,0,21,22,0
+1,,5,"Barking and Dagenham","Eastbrook","7,523",3729,341,0,1,0,158,159,0
+1,,6,"Barking and Dagenham","Eastbury","7,697","STATIONS",495,0,0,0,8,8,0
+1,,7,"Barking and Dagenham","Gascoigne","7,146",2065,296,0,1,2,41,44,0
+1,,8,"Barking and Dagenham","Goresbrook","7,298",2656,365,0,0,0,6,6,0
+1,,9,"Barking and Dagenham","Heath","7,396",2259,275,0,0,0,81,81,0
+1,,10,"Barking and Dagenham","Longbridge","7,543",3234,427,0,0,0,0,0,0
+1,,11,"Barking and Dagenham","Mayesbrook","6,886",2440,342,0,0,0,7,7,0
+1,,12,"Barking and Dagenham","Parsloes","6,643",2095,370,0,0,0,21,21,0
+1,,13,"Barking and Dagenham","River","7,419",2314,335,0,1,2,52,55,0
+1,,14,"Barking and Dagenham","Thames","7,223",1930,294,0,0,0,63,63,0
+1,,15,"Barking and Dagenham","Valence","6,662",2323,326,0,0,0,15,15,0
+1,,16,"Barking and Dagenham","Village","7,089",2605,385,0,2,0,13,15,0
+1,,17,"Barking and Dagenham","Whalebone","7,287",2175,355,0,2,1,129,132,0
+,,,"Barking and Dagenham","Total","122,462","38,539","5,831",0,18,7,767,792,0
+2,,1,"Barnet","Brunswick Park","10,457","2,922","1,534",0,0,1,6,7,0
+2,,2,"Barnet","Burnt Oak","9,920","1,513","1,706",2,11,0,5,18,2
+2,,3,"Barnet","Childs Hill","10,853","2,109","1,807",3,6,3,48,60,0
+2,,4,"Barnet","Colindale","8,521","1,324","1,317",0,5,0,8,13,6
+2,,5,"Barnet","Coppetts","10,181","2,588","1,486",0,6,0,16,22,0
+2,,6,"Barnet","East Barnet","10,905","3,329","1,716",0,3,0,27,30,0
+2,,7,"Barnet","East Finchley","9,834","2,903","1,312",0,5,0,14,19,0
+2,,8,"Barnet","Edgware","10,633","2,476","1,688",0,4,0,6,10,6
+2,,9,"Barnet","Finchley Church End","9,770","2,705","1,473",0,24,0,48,72,0
+2,,10,"Barnet","Garden Suburb","9,829","3,102","1,449",15,6,0,18,39,0
+2,,11,"Barnet","Golders Green","9,804","1,883","1,719",0,0,0,13,13,0
+2,,12,"Barnet","Hale","10,709","2,783","2,116",0,8,2,8,18,4
+2,,13,"Barnet","Hendon","10,578","2,241","1,416",1,11,1,8,21,0
+2,,14,"Barnet","High Barnet","10,474","3,768","1,464",0,0,1,11,12,0
+2,,15,"Barnet","Mill Hill","10,968","3,249","1,624",0,9,2,7,18,3
+2,,16,"Barnet","Oakleigh","10,815","3,353","1,477",0,1,0,16,17,0
+2,,17,"Barnet","Totteridge","10,058","2,835","1,441",0,0,0,9,9,0
+2,,18,"Barnet","Underhill","10,491","3,009","2,077",0,1,2,25,28,0
+2,,19,"Barnet","West Finchley","9,682","2,717","1,614",0,0,0,12,12,0
+2,,20,"Barnet","West Hendon","10,186","1,977","1,637",0,8,3,8,19,7
+2,,21,"Barnet","Woodhouse","10,638","3,019","1,800",0,6,0,45,51,0
+,,,"Barnet","Total","215,306","55,805","33,873",21,114,15,358,508,28
+3,,1,"Bexley","Barnehurst","8,041","3,027",637,0,3,0,19,22,1
+3,,2,"Bexley","Belvedere","8,042","2,530",354,0,0,0,29,29,0
+3,,3,"Bexley","Blackfen and Lamorbey","8,019","3,077",477,0,4,0,9,13,0
+3,,4,"Bexley","Blendon and Penhill","8,292","2,995",493,0,2,0,28,30,0
+3,,5,"Bexley","Brampton","8,311","3,448",731,0,0,0,12,12,0
+3,,6,"Bexley","Christchurch","8,356","2,709",814,0,3,0,25,28,0
+3,,7,"Bexley","Colyers","8,232","2,730",603,0,0,0,16,16,0
+3,,9,"Bexley","Crayford","8,128","2,895",547,0,1,0,6,7,0
+3,,8,"Bexley","Cray Meadows","8,089","3,046",704,0,4,0,8,12,0
+3,,10,"Bexley","Danson Park","8,030","2,905",639,0,0,0,28,28,0
+3,,11,"Bexley","East Wickham","8,044","3,150",494,0,2,0,1,3,0
+3,,12,"Bexley","Erith","8,076","2,108",496,1,5,0,17,23,0
+3,,13,"Bexley","Falconwood and Welling","8,116","3,445",479,0,3,0,6,9,0
+3,,14,"Bexley","Lesnes Abbey","8,646","3,258",654,0,2,0,14,16,0
+3,,15,"Bexley","Longlands","7,659","2,821",493,0,5,1,8,14,0
+3,,16,"Bexley","North End","7,589","1,991",428,0,0,0,6,6,0
+3,,17,"Bexley","Northumberland Heath","7,928","3,238",457,0,1,0,41,42,0
+3,,18,"Bexley","St Mary's","8,135","3,175",522,0,1,0,22,23,0
+3,,19,"Bexley","St Michael's","7,998","3,345",378,0,0,0,46,46,0
+3,,20,"Bexley","Sidcup","8,375","3,226",514,0,0,1,16,17,0
+3,,21,"Bexley","Thamesmead East","8,626","1,856",400,0,3,0,9,12,0
+,,,"Bexley","Total","170,732","60,975","11,314",1,39,2,366,408,1
+4,,1,"Brent","Alperton","9,169","3,510",288,0,10,1,17,28,0
+4,,2,"Brent","Barnhill","9,879","2,839",382,0,4,1,9,14,0
+4,,3,"Brent","Brondesbury Park","8,382","2,666",688,0,2,0,10,12,0
+4,,4,"Brent","Dollis Hill","7,980","2,775",368,0,6,3,11,20,0
+4,,5,"Brent","Dudden Hill","9,078","3,143",331,0,5,0,14,19,0
+4,,6,"Brent","Fryent","8,613","3,142",372,0,5,0,14,19,0
+4,,7,"Brent","Harlesden","9,255","2,315",179,0,8,2,7,17,0
+4,,8,"Brent","Kensal Green","8,728","2,403",207,0,2,0,6,8,0
+4,,9,"Brent","Kenton","8,867","3,130",436,0,4,0,3,7,0
+4,,10,"Brent","Kilburn","10,545","2,953",333,0,1,0,8,9,0
+4,,11,"Brent","Mapesbury","9,445","2,962",478,0,3,5,0,8,0
+4,,12,"Brent","Northwick Park","9,287","2,819",414,0,3,0,2,5,0
+4,,13,"Brent","Preston","9,621","3,068",487,0,4,1,10,15,0
+4,,14,"Brent","Queens Park","9,487","3,300",342,0,9,1,8,18,1
+4,,15,"Brent","Queensbury","9,713","3,821",517,0,4,0,10,14,0
+4,,16,"Brent","Stonebridge","10,184","2,593",275,0,5,0,9,14,0
+4,,17,"Brent","Sudbury","9,295","3,240",428,0,8,0,11,19,0
+4,,18,"Brent","Tokyngton","8,973","3,951",304,0,7,4,3,14,0
+4,,19,"Brent","Welsh Harp","8,649","3,027",410,0,4,0,10,14,0
+4,,20,"Brent","Wembley Central","8,995","3,655",438,0,10,1,13,24,0
+4,,21,"Brent","Willesden Green","8,255","2,448",259,0,2,0,6,8,0
+,,,"Brent","Total","192,400","63,760","7,936",0,106,19,181,306,1
+5,,1,"Bromley","Bickley","11,027","3,767",966,0,5,0,20,25,0
+5,,2,"Bromley","Biggin Hill","7,808","2,953",420,0,0,1,25,26,0
+5,,3,"Bromley","Bromley Common and Keston","10,992","3,586",825,0,2,1,11,14,0
+5,,4,"Bromley","Bromley Town","11,933","3,755",904,0,2,0,19,21,0
+5,,5,"Bromley","Chelsfield and Pratts Bottom","11,275","4,573",950,0,4,0,17,21,0
+5,,6,"Bromley","Chislehurst","11,614","3,815",905,0,0,1,16,17,0
+5,,7,"Bromley","Clock House","11,583","4,019",665,0,1,0,29,30,0
+5,,8,"Bromley","Copers Cope","11,605","3,591",909,0,3,2,26,31,0
+5,,9,"Bromley","Cray Valley East","10,985","2,782",785,0,5,0,24,29,0
+5,,10,"Bromley","Cray Valley West","11,899","3,318",951,0,2,4,7,13,0
+5,,11,"Bromley","Crystal Palace","8,394","2,272",516,0,2,0,12,14,0
+5,,12,"Bromley","Darwin","3,704","1,471",258,0,2,0,11,13,0
+5,,13,"Bromley","Farnborough and Crofton","11,301","4,479",956,5,3,0,17,25,0
+5,,14,"Bromley","Hayes and Coney Hall","12,226","4,550",736,0,2,0,16,18,0
+5,,15,"Bromley","Kelsey and Eden Park","11,824","4,259",900,0,4,1,14,19,0
+5,,16,"Bromley","Mottingham and Chislehurst North","7,459","2,280",461,0,2,0,3,5,0
+5,,17,"Bromley","Orpington","11,547","4,452",982,0,0,0,29,29,0
+5,,18,"Bromley","Penge and Cator","12,064","4,103",656,0,6,0,45,51,0
+5,,19,"Bromley","Petts Wood and Knoll","10,847","4,516",807,0,1,0,18,19,0
+5,,20,"Bromley","Plaistow and Sundridge","11,312","4,100",755,0,1,2,12,15,0
+5,,21,"Bromley","Shortlands","7,546","2,834",614,0,0,0,20,20,0
+5,,22,"Bromley","West Wickham","11,252","4,432",796,4,30,0,0,34,0
+,,,"Bromley","Total","230,197","79,907","16,717",9,77,12,391,489,0
+6,,1,"Camden","Belsize","8,710","2,709",629,0,0,10,1,11,0
+6,,2,"Camden","Bloomsbury","7,429","2,002",542,0,2,1,7,10,0
+6,,3,"Camden","Camden Town with Primrose Hill","8,500","2,898",676,0,3,11,0,14,0
+6,,4,"Camden","Cantelowes","8,270","2,475",445,0,3,1,9,13,0
+6,,5,"Camden","Fortune Green","7,962","2,257",502,0,2,1,11,14,0
+6,,6,"Camden","Frognal and Fitzjohns","8,166","1,888",743,0,0,1,4,5,0
+6,,7,"Camden","Gospel Oak","7,653","2,911",603,7,5,3,3,18,0
+6,,8,"Camden","Hampstead Town","7,392","2,719",913,1,0,3,4,8,0
+6,,9,"Camden","Haverstock","8,081","2,548",544,1,1,2,10,14,0
+6,,10,"Camden","Highgate","7,986","3,037",751,0,0,0,7,7,0
+6,,11,"Camden","Holborn and Covent Garden","8,561","2,205",512,0,4,1,6,11,0
+6,,12,"Camden","Kentish Town","8,756","3,210",452,0,1,1,5,7,0
+6,,13,"Camden","Kilburn","8,034","2,301",485,0,1,0,6,7,0
+6,,14,"Camden","King's Cross","8,300","2,225",374,0,1,0,12,13,0
+6,,15,"Camden","Regent's Park","8,570","2,635",520,0,5,1,14,20,0
+6,,16,"Camden","St Pancras and Somers Town","8,008","2,626",496,2,4,0,13,19,0
+6,,17,"Camden","Swiss Cottage","8,745","2,006",791,0,7,0,0,7,0
+6,,18,"Camden","West Hampstead","8,260","2,104",473,0,1,0,9,10,0
+,,,"Camden","Total","147,383","44,756","10,451",11,40,36,121,208,0
+7,,1,"Croydon","Addiscombe","11,087","3,628",809,0,2,0,14,16,4
+7,,2,"Croydon","Ashburton","10,115","3,509",815,0,0,0,6,6,0
+7,,3,"Croydon","Bensham Manor","10,333","3,009",398,0,4,1,8,13,2
+7,,4,"Croydon","Broad Green","10,885","3,021",405,0,4,0,10,14,0
+7,,5,"Croydon","Coulsdon East","9,412","4,355","1,025",0,0,10,22,32,0
+7,,6,"Croydon","Coulsdon West","9,831","3,335",891,0,2,1,15,18,0
+7,,7,"Croydon","Croham","10,785","3,704",756,0,1,1,9,11,0
+7,,8,"Croydon","Fairfield","10,127","2,798","1,010",0,3,2,3,8,0
+7,,9,"Croydon","Fieldway","6,697","1,823",470,0,0,0,0,0,0
+7,,10,"Croydon","Heathfield","9,863","3,588",817,0,0,0,9,9,0
+7,,11,"Croydon","Kenley","10,473","3,450",917,0,3,1,11,15,0
+7,,12,"Croydon","New Addington","7,198","2,546",682,0,3,0,1,4,0
+7,,13,"Croydon","Norbury","10,978","3,881",903,0,3,1,11,15,0
+7,,14,"Croydon","Purley","10,161","3,413",746,0,1,0,6,7,0
+7,,15,"Croydon","Sanderstead","9,663","3,942",758,0,4,0,4,8,5
+7,,16,"Croydon","Selhurst","10,259","2,715",505,0,2,0,0,2,11
+7,,17,"Croydon","Selsdon and Ballards","9,355","3,950",769,0,1,0,12,13,0
+7,,18,"Croydon","Shirley","10,422","4,060",954,0,3,0,3,6,0
+7,,19,"Croydon","South Norwood","10,732","3,388",609,0,5,0,8,13,1
+7,,20,"Croydon","Thornton Heath","10,920","3,011",434,0,5,2,16,23,1
+7,,21,"Croydon","Upper Norwood","10,795","3,360",732,0,0,0,13,13,0
+7,,22,"Croydon","Waddon","11,096","4,045","1,031",0,5,4,6,15,0
+7,,23,"Croydon","West Thornton","10,790","2,860",526,12,1,0,0,13,4
+7,,24,"Croydon","Woodside","10,314","2,868",617,0,5,1,5,11,0
+,,,"Croydon","Total","242,291","80,259","17,579",12,57,24,192,285,28
+8,,1,"Ealing","Acton Central","9,413","2,942",325,0,7,0,8,15,0
+8,,2,"Ealing","Cleveland","9,911","4,157",464,0,5,0,13,18,0
+8,,3,"Ealing","Dormers Wells","9,098","2,746",268,4,4,0,15,23,0
+8,,4,"Ealing","Ealing Broadway","9,268","2,882",429,8,3,0,12,23,0
+8,,5,"Ealing","Ealing Common","9,661","3,397",462,1,0,0,7,8,0
+8,,6,"Ealing","East Acton","9,554","2,801",316,0,8,0,18,26,0
+8,,7,"Ealing","Elthorne","9,510","2,972",318,2,9,0,10,21,0
+8,,8,"Ealing","Greenford Broadway","9,895","3,201",345,0,1,0,7,8,0
+8,,9,"Ealing","Greenford Green","9,602","3,382",355,5,3,0,24,32,0
+8,,10,"Ealing","Hanger Hill","9,959","3,429",474,0,1,0,7,8,0
+8,,11,"Ealing","Hobbayne","9,339","3,329",356,0,5,0,13,18,0
+8,,12,"Ealing","Lady Margaret","9,654","2,875",314,0,5,0,8,13,0
+8,,13,"Ealing","North Greenford","9,916","3,591",438,7,4,0,9,20,0
+8,,14,"Ealing","Northfield","9,743","3,775",395,0,5,0,12,17,0
+8,,15,"Ealing","Northolt Mandeville","9,740","3,085",465,2,1,0,27,30,0
+8,,16,"Ealing","Northolt West End","9,651","2,637",312,4,6,1,20,31,0
+8,,17,"Ealing","Norwood Green","8,863","2,780",366,0,7,0,8,15,0
+8,,18,"Ealing","Perivale","10,029","3,894",307,0,5,0,11,16,0
+8,,19,"Ealing","South Acton","9,372","3,035",378,0,3,0,13,16,0
+8,,20,"Ealing","Southall Broadway","9,483","3,191",590,0,10,0,13,23,0
+8,,21,"Ealing","Southall Green","9,526","3,213",388,0,10,0,6,16,0
+8,,22,"Ealing","Southfield","9,786","3,213",459,0,5,1,7,13,0
+8,,23,"Ealing","Walpole","9,359","3,642",383,0,1,0,10,11,0
+,,,"Ealing","Total","220,332","74,169","8,907",33,108,2,278,421,0
+9,,1,"Enfield","Bowes","8,592","2,281",885,0,1,0,14,15,0
+9,,2,"Enfield","Bush Hill Park","10,038","3,285",950,0,3,0,9,12,0
+9,,3,"Enfield","Chase","9,142","2,955",939,0,16,0,5,21,0
+9,,4,"Enfield","Cockfosters","10,061","2,443","1,307",0,0,0,0,0,0
+9,,5,"Enfield","Edmonton Green","8,657","2,150",724,0,9,1,14,24,0
+9,,6,"Enfield","Enfield Highway","9,415","2,590",829,0,10,0,8,18,0
+9,,7,"Enfield","Enfield Lock","9,679","2,319",913,0,10,0,5,15,0
+9,,8,"Enfield","Grange","9,419","3,139","1,005",0,0,0,1,1,0
+9,,9,"Enfield","Haselbury","9,251","2,502",617,0,4,3,19,26,0
+9,,10,"Enfield","Highlands","9,725","3,258","1,118",0,3,0,16,19,0
+9,,11,"Enfield","Jubilee","8,798","2,802",692,0,5,0,15,20,0
+9,,12,"Enfield","Lower Edmonton","9,445","2,526",612,0,2,0,3,5,0
+9,,13,"Enfield","Palmers Green","9,406","2,755",914,0,0,0,0,0,0
+9,,14,"Enfield","Ponders End","9,392","2,091",802,0,5,0,22,27,0
+9,,15,"Enfield","Southbury","9,030","2,687",929,0,2,1,3,6,0
+9,,16,"Enfield","Southgate","9,511","2,247","1,110",0,1,0,0,1,0
+9,,17,"Enfield","Southgate Green","9,723","2,876","1,081",0,4,1,0,5,0
+9,,18,"Enfield","Town","10,691","3,782","1,126",0,6,0,0,6,0
+9,,19,"Enfield","Turkey Street","8,803","2,210",949,0,4,1,19,24,0
+9,,20,"Enfield","Upper Edmonton","9,568","2,343",692,0,7,2,11,20,0
+9,,21,"Enfield","Winchmore Hill","9,676","2,773","1,025",0,3,0,0,3,0
+,,,"Enfield","Total","198,022","56,014","19,219",0,95,9,164,268,0
+10,,1,"Greenwich","Abbey Wood","10,045","2,637",607,0,3,0,32,35,0
+10,,2,"Greenwich","Blackheath Westcombe","8,955","3,193",744,1,1,0,12,14,0
+10,,3,"Greenwich","Charlton","9,309","2,859",611,0,5,0,13,18,0
+10,,4,"Greenwich","Coldharbour and New Eltham","9,516","3,022",758,13,2,0,20,35,0
+10,,5,"Greenwich","Eltham North","9,294","3,909",736,0,4,15,11,30,0
+10,,6,"Greenwich","Eltham South","9,286","2,988",725,2,3,0,30,35,0
+10,,7,"Greenwich","Eltham West","9,313","2,792",563,1,3,0,14,18,0
+10,,8,"Greenwich","Glyndon","10,302","2,479",613,0,1,0,48,49,0
+10,,9,"Greenwich","Greenwich West","9,712","2,829",566,0,1,0,16,17,0
+10,,10,"Greenwich","Kidbrooke with Hornfair","9,315","2,561",752,4,1,0,28,33,0
+10,,11,"Greenwich","Middle Park and Sutcliffe","9,255","2,973",792,12,3,0,42,57,0
+10,,12,"Greenwich","Peninsula","8,192","2,436",460,0,8,0,5,13,0
+10,,13,"Greenwich","Plumstead","9,831","2,718",610,0,5,0,49,54,0
+10,,14,"Greenwich","Shooters Hill","9,219","3,213",657,0,2,0,46,48,0
+10,,15,"Greenwich","Thamesmead Moorings","11,243","2,262",553,2,6,0,41,49,0
+10,,16,"Greenwich","Woolwich Common","9,740","2,029",711,0,8,0,25,33,0
+10,,17,"Greenwich","Woolwich Riverside","9,838","2,267",490,2,3,0,30,35,0
+,,,"Greenwich","Total","162,365","47,167","10,948",37,59,15,462,573,0
+11,,1,"Hackney","Brownswood","6,972","1,406",789,0,0,3,14,17,0
+11,,2,"Hackney","Cazenove","7,351","1,431","1,503",0,2,1,25,28,0
+11,,3,"Hackney","Chatham","7,101","1,389",719,0,5,0,22,27,0
+11,,4,"Hackney","Clissold","7,351","1,964","1,032",0,0,6,7,13,2
+11,,5,"Hackney","Dalston","7,484","1,674",784,0,9,3,21,33,0
+11,,6,"Hackney","De Beauvoir","7,627","1,486",810,0,4,0,16,20,0
+11,,7,"Hackney","Hackney Central","7,460","1,612",836,0,3,0,14,17,0
+11,,8,"Hackney","Hackney Downs","7,311","1,436",784,0,4,2,31,37,0
+11,,9,"Hackney","Haggerston","7,524","1,626",751,0,0,0,24,24,11
+11,,10,"Hackney","Hoxton","7,549","1,688",818,13,1,1,3,18,0
+11,,11,"Hackney","King's Park","6,571","1,384",736,0,0,0,15,15,9
+11,,12,"Hackney","Leabridge","6,470","1,694",818,0,7,0,10,17,0
+11,,13,"Hackney","Lordship","6,497","1,338","1,200",0,2,7,14,23,0
+11,,14,"Hackney","New River","6,326","1,346","1,109",0,8,1,14,23,0
+11,,15,"Hackney","Queensbridge","7,382","2,069",959,3,7,4,20,34,0
+11,,16,"Hackney","Springfield","5,961","1,122",726,8,7,0,0,15,0
+11,,17,"Hackney","Stoke Newington Central","7,353","1,885",751,0,9,1,19,29,0
+11,,18,"Hackney","Victoria","8,089","1,787",966,7,11,0,17,35,0
+11,,19,"Hackney","Wick","7,107","1,432",714,0,3,0,12,15,0
+,,,"Hackney","Total","135,486","29,769","16,805",31,82,29,298,440,22
+12,,1,"Hammersmith and Fulham","Addison","8,160","3,054",614,0,1,0,11,12,0
+12,,2,"Hammersmith and Fulham","Askew","8,539","2,830",317,0,7,1,22,30,0
+12,,3,"Hammersmith and Fulham","Avonmore and Brook Green","8,481","2,494",726,0,4,0,14,18,0
+12,,4,"Hammersmith and Fulham","College Park and Old Oak","4,662","1,279",190,0,6,2,6,14,0
+12,,5,"Hammersmith and Fulham","Fulham Broadway","7,549","2,682",660,0,2,0,7,9,0
+12,,6,"Hammersmith and Fulham","Fulham Reach","7,628","2,724",636,0,2,0,29,31,0
+12,,7,"Hammersmith and Fulham","Hammersmith Broadway","7,831","2,387",491,0,3,0,19,22,0
+12,,8,"Hammersmith and Fulham","Munster","7,703","2,188",527,0,2,0,23,25,0
+12,,9,"Hammersmith and Fulham","North End","7,795","2,686",597,0,0,0,23,23,0
+12,,10,"Hammersmith and Fulham","Palace Riverside","5,431","1,975",770,0,2,0,8,10,0
+12,,11,"Hammersmith and Fulham","Parsons Green and Walham","7,579","2,437",733,0,1,0,8,9,0
+12,,12,"Hammersmith and Fulham","Ravenscourt Park","7,397","2,840",767,0,5,0,11,16,0
+12,,13,"Hammersmith and Fulham","Sands End","7,363","2,339",684,0,4,1,3,8,0
+12,,14,"Hammersmith and Fulham","Shepherd's Bush Green","7,800","2,117",315,0,2,0,30,32,0
+12,,15,"Hammersmith and Fulham","Town","7,296","1,984",573,0,0,0,14,14,0
+12,,16,"Hammersmith and Fulham","Wormholt and White City","8,081","2,395",306,0,4,0,19,23,0
+,,,"Hammersmith and Fulham","Total","119,295","38,411","8,906",0,45,4,247,296,0
+13,,1,"Haringey","Alexandra","7,975","3,076",403,0,1,0,8,9,0
+13,,2,"Haringey","Bounds Green","7,824","2,719",386,0,8,0,10,18,0
+13,,3,"Haringey","Bruce Grove","8,054","2,132",262,0,0,0,13,13,0
+13,,4,"Haringey","Crouch End","8,769","2,903",447,0,0,0,4,4,0
+13,,5,"Haringey","Fortis Green","8,556","2,668",655,0,1,0,7,8,0
+13,,6,"Haringey","Harringay","8,132","2,745",234,0,2,1,9,12,0
+13,,7,"Haringey","Highgate","7,991","2,867",728,0,0,0,8,8,0
+13,,8,"Haringey","Hornsey","7,954","2,798",375,0,3,0,9,12,0
+13,,9,"Haringey","Muswell Hill","7,956","3,014",449,0,2,0,5,7,0
+13,,10,"Haringey","Noel Park","8,177","2,410",254,0,6,0,6,12,0
+13,,11,"Haringey","Northumberland Park","7,908","2,061",274,0,5,1,19,25,0
+13,,12,"Haringey","St Ann's","8,231","2,370",208,0,2,0,7,9,0
+13,,13,"Haringey","Seven Sisters","8,536","2,111",524,0,6,0,15,21,0
+13,,14,"Haringey","Stroud Green","8,365","2,970",360,0,2,1,8,11,0
+13,,15,"Haringey","Tottenham Green","8,159","1,962",229,0,6,0,7,13,0
+13,,16,"Haringey","Tottenham Hale","8,527","2,186",276,0,4,1,10,15,0
+13,,17,"Haringey","West Green","8,080","2,453",269,0,1,0,10,11,0
+13,,18,"Haringey","White Hart Lane","7,853","2,405",270,0,3,5,8,16,0
+13,,19,"Haringey","Woodside","8,183","2,741",376,0,6,2,12,20,0
+,,,"Haringey","Total","155,230","48,591","6,979",0,58,11,175,244,0
+14,,1,"Harrow","Belmont","7,909","3,243",387,0,4,0,12,16,0
+14,,2,"Harrow","Canons","8,634","2,564",717,0,4,0,9,13,0
+14,,3,"Harrow","Edgware","7,555","2,481",332,0,9,0,11,20,0
+14,,4,"Harrow","Greenhill","7,651","2,349",471,0,0,0,7,7,0
+14,,5,"Harrow","Harrow on the Hill","7,661","2,408",458,0,3,1,23,27,0
+14,,6,"Harrow","Harrow Weald","8,170","2,891",503,0,3,0,15,18,0
+14,,7,"Harrow","Hatch End","7,961","2,912",493,0,1,0,9,10,0
+14,,8,"Harrow","Headstone North","7,564","2,998",456,0,0,2,6,8,0
+14,,9,"Harrow","Headstone South","7,483","3,098",393,0,3,0,2,5,2
+14,,10,"Harrow","Kenton East","7,778","2,923",294,0,4,0,8,12,0
+14,,11,"Harrow","Kenton West","8,174","3,257",355,0,4,0,3,7,0
+14,,12,"Harrow","Marlborough","7,543","2,542",290,0,10,0,18,28,0
+14,,13,"Harrow","Pinner","7,608","2,604",597,0,2,0,14,16,0
+14,,14,"Harrow","Pinner South","7,789","2,951",513,0,0,0,16,16,0
+14,,15,"Harrow","Queensbury","8,038","2,804",357,0,6,0,2,8,11
+14,,16,"Harrow","Rayners Lane","7,823","3,314",434,0,3,0,6,9,0
+14,,17,"Harrow","Roxbourne","7,718","2,435",389,0,2,0,14,16,0
+14,,18,"Harrow","Roxeth","7,863","2,903",363,0,8,0,24,32,0
+14,,19,"Harrow","Stanmore Park","8,491","2,754",564,0,1,0,10,11,0
+14,,20,"Harrow","Wealdstone","7,118","2,369",295,0,2,4,2,8,0
+14,,21,"Harrow","West Harrow","7,212","2,878",422,0,4,0,13,17,0
+,,,"Harrow","Total","163,743","58,678","9,083",0,73,7,224,304,13
+15,,1,"Havering","Brooklands","9,939","3,128",641,0,0,0,17,17,0
+15,,2,"Havering","Cranham","9,803","4,191",528,0,5,0,11,16,0
+15,,3,"Havering","Elm Park","9,463","3,384",392,0,4,12,0,16,0
+15,,4,"Havering","Emerson Park","9,317","3,348",543,4,1,0,21,26,0
+15,,5,"Havering","Gooshays","9,735","2,629",387,0,3,0,4,7,0
+15,,6,"Havering","Hacton","9,786","3,486",441,0,0,0,25,25,0
+15,,7,"Havering","Harold Wood","9,853","3,602",412,0,1,0,21,22,0
+15,,8,"Havering","Havering Park","9,177","2,866",711,0,2,0,17,19,0
+15,,9,"Havering","Heaton","8,800","2,460",386,0,4,0,11,15,0
+15,,10,"Havering","Hylands","9,681","3,328",478,0,2,0,19,21,0
+15,,11,"Havering","Mawneys","9,443","3,127",705,0,3,0,10,13,0
+15,,12,"Havering","Pettits","10,175","3,773",887,0,3,0,10,13,0
+15,,13,"Havering","Rainham and Wennington","9,091","2,969",385,1,4,0,14,19,0
+15,,14,"Havering","Romford Town","10,700","2,950",791,0,0,1,29,30,0
+15,,15,"Havering","St Andrew's","10,298","3,636",566,6,4,1,6,17,0
+15,,16,"Havering","South Hornchurch","9,991","3,058",338,0,0,0,13,13,0
+15,,17,"Havering","Squirrel's Heath","9,852","3,047",800,0,0,1,16,17,0
+15,,18,"Havering","Upminster","10,170","4,348",598,0,0,0,13,13,0
+,,,"Havering","Total","175,274","59,330","9,989",11,36,15,257,319,0
+16,,1,"Hillingdon","Barnhill","8,271","2,688",,0,1,0,5,6,0
+16,,2,"Hillingdon","Botwell","8,814","2,785",,0,3,0,16,19,0
+16,,3,"Hillingdon","Brunel","8,867","2,897",,0,0,0,17,17,0
+16,,4,"Hillingdon","Cavendish","8,534","4,176",,0,1,0,15,16,0
+16,,5,"Hillingdon","Charville","8,478","3,250",,0,8,0,19,27,0
+16,,6,"Hillingdon","Eastcote and East Ruislip","8,955","4,322",,0,2,1,24,27,0
+16,,7,"Hillingdon","Harefield","5,450","2,264",,0,0,0,2,2,0
+16,,8,"Hillingdon","Heathrow Villages","7,761","2,662",,0,1,0,1,2,0
+16,,9,"Hillingdon","Hillingdon East","8,683","3,231",,0,0,0,10,10,0
+16,,10,"Hillingdon","Ickenham","7,840","3,735",,0,1,0,20,21,0
+16,,11,"Hillingdon","Manor","8,282","4,318",,1,1,2,11,15,0
+16,,12,"Hillingdon","Northwood","8,127","3,126",,0,4,0,22,26,0
+16,,13,"Hillingdon","Northwood Hills","8,389","3,136",,0,1,0,19,20,0
+16,,14,"Hillingdon","Pinkwell","8,989","3,058",,0,3,0,11,14,0
+16,,15,"Hillingdon","South Ruislip","8,330","3,549",,0,0,0,1,1,0
+16,,16,"Hillingdon","Townfield","8,498","2,565",,0,4,1,7,12,0
+16,,17,"Hillingdon","Uxbridge North","8,773","3,439",,0,3,0,6,9,0
+16,,18,"Hillingdon","Uxbridge South","9,064","2,962",,0,2,4,14,20,0
+16,,19,"Hillingdon","West Drayton","8,794","3,101",,0,1,0,7,8,0
+16,,20,"Hillingdon","West Ruislip","7,748","3,376",,0,0,0,6,6,0
+16,,21,"Hillingdon","Yeading","8,400","2,695",,0,2,0,13,15,0
+16,,22,"Hillingdon","Yiewsley","8,203","2,451",,0,0,0,15,15,0
+,,,"Hillingdon","Total","183,250","69,786",0,1,38,8,261,308,0
+17,,1,"Hounslow","Bedfont",7505,1974,829,0,2,0,12,14,0
+17,,2,"Hounslow","Brentford",7689,2441,662,0,2,0,12,14,0
+17,,3,"Hounslow","Chiswick Homefields",7348,2168,744,0,1,0,4,5,0
+17,,4,"Hounslow","Chiswick Riverside",7631,2473,688,0,0,1,7,8,0
+17,,5,"Hounslow","Cranford",7346,1929,1067,0,4,2,8,14,0
+17,,6,"Hounslow","Feltham North",7361,2244,690,0,1,0,3,4,0
+17,,7,"Hounslow","Feltham West",7871,1970,560,0,0,0,8,8,0
+17,,8,"Hounslow","Hanworth",7128,1730,580,0,0,0,13,13,0
+17,,9,"Hounslow","Hanworth Park",7411,2243,599,0,0,0,14,14,0
+17,,10,"Hounslow","Heston Central",7715,2136,814,0,5,2,11,18,0
+17,,11,"Hounslow","Heston East",7769,2224,491,0,5,0,6,11,0
+17,,12,"Hounslow","Heston West",7624,2224,862,0,2,2,19,23,0
+17,,13,"Hounslow","Hounslow Central",7785,2206,683,0,0,3,5,8,0
+17,,14,"Hounslow","Hounslow Heath",8014,2315,650,0,4,1,10,15,0
+17,,15,"Hounslow","Hounslow South",7617,3021,525,0,0,0,10,10,0
+17,,16,"Hounslow","Hounslow West",7520,2085,483,0,6,0,12,18,0
+17,,17,"Hounslow","Isleworth",7281,2164,530,0,0,1,11,12,0
+17,,18,"Hounslow","Osterley and Spring Grove",7903,2302,585,0,0,0,2,2,0
+17,,19,"Hounslow","Syon",7760,2260,535,0,5,0,10,15,0
+17,,20,"Hounslow","Turnham Green",7392,2055,621,0,2,0,3,5,0
+,,,"Hounslow","Total",151670,44164,13198,0,39,12,180,231,0
+18,,1,"Islington","Barnsbury","7,645","2,276",467,0,0,1,15,16,0
+18,,2,"Islington","Bunhill","8,444","2,056",430,0,0,0,5,5,0
+18,,3,"Islington","Caledonian","7,562","2,161",422,0,5,0,8,13,0
+18,,4,"Islington","Canonbury","7,706","1,952",492,0,0,0,8,8,0
+18,,5,"Islington","Clerkenwell","7,735","2,033",390,0,0,0,8,8,0
+18,,6,"Islington","Finsbury Park","7,877","2,067",346,0,0,0,7,7,0
+18,,7,"Islington","Highbury East","7,579","2,308",455,0,1,0,7,8,0
+18,,8,"Islington","Highbury West","8,210","2,487",367,0,3,0,18,21,0
+18,,9,"Islington","Hillrise","7,535","2,178",393,0,3,0,5,8,0
+18,,10,"Islington","Holloway","7,615","2,032",422,0,3,0,21,24,0
+18,,11,"Islington","Junction","7,450","2,213",425,0,2,0,8,10,0
+18,,12,"Islington","Mildmay","7,901","1,766",403,0,2,0,33,35,0
+18,,13,"Islington","St George's","7,794","2,388",422,0,2,0,17,19,0
+18,,14,"Islington","St Mary's","7,506","2,105",413,1,2,0,9,12,0
+18,,15,"Islington","St Peter's","7,769","2,101",466,0,1,0,5,6,0
+18,,16,"Islington","Tollington","8,453","2,509",367,0,2,0,13,15,0
+,,,"Islington","Total","124,781","34,632","6,680",1,26,1,187,215,0
+19,,1,"Kensington and Chelsea","Abingdon","6,553",1402,283,,2,,5,7,0
+19,,2,"Kensington and Chelsea","Brompton","6,141",1151,309,,1,,5,6,0
+19,,3,"Kensington and Chelsea","Campden","5,353",1394,287,,,,3,3,0
+19,,4,"Kensington and Chelsea","Colville","5,591",1636,148,,4,,11,15,0
+19,,5,"Kensington and Chelsea","Courtfield","5,964",1191,220,,7,,6,13,0
+19,,6,"Kensington and Chelsea","Cremorne","5,487",1732,216,,,2,10,12,0
+19,,7,"Kensington and Chelsea","Earls Court","6,145",1344,198,13,3,,,16,0
+19,,8,"Kensington and Chelsea","Golborne","5,644",1561,118,15,4,,,19,0
+19,,9,"Kensington and Chelsea","Hans Town","5,909",1306,287,,3,,19,22,0
+19,,10,"Kensington and Chelsea","Holland","5,876",1375,234,,,,4,4,0
+19,,11,"Kensington and Chelsea","Norland","5,949",1696,253,,,,18,18,0
+19,,12,"Kensington and Chelsea","Notting Barns","6,203",1932,177,,3,,27,30,0
+19,,13,"Kensington and Chelsea","Pembridge","5,206",1356,169,,,,5,5,0
+19,,14,"Kensington and Chelsea","Queen's Gate","6,024",1135,348,,,,7,7,0
+19,,15,"Kensington and Chelsea","Redcliffe","6,398",1404,193,,2,,7,9,0
+19,,16,"Kensington and Chelsea","Royal Hospital","5,369",1381,330,,1,,3,4,0
+19,,17,"Kensington and Chelsea","St Charles","6,044",1857,233,23,1,,,24,0
+19,,18,"Kensington and Chelsea","Stanley","5,087",1277,257,,,,4,4,0
+,,,"Kensington and Chelsea","Total","104,943","26,130","4,260",51,31,2,134,218,0
+20,,1,"Kingston upon Thames","Alexandra","6,302","2,697",514,0,1,0,10,11,0
+20,,2,"Kingston upon Thames","Berrylands","6,428","2,628",683,0,0,0,11,11,0
+20,,3,"Kingston upon Thames","Beverley","6,197","2,519",480,0,1,0,8,9,0
+20,,4,"Kingston upon Thames","Canbury","7,396","2,473",768,0,0,0,9,9,0
+20,,5,"Kingston upon Thames","Chessington North and Hook","5,990","2,045",525,0,3,0,17,20,0
+20,,6,"Kingston upon Thames","Chessington South","6,889","2,698",510,0,2,0,8,10,0
+20,,7,"Kingston upon Thames","Coombe Hill","6,590","1,747",755,0,0,0,0,0,0
+20,,8,"Kingston upon Thames","Coombe Vale","6,184","2,522",643,0,0,0,5,5,0
+20,,9,"Kingston upon Thames","Grove","6,477","1,876",615,0,4,0,7,11,0
+20,,10,"Kingston upon Thames","Norbiton","5,728","1,969",525,0,1,0,2,3,0
+20,,11,"Kingston upon Thames","Old Malden","6,562","2,794",528,0,2,0,13,15,0
+20,,12,"Kingston upon Thames","St James","6,080","2,306",569,0,1,0,15,16,0
+20,,13,"Kingston upon Thames","St Mark's","7,292","2,094",626,0,2,0,5,7,0
+20,,14,"Kingston upon Thames","Surbiton Hill","6,930","2,315",748,0,2,0,2,4,0
+20,,15,"Kingston upon Thames","Tolworth and Hook Rise","6,454","2,208",541,0,5,0,11,16,0
+20,,16,"Kingston upon Thames","Tudor","6,316","2,256",758,0,1,0,4,5,0
+,,,"Kingston upon Thames","Total","103,815","37,147","9,788",0,25,0,127,152,0
+21,,1,"Lambeth","Bishop's",7515,1757,392,0,2,1,8,11,0
+21,,2,"Lambeth","Brixton Hill",10545,2435,420,0,3,0,17,20,0
+21,,3,"Lambeth","Clapham Common",9434,2386,628,0,0,0,3,3,0
+21,,4,"Lambeth","Clapham Town",10042,2738,618,0,7,0,12,19,0
+21,,5,"Lambeth","Coldharbour",10955,1973,418,0,2,3,7,12,0
+21,,6,"Lambeth","Ferndale",11239,2174,402,0,3,0,17,20,0
+21,,7,"Lambeth","Gipsy Hill",9718,2478,565,0,5,0,10,15,0
+21,,8,"Lambeth","Herne Hill",10361,3105,511,0,3,2,11,16,0
+21,,9,"Lambeth","Knight's Hill",9746,2838,523,0,4,0,5,9,0
+21,,10,"Lambeth","Larkhall",11125,2210,434,0,4,5,14,23,0
+21,,11,"Lambeth","Oval",10397,2209,564,0,0,0,8,8,0
+21,,12,"Lambeth","Prince's",10149,3034,361,0,5,0,10,15,0
+21,,13,"Lambeth","St Leonard's",9955,2360,484,0,0,0,2,2,0
+21,,14,"Lambeth","Stockwell",10098,2939,503,0,5,0,8,13,0
+21,,15,"Lambeth","Streatham Hill",10320,2740,482,0,2,1,3,6,0
+21,,16,"Lambeth","Streatham South",9865,3270,522,0,3,1,7,11,0
+21,,17,"Lambeth","Streatham Wells",9915,2335,512,0,3,0,13,16,0
+21,,18,"Lambeth","Thornton",9266,2910,511,0,3,12,3,18,0
+21,,19,"Lambeth","Thurlow Park",9581,2788,574,0,4,0,4,8,0
+21,,20,"Lambeth","Tulse Hill",10546,2455,410,0,1,0,11,12,0
+21,,21,"Lambeth","Vassall",10214,2748,499,0,2,6,21,29,0
+,,,"Lambeth","Total",210986,53882,10333,0,61,31,194,286,0
+22,,1,"Lewisham","Bellingham",9628,2052,586,0,9,0,39,48,0
+22,,2,"Lewisham","Blackheath",9516,2276,714,0,16,1,41,58,0
+22,,3,"Lewisham","Brockley",10725,2916,512,0,11,0,44,55,0
+22,,4,"Lewisham","Catford South",10124,3069,592,0,4,0,62,66,0
+22,,5,"Lewisham","Crofton Park",10103,2939,538,0,17,0,33,50,0
+22,,6,"Lewisham","Downham",9575,2406,660,0,7,0,44,51,0
+22,,7,"Lewisham","Evelyn",9378,2170,414,0,20,0,29,49,0
+22,,8,"Lewisham","Forest Hill",9684,3076,704,0,7,0,25,32,0
+22,,9,"Lewisham","Grove Park",10414,2847,641,0,15,0,36,51,0
+22,,10,"Lewisham","Ladywell",9300,3196,619,0,7,0,26,33,0
+22,,11,"Lewisham","Lee Green",9842,3402,661,0,12,1,31,44,0
+22,,12,"Lewisham","Lewisham Central",10352,2482,747,0,14,0,34,48,0
+22,,13,"Lewisham","New Cross",10042,2200,484,0,23,0,33,56,0
+22,,14,"Lewisham","Perry Vale",10063,2908,569,0,7,0,29,36,0
+22,,15,"Lewisham","Rushey Green",9286,2198,501,0,12,1,27,40,0
+22,,16,"Lewisham","Sydenham",10449,2822,646,0,10,0,34,44,0
+22,,17,"Lewisham","Telegraph Hill",10066,2841,579,0,10,0,31,41,0
+22,,18,"Lewisham","Whitefoot",9395,2513,698,0,12,0,35,47,0
+,,,"Lewisham","Total",177942,48313,10865,0,213,3,633,849,0
+23,,1,"Merton","Abbey","7,171","2,723",437,0,2,1,7,10,0
+23,,2,"Merton","Cannon Hill","6,922","2,877",385,0,1,0,7,8,0
+23,,3,"Merton","Colliers Wood","7,011","3,030",404,0,2,0,8,10,0
+23,,4,"Merton","Cricket Green","7,181","2,344",344,0,3,0,29,32,0
+23,,5,"Merton","Dundonald","6,842","2,662",451,0,0,0,4,4,0
+23,,6,"Merton","Figge's Marsh","7,088","2,425",292,0,3,0,11,14,0
+23,,7,"Merton","Graveney","6,957","2,343",249,0,2,0,10,12,0
+23,,8,"Merton","Hillside","6,561","1,941",437,0,1,1,0,2,0
+23,,9,"Merton","Lavender Fields","6,658","1,712",384,0,5,0,9,14,0
+23,,10,"Merton","Longthornton","6,653","2,748",414,0,3,0,6,9,0
+23,,11,"Merton","Lower Morden","6,680","2,607",288,0,5,0,20,25,0
+23,,12,"Merton","Merton Park","6,807","2,896",433,0,0,0,7,7,0
+23,,13,"Merton","Pollards Hill","7,208","2,442",315,0,5,1,16,22,0
+23,,14,"Merton","Ravensbury","6,757","2,578",412,0,4,0,6,10,0
+23,,15,"Merton","Raynes Park","6,940","2,473",458,0,2,0,8,10,0
+23,,16,"Merton","St Helier","6,709","2,706",424,0,5,0,4,9,0
+23,,17,"Merton","Trinity","6,894","2,417",408,0,2,0,9,11,0
+23,,18,"Merton","Village","6,358","2,422",598,0,1,0,3,4,0
+23,,19,"Merton","West Barnes","6,922","2,985",465,0,2,0,13,15,0
+23,,20,"Merton","Wimbledon Park","7,055","2,504",436,0,0,0,12,12,0
+,,,"Merton","Total","137,374","50,835","8,034",0,48,3,189,240,0
+24,,1,"Newham","Beckton","9,518","1,988",548,0,13,0,16,29,0
+24,,2,"Newham","Boleyn","9,478","3,014",564,0,24,1,25,50,0
+24,,3,"Newham","Canning Town North","9,729","2,206",473,0,26,0,31,57,0
+24,,4,"Newham","Canning Town South","8,661","2,323",522,0,18,0,19,37,0
+24,,5,"Newham","Custom House","9,065","1,961",652,0,19,0,28,47,0
+24,,6,"Newham","East Ham Central","9,650","3,138",557,0,23,0,19,42,0
+24,,7,"Newham","East Ham North","9,382","3,737",507,0,24,0,19,43,0
+24,,8,"Newham","East Ham South","9,356","2,575",595,0,23,3,12,38,0
+24,,9,"Newham","Forest Gate North","9,558","2,850",528,0,20,0,15,35,0
+24,,10,"Newham","Forest Gate South","10,117","3,019",587,0,29,0,15,44,0
+24,,11,"Newham","Green Street East","9,874","3,440",522,0,34,1,13,48,0
+24,,12,"Newham","Green Street West","9,522","3,584",595,0,46,0,15,61,0
+24,,13,"Newham","Little Ilford","9,451","2,738",562,0,45,0,16,61,0
+24,,14,"Newham","Manor Park","9,596","2,869",606,0,31,0,10,41,0
+24,,15,"Newham","Plaistow North","8,711","2,562",520,0,24,2,22,48,0
+24,,16,"Newham","Plaistow South","9,919","2,555",611,0,20,0,15,35,0
+24,,17,"Newham","Royal Docks","7,018","1,534",372,0,11,0,18,29,0
+24,,18,"Newham","Stratford and New Town","10,170","2,277",555,0,28,0,14,42,0
+24,,19,"Newham","Wall End","9,727","3,386",519,0,30,0,19,49,0
+24,,20,"Newham","West Ham","9,200","2,280",554,0,18,0,9,27,0
+,,,"Newham","Total","187,702","54,036","10,949",0,506,7,350,863,0
+25,,1,"Redbridge","Aldborough","9,585","3,212",570,0,5,0,10,15,0
+25,,2,"Redbridge","Barkingside","8,753","3,054",548,0,6,1,22,29,0
+25,,3,"Redbridge","Bridge","8,474","2,543",427,0,1,0,17,18,0
+25,,4,"Redbridge","Chadwell","9,130","2,979",529,0,0,0,11,11,0
+25,,5,"Redbridge","Church End","7,535","2,721",498,0,6,0,15,21,0
+25,,6,"Redbridge","Clayhall","9,328","3,436",591,0,0,0,8,8,0
+25,,7,"Redbridge","Clementswood","8,515","2,358",234,0,0,0,15,15,0
+25,,8,"Redbridge","Cranbrook","8,769","3,009",393,0,6,0,17,23,0
+25,,9,"Redbridge","Fairlop","8,838","2,702",599,0,2,0,1,3,0
+25,,10,"Redbridge","Fullwell","8,887","2,862",540,0,5,0,7,12,0
+25,,11,"Redbridge","Goodmayes","8,828","2,834",328,0,8,0,20,28,0
+25,,12,"Redbridge","Hainault","8,690","2,742",587,0,4,0,5,9,0
+25,,13,"Redbridge","Loxford","9,762","2,570",429,0,0,0,19,19,0
+25,,14,"Redbridge","Mayfield","9,166","3,243",508,0,0,0,22,22,0
+25,,15,"Redbridge","Monkhams","8,173","2,978",545,0,0,0,27,27,0
+25,,16,"Redbridge","Newbury","10,207","3,381",527,0,0,0,24,24,0
+25,,17,"Redbridge","Roding","8,236","2,898",398,0,7,0,22,29,0
+25,,18,"Redbridge","Seven Kings","9,557","2,699",360,0,0,0,0,0,0
+25,,19,"Redbridge","Snaresbrook","8,743","3,218",622,0,3,0,12,15,0
+25,,20,"Redbridge","Valentines","9,153","2,884",390,0,6,0,8,14,0
+25,,21,"Redbridge","Wanstead","8,648","3,378",511,0,1,0,16,17,0
+,,,"Redbridge","Total","186,977","61,701","10,134",0,60,1,298,359,0
+26,,1,"Richmond upon Thames","Barnes",6645,2763,815,0,3,0,7,10,0
+26,,2,"Richmond upon Thames","East Sheen",6874,2913,699,0,1,0,9,10,0
+26,,3,"Richmond upon Thames","Fulwell and Hampton Hill",6754,2718,695,0,1,1,7,9,0
+26,,4,"Richmond upon Thames","Ham, Petersham and Richmond Riverside",6571,2681,745,0,1,0,5,6,0
+26,,5,"Richmond upon Thames","Hampton",6839,2669,870,0,1,0,19,20,0
+26,,6,"Richmond upon Thames","Hampton North",6506,2334,668,0,6,0,14,20,0
+26,,7,"Richmond upon Thames","Hampton Wick",6814,2449,777,0,1,0,9,10,0
+26,,8,"Richmond upon Thames","Heathfield",6599,2675,742,0,0,2,3,5,0
+26,,9,"Richmond upon Thames","Kew",7133,3071,965,0,1,1,7,9,0
+26,,10,"Richmond upon Thames","Mortlake and Barnes Common",7100,2770,900,0,1,0,11,12,0
+26,,11,"Richmond upon Thames","North Richmond",6968,2531,886,0,3,3,13,19,0
+26,,12,"Richmond upon Thames","St Margarets and North Twickenham",6931,3075,734,0,3,0,1,4,0
+26,,13,"Richmond upon Thames","South Richmond",6880,2601,859,0,2,0,4,6,0
+26,,14,"Richmond upon Thames","South Twickenham",7142,2645,640,0,1,2,18,21,0
+26,,15,"Richmond upon Thames","Teddington",6982,2831,738,0,0,0,5,5,0
+26,,16,"Richmond upon Thames","Twickenham Riverside",6713,2549,689,0,2,0,2,4,0
+26,,17,"Richmond upon Thames","West Twickenham",6922,2878,731,0,3,0,7,10,0
+26,,18,"Richmond upon Thames","Whitton",6474,2890,613,0,1,0,14,15,0
+,,,"Richmond upon Thames","Total","122,847","49,043","13,766",0,31,9,155,195,0
+27,,1,"Southwark","Brunswick Park","8,561","3,012",496,7,2,1,1,11,0
+27,,2,"Southwark","Camberwell Green","9,658","2,582",577,0,2,0,16,18,0
+27,,3,"Southwark","Cathedrals","10,023","2,213",574,0,2,1,12,15,0
+27,,4,"Southwark","Chaucer","10,230","2,467",491,0,4,0,9,13,0
+27,,5,"Southwark","College","8,238","2,336",885,0,4,3,25,32,0
+27,,6,"Southwark","East Dulwich","8,696","3,616",597,0,4,22,0,26,0
+27,,7,"Southwark","East Walworth","9,036","2,642",556,1,4,0,35,40,0
+27,,8,"Southwark","Faraday","8,822","2,747",571,9,5,1,0,15,0
+27,,9,"Southwark","Grange","9,251","1,959",503,13,1,0,0,14,0
+27,,10,"Southwark","Livesey","9,494","3,126",588,0,11,0,3,14,0
+27,,11,"Southwark","Newington","9,111","2,329",514,1,2,0,34,37,0
+27,,12,"Southwark","Nunhead","8,676","1,986",456,0,1,0,2,3,0
+27,,13,"Southwark","Peckham","9,483","2,483",417,8,1,0,3,12,1
+27,,14,"Southwark","Peckham Rye","9,055","2,702",673,0,0,0,11,11,1
+27,,15,"Southwark","Riverside","8,929","1,818",583,0,1,0,14,15,0
+27,,16,"Southwark","Rotherhithe","8,488","1,898",496,0,7,0,26,33,0
+27,,17,"Southwark","South Bermondsey","8,432","1,910",386,0,3,0,14,17,0
+27,,18,"Southwark","South Camberwell","8,572","2,322",578,1,4,0,8,13,0
+27,,19,"Southwark","Surrey Docks","9,040","1,812",673,0,1,0,10,11,1
+27,,20,"Southwark","The Lane","9,407","2,350",570,0,2,0,12,14,0
+27,,21,"Southwark","Village","8,626","3,593",854,0,2,0,7,9,0
+,,,"Southwark","Total","189,828","51,903","12,038",40,63,28,242,373,3
+28,,1,"Sutton","Beddington North","7,473","2,299",750,0,1,0,15,16,0
+28,,2,"Sutton","Beddington South","6,959","2,447",681,0,3,0,18,21,0
+28,,3,"Sutton","Belmont","7,235","2,504",973,0,3,0,14,17,0
+28,,4,"Sutton","Carshalton Central","7,275","2,749",713,0,2,0,16,18,0
+28,,5,"Sutton","Carshalton South and Clockhouse","7,227","3,111",692,0,3,0,16,19,0
+28,,6,"Sutton","Cheam","7,603","3,035",883,0,2,0,4,6,0
+28,,7,"Sutton","Nonsuch","7,695","3,145",774,0,2,0,16,18,0
+28,,8,"Sutton","St Helier","7,772","2,090",652,0,4,0,2,6,0
+28,,9,"Sutton","Stonecot","7,671","2,601",698,0,1,0,16,17,0
+28,,10,"Sutton","Sutton Central","7,102","1,907",687,0,3,0,9,12,0
+28,,11,"Sutton","Sutton North","7,284","2,429",657,0,4,2,18,24,0
+28,,12,"Sutton","Sutton South","6,808","2,158","1,014",0,4,0,7,11,0
+28,,13,"Sutton","Sutton West","7,388","2,469",865,0,3,0,8,11,0
+28,,14,"Sutton","The Wrythe","7,637","2,180",612,0,0,0,24,24,0
+28,,15,"Sutton","Wallington North","7,549","2,733",629,0,0,0,13,13,0
+28,,16,"Sutton","Wallington South","7,431","2,603",760,0,1,0,7,8,0
+28,,17,"Sutton","Wandle Valley","7,531","1,861",605,0,2,0,30,32,0
+28,,18,"Sutton","Worcester Park","7,708","2,723",731,0,2,0,9,11,0
+,,,"Sutton","Total","133,348","45,044","13,376",0,40,2,242,284,0
+29,,1,"Tower Hamlets","Bethnal Green North","8,919","3,054",543,0,5,0,12,17,0
+29,,2,"Tower Hamlets","Bethnal Green South","9,591","3,470",759,0,8,3,19,30,0
+29,,3,"Tower Hamlets","Blackwall and Cubitt Town","10,488","2,653",797,0,2,0,16,18,0
+29,,4,"Tower Hamlets","Bow East","7,925","2,544",438,0,3,0,9,12,0
+29,,5,"Tower Hamlets","Bow West","8,294","3,276",470,0,3,0,12,15,0
+29,,6,"Tower Hamlets","Bromley-by-Bow","7,755","3,211",547,0,9,0,20,29,0
+29,,7,"Tower Hamlets","East India and Lansbury","8,751","2,927",551,0,12,2,23,37,0
+29,,8,"Tower Hamlets","Limehouse","9,352","2,959","1,067",0,8,1,0,9,17
+29,,9,"Tower Hamlets","Mile End and Globe Town","9,245","3,285",448,0,14,0,15,29,0
+29,,10,"Tower Hamlets","Mile End East","8,052","2,735",626,0,9,1,23,33,0
+29,,11,"Tower Hamlets","Millwall","11,884","2,985",847,0,1,0,9,10,0
+29,,12,"Tower Hamlets","St Dunstan's and Stepney Green","10,030","3,661",779,0,10,0,26,36,0
+29,,13,"Tower Hamlets","St Katharine's and Wapping","9,222","2,708",560,0,7,0,15,22,0
+29,,14,"Tower Hamlets","Shadwell","8,660","3,231",766,0,8,0,5,13,0
+29,,15,"Tower Hamlets","Spitalfields and Banglatown","6,647","2,211",708,0,12,0,9,21,0
+29,,16,"Tower Hamlets","Weavers","8,467","2,889",651,0,5,0,11,16,0
+29,,17,"Tower Hamlets","Whitechapel","9,162","3,108",550,0,13,0,21,34,0
+,,,"Tower Hamlets","Total","152,444","50,907","11,107",0,129,7,245,381,17
+30,,1,"Waltham Forest","Cann Hall","8,066","2,318",464,0,1,0,13,14,0
+30,,2,"Waltham Forest","Cathall","7,251","2,096",367,0,6,1,7,14,0
+30,,3,"Waltham Forest","Chapel End","8,389","2,484",507,0,2,0,14,16,0
+30,,4,"Waltham Forest","Chingford Green","7,859","2,744",632,0,3,0,23,26,0
+30,,5,"Waltham Forest","Endlebury","7,964","2,658",562,0,2,1,11,14,0
+30,,6,"Waltham Forest","Forest","8,185","2,453",942,0,4,0,19,23,0
+30,,7,"Waltham Forest","Grove Green","8,641","2,897",423,0,6,0,7,13,1
+30,,8,"Waltham Forest","Hale End and Highams Park","7,794","2,872",756,0,2,0,16,18,0
+30,,9,"Waltham Forest","Hatch Lane","7,944","2,454",549,0,0,0,4,4,0
+30,,11,"Waltham Forest","Higham Hill","8,017","2,364",419,0,1,0,16,17,0
+30,,10,"Waltham Forest","High Street","8,350","3,162",433,0,8,0,7,15,0
+30,,12,"Waltham Forest","Hoe Street","8,467","2,428",506,0,5,0,13,18,0
+30,,13,"Waltham Forest","Larkswood","8,227","2,257",579,0,2,0,9,11,0
+30,,14,"Waltham Forest","Lea Bridge","9,576","2,193",406,0,4,0,12,16,0
+30,,15,"Waltham Forest","Leyton","8,423","2,701",469,0,5,0,8,13,0
+30,,16,"Waltham Forest","Leytonstone","8,080","2,624",510,0,2,0,5,7,0
+30,,17,"Waltham Forest","Markhouse","8,429","2,611",450,0,3,0,14,17,0
+30,,18,"Waltham Forest","Valley","8,011","2,428",543,0,3,0,23,26,0
+30,,19,"Waltham Forest","William Morris","8,280","2,810",537,0,1,0,12,13,0
+30,,20,"Waltham Forest","Wood Street","8,459","2,829",570,0,8,0,15,23,0
+,,,"Waltham Forest","Total","164,412","51,383","10,624",0,68,2,248,318,1
+31,,1,"Wandsworth","Balham","10,999","2,915",652,0,2,0,5,7,0
+31,,2,"Wandsworth","Bedford","11,071","3,156",634,0,2,0,6,8,0
+31,,3,"Wandsworth","Earlsfield","11,161","2,795",639,0,3,0,7,10,0
+31,,4,"Wandsworth","East Putney","11,096","2,759",842,0,3,0,7,10,0
+31,,5,"Wandsworth","Fairfield","10,954","2,731",561,4,2,0,13,19,0
+31,,6,"Wandsworth","Furzedown","10,548","3,934",703,0,6,0,11,17,0
+31,,7,"Wandsworth","Graveney","10,798","3,577",549,10,8,0,8,26,0
+31,,8,"Wandsworth","Latchmere","10,226","3,208",674,10,5,0,16,31,0
+31,,9,"Wandsworth","Nightingale","11,157","2,953",637,0,1,4,6,11,0
+31,,10,"Wandsworth","Northcote","10,899","2,861",723,0,0,0,2,2,0
+31,,11,"Wandsworth","Queenstown","10,558","2,933",733,20,3,0,2,25,1
+31,,12,"Wandsworth","Roehampton","10,952","2,917",634,0,2,3,0,5,0
+31,,13,"Wandsworth","Saint Mary's Park","11,039","2,538",780,0,0,0,5,5,0
+31,,14,"Wandsworth","Shaftesbury","10,816","2,666",677,0,2,0,0,2,0
+31,,15,"Wandsworth","Southfields","11,306","3,345",716,0,6,4,6,16,0
+31,,16,"Wandsworth","Thamesfield","10,890","3,116",689,0,0,0,8,8,0
+31,,17,"Wandsworth","Tooting","11,103","3,649",459,0,2,0,7,9,0
+31,,18,"Wandsworth","Wandsworth Common","10,296","3,134",741,0,1,0,6,7,0
+31,,19,"Wandsworth","West Hill","10,918","2,601",690,0,1,0,2,3,0
+31,,20,"Wandsworth","West Putney","10,365","2,667",909,0,3,0,9,12,0
+,,,"Wandsworth","Total","217,152","60,455","13,642",44,52,11,126,233,1
+32,,1,"Westminster","Abbey Road",7017,2171,,0,0,0,10,10,0
+32,,2,"Westminster","Bayswater",7101,2170,,0,4,0,21,25,0
+32,,3,"Westminster","Bryanston and Dorset Square",7266,1975,,0,0,0,7,7,0
+32,,4,"Westminster","Church Street",7095,2458,,0,3,0,16,19,0
+32,,5,"Westminster","Churchill",6133,2371,,0,6,0,13,19,0
+32,,6,"Westminster","Harrow Road",7498,1950,,0,3,0,18,21,0
+32,,7,"Westminster","Hyde Park",6902,1831,,0,2,0,11,13,0
+32,,8,"Westminster","Knightsbridge and Belgravia",6133,1547,,0,0,0,16,16,0
+32,,9,"Westminster","Lancaster Gate",8135,1989,,0,2,0,12,14,0
+32,,10,"Westminster","Little Venice",6928,2013,,0,2,0,11,13,0
+32,,11,"Westminster","Maida Vale",6870,2283,,0,2,0,12,14,0
+32,,12,"Westminster","Marylebone High Street",6689,1906,,0,0,0,17,17,0
+32,,13,"Westminster","Queen's Park",7766,2283,,0,0,0,14,14,0
+32,,14,"Westminster","Regent's Park",7247,2160,,0,2,0,12,14,0
+32,,15,"Westminster","St James's",6785,2020,,0,3,0,17,20,0
+32,,16,"Westminster","Tachbrook",6483,2369,,0,3,0,13,16,1
+32,,17,"Westminster","Vincent Square",7024,2473,,0,0,0,15,15,0
+32,,18,"Westminster","Warwick",6837,2229,,0,3,0,12,15,0
+32,,19,"Westminster","West End",6773,1746,,0,2,0,4,6,0
+32,,20,"Westminster","Westbourne",7981,1943,,0,6,0,20,26,0
+,,,"Westminster","Total","140,663","41,887",0,0,43,0,271,314,1

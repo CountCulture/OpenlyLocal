@@ -22,6 +22,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :meeting_documents, :through => :meetings
     should_have_many :past_meeting_documents, :through => :held_meetings
     should_have_many :feed_entries
+    should_have_many :polls
     should_have_one :police_authority, :through => :police_force
     should_have_one :chief_executive
     should_belong_to :parent_authority

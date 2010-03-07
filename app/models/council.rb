@@ -28,6 +28,7 @@ class Council < ActiveRecord::Base
   has_many :services
   has_many :datapoints, :as => :area
   has_many :dataset_topics, :through => :datapoints
+  has_many :polls, :as => :area
   belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
   has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   has_many :hyperlocal_sites, :conditions => {:approved => true}
