@@ -9,6 +9,7 @@ class Ward < ActiveRecord::Base
   has_many :datapoints, :as => :area
   has_many :dataset_topics, :through => :datapoints
   has_many :polls, :as => :area
+  has_one  :boundary, :as => :area
   allow_access_to :members, :via => :uid
   allow_access_to :committees, :via => [:uid, :normalised_title]
   validates_presence_of :name, :council_id

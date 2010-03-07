@@ -119,7 +119,7 @@ EOF
   end
   
   class RestClient
-    BaseUrl = "http://212.58.231.244:7778/NDE2/"
+    BaseUrl = "http://neighbourhood.statistics.gov.uk/NDE2/"
     DeliveryRequests = %w(GetTables GetChildAreaTables)
     
     # class RequestError < Standard Error;end

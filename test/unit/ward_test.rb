@@ -18,6 +18,7 @@ class WardTest < ActiveSupport::TestCase
     should_have_many :datapoints
     should_have_many :polls
     should_have_many :dataset_topics, :through => :datapoints
+    should_have_one  :boundary
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url

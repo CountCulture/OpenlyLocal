@@ -17,7 +17,7 @@ class Council < ActiveRecord::Base
   has_many :scrapers
   has_many :meetings
   has_many :held_meetings, :class_name => "Meeting", :conditions => 'date_held <= \'#{Time.now.to_s(:db)}\''
-  has_many :wards, :order => "name"
+  has_many :wards, :order => 'wards.name'
   has_many :officers
   has_one  :chief_executive, :class_name => "Officer", :conditions => {:position => "Chief Executive"}
   has_one  :police_authority, :through => :police_force
@@ -41,7 +41,7 @@ class Council < ActiveRecord::Base
   named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? 
                       { :select => 'councils.*, COUNT(members.id) AS member_count', :joins =>'LEFT JOIN members ON members.council_id = councils.id', :group => "councils.id" } : 
                       {:joins => :members, :group => "councils.id", :select => 'councils.*, COUNT(members.id) AS member_count'} }
-  default_scope :order => 'name'
+  default_scope :order => 'councils.name' # fully specify councils.name, in case clashes with another model we're including
   alias_attribute :title, :name
   alias_method :old_to_xml, :to_xml
   
