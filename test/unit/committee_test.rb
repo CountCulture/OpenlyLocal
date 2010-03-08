@@ -38,6 +38,7 @@ class CommitteeTest < ActiveSupport::TestCase
         assert_equal [@committee], Committee.active.all
       end
     end
+    
     context "when finding committees with activity status" do
       setup do
         @inactive_committee = Factory(:committee, :council => @committee.council)

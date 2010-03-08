@@ -488,6 +488,10 @@ table.datapoints td.more_info {
 	width: 50px;
 }
 
+/*Election data formatting*/
+.candidate.elected * {
+	font-weight:bold;
+}
 /*Hyperlocal formatting*/
 #new_hyperlocal_site label {
 	color:#666;

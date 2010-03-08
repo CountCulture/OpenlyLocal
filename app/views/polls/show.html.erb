@@ -1,0 +1,17 @@
+<h1>Election for <%= @poll.position %> for <%= basic_link_for(@poll.area) %> <%= @poll.area.class %> on <%= @poll.date_held.to_s(:event_date) %></h1>
+
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :electorate, @poll.electorate %>
+  <%= attribute_tag :ballots_issued, @poll.ballots_issued %>
+  <%= attribute_tag :ballots_rejected, @poll.ballots_rejected %>
+  <%= attribute_tag :postal_votes, @poll.postal_votes %>
+  <%= attribute_tag :turnout, number_to_percentage(@poll.turnout*100, :precision => 1) if @poll.turnout %>
+</dl>
+<br class='clear'/>
+<table class='statistics' id='candidates'>
+  <caption>Election Results</caption>
+  <tr><th>Candidate</th><th>Party</th><th>Votes</th><th>Elected?</th></tr>
+  <%- @poll.candidates.each do |candidate| -%>
+    <tr class="candidate <%= candidate.status %>"><td><%= candidate.first_name %> <%= candidate.last_name %></td><td><%= candidate.party_name %></td><td><%= candidate.votes %></td><td><%= candidate.elected? ? 'Yes' : 'No' %></td></tr>
+  <%- end -%>
+</table>

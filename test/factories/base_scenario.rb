@@ -225,12 +225,13 @@ end
 
 Factory.define :candidate do |f|
   f.association :poll
-  f.last_name "Flintstone"
+  f.sequence(:last_name) { |n| "Flintstone #{n}" }
 end
 
 Factory.define :poll do |f|
   f.date_held 3.days.ago.to_date
   f.association :area, :factory => :council
+  f.position 'Member'
 end
 
 Factory.define :political_party do |f|
@@ -245,6 +246,6 @@ end
 
 Factory.define :user_submission do |f|
   f.association :council
-  f.member_name "Fred Flintstone"
+  f.member_name 'Fred Flintstone'
 end
 

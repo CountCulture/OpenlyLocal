@@ -29,5 +29,42 @@ class CandidateTest < ActiveSupport::TestCase
     should "not be elected by default" do
       assert !@candidate.elected?
     end
+    
+    context "when returning party_name" do
+      
+      should "return nil by default" do
+        assert_nil @candidate.party_name
+      end
+      
+      should "return name of political party if set" do
+        political_party = Factory(:political_party)
+        @candidate.political_party = political_party
+        assert_equal political_party.name, @candidate.party_name
+      end
+      
+      should "return party if political party if not set" do
+        @candidate.party = "foo"
+        assert_equal "foo", @candidate.party_name
+      end
+      
+      should "return name of political party if political_party and party set" do
+        political_party = Factory(:political_party)
+        @candidate.political_party = political_party
+        @candidate.party = "foo"
+        assert_equal political_party.name, @candidate.party_name
+      end
+      
+    end
+    
+    context "when returning status" do
+      should "return nil by default" do
+        assert_nil @candidate.status
+      end
+      
+      should "return 'elected' if elected" do
+        @candidate.elected = true
+        assert 'elected', @candidate.status
+      end
+    end
   end
 end
