@@ -36,6 +36,17 @@ class BoundaryTest < ActiveSupport::TestCase
         @boundary.bounding_box_from_sw_ne = [[39.2, -3.2],[42.1, 0.2]]
         assert_equal expected_box, @boundary.bounding_box
       end
+    end
+    
+    context "when returning centrepoint" do
+      
+      should "return centre point of bounding box" do
+        @boundary.bounding_box_from_sw_ne = [[39.2, -3.2],[42.1, 0.2]]
+        centrepoint = @boundary.centrepoint
+        assert_in_delta 40.65, centrepoint.lat, 0.00001
+        assert_in_delta -1.5, centrepoint.lng, 0.00001
+      end
     end    
+    
   end
 end

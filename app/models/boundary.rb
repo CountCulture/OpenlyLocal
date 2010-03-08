@@ -7,4 +7,9 @@ class Boundary < ActiveRecord::Base
     sw, ne = sw_ne_coords
     self[:bounding_box] = Polygon.from_coordinates([[[sw.last, sw.first], [ne.last, sw.first], [ne.last, ne.first], [sw.last, ne.first], [sw.last, sw.first]]])
   end
+  
+  
+  def centrepoint
+    Envelope.from_points(self[:bounding_box].bounding_box).center
+  end
 end
