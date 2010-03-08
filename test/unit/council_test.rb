@@ -184,6 +184,22 @@ class CouncilTest < ActiveSupport::TestCase
       ceo = Factory(:officer, :position => "Chief Executive", :council => @council)
       assert_equal ceo, @council.chief_executive
     end
+    
+    context "when getting councils without wards" do
+      setup do
+        ward = Factory(:ward, :council => @council)
+        @council_without_wards = Factory(:another_council)
+      end
+      
+      should "not return councils with wards" do
+        assert !Council.without_wards.include?(@council)
+      end
+      
+      
+      should "return councils without wards" do
+        assert Council.without_wards.include?(@council_without_wards)
+      end
+    end
 
     context "when getting potential_services" do
       setup do

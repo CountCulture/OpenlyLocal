@@ -82,7 +82,12 @@ class Council < ActiveRecord::Base
     title = "Council Social Networking Info Report: #{total_error_count} errors, #{total_update_count} updates"
     AdminMailer.deliver_admin_alert!( :title => title, :details => report )
   end  
-
+  
+  # quick n diirty to return councils without wards (which need to be added). Can prob be removed ultimately
+  def self.without_wards
+    all(:joins => "LEFT JOIN wards on wards.council_id = councils.id WHERE (wards.id IS NULL)")
+  end
+  
   # instance methods
   def authority_type_help_url
     AUTHORITY_TYPES[authority_type]
