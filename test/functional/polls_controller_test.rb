@@ -6,37 +6,61 @@ class PollsControllerTest < ActionController::TestCase
     setup do
       @area = Factory(:ward)
       @poll = Factory(:poll, :area => @area)
-      @candidate_1 = Factory(:candidate, :poll => @poll, :votes => 537)
-      @candidate_2 = Factory(:candidate, :poll => @poll, :votes => 210)
-      get :show, :id => @poll.id
-    end
-  
-    should_assign_to(:poll) { @poll}
-    should_respond_with :success
-    should_render_template :show
-    should_render_with_layout
-  
-    should "list associated area" do
-      assert_select "a", @area.title
     end
     
-    should "list all candidates" do
-      assert_select "#candidates" do
-        assert_select ".candidate", 2
-      end
-    end
-    
-    should "show poll details in title" do
-      assert_select "title", /#{@area.name}/
-    end
+    context "in general" do
+        setup do
+          @candidate_1 = Factory(:candidate, :poll => @poll, :votes => 537)
+          @candidate_2 = Factory(:candidate, :poll => @poll, :votes => 210)
+          get :show, :id => @poll.id
+        end
 
-    
-    should "show share block" do
-      assert_select "#share_block"
+        should_assign_to(:poll) { @poll}
+        should_assign_to(:total_votes) { 537 + 210 }
+        should_respond_with :success
+        should_render_template :show
+        should_render_with_layout
+
+        should "list associated area" do
+          assert_select "a", @area.title
+        end
+
+        should "list all candidates" do
+          assert_select "#candidates" do
+            assert_select ".candidate", 2
+          end
+        end
+
+        should "show poll details in title" do
+          assert_select "title", /#{@area.name}/
+        end
+
+
+        should "caption ttable as Election Results" do
+          assert_select "table.statistics caption", /Election Results/
+        end
+
+
+        should "show share block" do
+          assert_select "#share_block"
+        end
+      end
+      
+      context "on GET to show with candidates with no votes" do
+        setup do
+          @candidate_1 = Factory(:candidate, :poll => @poll)
+          @candidate_2 = Factory(:candidate, :poll => @poll)
+          get :show, :id => @poll.id
+        end
+        
+        should "caption ttable as Election Results" do
+          assert_select "table.statistics caption", /Election Candidates/
+        end
+
+      end
+      
     end
-    
-    # should "show api block" do
-    #   assert_select "#api_info"
-    # end
-  end  
+  
+  
+   
 end
