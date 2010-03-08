@@ -10,6 +10,6 @@ class Boundary < ActiveRecord::Base
   
   
   def centrepoint
-    Envelope.from_points(self[:bounding_box].bounding_box).center
+    bounding_box.envelope.center
   end
 end

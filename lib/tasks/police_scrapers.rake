@@ -197,4 +197,24 @@ task :get_police_authority_wdtk_ids  => :environment do
   end
 end
 
+desc "Connect Wards and Police Teams"
+task :connect_wards_and_police_teams  => :environment do
+  wards_without_police_teams = Ward.all(:include => [:boundary, :council], :conditions => "police_team_id IS NULL AND snac_id IS NOT NULL")
+  police_forces = PoliceForce.all
+  wards_without_police_teams.each do |ward|
+    next if ward.council.authority_type == 'County' || !ward.boundary
+    centrepoint = ward.boundary.centrepoint
+    client = NpiaUtilities::Client.new(:geocode_team, :q => [centrepoint.lat, centrepoint.lng].join(','))
+    begin
+      resp = client.response
+      force = police_forces.detect{ |f| f.npia_id == resp["team"]["force_id"] }
+      police_team = force.police_teams.find_by_uid(resp["team"]["team_id"])
+      ward.update_attribute(:police_team_id, police_team.id)
+      puts "Associated ward (#{ward.name}) with police_team (#{police_team.name})"
+    rescue Exception => e
+      puts "Problem associating team with ward: #{ward.name} (#{ward.id}): #{e.inspect}\n #{e.backtrace}\n\n#{resp}"
+    end
+  end
+end
+
 
