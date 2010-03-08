@@ -4,7 +4,7 @@ class NpiaUtilitiesTest < ActiveSupport::TestCase
 
   context "A Client instance" do
     setup do
-      @client = NpiaUtilities::Client.new(:foo_method, :foo => "bar bam", :foo_1 => "baz")
+      @client = NpiaUtilities::Client.new(:foo_method, :foo => "bar bam", :foo_1 => "baz", :foo_2 => 42)
     end
 
     should "store given method as method_name" do
@@ -12,7 +12,7 @@ class NpiaUtilitiesTest < ActiveSupport::TestCase
     end
 
     should "store given params as params" do
-      assert_equal( {:foo => "bar bam", :foo_1 => "baz"}, @client.params)
+      assert_equal( {:foo => "bar bam", :foo_1 => "baz", :foo_2 => 42}, @client.params)
     end
     
     context "when building request_url" do
