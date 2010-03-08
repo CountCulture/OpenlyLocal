@@ -24,7 +24,7 @@ class PollTest < ActiveSupport::TestCase
   context "A Poll instance" do
     
     should "date_held as string as title" do
-      assert_equal @poll.date_held.to_s(:event), @poll.title
+      assert_equal @poll.date_held.to_s(:event_date), @poll.title
     end
     
     context "when calculating turnout" do

@@ -4,7 +4,7 @@ class Poll < ActiveRecord::Base
   validates_presence_of :date_held, :area_id, :area_type, :position
   
   def title
-    date_held.to_s(:event)
+    date_held.to_s(:event_date)
   end
   
   def turnout

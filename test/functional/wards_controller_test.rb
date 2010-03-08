@@ -99,7 +99,7 @@ class WardsControllerTest < ActionController::TestCase
                                      stub_everything(:title => "misc", :display_as => "in_words") => [@another_datapoint], 
                                      stub_everything(:title => "religion", :display_as => "graph") => [@graphed_datapoint]
                                     }
-
+        @poll = Factory(:poll, :area => @ward)
         Ward.any_instance.stubs(:grouped_datapoints).returns(dummy_grouped_datapoints)
         get :show, :id => @ward.id
       end
@@ -116,6 +116,10 @@ class WardsControllerTest < ActionController::TestCase
 
       should "show link to police neighbourhood team" do
         assert_select "dt", /neighbourhood police team/i
+      end
+
+      should "show link to polls" do
+        assert_select "#polls a.poll_link"
       end
 
       should "show statistics" do

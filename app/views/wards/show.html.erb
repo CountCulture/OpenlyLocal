@@ -26,6 +26,13 @@
         <%= list_all @ward.meetings %>
       </div>
     <%- end -%>
+    
+    <%- unless @ward.polls.blank? -%>
+      <div id="polls" class="item_grouping">
+        <h3>Elections for this ward</h3>
+        <%= list_all @ward.polls %>
+      </div>
+    <%- end -%>
   </div>
 <%- end -%>
 <%= render :partial => 'shared/api_info' %>

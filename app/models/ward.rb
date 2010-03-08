@@ -8,7 +8,7 @@ class Ward < ActiveRecord::Base
   has_many :meetings, :through => :committees
   has_many :datapoints, :as => :area
   has_many :dataset_topics, :through => :datapoints
-  has_many :polls, :as => :area
+  has_many :polls, :as => :area, :order => "date_held DESC"
   has_one  :boundary, :as => :area
   allow_access_to :members, :via => :uid
   allow_access_to :committees, :via => [:uid, :normalised_title]
