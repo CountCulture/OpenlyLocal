@@ -217,7 +217,7 @@ dl#main_attributes {
 	clear:left;
 	margin: 2em 0;
 	float:left;
-	max-width:600px;
+	width:600px;
 	
 }
 .attributes dt {
@@ -225,10 +225,14 @@ dl#main_attributes {
 	width: 9em;
 	clear: left;
 	text-align:right;
+	border-top: 1px solid #ddd;
 }
 .attributes dd {
-	margin-left: 10em;
-	max-width:350px;
+	float:left;
+	padding-left: 1em;
+	margin-left:0;
+	border-top: 1px solid #ddd;
+	width:300px;
 }
 div.item_grouping {
 float: left;
