@@ -11,6 +11,7 @@ class CandidateTest < ActiveSupport::TestCase
 
     should_belong_to :poll
     should_belong_to :political_party
+    should_belong_to :member
     should_have_db_columns :first_name, :last_name, :party, :elected, :votes, :address
     should_validate_presence_of :poll_id
     should_validate_presence_of :last_name

@@ -83,3 +83,19 @@ task :get_details_for_electoral_commission_parties => :environment do
     puts "Added alternative_names to #{party.name}: #{alternative_names.inspect}"
   end
 end
+
+desc "Match candidates and members"
+task :match_candidates_and_members => :environment do
+  Candidate.all(:conditions => {:member_id => nil, :elected => true}, :include => :poll).each do |candidate|
+    next unless (ward = candidate.poll.area) && ward.is_a?(Ward) # don't want councils
+    members = ward.members.select{ |m| m.last_name.downcase == candidate.last_name.downcase }
+    if members.size == 1
+      candidate.update_attribute(:member, members.first)
+      puts "Matched candidate (#{candidate.first_name} #{candidate.last_name}) with member (#{members.first.full_name})"
+    elsif members.size > 1
+      puts "*** Matched more than one member to candidate (#{candidate.first_name} #{candidate.last_name}): #{members.collect(&:title)}"
+    else
+      puts "Failed to match members against candidate (#{candidate.first_name} #{candidate.last_name})"
+    end
+  end
+end
