@@ -34,7 +34,9 @@
       <%- unless @council.wdtk_name.blank? -%>
         <li><%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@council.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@council.wdtk_name}", :class => "feed" %>)</li>
       <%- end -%>
-      <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external' %></li>
+      <%- unless @council.ons_url.blank? -%>
+        <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external' %></li>
+      <%- end -%>
       <li><%= link_to "eGovernment Register page", "http://www.brent.gov.uk/egr.nsf/laref/#{@council.egr_id}", :class => 'external' %></li>
       <li><%= link_to "ONS SNAC ID", "http://www.ons.gov.uk/about-statistics/geography/products/geog-products-area/snac/index.html", :class => 'external' %>: <%= link_to(@council.snac_id, "http://statistics.data.gov.uk/doc/local-authority/#{@council.snac_id}", :class => "external") unless @council.snac_id.blank? %> </li>
       <li><%= link_to "ONS GSS code", "http://www.ons.gov.uk/about-statistics/geography/policy/coding-and-naming-for-statistical-geographies/index.html", :class => 'external' %>: <%= @council.gss_code || "Not known" %> </li>      
