@@ -217,19 +217,19 @@ dl#main_attributes {
 	clear:left;
 	margin: 2em 0;
 	float:left;
-	width:600px;
+	width:450px;
 	
 }
 .attributes dt {
 	float: left;
-	width: 9em;
+	width: 110px;
 	clear: left;
 	text-align:right;
 	border-top: 1px solid #ddd;
 }
 .attributes dd {
 	float:left;
-	padding-left: 1em;
+	padding-left: 12px;
 	margin-left:0;
 	border-top: 1px solid #ddd;
 	width:300px;
