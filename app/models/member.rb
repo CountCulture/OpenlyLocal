@@ -19,7 +19,7 @@ class Member < ActiveRecord::Base
                            meetings.committee_id=memberships.committee_id 
                            AND memberships.member_id=#{id} AND meetings.date_held > \'#{Time.now.to_s(:db)}\' ORDER BY meetings.date_held'
 
-  has_many :candidates
+  has_many :candidacies
   belongs_to :council
   belongs_to :ward
   allow_access_to :committees, :via => [:uid, :normalised_title]
@@ -45,6 +45,10 @@ class Member < ActiveRecord::Base
   
   def foaf_telephone
     "tel:+44-#{telephone.gsub(/^0/, '').gsub(/\s/, '-')}" unless telephone.blank?
+  end
+  
+  def latest_succesful_candidacy
+    candidacies.first(:conditions => "votes IS NOT NULL AND elected='1'", :include => :poll, :order => 'polls.date_held DESC')
   end
   
   # overrides stub method from TwitterAccountMethods

@@ -1,12 +1,12 @@
 require 'test_helper'
 
-class CandidateTest < ActiveSupport::TestCase
-  subject { @candidate }
+class CandidacyTest < ActiveSupport::TestCase
+  subject { @candidacy }
 
-  context "The Candidate class" do
+  context "The Candidacy class" do
     setup do
       @poll = Factory(:poll)
-      @candidate = Factory(:candidate, :poll => @poll)
+      @candidacy = Factory(:candidacy, :poll => @poll)
     end
 
     should_belong_to :poll
@@ -17,64 +17,64 @@ class CandidateTest < ActiveSupport::TestCase
     should_validate_presence_of :last_name
     
     should "delegate area to poll" do
-      assert_equal @poll.area, @candidate.area
+      assert_equal @poll.area, @candidacy.area
     end
 
   end
 
-  context "A Candidate instance" do
+  context "A Candidacy instance" do
     setup do
-      @candidate = Factory(:candidate)
+      @candidacy = Factory(:candidacy)
     end
     
     should "not be elected by default" do
-      assert !@candidate.elected?
+      assert !@candidacy.elected?
     end
     
     context "when returning party_name" do
       
       should "return nil by default" do
-        assert_nil @candidate.party_name
+        assert_nil @candidacy.party_name
       end
       
       should "return name of political party if set" do
         political_party = Factory(:political_party)
-        @candidate.political_party = political_party
-        assert_equal political_party.name, @candidate.party_name
+        @candidacy.political_party = political_party
+        assert_equal political_party.name, @candidacy.party_name
       end
       
       should "return party if political party if not set" do
-        @candidate.party = "foo"
-        assert_equal "foo", @candidate.party_name
+        @candidacy.party = "foo"
+        assert_equal "foo", @candidacy.party_name
       end
       
       should "return name of political party if political_party and party set" do
         political_party = Factory(:political_party)
-        @candidate.political_party = political_party
-        @candidate.party = "foo"
-        assert_equal political_party.name, @candidate.party_name
+        @candidacy.political_party = political_party
+        @candidacy.party = "foo"
+        assert_equal political_party.name, @candidacy.party_name
       end
       
     end
     
     context "when returning full_name" do
       should "concatenate first and last names" do
-        assert_equal 'Fred M Flintstone', Candidate.new(:first_name => 'Fred M', :last_name => 'Flintstone').full_name
+        assert_equal 'Fred M Flintstone', Candidacy.new(:first_name => 'Fred M', :last_name => 'Flintstone').full_name
       end
       
       should "concatenate return last name if no first_name" do
-        assert_equal 'Flintstone', Candidate.new(:last_name => 'Flintstone').full_name
+        assert_equal 'Flintstone', Candidacy.new(:last_name => 'Flintstone').full_name
       end
     end
     
     context "when returning status" do
       should "return nil by default" do
-        assert_nil @candidate.status
+        assert_nil @candidacy.status
       end
       
       should "return 'elected' if elected" do
-        @candidate.elected = true
-        assert 'elected', @candidate.status
+        @candidacy.elected = true
+        assert 'elected', @candidacy.status
       end
     end
   end

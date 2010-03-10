@@ -100,6 +100,18 @@ class MembersControllerTest < ActionController::TestCase
        end
      end
      
+     context "with member with additional details" do
+       setup do
+         @poll = Factory(:poll, :area => @member.council)
+         @candidacy = Factory(:candidacy, :poll => @poll, :member => @member, :votes => 321, :elected => true)
+         get :show, :id => @member.id
+       end
+
+       should "show link to poll if recent successfull candidacy" do
+         assert_select "#main_attributes a", /#{@poll.date_held.to_s(:event_date)}/
+       end
+     end
+     
      context "with xml requested" do
        setup do
          get :show, :id => @member.id, :format => "xml"

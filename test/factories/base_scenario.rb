@@ -223,7 +223,7 @@ Factory.define :boundary do |f|
   f.sequence(:bounding_box) { |n| Polygon.from_coordinates([[[1.0+0.1*n, 52.0+0.1*n], [2.0+0.1*n, 52.0+0.1*n], [2.0+0.1*n, 54.0+0.1*n], [1.0+0.1*n, 54.0+0.1*n], [1.0+0.1*n, 52.0+0.1*n]]]) } 
 end
 
-Factory.define :candidate do |f|
+Factory.define :candidacy do |f|
   f.association :poll
   f.sequence(:last_name) { |n| "Flintstone #{n}" }
 end

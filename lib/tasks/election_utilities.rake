@@ -23,7 +23,7 @@ task :import_london_2006_election_results => :environment do
     political_party = political_parties.detect{ |p| p.matches_name?(row["Party"]) }
     party = political_party ? nil : row["Party"]
     elected = !!row["Elected"]
-    poll.candidates.create!(:elected => elected, :last_name => last_name, :first_name => first_name, :votes => row["Vote"], :political_party => political_party, :party => party)
+    poll.candidacies.create!(:elected => elected, :last_name => last_name, :first_name => first_name, :votes => row["Vote"], :political_party => political_party, :party => party)
   end
 end
 
@@ -84,26 +84,26 @@ task :get_details_for_electoral_commission_parties => :environment do
   end
 end
 
-desc "Match candidates and members"
-task :match_candidates_and_members => :environment do
-  Candidate.all(:conditions => {:member_id => nil, :elected => true}, :include => :poll).each do |candidate|
-    next unless (ward = candidate.poll.area) && ward.is_a?(Ward) # don't want councils
-    members = ward.members.select{ |m| m.last_name.downcase == candidate.last_name.downcase }
+desc "Match candidacies and members"
+task :match_candidacies_and_members => :environment do
+  Candidacy.all(:conditions => {:member_id => nil, :elected => true}, :include => :poll).each do |candidacy|
+    next unless (ward = candidacy.poll.area) && ward.is_a?(Ward) # don't want councils
+    members = ward.members.select{ |m| m.last_name.downcase == candidacy.last_name.downcase }
     if members.empty?
-      puts "Failed to match members against candidate (#{candidate.first_name} #{candidate.last_name})"
+      puts "Failed to match members against candidacy (#{candidacy.first_name} #{candidacy.last_name})"
       next
     elsif members.size == 1
       member = members.first
-    elsif members.size > 1 && poss_members = members.select{|m| m.first_name.split(' ').first == candidate.first_name.split(' ').first} #see if we can match first, first names
+    elsif members.size > 1 && poss_members = members.select{|m| m.first_name.split(' ').first == candidacy.first_name.split(' ').first} #see if we can match first, first names
       if poss_members.size != 1
-        puts "*** Matched more than one member to candidate (#{candidate.first_name} #{candidate.last_name}): #{members.collect(&:full_name)}"
+        puts "*** Matched more than one member to candidacy (#{candidacy.first_name} #{candidacy.last_name}): #{members.collect(&:full_name)}"
         next
       else
         member = poss_members.first
       end
     end
-    member.candidates << candidate
-    member.update_attribute(:date_elected, candidate.poll.date_held) unless member.date_elected? && candidate.poll.date_held < 4.years.ago.to_date
-    puts "Matched candidate (#{candidate.first_name} #{candidate.last_name}, #{candidate.poll.date_held.to_s(:event_date)}) with member (#{members.first.full_name})"
+    member.candidacies << candidacy
+    member.update_attribute(:date_elected, candidacy.poll.date_held) unless member.date_elected? && candidacy.poll.date_held < 4.years.ago.to_date
+    puts "Matched candidacy (#{candidacy.first_name} #{candidacy.last_name}, #{candidacy.poll.date_held.to_s(:event_date)}) with member (#{members.first.full_name})"
   end
 end

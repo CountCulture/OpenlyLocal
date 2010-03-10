@@ -10,8 +10,8 @@ class PollsControllerTest < ActionController::TestCase
     
     context "in general" do
       setup do
-        @candidate_1 = Factory(:candidate, :poll => @poll, :votes => 537)
-        @candidate_2 = Factory(:candidate, :poll => @poll, :votes => 210)
+        @candidacy_1 = Factory(:candidacy, :poll => @poll, :votes => 537)
+        @candidacy_2 = Factory(:candidacy, :poll => @poll, :votes => 210)
         get :show, :id => @poll.id
       end
 
@@ -25,9 +25,9 @@ class PollsControllerTest < ActionController::TestCase
         assert_select "a", @area.title
       end
 
-      should "list all candidates" do
-        assert_select "#candidates" do
-          assert_select ".candidate", 2
+      should "list all candidacies" do
+        assert_select "#candidacies" do
+          assert_select ".candidacy", 2
         end
       end
 
@@ -46,10 +46,10 @@ class PollsControllerTest < ActionController::TestCase
       end
     end
     
-    context "on GET to show with candidates with no votes" do
+    context "on GET to show with candidacies with no votes" do
       setup do
-        @candidate_1 = Factory(:candidate, :poll => @poll)
-        @candidate_2 = Factory(:candidate, :poll => @poll)
+        @candidacy_1 = Factory(:candidacy, :poll => @poll)
+        @candidacy_2 = Factory(:candidacy, :poll => @poll)
         get :show, :id => @poll.id
       end
       
@@ -59,16 +59,16 @@ class PollsControllerTest < ActionController::TestCase
 
     end
     
-    context "on GET to show with candidate with associated member" do
+    context "on GET to show with candidacy with associated member" do
       setup do
         @member = Factory(:member, :council => @area.council)
-        @candidate_1 = Factory(:candidate, :poll => @poll, :member => @member)
-        @candidate_2 = Factory(:candidate, :poll => @poll)
+        @candidacy_1 = Factory(:candidacy, :poll => @poll, :member => @member)
+        @candidacy_2 = Factory(:candidacy, :poll => @poll)
         get :show, :id => @poll.id
       end
       
       should "show link to member" do
-        assert_select "table.statistics td a", /#{@candidate_1.full_name}/
+        assert_select "table.statistics td a", /#{@candidacy_1.full_name}/
       end
 
     end

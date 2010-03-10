@@ -493,7 +493,7 @@ table.datapoints td.more_info {
 }
 
 /*Election data formatting*/
-.candidate.elected * {
+.candidacy.elected * {
 	font-weight:bold;
 }
 /*Hyperlocal formatting*/

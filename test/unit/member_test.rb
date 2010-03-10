@@ -5,7 +5,7 @@ class MemberTest < ActiveSupport::TestCase
   should_belong_to :council
   should_belong_to :ward
   should_have_many :memberships
-  should_have_many :candidates
+  should_have_many :candidacies
   should_have_many :committees, :through => :memberships
   should_have_named_scope :current, :conditions => "date_left IS NULL"
   should_have_db_columns :address, :blog_url, :facebook_account_name, :linked_in_account_name
@@ -85,6 +85,40 @@ class MemberTest < ActiveSupport::TestCase
         assert_nil Member.find_by_id(@vacancy.id)
         assert @existing_member.reload.ex_member?
       end       
+    end
+    
+    context "should have latest_succesful_candidacy and" do
+      setup do
+        @area = Factory(:ward, :council => @existing_member.council)
+        @poll = Factory(:poll, :area => @area, :date_held => 1.year.ago)
+        @more_recent_poll = Factory(:poll, :area => @area, :date_held => 5.days.ago) # more recent
+        @old_poll = Factory(:poll, :area => @area, :date_held => 4.years.ago)
+        @candidacy = Factory(:candidacy, :votes => 321, :elected => true, :poll => @poll, :member => @existing_member)
+      end
+      
+      should "return nil if no candidancies" do
+        assert_nil Member.new.latest_succesful_candidacy
+      end
+      
+      should "return successful candidacy" do
+        assert_equal @candidacy, @existing_member.latest_succesful_candidacy
+      end
+      
+      should "most recent successful candidacy" do
+        older_candidate = Factory(:candidacy, :poll => @old_poll, :member => @existing_member, :votes => 234, :elected => true, :last_name => "Aname")
+        assert_equal @candidacy, @existing_member.latest_succesful_candidacy
+      end
+      
+      should "not return unsuccessful candidacy" do
+        @candidacy.update_attribute(:elected, false)
+        assert_nil @existing_member.latest_succesful_candidacy
+      end
+      
+      should "not return no votes candidacy" do
+        no_result_candidacy = Factory(:candidacy, :poll => @more_recent_poll, :member => @existing_member)
+        assert_equal @candidacy, @existing_member.latest_succesful_candidacy
+      end
+      
     end   
       
   end

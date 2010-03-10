@@ -1,4 +1,5 @@
-class Candidate < ActiveRecord::Base
+class Candidacy < ActiveRecord::Base
+  set_table_name 'candidates'
   belongs_to :poll
   belongs_to :political_party
   belongs_to :member
