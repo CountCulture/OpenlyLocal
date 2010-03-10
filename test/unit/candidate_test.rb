@@ -57,6 +57,16 @@ class CandidateTest < ActiveSupport::TestCase
       
     end
     
+    context "when returning full_name" do
+      should "concatenate first and last names" do
+        assert_equal 'Fred M Flintstone', Candidate.new(:first_name => 'Fred M', :last_name => 'Flintstone').full_name
+      end
+      
+      should "concatenate return last name if no first_name" do
+        assert_equal 'Flintstone', Candidate.new(:last_name => 'Flintstone').full_name
+      end
+    end
+    
     context "when returning status" do
       should "return nil by default" do
         assert_nil @candidate.status

@@ -6,6 +6,10 @@ class Candidate < ActiveRecord::Base
   delegate :area, :to => :poll
   default_scope :order => 'last_name'
   
+  def full_name
+    first_name.blank? ? last_name : "#{first_name} #{last_name}"
+  end
+  
   def party_name
     political_party ? political_party.name : party
   end
