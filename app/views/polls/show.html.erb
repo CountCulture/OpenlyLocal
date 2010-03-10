@@ -13,7 +13,7 @@
   <tr><th>Candidate</th><th>Party</th><th class='value'>Votes</th><th class='value'>Proportion of vote</th><th class='value'>Elected?</th></tr>
   <%- @poll.candidates.each do |candidate| -%>
     <tr class="candidate <%= candidate.status %>">
-      <td><%= candidate.first_name %> <%= candidate.last_name %></td>
+      <td><%= candidate.member ? link_to(candidate.full_name, candidate.member) : candidate.full_name %></td>
       <td><%= candidate.party_name %></td>
       <td class='value'><%= candidate.votes %></td>
       <td class='value'><%= number_to_percentage(100*candidate.votes.to_f/@total_votes.to_f, :precision => 1) if candidate.votes %></td>

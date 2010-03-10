@@ -89,13 +89,21 @@ task :match_candidates_and_members => :environment do
   Candidate.all(:conditions => {:member_id => nil, :elected => true}, :include => :poll).each do |candidate|
     next unless (ward = candidate.poll.area) && ward.is_a?(Ward) # don't want councils
     members = ward.members.select{ |m| m.last_name.downcase == candidate.last_name.downcase }
-    if members.size == 1
-      candidate.update_attribute(:member, members.first)
-      puts "Matched candidate (#{candidate.first_name} #{candidate.last_name}) with member (#{members.first.full_name})"
-    elsif members.size > 1
-      puts "*** Matched more than one member to candidate (#{candidate.first_name} #{candidate.last_name}): #{members.collect(&:title)}"
-    else
+    if members.empty?
       puts "Failed to match members against candidate (#{candidate.first_name} #{candidate.last_name})"
+      next
+    elsif members.size == 1
+      member = members.first
+    elsif members.size > 1 && poss_members = members.select{|m| m.first_name.split(' ').first == candidate.first_name.split(' ').first} #see if we can match first, first names
+      if poss_members.size != 1
+        puts "*** Matched more than one member to candidate (#{candidate.first_name} #{candidate.last_name}): #{members.collect(&:full_name)}"
+        next
+      else
+        member = poss_members.first
+      end
     end
+    member.candidates << candidate
+    member.update_attribute(:date_elected, candidate.poll.date_held) unless member.date_elected? && candidate.poll.date_held < 4.years.ago.to_date
+    puts "Matched candidate (#{candidate.first_name} #{candidate.last_name}, #{candidate.poll.date_held.to_s(:event_date)}) with member (#{members.first.full_name})"
   end
 end

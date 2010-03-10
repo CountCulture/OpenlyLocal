@@ -19,6 +19,7 @@ class Member < ActiveRecord::Base
                            meetings.committee_id=memberships.committee_id 
                            AND memberships.member_id=#{id} AND meetings.date_held > \'#{Time.now.to_s(:db)}\' ORDER BY meetings.date_held'
 
+  has_many :candidates
   belongs_to :council
   belongs_to :ward
   allow_access_to :committees, :via => [:uid, :normalised_title]
