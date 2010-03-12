@@ -157,6 +157,15 @@ Factory.define :police_team do |f|
   f.association :police_force
 end
 
+Factory.define :police_officer do |f|
+  f.sequence(:name) { |n| "Police Officer #{n}" }
+  f.association :police_team
+end
+
+Factory.define :inactive_police_officer, :class => :police_officer, :parent => :police_officer do |f|
+  f.active false
+end
+
 Factory.define :pension_fund do |f|
   f.sequence(:name) { |n| "Pension Fund #{n}" }
 end
