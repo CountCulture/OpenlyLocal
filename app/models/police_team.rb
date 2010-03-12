@@ -13,7 +13,7 @@ class PoliceTeam < ActiveRecord::Base
   def update_officers
     return unless response = NpiaUtilities::Client.new(:team_people, :force => police_force.npia_id, :team => uid).response
     existing_officers = police_officers.dup
-    officers = response['person'].collect do |person|
+    officers = [response['person']].flatten.collect do |person|
       if existing_officer = existing_officers.detect{ |o| (o.name == person['name']) && (o.rank == person['rank']) }
         existing_officers -= [existing_officer]
         existing_officer.update_attributes(:biography => person['bio'])

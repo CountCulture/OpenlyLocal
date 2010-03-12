@@ -74,6 +74,11 @@ class PoliceTeamTest < ActiveSupport::TestCase
       assert_nothing_raised(Exception) { @police_team.update_officers }
     end
     
+    should "not raise error if only one officer found for area" do
+      NpiaUtilities::Client.any_instance.expects(:response).returns('person' => {"name"=>"Steven Mildren", "rank"=>"Inspector", "bio"=> nil })
+      assert_nothing_raised(Exception) { @police_team.update_officers }
+    end
+    
     should "return all officers for team" do
       assert_kind_of Array, officers = @police_team.update_officers
       assert_equal 4, officers.size

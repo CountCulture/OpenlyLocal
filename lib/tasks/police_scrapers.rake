@@ -1,7 +1,12 @@
 desc "Populate Police Officers from NPIA api"
 task :populate_police_officers => :environment do
   PoliceTeam.find_each(:include => :police_force) do |team|
-    team.update_officers
+    begin
+      officers = team.update_officers
+      puts "added updated #{officers.size} officers for #{team.name} (#{team.id})"
+    rescue Exception => e
+      puts "Problem updating officers for #{team.name} (#{team.id})"
+    end
   end
 end
 
@@ -223,19 +228,4 @@ task :connect_wards_and_police_teams  => :environment do
     end
   end
 end
-
-desc "Get Police Officers From Police Teams"
-task :get_police_officers_from_npia  => :environment do
-  require 'pp'
-  PoliceTeam.all(:limit => 5).each do |team|
-    client = NpiaUtilities::Client.new(:team_people, :force => team.police_force.npia_id, :team => team.uid)
-    if officers = client.response['person']
-      puts "Found #{officers.size} officers for  #{team.name} (#{team.police_force.name})"
-      pp officers
-    else
-      puts "*** Couldn't get team officers for #{team.name} (#{team.police_force.name})"
-    end
-  end
-end
-
 
