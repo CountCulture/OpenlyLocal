@@ -3,6 +3,9 @@ require 'test_helper'
 class PoliceTeamsControllerTest < ActionController::TestCase
   def setup
     @police_team = Factory(:police_team)
+    @police_officer = Factory(:police_officer, :police_team => @police_team)
+    @inactive_police_officer = Factory(:inactive_police_officer, :police_team => @police_team)
+    @ward = Factory(:ward, :police_team => @police_team)
   end
   
   # show test
@@ -22,6 +25,22 @@ class PoliceTeamsControllerTest < ActionController::TestCase
     
     should 'show associated police_force' do
       assert_select ".attributes a", @police_team.police_force.name
+    end
+    
+    should 'show associated wards' do
+      assert_select ".attributes a", @ward.title
+    end
+        
+    should 'show associated wards' do
+      assert_select ".attributes a", @police_team.police_force.name
+    end
+    
+    should 'show associated police_officers' do
+      assert_select "#police_officers li", /#{@police_officer.name}/
+    end
+    
+    should 'not show associated inactive police_officers' do
+      assert_select "#police_officers li", :text => /#{@inactive_police_officer.name}/, :count => 0
     end
     
     should "show share block" do

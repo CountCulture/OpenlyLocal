@@ -63,7 +63,7 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should "not show link to police neighbourhood team" do
-        assert_select "dd", :text => /neighbourhood police team/i, :count => 0
+        assert_select "#police_team", false
       end
 
       should "not show statistics" do
@@ -88,7 +88,6 @@ class WardsControllerTest < ActionController::TestCase
 
     context "with basic request when ward has additional attributes" do
       setup do
-        @ward.update_attributes(:police_team => Factory(:police_team))
         @ward.committees << @committee = Factory(:committee, :council => @council)
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
         @datapoint = Factory(:datapoint, :area => @ward)
@@ -100,6 +99,10 @@ class WardsControllerTest < ActionController::TestCase
                                      stub_everything(:title => "religion", :display_as => "graph") => [@graphed_datapoint]
                                     }
         @poll = Factory(:poll, :area => @ward)
+        @police_team = Factory(:police_team)
+        @ward.update_attributes(:police_team => @police_team)
+        @police_officer = Factory(:police_officer, :police_team => @police_team)
+        @inactive_police_officer = Factory(:inactive_police_officer, :police_team => @police_team)
         Ward.any_instance.stubs(:grouped_datapoints).returns(dummy_grouped_datapoints)
         get :show, :id => @ward.id
       end
@@ -114,8 +117,16 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "#meetings li", /#{@meeting.title}/
       end
 
-      should "show link to police neighbourhood team" do
-        assert_select "dt", /neighbourhood police team/i
+      should "show link to police neighbourhood officers" do
+        assert_select "#police_team" do
+          assert_select 'li', /#{@police_officer.name}/
+        end
+      end
+
+      should "not show link to inactive police neighbourhood officers" do
+        assert_select "#police_team" do
+          assert_select 'li', :text => /#{@inactive_police_officer.name}/, :count => 0
+        end
       end
 
       should "show link to polls" do

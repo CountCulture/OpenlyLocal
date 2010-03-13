@@ -1,7 +1,6 @@
 <%- div_for @ward do -%>
   <h1><%= basic_link_for @council %>: <%= @title %> <em><%= council_page_for @ward %></em></h1>
   <dl id="main_attributes" class="attributes">
-    <%= attribute_tag :neighbourhood_police_team, link_for(@ward.police_team) %>
     <%= attribute_tag :ons_snac_ref, @ward.snac_id %>
     <%= attribute_tag :ons_gss_code, @ward.gss_code %>
     <%= attribute_tag :ordnance_survey_ref, @ward.os_id  %>
@@ -12,7 +11,18 @@
       <h3>Councillors for this ward</h3>
       <%= list_all @members %>
     </div>
-
+    
+    <%- if @ward.police_team -%>
+      <div id="police_team" class="item_grouping">
+        <h3><%= link_to('Neighbourhood Police Team', @ward.police_team) %> </h3>
+        <ul>
+          <%- @ward.police_team.police_officers.active.each do |officer| -%>
+            <li><%= officer.title %></li>
+          <%- end -%>
+        </ul>
+      </div>
+    <%- end -%>
+    
     <%- unless @committees.blank? -%>
       <div id="committees" class="item_grouping">
         <h3>Committees for this ward</h3>

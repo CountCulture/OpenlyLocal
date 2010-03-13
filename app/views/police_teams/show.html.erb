@@ -3,7 +3,19 @@
   <%= attribute_tag :police_force, basic_link_for( @police_team.police_force) %>
   <%= attribute_tag :web_page, link_to(@police_team.url, @police_team.url, :class => "external") if @police_team.url? %>
   <%= attribute_tag :about_this_team, @police_team.description %>
+  <%= attribute_tag :wards_policed_by_this_team, @police_team.wards.collect{ |w| link_for(w) }.join(', ') %>
 </dl>
+
+<div id="relationships">
+  <div id="police_officers" class="item_grouping">
+    <h3>Police Officers in this team</h3>
+    <ul>
+      <%- @police_team.police_officers.active.each do |officer| -%>
+        <li><strong><%= officer.title %></strong> <%= truncate(officer.biography, :length => 100) %></li>
+      <%- end -%>
+    </ul>
+  </div>
+</div>
 
 <p class="attribution">Source: <a href="http://policeapi.rkh.co.uk/" title="Police API">NPIA</a></p>
 <%= timestamp_data_for @police_team %>

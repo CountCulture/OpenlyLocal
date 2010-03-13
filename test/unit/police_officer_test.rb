@@ -27,9 +27,13 @@ class PoliceOfficerTest < ActiveSupport::TestCase
   
   context "A PoliceTeam instance" do
     setup do
-      @police_officer = Factory(:police_officer)
+      @police_officer = Factory(:police_officer, :rank => "PC", :name => "Fred Flintsone")
       raw_bio = "\"Since the merger of the Abbey neighbourhood in January 2010, I provide high visibility reassurance patrols both on foot and on push bike, to reduce local crime and anti-social behaviour.\n\n\"I attend numerous neighbourhood watch meetings and hold surgeries within the community where anybody can attend and discuss any problems or issues they may have with myself.\n\n\"I also provide burglary victims with crime prevention advice and work alongside many partner agencies to tackle all the issues that concern the residents as well as the commercial side to the beat.\""
       @police_officer.biography = raw_bio
+    end
+    
+    should "return rank and name as title" do
+      assert_equal "PC Fred Flintsone", @police_officer.title
     end
     
     context "when setting biography" do

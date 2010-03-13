@@ -7,4 +7,8 @@ class PoliceOfficer < ActiveRecord::Base
     return if raw_bio.blank?
     self[:biography] = raw_bio.gsub(/\n+/,"\n").gsub(/\"/,'')
   end
+  
+  def title
+    [rank, name].join(' ')
+  end
 end

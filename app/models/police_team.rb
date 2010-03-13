@@ -2,6 +2,7 @@ class PoliceTeam < ActiveRecord::Base
 
   belongs_to :police_force
   has_many :police_officers
+  has_many :wards
   validates_presence_of :name, :uid, :police_force_id
   default_scope :order => 'name'
   alias_attribute :title, :name
