@@ -1,0 +1,6 @@
+<h1><%= @title %></h1>
+<ul>
+<%- @political_parties.each do |party| -%>
+  <li><strong><%= party.name %></strong> <%= link_to 'edit', edit_political_party_path(party), :class => 'button' %></li>
+<%- end -%>
+</ul>
