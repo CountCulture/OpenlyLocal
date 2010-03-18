@@ -5,6 +5,27 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
     @political_party = Factory(:political_party)
   end
   
+  # index test
+  context "on GET to :index" do
+    context "with basic request" do
+      setup do
+        stub_authentication
+        get :index
+      end
+
+      should_assign_to(:political_parties) { PoliticalParty.all}
+      should_respond_with :success
+      should_render_template :index
+      should "list political parties" do
+        assert_select "li", /#{@political_party.name}/
+      end
+
+      should 'show title' do
+        assert_select "title", /political parties/i
+      end
+      
+    end
+  end
   # edit test
   context "on GET to :edit without auth" do
     setup do
@@ -49,7 +70,7 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
       should_change "@political_party.reload.name", :to => "New Name"
       should_change "@political_party.reload.url", :to => "http://new.name.com"
       should_assign_to :political_party
-      should_redirect_to( "the show page for political party") { political_party_path(assigns(:political_party)) }
+      should_redirect_to( "the index page for political parties") { political_parties_path }
       should_set_the_flash_to "Successfully updated political party"
     
     end

@@ -1,6 +1,11 @@
 class PoliticalPartiesController < ApplicationController
-  before_filter :authenticate, :except => [:index, :show]
+  before_filter :authenticate
   before_filter :find_political_party, :except => [:index, :new, :create]
+  
+  def index
+    @political_parties = PoliticalParty.all
+    @title = "UK Political Parties"
+  end
   
   def edit
   end
@@ -8,7 +13,7 @@ class PoliticalPartiesController < ApplicationController
   def update
     @political_party.update_attributes!(params[:political_party])
     flash[:notice] = "Successfully updated political party"
-    redirect_to political_party_url(@political_party)
+    redirect_to political_parties_url
   rescue
     render :action => "edit"
   end
