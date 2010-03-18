@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :political_parties
+
   map.resources :polls
 
   map.resources :police_teams

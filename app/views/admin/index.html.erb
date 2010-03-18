@@ -20,6 +20,19 @@
   </ul>
 </div>
 
+<div id="councils_without_wards">
+  <h3>Councils Without Wards</h3>
+  <ul>
+    <%- Council.without_wards.each do |council| -%>
+      <li>
+        <strong><%= basic_link_for council %></strong>
+        <%= link_to council.url, council.url, :class => 'external' %>
+        <%= link_to "#{council.name} scrapers", scrapers_path(:anchor => dom_id(council)) %>
+        <strong>SNAC id:</strong> <%= link_to(council.snac_id, "http://statistics.data.gov.uk/doc/local-authority/#{council.snac_id}", :class => "external") unless council.snac_id.blank? %>
+      </li>
+    <%- end -%>
+  </ul>
+</div>
 <div id="hyperlocal_sites">
   <h3>Unapproved <%= link_to "Hyperlocal Sites", hyperlocal_sites_path %></h3>
 

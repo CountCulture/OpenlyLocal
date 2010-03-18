@@ -107,3 +107,27 @@ task :match_candidacies_and_members => :environment do
     puts "Matched candidacy (#{candidacy.first_name} #{candidacy.last_name}, #{candidacy.poll.date_held.to_s(:event_date)}) with member (#{members.first.full_name})"
   end
 end
+
+desc "Search Wikipedia For Political Parties"
+task :search_wikipedia_for_parties => :environment do
+  require 'hpricot'
+  base_url = "http://en.wikipedia.org/w/index.php?fulltext=Search&search="
+  PoliticalParty.find_all_by_wikipedia_name(nil).each do |party|
+    client = HTTPClient.new
+    content = client.get_content("http://en.wikipedia.org/w/index.php?fulltext=Search&search="+URI.escape(party.name), nil, "User-Agent" => "Mozilla/4.0 (OpenlyLocal.com)")
+    poss_parties = Hpricot(content).search('.mw-search-results li>a')
+    puts "\n========\nPossible matches for #{party.name}\n"
+    poss_parties[0..4].each_with_index do |poss_party, i|
+      puts "  #{i+1}. #{poss_party.inner_text}  - http://en.wikipedia.org#{poss_party[:href]}\n"
+    end
+    puts "Please choose correct answer -- enter number, n for next(default), q to quit:"
+    response = $stdin.gets.chomp
+    next if response == "n" || response.empty?
+    break if response == "q"
+    chosen_party = response.to_i
+    wikipedia_name = poss_parties[chosen_party-1][:href].sub(/^\/wiki\//,'')
+    party.update_attribute(:wikipedia_name, wikipedia_name)
+    puts "Updated #{party.name} with Wikipedia name (#{wikipedia_name})"
+  end
+end
+

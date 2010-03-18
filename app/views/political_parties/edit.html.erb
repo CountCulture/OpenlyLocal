@@ -1,0 +1,27 @@
+<h1>Editing Political Party: <%= @political_party.name %></h1>
+
+<p><strong>Electoral Commission page</strong> <%= link_to @political_party.electoral_commission_url, @political_party.electoral_commission_url %></p>
+
+<%= error_messages_for :political_party %>
+
+<% form_for @political_party do |f| -%>
+  <p>
+    <%= f.label :name, "Name" %>
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :url, "Url" %>
+    <%= f.text_field :url %>
+  </p>
+  <p>
+    <%= f.label :wikipedia_name %>
+    <%= f.text_field :wikipedia_name %>
+  </p>
+  <p>
+    <%= f.label :colour %>
+    <%= f.text_field :colour %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>

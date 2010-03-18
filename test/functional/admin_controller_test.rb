@@ -31,6 +31,10 @@ class AdminControllerTest < ActionController::TestCase
         assert_select "#user_submissions li a", /#{@another_council.name}/
       end
       
+      should "list councils without wards" do
+        assert_select "#councils_without_wards li a", /#{@another_council.name}/
+      end
+      
     end 
     
     context "without authentication" do
