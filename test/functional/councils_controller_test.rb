@@ -427,7 +427,10 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show council is same as other resources" do
         assert_match /owl:sameAs.+rdf:resource.+statistics.data.gov.uk.+local-authority\/#{@council.snac_id}/, @response.body
         assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_resource)}/, @response.body
-        assert_match /owl:sameAs.+rdf:resource.+data.ordnancesurvey.co.uk\/id\/#{@council.os_id}/, @response.body
+      end
+      
+      should "show council has geogrphic area of OS resource" do
+        assert_match /administrative-geography:coverage.+rdf:resource.+data.ordnancesurvey.co.uk\/id\/#{@council.os_id}/, @response.body
       end
       
       should "show details of council" do
