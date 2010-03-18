@@ -7,7 +7,7 @@ class PoliticalPartiesController < ApplicationController
   
   def update
     @political_party.update_attributes!(params[:political_party])
-    flash[:notice] = "Successfully updated police force"
+    flash[:notice] = "Successfully updated political party"
     redirect_to political_party_url(@political_party)
   rescue
     render :action => "edit"
