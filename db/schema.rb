@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100312082911) do
+ActiveRecord::Schema.define(:version => 20100318183448) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -56,6 +56,15 @@ ActiveRecord::Schema.define(:version => 20100312082911) do
 
   add_index "committees", ["council_id"], :name => "index_committees_on_council_id"
   add_index "committees", ["ward_id"], :name => "index_committees_on_ward_id"
+
+  create_table "council_contacts", :force => true do |t|
+    t.column "name", :string
+    t.column "position", :string
+    t.column "email", :string
+    t.column "council_id", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "councils", :force => true do |t|
     t.column "name", :string

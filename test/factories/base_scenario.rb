@@ -258,3 +258,10 @@ Factory.define :user_submission do |f|
   f.member_name 'Fred Flintstone'
 end
 
+Factory.define :council_contact do |f|
+  f.association :council
+  f.name 'Fred Flintstone'
+  f.email 'fred@council.gov.uk'
+  f.position 'webmaster'
+end
+
