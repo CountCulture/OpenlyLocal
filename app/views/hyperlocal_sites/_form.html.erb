@@ -56,7 +56,7 @@
     <legend>Area covered by this site</legend>
     <p class='required'>
       <%= f.label :country %>
-      <%= f.select :country, AllowedCountries, { :include_blank => true } %>
+      <%= f.select :country, AllowedCountries + ['Republic of Ireland'], { :include_blank => true } %>
     </p>
     <p class='required'>
       <%= f.label :area_covered, "Area Covered in words <em>(keep it short)</em>" %>

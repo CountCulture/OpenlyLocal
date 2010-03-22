@@ -10,7 +10,7 @@ class HyperlocalSite < ActiveRecord::Base
   # validates_uniqueness_of :title
   # validates_uniqueness_of :url
   validates_inclusion_of :platform, :in => PossiblePlatforms, :allow_blank => true
-  validates_inclusion_of :country, :in => AllowedCountries
+  validates_inclusion_of :country, :in => AllowedCountries + ['Republic of Ireland']
   named_scope :approved, :conditions => {:approved => true}, :include => [:twitter_account]
   named_scope :independent, lambda { |restriction| restriction ? {:conditions => {:hyperlocal_group_id => nil} } : {} }
   named_scope :country, lambda { |country| country ? { :conditions => {:country => country } } : {} }

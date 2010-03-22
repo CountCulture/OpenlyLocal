@@ -69,6 +69,12 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       assert @hyperlocal_site.valid?
     end   
         
+    should "validate presence of country in Allowed Countries and Ireland" do
+      assert Factory.build(:hyperlocal_site, :country => 'England').valid?
+      assert Factory.build(:hyperlocal_site, :country => 'Republic of Ireland').valid?
+      assert !Factory.build(:hyperlocal_site, :country => 'France').valid?
+    end   
+        
     context "should have named_scope model that should" do
       should "return only approved hyperlocal_sites" do
         approved_site = Factory(:approved_hyperlocal_site)
