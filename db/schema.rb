@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100318183448) do
+ActiveRecord::Schema.define(:version => 20100322141814) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(:version => 20100318183448) do
     t.column "council_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "approved", :datetime
   end
 
   create_table "councils", :force => true do |t|

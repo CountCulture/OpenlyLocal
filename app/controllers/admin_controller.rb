@@ -5,6 +5,7 @@ class AdminController < ApplicationController
     @title = 'Admin'
     @hyperlocal_sites = HyperlocalSite.find_all_by_approved(false)
     @user_submissions = UserSubmission.all
+    @unapproved_contacts = CouncilContact.unapproved
   end
 
 end

@@ -5,7 +5,7 @@
   <li><%= link_to "All councils (including unparsed)", councils_path(:include_unparsed => true) %></li>
 </ul>
 
-<div id="user_submissions">
+<div id="user_submissions" class='item_grouping'>
   <h3>Twitter Account Submissions</h3>
   <ul>
     <%- @user_submissions.each do |submission| -%>
@@ -20,6 +20,21 @@
   </ul>
 </div>
 
+<div id="council_contacts" class='item_grouping'>
+  <h3>Unapproved Council Contacts</h3>
+  <ul>
+    <%- @unapproved_contacts.each do |contact| -%>
+      <li>
+        <strong><%= basic_link_for contact.council %></strong>
+        <%= council_page_for contact.council %>
+        <strong><%= contact.name %></strong>
+        (<%= contact.position %>)
+        <%= mail_to contact.email %>
+      </li>
+    <%- end -%>
+  </ul>
+</div>
+<br class='clear' />
 <div id="councils_without_wards">
   <h3>Councils Without Wards</h3>
   <ul>
