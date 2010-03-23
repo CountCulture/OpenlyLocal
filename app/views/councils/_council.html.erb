@@ -1,6 +1,6 @@
     <%- div_for council do -%>
       <div class='area'>
-        <%= council.region ? "#{link_to council.region, params.merge(:region => council.region) }, " : '' %><%= link_to council.country, params.merge(:country => council.country) %>
+        <%= council.region? ? "#{link_to council.region, params.merge(:region => council.region) }, " : '' %><%= link_to council.country, params.merge(:country => council.country) %>
       </div>
       <h4><%= link_for council %></h4>
       <div class='info'>
