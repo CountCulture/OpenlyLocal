@@ -74,7 +74,7 @@ module ApplicationHelper
   def facebook_link_for(facebook_account=nil, options={})
     return if facebook_account.blank?
     options[:short] ? link_to(image_tag("facebook_icon.png", :alt => "Facebook page for #{facebook_account}"), "http://facebook.com/#{facebook_account}") : 
-                      link_to("Facebook", "http://facebook.com/#{facebook_account}", :class => "facebook", :title => "Facebook page for #{facebook_account}")
+                      link_to("Facebook", "http://facebook.com/#{facebook_account}", :class => "facebook feed", :title => "Facebook page for #{facebook_account}")
   end
 
   def list_all(coll=nil, options={})

@@ -4,7 +4,7 @@
   <%= f.hidden_field :member_id %>
   
   <%- if @user_submission.member -%>
-    <h3>Social networking details for <%= basic_link_for @user_submission.member %></h3>
+    <h3>Social networking details for <%= basic_link_for @user_submission.member %> (<%= basic_link_for @user_submission.member.council %>)</h3>
   <%- else -%>
     <p class='required'>
       <%= f.label :council_id %>

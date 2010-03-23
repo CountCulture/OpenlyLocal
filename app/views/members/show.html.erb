@@ -9,7 +9,7 @@
     <%= attribute_tag :address, @member.address %>
     <%= attribute_tag :telephone, @member.telephone %>
     <%= attribute_tag :blog, link_to(@member.blog_url, @member.blog_url) if @member.blog_url? %>
-    <%= attribute_tag :social_networking, twitter_link_for(@member.twitter_account_name) %>
+    <%= attribute_tag :social_networking, social_networking_links_for(@member) %>
     <%= attribute_tag :date_elected, (@member.latest_succesful_candidacy ? link_to(@member.latest_succesful_candidacy.poll.date_held.to_s(:event_date), @member.latest_succesful_candidacy.poll) : (@member.date_elected? ? @member.date_elected.to_s(:custom_short) : 'not known')) %>
     <%= attribute_tag(:date_left, "#{@member.date_left.to_s(:custom_short)} (approx)") unless @member.date_left.blank? %>
     <%= attribute_tag :declarations, link_to('Register of interests', @member.register_of_interests, :class => "external") if @member.register_of_interests? %>

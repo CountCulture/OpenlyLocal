@@ -50,6 +50,9 @@ a.feed, a.rss {
 a.twitter {
 	background: transparent url(../images/twitter_icon.png) no-repeat scroll left top;
 	 }
+a.facebook {
+	background: transparent url(../images/facebook_icon.png) no-repeat scroll left top;
+	 }
 /*a.new {
 	display: inline-block;
 	padding-left: 24px;
