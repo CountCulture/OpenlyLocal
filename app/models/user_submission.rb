@@ -3,7 +3,6 @@ class UserSubmission < ActiveRecord::Base
   belongs_to :member
   validates_presence_of :council_id
   attr_protected :approved
-  before_validation :before_approval_action
   named_scope :unapproved, :conditions => {:approved => false}
   
   # Note: approving a user_submission, means we update member with info (and
@@ -23,12 +22,4 @@ class UserSubmission < ActiveRecord::Base
     self[:twitter_account_name] = name.sub(/^@/, '')
   end
   
-  private
-  def before_approval_action
-    if approved && !approved_was
-      errors.add(:base, "Member can't be found. Can't approve") and return false unless member
-      member.update_from_user_submission(self)
-    end
-    true
-  end
 end
