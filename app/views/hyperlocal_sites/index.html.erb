@@ -50,7 +50,7 @@
 
 </script>
 <p class="breadcrumbs"><%= link_to (params[:independent]||params[:region]||params[:country] ? "Show all sites" : "Restrict to independent sites"), hyperlocal_sites_url(:independent => !params[:independent]) %></p>
-<h1><%= @title %></h1>
+<h1><%= h @title %></h1>
 
 <div id="hyperlocal_list_map" class="map_outer">
   <div id="map_canvas"></div>

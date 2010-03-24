@@ -205,7 +205,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should_render_without_layout
       should_respond_with_content_type 'application/rss+xml'
       should "have title " do
-        assert_select "title", "Latest Hyperlocal Sites in UK"
+        assert_select "title", "Latest Hyperlocal Sites in UK &amp; Ireland"
       end
       should "list hyperlocal sites" do
         assert_select "item", 2 do

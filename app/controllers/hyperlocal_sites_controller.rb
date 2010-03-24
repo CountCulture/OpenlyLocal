@@ -18,7 +18,7 @@ class HyperlocalSitesController < ApplicationController
       end
     else
       @hyperlocal_sites = HyperlocalSite.country(params[:country]).region(params[:region]).independent(params[:independent]).approved
-      @title += " in #{(params[:region]||params[:country]||'UK')}"
+      @title += " in #{(params[:region]||params[:country]||'UK & Ireland')}"
     end
     @cse_label = "openlylocal_cse_hyperlocal_" + params[:location].to_s.gsub(/\W/,'').downcase
     respond_to do |format|
@@ -33,7 +33,7 @@ class HyperlocalSitesController < ApplicationController
   end
   
   def show
-    @title = "#{@hyperlocal_site.title} :: UK Hyperlocal Sites"
+    @title = "#{@hyperlocal_site.title} :: UK & Ireland Hyperlocal Sites"
   end
   
   def new
