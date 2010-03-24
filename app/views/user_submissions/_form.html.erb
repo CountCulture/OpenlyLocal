@@ -1,6 +1,6 @@
 <%= error_messages_for :user_submission %>
 
-<% form_for @user_submission, :url => { :action => "create" } do |f| -%>
+<% form_for @user_submission do |f| -%>
   <%= f.hidden_field :member_id %>
   
   <%- if @user_submission.member -%>

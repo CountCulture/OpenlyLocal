@@ -6,7 +6,7 @@
 </ul>
 
 <div id="user_submissions" class='item_grouping'>
-  <h3>Twitter Account Submissions</h3>
+  <h3>Social Networking Submissions</h3>
   <ul>
     <%- @user_submissions.each do |submission| -%>
       <li>
@@ -14,7 +14,7 @@
         <%= basic_link_for submission.council %>
         <%= basic_link_for(submission.member) || submission.member_name %>
         <%= link_to "edit", edit_user_submission_path(submission), :class => "edit button" %> 
-        <%= button_to "Update member", user_submission_path(submission), :confirm => "Are you sure?", :method => :put %>
+        <%= button_to "Update member", user_submission_path(submission, :approve => true), :confirm => "Are you sure?", :method => :put %>
       </li>
     <%- end -%>
   </ul>

@@ -24,7 +24,7 @@ class UserSubmissionsController < ApplicationController
   def update
     @user_submission = UserSubmission.find(params[:id])
     member = @user_submission.member
-    @user_submission.approved = params[:user_submission][:approved]
+    @user_submission.approved = params[:approve]
     @user_submission.update_attributes!(params[:user_submission])
     flash[:notice] = "Successfully updated submission"
     redirect_to admin_url

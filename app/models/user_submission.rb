@@ -4,13 +4,15 @@ class UserSubmission < ActiveRecord::Base
   validates_presence_of :council_id
   attr_protected :approved
   before_validation :before_approval_action
+  named_scope :unapproved, :conditions => {:approved => false}
   
-  # Note: approving a user_submission, means we update member with info (which
-  # in turn deletes submission)
-  def approve=(bool)
-    return unless bool
+  # Note: approving a user_submission, means we update member with info (and
+  # mark as approved)
+  def approve
     errors.add(:member_id, "can't be found. Can't approve") and return unless self.member
-    member.update_from_user_submission(self) 
+    update_attribute(:approved, true)
+    member.update_from_user_submission(self)
+    Delayed::Job.enqueue(Tweeter.new("@#{twitter_account_name} has been added to @OpenlyLocal #ukcouncillors list ", {:url => "http://twitter.com/OpenlyLocal/ukcouncillors"})) if twitter_account_name?
   end
 
   def validate

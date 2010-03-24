@@ -47,6 +47,7 @@ class TwitterAccountTest < ActiveSupport::TestCase
     context "with associated user with twitter_list_name" do
       setup do
         TestTwitterAccountUser.any_instance.stubs(:twitter_list_name).returns("foo_list")
+        Tweeter.stubs(:new).with(kind_of(Hash)).returns(@dummy_tweeter)
       end
 
       should "add to twitter list when twitter_account is created" do
@@ -80,7 +81,7 @@ class TwitterAccountTest < ActiveSupport::TestCase
         Tweeter.expects(:new).never
         @user.twitter_account.update_attributes(:following_count => 2)
       end
-
+      
     end    
 
     context "with associated user with blank twitter_list_name" do

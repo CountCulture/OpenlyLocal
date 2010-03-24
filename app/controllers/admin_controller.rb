@@ -4,7 +4,7 @@ class AdminController < ApplicationController
   def index
     @title = 'Admin'
     @hyperlocal_sites = HyperlocalSite.find_all_by_approved(false)
-    @user_submissions = UserSubmission.all
+    @user_submissions = UserSubmission.unapproved
     @unapproved_contacts = CouncilContact.unapproved
   end
 

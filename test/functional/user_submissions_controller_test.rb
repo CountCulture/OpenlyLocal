@@ -228,7 +228,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
      context "without auth" do
        setup do
          put :update, { :id => @user_submission.id,
-                        :user_submission => { :approve => "true"}}
+                        :approve => "true" }
        end
 
        should_respond_with 401
@@ -247,6 +247,10 @@ class UserSubmissionsControllerTest < ActionController::TestCase
        should "update user submission" do
          assert_equal "bar", @user_submission.reload.twitter_account_name
        end
+       
+       should "not mark user_submission as approved" do
+         assert !@user_submission.reload.approved?
+       end
      end
      
      context "when approving" do
@@ -254,7 +258,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
          setup do
            stub_authentication
            put :update, { :id => @user_submission.id,
-                          :user_submission => { :approved => "true" }}
+                          :approve => "true" }
          end
 
          should_redirect_to( "the admin page") { admin_url }
@@ -264,7 +268,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
             assert_equal "foo", @member.reload.twitter_account_name
          end
          
-         should "update user_submission to be approved" do
+         should "mark user_submission as approved" do
            assert @user_submission.reload.approved?
          end
        end
@@ -275,7 +279,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
            @user_submission.update_attributes(:member => nil, :member_name => "Barney Rubble")
            
            put :update, { :id => @user_submission.id,
-                          :user_submission => { :approved => "true" }}
+                          :approve => "true" }
          end
 
          should_redirect_to( "the edit page for the submission") { edit_user_submission_url(@user_submission) }
