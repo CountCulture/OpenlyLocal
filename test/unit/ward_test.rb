@@ -70,6 +70,8 @@ class WardTest < ActiveSupport::TestCase
       assert_equal "Footon", Ward.new(:name => "Footon Ward").name
       assert_equal "Footon", Ward.new(:name => "Footon ward").name
       assert_equal "Footon", Ward.new(:name => "Footon ward  ").name
+      assert_equal "Forward", Ward.new(:name => "Forward ward").name
+      assert_equal "Forward", Ward.new(:name => "Forward").name
     end
 
     context "when matching existing member against params should override default and" do

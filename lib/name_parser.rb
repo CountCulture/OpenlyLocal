@@ -8,7 +8,7 @@ module NameParser
   def parse(fn)
     poss_quals = Qualifications + Qualifications.map{|e| e.gsub('.','')}
     titles, qualifications, result_hash = [], [], {}
-    fn = fn.gsub(/&nbsp;|\xC2\xA0|\xA0/, ' ').strip.sub(/(Councillor|Councilor|Councilllor|Cllr|Councillior|CC|County Councillor)\b/, '').sub(/- [A-Za-z ]+$/,'').gsub(/\([\w ]+\)/, '')
+    fn = strip_all_spaces(fn).sub(/(Councillor|Councilor|Councilllor|Cllr|Councillior|CC|County Councillor)\b/, '').sub(/- [A-Za-z ]+$/,'').gsub(/\([\w ]+\)/, '')
     titles = Titles.select{ |t| fn.sub!(Regexp.new("#{t}\\.?\\s"),'')}
     fn.strip! # so initials should have no white space before them
     qualifications = poss_quals.select{ |q| fn.sub!(Regexp.new("\\s#{Regexp.escape(q)}"),'')}.compact
@@ -19,5 +19,10 @@ module NameParser
     result_hash[:name_title] = titles.join(" ") unless titles.empty?
     result_hash[:qualifications] = qualifications.join(" ") unless qualifications.empty?
     result_hash
+  end
+  
+  #strips spaces and converts unicode spaces (Gpricot turns non-breaking spaces into these) to spaces
+  def strip_all_spaces(text)
+    text.gsub(/&nbsp;|\xC2\xA0|\xA0/, ' ').strip
   end
 end

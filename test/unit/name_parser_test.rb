@@ -66,6 +66,10 @@ class NameParserTest < Test::Unit::TestCase
       end
     end
 
+    should "strip all spaces from name" do
+        assert_equal 'Mr Fred Flintstone', NameParser.strip_all_spaces("   Mr#{160.chr}Fred Flintstone\n  ")
+    end
+
   end
   
 end

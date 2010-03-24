@@ -89,6 +89,6 @@ class Ward < ActiveRecord::Base
 
   private
   def clean_name(raw_name)
-    raw_name.blank? ? raw_name : raw_name.sub(/ward\s*$/i, '').strip
+    raw_name.blank? ? raw_name : NameParser.strip_all_spaces(raw_name.sub(/\bward\s*$/i, ''))
   end
 end
