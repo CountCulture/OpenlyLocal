@@ -129,6 +129,7 @@ class ScrapersControllerTest < ActionController::TestCase
   context "on GET to :show with successful :dry_run" do
     setup do
       @scraper = Factory(:scraper)
+      @scraper.parser.update_attribute(:result_model, 'Member') # update to use members, as TestScrapedModel cause probs with link_for
       @member = Factory(:member, :council => @scraper.council)
       @member.save # otherwise looks like new_before_save
       @new_member = Member.new(:full_name => "Fred Flintstone", :uid => 55)
@@ -229,6 +230,7 @@ class ScrapersControllerTest < ActionController::TestCase
   context "on GET to :show with successful process immediately" do
     setup do
       @scraper = Factory(:scraper)
+      @scraper.parser.update_attribute(:result_model, 'Member') # update to use members, as TestScrapedModel cause probs with link_for
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
       @scraper.class.any_instance.stubs(:parsing_results).returns([{ :full_name => "Fred Flintstone", :uid => 1, :url => "http://www.anytown.gov.uk/members/fred" }] )
       stub_authentication
@@ -261,6 +263,7 @@ class ScrapersControllerTest < ActionController::TestCase
   context "on GET to :show with unsuccesful :process immediately due to failed validation" do
     setup do
       @scraper = Factory(:scraper)
+      @scraper.parser.update_attribute(:result_model, 'Member') # update to use members, as TestScrapedModel cause probs with link_for
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
       @scraper.class.any_instance.stubs(:parsing_results).returns([{ :full_name => "Fred Flintstone", :uid => 1, :url => "http://www.anytown.gov.uk/members/fred" },
                                                             { :full_name => "Bob Nourl"}] )

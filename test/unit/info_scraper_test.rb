@@ -24,39 +24,39 @@ class InfoScraperTest < ActiveSupport::TestCase
     end
     
     should "return what it is scraping for" do
-      assert_equal "info on Members from Member's url", @scraper.scraping_for
+      assert_equal "info on TestScrapedModels from TestScrapedModel's url", @scraper.scraping_for
     end
     
     should "return include url it is if set" do
       @scraper.url = "http://foo.com/something"
-      assert_equal "info on Members from <a href='http://foo.com/something'>http://foo.com/something</a>", @scraper.scraping_for
+      assert_equal "info on TestScrapedModels from <a href='http://foo.com/something'>http://foo.com/something</a>", @scraper.scraping_for
     end
     
     should "search result model for related_objects when none exist" do
-      Member.expects(:find).with(:all, :conditions => {:council_id => @scraper.council_id}).returns("related_objects")
+      TestScrapedModel.expects(:find).with(:all, :conditions => {:council_id => @scraper.council_id}).returns("related_objects")
       assert_equal "related_objects", @scraper.related_objects
     end
     
     should "not search result model for related_objects when already exist" do
       @scraper.instance_variable_set(:@related_objects, "foo")
-      Member.expects(:find).never
+      TestScrapedModel.expects(:find).never
       assert_equal "foo", @scraper.related_objects
     end
     
     context "when processing" do
       
       should "not search for related_objects when passed as params" do
-        Member.expects(:find).never
-        @scraper.process(:objects => Member.new)
+        TestScrapedModel.expects(:find).never
+        @scraper.process(:objects => TestScrapedModel.new)
       end
       
       should "treat object passed as parameter as related objects" do
-        obj = Member.new
+        obj = TestScrapedModel.new
         assert_equal [obj], @scraper.process(:objects => obj ).related_objects
       end
       
       should "search for related_objects when passed as params" do
-        Member.expects(:find).returns([])
+        TestScrapedModel.expects(:find).returns([])
         @scraper.process
       end
       
@@ -64,8 +64,8 @@ class InfoScraperTest < ActiveSupport::TestCase
         setup do
           @scraper.stubs(:_data).returns("something")
           @parser = @scraper.parser
-          @parser.stubs(:results).returns([{ :full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
-          @dummy_related_object = Member.new(:url => "http://www.anytown.gov.uk/members/fred")
+          Parser.any_instance.stubs(:results).returns([{ :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
+          @dummy_related_object = TestScrapedModel.new(:url => "http://www.anytown.gov.uk/members/fred")
         end
 
         should "by default get data from object's url" do
@@ -100,7 +100,7 @@ class InfoScraperTest < ActiveSupport::TestCase
 
         should "update existing instance of result_class" do
           @scraper.process(:objects => @dummy_related_object)
-          assert_equal "Fred Flintstone", @dummy_related_object.full_name
+          assert_equal "Fred Flintstone", @dummy_related_object.title
         end
         
         should "validate existing instance of result_class" do
@@ -121,7 +121,7 @@ class InfoScraperTest < ActiveSupport::TestCase
         should "store scraped_object_result in results" do
           results = @scraper.process(:objects => @dummy_related_object).results
           assert_kind_of ScrapedObjectResult, results.first
-          assert_equal "Member", results.first.base_object_klass
+          assert_equal "TestScrapedModel", results.first.base_object_klass
           assert_equal @dummy_related_object.url, results.first.url
         end
         
@@ -149,15 +149,16 @@ class InfoScraperTest < ActiveSupport::TestCase
       
       context "with collection of objects" do
         setup do
-          @dummy_object_1, @dummy_object_2 = Factory(:member, :council => @scraper.council), Factory(:member, :council => @scraper.council)
+          @dummy_object_1 = TestScrapedModel.create!(:title => "test model title 1", :url =>  "http://www.anytown.gov.uk/scraped_models/test_1", :uid => '42', :council => @scraper.council)
+          @dummy_object_2 = TestScrapedModel.create!(:title => "test model title 2", :url =>  "http://www.anytown.gov.uk/scraped_models/test_2", :uid => '43', :council => @scraper.council)
           @dummy_collection = [@dummy_object_1, @dummy_object_2]
           @scraper.stubs(:_data).returns("something")
           @scraper.stubs(:related_objects).returns(@dummy_collection)
           @parser = @scraper.parser
           
-          @parser.stubs(:results).returns([{ :full_name => "Fred Flintstone", 
+          Parser.any_instance.stubs(:results).returns([{ :title => "Fred Flintstone", 
                                              :url => "http://www.anytown.gov.uk/members/fred" }] 
-                                          ).then.returns([{ :full_name => "Barney Rubble", 
+                                          ).then.returns([{ :title => "Barney Rubble", 
                                                            :url => "http://www.anytown.gov.uk/members/barney" }])
         end
       
@@ -182,8 +183,8 @@ class InfoScraperTest < ActiveSupport::TestCase
       
         should "update collection objects" do
           @scraper.process
-          assert_equal "Fred Flintstone", @dummy_object_1.full_name
-          assert_equal "Barney Rubble", @dummy_object_2.full_name
+          assert_equal "Fred Flintstone", @dummy_object_1.title
+          assert_equal "Barney Rubble", @dummy_object_2.title
         end
       
         should "validate existing instance of result_class" do
@@ -195,8 +196,8 @@ class InfoScraperTest < ActiveSupport::TestCase
           results = @scraper.process.results
           assert_equal 2, results.size
           assert_kind_of ScrapedObjectResult, results.first
-          assert_equal "Member", results.last.base_object_klass
-          assert_equal ["Bob", "Barney"], results.last.changes["first_name"]
+          assert_equal "TestScrapedModel", results.last.base_object_klass
+          assert_equal ["test model title 2", "Barney Rubble"], results.last.changes["title"]
         end
       
         should "not mark scraper as problematic" do
@@ -222,7 +223,8 @@ class InfoScraperTest < ActiveSupport::TestCase
         
         context "and non-ScraperError occurs" do
           setup do
-            @parser.expects(:results).twice.returns([{ :full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }]).then.raises(ActiveRecord::UnknownAttributeError, "unknown attribute foo")
+            @parser.update_attribute(:attribute_parser, {:foobar => "\"bar\""})
+            Parser.any_instance.expects(:results).twice.returns([{ :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }]).then.raises(ActiveRecord::UnknownAttributeError, "unknown attribute foo")
           end
 
           should "catch exception" do
@@ -231,7 +233,7 @@ class InfoScraperTest < ActiveSupport::TestCase
           
           should "add details to scraper errors" do
             @scraper.process
-            assert_match /unknown attribute foo/, @scraper.errors[:base]
+            assert_match /unknown attribute foo/m, @scraper.errors[:base]
           end
           
           should "return self" do
@@ -278,7 +280,7 @@ class InfoScraperTest < ActiveSupport::TestCase
           end
 
           should "not build or update instance of result_class if no results for that instance" do
-            Member.any_instance.expects(:attributes=).once
+            TestScrapedModel.any_instance.expects(:attributes=).once
             @scraper.process
           end
           

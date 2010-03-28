@@ -7,15 +7,17 @@ require 'test_helper'
 # Scraper model, prob shouldn't be testing it, rather should test a 
 # basic scraper that inherits from it. 
 class ScraperTest < ActiveSupport::TestCase
-  
-  should_belong_to :parser
-  should_belong_to :council
-  should_validate_presence_of :council_id
-  should_accept_nested_attributes_for :parser
-  
+  subject { @scraper }  
   
   context "The Scraper class" do
-    
+    setup do
+      @scraper = Factory.create(:scraper)
+    end
+    should_belong_to :parser
+    should_belong_to :council
+    should_validate_presence_of :council_id
+    should_accept_nested_attributes_for :parser
+
     should "define ScraperError as child of StandardError" do
       assert_equal StandardError, Scraper::ScraperError.superclass
     end
@@ -38,7 +40,7 @@ class ScraperTest < ActiveSupport::TestCase
     
     should "return stale scrapers" do
       # just checking...
-      fresh_scraper = Factory(:scraper, :last_scraped => 6.days.ago)
+      @scraper.update_attribute(:last_scraped, 6.days.ago)
       stale_scraper = Factory(:item_scraper, :last_scraped => 8.days.ago)
       never_used_scraper = Factory(:info_scraper)
       assert_equal [never_used_scraper, stale_scraper], Scraper.stale
@@ -167,12 +169,12 @@ class ScraperTest < ActiveSupport::TestCase
     
     should "build title from council short_name result class and scraper type when ItemScraper" do
       @scraper.council.name = "Anytown Council"
-      assert_equal "Member Items scraper for Anytown", @scraper.title
+      assert_equal "TestScrapedModel Items scraper for Anytown", @scraper.title
     end
     
     should "build title from council name result class and scraper type when InfoScraper" do
       @scraper.council.name = "Anothertown Council"
-      assert_equal "Member Info scraper for Anothertown", Factory.build(:info_scraper).title
+      assert_equal "TestScrapedModel Info scraper for Anothertown", Factory.build(:info_scraper).title
     end
     
     should "return errors in parser as parsing errors" do
@@ -377,7 +379,7 @@ class ScraperTest < ActiveSupport::TestCase
     context "when processing" do
       setup do
         @parser = @scraper.parser
-        @parser.stubs(:results).returns([{ :full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
+        Parser.any_instance.stubs(:results).returns([{ :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
         @scraper.stubs(:_data).returns("something")
       end
       
@@ -402,24 +404,25 @@ class ScraperTest < ActiveSupport::TestCase
       end
       
       should "build new or update existing instance of result_class with parser results and scraper council" do
-        dummy_new_member = Member.new
-        Member.expects(:build_or_update).with([{:full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id }).returns([dummy_new_member])
-        dummy_new_member.expects(:save).never
+        dummy_scraped_obj = TestScrapedModel.new
+        
+        TestScrapedModel.expects(:build_or_update).with([{:title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id }).returns([dummy_scraped_obj])
+        dummy_scraped_obj.expects(:save).never
         @scraper.process
       end
       
       should "validate instances of result_class" do
-        Member.any_instance.expects(:valid?)
+        TestScrapedModel.any_instance.expects(:valid?)
         @scraper.process
       end
       
       should "store instances of scraped_object_result in results" do
-        dummy_member = Member.new(:full_name => "Fred Flintstone")
-        Member.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_member)])
+        dummy_scraped_obj = TestScrapedModel.new(:title => "Fred Flintstone")
+        TestScrapedModel.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_scraped_obj)])
         results = @scraper.process.results
         assert_kind_of ScrapedObjectResult, results.first
         assert_match /new/, results.first.status
-        assert_equal "Member", results.first.base_object_klass
+        assert_equal "TestScrapedModel", results.first.base_object_klass
         assert_equal "Fred Flintstone", results.first.title
       end
       
@@ -445,7 +448,7 @@ class ScraperTest < ActiveSupport::TestCase
         end
 
         should "not build or update instance of result_class if no results" do
-          Member.expects(:build_or_update).never
+          TestScrapedModel.expects(:build_or_update).never
         end
         
         should "mark scraper as problematic" do
@@ -493,27 +496,27 @@ class ScraperTest < ActiveSupport::TestCase
         end
 
         should "create new or update and save existing instance of result_class with parser results and scraper council" do
-          dummy_new_member = Member.new
-          Member.expects(:build_or_update).with([{:full_name => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id, :save_results => true}).returns([ScrapedObjectResult.new(dummy_new_member)])
+          dummy_scraped_obj = TestScrapedModel.new
+          TestScrapedModel.expects(:build_or_update).with([{:title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id, :save_results => true}).returns([ScrapedObjectResult.new(dummy_scraped_obj)])
           @scraper.process(:save_results => true)
         end
 
         # should "save record using save_without_losing_dirty" do
-        #   dummy_new_member = Member.new
-        #   Member.stubs(:build_or_update).returns(dummy_new_member)
-        #   dummy_new_member.expects(:save_without_losing_dirty)
+        #   dummy_scraped_obj = Member.new
+        #   Member.stubs(:build_or_update).returns(dummy_scraped_obj)
+        #   dummy_scraped_obj.expects(:save_without_losing_dirty)
         #   
         #   @scraper.process(:save_results => true)
         # end
 
         should "store instances of result class in results" do
-          dummy_member = Member.new(:full_name => "Fred Flintstone")
-          Member.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_member)])
+          dummy_scraped_obj = TestScrapedModel.new(:title => "Fred Flintstone")
+          TestScrapedModel.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_scraped_obj)])
           results = @scraper.process(:save_results => true).results
           
           assert_kind_of ScrapedObjectResult, results.first
           assert_match /new/, results.first.status
-          assert_equal "Member", results.first.base_object_klass
+          assert_equal "TestScrapedModel", results.first.base_object_klass
           assert_equal "Fred Flintstone", results.first.title
         end
         

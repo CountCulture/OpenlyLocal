@@ -1,5 +1,4 @@
 Factory.define :scraper, :class => :item_scraper do |s|
-  # s.url 'http://www.anytown.gov.uk/members/bob'
   s.association :parser
   s.association :council
 end
@@ -18,7 +17,7 @@ end
 Factory.define :parser do |f|
   f.description 'description of dummy parser'
   f.item_parser  'foo="bar"'
-  f.result_model 'Member'
+  f.result_model 'TestScrapedModel'
   f.scraper_type 'ItemScraper'
   f.attribute_parser({:foo => "\"bar\"", :foo1 => "\"bar1\""})
 end

@@ -12,31 +12,31 @@ class ItemScraperTest < ActiveSupport::TestCase
   context "an ItemScraper instance" do
     setup do
       @scraper = Factory(:item_scraper)
-      @scraper.parser.update_attribute(:result_model, "Committee")
+      @scraper.parser.update_attribute(:result_model, "TestScrapedModel")
     end
 
     should "return what it is scraping for" do
-      assert_equal "Committees from <a href='http://www.anytown.gov.uk/members'>http://www.anytown.gov.uk/members</a>", @scraper.scraping_for
+      assert_equal "TestScrapedModels from <a href='http://www.anytown.gov.uk/members'>http://www.anytown.gov.uk/members</a>", @scraper.scraping_for
     end
     
     context "with related model" do
       setup do
-        @scraper.parser.update_attributes(:result_model => "Meeting", :related_model => "Committee")
+        @scraper.parser.update_attributes(:result_model => "TestChildModel", :related_model => "TestScrapedModel")
       end
 
       should "return related model" do
-        assert_equal "Committee", @scraper.related_model
+        assert_equal "TestScrapedModel", @scraper.related_model
       end
 
       should "get related objects from related model" do
-        Committee.expects(:find).with(:all, :conditions => {:council_id => @scraper.council_id}).returns("related_objects")
+        TestScrapedModel.expects(:find).with(:all, :conditions => {:council_id => @scraper.council_id}).returns("related_objects")
 
         assert_equal "related_objects", @scraper.related_objects
       end
 
       should "not search related model for related_objects when already exist" do
         @scraper.instance_variable_set(:@related_objects, "foo")
-        Committee.expects(:find).never
+        TestScrapedModel.expects(:find).never
         assert_equal "foo", @scraper.related_objects
       end
     end
@@ -45,7 +45,7 @@ class ItemScraperTest < ActiveSupport::TestCase
     context "when processing" do
       setup do
         @parser = @scraper.parser
-        @parser.stubs(:results).returns([{ :uid => 456 }, { :uid => 457 }] ).then.returns(nil) #second time around finds no results
+        Parser.any_instance.stubs(:results).returns([{ :uid => 456 }, { :uid => 457 }] ).then.returns(nil) #second time around finds no results
         @scraper.stubs(:_data).returns("something")
       end
       
@@ -126,46 +126,14 @@ class ItemScraperTest < ActiveSupport::TestCase
 
       end
 
-      # DEPRECATED: We shouldn't have non-ScraperError as parsing errors are caught by parser
-      # 
-      # context "and non-ScraperError occurs" do
-      #   setup do
-      #     @parser.expects(:results).raises(ActiveRecord::UnknownAttributeError, "unknown attribute foo")
-      #   end
-      # 
-      #   should "catch exception" do
-      #     assert_nothing_raised(Exception) { @scraper.process }
-      #   end
-      #   
-      #   should "add details to scraper errors" do
-      #     @scraper.process
-      #     assert_match /unknown attribute foo/, @scraper.errors[:base]
-      #   end
-      #   
-      #   should "return self" do
-      #     assert_equal @scraper, @scraper.process
-      #   end
-      #   
-      #   should "mark scraper as problematic if saving results" do
-      #     @scraper.process(:save_results => true)
-      #     assert @scraper.reload.problematic?
-      #   end
-      #   
-      #   should "not update last_scraped if saving results" do
-      #     @scraper.process
-      #     assert_nil @scraper.last_scraped
-      #   end
-      # end
-      
       context "item_scraper with related_model" do
         setup do
-          @scraper.parser.update_attributes(:result_model => "Meeting", :related_model => "Committee")
+          @scraper.parser.update_attributes(:result_model => "TestChildModel", :related_model => "TestScrapedModel")
           
-          @committee_1 = Factory(:committee, :council => @scraper.council)
-          @committee_2 = Factory(:committee, :council => @scraper.council)
-          dummy_related_objects = [@committee_1, @committee_2]
+          @dummy_object_1 = TestScrapedModel.create!(:title => "test model title 1", :url =>  "http://www.anytown.gov.uk/scraped_models/test_1", :uid => '42', :council => @scraper.council)
+          @dummy_object_2 = TestScrapedModel.create!(:title => "test model title 2", :url =>  "http://www.anytown.gov.uk/scraped_models/test_2", :uid => '43', :council => @scraper.council)
+          dummy_related_objects = [@dummy_object_1, @dummy_object_2]
           @scraper.stubs(:related_objects).returns(dummy_related_objects)
-          @scraper.stubs(:_data).returns("something")
         end
         
         context "and url" do
@@ -182,8 +150,8 @@ class ItemScraperTest < ActiveSupport::TestCase
           end
 
           should "get data from url interpolated with related object" do
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/meetings?ctte_id=#{@committee_1.uid}")
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/meetings?ctte_id=#{@committee_2.uid}")
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/meetings?ctte_id=#{@dummy_object_1.uid}")
+            @scraper.expects(:_data).with("http://www.anytown.gov.uk/meetings?ctte_id=#{@dummy_object_2.uid}")
             @scraper.process
           end
           
@@ -195,18 +163,16 @@ class ItemScraperTest < ActiveSupport::TestCase
           should "store all instances of scraped_object_result in results" do
             Parser.any_instance.stubs(:process).returns(stub_everything(:results => [{:date_held => 3.days.ago, :uid => 42}]))
             
-            dummy_members = (1..3).collect{ |i|  Meeting.new(:date_held => i.days.ago, :committee_id => @committee_1.id, :venue => "Venue #{i}") }
-            Meeting.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_members[0])]).then.returns([ScrapedObjectResult.new(dummy_members[1]), ScrapedObjectResult.new(dummy_members[2])])
+            dummy_members = (1..3).collect{ |i|  TestChildModel.new(:date_held => i.days.ago, :committee_id => @dummy_object_1.id, :venue => "Venue #{i}") }
+            TestChildModel.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_members[0])]).then.returns([ScrapedObjectResult.new(dummy_members[1]), ScrapedObjectResult.new(dummy_members[2])])
             
             results = @scraper.process.results
             assert_equal 3, results.size
             assert_kind_of ScrapedObjectResult, results.first
             assert_match /new/, results.first.status
-            assert_equal "Meeting", results.first.base_object_klass
-            assert_equal "#{@committee_1.title} meeting", results.first.title
-          end
-
-          
+            assert_equal "TestChildModel", results.first.base_object_klass
+            assert_equal "Venue 1", results.first.changes['venue'].last
+          end          
           
           should "not update last_scraped attribute if not saving results" do
             assert_nil @scraper.process.last_scraped
@@ -230,13 +196,13 @@ class ItemScraperTest < ActiveSupport::TestCase
           end
 
           should "get data from each related_object's url" do
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_1.uid}")
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_2.uid}")
+            @scraper.expects(:_data).with(@dummy_object_1.url)
+            @scraper.expects(:_data).with(@dummy_object_2.url)
             @scraper.process
           end
 
           should "update result model with each result and related object details" do
-            @scraper.expects(:update_with_results).with([{ :committee_id => @committee_1.id, :uid => 456 }, { :committee_id => @committee_1.id, :uid => 457 }], anything)
+            @scraper.expects(:update_with_results).with([{ :committee_id => @dummy_object_1.id, :uid => 456 }, { :committee_id => @dummy_object_1.id, :uid => 457 }], anything)
             @scraper.process
           end
 
@@ -296,8 +262,8 @@ class ItemScraperTest < ActiveSupport::TestCase
           end
 
           should "get data from each related_object's url" do
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_1.uid}")
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_2.uid}")
+            @scraper.expects(:_data).with(@dummy_object_1.url)
+            @scraper.expects(:_data).with(@dummy_object_2.url)
             @scraper.process
           end
 
@@ -307,7 +273,7 @@ class ItemScraperTest < ActiveSupport::TestCase
 
           setup do
             @scraper.update_attribute(:url, nil)
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_1.uid}").raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
+            @scraper.stubs(:_data).with(@dummy_object_1.url).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
           end
 
           should "not raise exception" do
@@ -324,7 +290,7 @@ class ItemScraperTest < ActiveSupport::TestCase
           end
           
           should "get data from other page" do
-            @scraper.expects(:_data).with("http://www.anytown.gov.uk/committee/#{@committee_2.uid}")
+            @scraper.expects(:_data).with(@dummy_object_1.url)
             @scraper.process
           end
 

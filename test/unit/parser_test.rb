@@ -34,7 +34,7 @@ class ParserTest < Test::Unit::TestCase
       end
 
       should "return details as title" do
-        assert_equal "Member item parser for single scraper only", @parser.title
+        assert_equal "TestScrapedModel item parser for single scraper only", @parser.title
       end
       
       should "return details as title when new parser" do
@@ -49,7 +49,7 @@ class ParserTest < Test::Unit::TestCase
       end
 
       should "return details of portal_system in title" do
-        assert_equal "Member item parser for Portal for Parser", @parser.title
+        assert_equal "TestScrapedModel item parser for Portal for Parser", @parser.title
       end
     end
         

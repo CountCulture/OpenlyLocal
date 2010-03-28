@@ -34,6 +34,7 @@ Rails::Initializer.run do |config|
   config.gem 'crack'
   config.gem "soap4r", :lib => false
   config.gem "pauldix-feedzirra", :lib => "feedzirra", :source => 'http://gems.github.com'
+  config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 
