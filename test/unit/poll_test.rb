@@ -15,12 +15,16 @@ class PollTest < ActiveSupport::TestCase
     should_validate_presence_of :date_held
     should_validate_presence_of :area_id, :area_type
     should_validate_presence_of :position
-    should_have_db_columns :electorate, :ballots_issued, :ballots_rejected, :postal_votes
+    should_have_db_columns :electorate, :ballots_issued, :ballots_rejected, :postal_votes, :uncontested, :source
     should_have_many :candidacies
     
     should "have associated polymorphic area" do
       assert_equal @council.id, @poll.area_id
       assert_equal "Council", @poll.area_type
+    end
+    
+    should 'return false for uncontested elected by default' do
+      assert !@poll.uncontested
     end
     
     context 'when creating or updating from open_election_data' do

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100322141814) do
+ActiveRecord::Schema.define(:version => 20100331100248) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -502,6 +502,8 @@ ActiveRecord::Schema.define(:version => 20100322141814) do
     t.column "postal_votes", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "source", :string
+    t.column "uncontested", :boolean, :default => false
   end
 
   create_table "portal_systems", :force => true do |t|
