@@ -59,10 +59,16 @@ class NameParserTest < Test::Unit::TestCase
   }
   
   context "The NameParser module" do
-
-    should "parse first name and last name from name" do
-      OriginalNameAndParsedName.each do |orig_name, parsed_values|
-        assert_equal( parsed_values, NameParser.parse(orig_name), "failed for #{orig_name}")
+    
+    context 'whne parsing' do
+      should "parse first name and last name from name" do
+        OriginalNameAndParsedName.each do |orig_name, parsed_values|
+          assert_equal( parsed_values, NameParser.parse(orig_name), "failed for #{orig_name}")
+        end
+      end
+      
+      should "return nil if no name given" do
+          assert_nil NameParser.parse(nil)
       end
     end
 

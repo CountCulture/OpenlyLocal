@@ -27,6 +27,24 @@ class WardTest < ActiveSupport::TestCase
     should "include ScraperModel mixin" do
       assert Ward.respond_to?(:find_all_existing)
     end
+    
+    context 'when finding from resource_uri' do
+      setup do
+        @snac_id_ward = Factory(:ward, :name => 'Snac_id ward', :snac_id => '41UDGE', :council => @ward.council)
+      end
+      
+      should 'return ward with snac_id identified in stats.data.gov.uk URI' do
+        assert_equal @snac_id_ward, Ward.find_from_resource_uri('http://statistics.data.gov.uk/id/local-authority-ward/41UDGE')
+      end
+      
+      should 'return nil if no matching ward' do
+        assert_nil Ward.find_from_resource_uri('http://statistics.data.gov.uk/id/local-authority-ward/41UDXX')
+      end
+      
+      should 'return ward with id identified in openlylocal URI' do
+        assert_equal @ward, Ward.find_from_resource_uri("http://openlylocal.com/id/wards/#{@ward.id}")
+      end
+    end
 
     context "when finding by postcode" do
       setup do

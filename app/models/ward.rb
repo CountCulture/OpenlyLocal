@@ -53,6 +53,16 @@ class Ward < ActiveRecord::Base
   #     return nil
   #   end
   # end
+  
+  # Given a resource URI identifying the ward, returns the ward
+  def self.find_from_resource_uri(resource_uri)
+    case resource_uri
+    when /statistics.data.gov.uk\/id\/local-authority-ward\/(\w+)/i
+      find_by_snac_id($1)
+    when /openlylocal.com\/id\/wards\/(\w+)/i
+      find_by_id($1)
+    end
+  end
 
   # override standard matches_params from ScrapedModel to match against name if uid is blank
   def matches_params(params={})

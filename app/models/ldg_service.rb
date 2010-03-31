@@ -1,5 +1,6 @@
 class LdgService < ActiveRecord::Base
   BaseUrl = "http://local.direct.gov.uk/LDGRedirect/index.jsp?"
+  has_many :services
   validates_presence_of :category, 
                         :lgsl,
                         :lgil,

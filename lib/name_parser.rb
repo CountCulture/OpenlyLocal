@@ -6,6 +6,7 @@ module NameParser
   Qualifications = %w(B.Sc. M.B.A. B.A. M.A. Ph.D. B.Ed. D.Phil. M.B.E. C.B.E. O.B.E. J.P. F.CMI F.R.C.S. Hons. MInstTA Cert.Ed CEng)
   
   def parse(fn)
+    return unless fn
     poss_quals = Qualifications + Qualifications.map{|e| e.gsub('.','')}
     titles, qualifications, result_hash = [], [], {}
     fn = strip_all_spaces(fn).sub(/(Councillor|Councilor|Councilllor|Cllr|Councillior|CC|County Councillor)\b/, '').sub(/- [A-Za-z ]+$/,'').gsub(/\([\w ]+\)/, '')

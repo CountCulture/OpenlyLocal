@@ -13,6 +13,7 @@ class LdgServiceTest < ActiveSupport::TestCase
     should_validate_presence_of :service_name
     should_validate_presence_of :authority_level
     should_validate_presence_of :url
+    should_have_many :services
     
     should "alias service_name as title" do
       assert_equal @ldg_service.service_name, @ldg_service.title

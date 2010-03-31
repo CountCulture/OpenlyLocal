@@ -1,11 +1,11 @@
 require 'test_helper'
 
 class PoliticalPartyTest < ActiveSupport::TestCase
-  subject { @poltical_party }
+  subject { @political_party }
 
   context "The PoliticalParty class" do
     setup do
-      @poltical_party = Factory(:political_party)
+      @political_party = Factory(:political_party)
     end
 
     should_validate_presence_of :name
@@ -19,8 +19,23 @@ class PoliticalPartyTest < ActiveSupport::TestCase
     end
     
     should "alias name as title" do
-      assert_equal @poltical_party.name, @poltical_party.title
+      assert_equal @political_party.name, @political_party.title
     end
+    
+    context 'when finding from resource_uri' do
+      setup do
+        @another_party = Factory(:political_party) # just to ensure we're not returning an old party
+      end
+      
+      should 'return party with electoral_commission identified in open_election_data uri' do
+        assert_equal @political_party, PoliticalParty.find_from_resource_uri("http://openelectiondata.org/id/parties/#{@political_party.electoral_commission_uid}")
+      end
+      
+      should 'return nil if no matching party' do
+        assert_nil PoliticalParty.find_from_resource_uri('http://openelectiondata.org/id/parties/12')
+      end
+    end
+    
 
     context "when normalising title" do
       setup do
@@ -38,7 +53,6 @@ class PoliticalPartyTest < ActiveSupport::TestCase
           assert_equal( normalised_title, PoliticalParty.normalise_title(orig_title), "failed for #{orig_title}")
         end
       end
-      
     end
   end
 

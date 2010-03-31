@@ -3,6 +3,13 @@ class PoliticalParty < ActiveRecord::Base
   serialize :alternative_names
   alias_attribute :title, :name
   
+  def self.find_from_resource_uri(resource_uri)
+    case resource_uri
+    when /openelectiondata.org\/id\/parties\/(\d+)/i
+      find_by_electoral_commission_uid($1)
+    end
+  end
+  
   def self.normalise_title(raw_title)
     semi_normed_title = raw_title.gsub(/\[.+\]|party|,/i,'')
     TitleNormaliser.normalise_title(semi_normed_title)
