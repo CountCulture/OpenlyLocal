@@ -1,0 +1,21 @@
+_:kXzFSmEL4 <http://openelectiondata.org/0.1/candidateVoteCount> "0"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:kXzFSmEL4 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/parties/25>.
+_:kXzFSmEL4 <http://openelectiondata.org/0.1/elected> "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:kXzFSmEL4 <http://openelectiondata.org/0.1/candidate> _:kXzFSmEL5.
+_:kXzFSmEL5 <http://xmlns.com/foaf/0.1/name> "Ian Maxwell Pardoe Pritchard"@en.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://www.lichfielddc.gov.uk/index.php#content>.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/uncontested> "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/candidacy> _:kXzFSmEL4.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openelectiondata.org/0.1/Poll>.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://www.w3.org/2002/12/cal#dtstart> "2007-05-03"^^<http://www.w3.org/2001/XMLSchema#date>.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/electionArea> <http://statistics.data.gov.uk/id/local-authority-ward/41UDGW>.
+<http://openelectiondata.org/id/parties/25> <http://www.w3.org/2000/01/rdf-schema#label> "Conservative Party"@en.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/generic/handheld.css>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/generic/style.php>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/standard.css>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/generic/print.css>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#icon> <http://www.lichfielddc.gov.uk/site/favicon.ico>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#meta> <http://www.lichfielddc.gov.uk/labels.rdf>.
+<http://www.lichfielddc.gov.uk/index.php#content> <http://www.w3.org/1999/xhtml/vocab#license> <http://creativecommons.org/publicdomain/zero/1.0/>.
+<http://www.lichfielddc.gov.uk/index.php#content> <http://xmlns.com/foaf/0.1/primaryTopic> <http://openelectiondata.org/id/polls/41UDGE/2007-05-03>.
+

@@ -186,6 +186,15 @@ class Council < ActiveRecord::Base
     end
   end
   
+  def update_election_results
+    full_results = ElectionResultExtractor.poll_results_for(self)
+    if full_results.blank? || full_results[:results].blank?
+      logger.info { "No poll results  for #{self.inspect}.\nStatus: #{full_results[:status]}, Errors: #{full_results[:errors]}" }
+    else
+      Poll.from_open_election_data(full_results[:results])
+    end
+  end
+  
   def update_social_networking_info
     base_result = SocialNetworkingUtilities::Finder.new(url).process
     update_count = 0

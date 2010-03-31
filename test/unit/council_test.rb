@@ -895,6 +895,49 @@ class CouncilTest < ActiveSupport::TestCase
         end
       end
     end
+    
+    context 'when updating election results' do
+      setup do
+        @ward_1 = Factory(:ward, :council => @council, :snac_id => '41UDGE')
+        @dummy_response = {:results => 
+        [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03',
+          :source => 'http://anytown.gov.uk/elections/poll/foo',
+          :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGE', 
+          :date => '2007-05-03', 
+          :electorate => '4409', 
+          :ballots_issued => '1642', 
+          :uncontested => nil, 
+          :candidacies => [{:first_name => 'Margaret', 
+                            :last_name => 'Stanhope',
+                            :votes => '790',
+                            :elected => 'true',
+                            :party => 'http://openelectiondata.org/id/parties/25',
+                            :independent => nil },
+                           {:name => 'John Linnaeus Middleton', 
+                            :votes => '342',
+                            :elected => 'true',
+                            :party => nil,
+                            :independent => true }
+            ] }]}
+        ElectionResultExtractor.stubs(:poll_results_for).returns(@dummy_response)
+      end
+      
+      should 'use election_result_extractor to get results' do
+        ElectionResultExtractor.expects(:poll_results_for).with(@council).returns(@dummy_response)
+        @council.update_election_results
+      end
+      
+      should 'create or update polls with the result' do
+        Poll.expects(:from_open_election_data).with(@dummy_response[:results])
+        @council.update_election_results
+      end
+      
+      should 'not create or update polls if no results' do
+        ElectionResultExtractor.expects(:poll_results_for).returns({})
+        Poll.expects(:from_open_election_data).never
+        @council.update_election_results
+      end
+    end
 
   end
 

@@ -1,0 +1,50 @@
+<http://openelectiondata.org/id/party/60> <http://www.w3.org/2000/01/rdf-schema#label> "UKIP"@en.
+<http://openelectiondata.org/id/parties/6> <http://www.w3.org/2000/01/rdf-schema#label> "<b xml:lang=\"en\">Labour</b>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral>.
+_:MffWWjqS11 <http://xmlns.com/foaf/0.1/familyName> "Pearson"@en.
+_:MffWWjqS11 <http://xmlns.com/foaf/0.1/givenName> "Carol"@en.
+_:MffWWjqS7 <http://xmlns.com/foaf/0.1/familyName> "Cullen"@en.
+_:MffWWjqS7 <http://xmlns.com/foaf/0.1/givenName> "Heather Elizabeth"@en.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://openelectiondata.org/0.1/electorate> "6528"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://openelectiondata.org/0.1/candidacy> _:MffWWjqS8.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://openelectiondata.org/0.1/candidacy> _:MffWWjqS4.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://openelectiondata.org/0.1/candidacy> _:MffWWjqS6.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://openelectiondata.org/0.1/candidacy> _:MffWWjqS10.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://openelectiondata.org/0.1/electionArea> <http://statistics.data.gov.uk/id/local-authority-ward/32UDFZ
+>.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421#content>.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://openelectiondata.org/0.1/ballotsIssued> "????"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://openelectiondata.org/0.1/rejectedBallots> "7"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://www.w3.org/2002/12/cal#dtstart> "2008-05-01"^^<http://www.w3.org/2001/XMLSchema#date>.
+<http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openelectiondata.org/0.1/Poll>.
+<http://openelectiondata.org/id/party/25> <http://www.w3.org/2000/01/rdf-schema#label> "Conservative"@en.
+<http://openelectiondata.org/id/parties/26> <http://www.w3.org/2000/01/rdf-schema#label> "Liberal Democrat"@en.
+<http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421#content> <http://xmlns.com/foaf/0.1/primaryTopic> <http://openelectiondata.org/id/polls/32UDFZ/2008-05-01/member>.
+<http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421#content> <http://www.w3.org/1999/xhtml/vocab#license> <http://creativecommons.org/publicdomain/zero/1.0/>.
+_:MffWWjqS8 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/party/25>.
+_:MffWWjqS8 <http://openelectiondata.org/0.1/candidate> _:MffWWjqS9.
+_:MffWWjqS8 <http://openelectiondata.org/0.1/candidateVoteCount> "625"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:MffWWjqS8 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:MffWWjqS6 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/parties/26>.
+_:MffWWjqS6 <http://openelectiondata.org/0.1/candidate> _:MffWWjqS7.
+_:MffWWjqS6 <http://openelectiondata.org/0.1/candidateVoteCount> "259"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:MffWWjqS6 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+<http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421> <http://www.w3.org/1999/xhtml/vocab#index> <http://www.lincoln.gov.uk/Info_page_two_pic_2.asp?sec_id=4421>.
+<http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421> <http://www.w3.org/1999/xhtml/vocab#alternate> <http://feeds.feedburner.com/colcwhatsnew?format=xml>.
+<http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421> <http://www.w3.org/1999/xhtml/vocab#up> <http://www.lincoln.gov.uk/Info_page_two_pic_2.asp?sec_id=4421>.
+<http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421> <http://www.w3.org/1999/xhtml/vocab#meta> <http://www.lincoln.gov.uk/labels.xml>.
+<http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421> <http://www.w3.org/1999/xhtml/vocab#start> <http://www.lincoln.gov.uk/>.
+<http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lincoln.gov.uk/stylesheets/print.css>.
+<http://www.lincoln.gov.uk/Info_page_two_pic_2_det.asp?art_id=14187&sec_id=4421> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lincoln.gov.uk/stylesheets/master.css>.
+_:MffWWjqS4 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/parties/6>.
+_:MffWWjqS4 <http://openelectiondata.org/0.1/candidate> _:MffWWjqS5.
+_:MffWWjqS4 <http://openelectiondata.org/0.1/candidateVoteCount> "657"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:MffWWjqS4 <http://openelectiondata.org/0.1/elected> "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:MffWWjqS5 <http://xmlns.com/foaf/0.1/familyName> "Brothwell"@en.
+_:MffWWjqS5 <http://xmlns.com/foaf/0.1/givenName> "Kath"@en.
+_:MffWWjqS10 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/party/60>.
+_:MffWWjqS10 <http://openelectiondata.org/0.1/candidate> _:MffWWjqS11.
+_:MffWWjqS10 <http://openelectiondata.org/0.1/candidateVoteCount> "101"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:MffWWjqS10 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:MffWWjqS9 <http://xmlns.com/foaf/0.1/familyName> "McCartney"@en.
+_:MffWWjqS9 <http://xmlns.com/foaf/0.1/givenName> "Cordelia Emma Julia"@en.
+

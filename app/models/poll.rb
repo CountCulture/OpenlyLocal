@@ -15,7 +15,12 @@ class Poll < ActiveRecord::Base
   def self.from_open_election_data(polls=[])
     polls.each do |poll_info|
       area = Ward.find_from_resource_uri(poll_info[:area])
-      poll = area.polls.find_or_create_by_date_held(:date_held => poll_info[:date], :position => 'Member', :electorate => poll_info[:electorate], :ballots_issued => poll_info[:ballots_issued])
+      poll = area.polls.find_or_create_by_date_held( :date_held => poll_info[:date], 
+                                                     :position => 'Member', 
+                                                     :electorate => poll_info[:electorate], 
+                                                     :ballots_issued => poll_info[:ballots_issued],
+                                                     :source => poll_info[:source], 
+                                                     :uncontested => poll_info[:uncontested] )
       poll_info[:candidacies].each do |candidacy_info|
         name = NameParser.parse(candidacy_info[:name])
         poll.candidacies.find_or_create_by_first_name_and_last_name( :first_name => candidacy_info[:first_name]||name[:first_name], 

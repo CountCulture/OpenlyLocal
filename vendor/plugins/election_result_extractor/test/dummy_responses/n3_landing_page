@@ -1,0 +1,9 @@
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#icon> <http://www.lichfielddc.gov.uk/site/favicon.ico>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/generic/handheld.css>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/standard.css>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/generic/style.php>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/generic/print.css>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#meta> <http://www.lichfielddc.gov.uk/labels.rdf>.
+<http://openelectiondata.org/id/elections/41UD/2007-05-03> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://www.lichfielddc.gov.uk/site/custom_scripts/electionresults.php?electionid=2>.
+<http://openelectiondata.org/id/elections/41UD/2007-05-03> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openelectiondata.org/0.1/Election>.
+

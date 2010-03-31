@@ -7,6 +7,7 @@ class PollTest < ActiveSupport::TestCase
     @poll = Factory(:poll, :area => @council)
     @ward_1 = Factory(:ward, :council => @council, :snac_id => '41UDGE')
     @ward_2 = Factory(:ward, :council => @council, :name => 'No Snac Id ward')
+    @ward_3 = Factory(:ward, :council => @council, :snac_id => '41UDPQ', :name => 'Uncontested ward')
     @conservative_party = Factory(:political_party, :title => 'Conservative', :electoral_commission_uid => 25)
   end
   
@@ -29,11 +30,11 @@ class PollTest < ActiveSupport::TestCase
     
     context 'when creating or updating from open_election_data' do
       setup do
-        
         @dummy_response = 
-        [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03', 
+        [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03',
+          :source => 'http://anytown.gov.uk/elections/poll/foo',
           :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGE', 
-          :date => '2007-05-03'.to_date, 
+          :date => '2007-05-03', 
           :electorate => '4409', 
           :ballots_issued => '1642', 
           :uncontested => nil, 
@@ -77,7 +78,8 @@ class PollTest < ActiveSupport::TestCase
         should 'create with given attributes' do
           assert_equal '2007-05-03'.to_date, @new_poll.date_held
           assert_equal 4409, @new_poll.electorate 
-          assert_equal 1642, @new_poll.ballots_issued 
+          assert_equal 1642, @new_poll.ballots_issued
+          assert_equal 'http://anytown.gov.uk/elections/poll/foo', @new_poll.source
         end
         
         should 'create candidacies' do
@@ -100,7 +102,34 @@ class PollTest < ActiveSupport::TestCase
           assert_equal @conservative_party, @conservative_candidacy.political_party
         end
       end
-            
+      
+      context 'and a poll is uncontested' do
+        setup do
+          @old_poll_count, @old_candidacy_count = Poll.count, Candidacy.count
+          @dummy_response << { :uri => 'http://openelectiondata.org/id/polls/41UDPQ/2007-05-03', 
+            :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDPQ', 
+            :date => '2007-05-03', 
+            :electorate => '4409', 
+            :uncontested => true, 
+            :candidacies => [{:name => 'Ian Maxwell Pardoe Pritchard', 
+                              :elected => 'true',
+                              :party => 'http://openelectiondata.org/id/parties/25' }
+              ] }
+          Poll.from_open_election_data(@dummy_response)
+        end
+        
+        should 'create polls' do
+          assert_equal @old_poll_count+2, Poll.count
+        end
+        
+        should 'mark uncontested poll as uncontested' do
+          assert Poll.last(:order => 'id').uncontested
+        end
+        
+        should 'create candidacies for poll' do
+          assert_equal @old_candidacy_count+3, Candidacy.count
+        end
+      end   
     end
   end
   

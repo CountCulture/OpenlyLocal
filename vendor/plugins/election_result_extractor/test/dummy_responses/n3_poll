@@ -1,0 +1,60 @@
+<http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=13#content> <http://xmlns.com/foaf/0.1/primaryTopic> <http://openelectiondata.org/id/polls/41UDGE/2007-05-03>.
+<http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=13#content> <http://www.w3.org/1999/xhtml/vocab#license> <http://creativecommons.org/publicdomain/zero/1.0/>.
+_:RqHMlTqb8 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:RqHMlTqb8 <http://openelectiondata.org/0.1/candidate> _:RqHMlTqb9.
+_:RqHMlTqb8 <http://openelectiondata.org/0.1/candidateVoteCount> "410"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:RqHMlTqb8 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/parties/26>.
+_:RqHMlTqb9 <http://xmlns.com/foaf/0.1/name> "Kevin James McCarthy"@en.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://www.w3.org/2002/12/cal#dtstart> "2007-05-03"^^<http://www.w3.org/2001/XMLSchema#date>.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/electionArea> <http://statistics.data.gov.uk/id/local-authority-ward/41UDGE>.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=13#content>.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/ballotsIssued> "1642"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/candidacy> _:RqHMlTqb8.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/candidacy> _:RqHMlTqb16.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/candidacy> _:RqHMlTqb10.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/candidacy> _:RqHMlTqb4.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/candidacy> _:RqHMlTqb12.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/candidacy> _:RqHMlTqb14.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/candidacy> _:RqHMlTqb6.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://openelectiondata.org/0.1/electorate> "4409"^^<http://www.w3.org/2001/XMLSchema#integer>.
+<http://openelectiondata.org/id/polls/41UDGE/2007-05-03> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openelectiondata.org/0.1/Poll>.
+_:RqHMlTqb7 <http://xmlns.com/foaf/0.1/name> "Paul Hogan"@en.
+_:RqHMlTqb4 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:RqHMlTqb4 <http://openelectiondata.org/0.1/candidate> _:RqHMlTqb5.
+_:RqHMlTqb4 <http://openelectiondata.org/0.1/candidateVoteCount> "473"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:RqHMlTqb4 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/parties/26>.
+_:RqHMlTqb10 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:RqHMlTqb10 <http://openelectiondata.org/0.1/independentCandidate> "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:RqHMlTqb10 <http://openelectiondata.org/0.1/candidate> _:RqHMlTqb11.
+_:RqHMlTqb10 <http://openelectiondata.org/0.1/candidateVoteCount> "342"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:RqHMlTqb5 <http://xmlns.com/foaf/0.1/name> "Patrick Wardle Curran"@en.
+_:RqHMlTqb14 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:RqHMlTqb14 <http://openelectiondata.org/0.1/candidate> _:RqHMlTqb15.
+_:RqHMlTqb14 <http://openelectiondata.org/0.1/candidateVoteCount> "311"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:RqHMlTqb14 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/parties/6>.
+_:RqHMlTqb12 <http://openelectiondata.org/0.1/elected> "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:RqHMlTqb12 <http://openelectiondata.org/0.1/candidate> _:RqHMlTqb13.
+_:RqHMlTqb12 <http://openelectiondata.org/0.1/candidateVoteCount> "937"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:RqHMlTqb12 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/parties/25>.
+_:RqHMlTqb11 <http://xmlns.com/foaf/0.1/name> "John Linnaeus Middleton"@en.
+_:RqHMlTqb16 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:RqHMlTqb16 <http://openelectiondata.org/0.1/candidate> _:RqHMlTqb17.
+_:RqHMlTqb16 <http://openelectiondata.org/0.1/candidateVoteCount> "790"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:RqHMlTqb16 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/parties/25>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/generic/style.php>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/generic/print.css>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/generic/handheld.css>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://www.lichfielddc.gov.uk/site/styles/standard.css>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#icon> <http://www.lichfielddc.gov.uk/site/favicon.ico>.
+<http://www.lichfielddc.gov.uk/index.php> <http://www.w3.org/1999/xhtml/vocab#meta> <http://www.lichfielddc.gov.uk/labels.rdf>.
+_:RqHMlTqb15 <http://xmlns.com/foaf/0.1/name> "David Peter Whatton"@en.
+_:RqHMlTqb6 <http://openelectiondata.org/0.1/elected> "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+_:RqHMlTqb6 <http://openelectiondata.org/0.1/candidate> _:RqHMlTqb7.
+_:RqHMlTqb6 <http://openelectiondata.org/0.1/candidateVoteCount> "841"^^<http://www.w3.org/2001/XMLSchema#integer>.
+_:RqHMlTqb6 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org/id/parties/25>.
+<http://openelectiondata.org/id/parties/25> <http://www.w3.org/2000/01/rdf-schema#label> "Conservative Party"@en.
+<http://openelectiondata.org/id/parties/6> <http://www.w3.org/2000/01/rdf-schema#label> "Labour Party [The]"@en.
+_:RqHMlTqb13 <http://xmlns.com/foaf/0.1/name> "Margaret Stanhope"@en.
+<http://openelectiondata.org/id/parties/26> <http://www.w3.org/2000/01/rdf-schema#label> "Liberal Democrats"@en.
+_:RqHMlTqb17 <http://xmlns.com/foaf/0.1/name> "Michael John Wilcox"@en.
+
