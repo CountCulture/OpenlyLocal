@@ -18,9 +18,8 @@ end
 
 desc "Import postcodes from CSV file"
 task :import_postcodes_from_csv => :environment do
-  # postcode_files = Dir.new(File.join(RAILS_ROOT, 'db', 'csv_data', 'postcodes')).entries[2..-1]
-  # postcode_files.each do |postcode_file|
-  postcode_file = 'se.csv'
+  postcode_files = Dir.new(File.join(RAILS_ROOT, 'db', 'csv_data', 'postcodes')).entries[2..-1]
+  postcode_files.each do |postcode_file|
     count = 0
     postcode_base = postcode_file.sub('.csv','').upcase
     puts "About to start importing postcodes beginning #{postcode_base}"
@@ -41,5 +40,5 @@ task :import_postcodes_from_csv => :environment do
       count += 1                             
     end
     puts "Created/Updated #{count} postcodes for area #{postcode_base}"
-  # end
+  end
 end
