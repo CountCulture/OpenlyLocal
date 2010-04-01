@@ -264,3 +264,9 @@ Factory.define :council_contact do |f|
   f.position 'webmaster'
 end
 
+Factory.define :postcode do |f|
+  f.sequence(:code) { |n| "AB1CD#{n}" }
+  f.sequence(:lat) {|n| 0.1*n}
+  f.sequence(:lng) {|n| 0.2*n}
+end
+
