@@ -1,6 +1,6 @@
 class AreasController < ApplicationController
   def show
-    @postcode = Postcode.find_by_code(params[:postcode].sub(/\s/,'').upcase)
+    @postcode = Postcode.find_from_messy_code(params[:postcode])
     @council = @postcode.council
     @county = @postcode.county
     @ward = @postcode.ward

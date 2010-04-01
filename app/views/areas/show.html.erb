@@ -5,3 +5,44 @@
   <%= attribute_tag :council, link_for(@council) %>
   <%= attribute_tag :county, link_for(@county) %>
 </dl>
+<%= render :partial => 'shared/grouped_datapoints', :object => @ward.grouped_datapoints if @ward %>
+
+<div id="relationships">
+  <%- unless @members.blank?  -%>
+  <h3>Your local councillors</h3>
+    <%= list_all @members %>
+  <%- end -%>
+  
+  <%- if @ward.police_team -%>
+    <div id="police_team" class="item_grouping">
+      <h3><%= link_to('Neighbourhood Police Team', @ward.police_team) %> </h3>
+      <ul>
+        <%- @ward.police_team.police_officers.active.each do |officer| -%>
+          <li><%= officer.title %></li>
+        <%- end -%>
+      </ul>
+    </div>
+  <%- end -%>
+  
+  <%- unless @ward.committees.blank? -%>
+    <div id="committees" class="item_grouping">
+      <h3>Committees for this ward</h3>
+      <%= list_all @ward.committees %>
+    </div>
+  <%- end -%>
+
+  <%- unless @ward.meetings.blank? -%>
+    <div id="meetings" class="item_grouping">
+      <h3>Meeting for ward committees</h3>
+      <%= list_all @ward.meetings %>
+    </div>
+  <%- end -%>
+  
+  <%- unless @ward.polls.blank? -%>
+    <div id="polls" class="item_grouping">
+      <h3>Elections for this ward</h3>
+      <%= list_all @ward.polls %>
+    </div>
+  <%- end -%>
+  
+</div>

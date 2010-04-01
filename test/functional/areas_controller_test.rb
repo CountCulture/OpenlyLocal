@@ -52,6 +52,92 @@ class AreasControllerTest < ActionController::TestCase
         assert_select 'a.council_link', /#{@council_1.title}/
       end
       
+      should 'show members' do
+        assert_select 'a.member_link', /#{@member_1.full_name}/
+      end
+      
     end
+    
+    context "and ward has additional attributes" do
+      setup do
+        @council_ward.committees << @committee = Factory(:committee, :council => @council_ward.council)
+        @meeting = Factory(:meeting, :committee => @committee, :council => @council_ward.council)
+        @datapoint = Factory(:datapoint, :area => @council_ward)
+        @another_datapoint = Factory(:datapoint, :area => @council_ward)
+        @graphed_datapoint = Factory(:datapoint, :area => @council_ward)
+        @graphed_datapoint_topic = @graphed_datapoint.dataset_topic       
+        dummy_grouped_datapoints = { stub_everything(:title => "demographics") => [@datapoint], 
+                                     stub_everything(:title => "misc", :display_as => "in_words") => [@another_datapoint], 
+                                     stub_everything(:title => "religion", :display_as => "graph") => [@graphed_datapoint]
+                                    }
+        @poll = Factory(:poll, :area => @council_ward)
+        @police_team = Factory(:police_team)
+        @council_ward.update_attributes(:police_team => @police_team)
+        @police_officer = Factory(:police_officer, :police_team => @police_team)
+        @inactive_police_officer = Factory(:inactive_police_officer, :police_team => @police_team)
+        Ward.any_instance.stubs(:grouped_datapoints).returns(dummy_grouped_datapoints)
+        get :show, :postcode => 'za13 3sl'
+      end
+
+      should_respond_with :success
+
+      should "show link to committee" do
+        p assigns(:ward).committees
+        puts css_select('#committees')
+        assert_select "#committees a", /#{@committee.title}/
+      end
+
+      should "show ward committee meetings" do
+        assert_select "#meetings li", /#{@meeting.title}/
+      end
+
+      should "show link to police neighbourhood officers" do
+        assert_select "#police_team" do
+          assert_select 'li', /#{@police_officer.name}/
+        end
+      end
+
+      should "not show link to inactive police neighbourhood officers" do
+        assert_select "#police_team" do
+          assert_select 'li', :text => /#{@inactive_police_officer.name}/, :count => 0
+        end
+      end
+
+      should "show link to polls" do
+        assert_select "#polls a.poll_link"
+      end
+
+      should "show statistics" do
+        assert_select "#grouped_datapoints"
+      end
+
+      context "when showing statistics" do
+        should "show datapoints grouped by topic group" do
+          assert_select "#grouped_datapoints" do
+            assert_select ".demographics a", @datapoint.title
+            assert_select ".stats_in_words a", @another_datapoint.title
+          end
+        end
+
+        should "show link to more info on data" do
+          assert_select "#grouped_datapoints .datapoint a[href=?]", "/wards/#{@council_ward.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
+        end
+        
+        should "not show datapoint groups with no data" do
+          assert_select "#grouped_datapoints .foo", false
+        end
+
+        should "show graphs for those groups that should be graphed" do
+          assert_select "#grouped_datapoints .graphed_datapoints #religion_graph"
+        end
+
+        should "show data in table with graphed_table class for groups that should be graphed" do
+          assert_select "#grouped_datapoints .religion.graphed_datapoints"
+        end
+      end
+
+    end
+
+    
   end
 end

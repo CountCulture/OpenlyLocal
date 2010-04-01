@@ -4,7 +4,7 @@ class PostcodeTest < ActiveSupport::TestCase
   subject { @postcode }
   
   def setup
-    @postcode = Factory(:postcode)
+    @postcode = Factory(:postcode, :code => 'AB13DR')
   end
   
   context "The Postcode class" do
@@ -15,6 +15,10 @@ class PostcodeTest < ActiveSupport::TestCase
     should_belong_to :ward
     should_belong_to :council
     should_belong_to :county
+    
+    should 'find from raw postcode' do
+      assert_equal @postcode, Postcode.find_from_messy_code(' ab 1 3Dr ')
+    end
   end
   
   context 'an instance of the Postcode class' do
