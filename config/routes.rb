@@ -41,7 +41,10 @@ ActionController::Routing::Routes.draw do |map|
     restype.resources :police_forces
     restype.resources :police_authorities
   end
-
+  
+  map.connect 'areas/postcodes/:postcode', :controller => 'areas', :action => 'show', :requirements => { :postcode => /[^\.\/]+/ }
+  map.connect 'areas/postcodes/:postcode.:format', :controller => 'areas', :action => 'show', :requirements => { :postcode => /[^\.\/]+/ }
+  
   map.connect 'wards/snac_id/:snac_id.:format', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/ }
   map.connect 'wards/snac_id/:snac_id', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/ }
   map.connect 'councils/snac_id/:snac_id.:format', :controller => "councils", :action => "show", :requirements => { :snac_id => /\w+/ }

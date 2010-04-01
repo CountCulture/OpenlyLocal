@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100401120848) do
+ActiveRecord::Schema.define(:version => 20100401134250) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -521,7 +521,7 @@ ActiveRecord::Schema.define(:version => 20100401120848) do
     t.column "nhs_region", :string
     t.column "nhs_health_authority", :string
     t.column "county_id", :integer
-    t.column "district_id", :integer
+    t.column "council_id", :integer
     t.column "ward_id", :integer
     t.column "lat", :float
     t.column "lng", :float
