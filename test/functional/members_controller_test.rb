@@ -29,13 +29,18 @@ class MembersControllerTest < ActionController::TestCase
         assert_select "title", /current members/i
       end
       
-      should "list current members" do
-        assert_select ".members li a", @member.full_name
+      should 'list current members' do
+        assert_select '.members li a', @member.full_name
       end
       
-      should "show link to include ex_members" do
-        assert_select "a[href*=include_ex_members]"
+      should 'show link to include ex_members' do
+        assert_select 'a[href*=include_ex_members]'
       end
+      
+      should "not show council in member item" do
+        assert_select '#members li a', :text => /#{@council.title}/, :count => 0
+      end
+      
     end
     
     context "with basic request and council_id and ex-members included" do
@@ -58,6 +63,48 @@ class MembersControllerTest < ActionController::TestCase
       
       should "not show link to include ex_members" do
         assert_select "a[href*=include_ex_members]", false
+      end
+    end
+    
+    context 'without council_id' do
+      context 'in general' do
+        setup do
+          @another_council = Factory(:another_council)
+          @another_council_member = Factory(:member, :council => @another_council)
+          Member.stubs(:find).returns([@member, @ex_member])
+          get :index
+        end
+      
+        should_assign_to(:members) { [@member, @ex_member] } # current members
+        should_respond_with :success
+      
+        should "show title" do
+          assert_select "title", /current members/i
+        end
+      
+        should "list all members" do
+          assert_select "#members li a", @member.full_name
+          assert_select "#members li a", @ex_member.full_name
+        end
+        
+        should "show council in member item" do          
+          assert_select "#members li a", /#{@council.title}/
+        end
+        
+        should 'not show pagination links' do
+          assert_select "div.pagination", false
+        end
+      end
+      
+      context 'when enough results' do
+        setup do
+          35.times { Factory(:member, :council => @council) }
+          get :index
+        end
+        
+        should 'show pagination links' do
+          assert_select "div.pagination"
+        end
       end
     end
 

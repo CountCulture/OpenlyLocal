@@ -3,8 +3,11 @@ class MembersController < ApplicationController
   before_filter :authenticate, :except => [:show, :index]
   
   def index
-    @council = Council.find(params[:council_id])
-    @members = params[:include_ex_members] ? @council.members : @council.members.current
+    if @council = Council.find_by_id(params[:council_id])
+      @members = params[:include_ex_members] ? @council.members : @council.members.current
+    else
+      @members = Member.current.paginate(:page => params[:page], :order => "last_name")
+    end
     @title = params[:include_ex_members] ? "All members" : "Current members"
   end
   

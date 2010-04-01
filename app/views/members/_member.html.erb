@@ -1,0 +1,3 @@
+<li>
+  <strong><%= link_for member %></strong>, <%= basic_link_for member.council %> <%= " (#{member.party})" unless member.party.blank? %> <%= twitter_link_for(member.twitter_account_name, :short => true) %>
+</li>
