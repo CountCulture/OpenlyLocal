@@ -42,13 +42,14 @@ ActionController::Routing::Routes.draw do |map|
     restype.resources :police_authorities
   end
   
-  map.connect 'areas/postcodes/:postcode', :controller => 'areas', :action => 'show', :requirements => { :postcode => /[^\.\/]+/ }
-  map.connect 'areas/postcodes/:postcode.:format', :controller => 'areas', :action => 'show', :requirements => { :postcode => /[^\.\/]+/ }
+  map.connect 'areas/postcodes/:postcode', :controller => 'areas', :action => 'search'
+  map.connect 'areas/postcodes/:postcode.:format', :controller => 'areas', :action => 'search'
+  map.connect 'areas/search', :controller => 'areas', :action => 'search'
   
-  map.connect 'wards/snac_id/:snac_id.:format', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/ }
-  map.connect 'wards/snac_id/:snac_id', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/ }
-  map.connect 'councils/snac_id/:snac_id.:format', :controller => "councils", :action => "show", :requirements => { :snac_id => /\w+/ }
-  map.connect 'councils/snac_id/:snac_id', :controller => "councils", :action => "show", :requirements => { :snac_id => /\w+/ }
+  map.connect 'wards/snac_id/:snac_id.:format', :controller => "wards", :action => "search", :requirements => { :snac_id => /\w+/ }
+  map.connect 'wards/snac_id/:snac_id', :controller => "wards", :action => "search", :requirements => { :snac_id => /\w+/ }
+  map.connect 'councils/snac_id/:snac_id.:format', :controller => "councils", :action => "search", :requirements => { :snac_id => /\w+/ }
+  map.connect 'councils/snac_id/:snac_id', :controller => "councils", :action => "search", :requirements => { :snac_id => /\w+/ }
 
   # The priority is based upon order of creation: first created -> highest priority.
 

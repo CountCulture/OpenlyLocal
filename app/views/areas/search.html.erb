@@ -6,7 +6,7 @@
   <%= attribute_tag :county, link_for(@county) %>
 </dl>
 <%= render :partial => 'shared/grouped_datapoints', :object => @ward.grouped_datapoints if @ward %>
-
+<%# if @ward %>
 <div id="relationships">
   <%- unless @members.blank?  -%>
   <h3>Your local councillors</h3>

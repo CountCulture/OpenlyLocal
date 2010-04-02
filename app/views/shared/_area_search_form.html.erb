@@ -1,0 +1,4 @@
+<% form_tag({:controller => 'areas', :action => 'search'}, { :class => "form", :method => :get}) do %>
+  <%= text_field_tag :postcode %>
+  <%= submit_tag "Search by postcode", :id => "submit", :name => "submit", :class => "form_submit", :disable_with => "Please wait..." %>
+<% end -%>

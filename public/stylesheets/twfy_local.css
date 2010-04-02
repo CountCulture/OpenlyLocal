@@ -143,8 +143,8 @@ body {
 #content {
 	min-height: 600px; }
 #header {
-	padding: 6px 6px;
-	border-bottom: #036 solid 3px;
+	padding: 6px 0 0;
+/*	border-bottom: #036 solid 3px;*/
 	background: #EFF7FF url(../images/header_bg.gif) repeat-y scroll 0 0;
 	margin-bottom: 9px;}
 #header h2 {
@@ -165,6 +165,29 @@ body {
 #header h2 em {
 	color: #036;
 	font-size:100%; }
+#navigation  {
+	overflow:auto;
+	width:100%;
+	background-color:#bcd;
+	border-top:1px solid #cde;}
+#navigation * {
+	float:left;}
+#navigation a {
+	display:block;
+	height:20px;
+	text-transform:uppercase;
+	padding:2px 1em;}
+#navigation form {
+	margin-left:1em;
+	margin-top:2px;
+}
+#navigation input {
+	margin-bottom:0;}
+#navigation a:hover {
+	color:#fff;
+	background-color:#036;
+	text-decoration:none;
+}
 #footer {
 	margin-top:18px;
 	text-align:right;

@@ -1,6 +1,8 @@
 class AreasController < ApplicationController
-  def show
-    @postcode = Postcode.find_from_messy_code(params[:postcode])
+  def search
+    unless @postcode = Postcode.find_from_messy_code(params[:postcode])
+      render :text => "<p class='alert'>Couldn't find postcode</p>" and return
+    end
     @council = @postcode.council
     @county = @postcode.county
     @ward = @postcode.ward

@@ -4,10 +4,11 @@ class AreasControllerTest < ActionController::TestCase
   
   # routing tests
   should "route ward identified by postcode to show action" do
-    assert_routing "areas/postcodes/ab123n", {:controller => "areas", :action => "show", :postcode => "ab123n"}
-    assert_routing "areas/postcodes/ab123n.xml", {:controller => "areas", :action => "show", :postcode => "ab123n", :format => "xml"}
-    assert_routing "areas/postcodes/ab123n.json", {:controller => "areas", :action => "show", :postcode => "ab123n", :format => "json"}
-    assert_routing "areas/postcodes/ab123n.rdf", {:controller => "areas", :action => "show", :postcode => "ab123n", :format => "rdf"}
+    assert_routing "areas/postcodes/ab123n", {:controller => "areas", :action => "search", :postcode => "ab123n"}
+    assert_routing "areas/postcodes/ab123n.xml", {:controller => "areas", :action => "search", :postcode => "ab123n", :format => "xml"}
+    assert_routing "areas/postcodes/ab123n.json", {:controller => "areas", :action => "search", :postcode => "ab123n", :format => "json"}
+    assert_routing "areas/postcodes/ab123n.rdf", {:controller => "areas", :action => "search", :postcode => "ab123n", :format => "rdf"}
+    assert_recognizes( {:controller => 'areas', :action => "search"}, 'areas/search')
   end
 
 
@@ -31,7 +32,7 @@ class AreasControllerTest < ActionController::TestCase
   
     context "with given postcode" do
       setup do
-        get :show, :postcode => 'za13 3sl'
+        get :search, :postcode => 'za13 3sl'
       end
   
       should_assign_to(:postcode) { @postcode }
@@ -41,7 +42,7 @@ class AreasControllerTest < ActionController::TestCase
       should_assign_to(:members) { [@member_1] }
 
       should_respond_with :success
-      should_render_template :show
+      should_render_template :search
       should_respond_with_content_type 'text/html'
       
       should 'show nice postcode in title' do
@@ -76,14 +77,12 @@ class AreasControllerTest < ActionController::TestCase
         @police_officer = Factory(:police_officer, :police_team => @police_team)
         @inactive_police_officer = Factory(:inactive_police_officer, :police_team => @police_team)
         Ward.any_instance.stubs(:grouped_datapoints).returns(dummy_grouped_datapoints)
-        get :show, :postcode => 'za13 3sl'
+        get :search, :postcode => 'za13 3sl'
       end
 
       should_respond_with :success
 
       should "show link to committee" do
-        p assigns(:ward).committees
-        puts css_select('#committees')
         assert_select "#committees a", /#{@committee.title}/
       end
 
@@ -138,6 +137,15 @@ class AreasControllerTest < ActionController::TestCase
 
     end
 
-    
+    context 'and no such postcode' do
+      setup do
+        get :search, :postcode => 'foo1'
+      end
+  
+      should_respond_with :success
+      should 'say so' do
+        assert_select '.alert', /couldn't find postcode/i
+      end
+    end
   end
 end
