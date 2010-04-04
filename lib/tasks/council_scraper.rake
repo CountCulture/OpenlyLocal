@@ -475,3 +475,42 @@ task :scrape_annual_audit_letters => :environment do
   end
 end
 
+desc "Import OS Ids for County Electoral Divisions"
+task :import_os_county_division_ids => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  
+  url = "http://api.talis.com/stores/ordnance-survey/services/sparql?query=PREFIX%20owl%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0D%0APREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0D%0APREFIX%20xsd%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0D%0APREFIX%20foaf%3A%20%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0D%0APREFIX%20rdf%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX%20admingeo%3A%20%3Chttp%3A%2F%2Fdata.ordnancesurvey.co.uk%2Fontology%2Fadmingeo%2F%3E%0D%0APREFIX%20spatialrelations%3A%20%3Chttp%3A%2F%2Fdata.ordnancesurvey.co.uk%2Fontology%2Fspatialrelations%2F%3E%0D%0A%0D%0Aselect%20%3Fced%20%3Fcounty%20%3Fcedname%20%3Fcountyname%0D%0Awhere%0D%0A%7B%0D%0A%3Fcounty%20rdf%3Atype%20admingeo%3ACounty%20.%0D%0A%3Fced%20rdf%3Atype%20admingeo%3ACountyElectoralDivision%20.%0D%0A%3Fcounty%20spatialrelations%3Acontains%20%3Fced%20.%0D%0A%3Fced%20rdfs%3Alabel%20%3Fcedname%20.%0D%0A%3Fcounty%20rdfs%3Alabel%20%3Fcountyname%20.%0D%0A%7D"
+  
+  results = Hpricot.XML(open(url)).search('result')
+  puts "Retrieved #{results.size} results"
+  
+  results = results.group_by{|r| r.at('binding[@name=county] uri').inner_text.scan(/\d+$/).to_s} #group by county os_id
+  # counter = 0
+  results.each do |county_os_id, wards|
+    # counter +=1
+    # break if counter > 5
+    unless county = Council.find_by_os_id(county_os_id)
+      puts "****County with os_id #{county_os_id} (#{county_name}) doesn't seem to exist"
+      next
+    end
+    if county.wards.count > 0
+      wards.each do |ward|
+        if (ward_name = ward.at('binding[@name=cedname] literal').try(:inner_text)) && (matched_ward = county.wards.detect{|w| TitleNormaliser.normalise_title(w.name) == TitleNormaliser.normalise_title(ward_name)})
+          ward_os_id = ward.at('binding[@name=ced] uri').inner_text.scan(/\d+$/).to_s
+          matched_ward.update_attribute(:os_id, ward_os_id)
+          puts "Matched #{ward_name} & #{matched_ward.name} for #{county.name} with os_id #{ward_os_id}"
+        else
+          puts "****Couldn't match #{ward_name} for #{county.name}"
+        end
+      end
+    else
+      puts "No wards for this county. Creating new ones"
+      wards.each do |ward|
+        new_ward = county.wards.create!(:os_id => ward.at('binding[@name=ced] uri').inner_text.scan(/\d+$/).to_s, :name => ward.at('binding[@name=cedname] literal').inner_text)
+        puts "Created new ward (#{new_ward.name}) for #{county.name}"
+      end
+    end
+  end
+end
+

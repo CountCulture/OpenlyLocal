@@ -26,7 +26,7 @@ class AreasControllerTest < ActionController::TestCase
      @county_member = Factory(:member, :ward => @county_ward, :council => @county)
      @another_county_member = Factory(:member, :ward => @county_ward, :council => @county)
      
-     @postcode = Factory(:postcode, :code => "ZA133SL", :ward => @council_ward, :council => @council_1, :county => @county )
+     @postcode = Factory(:postcode, :code => "ZA133SL", :ward => @council_ward, :council => @council_1, :county => @county, :lat => 54.12, :lng => 1.23 )
      @another_postcode = Factory(:postcode)
     end
   
@@ -143,8 +143,54 @@ class AreasControllerTest < ActionController::TestCase
       end
   
       should_respond_with :success
+      should_render_with_layout
       should 'say so' do
         assert_select '.alert', /couldn't find postcode/i
+      end
+    end
+    
+    context "with xml request" do
+      setup do
+        @council_ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
+        @council_ward.committees << @committee = Factory(:committee, :council => @council_1)
+        @meeting = Factory(:meeting, :committee => @committee, :council => @council_1)
+        get :search, :postcode => 'za13 3sl', :format => "xml"
+      end
+
+      should_assign_to(:postcode) { @postcode }
+      should_assign_to(:council) { @council_1 }
+      should_assign_to(:county) { @county }
+      should_assign_to(:ward) { @ward }
+      should_assign_to(:members) { [@member_1] }
+
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/xml'
+
+      should "return postcode" do
+        assert_select "postcode>code", @postcode.code
+        assert_select "postcode>lat"
+        assert_select "postcode>lng"
+      end
+
+      should "include council ward in response" do
+        assert_select "postcode ward"
+      end
+
+      should "include councillors in response" do
+        assert_select "postcode>ward>members>member>id", @member_1.id.to_s
+      end
+
+      should "include committees in response" do
+        assert_select "postcode>ward>committees>committee"
+      end
+
+      should_eventually "include police_neighbourhood_team in response" do
+        assert_select "postcode police-neighbourhood-url"
+      end
+      
+      should_eventually "include hyperlocal_sites in response" do
+        assert_select "postcode>hyperlocal_sites"
       end
     end
   end

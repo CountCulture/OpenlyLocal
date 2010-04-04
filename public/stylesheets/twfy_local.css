@@ -148,7 +148,7 @@ body {
 	background: #EFF7FF url(../images/header_bg.gif) repeat-y scroll 0 0;
 	margin-bottom: 9px;}
 #header h2 {
-	margin: 0;
+	margin: 3px 6px;
 	color: #036;
 	line-height:50px; }
 #header h2 a {
@@ -168,8 +168,8 @@ body {
 #navigation  {
 	overflow:auto;
 	width:100%;
-	background-color:#bcd;
-	border-top:1px solid #cde;}
+	background-color:#ddd;
+	border-top:1px solid #eee;}
 #navigation * {
 	float:left;}
 #navigation a {

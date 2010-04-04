@@ -2,6 +2,7 @@ class Postcode < ActiveRecord::Base
   belongs_to :ward
   belongs_to :council
   belongs_to :county, :class_name => "Council", :foreign_key => "county_id"
+  has_many :councillors, :class_name => "Member", :through => :ward, :source => :members
   validates_uniqueness_of :code
   validates_presence_of :code, :lat, :lng
   
