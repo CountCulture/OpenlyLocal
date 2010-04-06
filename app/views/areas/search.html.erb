@@ -6,9 +6,11 @@
   <%= attribute_tag :ward, link_for(@ward) %>
   <%= attribute_tag :council, link_for(@council) %>
   <%= attribute_tag :county, link_for(@county) %>
+  <%= attribute_tag :latitude, @latitude %>
+  <%= attribute_tag :longitude, @longitude %>
 </dl>
 <%= render :partial => 'shared/grouped_datapoints', :object => @ward.grouped_datapoints if @ward %>
-<%# if @ward %>
+<%- if @ward -%>
 <div id="relationships">
   <%- unless @members.blank?  -%>
   <h3>Your local councillors</h3>
@@ -47,4 +49,19 @@
     </div>
   <%- end -%>
   
+  <%- unless @postcode.hyperlocal_sites.blank? -%>
+    <div id="hyperlocal_sites" class="item_grouping">
+      <h3>Nearby Hyperlocal websites</h3>
+      <ul>
+        <%= render :partial => "hyperlocal_sites/hyperlocal_site", :collection => @postcode.hyperlocal_sites %>
+      </ul>
+    </div>
+  <%- end -%>
+
 </div>
+<%- else -%>
+  <p class='alert'>Sorry, no info for this area</p>
+<%- end -%>
+
+
+<%= render :partial => 'shared/api_info' %>

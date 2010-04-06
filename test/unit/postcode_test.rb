@@ -29,6 +29,31 @@ class PostcodeTest < ActiveSupport::TestCase
       assert_equal [member], @postcode.councillors
     end
     
+    context 'when returning hyperlocal sites' do
+      setup do
+        @close_site = Factory(:approved_hyperlocal_site, :lat => @postcode.lat+0.05, :lng => @postcode.lng-0.05)
+        @closest_site = Factory(:approved_hyperlocal_site, :lat => @postcode.lat+0.01, :lng => @postcode.lng-0.01)
+        @unapproved_site = Factory(:hyperlocal_site, :lat => @postcode.lat+0.01, :lng => @postcode.lng+0.01)
+        @faraway_site = Factory(:approved_hyperlocal_site, :lat => @postcode.lat+10.0, :lng => @postcode.lng-10.0)
+      end
+      
+      should 'return sites close to postcode' do
+        assert @postcode.hyperlocal_sites.include?(@close_site)
+      end
+      
+      should 'not return faraway site' do
+        assert !@postcode.hyperlocal_sites.include?(@faraway_site)
+      end
+      
+      should 'return only approved sites' do
+        assert !@postcode.hyperlocal_sites.include?(@unapproved_site)
+      end
+      
+      should 'return closest first' do
+        assert_equal @closest_site, @postcode.hyperlocal_sites.first
+      end
+      
+    end
   end
   
   context 'an instance of the Postcode class' do

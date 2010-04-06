@@ -10,6 +10,10 @@ class Postcode < ActiveRecord::Base
     find_by_code(raw_code.strip.gsub(/\s/,'').upcase)
   end
   
+  def hyperlocal_sites
+    HyperlocalSite.approved.find(:all, :origin => [lat,lng], :within => 20, :limit => 5, :order => 'distance')
+  end
+  
   def pretty_code
     pc = code.dup
     pc[-3, 0] = ' '

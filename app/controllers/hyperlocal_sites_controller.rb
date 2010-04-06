@@ -11,7 +11,7 @@ class HyperlocalSitesController < ApplicationController
       @title += " nearest to #{params[:location]}"
       begin
         @location = Geokit::LatLng.normalize(params[:location])
-        @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => @location, :order => "distance", :limit => 10)
+        @hyperlocal_sites = HyperlocalSite.approved.find(:all, :origin => @location, :order => 'distance', :limit => 10)
       rescue Geokit::Geocoders::GeocodeError => e
         @message = "Sorry, couldn't find location: #{params[:location]}"
         @hyperlocal_sites = HyperlocalSite.approved

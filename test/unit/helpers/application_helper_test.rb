@@ -254,6 +254,11 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_equal link_to("json", { :controller => "councils", :action => "index", :format => "json" }, :class => "api_link json"), link_to_api_url("json")
     end
 
+    should "should ignore submit params when constructing" do
+      self.stubs(:params).returns(:controller => "councils", :action => "index", :submit => 'Search+by+postcode')
+      assert_equal link_to("xml", { :controller => "councils", :action => "index", :format => "xml" }, :class => "api_link xml"), link_to_api_url("xml")
+    end
+
     should "should use id rather than to_param in url js link when json requested" do
       resource = Factory(:member)
       self.stubs(:params).returns(:controller => "members", :action => "show", :id => resource.to_param)

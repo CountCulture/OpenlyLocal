@@ -52,7 +52,7 @@ module ApplicationHelper
 
   def link_to_api_url(response_type)
     params[:id] = params[:id].to_i if params[:id] # if we've got an id, clean it up
-    link_to(response_type, params.merge(:format => response_type), :class => "api_link #{response_type}")
+    link_to(response_type, params.merge(:format => response_type).except(:submit), :class => "api_link #{response_type}")
   end
 
   def link_to_calendar(basic_url=nil)

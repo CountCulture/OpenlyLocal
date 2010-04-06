@@ -561,13 +561,13 @@ ul#hyperlocal_sites li li{
 	font-weight: normal;
 	font-size: .9em;
 } 
-.hyperlocal_sites .area {
+#hyperlocal_sites .area {
 	text-transform: uppercase;
 	color: #8a1f11;
 	font-size: 0.85em;
 	display:block;
 }
-.hyperlocal_sites .area .distance {
+#hyperlocal_sites .area .distance {
 	color: #111;
 	font-weight:bold;
 }

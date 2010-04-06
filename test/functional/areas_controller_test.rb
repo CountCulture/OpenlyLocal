@@ -77,64 +77,174 @@ class AreasControllerTest < ActionController::TestCase
         @police_officer = Factory(:police_officer, :police_team => @police_team)
         @inactive_police_officer = Factory(:inactive_police_officer, :police_team => @police_team)
         Ward.any_instance.stubs(:grouped_datapoints).returns(dummy_grouped_datapoints)
-        get :search, :postcode => 'za13 3sl'
+        @hyperlocal_site = Factory(:approved_hyperlocal_site, :lat => @postcode.lat+0.01, :lng => @postcode.lng-0.01)
       end
-
-      should_respond_with :success
-
-      should "show link to committee" do
-        assert_select "#committees a", /#{@committee.title}/
-      end
-
-      should "show ward committee meetings" do
-        assert_select "#meetings li", /#{@meeting.title}/
-      end
-
-      should "show link to police neighbourhood officers" do
-        assert_select "#police_team" do
-          assert_select 'li', /#{@police_officer.name}/
+      
+      context 'in general' do
+        setup do
+          get :search, :postcode => 'za13 3sl'
         end
-      end
+        should_respond_with :success
 
-      should "not show link to inactive police neighbourhood officers" do
-        assert_select "#police_team" do
-          assert_select 'li', :text => /#{@inactive_police_officer.name}/, :count => 0
+        should "show link to committee" do
+          assert_select "#committees a", /#{@committee.title}/
         end
-      end
 
-      should "show link to polls" do
-        assert_select "#polls a.poll_link"
-      end
+        should "show ward committee meetings" do
+          assert_select "#meetings li", /#{@meeting.title}/
+        end
 
-      should "show statistics" do
-        assert_select "#grouped_datapoints"
-      end
-
-      context "when showing statistics" do
-        should "show datapoints grouped by topic group" do
-          assert_select "#grouped_datapoints" do
-            assert_select ".demographics a", @datapoint.title
-            assert_select ".stats_in_words a", @another_datapoint.title
+        should "show link to police neighbourhood officers" do
+          assert_select "#police_team" do
+            assert_select 'li', /#{@police_officer.name}/
           end
         end
 
-        should "show link to more info on data" do
-          assert_select "#grouped_datapoints .datapoint a[href=?]", "/wards/#{@council_ward.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
-        end
-        
-        should "not show datapoint groups with no data" do
-          assert_select "#grouped_datapoints .foo", false
+        should "not show link to inactive police neighbourhood officers" do
+          assert_select "#police_team" do
+            assert_select 'li', :text => /#{@inactive_police_officer.name}/, :count => 0
+          end
         end
 
-        should "show graphs for those groups that should be graphed" do
-          assert_select "#grouped_datapoints .graphed_datapoints #religion_graph"
+        should "show link to polls" do
+          assert_select "#polls a.poll_link"
         end
 
-        should "show data in table with graphed_table class for groups that should be graphed" do
-          assert_select "#grouped_datapoints .religion.graphed_datapoints"
+        should "show link to hyperlocal_sites" do
+          assert_select "#hyperlocal_sites a", @hyperlocal_site.title
+        end
+
+        should "show statistics" do
+          assert_select "#grouped_datapoints"
+        end
+
+        context "when showing statistics" do
+          should "show datapoints grouped by topic group" do
+            assert_select "#grouped_datapoints" do
+              assert_select ".demographics a", @datapoint.title
+              assert_select ".stats_in_words a", @another_datapoint.title
+            end
+          end
+
+          should "show link to more info on data" do
+            assert_select "#grouped_datapoints .datapoint a[href=?]", "/wards/#{@council_ward.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
+          end
+
+          should "not show datapoint groups with no data" do
+            assert_select "#grouped_datapoints .foo", false
+          end
+
+          should "show graphs for those groups that should be graphed" do
+            assert_select "#grouped_datapoints .graphed_datapoints #religion_graph"
+          end
+
+          should "show data in table with graphed_table class for groups that should be graphed" do
+            assert_select "#grouped_datapoints .religion.graphed_datapoints"
+          end
+        end
+
+      end
+
+      context "with xml request" do
+        setup do
+          @council_ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
+          @council_ward.committees << @committee = Factory(:committee, :council => @council_1)
+          @meeting = Factory(:meeting, :committee => @committee, :council => @council_1)
+          get :search, :postcode => 'za13 3sl', :format => "xml"
+        end
+
+        should_assign_to(:postcode) { @postcode }
+        should_assign_to(:council) { @council_1 }
+        should_assign_to(:county) { @county }
+        should_assign_to(:ward) { @ward }
+        should_assign_to(:members) { [@member_1] }
+
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/xml'
+
+        should "return postcode" do
+          assert_select "postcode>code", @postcode.code
+          assert_select "postcode>lat"
+          assert_select "postcode>lng"
+        end
+
+        should "include council ward in response" do
+          assert_select "postcode ward"
+        end
+
+        should "include councillors in response" do
+          assert_select "postcode>ward>members>member>id", @member_1.id.to_s
+        end
+
+        should "include committees in response" do
+          assert_select "postcode>ward>committees>committee"
+        end
+
+        should_eventually "include police_neighbourhood_team in response" do
+          assert_select "postcode police-neighbourhood-url"
+        end
+
+        should_eventually "include hyperlocal_sites in response" do
+          assert_select "postcode>hyperlocal_sites"
         end
       end
 
+      context "with json request" do
+        setup do
+          @council_ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
+          @council_ward.committees << @committee = Factory(:committee, :council => @council_1)
+          @meeting = Factory(:meeting, :committee => @committee, :council => @council_1)
+          get :search, :postcode => 'za13 3sl', :format => "json"
+        end
+
+        should_assign_to(:postcode) { @postcode }
+        should_assign_to(:council) { @council_1 }
+        should_assign_to(:county) { @county }
+        should_assign_to(:ward) { @ward }
+        should_assign_to(:members) { [@member_1] }
+
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/json'
+
+        should "include councillors in response" do
+          assert_match /postcode\":.+members\":.+id/m, @response.body
+        end
+
+        # should "include committees in response" do
+        #   assert_match /ward\":.+committees\":.+#{@committee.title}/, @response.body
+        # end
+        # 
+        # should "include meetings in response" do
+        #   assert_match /ward\":.+meetings\":.+#{@meeting.url}/, @response.body
+        # end
+        # should "return postcode" do
+        #   assert_select "postcode>code", @postcode.code
+        #   assert_select "postcode>lat"
+        #   assert_select "postcode>lng"
+        # end
+        # 
+        # should "include council ward in response" do
+        #   assert_select "postcode ward"
+        # end
+        # 
+        # should "include councillors in response" do
+        #   assert_select "postcode>ward>members>member>id", @member_1.id.to_s
+        # end
+        # 
+        # should "include committees in response" do
+        #   assert_select "postcode>ward>committees>committee"
+        # end
+        # 
+        # should_eventually "include police_neighbourhood_team in response" do
+        #   assert_select "postcode police-neighbourhood-url"
+        # end
+        # 
+        # should_eventually "include hyperlocal_sites in response" do
+        #   assert_select "postcode>hyperlocal_sites"
+        # end
+      end
     end
 
     context 'and no such postcode' do
@@ -149,48 +259,16 @@ class AreasControllerTest < ActionController::TestCase
       end
     end
     
-    context "with xml request" do
+    context 'and no associated ward' do
       setup do
-        @council_ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
-        @council_ward.committees << @committee = Factory(:committee, :council => @council_1)
-        @meeting = Factory(:meeting, :committee => @committee, :council => @council_1)
-        get :search, :postcode => 'za13 3sl', :format => "xml"
+        @another_postcode = Factory(:postcode)
+        get :search, :postcode => "#{@another_postcode.code}"
       end
-
-      should_assign_to(:postcode) { @postcode }
-      should_assign_to(:council) { @council_1 }
-      should_assign_to(:county) { @county }
-      should_assign_to(:ward) { @ward }
-      should_assign_to(:members) { [@member_1] }
-
+  
       should_respond_with :success
-      should_render_without_layout
-      should_respond_with_content_type 'application/xml'
-
-      should "return postcode" do
-        assert_select "postcode>code", @postcode.code
-        assert_select "postcode>lat"
-        assert_select "postcode>lng"
-      end
-
-      should "include council ward in response" do
-        assert_select "postcode ward"
-      end
-
-      should "include councillors in response" do
-        assert_select "postcode>ward>members>member>id", @member_1.id.to_s
-      end
-
-      should "include committees in response" do
-        assert_select "postcode>ward>committees>committee"
-      end
-
-      should_eventually "include police_neighbourhood_team in response" do
-        assert_select "postcode police-neighbourhood-url"
-      end
-      
-      should_eventually "include hyperlocal_sites in response" do
-        assert_select "postcode>hyperlocal_sites"
+      should_render_with_layout
+      should 'say no info about this area' do
+        assert_select '.alert', /No info/i
       end
     end
   end
