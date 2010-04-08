@@ -26,6 +26,20 @@ class MemberTest < ActiveSupport::TestCase
       assert Member.new.respond_to?(:twitter_account_name)
     end
     
+    context 'when returning excluding vacancies' do
+      setup do
+        @vacancy = Factory.create(:member, :full_name => "Vacancy", :council => @existing_member.council)
+      end
+      
+      should 'return members' do
+        assert Member.except_vacancies.include?(@existing_member)
+      end
+      
+      should 'not return vacancies' do
+        assert !Member.except_vacancies.include?(@vacancy)
+      end
+    end
+    
     context "should overwrite orphan_records_callback and" do
       setup do
         @another_member = Factory(:member, :council => @existing_member.council)

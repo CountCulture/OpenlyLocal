@@ -7,6 +7,7 @@ module NameParser
   
   def parse(fn)
     return unless fn
+    return {:last_name => 'Vacancy'} if fn.match(/vacan[tc]/i)
     poss_quals = Qualifications + Qualifications.map{|e| e.gsub('.','')}
     titles, qualifications, result_hash = [], [], {}
     fn = strip_all_spaces(fn).sub(/(Councillor|Councilor|Councilllor|Cllr|Councillior|CC|County Councillor)\b/, '').sub(/- [A-Za-z ]+$/,'').gsub(/\([\w ]+\)/, '')

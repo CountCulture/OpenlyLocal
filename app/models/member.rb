@@ -25,6 +25,7 @@ class Member < ActiveRecord::Base
   allow_access_to :committees, :via => [:uid, :normalised_title]
   allow_access_to :ward, :via => [:uid, :name]
   named_scope :current, :conditions => "date_left IS NULL"
+  named_scope :except_vacancies, :conditions => 'last_name NOT LIKE "vacan%" AND first_name NOT LIKE "vacan%"'
   alias_attribute :title, :full_name
   after_create :tweet_about_it
   
@@ -61,7 +62,6 @@ class Member < ActiveRecord::Base
   end
   
   def party=(party_name)
-    # self[:party] = party_name.blank? ? nil : party_name.gsub(/party/i, '').sub(/^(The|the)/,'').gsub(/\302\240/,'').strip unless party_name.blank?
     self[:party] = Party.new(party_name).to_s
   end
   

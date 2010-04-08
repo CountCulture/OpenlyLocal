@@ -3,7 +3,7 @@ module ElectionResultExtractor
   
   extend self
   
-  class ExtractorError < StandardError;end
+  class ExtractorError < StandardError; end
   
   def landing_page_for(council)
     resp = open("http://local.direct.gov.uk/LDGRedirect/index.jsp?LGSL=721&LGIL=8&AgencyId=#{council.ldg_id}&Type=Single")

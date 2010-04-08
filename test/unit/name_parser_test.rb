@@ -55,6 +55,9 @@ class NameParserTest < Test::Unit::TestCase
     "Councillor Fred Flintstone - The Mayor" => {:first_name => "Fred", :last_name => "Flintstone"},
     "Councillor Fred Flintstone - Some Other Title" => {:first_name => "Fred", :last_name => "Flintstone"},
     "Matthew Holmes" => {:first_name => "Matthew", :last_name => "Holmes"},
+    "SHIPSTON VACANCY" => {:last_name => "Vacancy"},
+    "Vacant Seat" => {:last_name => "Vacancy"},
+    "Vacancies" => {:last_name => "Vacancy"},
     "Jane Annabel Wilson (nee Allen)" => {:first_name => "Jane Annabel", :last_name => "Wilson"}    
   }
   

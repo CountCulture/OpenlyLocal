@@ -486,10 +486,7 @@ task :import_os_county_division_ids => :environment do
   puts "Retrieved #{results.size} results"
   
   results = results.group_by{|r| r.at('binding[@name=county] uri').inner_text.scan(/\d+$/).to_s} #group by county os_id
-  # counter = 0
   results.each do |county_os_id, wards|
-    # counter +=1
-    # break if counter > 5
     unless county = Council.find_by_os_id(county_os_id)
       puts "****County with os_id #{county_os_id} (#{county_name}) doesn't seem to exist"
       next
