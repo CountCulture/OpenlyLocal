@@ -511,7 +511,26 @@ task :import_os_county_division_ids => :environment do
   end
 end
 
-desc 'Import FixMyStreet Ids for council & wards'
+desc 'Import FixMyStreet Ids for councils'
+task :import_fix_my_street_council_ids => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  fms_councils = Hpricot(open('http://www.fixmystreet.com/reports')).search('#content tr[@class!=gone] a')
+  councils = Council.all
+  fms_councils.each do |fc|
+    if council = councils.detect{ |c| (Council.normalise_title(fc.inner_text) == Council.normalise_title(c.name)) }
+      fms_id = fc[:href].scan(/\/([^\/]+)$/).to_s
+      council.update_attribute(:fix_my_street_id, fms_id)
+      puts "Updated #{council.name} with FixMyStreet id #{fms_id}"
+      councils.delete(council)
+    else
+      puts "****Failed to match council with #{fc.inner_text}"
+    end
+  end
+  puts "The folllowing councils were not matched:\n#{councils.inspect}"
+end
+
+desc 'Import FixMyStreet Ids for wards'
 task :import_fix_my_street_ids => :environment do
   require 'hpricot'
   require 'open-uri'
