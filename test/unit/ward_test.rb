@@ -22,7 +22,7 @@ class WardTest < ActiveSupport::TestCase
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url
-    should_have_db_column :police_neighbourhood_url
+    should_have_db_columns :police_neighbourhood_url, :fix_my_street_id
 
     should "include ScraperModel mixin" do
       assert Ward.respond_to?(:find_all_existing)
