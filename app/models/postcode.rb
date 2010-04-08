@@ -5,6 +5,8 @@ class Postcode < ActiveRecord::Base
   has_many :councillors, :class_name => "Member", :through => :ward, :source => :members
   validates_uniqueness_of :code
   validates_presence_of :code, :lat, :lng
+  acts_as_mappable
+  
   
   def self.find_from_messy_code(raw_code)
     find_by_code(raw_code.strip.gsub(/\s/,'').upcase)

@@ -531,20 +531,23 @@ task :import_fix_my_street_council_ids => :environment do
 end
 
 desc 'Import FixMyStreet Ids for wards'
-task :import_fix_my_street_ids => :environment do
+task :import_fix_my_street_ward_ids => :environment do
   require 'hpricot'
   require 'open-uri'
   base_url = 'http://www.fixmystreet.com/alert?pc='
-  councils = Council.all(:conditions => "authority_type != 'County' AND authority_type IS NOT NULL")
+
+  councils = Council.all(:conditions => "fix_my_street_id IS NOT NULL")
   councils.each do |council|
     sleep 5 # give server time to rest
     puts "==========\nAbout to start getting info for #{council.name}"
     wards = council.wards.all(:conditions => {:fix_my_street_id => nil})
     wards.each do |ward|
       begin
-        pc = Postcode.first(:conditions => {:ward_id  => ward.id})
+        next if ward.council.authority_type == 'County' || !ward.boundary
+        centrepoint = ward.boundary.centrepoint
+        pc = Postcode.find_closest(:origin => [centrepoint.lat, centrepoint.lng])
         fms_doc = Hpricot(open(base_url + pc.code))
-        feed_url = fms_doc.search('a[@href*="/rss/reports"]').last[:href]
+        feed_url = fms_doc.search("a[@href*='/rss/reports/#{ward.council.fix_my_street_id}']").last[:href]
         council_id, ward_id = feed_url.split('/')[-2..-1]
         if council_id == "reports"
           puts "No FixMyStreet ward for #{ward.name}"
@@ -554,7 +557,8 @@ task :import_fix_my_street_ids => :environment do
         ward.update_attribute(:fix_my_street_id, ward_id)
         puts "Successfully updated #{ward.name} with FixMyStreet id: #{ward_id}"        
       rescue Exception => e
-        puts "Problem updating #{ward.name} with FixMyStreet id : #{e.inspect}"
+        puts "Problem updating #{ward.name} with FixMyStreet id (postcode:#{pc.code}): #{e.inspect}"
+        p fms_doc.search('a[@href*="/rss/reports/#{ward.council.fix_my_street_id}"]')
       end
     end
   end

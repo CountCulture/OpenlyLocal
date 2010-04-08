@@ -16,6 +16,10 @@ class PostcodeTest < ActiveSupport::TestCase
     should_belong_to :council
     should_belong_to :county
     
+    should "act as mappable" do
+      assert Postcode.respond_to?(:find_closest)
+    end
+    
     should 'find from raw postcode' do
       assert_equal @postcode, Postcode.find_from_messy_code(' ab 1 3Dr ')
     end
