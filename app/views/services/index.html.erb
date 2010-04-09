@@ -1,23 +1,25 @@
 <h1>Links to <%= basic_link_for @council %> Services</h1>
-<%= render :partial => 'services_search' %>
+<%= render :partial => 'services_search' if @council %>
 <%= content_tag(:p, link_to("Show all services", services_path(:council_id => @council.id))) if params[:term] %>
 <%- if @services.blank? -%>
   <p class="alert">Sorry, no services found for <%= basic_link_for @council %></p>
 <%- else -%>
-  <div id="categories">
-    <h3>Categories</h3>
-    <ul>
-      <%- for category in @services -%>
-        <li><%= link_to category[0], params.merge(:anchor => category[0].parameterize) %></li>
-      <%- end -%>
-    </ul>
-  </div>
+  <%- if @council -%>
+    <div id="categories">
+      <h3>Categories</h3>
+      <ul>
+        <%- for category in @services -%>
+          <li><%= link_to category[0], params.merge(:anchor => category[0].parameterize) %></li>
+        <%- end -%>
+      </ul>
+    </div>
+  <%- end -%>
   <div id="services">
     <%- for category in @services -%>
       <h3><a name="<%= category[0].parameterize %>"><%= category[0] %></a></h3>
       <ul class="<%= category[0].parameterize %>">
         <%- for service in category[1] -%>
-          <li><%= link_to service.title, service.url, :class => "external" %></li>
+          <li><%= link_to (@council ? service.title : service.council.title), service.url, :class => "external" %></li>
         <%- end -%>
       </ul>  
     <%- end -%>
