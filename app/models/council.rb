@@ -191,7 +191,9 @@ class Council < ActiveRecord::Base
     if full_results.blank? || full_results[:results].blank?
       logger.info { "No poll results  for #{self.inspect}.\nStatus: #{full_results[:status]}, Errors: #{full_results[:errors]}" }
     else
-      Poll.from_open_election_data(full_results[:results])
+      full_results[:results].each do |election, polls|
+        Poll.from_open_election_data(polls)
+      end
     end
   end
   

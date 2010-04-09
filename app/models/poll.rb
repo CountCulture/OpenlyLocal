@@ -1,6 +1,6 @@
 class Poll < ActiveRecord::Base
   belongs_to :area, :polymorphic => true
-  has_many :candidacies
+  has_many :candidacies, :dependent => :destroy
   validates_presence_of :date_held, :area_id, :area_type, :position
   
   def title
@@ -25,6 +25,7 @@ class Poll < ActiveRecord::Base
         name = NameParser.parse(candidacy_info[:name])
         poll.candidacies.find_or_create_by_first_name_and_last_name( :first_name => candidacy_info[:first_name]||name[:first_name], 
                                                                      :last_name => candidacy_info[:last_name]||name[:last_name], 
+                                                                     :elected => candidacy_info[:elected] == 'true',
                                                                      :votes => candidacy_info[:votes],
                                                                      :political_party => PoliticalParty.find_from_resource_uri(candidacy_info[:party]))
       end

@@ -250,14 +250,13 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
           @results = ElectionResultExtractor.poll_results_for(@council)[:results]
         end
         
-        should 'return as array of hashes keyed to elections' do
-          assert_kind_of Array, @results
-          assert_kind_of Hash, @results.first
-          assert_equal 'http://foo.com/election', @results.first.keys.first
+        should 'return as hash keyed to elections' do
+          assert_kind_of Hash, @results
+          assert_equal 'http://foo.com/election', @results.keys.first
         end
 
         should 'return polls array associated with elections' do
-          assert_kind_of Array, polls = @results.first.values.first
+          assert_kind_of Array, polls = @results.values.first
           assert_kind_of Hash, polls.first
           assert_equal 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03', polls.first[:uri]
         end

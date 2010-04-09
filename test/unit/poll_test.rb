@@ -17,7 +17,7 @@ class PollTest < ActiveSupport::TestCase
     should_validate_presence_of :area_id, :area_type
     should_validate_presence_of :position
     should_have_db_columns :electorate, :ballots_issued, :ballots_rejected, :postal_votes, :uncontested, :source
-    should_have_many :candidacies
+    should_have_many :candidacies, :dependent => :destroy
     
     should "have associated polymorphic area" do
       assert_equal @council.id, @poll.area_id
@@ -46,7 +46,7 @@ class PollTest < ActiveSupport::TestCase
                             :independent => nil },
                            {:name => 'John Linnaeus Middleton', 
                             :votes => '342',
-                            :elected => 'true',
+                            :elected => 'false',
                             :party => nil,
                             :independent => true }
             ] }]
@@ -73,6 +73,11 @@ class PollTest < ActiveSupport::TestCase
         
         should 'assume position is Member' do
           assert_equal 'Member', @new_poll.position
+        end
+        
+        should 'mark candidate as elected only when elected' do
+          assert !@independent_candidacy.elected
+          assert @conservative_candidacy.elected
         end
         
         should 'create with given attributes' do

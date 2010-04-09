@@ -57,16 +57,17 @@ module ElectionResultExtractor
     status << "Landing page found"
     election_pages = election_pages_from(landing_page)
     status << "#{election_pages.size} election(s) found"
-    elections = election_pages.collect do |election_page|
+    results = {}
+    elections = election_pages.each do |election_page|
       poll_pages = poll_pages_from(election_page)
       poll_count += poll_pages.size
       polls = poll_pages.collect do |poll_page|
          poll_results_from(poll_page)
       end.flatten
-      { election_page => polls }
+      results[election_page] = polls
     end
     status << "#{poll_count} polls found"
-    { :results => elections, :status => status }
+    { :results => results, :status => status }
   rescue ExtractorError => e
     {:errors => e.message, :status => status }
   end
