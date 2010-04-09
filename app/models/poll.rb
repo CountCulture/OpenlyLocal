@@ -3,15 +3,6 @@ class Poll < ActiveRecord::Base
   has_many :candidacies, :dependent => :destroy
   validates_presence_of :date_held, :area_id, :area_type, :position
   
-  def title
-    date_held.to_s(:event_date)
-  end
-  
-  def turnout
-    return unless ballots_issued&&electorate
-    ballots_issued.to_f/electorate.to_f
-  end
-  
   def self.from_open_election_data(polls=[])
     polls.each do |poll_info|
       area = Ward.find_from_resource_uri(poll_info[:area])
@@ -30,5 +21,18 @@ class Poll < ActiveRecord::Base
                                                                      :political_party => PoliticalParty.find_from_resource_uri(candidacy_info[:party]))
       end
     end
+  end
+  
+  def status
+    uncontested? ? 'uncontested' : nil
+  end
+  
+  def title
+    date_held.to_s(:event_date)
+  end
+  
+  def turnout
+    return unless ballots_issued&&electorate
+    ballots_issued.to_f/electorate.to_f
   end
 end

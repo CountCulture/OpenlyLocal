@@ -44,6 +44,7 @@ class PollsControllerTest < ActionController::TestCase
       should "show share block" do
         assert_select "#share_block"
       end
+      
     end
     
     context "on GET to show with candidacies with no votes" do
@@ -53,7 +54,7 @@ class PollsControllerTest < ActionController::TestCase
         get :show, :id => @poll.id
       end
       
-      should "caption ttable as Election Results" do
+      should "caption table as Election Results" do
         assert_select "table.statistics caption", /Election Candidates/
       end
 
@@ -69,6 +70,19 @@ class PollsControllerTest < ActionController::TestCase
       
       should "show link to member" do
         assert_select "table.statistics td a", /#{@candidacy_1.full_name}/
+      end
+
+    end
+    
+    context "on GET to show with uncontested poll" do
+      setup do
+        @poll.update_attribute(:uncontested, true)
+        @candidacy_1 = Factory(:candidacy, :poll => @poll, :votes => 537)
+        get :show, :id => @poll.id
+      end
+      
+      should "say so" do
+        assert_select "table.statistics caption", /uncontested/i
       end
 
     end

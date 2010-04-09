@@ -522,6 +522,9 @@ table.datapoints td.more_info {
 .candidacy.elected * {
 	font-weight:bold;
 }
+table.statistics caption.uncontested {
+	background-color:#FBC2C4;
+} 
 /*Hyperlocal formatting*/
 #new_hyperlocal_site label {
 	color:#666;

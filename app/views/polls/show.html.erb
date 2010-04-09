@@ -9,7 +9,7 @@
 </dl>
 <br class='clear'/>
 <table class='statistics' id='candidacies'>
-  <caption>Election <%= @total_votes > 0 ? "Results" : "Candidates"%></caption>
+  <%= content_tag :caption, (@poll.uncontested? ? 'Uncontested Election' : (@total_votes > 0 ? "Election Results" : "Election Candidates")), :class => @poll.status %>
   <tr><th>Candidate</th><th>Party</th><th class='value'>Votes</th><th class='value'>Proportion of vote</th><th class='value'>Elected?</th></tr>
   <%- @poll.candidacies.each do |candidacy| -%>
     <tr class="candidacy <%= candidacy.status %>">
@@ -21,3 +21,6 @@
     </tr>
   <%- end -%>
 </table>
+<div class='source attribution'>
+  Source: <%= link_to @poll.source, @poll.source, :class => 'external' %>
+</div>

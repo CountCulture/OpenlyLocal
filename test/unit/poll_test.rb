@@ -144,6 +144,17 @@ class PollTest < ActiveSupport::TestCase
       assert_equal @poll.date_held.to_s(:event_date), @poll.title
     end
     
+    context 'when returning status' do
+      should 'return nil by default' do
+        assert_nil Poll.new.status
+      end
+      
+      should 'return uncontested if uncontested' do
+        assert_equal 'uncontested', Poll.new(:uncontested => true).status
+      end
+      
+    end
+    
     context "when calculating turnout" do
       setup do
         @t_poll= Factory(:poll, :area => @council, :electorate => 200, :ballots_issued => 90)
