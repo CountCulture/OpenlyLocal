@@ -117,6 +117,11 @@ class Council < ActiveRecord::Base
     read_attribute(:base_url).blank? ? url : read_attribute(:base_url)
   end
   
+  # convenience method to allow us to get council for an area, without having to worry whether it is a ward or a council
+  def council
+    self
+  end
+  
   def dbpedia_resource
     wikipedia_url.gsub(/en\.wikipedia.org\/wiki/, "dbpedia.org/resource") unless wikipedia_url.blank?
   end

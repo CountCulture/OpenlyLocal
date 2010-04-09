@@ -16,6 +16,7 @@ class PollsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:poll) { @poll}
+      should_assign_to(:council) { @area.council}
       should_assign_to(:total_votes) { 537 + 210 }
       should_respond_with :success
       should_render_template :show

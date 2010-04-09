@@ -396,6 +396,10 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal @council.name, @council.title
     end
 
+    should "return self as council" do
+      assert_equal @council, @council.council
+    end
+
     should "return url as base_url if base_url is not set" do
       assert_equal @council.url, @council.base_url
     end
