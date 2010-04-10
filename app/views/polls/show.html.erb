@@ -6,6 +6,7 @@
   <%= attribute_tag :ballots_rejected, @poll.ballots_rejected %>
   <%= attribute_tag :postal_votes, @poll.postal_votes %>
   <%= attribute_tag :turnout, number_to_percentage(@poll.turnout*100, :precision => 1) if @poll.turnout %>
+  <%= attribute_tag :council, basic_link_for(@council) %>
 </dl>
 <br class='clear'/>
 <table class='statistics' id='candidacies'>

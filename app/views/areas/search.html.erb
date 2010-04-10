@@ -9,7 +9,7 @@
   <%= attribute_tag :latitude, @latitude %>
   <%= attribute_tag :longitude, @longitude %>
 </dl>
-<%= render :partial => 'shared/grouped_datapoints', :object => @ward.grouped_datapoints if @ward %>
+<%= render :partial => 'shared/grouped_datapoints', :locals => { :area => @ward } if @ward %>
 <%- if @ward -%>
 <div id="relationships">
   <%- unless @members.blank?  -%>

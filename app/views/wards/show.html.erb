@@ -5,7 +5,7 @@
     <%= attribute_tag :ons_gss_code, @ward.gss_code %>
     <%= attribute_tag :ordnance_survey_ref, @ward.os_id  %>
   </dl>
-  <%= render :partial => 'shared/grouped_datapoints', :object => @ward.grouped_datapoints %>
+  <%= render :partial => 'shared/grouped_datapoints', :locals => { :area => @ward } %>
   <div id="relationships">
     <div id="members" class="item_grouping">
       <h3>Councillors for this ward</h3>

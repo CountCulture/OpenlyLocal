@@ -142,7 +142,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
       should 'mark independent councillors as such' do
         independent = @results.first[:candidacies].detect { |c| c[:name] == 'John Linnaeus Middleton' }
         assert_nil independent[:party]
-        assert independent[:independent]
+        assert_equal 'true', independent[:independent]
       end
     end
 

@@ -75,6 +75,10 @@ class PollTest < ActiveSupport::TestCase
           assert_equal 'Member', @new_poll.position
         end
         
+        should 'not mark uncontested poll as uncontested' do
+          assert_equal false, @new_poll.uncontested
+        end
+        
         should 'mark candidate as elected only when elected' do
           assert !@independent_candidacy.elected
           assert @conservative_candidacy.elected
@@ -115,7 +119,7 @@ class PollTest < ActiveSupport::TestCase
             :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDPQ', 
             :date => '2007-05-03', 
             :electorate => '4409', 
-            :uncontested => true, 
+            :uncontested => 'true', 
             :candidacies => [{:name => 'Ian Maxwell Pardoe Pritchard', 
                               :elected => 'true',
                               :party => 'http://openelectiondata.org/id/parties/25' }

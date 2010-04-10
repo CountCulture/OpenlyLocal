@@ -1,7 +1,8 @@
+<%- grouped_datapoints = area.grouped_datapoints -%>
 <%- unless grouped_datapoints.blank? || grouped_datapoints.values.flatten.compact.empty? -%>
 
   <div id="grouped_datapoints" class="item_grouping">
-    <h3>About this area</h3>
+    <h3>About this <%= area.class %></h3>
     <%= render :partial => 'shared/experimental_flash' %>
     
     <%- grouped_datapoints.each do |group, datapoints| -%>

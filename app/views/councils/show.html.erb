@@ -24,7 +24,7 @@
   <%= attribute_tag :signed_up_for_1010, (@council.signed_up_for_1010 ? 'Yes' : 'No'), :text => link_to("1010 signatory", "http://www.1010uk.org") %>
 </dl>
 
-<%= render :partial => 'shared/grouped_datapoints', :object => @council.grouped_datapoints %>
+<%= render :partial => 'shared/grouped_datapoints', :locals => { :area => @council } %>
 
 <div class="extra_info">
   <h3>Other info</h3>
