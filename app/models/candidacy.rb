@@ -12,7 +12,7 @@ class Candidacy < ActiveRecord::Base
   end
   
   def party_name
-    political_party ? political_party.name : party
+    political_party ? political_party.name : party||'Independent'
   end
   
   def status

@@ -33,8 +33,8 @@ class CandidacyTest < ActiveSupport::TestCase
     
     context "when returning party_name" do
       
-      should "return nil by default" do
-        assert_nil @candidacy.party_name
+      should "return 'Independent' if not party_name and not associated political party" do
+        assert_equal 'Independent', @candidacy.party_name
       end
       
       should "return name of political party if set" do
