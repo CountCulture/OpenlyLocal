@@ -34,4 +34,12 @@ class UserSubmissionsController < ApplicationController
       redirect_to edit_user_submission_url(@user_submission)
     end
   end
+  
+  def destroy
+    @user_submission = UserSubmission.find(params[:id])
+    @user_submission.destroy
+    flash[:notice] = "Successfully destroyed submission"
+    redirect_to admin_url
+  end
+  
 end

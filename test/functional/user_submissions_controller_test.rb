@@ -289,12 +289,42 @@ class UserSubmissionsControllerTest < ActionController::TestCase
            assert_nil @member.reload.twitter_account_name
          end
          
-         should "not destroy user_submission" do
-           assert UserSubmission.find_by_id(@user_submission.id)
+         should "mark user_submission as approved" do
+           assert !@user_submission.reload.approved?
          end
        end
      end
      
+   end
+   
+   # delete tests
+   context "on delete to :destroy a submission" do
+     setup do
+       @member = Factory(:member)
+       @user_submission = Factory(:user_submission, :council => @member.council, :member => @member, :twitter_account_name => "foo")
+     end
+     
+     context "without auth" do
+       setup do
+         delete :destroy, :id => @user_submission.id
+       end
+
+       should_respond_with 401
+     end
+
+     context 'with auth' do
+       setup do
+         stub_authentication
+         delete :destroy, :id => @user_submission.id
+       end
+
+       should "destroy submission" do
+         assert_nil UserSubmission.find_by_id(@user_submission.id)
+       end
+       should_redirect_to ( "the admin page") { admin_url }
+       should_set_the_flash_to "Successfully destroyed submission"
+     end
+
    end
    
 end

@@ -14,7 +14,8 @@
         <%= basic_link_for submission.council %>
         <%= basic_link_for(submission.member) || submission.member_name %>
         <%= link_to "edit", edit_user_submission_path(submission), :class => "edit button" %> 
-        <%= button_to "Update member", user_submission_path(submission, :approve => true), :confirm => "Are you sure?", :method => :put %>
+        <%= button_to "approve", user_submission_path(submission, :approve => true), :confirm => "Are you sure?", :method => :put %>
+        <%= button_to "delete", user_submission_path(submission), :confirm => "Are you sure?", :method => :delete %>
       </li>
     <%- end -%>
   </ul>
