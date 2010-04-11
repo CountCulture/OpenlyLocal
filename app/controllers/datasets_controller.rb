@@ -1,7 +1,7 @@
 class DatasetsController < ApplicationController
   before_filter :authenticate, :except => [:show, :index]
   before_filter :find_dataset, :except => [:index]
-  caches_action :show
+  caches_action :show, :cache_path => Proc.new { |controller| controller.params }
   
   def index
     @datasets = Dataset.all
