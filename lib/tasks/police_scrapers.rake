@@ -240,6 +240,7 @@ end
 desc "Populate Crime Areas from NPIA api"
 task :populate_crime_areas => :environment do
   PoliceForce.all.each do |force|
+    next unless force.crime_areas.empty?
     raw_areas = NpiaUtilities::Client.new(:crime_areas, :force => force.npia_id).response
     puts "===========\nAbout to create crime areas for #{force.name}"
     PoliceRakeUtils.create_crime_areas(raw_areas, :police_force => force)
@@ -257,7 +258,7 @@ end
 
 module PoliceRakeUtils
   def self.create_crime_areas(resp_hash, options={})
-    return unless resp_hash['area']
+    return unless resp_hash&&resp_hash['area']
     [resp_hash['area']].flatten.each do |area_hash|
       new_area = options[:police_force].crime_areas.create!(:uid => area_hash['id'], :level => area_hash['level'].to_i, :name => area_hash['name'], :parent_area_id => options[:parent_area_id] )
       puts "created new area #{new_area.name} for #{options[:police_force].name}"
