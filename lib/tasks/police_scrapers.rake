@@ -249,10 +249,27 @@ end
 
 desc "Populate Crime Areas info from NPIA api"
 task :populate_crime_area_info => :environment do
-  CrimeArea.all(:limit => 30, :include => :police_force).each do |crime_area|
+  CrimeArea.find_each do |crime_area|
     area_info = NpiaUtilities::Client.new(:crime_area, :force => crime_area.police_force.npia_id, :area => crime_area.uid).response
     crime_area.update_attributes(:crime_mapper_url => area_info['url_crimemapper'], :feed_url => area_info['url_rss'], :crime_level_cf_national => area_info['crime_level'], :crime_rates => area_info['crime_rates']['total'], :total_crimes => area_info['total_crimes']['total'])
     puts "Updated crime area #{crime_area.name}"
+  end
+end
+
+desc "Connect postcode and crime areas"
+task :connect_postcodes_and_crime_areas => :environment do
+  Postcode.all(:conditions => "crime_area_id IS NULL AND country ='064'", :limit => 1000).each do |postcode|
+    response = NpiaUtilities::Client.new(:geocode_crime_area, :q => postcode.code).response
+    next unless response && response['areas']['area']
+    begin
+      crime_areas = response['areas']['area']
+      police_force = PoliceForce.find_by_npia_id(crime_areas.first['force_id'])
+      crime_area = police_force.crime_areas.find_by_uid(crime_areas.detect{ |ca| ca['level'] == '4' }['area_id'])
+      postcode.update_attribute(:crime_area_id, crime_area.id)
+      puts "updated postcode #{postcode.code}"
+    rescue Exception => e
+      puts "problem updating postcode (#{postcode.code}) with crime_area: #{e.inspect}\nResponse = #{response}"
+    end
   end
 end
 

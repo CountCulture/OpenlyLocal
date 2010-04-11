@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100411133444) do
+ActiveRecord::Schema.define(:version => 20100411184315) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -623,6 +623,7 @@ ActiveRecord::Schema.define(:version => 20100411133444) do
     t.column "ward_id", :integer
     t.column "lat", :float
     t.column "lng", :float
+    t.column "crime_area_id", :integer
   end
 
   add_index "postcodes", ["code"], :name => "index_postcodes_on_code"

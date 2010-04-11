@@ -15,6 +15,7 @@ class PostcodeTest < ActiveSupport::TestCase
     should_belong_to :ward
     should_belong_to :council
     should_belong_to :county
+    should_belong_to :crime_area
     
     should "act as mappable" do
       assert Postcode.respond_to?(:find_closest)
