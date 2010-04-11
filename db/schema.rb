@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100408091345) do
+ActiveRecord::Schema.define(:version => 20100410185830) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -135,6 +135,16 @@ ActiveRecord::Schema.define(:version => 20100408091345) do
   end
 
   add_index "county_region", ["the_geom"], :name => "index_county_region_on_the_geom", :spatial=> true 
+
+  create_table "crime_areas", :force => true do |t|
+    t.column "uid", :integer
+    t.column "police_force_id", :integer
+    t.column "name", :string
+    t.column "level", :integer
+    t.column "parent_area_id", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "data_periods", :force => true do |t|
     t.column "start_date", :date

@@ -3,6 +3,7 @@ class PoliceForce < ActiveRecord::Base
   include TwitterAccountMethods
   has_many :councils
   has_many :police_teams
+  has_many :crime_areas
   has_one :police_authority
   validates_presence_of :name, :url
   validates_uniqueness_of :name

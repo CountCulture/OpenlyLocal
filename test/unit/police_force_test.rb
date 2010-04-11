@@ -10,6 +10,7 @@ class PoliceForceTest < ActiveSupport::TestCase
     
     should_have_many :councils
     should_have_many :police_teams
+    should_have_many :crime_areas
     should_have_one :police_authority 
     should_validate_presence_of :name
     should_validate_uniqueness_of :name

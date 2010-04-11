@@ -165,6 +165,13 @@ Factory.define :inactive_police_officer, :class => :police_officer, :parent => :
   f.active false
 end
 
+Factory.define :crime_area do |f|
+  f.sequence(:name) { |n| "Crime Area #{n}" }
+  f.sequence(:uid) { |n| "CA#{n}" }
+  f.level 4
+  f.association :police_force
+end
+
 Factory.define :pension_fund do |f|
   f.sequence(:name) { |n| "Pension Fund #{n}" }
 end
