@@ -229,3 +229,41 @@ task :connect_wards_and_police_teams  => :environment do
   end
 end
 
+desc "Populate Crime Types from NPIA api"
+task :populate_crime_types => :environment do
+  NpiaUtilities::Client.new(:crime_types).response['crime_type'].each do |ct|
+    crime_type = CrimeType.create!(:uid => ct['id'], :name => ct['name_single'], :plural_name => ct['name_plural'])    
+    puts "Create crime type: #{crime_type.name}"
+  end
+end
+
+desc "Populate Crime Areas from NPIA api"
+task :populate_crime_areas => :environment do
+  PoliceForce.all.each do |force|
+    raw_areas = NpiaUtilities::Client.new(:crime_areas, :force => force.npia_id).response
+    puts "===========\nAbout to create crime areas for #{force.name}"
+    PoliceRakeUtils.create_crime_areas(raw_areas, :police_force => force)
+  end
+end
+
+desc "Populate Crime Areas info from NPIA api"
+task :populate_crime_area_info => :environment do
+  CrimeArea.all(:limit => 30, :include => :police_force).each do |crime_area|
+    area_info = NpiaUtilities::Client.new(:crime_area, :force => crime_area.police_force.npia_id, :area => crime_area.uid).response
+    crime_area.update_attributes(:crime_mapper_url => area_info['url_crimemapper'], :feed_url => area_info['url_rss'], :crime_level_cf_national => area_info['crime_level'], :crime_rates => area_info['crime_rates']['total'], :total_crimes => area_info['total_crimes']['total'])
+    puts "Updated crime area #{crime_area.name}"
+  end
+end
+
+module PoliceRakeUtils
+  def self.create_crime_areas(resp_hash, options={})
+    return unless resp_hash['area']
+    [resp_hash['area']].flatten.each do |area_hash|
+      new_area = options[:police_force].crime_areas.create!(:uid => area_hash['id'], :level => area_hash['level'].to_i, :name => area_hash['name'], :parent_area_id => options[:parent_area_id] )
+      puts "created new area #{new_area.name} for #{options[:police_force].name}"
+      if child_areas = area_hash['child_areas']&&area_hash['child_areas']['area']
+        create_crime_areas(area_hash['child_areas'], :parent_area_id => new_area.id, :police_force => options[:police_force])
+      end
+    end
+  end
+end
