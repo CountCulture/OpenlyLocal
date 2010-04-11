@@ -172,6 +172,11 @@ Factory.define :crime_area do |f|
   f.association :police_force
 end
 
+Factory.define :crime_type do |f|
+  f.sequence(:name) { |n| "Crime Type #{n}" }
+  f.sequence(:uid) { |n| "CT#{n}" }
+end
+
 Factory.define :pension_fund do |f|
   f.sequence(:name) { |n| "Pension Fund #{n}" }
 end

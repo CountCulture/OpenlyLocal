@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100410185830) do
+ActiveRecord::Schema.define(:version => 20100411104822) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -142,6 +142,14 @@ ActiveRecord::Schema.define(:version => 20100410185830) do
     t.column "name", :string
     t.column "level", :integer
     t.column "parent_area_id", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
+
+  create_table "crime_types", :force => true do |t|
+    t.column "uid", :string
+    t.column "name", :string
+    t.column "plural_name", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
   end
