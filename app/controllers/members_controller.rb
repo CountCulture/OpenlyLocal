@@ -4,7 +4,7 @@ class MembersController < ApplicationController
   
   def index
     if @council = Council.find_by_id(params[:council_id])
-      @members = params[:include_ex_members] ? @council.members : @council.members.current
+      @members = params[:include_ex_members] ? @council.members.all(:include => :ward) : @council.members.current.all(:include => :ward)
     else
       @members = Member.except_vacancies.current.paginate(:page => params[:page], :order => "last_name")
     end

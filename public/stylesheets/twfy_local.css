@@ -272,6 +272,10 @@ div#relationships {
 	clear:left;
 	padding-top:1em;
 }
+div.item_grouping h4 {
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 0.5em;
+}
 /*Council formatting*/
 body.councils h1 {
 	float:left;}

@@ -13,21 +13,50 @@
 <%- if @ward -%>
 <div id="relationships">
   <%- unless @members.blank?  -%>
-  <h3>Your local councillors</h3>
+    <h3>Your local councillors</h3>
     <%= list_all @members %>
   <%- end -%>
   
-  <%- if @ward.police_team -%>
-    <div id="police_team" class="item_grouping">
-      <h3><%= link_to('Neighbourhood Police Team', @ward.police_team) %> </h3>
-      <ul>
-        <%- @ward.police_team.police_officers.active.each do |officer| -%>
-          <li><%= officer.title %></li>
+  <div id="crime" class="item_grouping">
+    <h3>Crime &amp; Policing</h3>
+    <%- if @ward.police_team -%>
+      <div id="police_team">
+        <h4>Neighbourhood Police Team: <%= link_for @ward.police_team %></h4>
+        <ul>
+          <%- @ward.police_team.police_officers.active.each do |officer| -%>
+            <li><%= officer.title %></li>
+          <%- end -%>
+        </ul>
+      </div>
+    <%- end -%>
+
+    <%- if @postcode.crime_area -%>
+      <div id="crime_area">
+        <h4>Crime area: <%= @postcode.crime_area.name %></h4>
+        <p>
+          <%= link_to('Crime map', @postcode.crime_area.crime_mapper_url, :class => 'external') if @postcode.crime_area.crime_mapper_url? %> 
+          <%= link_to( 'Crime map data', @postcode.crime_area.feed_url, :class => 'feed') if @postcode.crime_area.feed_url? %></p>
+        <p class='summary'><strong>Overall crime level</strong> (compared with national figure) <%= @postcode.crime_area.crime_level_cf_national? ? @postcode.crime_area.crime_level_cf_national.titleize : 'not known' %></p>
+        <%- unless @postcode.crime_area.total_crimes.blank? -%>
+          <table id="total_crimes" class='statistics'>
+            <caption>Total crime by period</caption>
+            <tr>
+              <th>Period</th>
+              <th class='value'>Crimes</th>
+            </tr>
+            <%- @postcode.crime_area.total_crimes.each do |stat| -%>
+              <tr>
+                <td class='period'><%= stat['date'] %></td>
+                <td class='value'><%= stat['value'] %></td>
+              </tr>
+            <%- end -%>
+          </table>
         <%- end -%>
-      </ul>
-    </div>
-  <%- end -%>
-  
+      </div>
+    <%- end -%>
+    <p class="attribution">Source: <a href="http://policeapi.rkh.co.uk/" title="Police API">NPIA</a></p>
+  </div>
+
   <%- unless @ward.committees.blank? -%>
     <div id="committees" class="item_grouping">
       <h3>Committees for this ward</h3>
@@ -51,10 +80,11 @@
   
   <%- unless @postcode.hyperlocal_sites.blank? -%>
     <div id="hyperlocal_sites" class="item_grouping">
-      <h3>Nearby Hyperlocal websites</h3>
+      <h3><%= link_to "Nearby Hyperlocal websites", hyperlocal_sites_path %></h3>
       <ul>
         <%= render :partial => "hyperlocal_sites/hyperlocal_site", :collection => @postcode.hyperlocal_sites %>
       </ul>
+      <p class='notes'>Want to start a hyperlocal site in your area. See <%= link_to "Talk About Local's guides", 'http://talkaboutlocal.org.uk/', :class => 'external' %> to setting up a hyperlocal site</p>
     </div>
   <%- end -%>
 

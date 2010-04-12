@@ -30,7 +30,7 @@ class MembersControllerTest < ActionController::TestCase
       end
       
       should 'list current members' do
-        assert_select '.members li a', @member.full_name
+        assert_select '.members .member a', @member.full_name
       end
       
       should 'show link to include ex_members' do
@@ -38,7 +38,7 @@ class MembersControllerTest < ActionController::TestCase
       end
       
       should "not show council in member item" do
-        assert_select '#members li a', :text => /#{@council.title}/, :count => 0
+        assert_select '#members .member a', :text => /#{@council.title}/, :count => 0
       end
       
     end
@@ -57,8 +57,8 @@ class MembersControllerTest < ActionController::TestCase
       end
       
       should "list all members" do
-        assert_select ".members li a", @member.full_name
-        assert_select ".members li a", @ex_member.full_name
+        assert_select ".members .member a", @member.full_name
+        assert_select ".members .member a", @ex_member.full_name
       end
       
       should "not show link to include ex_members" do
@@ -83,12 +83,12 @@ class MembersControllerTest < ActionController::TestCase
         end
       
         should "list all members" do
-          assert_select "#members li a", @member.full_name
-          assert_select "#members li a", @ex_member.full_name
+          assert_select "#members .member a", @member.full_name
+          assert_select "#members .member a", @ex_member.full_name
         end
         
         should "show council in member item" do          
-          assert_select "#members li a", /#{@council.title}/
+          assert_select "#members .member", /#{@council.title}/
         end
         
         should 'not show pagination links' do

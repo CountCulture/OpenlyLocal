@@ -57,6 +57,10 @@ class AreasControllerTest < ActionController::TestCase
         assert_select 'a.member_link', /#{@member_1.full_name}/
       end
       
+      should 'not show crime area by default' do
+        assert_select '#crime_area', false
+      end
+      
     end
     
     context "and ward has additional attributes" do
@@ -84,6 +88,7 @@ class AreasControllerTest < ActionController::TestCase
         setup do
           get :search, :postcode => 'za13 3sl'
         end
+        
         should_respond_with :success
 
         should "show link to committee" do
@@ -141,6 +146,31 @@ class AreasControllerTest < ActionController::TestCase
           should "show data in table with graphed_table class for groups that should be graphed" do
             assert_select "#grouped_datapoints .religion.graphed_datapoints"
           end
+        end
+
+      end
+
+      context "and postcode has associated crime area" do
+        setup do
+          @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average', :total_crimes => [{"date"=>"2008-12", "value"=>"432"}, {"date"=>"2009-01", "value"=>"541"}])
+          @postcode.update_attribute(:crime_area, @crime_area)
+          get :search, :postcode => 'za13 3sl'
+        end
+
+        should_assign_to(:postcode) { @postcode }
+
+        should_respond_with :success
+        should_render_template :search
+        should_respond_with_content_type 'text/html'
+
+
+        should 'show crime area' do
+          assert_select '#crime_area'
+        end
+
+        should 'show crime stats in area' do
+          assert_select '#crime_area .summary', /below average/i
+          assert_select '#crime_area #total_crimes'
         end
 
       end

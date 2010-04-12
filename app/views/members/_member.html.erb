@@ -1,3 +1,3 @@
-<li>
-  <strong><%= link_for member %></strong>, <%= basic_link_for member.council %> <%= " (#{member.party})" unless member.party.blank? %> <%= twitter_link_for(member.twitter_account_name, :short => true) %>
-</li>
+<%- div_for member do -%>
+  <strong><%= link_for member %></strong> <%= basic_link_for member.council unless @council %> <%= "(#{[link_for(member.ward), member.party].compact.join(', ')})" if member.party?||member.ward %> <%= twitter_link_for(member.twitter_account_name, :short => true) %>
+<%- end -%>

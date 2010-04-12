@@ -249,7 +249,7 @@ end
 
 desc "Populate Crime Areas info from NPIA api"
 task :populate_crime_area_info => :environment do
-  CrimeArea.find_each do |crime_area|
+  CrimeArea.find_each(:conditions => {:crime_level_cf_national => nil}) do |crime_area|
     area_info = NpiaUtilities::Client.new(:crime_area, :force => crime_area.police_force.npia_id, :area => crime_area.uid).response
     crime_area.update_attributes(:crime_mapper_url => area_info['url_crimemapper'], :feed_url => area_info['url_rss'], :crime_level_cf_national => area_info['crime_level'], :crime_rates => area_info['crime_rates']['total'], :total_crimes => area_info['total_crimes']['total'])
     puts "Updated crime area #{crime_area.name}"
