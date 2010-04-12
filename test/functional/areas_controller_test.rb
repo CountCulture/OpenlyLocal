@@ -169,7 +169,7 @@ class AreasControllerTest < ActionController::TestCase
         end
 
         should 'show crime stats in area' do
-          assert_select '#crime_area .summary', /below average/i
+          assert_select '#crime_area .crime_level', /below average/i
           assert_select '#crime_area #total_crimes'
         end
 
@@ -180,6 +180,8 @@ class AreasControllerTest < ActionController::TestCase
           @council_ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
           @council_ward.committees << @committee = Factory(:committee, :council => @council_1)
           @meeting = Factory(:meeting, :committee => @committee, :council => @council_1)
+          @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average', :total_crimes => [{"date"=>"2008-12", "value"=>"432"}, {"date"=>"2009-01", "value"=>"541"}])
+          @postcode.update_attribute(:crime_area, @crime_area)
           get :search, :postcode => 'za13 3sl', :format => "xml"
         end
 
@@ -211,8 +213,12 @@ class AreasControllerTest < ActionController::TestCase
           assert_select "postcode>ward>committees>committee"
         end
 
-        should_eventually "include police_neighbourhood_team in response" do
-          assert_select "postcode police-neighbourhood-url"
+        should_eventually "include neighbourhood police team in response" do
+          assert_select "postcode police-team"
+        end
+
+        should "include crime_area in response" do
+          assert_select "postcode crime-area"
         end
 
         should_eventually "include hyperlocal_sites in response" do
@@ -280,6 +286,18 @@ class AreasControllerTest < ActionController::TestCase
     context 'and no such postcode' do
       setup do
         get :search, :postcode => 'foo1'
+      end
+  
+      should_respond_with :success
+      should_render_with_layout
+      should 'say so' do
+        assert_select '.alert', /couldn't find postcode/i
+      end
+    end
+    
+    context 'and no postcode' do
+      setup do
+        get :search, :postcode => ''
       end
   
       should_respond_with :success

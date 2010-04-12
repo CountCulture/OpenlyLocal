@@ -167,7 +167,7 @@ end
 
 Factory.define :crime_area do |f|
   f.sequence(:name) { |n| "Crime Area #{n}" }
-  f.sequence(:uid) { |n| "CA#{n}" }
+  f.sequence(:uid) { |n| n }
   f.level 4
   f.association :police_force
 end

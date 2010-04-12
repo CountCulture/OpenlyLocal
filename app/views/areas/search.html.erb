@@ -36,7 +36,7 @@
         <p>
           <%= link_to('Crime map', @postcode.crime_area.crime_mapper_url, :class => 'external') if @postcode.crime_area.crime_mapper_url? %> 
           <%= link_to( 'Crime map data', @postcode.crime_area.feed_url, :class => 'feed') if @postcode.crime_area.feed_url? %></p>
-        <p class='summary'><strong>Overall crime level</strong> (compared with national figure) <%= @postcode.crime_area.crime_level_cf_national? ? @postcode.crime_area.crime_level_cf_national.titleize : 'not known' %></p>
+        <p class='crime_level'><strong>Overall crime level</strong> (compared with national figure) <span class='<%= @postcode.crime_area.crime_level_cf_national %>'><%= @postcode.crime_area.crime_level_cf_national? ? @postcode.crime_area.crime_level_cf_national.titleize : 'not known' %></span></p>
         <%- unless @postcode.crime_area.total_crimes.blank? -%>
           <table id="total_crimes" class='statistics'>
             <caption>Total crime by period</caption>

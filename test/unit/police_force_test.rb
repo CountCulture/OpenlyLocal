@@ -30,6 +30,13 @@ class PoliceForceTest < ActiveSupport::TestCase
     should "include TwitterAccountMethods mixin" do
       assert Member.new.respond_to?(:twitter_account_name)
     end
+    
+    should 'have one force_crime_area' do
+      non_force_crime_area = Factory(:crime_area, :police_force => @police_force, :level => 3)
+      force_crime_area = Factory(:crime_area, :police_force => @police_force, :level => 1)
+      unrelated_force_crime_area = Factory(:crime_area, :level => 1)
+      assert_equal force_crime_area, @police_force.force_crime_area
+    end
   end
   
   context "A PoliceForce instance" do

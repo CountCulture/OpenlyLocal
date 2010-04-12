@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100411184315) do
+ActiveRecord::Schema.define(:version => 20100412105157) do
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(:version => 20100411184315) do
   add_index "county_region", ["the_geom"], :name => "index_county_region_on_the_geom", :spatial=> true 
 
   create_table "crime_areas", :force => true do |t|
-    t.column "uid", :integer
+    t.column "uid", :string
     t.column "police_force_id", :integer
     t.column "name", :string
     t.column "level", :integer

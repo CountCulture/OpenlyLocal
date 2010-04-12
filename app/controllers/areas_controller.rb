@@ -12,9 +12,9 @@ class AreasController < ApplicationController
     @title = "Local information for #{@postcode.pretty_code}"
     respond_to do |format|
       format.html
-      format.xml { render :xml => @postcode.to_xml(:include => { :ward => { :include => [:members, :council, :committees] } }) }
+      format.xml { render :xml => @postcode.to_xml(:include => { :ward => { :include => [:members, :council, :committees] }, :crime_area => {} }) }
       # format.rdf 
-      format.json { render :json => @postcode.to_json(:include => { :ward => { :include => [:members, :council, :committees] } }) }
+      format.json { render :json => @postcode.to_json(:include => { :ward => { :include => [:members, :council, :committees] }, :crime_area => {} }) }
     end
   end
 end
