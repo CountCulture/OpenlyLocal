@@ -33,13 +33,18 @@
     <%- end -%>
 
     <%- if @postcode.crime_area -%>
-      <div id="crime_area">
+      <div id='crime_area' class='graphed_datapoints'>
         <h4>Crime area: <%= @postcode.crime_area.name %></h4>
         <p>
           <%= link_to('Crime map', @postcode.crime_area.crime_mapper_url, :class => 'external') if @postcode.crime_area.crime_mapper_url? %> 
-          <%= link_to( 'Crime map data', @postcode.crime_area.feed_url, :class => 'feed') if @postcode.crime_area.feed_url? %></p>
-        <p class='crime_level'><strong>Overall crime level</strong> (compared with national figure) <span class='<%= @postcode.crime_area.crime_level_cf_national %>'><%= @postcode.crime_area.crime_level_cf_national? ? @postcode.crime_area.crime_level_cf_national.titleize : 'not known' %></span></p>
+          <%= link_to( 'Crime map data', @postcode.crime_area.feed_url, :class => 'feed') if @postcode.crime_area.feed_url? %>
+        </p>
+        <p class='crime_level <%= @postcode.crime_area.crime_level_cf_national %>'>
+          <strong>Overall crime level</strong> (compared with national) 
+          <span class='value'><%= @postcode.crime_area.crime_level_cf_national? ? @postcode.crime_area.crime_level_cf_national.titleize : 'not known' %></span>
+        </p>
         <%- if @postcode.crime_area.crime_rate_comparison -%>
+        <%= crime_stats_graph @postcode.crime_area.crime_rate_comparison %>
           <table id="crime_rates" class='statistics'>
             <caption>Crime rate by period</caption>
             <tr>
