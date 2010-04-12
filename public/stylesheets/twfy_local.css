@@ -529,6 +529,17 @@ table.datapoints td.more_info {
 table.statistics caption.uncontested {
 	background-color:#FBC2C4;
 } 
+/*Crime & Police formatting*/
+.crime_level span {
+	font-weight:bold;
+	font-size: 120%;
+	text-transform: uppercase;
+}
+.crime_level .high { color:#8A1F11;}
+.crime_level .above_average { color:#8F382C;}
+.crime_level .average { color:#036;}
+.crime_level .below_average { color:#628F68;}
+.crime_level .low { color:#277F33;}
 /*Hyperlocal formatting*/
 #new_hyperlocal_site label {
 	color:#666;

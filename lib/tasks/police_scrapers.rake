@@ -258,10 +258,10 @@ end
 
 desc "Connect postcode and crime areas"
 task :connect_postcodes_and_crime_areas => :environment do
-  Postcode.all(:conditions => "crime_area_id IS NULL AND country ='064'", :limit => 1000).each do |postcode|
+  Postcode.all(:conditions => "crime_area_id IS NULL AND country ='064'", :limit => 2000).each do |postcode|
     response = NpiaUtilities::Client.new(:geocode_crime_area, :q => postcode.code).response
-    next unless response && response['areas']['area']
     begin
+      next unless response && response['areas']['area']
       crime_areas = response['areas']['area']
       police_force = PoliceForce.find_by_npia_id(crime_areas.first['force_id'])
       crime_area = police_force.crime_areas.find_by_uid(crime_areas.detect{ |ca| ca['level'] == '4' }['area_id'])

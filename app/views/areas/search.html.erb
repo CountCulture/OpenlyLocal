@@ -19,6 +19,8 @@
   
   <div id="crime" class="item_grouping">
     <h3>Crime &amp; Policing</h3>
+    <h4>Police force: <%= link_for @council.police_force %></h4>
+    
     <%- if @ward.police_team -%>
       <div id="police_team">
         <h4>Neighbourhood Police Team: <%= link_for @ward.police_team %></h4>
@@ -37,17 +39,19 @@
           <%= link_to('Crime map', @postcode.crime_area.crime_mapper_url, :class => 'external') if @postcode.crime_area.crime_mapper_url? %> 
           <%= link_to( 'Crime map data', @postcode.crime_area.feed_url, :class => 'feed') if @postcode.crime_area.feed_url? %></p>
         <p class='crime_level'><strong>Overall crime level</strong> (compared with national figure) <span class='<%= @postcode.crime_area.crime_level_cf_national %>'><%= @postcode.crime_area.crime_level_cf_national? ? @postcode.crime_area.crime_level_cf_national.titleize : 'not known' %></span></p>
-        <%- unless @postcode.crime_area.total_crimes.blank? -%>
-          <table id="total_crimes" class='statistics'>
-            <caption>Total crime by period</caption>
+        <%- if @postcode.crime_area.crime_rate_comparison -%>
+          <table id="crime_rates" class='statistics'>
+            <caption>Crime rate by period</caption>
             <tr>
               <th>Period</th>
-              <th class='value'>Crimes</th>
+              <th class='value'>Crime Rate</th>
+              <th class='force_value value'>Force average</th>
             </tr>
-            <%- @postcode.crime_area.total_crimes.each do |stat| -%>
+            <%- @postcode.crime_area.crime_rate_comparison.each do |stat| -%>
               <tr>
                 <td class='period'><%= stat['date'] %></td>
-                <td class='value'><%= stat['value'] %></td>
+                <td class='value'><%= sprintf("%.1f", stat['value']) %></td>
+                <td class='force_value value'><%= sprintf("%.1f", stat['force_value']) if stat['force_value'] %></td>
               </tr>
             <%- end -%>
           </table>

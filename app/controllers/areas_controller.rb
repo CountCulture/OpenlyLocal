@@ -1,6 +1,6 @@
 class AreasController < ApplicationController
   def search
-    unless @postcode = Postcode.find_from_messy_code(params[:postcode])
+    unless !params[:postcode].blank? && @postcode = Postcode.find_from_messy_code(params[:postcode])
       render :text => "<p class='alert'>Couldn't find postcode</p>", :layout => true and return
     end
     @council = @postcode.council

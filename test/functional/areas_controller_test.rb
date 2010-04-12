@@ -152,7 +152,9 @@ class AreasControllerTest < ActionController::TestCase
 
       context "and postcode has associated crime area" do
         setup do
-          @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average', :total_crimes => [{"date"=>"2008-12", "value"=>"432"}, {"date"=>"2009-01", "value"=>"541"}])
+          @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average')
+          comparison_data = [{"date"=>"2008-12", "value"=>"42.2"}, {"date"=>"2009-01", "value"=>"51", 'force_value' => '2.5'}, {"date"=>"2009-02", "value"=>"3.14"}]
+          CrimeArea.any_instance.stubs(:crime_rate_comparison).returns(comparison_data)
           @postcode.update_attribute(:crime_area, @crime_area)
           get :search, :postcode => 'za13 3sl'
         end
@@ -170,7 +172,16 @@ class AreasControllerTest < ActionController::TestCase
 
         should 'show crime stats in area' do
           assert_select '#crime_area .crime_level', /below average/i
-          assert_select '#crime_area #total_crimes'
+          assert_select '#crime_area #crime_rates'
+        end
+        
+        should 'show comparison with force levels' do
+          assert_select '#crime_rates .force_value', '2.5'
+        end
+
+        should 'format values to one decimal place' do
+          assert_select '#crime_rates .value', '51.0'
+          assert_select '#crime_rates .value', '3.1'
         end
 
       end
@@ -180,7 +191,9 @@ class AreasControllerTest < ActionController::TestCase
           @council_ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
           @council_ward.committees << @committee = Factory(:committee, :council => @council_1)
           @meeting = Factory(:meeting, :committee => @committee, :council => @council_1)
-          @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average', :total_crimes => [{"date"=>"2008-12", "value"=>"432"}, {"date"=>"2009-01", "value"=>"541"}])
+          @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average')
+          comparison_data = [{"date"=>"2008-12", "value"=>"42.2"}, {"date"=>"2009-01", "value"=>"51", 'force_value' => '2.5'}, {"date"=>"2009-02", "value"=>"3.1"}]
+          CrimeArea.any_instance.stubs(:crime_rate_comparison).returns(comparison_data)
           @postcode.update_attribute(:crime_area, @crime_area)
           get :search, :postcode => 'za13 3sl', :format => "xml"
         end
@@ -297,7 +310,7 @@ class AreasControllerTest < ActionController::TestCase
     
     context 'and no postcode' do
       setup do
-        get :search, :postcode => ''
+        get :search, :postcode => nil
       end
   
       should_respond_with :success
