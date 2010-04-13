@@ -215,6 +215,60 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
     end
   end
   
+  context 'when getting poll results from an election page' do
+    setup do
+      @dummy_response = dummy_response(:n3_election_polls_page)
+      @dummy_graph = RDF::Graph.new
+      RdfUtilities.stubs(:_http_get).returns(@dummy_response)
+    end
+    
+    context 'in general' do
+      setup do
+        @results = ElectionResultExtractor.poll_results_from('http://foo.com/election')
+      end
+      
+      before_should 'build graph from given page' do
+        RdfUtilities.expects(:graph_from).with('http://foo.com/election').returns(@dummy_graph)
+      end
+      
+      should 'return array of polls as result' do
+        assert_kind_of Array, @results
+        assert_equal 21, @results.size
+      end
+      
+      context 'and when returning polls' do
+        setup do
+          @poll = @results.detect{ |p| p[:uri] == 'http://openelectiondata.org/id/polls/00BUFY/2008-05-01/member' }
+        end
+        
+        should 'return poll details in hash' do
+          assert_equal '8038', @poll[:electorate]
+        end
+
+        should "extract date from poll uri if it isn't explicitly stated" do
+          assert_equal '2008-05-01', @poll[:date]
+        end
+
+        should "return candidacies" do
+          assert_equal 5, @poll[:candidacies].size
+          
+          candidacy = @poll[:candidacies].detect { |c| c[:given_name] == 'Majella Teresa' }
+          assert_equal '620', candidacy[:votes]
+          assert_equal 'Kennedy', candidacy[:family_name]
+          assert_equal 'false', candidacy[:elected]
+          assert_equal 'http://openelectiondata.org/id/parties/6', candidacy[:party]
+          assert !candidacy[:independent]
+        end
+
+        # before_should 'build graph from given page' do
+        #   RdfUtilities.expects(:graph_from).with('http://foo.com/election').returns(@dummy_graph)
+        # end
+        # 
+      end
+      
+    end
+  end
+
   context 'when getting poll results for council' do
     setup do
       @council = stub(:ldg_id => 123) #stub Council behaviour
