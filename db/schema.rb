@@ -9,7 +9,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100412105157) do
+ActiveRecord::Schema.define(:version => 20100412223334) do
+
+  create_table "addresses", :force => true do |t|
+    t.column "street_address", :text
+    t.column "locality", :string
+    t.column "postal_code", :string
+    t.column "country", :string
+    t.column "addressee_type", :string
+    t.column "addressee_id", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string

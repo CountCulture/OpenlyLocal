@@ -282,3 +282,7 @@ Factory.define :postcode do |f|
   f.sequence(:lng) {|n| 0.2*n}
 end
 
+Factory.define :address do |f|
+  f.association :addressee, :factory => :police_force 
+end
+
