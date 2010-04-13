@@ -27,7 +27,8 @@ _:RqHMlTqb10 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.o
 _:RqHMlTqb10 <http://openelectiondata.org/0.1/independentCandidate> "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
 _:RqHMlTqb10 <http://openelectiondata.org/0.1/candidate> _:RqHMlTqb11.
 _:RqHMlTqb10 <http://openelectiondata.org/0.1/candidateVoteCount> "342"^^<http://www.w3.org/2001/XMLSchema#integer>.
-_:RqHMlTqb5 <http://xmlns.com/foaf/0.1/name> "Patrick Wardle Curran"@en.
+_:RqHMlTqb5 <http://xmlns.com/foaf/0.1/givenName> "Patrick Wardle"@en.
+_:RqHMlTqb5 <http://xmlns.com/foaf/0.1/familyName> "Curran"@en.
 _:RqHMlTqb14 <http://openelectiondata.org/0.1/elected> "false"^^<http://www.w3.org/2001/XMLSchema#boolean>.
 _:RqHMlTqb14 <http://openelectiondata.org/0.1/candidate> _:RqHMlTqb15.
 _:RqHMlTqb14 <http://openelectiondata.org/0.1/candidateVoteCount> "311"^^<http://www.w3.org/2001/XMLSchema#integer>.
@@ -57,4 +58,9 @@ _:RqHMlTqb6 <http://openelectiondata.org/0.1/party> <http://openelectiondata.org
 _:RqHMlTqb13 <http://xmlns.com/foaf/0.1/name> "Margaret Stanhope"@en.
 <http://openelectiondata.org/id/parties/26> <http://www.w3.org/2000/01/rdf-schema#label> "Liberal Democrats"@en.
 _:RqHMlTqb17 <http://xmlns.com/foaf/0.1/name> "Michael John Wilcox"@en.
+_:RqHMlTqb5 <http://openelectiondata.org/0.1/address> _:EjQiAeIm9.
+_:EjQiAeIm9 <http://www.w3.org/2006/vcard/ns#postal-code> "IG2 6RR "@en.
+_:EjQiAeIm9 <http://www.w3.org/2006/vcard/ns#locality> "Gants Hill"@en.
+_:EjQiAeIm9 <http://www.w3.org/2006/vcard/ns#street-address> "7 Pershore Close"@en.
+_:EjQiAeIm9 <http://www.w3.org/2006/vcard/ns#region> "Essex"@en.
 

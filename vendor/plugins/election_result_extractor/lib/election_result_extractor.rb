@@ -2,6 +2,7 @@ module ElectionResultExtractor
   require 'rdf_utilities'
   
   extend self
+  ca_mapping = {RDF::FOAF.given_name => :given_name }
   
   class ExtractorError < StandardError; end
   
@@ -41,9 +42,19 @@ module ElectionResultExtractor
         votes = graph.query([candidacy.object, openelection.candidateVoteCount, nil]).first.object.value rescue nil
         elected = graph.query([candidacy.object, openelection.elected, nil]).first.object.value rescue nil
         independent = graph.query([candidacy.object, openelection.independentCandidate, nil]).first.object.value rescue nil
-        candidate = graph.query([candidacy.object, openelection.candidate, nil]).first.object rescue nil
+        candidate = graph.query([candidacy.object, openelection.candidate, nil]).first.object rescue nil        
         name = graph.query([candidate, RDF::FOAF.name, nil]).first.object.value rescue nil
-        {:party  => party, :name => name, :votes => votes, :elected => elected, :independent => independent }
+        given_name = graph.query([candidate, RDF::FOAF.givenName, nil]).first.object.value rescue nil
+        family_name = graph.query([candidate, RDF::FOAF.familyName, nil]).first.object.value rescue nil
+
+        address = graph.query([candidate, openelection.address, nil]).first.object rescue nil
+        if address
+          address = %w(street_address locality region postal_code).inject({}) do |h,a|
+            h[a.to_sym] = graph.query([address, vcard[a.gsub('_','-')], nil]).first.object.value rescue nil
+            h
+          end
+        end
+        {:party  => party, :name => name, :given_name => given_name, :family_name => family_name, :votes => votes, :elected => elected, :independent => independent, :address => address }
       end
     { :uri => uri, :area => area, :date => date, :electorate => electorate, :ballots_issued => ballots_issued, :uncontested => uncontested, :source => poll_page, :candidacies => candidacies }
     end
@@ -75,5 +86,9 @@ module ElectionResultExtractor
   private
   def openelection
     RDF::Vocabulary.new('http://openelectiondata.org/0.1/')
+  end
+  
+  def vcard
+    RDF::Vocabulary.new('http://www.w3.org/2006/vcard/ns#')
   end
 end

@@ -144,6 +144,20 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         assert_nil independent[:party]
         assert_equal 'true', independent[:independent]
       end
+      
+      should 'get given and family names when supplied' do
+        rich_candidacy = @results.first[:candidacies].detect { |c| c[:given_name] == 'Patrick Wardle' }
+        assert_equal 'Curran', rich_candidacy[:family_name]
+        assert_equal '473', rich_candidacy[:votes]
+      end
+      
+      should 'get address when supplied' do
+        rich_candidacy_address = @results.first[:candidacies].detect { |c| c[:given_name] == 'Patrick Wardle' }[:address]
+        assert_equal 'IG2 6RR ', rich_candidacy_address[:postal_code]
+        assert_equal '7 Pershore Close', rich_candidacy_address[:street_address]
+        assert_equal 'Gants Hill', rich_candidacy_address[:locality]
+        assert_equal 'Essex', rich_candidacy_address[:region]
+      end
     end
 
     context 'and error raised querying results' do
