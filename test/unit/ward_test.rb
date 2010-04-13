@@ -46,28 +46,6 @@ class WardTest < ActiveSupport::TestCase
       end
     end
 
-    context "when finding by postcode" do
-      setup do
-
-      end
-
-      should "query ons site" do
-        # Net:Http.expects(:get).with(match("ab1+cd2"))
-        # Ward.find_by_postcode("ab1 cd2")
-      end
-
-      should "parser response" do
-
-      end
-
-      should "raise exception if no postocde found" do
-
-      end
-
-      should "raise exeption if bad response" do
-
-      end
-    end
   end
 
   context "A Ward instance" do

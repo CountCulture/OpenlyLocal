@@ -60,7 +60,15 @@ class CouncilsController < ApplicationController
   
   private
   def find_council
-    @council = params[:id] ? Council.find(params[:id]) : Council.find_by_snac_id(params[:snac_id])
+    @council = 
+    case 
+    when params[:snac_id]
+      Council.find_by_snac_id(params[:snac_id])
+    when params[:os_id]
+      Council.find_by_os_id(params[:os_id])
+    else
+      Council.find(params[:id])
+    end
   end
   
 end

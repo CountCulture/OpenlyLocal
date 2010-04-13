@@ -50,6 +50,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'wards/snac_id/:snac_id', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/ }
   map.connect 'councils/snac_id/:snac_id.:format', :controller => "councils", :action => "show", :requirements => { :snac_id => /\w+/ }
   map.connect 'councils/snac_id/:snac_id', :controller => "councils", :action => "show", :requirements => { :snac_id => /\w+/ }
+  map.connect 'wards/os_id/:os_id.:format', :controller => "wards", :action => "show", :requirements => { :os_id => /\d+/ }
+  map.connect 'wards/os_id/:os_id', :controller => "wards", :action => "show", :requirements => { :os_id => /\d+/ }
+  map.connect 'councils/os_id/:os_id.:format', :controller => "councils", :action => "show", :requirements => { :os_id => /\d+/ }
+  map.connect 'councils/os_id/:os_id', :controller => "councils", :action => "show", :requirements => { :os_id => /\d+/ }
 
   # The priority is based upon order of creation: first created -> highest priority.
 

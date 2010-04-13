@@ -218,6 +218,13 @@ class CouncilsControllerTest < ActionController::TestCase
       assert_routing "councils/snac_id/23.rdf", {:controller => "councils", :action => "show", :snac_id => "23", :format => "rdf"}
     end
 
+    should "route council identified by os_id to show action" do
+      assert_routing "councils/os_id/1023", {:controller => "councils", :action => "show", :os_id => "1023"}
+      assert_routing "councils/os_id/1023.xml", {:controller => "councils", :action => "show", :os_id => "1023", :format => "xml"}
+      assert_routing "councils/os_id/1023.json", {:controller => "councils", :action => "show", :os_id => "1023", :format => "json"}
+      assert_routing "councils/os_id/1023.rdf", {:controller => "councils", :action => "show", :os_id => "1023", :format => "rdf"}
+    end
+
     context "when passed redirect_from_resource as parameter" do
       setup do
         get :show, :id => @council.id, :redirect_from_resource => true
@@ -313,6 +320,21 @@ class CouncilsControllerTest < ActionController::TestCase
       setup do
         @council.update_attribute(:snac_id, "AB12")
         get :show, :snac_id => @council.snac_id
+      end
+
+      should_assign_to(:council) { @council }
+      should_respond_with :success
+      should_render_template :show
+
+      should "show council in title" do
+        assert_select "title", /#{@council.title}/
+      end
+    end
+
+    context "with basic request and ward identified by os_id" do
+      setup do
+        @council.update_attribute(:os_id, "1023")
+        get :show, :os_id => @council.os_id
       end
 
       should_assign_to(:council) { @council }

@@ -36,6 +36,14 @@ class WardsController < ApplicationController
   
   private
   def find_ward
-    @ward = params[:id] ? Ward.find(params[:id]) : Ward.find_by_snac_id(params[:snac_id])
+    @ward = 
+    case 
+    when params[:snac_id]
+      Ward.find_by_snac_id(params[:snac_id])
+    when params[:os_id]
+      Ward.find_by_os_id(params[:os_id])
+    else
+      Ward.find(params[:id])
+    end
   end
 end

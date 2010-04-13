@@ -29,6 +29,13 @@ class WardsControllerTest < ActionController::TestCase
       assert_routing "wards/snac_id/23.rdf", {:controller => "wards", :action => "show", :snac_id => "23", :format => "rdf"}
     end
 
+    should "route ward identified by os_id to show action" do
+      assert_routing "wards/os_id/10023", {:controller => "wards", :action => "show", :os_id => "10023"}
+      assert_routing "wards/os_id/10023.xml", {:controller => "wards", :action => "show", :os_id => "10023", :format => "xml"}
+      assert_routing "wards/os_id/10023.json", {:controller => "wards", :action => "show", :os_id => "10023", :format => "json"}
+      assert_routing "wards/os_id/10023.rdf", {:controller => "wards", :action => "show", :os_id => "10023", :format => "rdf"}
+    end
+
     context "with basic request" do
       setup do
         get :show, :id => @ward.id
@@ -75,6 +82,22 @@ class WardsControllerTest < ActionController::TestCase
       setup do
         @ward.update_attribute(:snac_id, "AB12")
         get :show, :snac_id => @ward.snac_id
+      end
+
+      should_assign_to(:ward) { @ward }
+      should_respond_with :success
+      should_render_template :show
+
+      should "show ward in title" do
+        assert_select "title", /#{@ward.title}/
+      end
+    end
+
+    context "with basic request and ward identified by os_id" do
+      setup do
+        @ward.update_attributes(:os_id => "10023", :snac_id => "AB12")
+        another_ward = Factory(:ward, :council => @ward.council, :name => 'another ward')
+        get :show, :os_id => @ward.os_id
       end
 
       should_assign_to(:ward) { @ward }
