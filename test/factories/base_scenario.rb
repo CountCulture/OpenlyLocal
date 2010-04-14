@@ -118,10 +118,6 @@ Factory.define :feed_entry do |f|
   f.sequence(:guid) { |n|  "guid_#{n}" }
 end
 
-Factory.define :cached_postcode do |f|
-  f.sequence(:code) { |n| "AB1CD#{n}" }
-end
-
 Factory.define :ldg_service do |f|
   f.sequence(:category) { |n| "Foo #{n}" }
   f.sequence(:lgsl) { |n| 33 + n }

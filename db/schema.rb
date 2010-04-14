@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100414082119) do
+ActiveRecord::Schema.define(:version => 20100414112459) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -29,15 +29,6 @@ ActiveRecord::Schema.define(:version => 20100414082119) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
   end
-
-  create_table "cached_postcodes", :force => true do |t|
-    t.column "code", :string
-    t.column "output_area_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-  end
-
-  add_index "cached_postcodes", ["output_area_id"], :name => "index_cached_postcodes_on_output_area_id"
 
   create_table "candidates", :force => true do |t|
     t.column "poll_id", :integer
