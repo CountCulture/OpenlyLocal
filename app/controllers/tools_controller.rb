@@ -6,6 +6,9 @@ class ToolsController < ApplicationController
   def ning
   end
 
+  def widget
+  end
+
   private
   def load_councils
     if params[:council_id].blank?
