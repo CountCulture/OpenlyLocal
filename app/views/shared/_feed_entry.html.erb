@@ -1,5 +1,5 @@
 <%- div_for feed_entry do -%>
-  <h4><span class="date"><%= feed_entry.published_at&&feed_entry.published_at.to_date.to_s(:custom_short) %></span> <%= link_to h(feed_entry.title), feed_entry.url, :class => "external" %></h4>
+  <h4><span class="date"><%= feed_entry.published_at&&feed_entry.published_at.to_date.to_s(:custom_short) %></span> <%= link_to h(feed_entry.title), feed_entry.url, :class => "external" %> <%= link_to(image_tag('map_icon.png'), "http://maps.google.co.uk/maps?q=#{feed_entry.lat},+#{feed_entry.lng}+(#{URI.escape(feed_entry.title)})&iwloc=A&hl=en") if feed_entry.lat?&&feed_entry.lng? %></h4>
   <div class="info">
     <%= truncate(feed_entry.summary, :length => 150) %>
   </div>
