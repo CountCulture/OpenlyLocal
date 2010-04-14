@@ -32,7 +32,10 @@
     <h4>External links</h4>
     <ul>
       <%- unless @council.wdtk_name.blank? -%>
-        <li><%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@council.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@council.wdtk_name}", :class => "feed" %>)</li>
+        <li><%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@council.wdtk_name}", :class => 'external' %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@council.wdtk_name}", :class => "feed" %>)</li>
+      <%- end -%>
+      <%- if @council.fix_my_street_url -%>
+        <li><%= link_to "Fix My Street reports", @council.fix_my_street_url, :class => 'external' %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@council.wdtk_name}", :class => "feed" %>)</li>
       <%- end -%>
       <%- unless @council.ons_url.blank? -%>
         <li><%= link_to "Office for National Statistics page", @council.ons_url, :class => 'external' %></li>

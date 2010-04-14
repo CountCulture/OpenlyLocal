@@ -318,7 +318,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
           @results = ElectionResultExtractor.poll_results_for(@council)[:results]
         end
         
-        should 'return as hash keyed to elections' do
+        should 'return as hash keyed to election page' do
           assert_kind_of Hash, @results
           assert_equal 'http://foo.com/election', @results.keys.first
         end

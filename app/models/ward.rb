@@ -25,6 +25,10 @@ class Ward < ActiveRecord::Base
       find_by_id($1)
     end
   end
+  
+  def fix_my_street_url
+    snac_id? ? "http://fixmystreet.com/reports/#{snac_id}" : nil
+  end
 
   # override standard matches_params from ScrapedModel to match against name if uid is blank
   def matches_params(params={})
