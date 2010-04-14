@@ -11,10 +11,29 @@ class FeedEntryTest < ActiveSupport::TestCase
     should_validate_presence_of :title
     should_validate_presence_of :guid
     should_validate_presence_of :url
+    should_have_db_columns :lat, :lng
     
     should "belong to polymorphic feed owner" do
       council = Factory(:council)
       assert_equal council, Factory(:feed_entry, :feed_owner => council).reload.feed_owner
+    end
+    
+    context 'when assigning point' do
+      should 'convert to lat long' do
+        @feed_entry.point = '45.256 -71.92'
+        assert_equal 45.256, @feed_entry.lat
+        assert_equal -71.92, @feed_entry.lng
+      end
+      
+      should 'allow comma as separator instead of space' do
+        @feed_entry.point = '45.256,-71.92'
+        assert_equal 45.256, @feed_entry.lat
+        assert_equal -71.92, @feed_entry.lng
+      end
+      
+      should 'not raise exception if nil' do
+        assert_nothing_raised(Exception) { @feed_entry.point = nil }
+      end
     end
 
     context "when returning entries for blog" do
@@ -31,9 +50,10 @@ class FeedEntryTest < ActiveSupport::TestCase
     context "when updating feed" do
       setup do
         html_content = "<p>News reaches us that the café at Rowheath<br />Pavilion\r\nwill now be open six<br><br>days a week<a href=\"http://togetherinmission.co.uk/\">Together in Mission</a> who are based at the Pavilion said:</p>\n<p>&lt;a href=&#x27;http://bournvillevillage.com/?p=682&#x27;&gt;hello&lt;/a&gt; world</p>"
-        dummy_entry_1 = stub(:title => "Entry 1", :summary => "<p>Entry</p> 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1")
-        dummy_entry_2 = stub(:title => "Entry 2", :summary => nil, :content => html_content, :url => "foo.com/entry_2", :published => 5.days.ago, :id => "entry_2")
-        Feedzirra::Feed.stubs(:fetch_and_parse).returns(stub(:entries => [dummy_entry_1, dummy_entry_2]))
+        dummy_entry_1 = stub_everything(:title => "Entry 1", :summary => "<p>Entry</p> 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1")
+        dummy_entry_2 = stub_everything(:title => "Entry 2", :summary => nil, :content => html_content, :url => "foo.com/entry_2", :point => '45.256 -71.92', :published => 5.days.ago, :id => "entry_2")
+        dummy_entry_3 = stub_everything(:title => "Entry 3", :summary => nil, :url => "foo.com/entry_3", :published => 5.days.ago, :id => "entry_3")
+        Feedzirra::Feed.stubs(:fetch_and_parse).returns(stub(:entries => [dummy_entry_1, dummy_entry_2, dummy_entry_3]))
       end
       
       should "use Feedzirra to get and parse feed from url" do
@@ -42,7 +62,7 @@ class FeedEntryTest < ActiveSupport::TestCase
       end
       
       should "add entries returned by Feedzirra" do
-        assert_difference "FeedEntry.count", 2 do
+        assert_difference "FeedEntry.count", 3 do
           FeedEntry.update_from_feed("foo.com")
         end
       end
@@ -62,7 +82,7 @@ class FeedEntryTest < ActiveSupport::TestCase
       
       should "not update entries already in db" do
         @existing_entry = Factory(:feed_entry, :title => "Orig title", :guid => "entry_2")
-        assert_difference "FeedEntry.count", 1 do
+        assert_difference "FeedEntry.count", 2 do
           FeedEntry.update_from_feed("foo.com")
         end
         assert_equal "Orig title", @existing_entry.reload.title
@@ -105,6 +125,17 @@ class FeedEntryTest < ActiveSupport::TestCase
         assert_match /hello world/, new_entry.summary
       end
       
+      should "convert point to lat, lng" do
+        FeedEntry.update_from_feed("foo.com")
+        new_entry = FeedEntry.find_by_guid("entry_2")
+        assert_in_delta 45.256, new_entry.lat, 2 ** -20
+        assert_in_delta -71.92, new_entry.lng, 2 ** -20
+      end
+      
+      should "not have errors when no content" do
+        assert_nothing_raised(Exception) { FeedEntry.update_from_feed("foo.com") }
+      end
+      
       context "and asked to update from feed_owner" do
         setup do
           @owner = Factory(:council, :feed_url => "bar.com")
@@ -116,7 +147,7 @@ class FeedEntryTest < ActiveSupport::TestCase
         end
         
         should "add entries returned by Feedzirra" do
-          assert_difference "FeedEntry.count", 2 do
+          assert_difference "FeedEntry.count", 3 do
             FeedEntry.update_from_feed(@owner)
           end
         end
@@ -132,8 +163,8 @@ class FeedEntryTest < ActiveSupport::TestCase
     
     context "when performing" do
       setup do
-        dummy_entry_1 = stub(:title => "Entry 1", :summary => "Entry 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1")
-        dummy_entry_2 = stub(:title => "Entry 2", :summary => "Entry 2 summary", :url => "foo.com/entry_2", :published => 5.days.ago, :id => "entry_2")
+        dummy_entry_1 = stub_everything(:title => "Entry 1", :summary => "Entry 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1")
+        dummy_entry_2 = stub_everything(:title => "Entry 2", :summary => "Entry 2 summary", :url => "foo.com/entry_2", :published => 5.days.ago, :id => "entry_2")
         Feedzirra::Feed.stubs(:fetch_and_parse).returns(stub(:entries => [dummy_entry_1, dummy_entry_2]))
         @council = Factory(:council, :feed_url => "bar.com")
         Council.stubs(:all).returns([@council])

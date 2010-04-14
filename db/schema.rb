@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100412223334) do
+ActiveRecord::Schema.define(:version => 20100414082119) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -338,6 +338,8 @@ ActiveRecord::Schema.define(:version => 20100412223334) do
     t.column "updated_at", :datetime
     t.column "feed_owner_type", :string
     t.column "feed_owner_id", :integer
+    t.column "lat", :float
+    t.column "lng", :float
   end
 
   add_index "feed_entries", ["feed_owner_id", "feed_owner_type"], :name => "index_feed_entries_on_feed_owner_id_and_feed_owner_type"
