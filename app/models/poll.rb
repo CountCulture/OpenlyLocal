@@ -14,8 +14,8 @@ class Poll < ActiveRecord::Base
                                                      :uncontested => poll_info[:uncontested] == 'true')
       poll_info[:candidacies].each do |candidacy_info|
         name = NameParser.parse(candidacy_info[:name])
-        poll.candidacies.find_or_create_by_first_name_and_last_name( :first_name => candidacy_info[:first_name]||name[:first_name], 
-                                                                     :last_name => candidacy_info[:last_name]||name[:last_name], 
+        poll.candidacies.find_or_create_by_first_name_and_last_name( :first_name => candidacy_info[:given_name]||name[:first_name], 
+                                                                     :last_name => candidacy_info[:family_name]||name[:last_name], 
                                                                      :elected => candidacy_info[:elected] == 'true',
                                                                      :votes => candidacy_info[:votes],
                                                                      :political_party => PoliticalParty.find_from_resource_uri(candidacy_info[:party]))

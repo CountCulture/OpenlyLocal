@@ -2,7 +2,6 @@ module ElectionResultExtractor
   require 'rdf_utilities'
   
   extend self
-  ca_mapping = {RDF::FOAF.given_name => :given_name }
   
   class ExtractorError < StandardError; end
   
@@ -70,14 +69,16 @@ module ElectionResultExtractor
     status << "#{election_pages.size} election(s) found"
     results = {}
     elections = election_pages.each do |election_page|
-      poll_pages = poll_pages_from(election_page)
-      poll_count += poll_pages.size
-      polls = poll_pages.collect do |poll_page|
-         poll_results_from(poll_page)
-      end.flatten
+      polls = poll_results_from(election_page) rescue nil
+      unless polls
+        poll_pages = poll_pages_from(election_page)
+        polls = poll_pages.collect do |poll_page|
+           poll_results_from(poll_page)
+        end.flatten
+      end
       results[election_page] = polls
     end
-    status << "#{poll_count} polls found"
+    status << "#{results.values.flatten.size} polls found"
     { :results => results, :status => status }
   rescue ExtractorError => e
     {:errors => e.message, :status => status }
@@ -90,5 +91,10 @@ module ElectionResultExtractor
   
   def vcard
     RDF::Vocabulary.new('http://www.w3.org/2006/vcard/ns#')
+  end
+  
+  def _http_get(url)
+    return if RAILS_ENV == 'test'
+    open(url)
   end
 end
