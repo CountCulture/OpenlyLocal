@@ -279,7 +279,7 @@ class ApplicationHelperTest < ActionView::TestCase
     end
 
     should "return just twitter image tage instead of text if short requested" do
-      assert_dom_equal link_to(image_tag("twitter_icon.png", :alt => "Twitter feed for foo"), "http://twitter.com/foo"), twitter_link_for("foo", :short => true)
+      assert_dom_equal link_to(image_tag("twitter_icon.png", :alt => 'Twitter feed for foo'), 'http://twitter.com/foo', :class => 'twitter', :title => 'Twitter feed for foo'), twitter_link_for("foo", :short => true)
     end
   end
   
