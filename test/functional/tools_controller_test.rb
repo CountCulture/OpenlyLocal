@@ -98,7 +98,7 @@ class ToolsControllerTest < ActionController::TestCase
       get :widget, :format => "js", :council_id => @council.id
     end
 
-    should_assign_to(:councils { @council}
+    should_assign_to(:council) { @council}
     should_respond_with :success
     should_render_template :widget
     should_render_without_layout

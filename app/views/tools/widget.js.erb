@@ -1,6 +1,6 @@
 (function(){
 	var council_id = <%= @council.id %>;
-	document.write('<style lang="text/css">div.olwidget {margin:3px;}\n .olwidget h3 { border-bottom: 1px solid #676767; margin: 0.5em 0 0 0; color: #003366;}\n .olwidget h4 { color: #333; margin: 0.5em 0 0 0;}\n .olwidget .footer { padding 5px; background-color: #eee; border-top: 1px solid #676767; margin-top: 1em;}\n.olwidget a {text-decoration: none; color: #003366;}\n .olwidget ul {padding: 10px; margin: 0.5em 0.25em;}</style>');
+	document.write('<style lang="text/css">div.olwidget {margin:3px;}\n .olwidget h3 { border-bottom: 1px solid #ccc; margin: 0.5em 0 0 0;}\n .olwidget h4 { color: #333;  border-bottom: 1px solid #ccc; margin: 0.5em 0 0 0;}\n .olwidget .footer { padding 5px; background-color: #eee; border-top: 1px solid #676767; margin-top: 1em;}\n .olwidget .date {text-transform:uppercase; font-size:13px;}\n .olwidget a {text-decoration: none; color: #003366;}\n .olwidget ul {padding: 10px; margin:0.5em 0.25em;font-size:14px;}\n .olwidget a.calendar img {border:none;}</style>');
   
   document.write('<div class="olwidget" id="openlylocal-widget">');
 
@@ -10,7 +10,7 @@
   
   function listItemFor(obj) {
     var li = "<li>";
-    li += obj.formatted_date || "";
+    li += obj.formatted_date ? ('<span class="date">' + obj.formatted_date + '</span>') : "";
     li += " <a href='" + (obj.openlylocal_url || obj.url) + "'>";
     li += (obj.title || obj.name || (obj.first_name + " " + obj.last_name));
     li += "</a>" + (obj.party ? " (" + obj.party + ")" : "");
@@ -21,7 +21,7 @@
   function listAll(coll) { 
     if(coll.length && coll.length > 0){
       var listResult = "<ul>";
-      for (var i = 0; i < coll.length && i < 10; i++) {
+      for (var i = 0; i < coll.length && i < 8; i++) {
         var li = coll[i];
         listResult += listItemFor(li);
       }
@@ -36,10 +36,11 @@
     var council = data.council;
     var partyBreakdown = [];
     var partyBreakdownObj ={};
-		var header = '<h3>' + council.name + '</h3><h4>Upcoming meetings</h4>';
+		var header = '<h3><a href="http://openlylocal.com/councils/' + council_id + '">' + council.name + '</a></h3>';
     var footer = "<div class='footer'>More details and info at <a href='http://openlylocal.com'>OpenlyLocal</a> :: Making local government more transparent</div>";
 		var form = '<form method="get" class="form" action="http://openlylocal.com/areas/search"><label for="postcode">Info on your area:</label><input type="text" name="postcode" id="postcode"><input type="submit" value="Search by postcode" name="submit" id="submit" class="form_submit"></form>';
-    $('.olwidget').html(header + listAll(council.meetings) + form + footer);
+		var meetingsHtml = '<h4>Upcoming meetings</h4>' + listAll(council.meetings) + '<a class="calendar feed" href="webcal://openlylocal.com/councils/' + council_id + '/meetings.ics"><image src="http://openlylocal.com/images/feed_icon.gif">Subscribe to calendar</a>'
+    $('.olwidget').html(header + form + meetingsHtml + footer);
 
   }
   

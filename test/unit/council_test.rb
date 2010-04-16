@@ -718,6 +718,10 @@ class CouncilTest < ActiveSupport::TestCase
         assert_match %r(<meeting.+<formatted-date>#{@future_meeting.formatted_date}.+</meeting.+<recent-activity)m, @council.to_detailed_xml
       end
 
+      should "include forthcoming meeting openlylocal_url" do
+        assert_match %r(<meeting.+<openlylocal-url>#{@future_meeting.openlylocal_url}.+</meeting.+<recent-activity)m, @council.to_detailed_xml
+      end
+
       should "exclude past meeting ids" do
         assert_no_match %r(<meeting.+<id type=\"integer\">#{@past_meeting.id}</id.+</meeting.+<recent-activity)m, @council.to_detailed_xml
       end

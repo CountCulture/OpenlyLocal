@@ -190,7 +190,7 @@ class Council < ActiveRecord::Base
     includes = {:members => {:only => [:id, :first_name, :last_name, :party, :url]}, :wards => {}, :twitter_account => {}}
     to_xml({:include => includes}.merge(options)) do |builder|
       builder<<active_committees.to_xml(:skip_instruct => true, :root => "committees", :only => [ :id, :title, :url ], :methods => [:openlylocal_url])
-      builder<<meetings.forthcoming.to_xml(:skip_instruct => true, :root => "meetings", :methods => [:title, :formatted_date])
+      builder<<meetings.forthcoming.to_xml(:skip_instruct => true, :root => "meetings", :methods => [:title, :formatted_date, :openlylocal_url])
       builder<<recent_activity.to_xml(:skip_instruct => true, :root => "recent-activity")
     end
   end
