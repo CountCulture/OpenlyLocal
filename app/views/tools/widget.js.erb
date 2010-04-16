@@ -1,4 +1,7 @@
 (function(){
+	var council_id = <%= @council.id %>;
+	document.write('<style lang="text/css">div.olwidget {margin:3px;}\n .olwidget h3 { border-bottom: 1px solid #676767; margin: 0.5em 0 0 0; color: #003366;}\n .olwidget h4 { color: #333; margin: 0.5em 0 0 0;}\n .olwidget .footer { padding 5px; background-color: #eee; border-top: 1px solid #676767; margin-top: 1em;}\n.olwidget a {text-decoration: none; color: #003366;}\n .olwidget ul {padding: 10px; margin: 0.5em 0.25em;}</style>');
+  
   document.write('<div class="olwidget" id="openlylocal-widget">');
 
   document.write('Loading...');
@@ -33,12 +36,12 @@
     var council = data.council;
     var partyBreakdown = [];
     var partyBreakdownObj ={};
-		var header = '<h3>' + council.name + ': upcoming meetings</h3>';
-    var footer = "<div id='footer'>More details and info at <a href='http://openlylocal.com'>OpenlyLocal</a> :: Making local government more transparent</div>";
-		var form = '<p>Info on your area:</p><form method="get" class="form" action="http://openlylocal.com/areas/search"><input type="text" name="postcode" id="postcode"><input type="submit" value="Search by postcode" name="submit" id="submit" class="form_submit"></form>';
+		var header = '<h3>' + council.name + '</h3><h4>Upcoming meetings</h4>';
+    var footer = "<div class='footer'>More details and info at <a href='http://openlylocal.com'>OpenlyLocal</a> :: Making local government more transparent</div>";
+		var form = '<form method="get" class="form" action="http://openlylocal.com/areas/search"><label for="postcode">Info on your area:</label><input type="text" name="postcode" id="postcode"><input type="submit" value="Search by postcode" name="submit" id="submit" class="form_submit"></form>';
     $('.olwidget').html(header + listAll(council.meetings) + form + footer);
 
   }
   
-  jQuery.getJSON('http://openlylocal.com/councils/2.json?callback=?', function(data){insertCouncilData(data);});
+  jQuery.getJSON('http://openlylocal.com/councils/' + council_id +'.json?callback=?', function(data){insertCouncilData(data);});
  })();

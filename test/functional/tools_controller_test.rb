@@ -90,15 +90,15 @@ class ToolsControllerTest < ActionController::TestCase
   end
   
   # widget test
-  context "on GET to :widget" do
+  context "on GET to :widget with council_id" do
     setup do
       @council = Factory(:council)
       @member = Factory(:member, :council => @council)
       @another_council = Factory(:another_council)
-      get :widget, :format => "js"
+      get :widget, :format => "js", :council_id => @council.id
     end
 
-    # should_assign_to(:councils) { [@council]} # only parsed councils
+    should_assign_to(:councils { @council}
     should_respond_with :success
     should_render_template :widget
     should_render_without_layout
