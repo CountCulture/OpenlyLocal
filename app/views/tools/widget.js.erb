@@ -1,9 +1,44 @@
 (function(){
-document.write('<div class="olwidget" id="openlylocal-widget">');
- 
-<%# @bookmarks.each do |bookmark| -%>
-    document.write('Loading...');
-<%# #end -%>
- 
-document.write('</div>');
- })()
+  document.write('<div class="olwidget" id="openlylocal-widget">');
+
+  document.write('Loading...');
+
+  document.write('</div>');
+  
+  function listItemFor(obj) {
+    var li = "<li>";
+    li += obj.formatted_date || "";
+    li += " <a href='" + (obj.openlylocal_url || obj.url) + "'>";
+    li += (obj.title || obj.name || (obj.first_name + " " + obj.last_name));
+    li += "</a>" + (obj.party ? " (" + obj.party + ")" : "");
+    li += obj.openlylocal_url && obj.url ? (" <a href='" + obj.url + "' class='official_page'>official page</a></li>") : "</li>";
+    return li;
+  }
+
+  function listAll(coll) { 
+    if(coll.length && coll.length > 0){
+      var listResult = "<ul>";
+      for (var i = 0; i < coll.length && i < 10; i++) {
+        var li = coll[i];
+        listResult += listItemFor(li);
+      }
+      listResult += "</ul>";
+      return listResult;
+    }
+    else { return '';}
+  }
+
+  function insertCouncilData(data)
+  { 
+    var council = data.council;
+    var partyBreakdown = [];
+    var partyBreakdownObj ={};
+		var header = '<h3>' + council.name + ': upcoming meetings</h3>';
+    var footer = "<div id='footer'>More details and info at <a href='http://openlylocal.com'>OpenlyLocal</a> :: Making local government more transparent</div>";
+		var form = '<p>Info on your area:</p><form method="get" class="form" action="http://openlylocal.com/areas/search"><input type="text" name="postcode" id="postcode"><input type="submit" value="Search by postcode" name="submit" id="submit" class="form_submit"></form>';
+    $('.olwidget').html(header + listAll(council.meetings) + form + footer);
+
+  }
+  
+  jQuery.getJSON('http://openlylocal.com/councils/2.json?callback=?', function(data){insertCouncilData(data);});
+ })();
