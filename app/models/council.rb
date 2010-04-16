@@ -126,6 +126,10 @@ class Council < ActiveRecord::Base
     wikipedia_url.gsub(/en\.wikipedia.org\/wiki/, "dbpedia.org/resource") unless wikipedia_url.blank?
   end
   
+  def fix_my_street_url
+    snac_id? ? "http://fixmystreet.com/reports/#{snac_id}" : nil
+  end
+
   def foaf_telephone
     "tel:+44-#{telephone.gsub(/^0/, '').gsub(/\s/, '-')}" unless telephone.blank?
   end

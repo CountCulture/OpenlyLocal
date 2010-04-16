@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100412223334) do
+ActiveRecord::Schema.define(:version => 20100414135412) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -30,15 +30,6 @@ ActiveRecord::Schema.define(:version => 20100412223334) do
     t.column "updated_at", :datetime
   end
 
-  create_table "cached_postcodes", :force => true do |t|
-    t.column "code", :string
-    t.column "output_area_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-  end
-
-  add_index "cached_postcodes", ["output_area_id"], :name => "index_cached_postcodes_on_output_area_id"
-
   create_table "candidates", :force => true do |t|
     t.column "poll_id", :integer
     t.column "first_name", :string
@@ -48,7 +39,7 @@ ActiveRecord::Schema.define(:version => 20100412223334) do
     t.column "votes", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
-    t.column "address", :text
+    t.column "basic_address", :text
     t.column "political_party_id", :integer
     t.column "member_id", :integer
   end
@@ -119,7 +110,6 @@ ActiveRecord::Schema.define(:version => 20100412223334) do
     t.column "pension_fund_id", :integer
     t.column "gss_code", :string
     t.column "annual_audit_letter", :string
-    t.column "fix_my_street_id", :string
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
@@ -338,6 +328,8 @@ ActiveRecord::Schema.define(:version => 20100412223334) do
     t.column "updated_at", :datetime
     t.column "feed_owner_type", :string
     t.column "feed_owner_id", :integer
+    t.column "lat", :float
+    t.column "lng", :float
   end
 
   add_index "feed_entries", ["feed_owner_id", "feed_owner_type"], :name => "index_feed_entries_on_feed_owner_id_and_feed_owner_type"
@@ -720,7 +712,6 @@ ActiveRecord::Schema.define(:version => 20100412223334) do
     t.column "ness_id", :string
     t.column "gss_code", :string
     t.column "police_team_id", :integer
-    t.column "fix_my_street_id", :string
   end
 
   add_index "wards", ["council_id"], :name => "index_wards_on_council_id"

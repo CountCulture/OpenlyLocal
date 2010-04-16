@@ -22,7 +22,7 @@ class WardTest < ActiveSupport::TestCase
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url
-    should_have_db_columns :police_neighbourhood_url, :fix_my_street_id
+    should_have_db_columns :police_neighbourhood_url
 
     should "include ScraperModel mixin" do
       assert Ward.respond_to?(:find_all_existing)
@@ -68,6 +68,20 @@ class WardTest < ActiveSupport::TestCase
       assert_equal "Footon", Ward.new(:name => "Footon ward  ").name
       assert_equal "Forward", Ward.new(:name => "Forward ward").name
       assert_equal "Forward", Ward.new(:name => "Forward").name
+    end
+    
+    context 'when returning fix_my_street_url' do
+      should 'build url using snac id' do
+        @ward.snac_id = '00ABCD'
+        assert_equal 'http://fixmystreet.com/reports/00ABCD', @ward.fix_my_street_url
+      end
+      
+      should 'return nil if snac_id blank' do
+        assert_nil @ward.fix_my_street_url
+        @ward.snac_id = ''
+        assert_nil @ward.fix_my_street_url
+      end
+      
     end
 
     context "when matching existing member against params should override default and" do

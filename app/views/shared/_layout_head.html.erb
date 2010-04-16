@@ -34,4 +34,17 @@
         google.load("maps", "2",{"other_params":"sensor=false"});
       </script>
     <% end %>
+    <script src="http://platform.twitter.com/anywhere.js?id=u9kPktZ2nJmwjJd5gjP4ug&v=1">
+    </script>
+    <script type="text/javascript">
+      twttr.anywhere(onAnywhereLoad);
+      function onAnywhereLoad(twitter) {
+        twitter("div.container a.twitter").hovercards({
+              username: function(node) {
+                return node.title.match(/feed for\s(\w+)/)[1];
+              }
+            });
+      };
+    </script>
+    
   </head>

@@ -32,7 +32,11 @@ class FeedEntry < ActiveRecord::Base
     AdminMailer.deliver_admin_alert!( :title => "RSS Feed Updating Report: #{items.size} successes, #{errors.size} problems", 
                                       :details => "Successfullly updated feeds for #{items.size} items\n" + errors_text)
   end
-    
+  
+  def point=(geo_rss_point)
+    return unless geo_rss_point
+    self.lat,self.lng = geo_rss_point.split(/,|\s/)
+  end
   
   private
   def self.add_entries(entries, options={})
@@ -40,10 +44,11 @@ class FeedEntry < ActiveRecord::Base
       unless exists? :guid => entry.id
         create!(
           :title        => entry.title,
-          :summary      => (entry.summary&&strip_tags_and_line_breaks(entry.summary))||summarize_content(entry.content),
+          :summary      => (entry.summary&&strip_tags_and_line_breaks(entry.summary))||(entry.content&&summarize_content(entry.content)),
           :url          => entry.url,
           :published_at => entry.published,
           :guid         => entry.id,
+          :point        => entry.point,
           :feed_owner   => options[:feed_owner]
         )
       end

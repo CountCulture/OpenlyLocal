@@ -46,7 +46,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_db_column :police_force_url
     should_have_db_column :region
     should_have_db_column :signed_up_for_1010
-    should_have_db_columns :annual_audit_letter, :fix_my_street_id
+    should_have_db_columns :annual_audit_letter
 
     should "mixin PartyBreakdownSummary module" do
       assert Council.new.respond_to?(:party_breakdown)
@@ -460,6 +460,19 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
+    context 'when returning fix_my_street_url' do
+      should 'build url using snac id' do
+        @council.snac_id = '00AB'
+        assert_equal 'http://fixmystreet.com/reports/00AB', @council.fix_my_street_url
+      end
+      
+      should 'return nil if snac_id blank' do
+        assert_nil @council.fix_my_street_url
+        @council.snac_id = ''
+        assert_nil @council.fix_my_street_url
+      end
+      
+    end
     context "when returning parsed status" do
       should "return true if it has members" do
         Factory(:member, :council => @council)
@@ -912,8 +925,8 @@ class CouncilTest < ActiveSupport::TestCase
               :electorate => '4409', 
               :ballots_issued => '1642', 
               :uncontested => nil, 
-              :candidacies => [{:first_name => 'Margaret', 
-                                :last_name => 'Stanhope',
+              :candidacies => [{:given_name => 'Margaret', 
+                                :family_name => 'Stanhope',
                                 :votes => '790',
                                 :elected => 'true',
                                 :party => 'http://openelectiondata.org/id/parties/25',

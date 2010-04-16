@@ -16,6 +16,7 @@ module RdfUtilities
   
   protected
   def _http_get(url)
+    return if RAILS_ENV == 'test'
     open(url, 'Accept' => 'text/rdf+n3').read
   rescue 
     return nil

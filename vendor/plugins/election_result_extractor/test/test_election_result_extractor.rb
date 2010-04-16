@@ -6,6 +6,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
   context 'when calculating landing_page for council' do
     setup do
       @council = stub(:ldg_id => 123) # stub Council behaviour
+      ElectionResultExtractor.stubs(:open).returns(nil)
     end
     
     should 'try to follow LocalDirectGov redirect for election results' do
@@ -30,6 +31,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
     setup do
       @dummy_response = dummy_response(:n3_landing_page)
       @dummy_graph = RDF::Graph.new
+      ElectionResultExtractor.stubs(:open).returns(nil)
       RdfUtilities.stubs(:_http_get).returns(@dummy_response)
     end
     
@@ -57,6 +59,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
     setup do
       @dummy_response = dummy_response(:n3_election_page)
       @dummy_graph = RDF::Graph.new
+      ElectionResultExtractor.stubs(:open).returns(nil)
       RdfUtilities.stubs(:_http_get).returns(@dummy_response)
     end
     
@@ -85,6 +88,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
     setup do
       @dummy_response = dummy_response(:n3_poll)
       @dummy_graph = RDF::Graph.new
+      ElectionResultExtractor.stubs(:open).returns(nil)
       RdfUtilities.stubs(:_http_get).returns(@dummy_response)
     end
     
@@ -159,7 +163,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         assert_equal 'Essex', rich_candidacy_address[:region]
       end
     end
-
+  
     context 'and error raised querying results' do
       should 'raise exception with message' do
         RDF::Graph.any_instance.expects(:query).raises
@@ -173,6 +177,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
     setup do
       @dummy_response = dummy_response(:n3_uncontested_poll)
       @dummy_graph = RDF::Graph.new
+      ElectionResultExtractor.stubs(:open).returns(nil)
       RdfUtilities.stubs(:_http_get).returns(@dummy_response)
     end
     
@@ -180,7 +185,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
       setup do
         @results = ElectionResultExtractor.poll_results_from('http://foo.com/polls')
       end
-
+  
       should 'return poll details in hash' do
         assert_equal 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03', @results.first[:uri]
       end
@@ -218,17 +223,13 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
   context 'when getting poll results from an election page' do
     setup do
       @dummy_response = dummy_response(:n3_election_polls_page)
-      @dummy_graph = RDF::Graph.new
+      ElectionResultExtractor.stubs(:open).returns(nil)
       RdfUtilities.stubs(:_http_get).returns(@dummy_response)
     end
     
     context 'in general' do
       setup do
         @results = ElectionResultExtractor.poll_results_from('http://foo.com/election')
-      end
-      
-      before_should 'build graph from given page' do
-        RdfUtilities.expects(:graph_from).with('http://foo.com/election').returns(@dummy_graph)
       end
       
       should 'return array of polls as result' do
@@ -244,11 +245,11 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         should 'return poll details in hash' do
           assert_equal '8038', @poll[:electorate]
         end
-
+        
         should "extract date from poll uri if it isn't explicitly stated" do
           assert_equal '2008-05-01', @poll[:date]
         end
-
+        
         should "return candidacies" do
           assert_equal 5, @poll[:candidacies].size
           
@@ -259,16 +260,12 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
           assert_equal 'http://openelectiondata.org/id/parties/6', candidacy[:party]
           assert !candidacy[:independent]
         end
-
-        # before_should 'build graph from given page' do
-        #   RdfUtilities.expects(:graph_from).with('http://foo.com/election').returns(@dummy_graph)
-        # end
-        # 
+        
       end
       
     end
   end
-
+  
   context 'when getting poll results for council' do
     setup do
       @council = stub(:ldg_id => 123) #stub Council behaviour
@@ -287,13 +284,14 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         ElectionResultExtractor.expects(:landing_page_for).with(@council).returns('http://foo.com/landing')
         ElectionResultExtractor.poll_results_for(@council)
       end
-
+  
       should 'get election pages from landing page' do
         ElectionResultExtractor.expects(:election_pages_from).with('http://foo.com/landing').returns(['http://foo.com/election'])
         ElectionResultExtractor.poll_results_for(@council)
       end
       
       should 'get poll pages from election page' do
+        ElectionResultExtractor.stubs(:poll_results_from).with('http://foo.com/election')# => nil
         ElectionResultExtractor.expects(:poll_pages_from).with('http://foo.com/election').returns([])
         ElectionResultExtractor.poll_results_for(@council)
       end
@@ -318,18 +316,18 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
           @results = ElectionResultExtractor.poll_results_for(@council)[:results]
         end
         
-        should 'return as hash keyed to elections' do
+        should 'return as hash keyed to election page' do
           assert_kind_of Hash, @results
           assert_equal 'http://foo.com/election', @results.keys.first
         end
-
+  
         should 'return polls array associated with elections' do
           assert_kind_of Array, polls = @results.values.first
           assert_kind_of Hash, polls.first
           assert_equal 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03', polls.first[:uri]
         end
       end
-
+  
       context 'when ExtractorError raised getting landing page' do
         should 'add message to errors' do
           ElectionResultExtractor.expects(:landing_page_for).raises(ElectionResultExtractor::ExtractorError, 'Error retrieving election landing page')
@@ -351,6 +349,102 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         end
       end
     end
-
+  
+    context 'and poll results are on election page' do
+      setup do
+        ElectionResultExtractor.stubs(:landing_page_for).returns('http://foo.com/landing')
+        ElectionResultExtractor.stubs(:election_pages_from).returns(['http://foo.com/election'])
+        RdfUtilities.stubs(:_http_get).returns(dummy_response(:n3_election_polls_page))
+      end
+      
+      should 'get landing page for council' do
+        ElectionResultExtractor.expects(:landing_page_for).with(@council).returns('http://foo.com/landing')
+        ElectionResultExtractor.poll_results_for(@council)
+      end
+  
+      should 'get election pages from landing page' do
+        ElectionResultExtractor.expects(:election_pages_from).with('http://foo.com/landing').returns(['http://foo.com/election'])
+        ElectionResultExtractor.poll_results_for(@council)
+      end
+      
+      should 'not get poll pages from election page' do
+        ElectionResultExtractor.expects(:poll_pages_from).never
+        ElectionResultExtractor.poll_results_for(@council)
+      end
+      
+      should 'get polls from election pages' do
+        ElectionResultExtractor.expects(:poll_results_from).with('http://foo.com/election').returns([])
+        ElectionResultExtractor.poll_results_for(@council)
+      end
+      
+      should 'return status of process' do
+        assert_kind_of Array, status = ElectionResultExtractor.poll_results_for(@council)[:status]
+        assert status.any?{ |s| s =~ /21 polls found/ }
+      end
+      
+      context 'when returning results' do 
+        setup do
+          @results = ElectionResultExtractor.poll_results_for(@council)[:results]
+        end
+        
+        should 'return as hash keyed to election page' do
+          assert_kind_of Hash, @results
+          assert_equal 'http://foo.com/election', @results.keys.first
+        end
+  
+        should 'return polls array associated with elections' do
+          assert_kind_of Array, polls = @results.values.first
+          assert_kind_of Hash, polls.first
+        end
+        
+        context 'and when returning polls' do
+          setup do
+            @poll = @results.values.flatten.detect{|p| p[:uri] =='http://openelectiondata.org/id/polls/00BUFY/2008-05-01/member'}
+          end
+          
+          should 'return poll details in hash' do
+            assert_equal '8038', @poll[:electorate]
+          end
+  
+          should "extract date from poll uri if it isn't explicitly stated" do
+            assert_equal '2008-05-01', @poll[:date]
+          end
+  
+          should "return candidacies" do
+            assert_equal 5, @poll[:candidacies].size
+  
+            candidacy = @poll[:candidacies].detect { |c| c[:given_name] == 'Majella Teresa' }
+            assert_equal '620', candidacy[:votes]
+            assert_equal 'Kennedy', candidacy[:family_name]
+            assert_equal 'false', candidacy[:elected]
+            assert_equal 'http://openelectiondata.org/id/parties/6', candidacy[:party]
+            assert !candidacy[:independent]
+          end
+        end
+        
+      end
+  
+      # context 'when ExtractorError raised getting landing page' do
+      #   should 'add message to errors' do
+      #     ElectionResultExtractor.expects(:landing_page_for).raises(ElectionResultExtractor::ExtractorError, 'Error retrieving election landing page')
+      #     assert_match /Error retrieving election landing page/, ElectionResultExtractor.poll_results_for(@council)[:errors]
+      #   end
+      # end
+      # 
+      # context 'when ExtractorError raised getting elections' do
+      #   setup do
+      #     ElectionResultExtractor.expects(:election_pages_from).raises(ElectionResultExtractor::ExtractorError, 'Error retreving election pages')
+      #   end
+      #   
+      #   should 'add message to errors' do
+      #     assert_match /Error retreving election pages/, ElectionResultExtractor.poll_results_for(@council)[:errors]
+      #   end
+      #   
+      #   should 'show success getting landing page in status' do
+      #     assert_match /Landing page found/i, ElectionResultExtractor.poll_results_for(@council)[:status].to_s # it's an array
+      #   end
+      # end
+    end
+  
   end
 end
