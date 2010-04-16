@@ -41,7 +41,7 @@
       function onAnywhereLoad(twitter) {
         twitter("div.container a.twitter").hovercards({
               username: function(node) {
-                return node.title.match(/feed for (\w+)/)[1];
+                return node.title.match(/feed for\s(\w+)/)[1];
               }
             });
       };
