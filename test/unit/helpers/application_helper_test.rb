@@ -16,6 +16,10 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_dom_equal "<dt class=\"foo_bar\">Different name</dt> <dd class=\"foo_bar\">some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name")
     end
 
+    should "add given class" do
+      assert_dom_equal "<dt class=\"foo_bar baz\">Different name</dt> <dd class=\"foo_bar baz\">some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name", :class => 'baz')
+    end
+
     should "return nil if value is nil" do
       assert_nil attribute_tag(:foo_bar, nil)
     end

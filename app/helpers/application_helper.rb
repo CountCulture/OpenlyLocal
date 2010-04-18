@@ -4,10 +4,11 @@ module ApplicationHelper
   # Generates an attribute block
   def attribute_tag(attrib_name=nil, attrib_value=nil, options={}, &block)
     text = options[:text]||attrib_name.to_s.titleize
+    css_class = options[:class] ? "#{attrib_name} #{options[:class]}" : attrib_name.to_s
     if block_given?
-      concat("<dt class=\"#{attrib_name}\">#{text}</dt> <dd class=\"#{attrib_name}\">#{capture(&block)}</dd>")
+      concat("<dt class=\"#{css_class}\">#{text}</dt> <dd class=\"#{css_class}\">#{capture(&block)}</dd>")
     elsif !attrib_value.blank?
-      "<dt class=\"#{attrib_name}\">#{text}</dt> <dd class=\"#{attrib_name}\">#{attrib_value}</dd>"
+      "<dt class=\"#{css_class}\">#{text}</dt> <dd class=\"#{css_class}\">#{attrib_value}</dd>"
     end
   end
 
