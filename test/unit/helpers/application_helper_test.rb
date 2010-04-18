@@ -9,15 +9,19 @@ class ApplicationHelperTest < ActionView::TestCase
     end
 
     should "return div tag using key as attrib name and value as value" do
-      assert_dom_equal "<dt class=\"foo_bar\">Foo Bar</dt> <dd class=\"foo_bar\">some value</dd>", attribute_tag(:foo_bar, "some value")
+      assert_dom_equal "<dt>Foo Bar</dt> <dd class=\"foo_bar\">some value</dd>", attribute_tag(:foo_bar, "some value")
     end
 
     should "use supplied text for name if given" do
-      assert_dom_equal "<dt class=\"foo_bar\">Different name</dt> <dd class=\"foo_bar\">some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name")
+      assert_dom_equal "<dt>Different name</dt> <dd class=\"foo_bar\">some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name")
     end
 
-    should "add given class" do
-      assert_dom_equal "<dt class=\"foo_bar baz\">Different name</dt> <dd class=\"foo_bar baz\">some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name", :class => 'baz')
+    should "add given class to dd element" do
+      assert_dom_equal "<dt>Different name</dt> <dd class=\"foo_bar baz\">some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name", :class => 'baz')
+    end
+
+    should "add given rel to dd" do
+      assert_dom_equal "<dt>Different name</dt> <dd class=\"foo_bar\" rel=\"foo bar\">some value</dd>", attribute_tag(:foo_bar, "some value", :text => "Different name", :rel => 'foo bar')
     end
 
     should "return nil if value is nil" do
@@ -229,7 +233,7 @@ class ApplicationHelperTest < ActionView::TestCase
 
     should "return link based on url" do
       obj = stub(:url => "http://somecouncil/meeting")
-      assert_dom_equal link_to("official page", "http://somecouncil/meeting", :class => "official_page external"), council_page_for(obj)
+      assert_dom_equal link_to("official page", "http://somecouncil/meeting", :class => "official_page external url"), council_page_for(obj)
     end
 
     should "return nil if url nil" do
@@ -239,7 +243,7 @@ class ApplicationHelperTest < ActionView::TestCase
 
     should "use options when constructing link" do
       obj = stub(:url => "http://somecouncil/meeting")
-      assert_dom_equal link_to("official page", "http://somecouncil/meeting", :class => "official_page external", :foo => "bar"), council_page_for(obj, :foo => "bar")
+      assert_dom_equal link_to("official page", "http://somecouncil/meeting", :class => "official_page external url", :foo => "bar"), council_page_for(obj, :foo => "bar")
     end
 
   end
@@ -279,11 +283,11 @@ class ApplicationHelperTest < ActionView::TestCase
     end
 
     should "return link for twitter_account" do
-      assert_dom_equal link_to("Twitter", "http://twitter.com/foo", :class => "twitter feed", :title => "Twitter feed for foo"), twitter_link_for("foo")
+      assert_dom_equal link_to("Twitter", "http://twitter.com/foo", :class => "twitter feed url", :title => "Twitter page for foo", :rel => "me tag"), twitter_link_for("foo")
     end
 
     should "return just twitter image tage instead of text if short requested" do
-      assert_dom_equal link_to(image_tag("twitter_icon.png", :alt => 'Twitter feed for foo'), 'http://twitter.com/foo', :class => 'twitter', :title => 'Twitter feed for foo'), twitter_link_for("foo", :short => true)
+      assert_dom_equal link_to(image_tag("twitter_icon.png", :alt => 'Twitter page for foo'), 'http://twitter.com/foo', :class => 'twitter', :title => 'Twitter page for foo'), twitter_link_for("foo", :short => true)
     end
   end
   
@@ -295,11 +299,11 @@ class ApplicationHelperTest < ActionView::TestCase
     end
 
     should "return link for facebook_account" do
-      assert_dom_equal link_to("Facebook", "http://facebook.com/foo", :class => "facebook feed", :title => "Facebook page for foo"), facebook_link_for("foo")
+      assert_dom_equal link_to("Facebook", "http://facebook.com/foo", :class => "facebook feed url", :title => "Facebook page for foo", :rel => "me tag"), facebook_link_for("foo")
     end
 
     should "return just facebook_icon image tag instead of text if short requested" do
-      assert_dom_equal link_to(image_tag("facebook_icon.png", :alt => "Facebook page for foo"), "http://facebook.com/foo"), facebook_link_for("foo", :short => true)
+      assert_dom_equal link_to(image_tag("facebook_icon.png", :alt => "Facebook page for foo"), "http://facebook.com/foo", :class => 'facebook', :title => 'Facebook page for foo'), facebook_link_for("foo", :short => true)
     end
   end
   

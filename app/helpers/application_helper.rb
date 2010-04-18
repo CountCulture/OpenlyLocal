@@ -6,15 +6,17 @@ module ApplicationHelper
     text = options[:text]||attrib_name.to_s.titleize
     css_class = options[:class] ? "#{attrib_name} #{options[:class]}" : attrib_name.to_s
     if block_given?
-      concat("<dt class=\"#{css_class}\">#{text}</dt> <dd class=\"#{css_class}\">#{capture(&block)}</dd>")
+      concat("<dt>#{text}</dt> <dd class=\"#{css_class}\">#{capture(&block)}</dd>")
     elsif !attrib_value.blank?
-      "<dt class=\"#{css_class}\">#{text}</dt> <dd class=\"#{css_class}\">#{attrib_value}</dd>"
+      dt = content_tag(:dt, text)
+      dd = content_tag(:dd, attrib_value, :class => css_class, :rel => options[:rel])
+      [dt,dd].join(' ')
     end
   end
 
   def council_page_for(obj, options={})
     return if obj.url.blank?
-    link_to("official page", obj.url, {:class => "official_page external"}.merge(options))
+    link_to("official page", obj.url, {:class => "official_page external url"}.merge(options))
   end
 
   def link_for(obj=nil, options={})
@@ -67,15 +69,17 @@ module ApplicationHelper
   end
   
   def twitter_link_for(twitter_account=nil, options={})
-    return if twitter_account.blank?
-    options[:short] ? link_to(image_tag("twitter_icon.png", :alt => "Twitter feed for #{twitter_account}"), "http://twitter.com/#{twitter_account}", :title => "Twitter feed for #{twitter_account}", :class => "twitter") : 
-                      link_to("Twitter", "http://twitter.com/#{twitter_account}", :class => "twitter feed", :title => "Twitter feed for #{twitter_account}")
+    social_network_link_for(:twitter, twitter_account, options)
   end
 
   def facebook_link_for(facebook_account=nil, options={})
-    return if facebook_account.blank?
-    options[:short] ? link_to(image_tag("facebook_icon.png", :alt => "Facebook page for #{facebook_account}"), "http://facebook.com/#{facebook_account}") : 
-                      link_to("Facebook", "http://facebook.com/#{facebook_account}", :class => "facebook feed", :title => "Facebook page for #{facebook_account}")
+    social_network_link_for(:facebook, facebook_account, options)
+  end
+  
+  def social_network_link_for(service, account_name, options={})
+    return if account_name.blank?
+    options[:short] ? link_to(image_tag("#{service}_icon.png", :alt => "#{service.to_s.capitalize} page for #{account_name}"), "http://#{service}.com/#{account_name}", :class => "#{service}", :title => "#{service.to_s.capitalize} page for foo") : 
+                      link_to(service.to_s.capitalize, "http://#{service}.com/#{account_name}", :class => "#{service} feed url", :rel => "me tag", :title => "#{service.to_s.capitalize} page for #{account_name}")
   end
 
   def list_all(coll=nil, options={})

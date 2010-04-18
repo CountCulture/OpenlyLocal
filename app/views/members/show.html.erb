@@ -1,14 +1,14 @@
-<%- div_for @member do -%>
+<%- div_for @member, :class => 'vcard' do -%>
   <%= content_tag(:h4, "Former Member", :class => "alert") if @member.ex_member? %>
-  <h1><%= @member.full_name %> <em><%= council_page_for @member %></em></h1>
+  <h1><span class='fn'><%= @member.full_name %></span> <em><%= council_page_for @member %></em></h1>
   <dl id="main_attributes" class="attributes">
-    <%= attribute_tag :council, basic_link_for(@council) %>
-    <%= attribute_tag :party, @member.party %>
+    <%= attribute_tag :council, basic_link_for(@council, :class => 'org') %>
+    <%= attribute_tag :party, @member.party, :class => 'category' %>
     <%= attribute_tag :ward, basic_link_for(@member.ward) %>
-    <%= attribute_tag :email, (@member.email ? mail_to(@member.email, @member.email, :encode => "javascript") : 'not known') %>
-    <%= attribute_tag :address, @member.address %>
-    <%= attribute_tag :telephone, @member.telephone %>
-    <%= attribute_tag :blog, link_to(@member.blog_url, @member.blog_url) if @member.blog_url? %>
+    <%= attribute_tag :email, (@member.email ? mail_to(@member.email, @member.email, :encode => "javascript", :class => 'email') : 'not known') %>
+    <%= attribute_tag :address, @member.address, :class => 'label' %>
+    <%= attribute_tag :tel, @member.telephone, :text => "Telephone" %>
+    <%= attribute_tag :blog, link_to(@member.blog_url, @member.blog_url, :class => 'url', :rel => 'me') if @member.blog_url? %>
     <%= attribute_tag :social_networking, social_networking_links_for(@member) %>
     <%= attribute_tag :date_elected, (@member.latest_succesful_candidacy ? link_to(@member.latest_succesful_candidacy.poll.date_held.to_s(:event_date), @member.latest_succesful_candidacy.poll) : (@member.date_elected? ? @member.date_elected.to_s(:custom_short) : 'not known')) %>
     <%= attribute_tag(:date_left, "#{@member.date_left.to_s(:custom_short)} (approx)") unless @member.date_left.blank? %>
