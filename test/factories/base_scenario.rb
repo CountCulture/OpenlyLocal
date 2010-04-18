@@ -219,6 +219,7 @@ end
 Factory.define :hyperlocal_site do |f|
   f.sequence(:title) { |n| "Hyperlocal #{n}" }
   f.sequence(:url) { |n| "http://hyperlocal.co.uk/site_#{n}" }
+  f.sequence(:email) { |n| "foo@bar.com" }
   f.country 'England'
   f.description "Some about the site"
   f.distance_covered 2
