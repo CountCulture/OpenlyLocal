@@ -57,6 +57,13 @@ class PollTest < ActiveSupport::TestCase
         end
       end
       
+      should 'return created polls' do
+        polls = Poll.from_open_election_data(@dummy_response)
+        assert_kind_of Poll, poll = polls.first
+        assert_equal '41UDGE', poll.area.snac_id
+        assert_equal '2007-05-03'.to_date, poll.date_held
+      end
+      
       context 'and when creating poll' do
         setup do
           @old_candidacy_count = Candidacy.count
@@ -137,6 +144,69 @@ class PollTest < ActiveSupport::TestCase
         
         should 'create candidacies for poll' do
           assert_equal @old_candidacy_count+3, Candidacy.count
+        end
+      end   
+      context 'and poll already exists' do
+        setup do
+          original_details = 
+          [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03',
+            :source => 'http://anytown.gov.uk/elections/poll/foo',
+            :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGE', 
+            :date => '2007-05-03', 
+            :electorate => '4409', 
+            # :ballots_issued => '1642', 
+            :candidacies => [{:given_name => 'Margaret', 
+                              :family_name => 'Stanhope',
+                              :votes => nil,
+                              :elected => nil,
+                              :party => 'http://openelectiondata.org/id/parties/25',
+                              :independent => nil },
+                             {:name => 'John Linnaeus Middleton', 
+                              :votes => nil,
+                              :elected => nil,
+                              :party => nil,
+                              :independent => true }
+              ] }]
+          Poll.from_open_election_data(original_details) # create poll
+          @old_poll_count, @old_candidacy_count = Poll.count, Candidacy.count
+          updated_details = 
+          [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03',
+            :source => 'http://anytown.gov.uk/elections/poll/foo',
+            :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGE', 
+            :date => '2007-05-03', 
+            :electorate => '4409', 
+            :ballots_issued => '1642', 
+            :candidacies => [{:given_name => 'Margaret', 
+                              :family_name => 'Stanhope',
+                              :votes => '790',
+                              :elected => 'true',
+                              :party => 'http://openelectiondata.org/id/parties/25',
+                              :independent => nil },
+                             {:name => 'John Linnaeus Middleton', 
+                              :votes => '342',
+                              :elected => 'false',
+                              :party => nil,
+                              :independent => true }
+              ] }]          
+          @poll = Poll.from_open_election_data(updated_details).first # update poll
+        end
+        
+        should 'not create new poll' do
+          assert_equal @old_poll_count, Poll.count
+        end
+        
+        should 'update poll' do
+          assert_equal 1642, @poll.ballots_issued
+        end
+        
+        should 'not create candidacies' do
+          assert_equal @old_candidacy_count, Candidacy.count
+        end
+        
+        should 'update candidacies for poll' do
+          candidacy = @poll.candidacies.find_by_last_name('Stanhope')
+          assert_equal 790, candidacy.votes
+          assert candidacy.elected?
         end
       end   
     end
