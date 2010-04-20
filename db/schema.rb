@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100414135412) do
+ActiveRecord::Schema.define(:version => 20100420154110) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -668,6 +668,23 @@ ActiveRecord::Schema.define(:version => 20100414135412) do
 
   add_index "services", ["council_id"], :name => "index_services_on_council_id"
   add_index "services", ["ldg_service_id"], :name => "index_services_on_ldg_service_id"
+
+  create_table "taggings", :force => true do |t|
+    t.column "tag_id", :integer
+    t.column "taggable_id", :integer
+    t.column "tagger_id", :integer
+    t.column "tagger_type", :string
+    t.column "taggable_type", :string
+    t.column "context", :string
+    t.column "created_at", :datetime
+  end
+
+  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
+
+  create_table "tags", :force => true do |t|
+    t.column "name", :string
+  end
 
   create_table "twitter_accounts", :force => true do |t|
     t.column "name", :string

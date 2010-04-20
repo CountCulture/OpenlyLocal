@@ -1,5 +1,6 @@
 class FeedEntry < ActiveRecord::Base
   belongs_to :feed_owner, :polymorphic => true
+  acts_as_taggable
   validates_presence_of :guid, :url, :title
   named_scope :for_blog, :conditions => "feed_owner_type IS NULL AND feed_owner_id IS NULL"
   default_scope :order => "published_at DESC"
@@ -49,6 +50,7 @@ class FeedEntry < ActiveRecord::Base
           :published_at => entry.published,
           :guid         => entry.id,
           :point        => entry.point,
+          :tag_list     => entry.categories,
           :feed_owner   => options[:feed_owner]
         )
       end

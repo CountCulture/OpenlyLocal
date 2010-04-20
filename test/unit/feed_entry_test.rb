@@ -18,6 +18,10 @@ class FeedEntryTest < ActiveSupport::TestCase
       assert_equal council, Factory(:feed_entry, :feed_owner => council).reload.feed_owner
     end
     
+    should "acts as taggable" do
+      assert FeedEntry.respond_to?(:tagged_with)
+    end
+    
     context 'when assigning point' do
       should 'convert to lat long' do
         @feed_entry.point = '45.256 -71.92'
@@ -50,7 +54,7 @@ class FeedEntryTest < ActiveSupport::TestCase
     context "when updating feed" do
       setup do
         html_content = "<p>News reaches us that the café at Rowheath<br />Pavilion\r\nwill now be open six<br><br>days a week<a href=\"http://togetherinmission.co.uk/\">Together in Mission</a> who are based at the Pavilion said:</p>\n<p>&lt;a href=&#x27;http://bournvillevillage.com/?p=682&#x27;&gt;hello&lt;/a&gt; world</p>"
-        dummy_entry_1 = stub_everything(:title => "Entry 1", :summary => "<p>Entry</p> 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1")
+        dummy_entry_1 = stub_everything(:title => "Entry 1", :summary => "<p>Entry</p> 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1", :categories => ['foo', 'bar'])
         dummy_entry_2 = stub_everything(:title => "Entry 2", :summary => nil, :content => html_content, :url => "foo.com/entry_2", :point => '45.256 -71.92', :published => 5.days.ago, :id => "entry_2")
         dummy_entry_3 = stub_everything(:title => "Entry 3", :summary => nil, :url => "foo.com/entry_3", :published => 5.days.ago, :id => "entry_3")
         Feedzirra::Feed.stubs(:fetch_and_parse).returns(stub(:entries => [dummy_entry_1, dummy_entry_2, dummy_entry_3]))
@@ -130,6 +134,14 @@ class FeedEntryTest < ActiveSupport::TestCase
         new_entry = FeedEntry.find_by_guid("entry_2")
         assert_in_delta 45.256, new_entry.lat, 2 ** -20
         assert_in_delta -71.92, new_entry.lng, 2 ** -20
+      end
+      
+      should "add tags for categories" do
+        assert_difference "Tag.count", 2 do
+          FeedEntry.update_from_feed("foo.com")
+        end
+        new_entry = FeedEntry.find_by_guid("entry_1")
+        assert_equal ["foo", "bar"], new_entry.tag_list
       end
       
       should "not have errors when no content" do
