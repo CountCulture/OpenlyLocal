@@ -21,6 +21,11 @@ class HyperlocalSite < ActiveRecord::Base
   delegate :region, :to => :council, :allow_nil => true
   after_save :tweet_about_it
   
+  def self.find_from_article_url(article_url)
+    return unless host = URI.parse(article_url).host rescue nil
+    approved.first(:conditions => ["url LIKE ?", "%#{host}%"])
+  end
+  
   def to_param
     id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
   end

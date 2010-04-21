@@ -136,6 +136,28 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
         assert_equal [@hyperlocal_site, @scottish_site], HyperlocalSite.country(false)
       end
     end
+    
+    context "when returning hyperlocal_site from article url" do
+      setup do
+        @approved_site = Factory(:approved_hyperlocal_site, :url => 'http://www.bar.com/home/index.php')
+      end
+
+      should 'return nil by default' do
+        assert_nil HyperlocalSite.find_from_article_url(nil)
+      end
+      
+      should 'return approved site that matches domain' do
+        assert_equal @approved_site, HyperlocalSite.find_from_article_url('http://www.bar.com/another/page')
+      end
+      
+      should 'not return unapproved site that matches domain' do
+        assert_nil HyperlocalSite.find_from_article_url(@hyperlocal_site.url)
+      end
+      
+      should 'not raise exception if non-url passed' do
+        assert_nil HyperlocalSite.find_from_article_url('foo')
+      end
+    end
   end
   
   context "A HyperlocalSite instance" do

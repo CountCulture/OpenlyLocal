@@ -283,3 +283,10 @@ Factory.define :address do |f|
   f.association :addressee, :factory => :police_force 
 end
 
+Factory.define :related_article do |f|
+  f.sequence(:title) { |n| "Some article abut Fred#{n}" }
+  f.sequence(:url) { |n| "http://foo.com/related/article_#{n}" }
+  f.association :hyperlocal_site
+  f.association :subject, :factory => :member 
+end
+

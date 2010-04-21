@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100420154110) do
+ActiveRecord::Schema.define(:version => 20100420171659) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -633,6 +633,17 @@ ActiveRecord::Schema.define(:version => 20100420154110) do
   add_index "postcodes", ["ward_id"], :name => "index_postcodes_on_ward_id"
   add_index "postcodes", ["council_id"], :name => "index_postcodes_on_council_id"
   add_index "postcodes", ["county_id"], :name => "index_postcodes_on_county_id"
+
+  create_table "related_articles", :force => true do |t|
+    t.column "title", :string
+    t.column "url", :string
+    t.column "subject_type", :string
+    t.column "subject_id", :integer
+    t.column "extract", :text
+    t.column "hyperlocal_site_id", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "scrapers", :force => true do |t|
     t.column "url", :string
