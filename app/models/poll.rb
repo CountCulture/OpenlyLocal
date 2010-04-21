@@ -5,7 +5,7 @@ class Poll < ActiveRecord::Base
   
   def self.from_open_election_data(polls=[])
     polls.collect do |poll_info|
-      area = Ward.find_from_resource_uri(poll_info[:area])
+      if area = Ward.find_from_resource_uri(poll_info[:area])
       poll = area.polls.find_or_initialize_by_date_held_and_position( :date_held => poll_info[:date], :position => 'Member')
       poll.update_attributes( :electorate => poll_info[:electorate], 
                               :ballots_issued => poll_info[:ballots_issued],
@@ -20,6 +20,7 @@ class Poll < ActiveRecord::Base
                                      :political_party => PoliticalParty.find_from_resource_uri(candidacy_info[:party]) )
       end
       poll
+      end
     end
   end
   

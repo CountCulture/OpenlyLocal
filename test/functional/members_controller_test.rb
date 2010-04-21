@@ -151,11 +151,17 @@ class MembersControllerTest < ActionController::TestCase
        setup do
          @poll = Factory(:poll, :area => @member.council)
          @candidacy = Factory(:candidacy, :poll => @poll, :member => @member, :votes => 321, :elected => true)
+         @hyperlocal_site = Factory(:hyperlocal_site)
+         @related_article = Factory(:related_article, :hyperlocal_site => @hyperlocal_site, :subject => @member)
          get :show, :id => @member.id
        end
 
        should "show link to poll if recent successfull candidacy" do
          assert_select "#main_attributes a", /#{@poll.date_held.to_s(:event_date)}/
+       end
+       
+       should "show link to related articles" do
+         assert_select "#related_articles a", @related_article.title
        end
      end
      

@@ -27,6 +27,13 @@
       <p><%= link_to_calendar %></p>
       <%= list_all @forthcoming_meetings %>
     </div>
+    
+    <%- unless @member.related_articles(:limit => 5).blank? -%>
+      <div id="related_articles" class="item_grouping">
+        <h3>Related articles/blog posts</h3>
+        <%= render :partial => 'shared/related_article', :collection => @member.related_articles %>
+      </div>
+    <%- end -%>
   </div>
 
   <%= render :partial => '/shared/api_info' %>

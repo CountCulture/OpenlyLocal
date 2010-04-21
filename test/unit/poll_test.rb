@@ -145,7 +145,33 @@ class PollTest < ActiveSupport::TestCase
         should 'create candidacies for poll' do
           assert_equal @old_candidacy_count+3, Candidacy.count
         end
-      end   
+      end
+      
+      context "and a matching area can't be found" do
+        setup do
+          @old_poll_count, @old_candidacy_count = Poll.count, Candidacy.count
+          @dummy_response << { :uri => 'http://openelectiondata.org/id/polls/41UDPQ/2007-05-03', 
+            :area => 'http://statistics.data.gov.uk/id/local-authority-ward/FOOBAR', 
+            :date => '2007-05-03', 
+            :electorate => '4409', 
+            :candidacies => [{:name => 'Ian Maxwell Pardoe Pritchard', 
+                              :elected => 'true',
+                              :votes => '342',
+                              :elected => 'false',
+                              :party => 'http://openelectiondata.org/id/parties/25' }
+              ] }
+          Poll.from_open_election_data(@dummy_response)
+        end
+        
+        should 'not create poll for area with unknown area' do
+          assert_equal @old_poll_count+1, Poll.count
+        end
+                
+        should 'create candidacies for poll' do
+          assert_equal @old_candidacy_count+2, Candidacy.count
+        end
+      end
+      
       context 'and poll already exists' do
         setup do
           original_details = 
