@@ -69,6 +69,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.admin 'admin', :controller => 'admin', :action => 'index'
 
+  map.connect 'pingback/xml', :controller => 'pingback', :action => 'xml', :method => :post
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   map.resources :products
 

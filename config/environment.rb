@@ -84,6 +84,7 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 end
 require 'open-uri'
+
 # require 'twitter/console'
 
 # set default host for Action mailer so can have urls in emails
@@ -98,3 +99,7 @@ Time::DATE_FORMATS[:vevent] = "%Y-%m-%dT%H:%M:%S"
 Date::DATE_FORMATS[:vevent] = "%Y-%m-%dT%H:%M:%S" 
 Date::DATE_FORMATS[:custom_short] = "%B %e %Y" # add custom time format so we get some unity
 Date::DATE_FORMATS[:month_and_year] = "%b %y" # add custom time format so we get some unity
+
+Pingback.save_callback do |ping|
+    RelatedArticle.process_pingback(ping)
+end

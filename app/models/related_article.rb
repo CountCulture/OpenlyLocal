@@ -8,6 +8,7 @@ class RelatedArticle < ActiveRecord::Base
   def self.process_pingback(pingback)
     subject_params = pingback.target_uri.scan(/openlylocal.com\/([\w_]+)\/(\d+)/i).flatten
     hyperlocal_site = HyperlocalSite.find_from_article_url(pingback.source_uri)
+    logger.error { "****Pingback received: #{pingback.inspect}" }
     return false unless subject_params.size == 2 && ModelsAcceptingPinbacks.include?(subject_params.first)
     subject = subject_params.first.classify.constantize.find_by_id(subject_params[1]) rescue nil
     if subject && hyperlocal_site

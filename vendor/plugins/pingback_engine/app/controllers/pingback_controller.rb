@@ -14,7 +14,7 @@ class PingbackController < ApplicationController
     xml_response = xmlrpc.process(request.body.read)
     
     # Log the error if there is one
-    parser = XMLRPC::XMLParser::XMLStreamParser.new
+    parser = XMLRPC::XMLParser::REXMLStreamParser.new
     ret = parser.parseMethodResponse(xml_response)
     logger.error("XMLRPC fault raised. Code: #{ret[1].faultCode}: Message: #{ret[1].faultString}") unless ret[0]
     
