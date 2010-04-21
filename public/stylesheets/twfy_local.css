@@ -605,6 +605,14 @@ ul#hyperlocal_sites li li{
 	color:#666;
 }
 
+/*related_articles*/
+.related_article .source a {
+	text-transform: uppercase;
+	color: #8a1f11;
+	font-size: 0.85em;
+}
+
+
 /*Feed entries*/
 .feed_entries .feed_entry h4 {
 	margin-bottom:0;

@@ -1,0 +1,7 @@
+<%- div_for related_article do -%>
+  <div class='source'>
+    <%= link_for related_article.hyperlocal_site %>
+  </div>
+  <h4><%= link_to related_article.title, related_article.url, :class => 'external' %></h4>
+  <p><%= related_article.extract %></p>
+<%- end -%>
