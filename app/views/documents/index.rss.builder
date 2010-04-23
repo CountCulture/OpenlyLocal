@@ -8,7 +8,7 @@ xml.rss :version => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" do
     for document in @documents
       xml.item do
         xml.title document.title
-        xml.description document.body
+        xml.description document.precis
         xml.pubDate document.created_at.to_s(:rfc822)
         xml.link document_url(document)
         xml.guid document_url(document)

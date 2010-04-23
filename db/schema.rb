@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100420171659) do
+ActiveRecord::Schema.define(:version => 20100423135749) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -314,9 +314,10 @@ ActiveRecord::Schema.define(:version => 20100420171659) do
     t.column "updated_at", :datetime
     t.column "raw_body", :text, :limit => 16777215
     t.column "document_type", :string
+    t.column "precis", :text
   end
 
-  add_index "documents", ["document_owner_type", "document_owner_id"], :name => "index_documents_on_document_owner_type_and_document_owner_id"
+  add_index "documents", ["document_owner_id", "document_owner_type"], :name => "index_documents_on_document_owner_id_and_document_owner_type"
 
   create_table "feed_entries", :force => true do |t|
     t.column "title", :string

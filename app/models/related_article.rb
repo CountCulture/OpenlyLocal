@@ -3,6 +3,7 @@ class RelatedArticle < ActiveRecord::Base
   belongs_to :hyperlocal_site
   validates_presence_of :title, :url, :hyperlocal_site_id, :subject_type, :subject_id
   validates_uniqueness_of :url
+  default_scope :order => 'created_at'
   ModelsAcceptingPinbacks = %w(members committees meetings polls)
   
   def self.process_pingback(pingback)

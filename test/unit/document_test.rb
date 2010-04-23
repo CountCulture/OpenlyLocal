@@ -15,7 +15,7 @@ class DocumentTest < ActiveSupport::TestCase
     should_validate_presence_of :document_owner_id
     should_validate_presence_of :document_owner_type
     should_belong_to :document_owner
-    should_have_db_column :raw_body
+    should_have_db_column :raw_body, :precis
     
     should "validate presence of body" do
       # we have to test this explicitly as shoulda macro gives other 
@@ -39,6 +39,21 @@ class DocumentTest < ActiveSupport::TestCase
     
     should "include ScraperModel mixin" do
       assert Document.respond_to?(:find_all_existing)
+    end
+    
+    context 'when saving' do
+      should 'calculate precis' do
+        unsaved_doc = Factory.build(:document, :document_owner => @doc_owner)
+        unsaved_doc.expects(:calculated_precis).returns('Hello World')
+        unsaved_doc.save!
+      end
+      
+      should 'save calculated precis' do
+        unsaved_doc = Factory.build(:document, :document_owner => @doc_owner)
+        unsaved_doc.stubs(:calculated_precis).returns('Hello World')
+        unsaved_doc.save!
+        assert_equal 'Hello World', unsaved_doc.reload.precis
+      end
     end
   end
   
@@ -121,7 +136,7 @@ class DocumentTest < ActiveSupport::TestCase
         end
       end
       
-      context "when returning precis" do
+      context "when returning calculated_precis" do
         setup do
           raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a>.\n\r\n\n\n   \r\n\tAlso <script> something dodgy</script> here \r\nand <img src='http://council.gov.uk/image' /> image"
           @document.attributes = {:url => "http://www.council.gov.uk/document/some_page.htm?q=something", :raw_body => raw_text*20}
@@ -129,19 +144,19 @@ class DocumentTest < ActiveSupport::TestCase
         end
 
         should "remove all tags" do
-          assert_no_match %r(<.+>), @document.precis
+          assert_no_match %r(<.+>), @document.calculated_precis
         end
         
         should "not remove text in tags" do
-          assert_match %r(some stylized text with relative link), @document.precis
+          assert_match %r(some stylized text with relative link), @document.calculated_precis
         end
         
         should "trim multiple line spaces to single space" do
-          assert_match %r(absolute link.\nAlso), @document.precis
+          assert_match %r(absolute link.\nAlso), @document.calculated_precis
         end
         
         should "trim to 500 chars in length" do
-          assert_equal 500, @document.precis.length
+          assert_equal 500, @document.calculated_precis.length
         end
       end
       
