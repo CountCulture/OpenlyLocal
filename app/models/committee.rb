@@ -9,6 +9,7 @@ class Committee < ActiveRecord::Base
   has_many :meeting_documents, :through => :meetings, :source => :documents, :select => "documents.id, documents.title, documents.document_type, documents.document_owner_type, documents.document_owner_id, documents.created_at, documents.updated_at", :order => "meetings.date_held DESC"
   has_many :memberships, :primary_key => :uid
   has_many :members, :through => :memberships
+  has_many :related_articles, :as => :subject
   has_one :next_meeting, :class_name => "Meeting", :conditions => 'date_held > \'#{Time.now.to_s(:db)}\'', :order => 'date_held'
   allow_access_to :members, :via => :uid
   before_save :normalise_title

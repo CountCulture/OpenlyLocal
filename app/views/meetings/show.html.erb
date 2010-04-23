@@ -27,6 +27,8 @@
       <h3>Other meetings of this committee</h3>
       <%= list_all @other_meetings, :rel => "openlylocal:meeting" %>
     </div>
+    
+    <%= render :partial => '/shared/related_articles', :object => @meeting.related_articles(:limit => 5) %>
   </div>
   
   <%= render :partial => '/shared/api_info' %>

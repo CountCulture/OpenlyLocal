@@ -22,6 +22,9 @@
       <h3>Documents for this committee</h3>
       <%= list_all @documents, :extended => true %>
     </div>
+    
+    <%= render :partial => '/shared/related_articles', :object => @committee.related_articles(:limit => 5) %>
+    
   </div>
   
   <%= render :partial => '/shared/api_info' %>

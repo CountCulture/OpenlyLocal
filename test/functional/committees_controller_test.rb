@@ -70,6 +70,14 @@ class CommitteesControllerTest < ActionController::TestCase
        end
      end
      
+     context "when committee has related articles" do
+       should "show them" do
+         related_article = Factory(:related_article, :subject => @committee)
+         get :show, :id => @committee.id
+         assert_select "#related_articles a", /#{related_article.title}/i
+       end
+     end
+
      context "with xml request" do
        setup do
          get :show, :id => @committee.id, :format => "xml"

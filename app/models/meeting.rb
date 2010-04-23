@@ -5,6 +5,7 @@ class Meeting < ActiveRecord::Base
   has_one :minutes, :class_name => "Document", :as => "document_owner", :conditions => "document_type = 'Minutes'"
   has_one :agenda, :class_name => "Document", :as => "document_owner", :conditions => "document_type = 'Agenda'"
   has_many :documents, :as => "document_owner"
+  has_many :related_articles, :as => "subject"
   validates_presence_of :date_held, :committee_id, :council_id
   validates_uniqueness_of :uid, :scope => :council_id, :allow_nil => true
   validates_uniqueness_of :url, :scope => :council_id, :allow_nil => true, :if => Proc.new { |meeting| meeting.uid.blank? }, :message => "must be unique"

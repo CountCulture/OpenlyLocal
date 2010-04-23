@@ -18,6 +18,7 @@ class PollTest < ActiveSupport::TestCase
     should_validate_presence_of :position
     should_have_db_columns :electorate, :ballots_issued, :ballots_rejected, :postal_votes, :uncontested, :source
     should_have_many :candidacies, :dependent => :destroy
+    should_have_many :related_articles
     
     should "have associated polymorphic area" do
       assert_equal @council.id, @poll.area_id

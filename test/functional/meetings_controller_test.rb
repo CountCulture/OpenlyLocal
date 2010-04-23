@@ -204,6 +204,14 @@ class MeetingsControllerTest < ActionController::TestCase
       end
     end
     
+    context "when meeting has related articles" do
+      should "show them" do
+        related_article = Factory(:related_article, :subject => @meeting)
+        get :show, :id => @meeting.id
+        assert_select "#related_articles a", /#{related_article.title}/i
+      end
+    end
+    
     context "with xml request" do
       context "in general" do
         setup do

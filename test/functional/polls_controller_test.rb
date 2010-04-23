@@ -88,6 +88,13 @@ class PollsControllerTest < ActionController::TestCase
 
     end
     
+    context "when meeting has related articles" do
+      should "show them" do
+        related_article = Factory(:related_article, :subject => @poll)
+        get :show, :id => @poll.id
+        assert_select "#related_articles a", /#{related_article.title}/i
+      end
+    end
   end
    
 end

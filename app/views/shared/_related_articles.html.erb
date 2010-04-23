@@ -1,0 +1,6 @@
+<%- unless related_articles.blank? -%>
+  <div id="related_articles" class="item_grouping">
+    <h3>Related articles/blog posts</h3>
+    <%= render :partial => 'shared/related_article', :collection => related_articles %>
+  </div>
+<%- end -%>

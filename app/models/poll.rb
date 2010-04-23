@@ -1,6 +1,7 @@
 class Poll < ActiveRecord::Base
   belongs_to :area, :polymorphic => true
   has_many :candidacies, :dependent => :destroy
+  has_many :related_articles, :as => :subject
   validates_presence_of :date_held, :area_id, :area_type, :position
   
   def self.from_open_election_data(polls=[])

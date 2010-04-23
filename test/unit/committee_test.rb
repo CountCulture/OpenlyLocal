@@ -15,6 +15,7 @@ class CommitteeTest < ActiveSupport::TestCase
     should_have_one  :next_meeting
     should_have_many :memberships
     should_have_many :members, :through => :memberships
+    should_have_many :related_articles
     should_belong_to :council
     should_belong_to :ward
     should_have_named_scope :active
