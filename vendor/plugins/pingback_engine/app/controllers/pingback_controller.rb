@@ -1,4 +1,5 @@
 class PingbackController < ApplicationController
+  newrelic_ignore
   # great help for using xml-rpc in Rails:
   # http://blog.multiplay.co.uk/2008/10/serving-xml-rpc-from-rails-2x/
   
