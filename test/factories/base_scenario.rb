@@ -290,3 +290,7 @@ Factory.define :related_article do |f|
   f.association :subject, :factory => :member 
 end
 
+Factory.define :contract do |f|
+  f.association :organisation, :factory => :police_force 
+end
+

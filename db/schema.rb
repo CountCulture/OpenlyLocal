@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100423135749) do
+ActiveRecord::Schema.define(:version => 20100426205705) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -62,6 +62,30 @@ ActiveRecord::Schema.define(:version => 20100423135749) do
 
   add_index "committees", ["council_id"], :name => "index_committees_on_council_id"
   add_index "committees", ["ward_id"], :name => "index_committees_on_ward_id"
+
+  create_table "contracts", :force => true do |t|
+    t.column "title", :string
+    t.column "description", :text
+    t.column "uid", :string
+    t.column "source_url", :string
+    t.column "url", :string
+    t.column "organisation_id", :integer
+    t.column "organisation_type", :string
+    t.column "start_date", :date
+    t.column "end_date", :date
+    t.column "duration", :string
+    t.column "total_value", :integer
+    t.column "annual_value", :integer
+    t.column "supplier_name", :string
+    t.column "supplier_address", :text
+    t.column "supplier_uid", :string
+    t.column "department_responsible", :string
+    t.column "person_responsible", :string
+    t.column "email", :string
+    t.column "telephone", :string
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "council_contacts", :force => true do |t|
     t.column "name", :string
@@ -334,6 +358,7 @@ ActiveRecord::Schema.define(:version => 20100423135749) do
   end
 
   add_index "feed_entries", ["feed_owner_id", "feed_owner_type"], :name => "index_feed_entries_on_feed_owner_id_and_feed_owner_type"
+  add_index "feed_entries", ["guid"], :name => "index_feed_entries_on_guid"
 
   create_table "hyperlocal_groups", :force => true do |t|
     t.column "title", :string
