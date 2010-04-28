@@ -4,6 +4,7 @@ class RelatedArticle < ActiveRecord::Base
   validates_presence_of :title, :url, :hyperlocal_site_id, :subject_type, :subject_id
   validates_uniqueness_of :url
   default_scope :order => 'created_at'
+  delegate :openlylocal_url, :to => :subject, :allow_nil => true
   ModelsAcceptingPinbacks = %w(members committees meetings polls)
   
   def self.process_pingback(pingback)

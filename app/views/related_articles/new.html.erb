@@ -1,8 +1,19 @@
 <h1><%= @title %></h1>
-<p><strong>Note:</strong> This is a manual option for blogs that don&#x27;t submit pingbacks autmoatically (e.g. Ning doesn&#x27;t,  Wordpress does). For more details see <a href="http://countculture.wordpress.com/2010/04/22/linking-hyperlocal-blog-posts-and-councillors-a-simple-solution/" title="Linking hyperlocal blog posts and councillors: a simple solution &laquo;  countculture">this post</a></p>
-<p>To avoid spam submissions, only articles/posts from sites in the OpenlyLocal Hyperlocal Directory and that link to a specific Councillor, Committee, Meeting or Poll page will be listed.</p>
+<p><strong>Note:</strong> This is a manual option for blogs that don&#x27;t submit pingbacks automatically (e.g. Ning doesn&#x27;t,  Wordpress does). For more details see <a href="http://countculture.wordpress.com/2010/04/22/linking-hyperlocal-blog-posts-and-councillors-a-simple-solution/" title="Linking hyperlocal blog posts and councillors: a simple solution &laquo;  countculture">this post</a></p>
+<p>To avoid spam submissions, only articles/posts from sites in the <%= link_to 'OpenlyLocal Hyperlocal Directory', hyperlocal_sites_url %> and that link to a specific Councillor, Committee, Meeting or Poll page will be allowed.</p>
 <p>After pressing submit, you may have to wait a short period while the system checks your article/post for the link (should be no more that 20 seconds)</p>
 
 <% form_for @related_article do |f| %>
+<p>
+  <%= f.label :openlylocal_url, "URL of OpenlyLocal page being linked to" %>
+  <%= f.text_field :openlylocal_url %>
+</p>
+
+<p>
+  <%= f.label :url, "Url of article/blog post referring to OpenlyLocal page" %>
+  <%= f.text_field :url %>
+</p>
+
+<%= f.submit %>
   
 <% end -%>

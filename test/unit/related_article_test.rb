@@ -22,6 +22,10 @@ class RelatedArticleTest < ActiveSupport::TestCase
       assert_equal subject, Factory(:related_article, :subject => subject).subject
     end
     
+    should "delegate openlylocal_url to subject" do
+      assert_equal @related_article.subject.openlylocal_url, @related_article.openlylocal_url
+    end
+    
     context 'when processing pingback' do
       setup do
         @subject = Factory(:member, :council => Factory(:another_council))

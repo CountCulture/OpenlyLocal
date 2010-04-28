@@ -36,7 +36,7 @@ class RelatedArticlesControllerTest < ActionController::TestCase
     
     context 'in general' do
       setup do
-        post :create, :related_article => { :source_uri => 'http://foo.com', :target_uri => 'http://bar.com' }
+        post :create, :related_article => { :url => 'http://foo.com', :openlylocal_url => 'http://bar.com' }
       end
       
       should_create :related_article
@@ -65,7 +65,7 @@ class RelatedArticlesControllerTest < ActionController::TestCase
     context 'when no approved hyperlocal site' do
       setup do
         HyperlocalSite.expects(:find_from_article_url) # => nil
-        post :create, :related_article => { :source_uri => 'http://foo.com', :target_uri => 'http://bar.com' }
+        post :create, :related_article => { :url => 'http://foo.com', :openlylocal_url => 'http://bar.com' }
       end
       
       should_not_change("related article count") {RelatedArticle.count}
