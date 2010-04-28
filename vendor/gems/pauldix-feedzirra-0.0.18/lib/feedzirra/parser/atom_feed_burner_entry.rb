@@ -28,6 +28,7 @@ module Feedzirra
       element :updated
       element :modified, :as => :updated
       elements :category, :as => :categories, :value => :term
+      element 'georss:point', :as => :point
     end
 
   end

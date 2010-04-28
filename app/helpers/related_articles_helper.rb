@@ -1,0 +1,2 @@
+module RelatedArticlesHelper
+end
