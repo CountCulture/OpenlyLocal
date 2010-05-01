@@ -1,4 +1,5 @@
 class Poll < ActiveRecord::Base
+  BallotRejectedCategories = %w(ballots_missing_official_mark ballots_with_too_many_candidates_chosen ballots_with_identifiable_voter ballots_void_for_uncertainty)
   belongs_to :area, :polymorphic => true
   has_many :candidacies, :dependent => :destroy
   has_many :related_articles, :as => :subject
@@ -23,6 +24,10 @@ class Poll < ActiveRecord::Base
       poll
       end
     end
+  end
+  
+  def rejected_ballot_details?
+    (ballots_rejected.to_i > 0) && (BallotRejectedCategories.sum{ |cat| self.send(cat).to_i  } > 0)
   end
   
   def status

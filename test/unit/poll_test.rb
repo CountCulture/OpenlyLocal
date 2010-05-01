@@ -276,6 +276,35 @@ class PollTest < ActiveSupport::TestCase
         assert_in_delta expected_result, @t_poll.turnout, 0.00000001
       end
     end
+    
+    context 'when returning whether rejected ballots details' do
+      should 'return false if ballot_rejected nil' do
+        assert !@poll.rejected_ballot_details?
+      end
+      
+      should 'return false if ballot_rejected zero' do
+        @poll.ballots_rejected = 0
+        assert !@poll.rejected_ballot_details?
+      end
+      
+      context 'and ballot_rejected non-zero' do
+        setup do
+          @poll.ballots_rejected = 10
+        end
+        
+        should 'return false if all ballot rejected categories add up to zero' do
+          assert !@poll.rejected_ballot_details?
+        end
+        
+        should 'return true if all ballot rejected categories add up to greater than zero' do
+          @poll.update_attributes(:ballots_missing_official_mark => 1, :ballots_void_for_uncertainty => 3)
+          assert @poll.rejected_ballot_details?
+          @poll.ballots_void_for_uncertainty = 0
+          assert @poll.rejected_ballot_details?
+        end
+      end
+      
+    end
 
   end
 end

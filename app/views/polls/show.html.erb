@@ -25,6 +25,14 @@
 <div class='source attribution'>
   Source: <%= link_to @poll.source, @poll.source, :class => 'external' %>
 </div>
+<%- if @poll.rejected_ballot_details? -%>
+  <p class='rejected_ballot_details'>
+    <h4>Rejected Ballot details</h4>
+    <%- Poll::BallotRejectedCategories.each do |category| -%>
+      <%= category.titleize %>: <span class='<%= category %>'><%= @poll.send(category) %></span><br />
+    <%- end -%>
+  </p>
+<%- end -%>
 
 <div id="relationships">
   <%= render :partial => '/shared/related_articles', :object => @poll.related_articles(:limit => 5) %> 
