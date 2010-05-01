@@ -41,12 +41,18 @@ task :import_london_2006_voting_proportions => :environment do
     end
     next if row['WardName'].strip == "Total"
     if ward = wards.detect{ |w| TitleNormaliser.normalise_title(w.title) == TitleNormaliser.normalise_title(row['WardName']) }
-      poll = ward.polls.find_or_create_by_date_held("04-05-2006".to_date)
-      voting_attribs = { :position => 'Member',
-                         :electorate => row['Electorate'].gsub(',',''), 
-                         :postal_votes => row['PostalVotes']&&row['PostalVotes'].gsub(',',''), 
-                         :ballots_rejected => row['RejectedBallots'] }
-      voting_attribs[:ballots_issued] = (row['PostalVotes']&&row['PostalVotes'].gsub(',','')).to_i + row['VotesInPerson'].gsub(',','').to_i
+      # poll = ward.polls.find_or_create_by_date_held("04-05-2006".to_date)
+      poll = ward.polls.find_by_date_held("04-05-2006".to_date)
+      voting_attribs = { #:position => 'Member',
+                         #:electorate => row['Electorate'].gsub(',',''), 
+                         #:postal_votes => row['PostalVotes']&&row['PostalVotes'].gsub(',',''), 
+                         #:ballots_rejected => row['RejectedBallots'],
+                         :ballots_missing_official_mark => row["ballots_missing_official_mark"], 
+                         :ballots_with_too_many_candidates_chosen => row["ballots_with_too_many_candidates_chosen"], 
+                         :ballots_with_identifiable_voter => row["ballots_with_identifiable_voter"], 
+                         :ballots_void_for_uncertainty => row["ballots_void_for_uncertainty"]
+                          }
+      # voting_attribs[:ballots_issued] = (row['PostalVotes']&&row['PostalVotes'].gsub(',','')).to_i + row['VotesInPerson'].gsub(',','').to_i
       poll.update_attributes(voting_attribs)
       puts "Updated results for #{ward.name}: #{voting_attribs.inspect}"
     else
