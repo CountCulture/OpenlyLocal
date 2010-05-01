@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:openelection="http://openelectiondata.org/0.1/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDHD/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=42"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGK/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=10"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGZ/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=29"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGM/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=18"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGY/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=28"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGU/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=25"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGQ/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=21"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDHG/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=41"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGW/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=26"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGX/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=27"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGG/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=14"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGE/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=13"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDHC/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=33"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGL/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=17"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGT/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=24"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGR/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=22"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGS/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=23"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGH/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=15"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDHE/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=39"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDHF/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=40"/>
+  </openelection:Poll>
+  <rdf:Description rdf:about="http://www.lichfielddc.gov.uk/index.php">
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/generic/print.css"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/generic/handheld.css"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/standard.css"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/generic/style.php"/>
+    <xhv:meta rdf:resource="http://www.lichfielddc.gov.uk/labels.rdf"/>
+    <xhv:icon rdf:resource="http://www.lichfielddc.gov.uk/site/favicon.ico"/>
+  </rdf:Description>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGF/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=9"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGN/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=19"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGP/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=12"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDHA/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=32"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGJ/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=16"/>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDHB/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/viewelection.php?pollid=34"/>
+  </openelection:Poll>
+  <rdf:Description rdf:about="http://www.lichfielddc.gov.uk/index.php#content">
+    <xhv:license rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/"/>
+    <foaf:primaryTopic>
+      <rdf:Description rdf:about="http://openelectiondata.org/id/elections/41UD/2007-05-03">
+        <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/index.php#content"/>
+      </rdf:Description>
+    </foaf:primaryTopic>
+  </rdf:Description>
+</rdf:RDF>

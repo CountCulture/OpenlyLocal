@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:cal="http://www.w3.org/2002/12/cal#"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:openelection="http://openelectiondata.org/0.1/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  xmlns:v="http://www.w3.org/2006/vcard/ns#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+>
+  <rdf:Description rdf:about="http://www.lichfielddc.gov.uk/index.php">
+    <xhv:icon rdf:resource="http://www.lichfielddc.gov.uk/site/favicon.ico"/>
+    <xhv:meta rdf:resource="http://www.lichfielddc.gov.uk/labels.rdf"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/generic/style.php"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/standard.css"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/generic/handheld.css"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/generic/print.css"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openelectiondata.org/id/parties/26">
+    <rdfs:label xml:lang="en">Liberal Democrats</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="jodsYnZr7">
+    <foaf:name xml:lang="en">David Peter Whatton</foaf:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="jodsYnZr4">
+    <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+    <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">790</openelection:candidateVoteCount>
+    <openelection:party>
+      <rdf:Description rdf:about="http://openelectiondata.org/id/parties/25">
+        <rdfs:label xml:lang="en">Conservative Party</rdfs:label>
+      </rdf:Description>
+    </openelection:party>
+    <openelection:candidate>
+      <rdf:Description>
+        <foaf:name xml:lang="en">Michael John Wilcox</foaf:name>
+      </rdf:Description>
+    </openelection:candidate>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="jodsYnZr13">
+    <foaf:name xml:lang="en">Kevin James McCarthy</foaf:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="jodsYnZr14">
+    <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+    <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">841</openelection:candidateVoteCount>
+    <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+    <openelection:candidate>
+      <rdf:Description>
+        <foaf:name xml:lang="en">Paul Hogan</foaf:name>
+      </rdf:Description>
+    </openelection:candidate>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="jodsYnZr8">
+    <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+    <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">937</openelection:candidateVoteCount>
+    <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+    <openelection:candidate>
+      <rdf:Description>
+        <foaf:name xml:lang="en">Margaret Stanhope</foaf:name>
+      </rdf:Description>
+    </openelection:candidate>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="jodsYnZr11">
+    <foaf:name xml:lang="en">John Linnaeus Middleton</foaf:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="jodsYnZr6">
+    <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+    <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">311</openelection:candidateVoteCount>
+    <openelection:party>
+      <rdf:Description rdf:about="http://openelectiondata.org/id/parties/6">
+        <rdfs:label xml:lang="en">Labour Party [The]</rdfs:label>
+      </rdf:Description>
+    </openelection:party>
+    <openelection:candidate rdf:nodeID="jodsYnZr7"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.lichfielddc.gov.uk/index.php#content">
+    <foaf:primaryTopic>
+      <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/41UDGE/2007-05-03">
+        <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/41UDGE"/>
+        <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2007-05-03</cal:dtstart>
+        <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/index.php#content"/>
+        <openelection:candidacy rdf:nodeID="jodsYnZr8"/>
+        <openelection:candidacy rdf:nodeID="jodsYnZr14"/>
+        <openelection:candidacy rdf:nodeID="jodsYnZr4"/>
+        <openelection:candidacy rdf:nodeID="jodsYnZr6"/>
+        <openelection:candidacy>
+          <rdf:Description>
+            <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+            <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">473</openelection:candidateVoteCount>
+            <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+            <openelection:candidate>
+              <rdf:Description>
+                <foaf:givenName xml:lang="en">Patrick Wardle</foaf:givenName>
+                <foaf:familyName xml:lang="en">Curran</foaf:familyName>
+                <openelection:address>
+                  <rdf:Description>
+                    <v:street-address xml:lang="en">7 Pershore Close</v:street-address>
+                    <v:postal-code xml:lang="en">IG2 6RR</v:postal-code>
+                    <v:locality xml:lang="en">Gants Hill</v:locality>
+                    <v:region xml:lang="en">Essex</v:region>
+                  </rdf:Description>
+                </openelection:address>
+              </rdf:Description>
+            </openelection:candidate>
+          </rdf:Description>
+        </openelection:candidacy>
+        <openelection:candidacy>
+          <rdf:Description>
+            <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+            <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">342</openelection:candidateVoteCount>
+            <openelection:independentCandidate rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:independentCandidate>
+            <openelection:candidate rdf:nodeID="jodsYnZr11"/>
+          </rdf:Description>
+        </openelection:candidacy>
+        <openelection:candidacy>
+          <rdf:Description>
+            <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+            <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">410</openelection:candidateVoteCount>
+            <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+            <openelection:candidate rdf:nodeID="jodsYnZr13"/>
+          </rdf:Description>
+        </openelection:candidacy>
+        <openelection:ballotsIssued rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1642</openelection:ballotsIssued>
+        <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4409</openelection:electorate>
+      </openelection:Poll>
+    </foaf:primaryTopic>
+    <xhv:license rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/"/>
+  </rdf:Description>
+</rdf:RDF>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:openelection="http://openelectiondata.org/0.1/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+>
+  <openelection:Election rdf:about="http://openelectiondata.org/id/elections/41UD/2007-05-03">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/electionresults.php?electionid=2"/>
+  </openelection:Election>
+  <openelection:Election rdf:about="http://openelectiondata.org/id/elections/41UD/2009-07-09">
+    <foaf:isPrimaryTopicOf rdf:resource="http://www.lichfielddc.gov.uk/site/custom_scripts/electionresults.php?electionid=6"/>
+  </openelection:Election>
+  <rdf:Description rdf:about="http://www.lichfielddc.gov.uk/index.php">
+    <xhv:meta rdf:resource="http://www.lichfielddc.gov.uk/labels.rdf"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/standard.css"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/generic/handheld.css"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/generic/print.css"/>
+    <xhv:stylesheet rdf:resource="http://www.lichfielddc.gov.uk/site/styles/generic/style.php"/>
+    <xhv:icon rdf:resource="http://www.lichfielddc.gov.uk/site/favicon.ico"/>
+  </rdf:Description>
+</rdf:RDF>
