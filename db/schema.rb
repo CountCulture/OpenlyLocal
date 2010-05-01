@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100426205705) do
+ActiveRecord::Schema.define(:version => 20100501123648) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -629,6 +629,10 @@ ActiveRecord::Schema.define(:version => 20100426205705) do
     t.column "updated_at", :datetime
     t.column "source", :string
     t.column "uncontested", :boolean, :default => false
+    t.column "ballots_missing_official_mark", :integer
+    t.column "ballots_with_too_many_candidates_chosen", :integer
+    t.column "ballots_with_identifiable_voter", :integer
+    t.column "ballots_void_for_uncertainty", :integer
   end
 
   add_index "polls", ["area_id", "area_type"], :name => "index_polls_on_area_id_and_area_type"
