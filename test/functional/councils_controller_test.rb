@@ -14,7 +14,9 @@ class CouncilsControllerTest < ActionController::TestCase
     @meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 2.days.from_now)
     @ward = Factory(:ward, :council => @council)
     @document = Factory(:document, :document_owner => @meeting)
-    @past_document = Factory(:document, :document_owner => @past_meeting)
+    Document.record_timestamps = false # update timestamp without triggering callbacks
+    @past_document = Factory(:document, :document_owner => @past_meeting, :created_at => 2.days.ago)
+    Document.record_timestamps = true
   end
   
   # index test
@@ -286,7 +288,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should "list documents" do
-        assert_equal [@past_document, @document], assigns(:documents) #most recently created first
+        assert_equal [@document, @past_document], assigns(:documents) #most recently created first
         assert_select "#documents li", @past_document.extended_title
       end
       

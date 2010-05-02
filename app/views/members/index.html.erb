@@ -1,7 +1,10 @@
-<h1><%= basic_link_for @council %>: <%= @title %></h1>
+<h1><%= @council ? "#{basic_link_for(@council)} ::" : 'All' %> <%= @title %></h1>
 <p><%= params[:include_ex_members] ? "<strong>Former members in grey</strong> (#{link_to('Restrict to current members', params.except(:include_ex_members))})" : link_to("Include former members", params.merge(:include_ex_members => true)) %></p>
 <div id='members'>
   <%= render :partial => @members %>
 </div>
 
 <%= will_paginate @members unless @council %>
+
+
+<%= render :partial => '/shared/api_info' %>

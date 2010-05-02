@@ -34,7 +34,7 @@ class MembersControllerTest < ActionController::TestCase
       end
       
       should 'show link to include ex_members' do
-        assert_select 'a[href*=include_ex_members]'
+        assert_select 'a', /include former members/i
       end
       
       should "not show council in member item" do
@@ -48,7 +48,7 @@ class MembersControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :include_ex_members => true
       end
       
-      should_assign_to(:members) { [@member, @ex_member] } # current members
+      should_assign_to(:members) { [@member, @ex_member] } # current and ex members
       should_assign_to(:council) { @council }
       should_respond_with :success
       
@@ -62,10 +62,58 @@ class MembersControllerTest < ActionController::TestCase
       end
       
       should "not show link to include ex_members" do
-        assert_select "a[href*=include_ex_members]", false
+        assert_select "a", :text => /include former members/i, :count => 0
       end
     end
     
+    context "with xml requested and council_id provided" do
+      setup do
+        get :index, :council_id => @council.id, :format => "xml"
+      end
+
+      should_assign_to(:members) { [@member] } # current members
+      should_assign_to(:council) { @council }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/xml'
+
+      should "include members" do
+        assert_select "members>member>id"
+      end
+
+      should "include council" do
+        assert_select "members>member>council>id"
+      end
+
+      should "include ward info" do
+        assert_select "member>ward>id"
+      end
+    end
+
+    context "with json requested and council_id provided" do
+      setup do
+        get :index, :council_id => @council.id, :format => "json"
+      end
+
+      should_assign_to(:members) { [@member] } # current members
+      should_assign_to(:council) { @council }
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/json'
+
+      should "include council" do
+        assert_match /council.+id/, @response.body
+      end
+      
+      should "include ward info" do
+        assert_match %r(ward.+name.+#{@ward.name}), @response.body
+      end
+      
+      should 'not include pagination info' do
+        assert_no_match %r(total_entries), @response.body
+      end
+    end
+
     context 'without council_id' do
       context 'in general' do
         setup do
@@ -99,12 +147,64 @@ class MembersControllerTest < ActionController::TestCase
       context 'when enough results' do
         setup do
           35.times { Factory(:member, :council => @council) }
-          get :index
         end
         
-        should 'show pagination links' do
-          assert_select "div.pagination"
+        context 'in general' do
+          setup do
+            get :index
+          end
+          
+          should 'show pagination links' do
+            assert_select "div.pagination"
+          end
         end
+        
+        context "with xml requested" do
+          setup do
+            get :index, :format => "xml"
+          end
+
+          should "include members" do
+            assert_select "members>member>id"
+          end
+
+          should "include council" do
+            assert_select "members>member>council>id"
+          end
+
+          should "include ward info" do
+            assert_select "member>ward>id"
+          end
+          
+          should 'include pagination info' do
+            assert_select "members>total-entries", false
+          end
+        end
+        
+        context "with json requested" do
+          setup do
+            get :index, :format => "json"
+          end
+
+          should_respond_with :success
+          should_render_without_layout
+          should_respond_with_content_type 'application/json'
+
+          should "include council" do
+            assert_match /council.+id/, @response.body
+          end
+          
+          should "include ward info" do
+            assert_match %r(ward.+name.+#{@ward.name}), @response.body
+          end
+          
+          should 'include pagination info' do
+            assert_match %r(total_entries.+#{Member.count}), @response.body
+            assert_match %r(per_page), @response.body
+            assert_match %r(page.+1), @response.body
+          end
+        end
+
       end
     end
 

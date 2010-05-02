@@ -4,11 +4,38 @@ class MembersController < ApplicationController
   
   def index
     if @council = Council.find_by_id(params[:council_id])
-      @members = params[:include_ex_members] ? @council.members.all(:include => :ward) : @council.members.current.all(:include => :ward)
+      @members = params[:include_ex_members] ? @council.members.all(:include => [:ward, :twitter_account]) : @council.members.current.all(:include => [:ward, :twitter_account])
     else
-      @members = Member.except_vacancies.current.paginate(:page => params[:page], :order => "last_name")
+      @members = Member.except_vacancies.current.paginate(:page => params[:page], :order => "last_name", :include => [:council, :ward, :twitter_account])
     end
-    @title = params[:include_ex_members] ? "All members" : "Current members"
+    @title = params[:include_ex_members] ? "Current and former members" : "Current members"
+    @title = @council ? "All members" : "Current members"
+    respond_to do |format|
+      format.html
+      format.xml do
+        if @council 
+         render :xml => @members.to_xml(:include => [:council, :ward, :twitter_account])
+        else
+         render :xml => @members.to_xml(:include => [:council, :ward, :twitter_account]) { |xml|
+                    xml.tag! 'total-entries', @members.total_entries
+                    xml.tag! 'per-page', @members.per_page
+                    xml.tag! 'page', params[:page].to_i
+                  }
+        end
+      end
+      format.json do
+        if @council 
+          render :json => @members.to_json(:include => [:council, :ward, :twitter_account])
+        else
+         render :json => { :page => params[:page].to_i,
+                           :per_page => @members.per_page,
+                           :total_entries => @members.total_entries,
+                           :members => @members.as_json(:include => [:council, :ward, :twitter_account])
+                         }
+                
+        end
+      end
+    end
   end
   
   def show
