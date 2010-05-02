@@ -9,7 +9,6 @@ class MembersController < ApplicationController
       @members = Member.except_vacancies.current.paginate(:page => params[:page], :order => "last_name", :include => [:council, :ward, :twitter_account])
     end
     @title = params[:include_ex_members] ? "Current and former members" : "Current members"
-    @title = @council ? "All members" : "Current members"
     respond_to do |format|
       format.html
       format.xml do
@@ -30,7 +29,7 @@ class MembersController < ApplicationController
          render :json => { :page => params[:page].to_i,
                            :per_page => @members.per_page,
                            :total_entries => @members.total_entries,
-                           :members => @members.as_json(:include => [:council, :ward, :twitter_account])
+                           :members => @members.to_json(:include => [:council, :ward, :twitter_account])
                          }
                 
         end

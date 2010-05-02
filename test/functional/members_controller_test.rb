@@ -88,6 +88,10 @@ class MembersControllerTest < ActionController::TestCase
       should "include ward info" do
         assert_select "member>ward>id"
       end
+      
+      should 'not include pagination info' do
+        assert_select "members>total-entries", false
+      end
     end
 
     context "with json requested and council_id provided" do
@@ -146,7 +150,7 @@ class MembersControllerTest < ActionController::TestCase
       
       context 'when enough results' do
         setup do
-          35.times { Factory(:member, :council => @council) }
+          35.times { Factory(:member, :council => @council, :ward => @ward) }
         end
         
         context 'in general' do
@@ -177,7 +181,7 @@ class MembersControllerTest < ActionController::TestCase
           end
           
           should 'include pagination info' do
-            assert_select "members>total-entries", false
+            assert_select "members>total-entries"
           end
         end
         
