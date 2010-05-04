@@ -36,6 +36,7 @@ class Council < ActiveRecord::Base
   belongs_to :portal_system
   belongs_to :police_force
   belongs_to :pension_fund
+  belongs_to :output_area_classification
   validates_presence_of :name
   validates_uniqueness_of :name
   named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? 

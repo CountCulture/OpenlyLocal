@@ -11,6 +11,7 @@ class WardTest < ActiveSupport::TestCase
     should_validate_uniqueness_of :name, :scoped_to => :council_id
     should_belong_to :council
     should_belong_to :police_team
+    should_belong_to :output_area_classification
     should_validate_presence_of :council_id
     should_have_many :members
     should_have_many :committees

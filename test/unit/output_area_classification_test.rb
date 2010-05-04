@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class OutputAreaClassificationTest < ActiveSupport::TestCase
+  subject { @output_area_classification }
   context "The OutputAreaClassification class" do
     setup do
       @output_area_classification = Factory(:output_area_classification)

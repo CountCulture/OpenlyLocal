@@ -29,6 +29,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_belong_to :portal_system
     should_belong_to :police_force
     should_belong_to :pension_fund
+    should_belong_to :output_area_classification
     should_have_many :datapoints
     should_have_many :dataset_topics, :through => :datapoints
     should_have_db_column :notes

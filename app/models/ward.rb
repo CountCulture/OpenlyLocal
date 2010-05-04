@@ -3,6 +3,7 @@ class Ward < ActiveRecord::Base
   include AreaStatisticMethods
   belongs_to :council
   belongs_to :police_team
+  belongs_to :output_area_classification
   has_many :members
   has_many :committees
   has_many :meetings, :through => :committees
