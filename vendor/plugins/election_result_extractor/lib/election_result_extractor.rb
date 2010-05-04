@@ -61,9 +61,9 @@ module ElectionResultExtractor
     raise ExtractorError, "Error getting/parsing election results (#{e.message}):#{e.backtrace}"
   end
   
-  def poll_results_for(council)
+  def poll_results_for(council, options={})
     status, poll_count, elections = [], 0, []
-    landing_page = landing_page_for(council)
+    landing_page = options[:landing_page] || landing_page_for(council)
     status << "Landing page found"
     election_pages = election_pages_from(landing_page)
     status << "#{election_pages.size} election(s) found"

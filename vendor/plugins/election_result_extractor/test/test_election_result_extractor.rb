@@ -610,5 +610,23 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
       # end
     end
   
+    context 'and landing page submitted' do
+      setup do
+        ElectionResultExtractor.stubs(:landing_page_for).returns('http://foo.com/landing')
+        ElectionResultExtractor.stubs(:election_pages_from).returns(['http://foo.com/election'])
+        ElectionResultExtractor.stubs(:poll_pages_from).returns(['http://foo.com/poll'])
+        RdfUtilities.stubs(:_http_get).returns(@dummy_response)
+      end
+
+      should 'not get landing page for council' do
+        ElectionResultExtractor.expects(:landing_page_for).never
+        ElectionResultExtractor.poll_results_for(@council, :landing_page => 'http://baz.com/supplied_landing')
+      end
+      
+      should 'use submitted landing page when getting elections' do
+        ElectionResultExtractor.expects(:election_pages_from).with('http://baz.com/supplied_landing').returns(['http://foo.com/election'])
+        ElectionResultExtractor.poll_results_for(@council, :landing_page => 'http://baz.com/supplied_landing')
+      end
+    end
   end
 end
