@@ -3,12 +3,13 @@ class MembersController < ApplicationController
   before_filter :authenticate, :except => [:show, :index]
   
   def index
+    @title = params[:include_ex_members] ? "Current and former members" : "Current members"
     if @council = Council.find_by_id(params[:council_id])
       @members = params[:include_ex_members] ? @council.members.all(:include => [:ward, :twitter_account]) : @council.members.current.all(:include => [:ward, :twitter_account])
     else
       @members = Member.except_vacancies.current.paginate(:page => params[:page], :order => "last_name", :include => [:council, :ward, :twitter_account])
+      @title += " :: Page #{(params[:page]||1).to_i}"
     end
-    @title = params[:include_ex_members] ? "Current and former members" : "Current members"
     respond_to do |format|
       format.html
       format.xml do

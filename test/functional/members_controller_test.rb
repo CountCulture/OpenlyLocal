@@ -161,6 +161,10 @@ class MembersControllerTest < ActionController::TestCase
           should 'show pagination links' do
             assert_select "div.pagination"
           end
+          
+          should 'show page number in title' do
+            assert_select "title", /page 1/i
+          end
         end
         
         context "with xml requested" do
