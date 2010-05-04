@@ -4,7 +4,7 @@
 </div>
 <div class='intro'>
   <p><strong>Openly Local</strong> is a new project to develop an open and unified way of accessing Local Government information.</p>
-  <p>So far we have opened up data for over 90 local authorities, and more are being added every week, with more information being opened up too.</p>
+  <p>So far we have opened up data for over 140 local authorities, and more are being added every week, with more information being opened up too.</p>
   <p>
     <strong>We currently have information on:</strong>
   </p>
@@ -23,7 +23,7 @@
       <li>Over <%= number_with_delimiter(Datapoint.count) %> pieces of data</li>
     </ul>
   </div>
-  <p class="clear-left">Most of the data is accessible as <%= link_to "XML", 'http://en.wikipedia.org/wiki/XML', :class => 'external' %> or <%= link_to "json", 'http://en.wikipedia.org/wiki/JSON', :class => 'external' %> data through a <%= link_to "simple API", :controller => "info", :action => "api" %> (basically add .xml or .json to the main part of the URL). There is also a <a href="http://countculture.wordpress.com/2009/10/09/openlylocal-info-on-your-website-part-1-google-gadgets/" title="OpenlyLocal info on your website, Part 1: Google Gadgets &laquo;  countculture">Google Gadget</a> and an <a href="http://countculture.wordpress.com/2009/11/20/openlylocal-info-on-your-hyperlocal-website-part-2-ning-app/" title="OpenlyLocal info on your hyperlocal website, Part 2: Ning app &laquo;  countculture">app for Hyperlocal sites using Ning</a></p>
+  <p class="clear-left">Most of the data is accessible as <%= link_to "XML", 'http://en.wikipedia.org/wiki/XML', :class => 'external' %> or <%= link_to "json", 'http://en.wikipedia.org/wiki/JSON', :class => 'external' %> data through a <%= link_to "simple API", :controller => "info", :action => "api" %> (basically add .xml or .json to the main part of the URL). There is also a <a href="http://countculture.wordpress.com/2009/10/09/openlylocal-info-on-your-website-part-1-google-gadgets/" title="OpenlyLocal info on your website, Part 1: Google Gadgets &laquo;  countculture">Google Gadget</a>, an <a href="http://countculture.wordpress.com/2009/11/20/openlylocal-info-on-your-hyperlocal-website-part-2-ning-app/" title="OpenlyLocal info on your hyperlocal website, Part 2: Ning app &laquo;  countculture">app for Hyperlocal sites using Ning</a>, and <a href="http://countculture.wordpress.com/2010/04/17/expirimental-openlylocal-widget-council-info-on-any-website/" title="Experimental OpenlyLocal widget: council info on any website &laquo;  countculture">a simple javascript widget</a></p>
 </div>
 
 <div id="relationships">
