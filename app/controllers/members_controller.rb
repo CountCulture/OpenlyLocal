@@ -27,7 +27,7 @@ class MembersController < ApplicationController
         if @council 
           render :json => @members.to_json(:include => [:council, :ward, :twitter_account])
         else
-         render :json => { :page => params[:page].to_i,
+         render :json => { :page => (params[:page]||1).to_i,
                            :per_page => @members.per_page,
                            :total_entries => @members.total_entries,
                            :members => @members.to_json(:include => [:council, :ward, :twitter_account])

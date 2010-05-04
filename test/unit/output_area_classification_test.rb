@@ -8,7 +8,7 @@ class OutputAreaClassificationTest < ActiveSupport::TestCase
     end
 
     should_validate_presence_of :title, :uid, :level, :area_type
-    should_validate_uniqueness_of :uid
+    should_validate_uniqueness_of :uid, :scoped_to => :area_type
   end
 
   context "A OutputAreaClassification instance" do
@@ -16,8 +16,5 @@ class OutputAreaClassificationTest < ActiveSupport::TestCase
       @output_area_classification = Factory(:output_area_classification)
     end
     
-    # should "not be elected by default" do
-    #   assert !@candidacy.elected?
-    # end
   end
 end

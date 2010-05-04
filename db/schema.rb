@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100504165112) do
+ActiveRecord::Schema.define(:version => 20100504172214) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -135,6 +135,7 @@ ActiveRecord::Schema.define(:version => 20100504165112) do
     t.column "gss_code", :string
     t.column "annual_audit_letter", :string
     t.column "output_area_classification_id", :integer
+    t.column "defunkt", :boolean, :default => false
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
@@ -779,6 +780,7 @@ ActiveRecord::Schema.define(:version => 20100504165112) do
     t.column "gss_code", :string
     t.column "police_team_id", :integer
     t.column "output_area_classification_id", :integer
+    t.column "defunkt", :boolean, :default => false
   end
 
   add_index "wards", ["council_id"], :name => "index_wards_on_council_id"
