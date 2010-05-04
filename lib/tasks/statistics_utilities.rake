@@ -212,3 +212,13 @@ task :import_socitm_bc10 => :environment do
   end
 end
 
+desc "Import Output Area Classification List"
+task :import_oac_list => :environment do
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/ons_data/output_area_classification_list.csv")).to_a[1..-1] # skip first row
+  rows.each do |row|
+    title, area_type, uid = row
+    level = uid.split('.').size
+    oac = OutputAreaClassification.find_or_create_by_area_type_and_uid(:area_type => area_type, :uid => uid, :title => title, :level => level)
+    puts "Successfully added/updated Output Area Classification: #{oac.inspect}"
+  end
+end

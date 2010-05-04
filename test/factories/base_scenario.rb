@@ -294,3 +294,10 @@ Factory.define :contract do |f|
   f.association :organisation, :factory => :police_force 
 end
 
+Factory.define :output_area_classification do |f|
+  f.title "Prosperous Area"
+  f.sequence(:uid) { |n| "1.2.#{n}" }
+  f.level 2
+  f.area_type 'Council'
+end
+
