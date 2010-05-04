@@ -169,6 +169,10 @@ class Council < ActiveRecord::Base
     LdgService.all(:conditions => conditions, :order => "lgsl") 
   end
   
+  def resource_uri
+    "http://#{DefaultDomain}/id/councils/#{id}"
+  end
+  
   def short_name
     return name if name =~ /City of London|Greater London Authority/
     name.gsub(/&| and|Metropolitan|Borough of|Borough|District|City of|City|County of|County|Royal|Council of the|London|Council|\([\w\s]+\)/, '').squish

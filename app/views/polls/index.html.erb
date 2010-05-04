@@ -1,0 +1,10 @@
+<h1><%= @title %></h1>
+
+<div id="polls">
+  <%= list_all @polls, :extended => true %>
+</div>
+
+<%= will_paginate @polls %>
+
+<%= render :partial => '/shared/api_info' %>
+

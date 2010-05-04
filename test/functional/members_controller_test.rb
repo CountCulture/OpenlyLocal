@@ -53,7 +53,7 @@ class MembersControllerTest < ActionController::TestCase
       should_respond_with :success
       
       should "show title" do
-        assert_select "title", /all members/i
+        assert_select "title", /current and former members/i
       end
       
       should "list all members" do

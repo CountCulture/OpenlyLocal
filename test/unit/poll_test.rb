@@ -29,6 +29,20 @@ class PollTest < ActiveSupport::TestCase
       assert !@poll.uncontested
     end
     
+    context 'when converting all records to csv' do
+      setup do
+        @csv_data = Poll.to_csv
+      end
+      
+      should 'use attributes as header row' do
+        assert_match /^#{Poll::CsvFields.join(',')}/, @csv_data
+      end
+      
+      should 'use date on subsequent rows' do
+        assert_match /\n#{@poll.id},#{@council.resource_uri},/, @csv_data
+      end
+    end
+    
     context 'when creating or updating from open_election_data' do
       setup do
         @dummy_response = 
@@ -241,8 +255,24 @@ class PollTest < ActiveSupport::TestCase
   
   context "A Poll instance" do
     
-    should "date_held as string as title" do
+    should "return date_held as string as title" do
       assert_equal @poll.date_held.to_s(:event_date), @poll.title
+    end
+    
+    should "return area and date_held as string as extended title" do
+      assert_equal "#{@poll.area.title}, #{@poll.date_held.to_s(:event_date)}", @poll.extended_title
+    end
+    
+    should 'return resource_uri' do
+      assert_equal "http://#{DefaultDomain}/id/polls/#{@poll.id}", @poll.resource_uri
+    end
+    
+    should 'delegate area_resource_uri to area' do
+      assert_equal @council.resource_uri, @poll.area_resource_uri
+    end
+    
+    should 'delegate area_title to area' do
+      assert_equal @council.title, @poll.area_title
     end
     
     context 'when returning status' do

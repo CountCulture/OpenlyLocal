@@ -1,9 +1,11 @@
 class Poll < ActiveRecord::Base
   BallotRejectedCategories = %w(ballots_missing_official_mark ballots_with_too_many_candidates_chosen ballots_with_identifiable_voter ballots_void_for_uncertainty)
+  CsvFields = %w(id area_resource_uri area_title area_type position electorate ballots_issued ballots_rejected postal_votes uncontested source)
   belongs_to :area, :polymorphic => true
   has_many :candidacies, :dependent => :destroy
   has_many :related_articles, :as => :subject
   validates_presence_of :date_held, :area_id, :area_type, :position
+  delegate :resource_uri, :title, :to => :area, :prefix => true
   
   def self.from_open_election_data(polls=[])
     polls.collect do |poll_info|
@@ -26,8 +28,21 @@ class Poll < ActiveRecord::Base
     end
   end
   
+  def self.to_csv
+    poll_array = [CsvFields] + all.collect { |p| CsvFields.collect{ |f| p.send(f) } }
+    poll_array.collect { |r| FasterCSV.generate_line(r) }.join
+  end
+  
+  def extended_title
+    "#{area.title}, #{title}"
+  end
+  
   def rejected_ballot_details?
     (ballots_rejected.to_i > 0) && (BallotRejectedCategories.sum{ |cat| self.send(cat).to_i  } > 0)
+  end
+  
+  def resource_uri
+    "http://#{DefaultDomain}/id/polls/#{id}"
   end
   
   def status

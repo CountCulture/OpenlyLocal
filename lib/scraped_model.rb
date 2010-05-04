@@ -125,6 +125,10 @@ module ScrapedModel
         "http://#{DefaultDomain}/#{self.class.table_name}/#{to_param}"
       end
 
+      def resource_uri
+        "http://#{DefaultDomain}/id/#{self.class.table_name}/#{id}"
+      end
+
       protected
       # Updates timestamp of council when member details are updated, new member is added or deleted
       def mark_council_as_updated

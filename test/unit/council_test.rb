@@ -419,6 +419,10 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal "#{@council.id}-some-title-with-stuff", @council.to_param
     end
 
+    should 'return resource_uri' do
+      assert_equal "http://#{DefaultDomain}/id/councils/#{@council.id}", @council.resource_uri
+    end
+    
     context "when returning foaf version of telephone number" do
 
       should "return nil if telephone blank" do

@@ -78,7 +78,7 @@ module ApplicationHelper
   
   def social_network_link_for(service, account_name, options={})
     return if account_name.blank?
-    options[:short] ? link_to(image_tag("#{service}_icon.png", :alt => "#{service.to_s.capitalize} page for #{account_name}"), "http://#{service}.com/#{account_name}", :class => "#{service}", :title => "#{service.to_s.capitalize} page for foo") : 
+    options[:short] ? link_to(image_tag("#{service}_icon.png", :alt => "#{service.to_s.capitalize} page for #{account_name}"), "http://#{service}.com/#{account_name}", :class => "#{service}", :title => "#{service.to_s.capitalize} page for #{account_name}") : 
                       link_to(service.to_s.capitalize, "http://#{service}.com/#{account_name}", :class => "#{service} feed url", :rel => "me tag", :title => "#{service.to_s.capitalize} page for #{account_name}")
   end
 

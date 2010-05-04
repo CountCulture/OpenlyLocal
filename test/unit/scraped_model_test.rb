@@ -437,8 +437,14 @@ class ScrapedModelTest < ActiveSupport::TestCase
       assert_nil @test_model.status
     end
     
-    should "calulate openlylocal_url from table name" do
+    should "calculate openlylocal_url from table name and to_param method" do
       assert_equal "http://#{DefaultDomain}/committees/#{@test_model.to_param}", @test_model.openlylocal_url
+    end
+    
+    context "when returning resource_uri" do
+      should 'return calculate from table_name and id' do
+        assert_equal "http://#{DefaultDomain}/id/committees/#{@test_model.id}", @test_model.resource_uri
+      end
     end
     
     should "match by default params based on uid" do
