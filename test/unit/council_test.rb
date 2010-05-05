@@ -88,6 +88,12 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal [@datapoint.old_dataset], @council.old_datasets
     end
 
+    should "not include defunkt wards in wards association" do
+      current_ward = Factory(:ward, :council => @council)
+      defunkt_ward = Factory(:defunkt_ward, :council => @council)
+      assert_equal [current_ward], @council.wards
+    end
+
     should "have many memberships through members" do
       @member = Factory(:member, :council => @council)
       Factory(:committee, :council => @council).members << @member

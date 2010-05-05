@@ -40,6 +40,12 @@ Factory.define :tricky_council, :class => :council do |f|
   f.url 'http://www.trickytown.gov.uk'
 end
 
+Factory.define :defunkt_council do |f|
+  f.name 'Defunkt Town'
+  f.url 'http://www.defunkt.gov.uk'
+  f.defunkt true
+end
+
 Factory.define :member do |f|
   f.sequence(:full_name) { |n| "Bob Wilson#{n}" }
   f.sequence(:uid) { |n| (76 + n).to_s }
@@ -92,6 +98,12 @@ end
 Factory.define :ward do |f|
   f.name "Foo South"
   f.association :council
+end
+
+Factory.define :defunkt_ward, :class => :ward do |f|
+  f.name "Defunkt Ward"
+  f.association :council
+  f.defunkt true
 end
 
 Factory.define :output_area do |f|

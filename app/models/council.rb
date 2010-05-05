@@ -17,7 +17,7 @@ class Council < ActiveRecord::Base
   has_many :scrapers
   has_many :meetings
   has_many :held_meetings, :class_name => "Meeting", :conditions => 'date_held <= \'#{Time.now.to_s(:db)}\''
-  has_many :wards, :order => 'wards.name'
+  has_many :wards, :conditions => {:defunkt => false}, :order => 'wards.name'
   has_many :officers
   has_one  :chief_executive, :class_name => "Officer", :conditions => {:position => "Chief Executive"}
   has_one  :police_authority, :through => :police_force
