@@ -8,7 +8,8 @@ class WardTest < ActiveSupport::TestCase
     end
 
     should_validate_presence_of :name
-    should_validate_uniqueness_of :name, :scoped_to => :council_id
+    # should_validate_uniqueness_of :name, :scoped_to => [:council_id, :defunkt] #note doesn't seem to take any notice of defunkt_scope so tested properly below
+    # should_validate_uniqueness_of :snac_id#, :allow_nil => true
     should_belong_to :council
     should_belong_to :police_team
     should_belong_to :output_area_classification
@@ -27,6 +28,98 @@ class WardTest < ActiveSupport::TestCase
 
     should "include ScraperModel mixin" do
       assert Ward.respond_to?(:find_all_existing)
+    end
+    
+    context 'when validating uniqueness of name' do
+      setup do
+        @council_1 = Factory(:council, :name => "Council 1")
+        @council_2 = Factory(:council, :name => "Council 2")
+        @ward_1 = Factory(:ward, :name => 'foo1', :council => @council_2)
+        @ward_2 = Factory.build(:ward, :name => 'foo1', :council => @council_2)
+      end
+      
+      should 'allow same name for wards with different councils' do
+        @ward_1.update_attribute(:council, @council_1)
+        assert @ward_2.valid?
+      end
+      
+      should 'not allow same name for wards with same council' do
+        assert !@ward_2.valid?
+      end
+      
+      should 'allow same name for wards with same council if both are defunkt and snac ids are different' do
+        @ward_1.update_attributes(:defunkt => true, :snac_id => '00ABCD')
+        @ward_2.defunkt = true
+        @ward_2.snac_id = '00ABCX'
+        assert @ward_2.valid?
+      end
+      
+      should 'allow same name for wards with same council if existing one is defunkt and snac ids are different' do
+        @ward_1.update_attributes(:defunkt => true, :snac_id => '00ABCD')
+        @ward_2.snac_id = '00ABCX'
+        assert @ward_2.valid?
+      end
+      
+      should 'allow same name for wards with same council if new one is defunkt, old one is not and snac ids are different' do
+        @ward_1.update_attributes(:snac_id => '00ABCD')
+        @ward_2.snac_id = '00ABCX'
+        @ward_2.defunkt = true
+        assert @ward_2.valid?
+      end
+      
+      should 'not allow same name for wards with same council if neither are defunkt and snac ids are different' do
+        @ward_1.update_attribute(:snac_id, '00ABCD')
+        @ward_2.snac_id = '00ABCX'
+        assert !@ward_2.valid?
+      end
+      
+      should 'not allow same name for wards with same council if both are defunkt and snac id is same' do
+        @ward_1.update_attributes(:defunkt => true, :snac_id => '00ABCD')
+        @ward_2.defunkt = true
+        @ward_2.snac_id = '00ABCD'
+        assert !@ward_2.valid?
+      end
+      
+      should 'not allow same name for wards with same council if one is missing snac_id' do
+        @ward_1.update_attribute(:defunkt, true)
+        @ward_2.snac_id = '00ABCD'
+        assert !@ward_2.valid?
+      end
+      
+      should 'not allow same name for wards with same council if one has blank snac_id' do
+        @ward_1.update_attributes(:defunkt => true, :snac_id => '')
+        @ward_2.snac_id = '00ABCD'
+        assert !@ward_2.valid?
+      end
+    end
+    
+    context 'when validating uniqueness of snac id' do
+      should 'not allow same snac id even with different councils' do
+        @ward.update_attribute(:snac_id, '00ABCD')
+        another_ward = Factory.build(:ward, :name => 'Another ward', :council => Factory(:another_council), :snac_id => '00ABCD')
+        assert !another_ward.valid?
+        assert another_ward.errors[:snac_id]
+      end
+      
+      should 'allow several wards with nil snac id' do
+        another_ward = Factory.build(:ward, :name => 'Another ward', :council => Factory(:another_council)) # snac_id => nil
+        assert another_ward.valid?
+      end
+    end
+    
+    context 'should have defunkt names scope and' do
+      setup do
+        @council = @ward.council
+        @defunkt_ward = Factory(:defunkt_ward, :council => @council)
+        @another_council = Factory(:another_council)
+        @another_ward = Factory(:ward, :name => 'another ward', :council => @another_council)
+        @another_defunkt_ward = Factory(:defunkt_ward, :name => 'another defunkt ward', :council => @another_council)
+      end
+      
+      should 'return defunkt wards only' do
+        assert_equal [@defunkt_ward, @another_defunkt_ward], Ward.defunkt
+      end
+      
     end
     
     context 'when finding from resource_uri' do

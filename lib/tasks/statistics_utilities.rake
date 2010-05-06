@@ -222,3 +222,38 @@ task :import_oac_list => :environment do
     puts "Successfully added/updated Output Area Classification: #{oac.inspect}"
   end
 end
+
+desc "Import Council Output Area Classifications"
+task :import_council_oacs => :environment do
+  oacs = OutputAreaClassification.all
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/ons_data/oacs_for_councils.csv"), :headers => true).each do |row|
+    if council = Council.find_by_snac_id(row['Code'])
+      oac = oacs.detect{ |oac| oac.uid == row['Subgroups'] && oac.area_type == 'Council' }
+      council.update_attribute(:output_area_classification, oac)
+      puts "Updated #{council.name} with output_area_classification: #{oac.inspect}"
+    else
+      puts "**Could not find council with snac id #{row['Code']}"
+    end
+  end
+end
+
+desc "Import Ward Output Area Classifications"
+task :import_ward_oacs => :environment do
+  oacs = OutputAreaClassification.all(:conditions => {:area_type => 'Ward'})
+  rows = FasterCSV.read(File.join(RAILS_ROOT, "db/ons_data/oacs_for_wards.csv"), :headers => true).each do |row|
+    oac = oacs.detect{ |oac| oac.uid == row['Subgroup'] }
+    if ward = Ward.find_by_snac_id(row['Wardcode'])
+      ward.update_attribute(:output_area_classification, oac)
+      puts "Updated #{ward.name} with output_area_classification: #{oac.inspect}"
+    elsif (council = Council.find_by_snac_id(row['Wardcode'][0..3])) && council.wards.count > 0
+      begin
+        Ward.create!(:defunkt => true, :council => council, :snac_id => row['Wardcode'], :name => row['Wardname'], :output_area_classification => oac) # can't use council.wards as this restricts to current wards
+        puts "+++++Added #{row['Wardname']} as new defunkt ward (SNAC id = #{row['Wardcode']})"
+      rescue Exception => e
+        puts "*******ERROR adding #{row['Wardname']} as new defunkt ward (SNAC id = #{row['Wardcode']}): #{e.inspect}"
+      end
+    else
+      puts "**Could not find ward (#{row['Wardname']}) with snac id #{row['Wardcode']} and could not find matching council either"
+    end
+  end
+end

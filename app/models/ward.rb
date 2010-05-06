@@ -11,11 +11,23 @@ class Ward < ActiveRecord::Base
   has_many :dataset_topics, :through => :datapoints
   has_many :polls, :as => :area, :order => "date_held DESC"
   has_one  :boundary, :as => :area
+  named_scope :defunkt, :conditions => { :defunkt => true }
   allow_access_to :members, :via => :uid
   allow_access_to :committees, :via => [:uid, :normalised_title]
   validates_presence_of :name, :council_id
-  validates_uniqueness_of :name, :scope => :council_id
+  # validates_uniqueness_of :name, :scope => [:council_id], :unless => Proc.new { |ward| ward.snac_id && Ward.find_by })
+  validates_uniqueness_of :snac_id, :allow_nil => true
   alias_attribute :title, :name
+  
+  def validate_on_create
+    if snac_id.blank?
+      errors.add(:name, 'already exists for this council') if Ward.exists?(['council_id = ? AND name LIKE ?', council_id, "%#{name}%"])
+    else
+      condition_string = "(council_id = :council_id AND name LIKE :name AND snac_id = :snac_id) OR (council_id = :council_id AND name LIKE :name AND (snac_id IS NULL OR snac_id = ''))"
+      condition_string += "OR (council_id = :council_id AND name LIKE :name AND defunkt = 0)" unless self.defunkt 
+      errors.add(:name, 'already exists for this council') if Ward.first( :conditions => [ condition_string, { :council_id => council_id, :name => "#{name}%", :snac_id => snac_id, :defunkt => defunkt }])
+    end
+  end
   
   # Given a resource URI identifying the ward, returns the ward
   def self.find_from_resource_uri(resource_uri)
