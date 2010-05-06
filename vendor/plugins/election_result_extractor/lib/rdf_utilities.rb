@@ -8,14 +8,15 @@ module RdfUtilities
   extend self
   
   def graph_from(url=nil)
-    return unless url && response = _http_get(url)
-    if response.content_type =~ /xml/
+    return unless url 
+    response = _http_get(url)
+    if response && response.content_type =~ /xml/
       response = response.read
       rdfxml_url = true
     else
-      rdfxml_url = rdf_representation_of(response.read)
+      rdfxml_url = response && rdf_representation_of(response.read)
       url = rdfxml_url || url
-      return unless response = rdfxml_url ? _http_get(url, :rdfxml_url => true).read : _http_get("http://www.w3.org/2007/08/pyRdfa/extract?format=nt&uri=#{url}").read
+      return unless response = rdfxml_url ? _http_get(url).read : _http_get("http://www.w3.org/2007/08/pyRdfa/extract?format=nt&uri=#{url}", :distill => true).read  rescue nil
     end
     graph = RDF::Graph.new
     reader = rdfxml_url ? RDF::Reader.for(:rdfxml).new(response) : RDF::Reader.for(:ntriples).new(response)
@@ -23,10 +24,10 @@ module RdfUtilities
     graph
   end
   
-  protected
+  # protected
   def _http_get(url, options={})
     return if RAILS_ENV == 'test'
-    headers = options[:rdfxml] ? {} : {'Accept' => 'text/rdf+n3'}
+    headers = options[:distill] ? {'Accept' => 'text/rdf+n3'} : {}
     open(url, headers)
   rescue 
     return nil

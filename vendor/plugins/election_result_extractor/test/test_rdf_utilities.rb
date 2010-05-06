@@ -20,16 +20,20 @@ class RdfUtilitiesTest < Test::Unit::TestCase
         @graph = RdfUtilities.graph_from(@url)
       end
       
-      before_should 'get data from n3 distilled version of url' do
-        RdfUtilities.expects(:_http_get).with("http://www.w3.org/2007/08/pyRdfa/extract?format=nt&uri=#{@url}").returns(@dummy_response)
-      end
-
-      before_should 'pass data to RDF NTriplesReader' do
-        RDF::NTriples::Reader.expects(:new).with(@n3_data).returns(@dummy_reader)
+      before_should "check if given page is rdfxml" do
+        RdfUtilities.expects(:_http_get).with(@url) # => nil
       end
       
       before_should "check if there's an rdfxml representation of page" do
         RdfUtilities.expects(:rdf_representation_of).with(@n3_data) # => nil
+      end
+      
+      before_should 'get data from n3 distilled version of url' do
+        RdfUtilities.expects(:_http_get).with("http://www.w3.org/2007/08/pyRdfa/extract?format=nt&uri=#{@url}", :distill => true).returns(@dummy_response)
+      end
+
+      before_should 'pass data to RDF NTriplesReader' do
+        RDF::NTriples::Reader.expects(:new).with(@n3_data).returns(@dummy_reader)
       end
       
       before_should 'construct graph from rdf statements' do
@@ -95,7 +99,7 @@ class RdfUtilitiesTest < Test::Unit::TestCase
 
   context 'when problem getting graph from url' do
     setup do
-      RdfUtilities.expects(:_http_get)
+      RdfUtilities.expects(:_http_get).at_least_once
     end
     
     should 'return nil' do
