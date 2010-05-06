@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100504172214) do
+ActiveRecord::Schema.define(:version => 20100505175744) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -136,6 +136,7 @@ ActiveRecord::Schema.define(:version => 20100504172214) do
     t.column "annual_audit_letter", :string
     t.column "output_area_classification_id", :integer
     t.column "defunkt", :boolean, :default => false
+    t.column "open_data_url", :string
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
@@ -708,7 +709,7 @@ ActiveRecord::Schema.define(:version => 20100504172214) do
 
   create_table "services", :force => true do |t|
     t.column "title", :string
-    t.column "url", :string
+    t.column "url", :text
     t.column "category", :string
     t.column "council_id", :integer
     t.column "ldg_service_id", :integer
