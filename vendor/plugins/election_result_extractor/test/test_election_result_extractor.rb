@@ -31,8 +31,9 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
     
     context "and page is rdfa" do
       setup do
-        @n3_data = dummy_response(:n3_landing_page)
-        @dummy_response = stub_everything(:read => @n3_data)
+        # @n3_data = dummy_response(:n3_landing_page)
+        @rdfxml_data = dummy_response(:rdfxml_landing_page)
+        @dummy_response = stub_everything(:read => @rdfxml_data)
         @dummy_graph = RDF::Graph.new
         RdfUtilities.stubs(:rdf_representation_of) # => returns nil
         RdfUtilities.stubs(:_http_get).returns(@dummy_response)
@@ -66,20 +67,20 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         RdfUtilities.stubs(:rdf_representation_of).returns('http://foo.com/elections.rdf')
         RdfUtilities.stubs(:_http_get).returns(@dummy_rdfxml_response)
       end
-
+    
       context 'in general' do
         setup do
           @results = ElectionResultExtractor.election_pages_from('http://foo.com/landing')
         end
-
+    
         before_should 'build graph from given page' do
           RdfUtilities.expects(:graph_from).with('http://foo.com/landing').returns(@dummy_graph)
         end
-
+    
         should 'return results' do
           assert_kind_of Array, @results
         end
-
+    
         should 'return election_pages in results' do
           assert_equal 'http://www.lichfielddc.gov.uk/site/custom_scripts/electionresults.php?electionid=2', @results.first
         end
@@ -90,8 +91,9 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
   context 'when getting polls from election page' do
     context "and page is rdfa" do
       setup do
-        @n3_data = dummy_response(:n3_election_page)
-        @dummy_response = stub_everything(:read => @n3_data)
+        # @n3_data = dummy_response(:n3_election_page)
+        @rdfxml_data = dummy_response(:rdfxml_election_page)
+        @dummy_response = stub_everything(:read => @rdfxml_data)
         @dummy_graph = RDF::Graph.new
         ElectionResultExtractor.stubs(:open).returns(nil)
         RdfUtilities.stubs(:_http_get).returns(@dummy_response)
@@ -108,7 +110,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
       
         should 'return results' do
           assert_kind_of Array, @results
-          assert_equal 25, @results.size
+          assert_equal 26, @results.size
         end
       
         should 'return election_pages in results' do
@@ -150,8 +152,10 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
   context 'when getting poll results from a poll_page' do
     context 'and page is rdfa' do
       setup do
-        @n3_data = dummy_response(:n3_poll)
-        @dummy_response = stub_everything(:read => @n3_data)
+        # @n3_data = dummy_response(:n3_poll)
+        @rdfxml_data = dummy_response(:rdfxml_poll)
+        @dummy_response = stub_everything(:read => @rdfxml_data)
+        @dummy_rdfxml_response = stub_everything(:read => @rdfxml_data)
         @dummy_graph = RDF::Graph.new
         ElectionResultExtractor.stubs(:open).returns(nil)
         RdfUtilities.stubs(:_http_get).returns(@dummy_response)
@@ -222,7 +226,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
 
         should 'get address when supplied' do
           rich_candidacy_address = @results.first[:candidacies].detect { |c| c[:given_name] == 'Patrick Wardle' }[:address]
-          assert_equal 'IG2 6RR ', rich_candidacy_address[:postal_code]
+          assert_equal 'IG2 6RR', rich_candidacy_address[:postal_code]
           assert_equal '7 Pershore Close', rich_candidacy_address[:street_address]
           assert_equal 'Gants Hill', rich_candidacy_address[:locality]
           assert_equal 'Essex', rich_candidacy_address[:region]
@@ -328,24 +332,13 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
       
     end
     
-    context 'and error is raised getting graph' do
-      setup do
-        @dummy_graph = RDF::Graph.new
-      end
-      
-      should 'get graph from rdfxml version of page' do
-        RdfUtilities.stubs(:graph_from).with('http://foo.com/polls').raises
-        RdfUtilities.expects(:graph_from).with('http://www.w3.org/2007/08/pyRdfa/extract?uri=http://foo.com/polls').returns(@dummy_graph)
-        ElectionResultExtractor.poll_results_from('http://foo.com/polls')
-      end
-    end
   end
   
   context 'when getting poll results from a poll_page with uncontested poll' do
     context 'and page is rdfa' do
       setup do
-        @n3_data = dummy_response(:n3_uncontested_poll)
-        @dummy_response = stub_everything(:read => @n3_data)
+        @rdfxml_data = dummy_response(:rdfxml_uncontested_poll)
+        @dummy_response = stub_everything(:read => @rdfxml_data)
         @dummy_graph = RDF::Graph.new
         ElectionResultExtractor.stubs(:open).returns(nil)
         RdfUtilities.stubs(:_http_get).returns(@dummy_response)
@@ -357,7 +350,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         end
   
         should 'return poll details in hash' do
-          assert_equal 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03', @results.first[:uri]
+          assert_equal 'http://openelectiondata.org/id/polls/41UDGW/2007-05-03', @results.first[:uri]
         end
   
         should 'mark poll as uncontested' do
@@ -383,7 +376,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
           assert_equal 'Ian Maxwell Pardoe Pritchard', candidacy[:name]
           assert_equal 'true', candidacy[:elected]
           assert_equal 'http://openelectiondata.org/id/parties/25', candidacy[:party]
-          assert_equal '0', candidacy[:votes]
+          assert_nil candidacy[:votes]
           assert !candidacy[:independent]
         end
   
@@ -393,8 +386,8 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
   
   context 'when getting poll results from an election page' do
     setup do
-      @n3_data = dummy_response(:n3_election_polls_page)
-      @dummy_response = stub_everything(:read => @n3_data)
+      @rdfxml_data = dummy_response(:rdfxml_election_polls_page)
+      @dummy_response = stub_everything(:read => @rdfxml_data)
       ElectionResultExtractor.stubs(:open).returns(nil)
       RdfUtilities.stubs(:_http_get).returns(@dummy_response)
     end
@@ -441,8 +434,8 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
   context 'when getting poll results for council' do
     setup do
       @council = stub(:ldg_id => 123) #stub Council behaviour
-      @n3_data = dummy_response(:n3_poll)
-      @dummy_response = stub_everything(:read => @n3_data)
+      @rdfxml_data = dummy_response(:rdfxml_poll)
+      @dummy_response = stub_everything(:read => @rdfxml_data)
     end
     
     context 'in general' do
@@ -527,8 +520,8 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
       setup do
         ElectionResultExtractor.stubs(:landing_page_for).returns('http://foo.com/landing')
         ElectionResultExtractor.stubs(:election_pages_from).returns(['http://foo.com/election'])
-        @n3_data = dummy_response(:n3_election_polls_page)
-        @dummy_response = stub_everything(:read => @n3_data)
+        @rdfxml_data = dummy_response(:rdfxml_election_polls_page)
+        @dummy_response = stub_everything(:read => @rdfxml_data)
         RdfUtilities.stubs(:_http_get).returns(@dummy_response)
       end
       
@@ -554,6 +547,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
       
       should 'return status of process' do
         assert_kind_of Array, status = ElectionResultExtractor.poll_results_for(@council)[:status]
+        p status
         assert status.any?{ |s| s =~ /21 polls found/ }
       end
       

@@ -27,11 +27,7 @@ module ElectionResultExtractor
   end 
       
   def poll_results_from(poll_page)
-    begin
-      graph = RdfUtilities.graph_from(poll_page)
-    rescue Exception => e
-      graph = RdfUtilities.graph_from("http://www.w3.org/2007/08/pyRdfa/extract?uri=#{poll_page}")
-    end
+    graph = RdfUtilities.graph_from(poll_page)
     poll_list = graph.query([nil, nil, openelection.Poll])
     polls = poll_list.collect do |poll|
       uri = poll.subject.to_s

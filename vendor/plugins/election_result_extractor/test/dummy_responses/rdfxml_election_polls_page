@@ -1,0 +1,1329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:cal="http://www.w3.org/2002/12/cal#"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:openelection="http://openelectiondata.org/0.1/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:v="http://www.w3.org/2006/vcard/ns#"
+  xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGJ/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGJ"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">617</openelection:candidateVoteCount>
+        <openelection:party>
+          <rdf:Description rdf:about="http://openelectiondata.org/id/parties/25">
+            <rdfs:label xml:lang="en">Conservative</rdfs:label>
+          </rdf:Description>
+        </openelection:party>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Levenston</foaf:familyName>
+            <foaf:givenName xml:lang="en">Colin John</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">189</openelection:candidateVoteCount>
+        <openelection:party>
+          <rdf:Description rdf:about="http://openelectiondata.org/id/parties/64">
+            <rdfs:label xml:lang="en">Green</rdfs:label>
+          </rdf:Description>
+        </openelection:party>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Leape</foaf:familyName>
+            <foaf:givenName xml:lang="en">Philip</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">262</openelection:candidateVoteCount>
+        <openelection:party>
+          <rdf:Description rdf:about="http://openelectiondata.org/id/parties/26">
+            <rdfs:label xml:lang="en">Liberal Democrat</rdfs:label>
+          </rdf:Description>
+        </openelection:party>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Beswick</foaf:familyName>
+            <foaf:givenName xml:lang="en">Francis Cyril</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1170</openelection:candidateVoteCount>
+        <openelection:party>
+          <rdf:Description rdf:about="http://openelectiondata.org/id/parties/6">
+            <rdfs:label xml:lang="en">Labour</rdfs:label>
+          </rdf:Description>
+        </openelection:party>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Walsh</foaf:familyName>
+            <foaf:givenName xml:lang="en">Laurence James</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8072</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGN/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGN"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">358</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Eisen</foaf:familyName>
+            <foaf:givenName xml:lang="en">James Adam</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1013</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Chilton</foaf:familyName>
+            <foaf:givenName xml:lang="en">Rob</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">253</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Handley</foaf:familyName>
+            <foaf:givenName xml:lang="en">Emma</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1225</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Brotherton</foaf:familyName>
+            <foaf:givenName xml:lang="en">Barry</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">144</openelection:candidateVoteCount>
+        <openelection:party>
+          <rdf:Description rdf:about="http://openelectiondata.org/id/parties/38">
+            <rdfs:label xml:lang="en">BNP</rdfs:label>
+          </rdf:Description>
+        </openelection:party>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Davis</foaf:familyName>
+            <foaf:givenName xml:lang="en">Philip Andrew</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7728</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGQ/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGQ"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">351</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Clarke</foaf:familyName>
+            <foaf:givenName xml:lang="en">Margaret</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">218</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Battye</foaf:familyName>
+            <foaf:givenName xml:lang="en">Bridget Mary</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1116</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Gratrix</foaf:familyName>
+            <foaf:givenName xml:lang="en">Philip</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1120</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Hooley</foaf:familyName>
+            <foaf:givenName xml:lang="en">Nigel William</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7666</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGU/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGU"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">126</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Leigh</foaf:familyName>
+            <foaf:givenName xml:lang="en">Michael John</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1883</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Bowker</foaf:familyName>
+            <foaf:givenName xml:lang="en">Ray</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">224</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Shelton</foaf:familyName>
+            <foaf:givenName xml:lang="en">Thomas Roland Philip</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1003</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Wilkinson</foaf:familyName>
+            <foaf:givenName xml:lang="en">Jacki</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7865</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGK/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGK"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2216</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Myers</foaf:familyName>
+            <foaf:givenName xml:lang="en">Patrick</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">290</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Spurrell</foaf:familyName>
+            <foaf:givenName xml:lang="en">Emily Elizabeth</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">125</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Gratton</foaf:familyName>
+            <foaf:givenName xml:lang="en">Andrew William</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">437</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Taylor</foaf:familyName>
+            <foaf:givenName xml:lang="en">Sandra</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7608</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGC/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGC"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">514</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Clarke</foaf:familyName>
+            <foaf:givenName xml:lang="en">Kenneth</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">196</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Jarkowski</foaf:familyName>
+            <foaf:givenName xml:lang="en">Barbara Anne</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">522</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Gratrix</foaf:familyName>
+            <foaf:givenName xml:lang="en">Angela</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1883</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Bullock</foaf:familyName>
+            <foaf:givenName xml:lang="en">Kathy</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8005</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGS/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGS"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2196</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Brophy</foaf:familyName>
+            <foaf:givenName xml:lang="en">Jane Elisabeth</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">97</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Leigh</foaf:familyName>
+            <foaf:givenName xml:lang="en">Jadwiga Teresa</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">247</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Baugh</foaf:familyName>
+            <foaf:givenName xml:lang="en">Peter John</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1864</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Storey</foaf:familyName>
+            <foaf:givenName xml:lang="en">Darren James</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8464</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGE/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGE"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">264</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Bird</foaf:familyName>
+            <foaf:givenName xml:lang="en">Louise Claire</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">313</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Power</foaf:familyName>
+            <foaf:givenName xml:lang="en">Anne Vivienne</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1212</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Taylor</foaf:familyName>
+            <foaf:givenName xml:lang="en">Sophie</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1434</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Stennett</foaf:familyName>
+            <foaf:givenName xml:lang="en">Whit</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">377</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Rawson</foaf:familyName>
+            <foaf:givenName xml:lang="en">Christine Lesley</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">220</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Hurst</foaf:familyName>
+            <foaf:givenName xml:lang="en">Derek John</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">318</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Blackburn</foaf:familyName>
+            <foaf:givenName xml:lang="en">John</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">338</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Schofield</foaf:familyName>
+            <foaf:givenName xml:lang="en">John Alan</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7368</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGF/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGF"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">150</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Gander</foaf:familyName>
+            <foaf:givenName xml:lang="en">Jennie</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1728</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Blackburn</foaf:familyName>
+            <foaf:givenName xml:lang="en">Linda</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">703</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Carter</foaf:familyName>
+            <foaf:givenName xml:lang="en">Ged</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">286</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Rogers</foaf:familyName>
+            <foaf:givenName xml:lang="en">Graham Peter</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7922</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGD/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGD"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">183</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Hogg</foaf:familyName>
+            <foaf:givenName xml:lang="en">Elizabeth Barbour</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">592</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Hooley</foaf:familyName>
+            <foaf:givenName xml:lang="en">Anne</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">961</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Platt</foaf:familyName>
+            <foaf:givenName xml:lang="en">Ian John</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">182</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Bell</foaf:familyName>
+            <foaf:givenName xml:lang="en">Melanie</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7188</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGR/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGR"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1345</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Ross</foaf:familyName>
+            <foaf:givenName xml:lang="en">Tom</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">218</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">O'Connor</foaf:familyName>
+            <foaf:givenName xml:lang="en">John Robert</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">247</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">O'Neill</foaf:familyName>
+            <foaf:givenName xml:lang="en">Liz</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">896</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Hooley</foaf:familyName>
+            <foaf:givenName xml:lang="en">Colin</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7743</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGB/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGB"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">334</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Chohan</foaf:familyName>
+            <foaf:givenName xml:lang="en">Armaan Kuneel</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1681</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Houraghan</foaf:familyName>
+            <foaf:givenName xml:lang="en">Brenda Margaret</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">836</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Western</foaf:familyName>
+            <foaf:givenName xml:lang="en">Andrew Howard</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">255</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Bate</foaf:familyName>
+            <foaf:givenName xml:lang="en">Martin Daniel</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8756</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGM/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGM"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1167</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Lloyd</foaf:familyName>
+            <foaf:givenName xml:lang="en">Judith Ann</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">931</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Allan</foaf:familyName>
+            <foaf:givenName xml:lang="en">Rod</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">282</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Rhodes</foaf:familyName>
+            <foaf:givenName xml:lang="en">David Arthur</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">448</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Westbrook</foaf:familyName>
+            <foaf:givenName xml:lang="en">Margaret Emily</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8710</openelection:electorate>
+  </openelection:Poll>
+  <rdf:Description rdf:about="http://www.trafford.gov.uk/content/elections/resultssummary.asp?year=2008">
+    <xhv:stylesheet rdf:resource="http://www.trafford.gov.uk/common/stylesheets/dynamic2.asp"/>
+  </rdf:Description>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGT/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGT"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">714</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Murray</foaf:familyName>
+            <foaf:givenName xml:lang="en">Bernard Joseph</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1129</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Acton</foaf:familyName>
+            <foaf:givenName xml:lang="en">Joyce</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">191</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Jocys</foaf:familyName>
+            <foaf:givenName xml:lang="en">Helen Elizabeth</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1346</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Turner</foaf:familyName>
+            <foaf:givenName xml:lang="en">Christine</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8069</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUFZ/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUFZ"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">535</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Wilton</foaf:familyName>
+            <foaf:givenName xml:lang="en">Michael Thomas Courtney</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">389</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Corbett</foaf:familyName>
+            <foaf:givenName xml:lang="en">Terry</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1762</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Rigby</foaf:familyName>
+            <foaf:givenName xml:lang="en">Brian Dean</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">244</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Sudbury</foaf:familyName>
+            <foaf:givenName xml:lang="en">Marian Kathryn</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7245</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGP/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGP"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">145</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Power</foaf:familyName>
+            <foaf:givenName xml:lang="en">Zoe Louise</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1659</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Holden</foaf:familyName>
+            <foaf:givenName xml:lang="en">John Charles</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">280</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Webster</foaf:familyName>
+            <foaf:givenName xml:lang="en">Diane</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">223</openelection:candidateVoteCount>
+        <openelection:party>
+          <rdf:Description rdf:about="http://openelectiondata.org/id/parties/60">
+            <rdfs:label xml:lang="en">UKIP</rdfs:label>
+          </rdf:Description>
+        </openelection:party>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Farndon</foaf:familyName>
+            <foaf:givenName xml:lang="en">Stephen John</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">655</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Tomkins</foaf:familyName>
+            <foaf:givenName xml:lang="en">Tom</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8629</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGA/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGA"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">334</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Chappell</foaf:familyName>
+            <foaf:givenName xml:lang="en">Ian Stuart</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2187</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Anstee</foaf:familyName>
+            <foaf:givenName xml:lang="en">Sean</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">190</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Green</foaf:familyName>
+            <foaf:givenName xml:lang="en">Bridget Mary</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">255</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Hague</foaf:familyName>
+            <foaf:givenName xml:lang="en">Thomas Robert Bauer</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7426</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGL/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGL"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">379</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Harrison</foaf:familyName>
+            <foaf:givenName xml:lang="en">Beverly Jill</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">338</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Cliff</foaf:familyName>
+            <foaf:givenName xml:lang="en">Pauline Anne</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1861</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Candish</foaf:familyName>
+            <foaf:givenName xml:lang="en">Chris</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">231</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">McIlroy</foaf:familyName>
+            <foaf:givenName xml:lang="en">Sarah Marri-Louise</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7382</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGH/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGH"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">213</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Syrett</foaf:familyName>
+            <foaf:givenName xml:lang="en">Paul Barry</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">890</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">O'Sullivan</foaf:familyName>
+            <foaf:givenName xml:lang="en">Dolores</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1785</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Summerfield</foaf:familyName>
+            <foaf:givenName xml:lang="en">Keith Gordon</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">321</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Elliott</foaf:familyName>
+            <foaf:givenName xml:lang="en">Richard Martin</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8400</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUFY/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUFY"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <rdfs:label xml:lang="en">Independent</rdfs:label>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">137</openelection:candidateVoteCount>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Walmsley</foaf:familyName>
+            <foaf:givenName xml:lang="en">Sarah Elizabeth</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+        <openelection:independentCandidate rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:independentCandidate>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">620</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Kennedy</foaf:familyName>
+            <foaf:givenName xml:lang="en">Majella Teresa</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1590</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Williams</foaf:familyName>
+            <foaf:givenName xml:lang="en">Susan</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">323</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Legge</foaf:familyName>
+            <foaf:givenName xml:lang="en">Roger Downing</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">155</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Leftwich</foaf:familyName>
+            <foaf:givenName xml:lang="en">Deborah Jean</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8038</openelection:electorate>
+  </openelection:Poll>
+  <openelection:Poll rdf:about="http://openelectiondata.org/id/polls/00BUGG/2008-05-01/member">
+    <openelection:electionArea rdf:resource="http://statistics.data.gov.uk/id/local-authority-ward/00BUGG"/>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">669</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/6"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Procter</foaf:familyName>
+            <foaf:givenName xml:lang="en">Kevin Alan</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1755</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/25"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Shaw</foaf:familyName>
+            <foaf:givenName xml:lang="en">Brian</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">292</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/26"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Wright</foaf:familyName>
+            <foaf:givenName xml:lang="en">Simon</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <openelection:candidacy>
+      <rdf:Description>
+        <openelection:candidateVoteCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">137</openelection:candidateVoteCount>
+        <openelection:party rdf:resource="http://openelectiondata.org/id/parties/64"/>
+        <openelection:candidate>
+          <rdf:Description>
+            <foaf:familyName xml:lang="en">Ryan</foaf:familyName>
+            <foaf:givenName xml:lang="en">Joe</foaf:givenName>
+          </rdf:Description>
+        </openelection:candidate>
+        <openelection:elected rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</openelection:elected>
+      </rdf:Description>
+    </openelection:candidacy>
+    <cal:dtstart rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-05-01</cal:dtstart>
+    <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7720</openelection:electorate>
+  </openelection:Poll>
+</rdf:RDF>

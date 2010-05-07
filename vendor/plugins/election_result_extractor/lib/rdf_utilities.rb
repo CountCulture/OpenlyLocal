@@ -16,10 +16,11 @@ module RdfUtilities
     else
       rdfxml_url = response && rdf_representation_of(response.read)
       url = rdfxml_url || url
-      return unless response = rdfxml_url ? _http_get(url).read : _http_get("http://www.w3.org/2007/08/pyRdfa/extract?format=nt&uri=#{url}", :distill => true).read  rescue nil
+      return unless response = rdfxml_url ? _http_get(url).read : _http_get("http://www.w3.org/2007/08/pyRdfa/extract?uri=#{url}", :distill => true).read  rescue nil
     end
     graph = RDF::Graph.new
-    reader = rdfxml_url ? RDF::Reader.for(:rdfxml).new(response) : RDF::Reader.for(:ntriples).new(response)
+    # reader = rdfxml_url ? RDF::Reader.for(:rdfxml).new(response) : RDF::Reader.for(:ntriples).new(response)
+    reader = RDF::Reader.for(:rdfxml).new(response)# : RDF::Reader.for(:ntriples).new(response)
     reader.each_statement { |st| graph << st }
     graph
   end
