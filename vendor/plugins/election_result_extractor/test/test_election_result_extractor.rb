@@ -246,49 +246,49 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         ElectionResultExtractor.stubs(:open).returns(nil)
         RdfUtilities.stubs(:_http_get).returns(@dummy_rdfxml_response)
       end
-
+    
       context 'in general' do
         setup do
           @results = ElectionResultExtractor.poll_results_from('http://foo.com/polls')
         end
-
+    
         before_should 'build graph from given page' do
           RdfUtilities.expects(:graph_from).with('http://foo.com/polls').returns(@dummy_graph)
         end
-
+    
         should 'return results' do
           assert_kind_of Array, @results
         end
-
+    
         should 'return poll details in hash' do
           assert_equal 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03', @results.first[:uri]
         end
-
+    
         should 'return poll area in hash' do
           assert_equal 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGE', @results.first[:area]
         end
-
+    
         should 'return poll date in hash' do
           assert_equal '2007-05-03', @results.first[:date]
         end
-
+    
         should 'return electorate in hash' do
           assert_equal '4409', @results.first[:electorate]
         end
-
+    
         should 'return ballots_issued in hash' do
           assert_equal '1642', @results.first[:ballots_issued]
         end
-
+    
         should 'return poll_page uri as source in hash' do
           assert_equal 'http://foo.com/polls', @results.first[:source]
         end
-
+    
         should 'return array of candidacies in hash' do
           assert_kind_of Array, candidacies = @results.first[:candidacies]
           assert_equal 7, candidacies.size
         end
-
+    
         should 'include candidate details for candidacies' do
           candidacies = @results.first[:candidacies]
           candidacy = @results.first[:candidacies].detect { |c| c[:name] == 'Michael John Wilcox' }
@@ -297,19 +297,19 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
           assert_equal 'http://openelectiondata.org/id/parties/25', candidacy[:party]
           assert !candidacy[:independent]
         end
-
+    
         should 'mark independent councillors as such' do
           independent = @results.first[:candidacies].detect { |c| c[:name] == 'John Linnaeus Middleton' }
           assert_nil independent[:party]
           assert_equal 'true', independent[:independent]
         end
-
+    
         should 'get given and family names when supplied' do
           rich_candidacy = @results.first[:candidacies].detect { |c| c[:given_name] == 'Patrick Wardle' }
           assert_equal 'Curran', rich_candidacy[:family_name]
           assert_equal '473', rich_candidacy[:votes]
         end
-
+    
         should 'get address when supplied' do
           rich_candidacy_address = @results.first[:candidacies].detect { |c| c[:given_name] == 'Patrick Wardle' }[:address]
           assert_equal 'IG2 6RR', rich_candidacy_address[:postal_code]
@@ -327,7 +327,18 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
       end
       
     end
+    
+    context 'and error is raised getting graph' do
+      setup do
+        @dummy_graph = RDF::Graph.new
+      end
       
+      should 'get graph from rdfxml version of page' do
+        RdfUtilities.stubs(:graph_from).with('http://foo.com/polls').raises
+        RdfUtilities.expects(:graph_from).with('http://www.w3.org/2007/08/pyRdfa/extract?uri=http://foo.com/polls').returns(@dummy_graph)
+        ElectionResultExtractor.poll_results_from('http://foo.com/polls')
+      end
+    end
   end
   
   context 'when getting poll results from a poll_page with uncontested poll' do
@@ -339,33 +350,33 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         ElectionResultExtractor.stubs(:open).returns(nil)
         RdfUtilities.stubs(:_http_get).returns(@dummy_response)
       end
-
+  
       context 'in general' do
         setup do
           @results = ElectionResultExtractor.poll_results_from('http://foo.com/polls')
         end
-
+  
         should 'return poll details in hash' do
           assert_equal 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03', @results.first[:uri]
         end
-
+  
         should 'mark poll as uncontested' do
           assert_equal 'true', @results.first[:uncontested]
         end
-
+  
         should 'return poll area in hash' do
           assert_equal 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGW', @results.first[:area]
         end
-
+  
         should 'return poll date in hash' do
           assert_equal '2007-05-03', @results.first[:date]
         end
-
+  
         should 'return array of candidacies in hash' do
           assert_kind_of Array, candidacies = @results.first[:candidacies]
           assert_equal 1, candidacies.size
         end
-
+  
         should 'include candidate details for candidacies' do
           candidacies = @results.first[:candidacies]
           candidacy = @results.first[:candidacies].first # only one of them in this case
@@ -375,7 +386,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
           assert_equal '0', candidacy[:votes]
           assert !candidacy[:independent]
         end
-
+  
       end
     end
   end
@@ -617,7 +628,7 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
         ElectionResultExtractor.stubs(:poll_pages_from).returns(['http://foo.com/poll'])
         RdfUtilities.stubs(:_http_get).returns(@dummy_response)
       end
-
+  
       should 'not get landing page for council' do
         ElectionResultExtractor.expects(:landing_page_for).never
         ElectionResultExtractor.poll_results_for(@council, :landing_page => 'http://baz.com/supplied_landing')
