@@ -88,7 +88,7 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
   end
 
   # add polls
-  Poll.all.each do |force|
+  Poll.all.each do |poll|
     sitemap.add poll_path(poll), :lastmod => poll.updated_at
   end
 
