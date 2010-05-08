@@ -3,7 +3,8 @@ task :import_london_2006_election_results => :environment do
   council_name, ward_name, council, ward, poll, wards = nil, nil, nil, nil, nil, nil #initialize variables
   councils = Council.find_all_by_authority_type('London Borough')
   political_parties = PoliticalParty.all
-  FasterCSV.foreach(File.join(RAILS_ROOT, 'db/csv_data/London_LA_Election_Results_May_4_2006.csv'), :headers => true) do |row|
+  # FasterCSV.foreach(File.join(RAILS_ROOT, 'db/csv_data/London_LA_Election_Results_May_4_2006.csv'), :headers => true) do |row|
+  FasterCSV.foreach(File.join(RAILS_ROOT, 'db/csv_data/Barnet_Election_Results_May_4_2006.csv'), :headers => true) do |row|
     if council_name != row["Borough"]
       council_name = row["Borough"]
       council = councils.detect{|c| Council.normalise_title(c.name) == Council.normalise_title(row["Borough"])}
@@ -13,7 +14,7 @@ task :import_london_2006_election_results => :environment do
     if ward_name != row["WardName"]
       ward_name = row["WardName"]
       if ward = wards.detect{ |w| TitleNormaliser.normalise_title(w.title) == TitleNormaliser.normalise_title(ward_name) }
-        poll = ward.polls.find_or_create_by_date_held("04-05-2006".to_date)
+        poll = ward.polls.find_or_create_by_date_held(:date_held => "04-05-2006".to_date, :position => "Member", :source => "http://data.london.gov.uk/datastore/package/council-elections-candidate-results-ward-2006")
         puts "Now importing results for ward: #{ward.name}"
       else
         puts "****Can't match: #{ward_name}"
