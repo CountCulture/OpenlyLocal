@@ -28,7 +28,7 @@ class Council < ActiveRecord::Base
   has_many :services
   has_many :datapoints, :as => :area
   has_many :dataset_topics, :through => :datapoints
-  has_many :polls, :as => :area
+  has_many :polls, :as => :area  
   belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
   has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   has_many :hyperlocal_sites, :conditions => {:approved => true}
@@ -90,6 +90,10 @@ class Council < ActiveRecord::Base
   end
   
   # instance methods
+  def all_polls
+    Poll.all(:select => 'polls.*', :joins => "INNER JOIN wards", :conditions => ["(wards.council_id = ?) AND ((polls.area_id = wards.id AND polls.area_type ='Ward') OR (polls.area_id = ? AND polls.area_type ='Council'))", id, id], :order => 'polls.date_held DESC, polls.created_at DESC')
+  end
+
   def authority_type_help_url
     AUTHORITY_TYPES[authority_type]
   end
