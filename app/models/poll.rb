@@ -11,7 +11,8 @@ class Poll < ActiveRecord::Base
     raise ArgumentError, "No council supplied for Poll#from_open_election_data" unless council = options[:council]
     polls.collect do |poll_info|
       if (area = Ward.find_from_resource_uri(poll_info[:area])) && (area.council == council)
-        poll = area.polls.find_or_initialize_by_date_held_and_position( :date_held => poll_info[:date], :position => 'Member')
+        date_held = poll_info[:date] || poll_info[:uri].to_s.scan(/openelectiondata.org\/id\/polls\/[^\/]+\/([\d-]+)/).to_s
+        poll = area.polls.find_or_initialize_by_date_held_and_position( :date_held => date_held, :position => 'Member')
         poll.update_attributes( :electorate => poll_info[:electorate], 
                                 :ballots_issued => poll_info[:ballots_issued],
                                 :source => poll_info[:source], 

@@ -216,6 +216,74 @@ class PollTest < ActiveSupport::TestCase
         end
       end
       
+      context "and no date given" do
+
+        should 'in general not create poll' do
+          @dummy_response = 
+          [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/',
+            :source => 'http://anytown.gov.uk/elections/poll/foo',
+            :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGE', 
+            :date => nil, 
+            :electorate => '4409', 
+            :ballots_issued => '1642', 
+            :uncontested => nil, 
+            :candidacies => [{:given_name => 'Margaret', 
+                              :family_name => 'Stanhope',
+                              :votes => '790',
+                              :elected => 'true',
+                              :party => 'http://openelectiondata.org/id/parties/25',
+                              :independent => nil },
+                             {:name => 'John Linnaeus Middleton', 
+                              :votes => '342',
+                              :elected => 'false',
+                              :party => nil,
+                              :independent => true }
+              ] }]
+          assert_no_difference "Poll.count" do
+            Poll.from_open_election_data(@dummy_response, :council => @council)
+          end
+        end
+          
+        context 'and date_held is in poll Resource URI' do
+          setup do
+            @dummy_response = 
+            [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03',
+              :source => 'http://anytown.gov.uk/elections/poll/foo',
+              :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGE', 
+              :date => nil, 
+              :electorate => '4409', 
+              :ballots_issued => '1642', 
+              :uncontested => nil, 
+              :candidacies => [{:given_name => 'Margaret', 
+                                :family_name => 'Stanhope',
+                                :votes => '790',
+                                :elected => 'true',
+                                :party => 'http://openelectiondata.org/id/parties/25',
+                                :independent => nil },
+                               {:name => 'John Linnaeus Middleton', 
+                                :votes => '342',
+                                :elected => 'false',
+                                :party => nil,
+                                :independent => true }
+                ] }]
+          end
+          
+          should 'create poll' do
+            assert_difference "Poll.count", 1 do
+              Poll.from_open_election_data(@dummy_response, :council => @council)
+            end
+          end
+          
+          should 'assign date_held from date in poll resource_uri' do
+            poll = Poll.from_open_election_data(@dummy_response, :council => @council).first
+            assert !poll.new_record? # will not have saved if invalid
+            assert_equal "2007-05-03".to_date, poll.date_held
+            assert_equal 'http://anytown.gov.uk/elections/poll/foo', poll.source
+          end
+        end
+        
+      end
+      
       context 'and poll already exists' do
         setup do
           original_details = 
