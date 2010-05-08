@@ -1,10 +1,10 @@
-<h1><%= @title %></h1>
+<h1><%= "#{basic_link_for @council} :: " if @council %> <%= @title %></h1>
 
 <div id="polls">
   <%= list_all @polls, :extended => true %>
 </div>
 
-<%= will_paginate @polls %>
+<%= will_paginate @polls unless @council %>
 
 <%= render :partial => '/shared/api_info' %>
 

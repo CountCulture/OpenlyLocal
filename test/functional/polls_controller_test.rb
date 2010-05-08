@@ -100,6 +100,47 @@ class PollsControllerTest < ActionController::TestCase
     #         
     # end
     
+    context 'with council_id supplied' do
+      setup do
+        @council = @area.council
+        @another_council = Factory(:another_council)
+        @another_council_ward = Factory(:ward, :council => @another_council)
+        @council_poll = Factory(:poll, :area => @council)
+        @ward_poll = Factory(:poll, :area => @area)
+        @another_council_poll = Factory(:poll, :area => @another_council)
+        @another_council_ward_poll = Factory(:poll, :area => @another_council_ward)
+        
+        get :index, :council_id => @council.id
+      end
+      
+      should_assign_to(:polls)
+      should_assign_to(:council) { @council }
+      should_respond_with :success
+      should_render_with_layout
+      
+      should 'not include non-council related wards' do
+        assert !assigns(:polls).include?(@another_council_poll)
+        assert !assigns(:polls).include?(@another_council_ward_poll)
+      end
+      
+      should 'list polls' do
+        assert_select 'a.poll_link'
+      end
+      
+      should 'not show pagination links' do
+        assert_select "div.pagination", false
+      end
+      
+      should 'not show page number in title' do
+        assert_select 'title', :text => /page 1/i, :count => 0
+      end
+      
+      should 'show tailor title to council' do
+        assert_select 'title', /#{@council.title}/
+        assert_select 'title', :text => /local authorities/i, :count => 0
+      end
+    end
+    
   end
 
   # show test  
