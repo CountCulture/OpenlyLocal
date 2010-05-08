@@ -963,7 +963,12 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should 'create or update polls with the result' do
-        Poll.expects(:from_open_election_data).with(@dummy_response[:results].values.first) # only uses poll array, not election => poll hash
+        Poll.expects(:from_open_election_data).with(@dummy_response[:results].values.first, anything) # only uses poll array, not election => poll hash
+        @council.update_election_results
+      end
+      
+      should 'submit self as council when creating or updating polls with the result' do
+        Poll.expects(:from_open_election_data).with(anything, :council => @council)
         @council.update_election_results
       end
       

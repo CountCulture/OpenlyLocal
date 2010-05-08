@@ -206,7 +206,7 @@ class Council < ActiveRecord::Base
       logger.info { "No poll results  for #{self.inspect}.\nStatus: #{full_results[:status]}, Errors: #{full_results[:errors]}" }
     else
       full_results[:results].each do |election, polls|
-        Poll.from_open_election_data(polls)
+        Poll.from_open_election_data(polls, :council => self)
       end
     end
   end

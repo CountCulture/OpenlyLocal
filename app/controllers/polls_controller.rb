@@ -2,7 +2,7 @@ class PollsController < ApplicationController
   # before_filter :linked_data_available, :only => :show
   
   def index
-    @polls = Poll.paginate(:page => params[:page], :include => :area, :order => "date_held DESC")
+    @polls = Poll.paginate(:page => params[:page], :include => :area, :order => "date_held DESC, created_at DESC")
     @title = "All Local Authority election polls :: Page #{(params[:page]||1).to_i}"
     respond_to do |format|
       format.html

@@ -4,10 +4,12 @@ class PollTest < ActiveSupport::TestCase
   subject { @poll }
   def setup
     @council = Factory(:council)
+    @another_council = Factory(:another_council)
     @poll = Factory(:poll, :area => @council)
     @ward_1 = Factory(:ward, :council => @council, :snac_id => '41UDGE')
     @ward_2 = Factory(:ward, :council => @council, :name => 'No Snac Id ward')
     @ward_3 = Factory(:ward, :council => @council, :snac_id => '41UDPQ', :name => 'Uncontested ward')
+    @another_council_ward = Factory(:ward, :council => @another_council, :snac_id => '41UDXX', :name => 'Wrong Snac id ward')
     @conservative_party = Factory(:political_party, :title => 'Conservative', :electoral_commission_uid => 25)
   end
   
@@ -66,14 +68,19 @@ class PollTest < ActiveSupport::TestCase
                             :independent => true }
             ] }]
       end
+      
       should 'create poll' do
         assert_difference "Poll.count", 1 do
-          Poll.from_open_election_data(@dummy_response)
+          Poll.from_open_election_data(@dummy_response, :council => @council)
         end
       end
       
+      should 'raise exception if no council given' do
+        assert_raise(ArgumentError) { Poll.from_open_election_data(@dummy_response) }
+      end
+      
       should 'return created polls' do
-        polls = Poll.from_open_election_data(@dummy_response)
+        polls = Poll.from_open_election_data(@dummy_response, :council => @council)
         assert_kind_of Poll, poll = polls.first
         assert_equal '41UDGE', poll.area.snac_id
         assert_equal '2007-05-03'.to_date, poll.date_held
@@ -82,7 +89,7 @@ class PollTest < ActiveSupport::TestCase
       context 'and when creating poll' do
         setup do
           @old_candidacy_count = Candidacy.count
-          Poll.from_open_election_data(@dummy_response)
+          Poll.from_open_election_data(@dummy_response, :council => @council)
           @new_poll = Poll.last(:order => 'id')
           @new_candidacies = Candidacy.all(:order => 'id DESC', :limit => 2)
           @independent_candidacy = @new_candidacies.detect{ |c| c.votes.to_s == '342' }
@@ -134,6 +141,28 @@ class PollTest < ActiveSupport::TestCase
         end
       end
       
+      context 'and a poll has snac_id for another council' do
+        setup do
+          @old_poll_count = Poll.count
+          @dummy_response << { :uri => 'http://openelectiondata.org/id/polls/41UDPQ/2007-05-03', 
+            :area => "http://statistics.data.gov.uk/id/local-authority-ward/#{@another_council_ward.snac_id}", 
+            :date => '2007-05-03', 
+            :electorate => '4409', 
+            :candidacies => [{:name => 'Ian Maxwell Pardoe Pritchard', 
+                              :elected => 'true',
+                              :votes => '123',
+                              :party => 'http://openelectiondata.org/id/parties/25' }
+              ] }
+        end
+        
+        should "not create poll if area isn't associated with council_id" do
+          Poll.from_open_election_data(@dummy_response, :council => @council)
+          assert_equal @old_poll_count+1, Poll.count
+          assert @another_council_ward.polls.empty?
+        end
+        
+      end
+      
       context 'and a poll is uncontested' do
         setup do
           @old_poll_count, @old_candidacy_count = Poll.count, Candidacy.count
@@ -146,7 +175,7 @@ class PollTest < ActiveSupport::TestCase
                               :elected => 'true',
                               :party => 'http://openelectiondata.org/id/parties/25' }
               ] }
-          Poll.from_open_election_data(@dummy_response)
+          Poll.from_open_election_data(@dummy_response, :council => @council)
         end
         
         should 'create polls' do
@@ -175,7 +204,7 @@ class PollTest < ActiveSupport::TestCase
                               :elected => 'false',
                               :party => 'http://openelectiondata.org/id/parties/25' }
               ] }
-          Poll.from_open_election_data(@dummy_response)
+          Poll.from_open_election_data(@dummy_response, :council => @council)
         end
         
         should 'not create poll for area with unknown area' do
@@ -208,7 +237,7 @@ class PollTest < ActiveSupport::TestCase
                               :party => nil,
                               :independent => true }
               ] }]
-          Poll.from_open_election_data(original_details) # create poll
+          Poll.from_open_election_data(original_details, :council => @council) # create poll
           @old_poll_count, @old_candidacy_count = Poll.count, Candidacy.count
           updated_details = 
           [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03',
@@ -229,7 +258,7 @@ class PollTest < ActiveSupport::TestCase
                               :party => nil,
                               :independent => true }
               ] }]          
-          @poll = Poll.from_open_election_data(updated_details).first # update poll
+          @poll = Poll.from_open_election_data(updated_details, :council => @council).first # update poll
         end
         
         should 'not create new poll' do
