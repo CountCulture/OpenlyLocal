@@ -233,6 +233,9 @@ class PollsControllerTest < ActionController::TestCase
         assert_select "#share_block"
       end
       
+      should 'show link to council results in breadcrumbs' do
+        assert_select "a[href*=/polls?council_id=#{@area.council.id}]", /#{@area.council.title}/
+      end
     end
     
     context 'with xml requested' do
@@ -258,6 +261,30 @@ class PollsControllerTest < ActionController::TestCase
         assert_select 'poll>candidacies>candidacy>id'
       end
       
+    end
+    
+    context 'with json requested' do
+      setup do
+        @candidacy_1 = Factory(:candidacy, :poll => @poll, :votes => 537)
+        get :show, :id => @poll.id, :format => 'json'
+      end
+      
+      should_assign_to(:poll)
+      should_respond_with :success
+      should_render_without_layout
+      should_respond_with_content_type 'application/json'
+      
+      should 'list poll details' do
+        assert_match %r(poll.+id), @response.body
+      end
+      
+      should 'list area' do
+        assert_match %r(poll.+area.+#{@area.title}), @response.body
+      end
+      
+      should 'list candidacies' do
+        assert_match %r(poll.+candidacies.+#{@candidacy_1.id}), @response.body
+      end
     end
     
     context 'with rdf requested' do
@@ -334,29 +361,20 @@ class PollsControllerTest < ActionController::TestCase
       
     end
     
-    context 'with json requested' do
+    context "when poll is associated with council" do
       setup do
+        @council = @area.council # @area is ward
         @candidacy_1 = Factory(:candidacy, :poll => @poll, :votes => 537)
-        get :show, :id => @poll.id, :format => 'json'
+        @candidacy_2 = Factory(:candidacy, :poll => @poll, :votes => 210)
+        @poll.update_attribute(:area, @council)
+        get :show, :id => @poll.id
       end
       
-      should_assign_to(:poll)
-      should_respond_with :success
-      should_render_without_layout
-      should_respond_with_content_type 'application/json'
-      
-      should 'list poll details' do
-        assert_match %r(poll.+id), @response.body
+      should 'show link to council results in breadcrumbs' do
+        puts css_select(".breadcrumbs")
+        assert_select "a[href*=/polls?council_id=#{@council.id}]", /#{@council.title}/
       end
-      
-      should 'list area' do
-        assert_match %r(poll.+area.+#{@area.title}), @response.body
-      end
-      
-      should 'list candidacies' do
-        assert_match %r(poll.+candidacies.+#{@candidacy_1.id}), @response.body
-      end
-      
+
     end
     
     context "with candidacies with no votes" do

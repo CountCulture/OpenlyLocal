@@ -42,7 +42,7 @@ class Poll < ActiveRecord::Base
   end
   
   def extended_title
-    "#{area.title}, #{title}"
+    "#{position} for #{area.title}, #{title}"
   end
   
   def rejected_ballot_details?

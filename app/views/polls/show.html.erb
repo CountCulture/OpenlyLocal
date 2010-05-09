@@ -1,3 +1,4 @@
+<%= breadcrumbs([link_to('All polls', polls_url), link_to("All #{@council.title} results", polls_url(:council_id => @council.id)), @poll.extended_title]) %>
 <h1>Election for <%= @poll.position %> for <%= basic_link_for(@poll.area) %> <%= @poll.area.class %> on <%= @poll.date_held.to_s(:event_date) %></h1>
 
 <dl id="main_attributes" class="attributes">

@@ -390,8 +390,8 @@ class PollTest < ActiveSupport::TestCase
       assert_equal @poll.date_held.to_s(:event_date), @poll.title
     end
     
-    should "return area and date_held as string as extended title" do
-      assert_equal "#{@poll.area.title}, #{@poll.date_held.to_s(:event_date)}", @poll.extended_title
+    should "return position, area and date_held as string as extended title" do
+      assert_equal "Member for #{@poll.area.title}, #{@poll.date_held.to_s(:event_date)}", @poll.extended_title
     end
     
     should 'return resource_uri' do
