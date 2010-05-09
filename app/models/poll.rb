@@ -4,11 +4,10 @@ class Poll < ActiveRecord::Base
   belongs_to :area, :polymorphic => true
   has_many :candidacies, :dependent => :destroy
   has_many :related_articles, :as => :subject
-  named_scope :associated_with_council, lambda { |council| council ? { :select => 'polls.*', 
-                                                             :joins => 'INNER JOIN wards', 
-                                                             :group => 'polls.id',
-                                                             :conditions => ["(wards.council_id = ?) AND ((polls.area_id = wards.id AND polls.area_type ='Ward') OR (polls.area_id = ? AND polls.area_type ='Council'))", council.id, council.id],
-                                                             :order => 'polls.date_held DESC, polls.created_at DESC' } : {} }
+  named_scope :associated_with_council, lambda { |council| council ? { :joins => 'INNER JOIN wards', 
+                                                                       :group => 'polls.id',
+                                                                       :conditions => ["(wards.council_id = ?) AND ((polls.area_id = wards.id AND polls.area_type ='Ward') OR (polls.area_id = ? AND polls.area_type ='Council'))", council.id, council.id],
+                                                                       :order => 'polls.date_held DESC, polls.created_at DESC' } : {} }
   
   validates_presence_of :date_held, :area_id, :area_type, :position
   delegate :resource_uri, :title, :to => :area, :prefix => true
