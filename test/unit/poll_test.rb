@@ -31,6 +31,40 @@ class PollTest < ActiveSupport::TestCase
       assert !@poll.uncontested
     end
     
+    context "when returning associated_with_council named scope" do
+      setup do
+        @ward_poll = Factory(:poll, :area => @ward_1, :date_held => 1.year.ago)
+        @another_council_poll = Factory(:poll, :area => @another_council)
+        @another_council_ward_poll = Factory(:poll, :area => @another_council_ward)
+        @associated_polls = Poll.associated_with_council(@council)
+      end
+
+      should 'include polls for council' do
+        assert @associated_polls.include?(@poll)
+      end
+
+      should 'include polls for council wards' do
+        assert @associated_polls.include?(@ward_poll)
+      end
+
+      should 'not include polls for other councils' do
+        assert !@associated_polls.include?(@another_council_poll)
+      end
+
+      should 'not include polls for other wards' do
+        assert !@associated_polls.include?(@another_council_ward_poll)
+      end
+
+      should 'return in date_held order, most recent first' do
+        assert_equal @poll, @associated_polls.first
+      end
+      
+      should 'return all polls when no council' do
+        assert_equal Poll.all, Poll.associated_with_council(nil)
+      end
+
+    end
+    
     context 'when converting all records to csv' do
       setup do
         @csv_data = Poll.to_csv

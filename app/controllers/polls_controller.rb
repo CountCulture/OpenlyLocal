@@ -2,13 +2,9 @@ class PollsController < ApplicationController
   # before_filter :linked_data_available, :only => :show
   
   def index
-    if params[:council_id]
-      @council = Council.find(params[:council_id])
-      @polls = @council.all_polls
-    else
-      @polls = Poll.paginate(:page => params[:page], :include => :area, :order => "date_held DESC, created_at DESC")
-    end
-    @title = @council ? "Election Results" : "All Local Authority election polls :: Page #{(params[:page]||1).to_i}"
+    @council = Council.find(params[:council_id]) if params[:council_id]
+    @polls = Poll.associated_with_council(@council).paginate(:page => params[:page], :order => "date_held DESC, created_at DESC")
+    @title = (@council ? "Election Results" : "All Local Authority election polls") + " :: Page #{(params[:page]||1).to_i}"
     respond_to do |format|
       format.html
       format.xml do

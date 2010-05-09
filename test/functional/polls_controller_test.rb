@@ -110,34 +110,79 @@ class PollsControllerTest < ActionController::TestCase
         @another_council_poll = Factory(:poll, :area => @another_council)
         @another_council_ward_poll = Factory(:poll, :area => @another_council_ward)
         
-        get :index, :council_id => @council.id
       end
       
-      should_assign_to(:polls)
-      should_assign_to(:council) { @council }
-      should_respond_with :success
-      should_render_with_layout
-      
-      should 'not include non-council related wards' do
-        assert !assigns(:polls).include?(@another_council_poll)
-        assert !assigns(:polls).include?(@another_council_ward_poll)
+      context "in general" do
+        setup do
+          get :index, :council_id => @council.id
+        end
+
+        should_assign_to(:polls)
+        should_assign_to(:council) { @council }
+        should_respond_with :success
+        should_render_with_layout
+
+        should 'not include non-council related wards' do
+          assert !assigns(:polls).include?(@another_council_poll)
+          assert !assigns(:polls).include?(@another_council_ward_poll)
+        end
+
+        should 'list polls' do
+          assert_select 'a.poll_link'
+        end
+
+        should 'show tailor title to council' do
+          assert_select 'title', /#{@council.title}/
+          assert_select 'title', :text => /local authorities/i, :count => 0
+        end
       end
-      
-      should 'list polls' do
-        assert_select 'a.poll_link'
+
+      context 'with xml requested' do
+        setup do
+          get :index, :council_id => @council.id, :format => 'xml'
+        end
+
+        should_assign_to(:polls)
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/xml'
+
+        should 'list first page of polls' do
+          assert_select 'polls>poll', 30
+        end
+
+        should 'include area' do
+          assert_select 'poll>area>id'
+        end
+
+        should 'show pagination links' do
+          assert_select "polls>total-entries"
+        end
+
       end
-      
-      should 'not show pagination links' do
-        assert_select "div.pagination", false
-      end
-      
-      should 'not show page number in title' do
-        assert_select 'title', :text => /page 1/i, :count => 0
-      end
-      
-      should 'show tailor title to council' do
-        assert_select 'title', /#{@council.title}/
-        assert_select 'title', :text => /local authorities/i, :count => 0
+
+      context 'with json requested' do
+        setup do
+          get :index, :council_id => @council.id, :format => 'json'
+        end
+
+        should_assign_to(:polls)
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/json'
+
+        should 'list polls' do
+          assert_match %r(polls.+poll.+id), @response.body
+        end
+
+        should 'list area' do
+          assert_match %r(polls.+area.+#{@area.title}), @response.body
+        end
+
+        should 'include pagination info' do
+          assert_match %r(total_entries.+#{Poll.associated_with_council(@council).count}), @response.body
+        end
+
       end
     end
     

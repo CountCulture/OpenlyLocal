@@ -4,7 +4,7 @@
   <%= list_all @polls, :extended => true %>
 </div>
 
-<%= will_paginate @polls unless @council %>
+<%= will_paginate @polls %>
 
 <%= render :partial => '/shared/api_info' %>
 

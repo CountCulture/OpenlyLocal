@@ -90,10 +90,6 @@ class Council < ActiveRecord::Base
   end
   
   # instance methods
-  def all_polls
-    Poll.all(:select => 'polls.*', :joins => "INNER JOIN wards", :conditions => ["(wards.council_id = ?) AND ((polls.area_id = wards.id AND polls.area_type ='Ward') OR (polls.area_id = ? AND polls.area_type ='Council'))", id, id], :order => 'polls.date_held DESC, polls.created_at DESC')
-  end
-
   def authority_type_help_url
     AUTHORITY_TYPES[authority_type]
   end

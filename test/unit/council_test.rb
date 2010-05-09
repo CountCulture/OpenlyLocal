@@ -56,40 +56,7 @@ class CouncilTest < ActiveSupport::TestCase
     should "include TwitterAccountMethods mixin" do
       assert Council.new.respond_to?(:twitter_account_name)
     end
-    
-    context 'when returning all_wards' do
-      setup do
-        @ward = Factory(:ward, :council => @council)
-        @another_council = Factory(:another_council)
-        @another_council_ward = Factory(:ward, :council => @another_council)
-        @council_poll = Factory(:poll, :area => @council)
-        @ward_poll = Factory(:poll, :area => @ward, :date_held => 1.year.ago)
-        @another_council_poll = Factory(:poll, :area => @another_council)
-        @another_council_ward_poll = Factory(:poll, :area => @another_council_ward)
-        @all_polls = @council.all_polls
-      end
-      
-      should 'include polls for council' do
-        assert @all_polls.include?(@council_poll)
-      end
-      
-      should 'include polls for council wards' do
-        assert @all_polls.include?(@ward_poll)
-      end
-      
-      should 'not include polls for other councils' do
-        assert !@all_polls.include?(@another_council_poll)
-      end
-      
-      should 'not include polls for other wards' do
-        assert !@all_polls.include?(@another_council_ward_poll)
-      end
-      
-      should 'return in date_held order, most recent first' do
-        assert_equal @council_poll, @all_polls.first
-      end
-    end
-    
+        
     context "parsed named_scope" do
       setup do
         @another_council = Factory(:another_council)
