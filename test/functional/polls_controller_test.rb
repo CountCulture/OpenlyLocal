@@ -371,7 +371,6 @@ class PollsControllerTest < ActionController::TestCase
       end
       
       should 'show link to council results in breadcrumbs' do
-        puts css_select(".breadcrumbs")
         assert_select "a[href*=/polls?council_id=#{@council.id}]", /#{@council.title}/
       end
 
