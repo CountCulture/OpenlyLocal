@@ -284,6 +284,10 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
           assert_equal '1642', @results.first[:ballots_issued]
         end
     
+        should 'return ballots_issued in hash' do
+          assert_equal '31', @results.first[:ballots_rejected]
+        end
+    
         should 'return poll_page uri as source in hash' do
           assert_equal 'http://foo.com/polls', @results.first[:source]
         end
@@ -547,7 +551,6 @@ class ElectionResultExtractorTest < Test::Unit::TestCase
       
       should 'return status of process' do
         assert_kind_of Array, status = ElectionResultExtractor.poll_results_for(@council)[:status]
-        p status
         assert status.any?{ |s| s =~ /21 polls found/ }
       end
       

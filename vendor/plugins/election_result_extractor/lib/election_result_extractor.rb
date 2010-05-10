@@ -22,8 +22,8 @@ module ElectionResultExtractor
   def poll_pages_from(election_page)
     graph = RdfUtilities.graph_from(election_page)
     graph.query(:object => openelection.Poll).collect do |poll|
-      graph.query(:subject => poll.subject, :predicate => RDF::FOAF.isPrimaryTopicOf).first.object.to_s
-    end
+      graph.query(:subject => poll.subject, :predicate => RDF::FOAF.isPrimaryTopicOf).collect{ |s| s.object.to_s }
+    end.flatten
   end 
       
   def poll_results_from(poll_page)
@@ -34,7 +34,7 @@ module ElectionResultExtractor
       area = graph.query([poll.subject, openelection.electionArea, nil]).first.object.to_s
       date = graph.query([poll.subject, RDF::URI.new('http://www.w3.org/2002/12/cal#dtstart'), nil]).first.object.value rescue nil
       ballots_issued = graph.query([poll.subject, openelection.ballotsIssued, nil]).first.object.value rescue nil
-      rejected_ballots = graph.query([poll.subject, openelection.rejectedBallots, nil]).first.object.value rescue nil
+      ballots_rejected = graph.query([poll.subject, openelection.rejectedBallots, nil]).first.object.value rescue nil
       electorate = graph.query([poll.subject, openelection.electorate, nil]).first.object.value rescue nil
       uncontested = graph.query([poll.subject, openelection.uncontested, nil]).first.object.value rescue nil
       candidacies = graph.query([poll.subject, openelection.candidacy, nil]).collect do |candidacy|
@@ -56,7 +56,7 @@ module ElectionResultExtractor
         end
         {:party  => party, :name => name, :given_name => given_name, :family_name => family_name, :votes => votes, :elected => elected, :independent => independent, :address => address }
       end
-    { :uri => uri, :area => area, :date => date, :electorate => electorate, :ballots_issued => ballots_issued, :rejected_ballots => rejected_ballots, :uncontested => uncontested, :source => poll_page, :candidacies => candidacies }
+    { :uri => uri, :area => area, :date => date, :electorate => electorate, :ballots_issued => ballots_issued, :ballots_rejected => ballots_rejected, :uncontested => uncontested, :source => poll_page, :candidacies => candidacies }
     end
   rescue Exception => e
     raise ExtractorError, "Error getting/parsing election results (#{e.message}):#{e.backtrace}"

@@ -88,6 +88,7 @@ class PollTest < ActiveSupport::TestCase
           :date => '2007-05-03', 
           :electorate => '4409', 
           :ballots_issued => '1642', 
+          :ballots_rejected => '31', 
           :uncontested => nil, 
           :candidacies => [{:given_name => 'Margaret', 
                             :family_name => 'Stanhope',
@@ -151,6 +152,7 @@ class PollTest < ActiveSupport::TestCase
           assert_equal '2007-05-03'.to_date, @new_poll.date_held
           assert_equal 4409, @new_poll.electorate 
           assert_equal 1642, @new_poll.ballots_issued
+          assert_equal 31, @new_poll.ballots_rejected
           assert_equal 'http://anytown.gov.uk/elections/poll/foo', @new_poll.source
         end
         

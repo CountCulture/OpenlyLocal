@@ -20,6 +20,7 @@ class Poll < ActiveRecord::Base
         poll = area.polls.find_or_initialize_by_date_held_and_position( :date_held => date_held, :position => 'Member')
         poll.update_attributes( :electorate => poll_info[:electorate], 
                                 :ballots_issued => poll_info[:ballots_issued],
+                                :ballots_rejected => poll_info[:ballots_rejected],
                                 :source => poll_info[:source], 
                                 :uncontested => poll_info[:uncontested] == 'true' )
         poll_info[:candidacies].each do |candidacy_info|
