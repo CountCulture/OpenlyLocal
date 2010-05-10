@@ -15,8 +15,8 @@ module ElectionResultExtractor
   def election_pages_from(landing_page)
     graph = RdfUtilities.graph_from(landing_page)
     graph.query(:object => openelection.Election).collect do |election|
-      graph.query(:subject => election.subject, :predicate => RDF::FOAF.isPrimaryTopicOf).first.object.to_s
-    end
+      graph.query(:subject => election.subject, :predicate => RDF::FOAF.isPrimaryTopicOf).collect{ |s| s.object.to_s }
+    end.flatten
   end 
       
   def poll_pages_from(election_page)

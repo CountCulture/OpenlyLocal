@@ -28,8 +28,10 @@ class RdfUtilitiesTest < Test::Unit::TestCase
         RdfUtilities.expects(:rdf_representation_of).with(@base_response) # => nil
       end
       
-      before_should 'get data from RDFXML distilled version of url' do
-        RdfUtilities.expects(:_http_get).with("http://www.w3.org/2007/08/pyRdfa/extract?uri=#{@url}", :distill => true).returns(@dummy_response)
+      should 'get data from RDFXML distilled version of url' do
+        RdfUtilities.expects(:_http_get).with(@url).returns(@dummy_response)
+        RdfUtilities.expects(:_http_get).with("http://www.w3.org/2007/08/pyRdfa/extract?uri=#{CGI.escape(@url)}").returns(@dummy_rdfxml_response)
+        RdfUtilities.graph_from(@url)
       end
 
       before_should 'pass data to RDFXML Reader' do
