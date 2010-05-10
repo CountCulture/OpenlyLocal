@@ -122,6 +122,7 @@
           </rdf:Description>
         </openelection:candidacy>
         <openelection:ballotsIssued rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1642</openelection:ballotsIssued>
+        <openelection:rejectedBallots rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">31</openelection:rejectedBallots>
         <openelection:electorate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4409</openelection:electorate>
       </openelection:Poll>
     </foaf:primaryTopic>
