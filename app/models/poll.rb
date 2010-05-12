@@ -24,7 +24,7 @@ class Poll < ActiveRecord::Base
                                 :source => poll_info[:source], 
                                 :uncontested => poll_info[:uncontested] == 'true' )
         poll_info[:candidacies].each do |candidacy_info|
-          name = NameParser.parse(candidacy_info[:name])
+          name = NameParser.parse(candidacy_info[:name]) || {}
           candidacy = poll.candidacies.find_or_initialize_by_first_name_and_last_name( :first_name => candidacy_info[:given_name]||name[:first_name], 
                                                                                        :last_name => candidacy_info[:family_name]||name[:last_name])
           candidacy.update_attributes( :elected => candidacy_info[:elected] == 'true',
