@@ -122,58 +122,100 @@ class PollTest < ActiveSupport::TestCase
       end
       
       context 'and when creating poll' do
-        setup do
-          @old_candidacy_count = Candidacy.count
-          Poll.from_open_election_data(@dummy_response, :council => @council)
-          @new_poll = Poll.last(:order => 'id')
-          @new_candidacies = Candidacy.all(:order => 'id DESC', :limit => 2)
-          @independent_candidacy = @new_candidacies.detect{ |c| c.votes.to_s == '342' }
-          @conservative_candidacy = @new_candidacies.detect{ |c| c.votes.to_s == '790' }
-        end
+        context 'in general' do
+          setup do
+            @old_candidacy_count = Candidacy.count
+            Poll.from_open_election_data(@dummy_response, :council => @council)
+            @new_poll = Poll.last(:order => 'id')
+            @new_candidacies = Candidacy.all(:order => 'id DESC', :limit => 2)
+            @independent_candidacy = @new_candidacies.detect{ |c| c.votes.to_s == '342' }
+            @conservative_candidacy = @new_candidacies.detect{ |c| c.votes.to_s == '790' }
+          end
         
-        should 'associate poll with ward associated with SNAC URI' do
-          assert_equal @ward_1, @new_poll.area
-        end
+          should 'associate poll with ward associated with SNAC URI' do
+            assert_equal @ward_1, @new_poll.area
+          end
         
-        should 'assume position is Member' do
-          assert_equal 'Member', @new_poll.position
-        end
+          should 'assume position is Member' do
+            assert_equal 'Member', @new_poll.position
+          end
         
-        should 'not mark uncontested poll as uncontested' do
-          assert_equal false, @new_poll.uncontested
-        end
+          should 'not mark uncontested poll as uncontested' do
+            assert_equal false, @new_poll.uncontested
+          end
         
-        should 'mark candidate as elected only when elected' do
-          assert !@independent_candidacy.elected
-          assert @conservative_candidacy.elected
-        end
+          should 'mark candidate as elected only when elected' do
+            assert !@independent_candidacy.elected
+            assert @conservative_candidacy.elected
+          end
         
-        should 'create with given attributes' do
-          assert_equal '2007-05-03'.to_date, @new_poll.date_held
-          assert_equal 4409, @new_poll.electorate 
-          assert_equal 1642, @new_poll.ballots_issued
-          assert_equal 31, @new_poll.ballots_rejected
-          assert_equal 'http://anytown.gov.uk/elections/poll/foo', @new_poll.source
-        end
+          should 'create with given attributes' do
+            assert_equal '2007-05-03'.to_date, @new_poll.date_held
+            assert_equal 4409, @new_poll.electorate 
+            assert_equal 1642, @new_poll.ballots_issued
+            assert_equal 31, @new_poll.ballots_rejected
+            assert_equal 'http://anytown.gov.uk/elections/poll/foo', @new_poll.source
+          end
         
-        should 'create candidacies' do
-          assert_equal @old_candidacy_count+2, Candidacy.count
-        end
+          should 'create candidacies' do
+            assert_equal @old_candidacy_count+2, Candidacy.count
+          end
         
-        should 'associate candidacies with poll' do
-          assert @new_candidacies.all?{ |c| c.poll == @new_poll }
-        end
+          should 'associate candidacies with poll' do
+            assert @new_candidacies.all?{ |c| c.poll == @new_poll }
+          end
         
-        should 'parse candidacy names when necessary' do
-          assert_equal 'John Linnaeus', @independent_candidacy.first_name
-          assert_equal 'Middleton', @independent_candidacy.last_name
-          assert_equal 'Margaret', @conservative_candidacy.first_name
-          assert_equal 'Stanhope', @conservative_candidacy.last_name
-        end
+          should 'parse candidacy names when necessary' do
+            assert_equal 'John Linnaeus', @independent_candidacy.first_name
+            assert_equal 'Middleton', @independent_candidacy.last_name
+            assert_equal 'Margaret', @conservative_candidacy.first_name
+            assert_equal 'Stanhope', @conservative_candidacy.last_name
+          end
         
-        should 'assign party when given' do
-          assert_nil @independent_candidacy.political_party
-          assert_equal @conservative_party, @conservative_candidacy.political_party
+          should 'assign party when given' do
+            assert_nil @independent_candidacy.political_party
+            assert_equal @conservative_party, @conservative_candidacy.political_party
+          end
+        end
+          
+        context 'when a candidate is missing name' do
+          setup do
+            @dummy_response = 
+            [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03',
+              :source => 'http://anytown.gov.uk/elections/poll/foo',
+              :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGE', 
+              :date => '2007-05-03', 
+              :electorate => '4409', 
+              :ballots_issued => '1642', 
+              :ballots_rejected => '31', 
+              :uncontested => nil, 
+              :candidacies => [{:given_name => 'Margaret', 
+                                :family_name => nil,
+                                :votes => '790',
+                                :elected => 'true',
+                                :party => 'http://openelectiondata.org/id/parties/25',
+                                :independent => nil },
+                               {:name => 'John Linnaeus Middleton', 
+                                :votes => '342',
+                                :elected => 'false',
+                                :party => nil,
+                                :independent => true }
+                ] }]
+            @old_candidacy_count = Candidacy.count
+            Poll.from_open_election_data(@dummy_response, :council => @council)
+            @new_poll = Poll.last(:order => 'id')
+            @new_candidacy = Candidacy.first(:order => 'id DESC', :limit => 1)
+          end
+        
+          should 'not raise exception' do
+            assert_nothing_raised(Exception) { Poll.from_open_election_data(@dummy_response, :council => @council) }
+          end
+          
+          should 'still create other candidate' do
+            assert_equal @old_candidacy_count+1, Candidacy.count
+            assert_equal 342, @new_candidacy.votes
+          end
+          
         end
       end
       
