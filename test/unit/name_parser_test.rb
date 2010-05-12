@@ -44,6 +44,7 @@ class NameParserTest < Test::Unit::TestCase
     "Fred Flintstone BSc, MRTPI(Rtd)" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "BSc"},
     "Councillor B. Lewis F.CMI" => {:first_name => "B", :last_name => "Lewis", :qualifications => "F.CMI"},
     "Fred Flintstone MInstTA" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "MInstTA"},
+    "Fred Flintstone MRPharmS" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "MRPharmS"},
     "Fred Flintstone MBCS CITP" => {:first_name => "Fred", :last_name => "Flintstone"},  
     "Fred Flintstone B.Ed. Hons" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "B.Ed. Hons"},
     "Fred Flintstone BSc (Eng) MBA MIET" => {:first_name => "Fred", :last_name => "Flintstone", :qualifications => "BSc MBA"},
@@ -63,7 +64,7 @@ class NameParserTest < Test::Unit::TestCase
   
   context "The NameParser module" do
     
-    context 'whne parsing' do
+    context 'when parsing' do
       should "parse first name and last name from name" do
         OriginalNameAndParsedName.each do |orig_name, parsed_values|
           assert_equal( parsed_values, NameParser.parse(orig_name), "failed for #{orig_name}")
