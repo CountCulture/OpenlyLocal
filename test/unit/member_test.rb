@@ -19,6 +19,12 @@ class MemberTest < ActiveSupport::TestCase
     
     should_validate_uniqueness_of :uid, :scoped_to => :council_id
     should_validate_presence_of :uid
+    
+    should 'not validate presence of :url if member is ex-member' do
+      ex_member = Factory.build(:member, :full_name => "Fred Flintstone", :url => nil, :date_left => 3.days.ago, :council => @existing_member.council)
+      assert ex_member.valid?
+    end
+    
     should "include ScraperModel mixin" do
       assert Member.respond_to?(:find_all_existing)
     end
