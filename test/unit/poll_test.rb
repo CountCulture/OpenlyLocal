@@ -177,7 +177,44 @@ class PollTest < ActiveSupport::TestCase
             assert_equal @conservative_party, @conservative_candidacy.political_party
           end
         end
+        
+        context 'when a candidacy has an address' do
+          setup do
+            @dummy_response = 
+            [{ :uri => 'http://openelectiondata.org/id/polls/41UDGE/2007-05-03',
+              :source => 'http://anytown.gov.uk/elections/poll/foo',
+              :area => 'http://statistics.data.gov.uk/id/local-authority-ward/41UDGE', 
+              :date => '2007-05-03', 
+              :electorate => '4409', 
+              :ballots_issued => '1642', 
+              :ballots_rejected => '31', 
+              :uncontested => nil, 
+              :candidacies => [{:given_name => 'Margaret', 
+                                :family_name => 'Stanhope',
+                                :votes => '790',
+                                :elected => 'true',
+                                :party => 'http://openelectiondata.org/id/parties/25',
+                                :independent => nil,
+                                :address => {:locality => "Barkingside",
+                                             :postal_code => "IG6 1HB",
+                                             :street_address => "284 Ashurst Drive",
+                                             :region => "Essex"}
+                                 }
+              ] }]
+            Poll.from_open_election_data(@dummy_response, :council => @council)
+            @new_poll = Poll.last(:order => 'id')
+            @new_candidacy = Candidacy.first(:order => 'id DESC', :limit => 1)
+          end
           
+          should_create :candidacy
+          should_create :address
+          
+          should 'associate address with candidacy' do
+            assert address = @new_candidacy.address
+            assert_equal "IG6 1HB", address.postal_code
+          end
+        end
+        
         context 'when a candidate is missing name' do
           setup do
             @dummy_response = 

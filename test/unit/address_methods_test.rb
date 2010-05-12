@@ -12,13 +12,35 @@ class AddressMethodsTest < ActiveSupport::TestCase
     
     setup do
       @test_model_with_address = TestAddresseeModel.create!
-      @address = Factory(:address, :addressee => @test_model_with_address)
+      @address = Factory(:address, :addressee => @test_model_with_address, :street_address => '2 Wilson Road', :locality => 'Sometown')
+      @former_address = Factory(:address, :addressee => @test_model_with_address, :street_address => '2 Heath St', :locality => 'Sometown', :former => true)
     end
     
-    should_have_one :address, :dependent => :destroy
-        
-    should "accept nested attributes for address" do
-      assert @test_model_with_address.class.instance_methods.include?("address_attributes=")
+    should_have_one :full_address, :dependent => :destroy
+    
+    context 'and full_address association' do
+      should 'not return former addresses' do
+        @address.update_attribute(:former, true)
+        assert_nil @test_model_with_address.full_address
+      end
+      
+      should 'be polymorphic as addressee' do
+        assert_equal @test_model_with_address, @address.addressee
+        assert_equal @address, @test_model_with_address.full_address
+      end
+
+    end
+    
+    should_have_many :former_addresses
+    
+    context 'and former_addresses association' do
+      should 'include former addresses' do
+        assert @test_model_with_address.former_addresses.include?(@former_address)
+      end
+      
+      should 'not include current addresses' do
+        assert !@test_model_with_address.former_addresses.include?(@address)
+      end
     end
     
     should "delegate address_in_full to associated address" do
@@ -28,7 +50,122 @@ class AddressMethodsTest < ActiveSupport::TestCase
     should "return nil for address_in_full if no associated address" do
       assert_nil TestAddresseeModel.new.address_in_full
     end
-        
+    
+    should 'alias full_address getter method as address' do
+      assert_equal @test_model_with_address.full_address, @test_model_with_address.address
+    end
+    
+    context 'when assigning address' do
+      setup do
+        @test_model_without_address = TestAddresseeModel.create!
+        @unsaved_address = Address.new(:street_address => '1 Acacia Ave', :locality => 'anytown')
+      end
+      
+      context 'in general' do
+        context 'and params are an address' do
+          setup do
+            @test_model_without_address.address = @unsaved_address
+          end
+
+          should_create :address
+          
+          should 'assign address to addressee' do
+            assert_equal @unsaved_address, @test_model_without_address.address.reload
+          end
+
+          should 'save association' do
+            assert_equal @unsaved_address, @test_model_without_address.reload.address
+          end
+        end
+
+        context 'and params are nil' do
+          should 'not raise exception' do
+            assert_nothing_raised(Exception) {  @test_model_without_address.address = nil }
+          end
+        end
+
+        context 'and params are hash' do
+          setup do
+            @test_model_without_address.address = { :street_address => '1 Acacia Ave', :locality => 'Anytown' }
+          end
+
+          should_create :address
+
+          should 'assign address to addressee' do
+            assert_kind_of Address, @test_model_without_address.address
+          end
+
+          should 'use hash keys, values to set address attributes' do
+            assert_equal '1 Acacia Ave', @test_model_without_address.address.street_address
+            assert_equal 'Anytown', @test_model_without_address.address.locality
+          end
+
+        end
+      end
+      
+      context 'and address already exists' do
+
+        context 'and params are an address' do
+          setup do
+            @test_model_with_address.address = @unsaved_address
+          end
+          
+          should_create :address
+          
+          should 'assign new address to addressee' do
+            assert_equal @unsaved_address, @test_model_with_address.address
+          end
+
+          should 'save new address' do
+            assert !@unsaved_address.new_record?
+          end
+
+          should 'mark old address as former' do
+            assert @address.reload.former?
+          end
+
+        end
+
+        context 'and params are nil' do
+          should 'not raise exception' do
+            assert_nothing_raised(Exception) {  @test_model_with_address.address = nil }
+          end
+          
+          should 'not create a new address' do
+            assert_no_difference "Address.count" do
+              @test_model_with_address.address = nil
+            end
+          end
+          
+          should 'mark old address as former' do
+            @test_model_with_address.address = nil
+            assert @address.reload.former?
+          end
+        end
+
+        context 'and params are hash' do
+          setup do
+            @test_model_with_address.address = { :street_address => '1 Acacia Ave', :locality => 'Anytown' }
+          end
+
+          should_create :address
+
+          should 'assign address to addressee' do
+            assert_kind_of Address, @test_model_with_address.address
+          end
+
+          should 'use hash keys, values to set address attributes' do
+            assert_equal '1 Acacia Ave', @test_model_with_address.address.street_address
+            assert_equal 'Anytown', @test_model_with_address.address.locality
+          end
+
+          should 'mark old address as former' do
+            assert @address.reload.former?
+          end
+
+        end
+      end
+    end
   end
  
   context "An instance of a class that includes AddressMethods mixin" do

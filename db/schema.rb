@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100505175744) do
+ActiveRecord::Schema.define(:version => 20100512113920) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(:version => 20100505175744) do
     t.column "addressee_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "region", :string
+    t.column "former", :boolean, :default => false
   end
 
   create_table "boundaries", :force => true do |t|

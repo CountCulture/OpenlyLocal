@@ -29,7 +29,8 @@ class Poll < ActiveRecord::Base
                                                                                        :last_name => candidacy_info[:family_name]||name[:last_name])
           candidacy.update_attributes( :elected => candidacy_info[:elected] == 'true',
                                        :votes => candidacy_info[:votes],
-                                       :political_party => PoliticalParty.find_from_resource_uri(candidacy_info[:party]) )
+                                       :political_party => PoliticalParty.find_from_resource_uri(candidacy_info[:party]),
+                                       :address => candidacy_info[:address] )
         end
         poll
       end

@@ -8,7 +8,7 @@ class AddressTest < ActiveSupport::TestCase
       @address = Factory(:address)
     end
     
-    should_have_db_columns :street_address, :locality, :postal_code, :country
+    should_have_db_columns :street_address, :locality, :postal_code, :country, :region, :former
     should_validate_presence_of :addressee_id, :addressee_type
     
     should 'belong to addressee polymorphically' do

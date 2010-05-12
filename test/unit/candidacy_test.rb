@@ -12,13 +12,16 @@ class CandidacyTest < ActiveSupport::TestCase
     should_belong_to :poll
     should_belong_to :political_party
     should_belong_to :member
-    should_have_one :address
     should_have_db_columns :first_name, :last_name, :party, :elected, :votes, :basic_address
     should_validate_presence_of :poll_id
     should_validate_presence_of :last_name
     
     should "delegate area to poll" do
       assert_equal @poll.area, @candidacy.area
+    end
+    
+    should 'mixin AddressMethods module' do
+      assert @candidacy.respond_to?(:address_in_full)
     end
 
   end
