@@ -12,6 +12,7 @@ class Ward < ActiveRecord::Base
   has_many :polls, :as => :area, :order => "date_held DESC"
   has_one  :boundary, :as => :area
   named_scope :defunkt, :conditions => { :defunkt => true }
+  named_scope :current, :conditions => { :defunkt => false }
   allow_access_to :members, :via => :uid
   allow_access_to :committees, :via => [:uid, :normalised_title]
   validates_presence_of :name, :council_id

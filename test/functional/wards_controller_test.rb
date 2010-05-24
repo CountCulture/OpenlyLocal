@@ -5,12 +5,272 @@ class WardsControllerTest < ActionController::TestCase
   def setup
     @ward = Factory(:ward)
     @council = @ward.council
+    @defunkt_ward = Factory(:ward, :council => @council, :name => 'defunkt ward', :defunkt => true)
+    @another_council = Factory(:another_council)
+    @another_council_ward = Factory(:ward, :council => @another_council)
     @member = Factory(:member, :council => @council)
     @ex_member = Factory(:member, :council => @council, :date_left => 1.month.ago)
     @ward.members << @member
     @ward.members << @ex_member
   end
 
+  # index test
+  context "on GET to :index" do
+    
+    context "with basic request and council_id" do
+      setup do
+        get :index, :council_id => @council.id
+      end
+      
+      should_assign_to(:council) { @council }
+      should_respond_with :success
+      
+      should 'assign only current wards' do
+        assert assigns(:wards).include?(@ward)
+        assert !assigns(:wards).include?(@defunkt_ward)
+      end
+            
+      should 'not assign wards for other councils' do
+        assert !assigns(:wards).include?(@another_council_ward)
+      end
+            
+      should "show title" do
+        assert_select "title", /current wards/i
+      end
+      
+      should 'list wards' do
+        assert_select 'a', @ward.title
+      end
+      
+      should_eventually 'show link to include defunkt wards' do
+        assert_select 'a', /include old wards/i
+      end
+      
+      should 'not include pagination info' do
+        assert_select "div.pagination", false
+      end
+      
+    end
+
+    context 'without council_id' do
+      context 'in general' do
+        setup do
+          get :index
+        end
+      
+        should_respond_with :success
+      
+        should 'assign only current wards' do
+          assert assigns(:wards).include?(@ward)
+          assert !assigns(:wards).include?(@defunkt_ward)
+        end
+
+        should 'assign wards for all councils' do
+          assert assigns(:wards).include?(@another_council_ward)
+        end
+        
+        should 'list wards' do
+          assert_select 'a', @ward.title
+        end
+
+      end
+      
+      context 'when enough results' do
+        setup do
+          35.times { |i| Factory(:ward, :council => @council, :name => "Another#{i}") }
+        end
+        
+        context 'in general' do
+          setup do
+            get :index
+          end
+          
+          should 'show pagination links' do
+            assert_select "div.pagination"
+          end
+          
+          should 'show page number in title' do
+            assert_select "title", /page 1/i
+          end
+        end
+      end
+
+    end
+  #   context "with basic request and council_id and ex-members included" do
+  #     setup do
+  #       get :index, :council_id => @council.id, :include_ex_members => true
+  #     end
+  #     
+  #     should_assign_to(:members) { [@member, @ex_member] } # current and ex members
+  #     should_assign_to(:council) { @council }
+  #     should_respond_with :success
+  #     
+  #     should "show title" do
+  #       assert_select "title", /current and former members/i
+  #     end
+  #     
+  #     should "list all members" do
+  #       assert_select ".members .member a", @member.full_name
+  #       assert_select ".members .member a", @ex_member.full_name
+  #     end
+  #     
+  #     should "not show link to include ex_members" do
+  #       assert_select "a", :text => /include former members/i, :count => 0
+  #     end
+  #   end
+  #   
+  #   context "with xml requested and council_id provided" do
+  #     setup do
+  #       get :index, :council_id => @council.id, :format => "xml"
+  #     end
+  # 
+  #     should_assign_to(:members) { [@member] } # current members
+  #     should_assign_to(:council) { @council }
+  #     should_respond_with :success
+  #     should_render_without_layout
+  #     should_respond_with_content_type 'application/xml'
+  # 
+  #     should "include members" do
+  #       assert_select "members>member>id"
+  #     end
+  # 
+  #     should "include council" do
+  #       assert_select "members>member>council>id"
+  #     end
+  # 
+  #     should "include ward info" do
+  #       assert_select "member>ward>id"
+  #     end
+  #     
+  #     should 'not include pagination info' do
+  #       assert_select "members>total-entries", false
+  #     end
+  #   end
+  # 
+  #   context "with json requested and council_id provided" do
+  #     setup do
+  #       get :index, :council_id => @council.id, :format => "json"
+  #     end
+  # 
+  #     should_assign_to(:members) { [@member] } # current members
+  #     should_assign_to(:council) { @council }
+  #     should_respond_with :success
+  #     should_render_without_layout
+  #     should_respond_with_content_type 'application/json'
+  # 
+  #     should "include council" do
+  #       assert_match /council.+id/, @response.body
+  #     end
+  #     
+  #     should "include ward info" do
+  #       assert_match %r(ward.+name.+#{@ward.name}), @response.body
+  #     end
+  #     
+  #     should 'not include pagination info' do
+  #       assert_no_match %r(total_entries), @response.body
+  #     end
+  #   end
+  # 
+  #   context 'without council_id' do
+  #     context 'in general' do
+  #       setup do
+  #         @another_council = Factory(:another_council)
+  #         @another_council_member = Factory(:member, :council => @another_council)
+  #         Member.stubs(:find).returns([@member, @ex_member])
+  #         get :index
+  #       end
+  #     
+  #       should_assign_to(:members) { [@member, @ex_member] } # current members
+  #       should_respond_with :success
+  #     
+  #       should "show title" do
+  #         assert_select "title", /current members/i
+  #       end
+  #     
+  #       should "list all members" do
+  #         assert_select "#members .member a", @member.full_name
+  #         assert_select "#members .member a", @ex_member.full_name
+  #       end
+  #       
+  #       should "show council in member item" do          
+  #         assert_select "#members .member", /#{@council.title}/
+  #       end
+  #       
+  #       should 'not show pagination links' do
+  #         assert_select "div.pagination", false
+  #       end
+  #     end
+  #     
+  #     context 'when enough results' do
+  #       setup do
+  #         35.times { Factory(:member, :council => @council, :ward => @ward) }
+  #       end
+  #       
+  #       context 'in general' do
+  #         setup do
+  #           get :index
+  #         end
+  #         
+  #         should 'show pagination links' do
+  #           assert_select "div.pagination"
+  #         end
+  #         
+  #         should 'show page number in title' do
+  #           assert_select "title", /page 1/i
+  #         end
+  #       end
+  #       
+  #       context "with xml requested" do
+  #         setup do
+  #           get :index, :format => "xml"
+  #         end
+  # 
+  #         should "include members" do
+  #           assert_select "members>member>id"
+  #         end
+  # 
+  #         should "include council" do
+  #           assert_select "members>member>council>id"
+  #         end
+  # 
+  #         should "include ward info" do
+  #           assert_select "member>ward>id"
+  #         end
+  #         
+  #         should 'include pagination info' do
+  #           assert_select "members>total-entries"
+  #         end
+  #       end
+  #       
+  #       context "with json requested" do
+  #         setup do
+  #           get :index, :format => "json"
+  #         end
+  # 
+  #         should_respond_with :success
+  #         should_render_without_layout
+  #         should_respond_with_content_type 'application/json'
+  # 
+  #         should "include council" do
+  #           assert_match /council.+id/, @response.body
+  #         end
+  #         
+  #         should "include ward info" do
+  #           assert_match %r(ward.+name.+#{@ward.name}), @response.body
+  #         end
+  #         
+  #         should 'include pagination info' do
+  #           assert_match %r(total_entries.+#{assigns(:members).size}), @response.body
+  #           assert_match %r(per_page), @response.body
+  #           assert_match %r(page.+1), @response.body
+  #         end
+  #       end
+  # 
+  #     end
+  #   end
+  
+  end
+  
   # show test
   context "on GET to :show" do
 
@@ -126,6 +386,10 @@ class WardsControllerTest < ActionController::TestCase
         @ward.update_attributes(:police_team => @police_team)
         @police_officer = Factory(:police_officer, :police_team => @police_team)
         @inactive_police_officer = Factory(:inactive_police_officer, :police_team => @police_team)
+        # @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average')
+        # comparison_data = [{"date"=>"2008-12", "value"=>"42.2"}, {"date"=>"2009-01", "value"=>"51", 'force_value' => '2.5'}, {"date"=>"2009-02", "value"=>"3.14"}]
+        # CrimeArea.any_instance.stubs(:crime_rate_comparison).returns(comparison_data)
+        # @ward.update_attribute(:crime_area, @crime_area)
         Ward.any_instance.stubs(:grouped_datapoints).returns(dummy_grouped_datapoints)
         get :show, :id => @ward.id
       end
@@ -184,6 +448,19 @@ class WardsControllerTest < ActionController::TestCase
           assert_select "#grouped_datapoints .religion.graphed_datapoints"
         end
       end
+
+      # should 'show crime area' do
+      #   assert_select '#crime_area'
+      # end
+      # 
+      # should 'show crime stats in area' do
+      #   assert_select '#crime_area .crime_level', /below average/i
+      #   assert_select '#crime_area #crime_rates'
+      # end
+      # 
+      # should 'show comparison with force levels' do
+      #   assert_select '#crime_rates .force_value', '2.5'
+      # end
 
     end
 

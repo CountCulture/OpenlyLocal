@@ -25,6 +25,7 @@ class AreasControllerTest < ActionController::TestCase
      @member_1 = Factory(:member, :ward => @council_ward, :council => @council_1)
      @county_member = Factory(:member, :ward => @county_ward, :council => @county)
      @another_county_member = Factory(:member, :ward => @county_ward, :council => @county)
+     @ex_member = Factory(:member, :ward => @council_ward, :council => @council_1, :date_left => 1.month.ago)
      
      @postcode = Factory(:postcode, :code => "ZA133SL", :ward => @council_ward, :council => @council_1, :county => @county, :lat => 54.12, :lng => 1.23 )
      @another_postcode = Factory(:postcode)
@@ -53,10 +54,11 @@ class AreasControllerTest < ActionController::TestCase
         assert_select 'a.council_link', /#{@council_1.title}/
       end
       
-      should 'show members' do
-        assert_select 'a.member_link', /#{@member_1.full_name}/
+      should "list current members" do
+        assert_select "a.member_link", @member_1.title
+        assert_select "a.member_link", :text => @ex_member.title, :count => 0
       end
-      
+
       should 'not show crime area by default' do
         assert_select '#crime_area', false
       end

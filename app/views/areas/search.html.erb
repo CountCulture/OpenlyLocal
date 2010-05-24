@@ -32,38 +32,7 @@
       </div>
     <%- end -%>
 
-    <%- if @postcode.crime_area -%>
-      <div id='crime_area' class='graphed_datapoints'>
-        <h4>Crime area: <%= @postcode.crime_area.name %></h4>
-        <p>
-          <%= link_to('Crime map', @postcode.crime_area.crime_mapper_url, :class => 'external') if @postcode.crime_area.crime_mapper_url? %> 
-          <%= link_to( 'Crime map data', @postcode.crime_area.feed_url, :class => 'feed') if @postcode.crime_area.feed_url? %>
-        </p>
-        <p class='crime_level <%= @postcode.crime_area.crime_level_cf_national %>'>
-          <strong>Overall crime level</strong> (compared with national) 
-          <span class='value'><%= @postcode.crime_area.crime_level_cf_national? ? @postcode.crime_area.crime_level_cf_national.titleize : 'not known' %></span>
-        </p>
-        <%- if @postcode.crime_area.crime_rate_comparison -%>
-        <%= crime_stats_graph @postcode.crime_area.crime_rate_comparison %>
-          <table id="crime_rates" class='statistics'>
-            <caption>Crime rate by period</caption>
-            <tr>
-              <th>Period</th>
-              <th class='value'>Crime Rate</th>
-              <th class='force_value value'>Force average</th>
-            </tr>
-            <%- @postcode.crime_area.crime_rate_comparison.each do |stat| -%>
-              <tr>
-                <td class='period'><%= stat['date'] %></td>
-                <td class='value'><%= sprintf("%.1f", stat['value']) %></td>
-                <td class='force_value value'><%= sprintf("%.1f", stat['force_value']) if stat['force_value'] %></td>
-              </tr>
-            <%- end -%>
-          </table>
-        <%- end -%>
-      </div>
-    <%- end -%>
-    <p class="attribution">Source: <a href="http://policeapi.rkh.co.uk/" title="Police API">NPIA</a></p>
+		<%= render :partial => 'crime_area', :object => @postcode.crime_area if @postcode.crime_area %>
   </div>
 
   <%- unless @ward.committees.blank? -%>

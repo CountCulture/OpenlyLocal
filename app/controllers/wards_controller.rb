@@ -1,9 +1,16 @@
 class WardsController < ApplicationController
-  before_filter :authenticate, :except => [:show]
-  before_filter :find_ward
+  before_filter :authenticate, :except => [:show, :index]
+  before_filter :find_ward, :except => [:index]
   before_filter :linked_data_available, :only => :show
   helper :datapoints
   caches_action :show
+  
+  def index
+    @council = Council.find(params[:council_id]) if params[:council_id]
+    @wards = @council ? @council.wards.current : Ward.current.paginate(:page => params[:page])
+    @title = "Current Wards"
+    @title += " :: Page #{(params[:page]||1).to_i}" unless @council
+  end
   
   def show
     @council = @ward.council

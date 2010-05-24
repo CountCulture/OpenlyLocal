@@ -207,7 +207,7 @@ class MembersControllerTest < ActionController::TestCase
           end
           
           should 'include pagination info' do
-            assert_match %r(total_entries.+#{assigns(:members).size}), @response.body
+            assert_match %r(total_entries.+36), @response.body
             assert_match %r(per_page), @response.body
             assert_match %r(page.+1), @response.body
           end

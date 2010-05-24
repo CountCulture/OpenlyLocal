@@ -21,6 +21,7 @@ class WardTest < ActiveSupport::TestCase
     should_have_many :polls
     should_have_many :dataset_topics, :through => :datapoints
     should_have_one  :boundary
+    should_belong_to :crime_area
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url
@@ -107,7 +108,7 @@ class WardTest < ActiveSupport::TestCase
       end
     end
     
-    context 'should have defunkt names scope and' do
+    context 'should have defunkt named scope and' do
       setup do
         @council = @ward.council
         @defunkt_ward = Factory(:defunkt_ward, :council => @council)
@@ -122,6 +123,24 @@ class WardTest < ActiveSupport::TestCase
       
     end
     
+    context 'should have current named scope and' do
+      setup do
+        @council = @ward.council
+        @defunkt_ward = Factory(:defunkt_ward, :council => @council)
+        @another_council = Factory(:another_council)
+        @another_ward = Factory(:ward, :name => 'another ward', :council => @another_council)
+        @another_defunkt_ward = Factory(:defunkt_ward, :name => 'another defunkt ward', :council => @another_council)
+        @current_wards = Ward.current
+      end
+      
+      should 'return current wards only' do
+        assert @current_wards.include?(@ward)
+        assert @current_wards.include?(@another_ward)
+        assert !@current_wards.include?(@defunkt_ward)
+      end
+      
+    end
+
     context 'when finding from resource_uri' do
       setup do
         @snac_id_ward = Factory(:ward, :name => 'Snac_id ward', :snac_id => '41UDGE', :council => @ward.council)

@@ -511,55 +511,14 @@ task :import_os_county_division_ids => :environment do
   end
 end
 
-# desc 'Import FixMyStreet Ids for councils'
-# task :import_fix_my_street_council_ids => :environment do
-#   require 'hpricot'
-#   require 'open-uri'
-#   fms_councils = Hpricot(open('http://www.fixmystreet.com/reports')).search('#content tr[@class!=gone] a')
-#   councils = Council.all
-#   fms_councils.each do |fc|
-#     if council = councils.detect{ |c| (Council.normalise_title(fc.inner_text) == Council.normalise_title(c.name)) }
-#       fms_id = fc[:href].scan(/\/([^\/]+)$/).to_s
-#       council.update_attribute(:fix_my_street_id, fms_id)
-#       puts "Updated #{council.name} with FixMyStreet id #{fms_id}"
-#       councils.delete(council)
-#     else
-#       puts "****Failed to match council with #{fc.inner_text}"
-#     end
-#   end
-#   puts "The folllowing councils were not matched:\n#{councils.inspect}"
-# end
-
-# desc 'Import FixMyStreet Ids for wards'
-# task :import_fix_my_street_ward_ids => :environment do
-#   require 'hpricot'
-#   require 'open-uri'
-#   base_url = 'http://www.fixmystreet.com/alert?pc='
-# 
-#   councils = Council.all(:conditions => "fix_my_street_id IS NOT NULL")
-#   councils.each do |council|
-#     sleep 5 # give server time to rest
-#     puts "==========\nAbout to start getting info for #{council.name}"
-#     wards = council.wards.all(:conditions => {:fix_my_street_id => nil})
-#     wards.each do |ward|
-#       begin
-#         next if ward.council.authority_type == 'County' || !ward.boundary
-#         centrepoint = ward.boundary.centrepoint
-#         pc = Postcode.find_closest(:origin => [centrepoint.lat, centrepoint.lng])
-#         fms_doc = Hpricot(open(base_url + pc.code))
-#         feed_url = fms_doc.search("a[@href*='/rss/reports/#{ward.council.fix_my_street_id}']").last[:href]
-#         council_id, ward_id = feed_url.split('/')[-2..-1]
-#         if council_id == "reports"
-#           puts "No FixMyStreet ward for #{ward.name}"
-#           next
-#         end
-#         council.update_attribute(:fix_my_street_id, council_id) unless council.fix_my_street_id?
-#         ward.update_attribute(:fix_my_street_id, ward_id)
-#         puts "Successfully updated #{ward.name} with FixMyStreet id: #{ward_id}"        
-#       rescue Exception => e
-#         puts "Problem updating #{ward.name} with FixMyStreet id (postcode:#{pc.code}): #{e.inspect}"
-#         p fms_doc.search('a[@href*="/rss/reports/#{ward.council.fix_my_street_id}"]')
-#       end
-#     end
-#   end
-# end
+desc "Import missing OS IDs"
+task :import_missing_os_ids => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  Ward.all(:conditions => {:os_id => nil}).each do |ward|
+    os_id = Hpricot(open("http://statistics.data.gov.uk/doc/electoral-ward/#{ward.snac_id}")).at('a[@href*="http://data.ordnancesurvey.co.uk/id/"]')[:href].scan(/id\/(\d+)/).to_s rescue nil
+    if os_id
+      ward.update_attribute(:os_id, os_id)
+    end
+  end
+end

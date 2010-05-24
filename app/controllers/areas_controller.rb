@@ -8,7 +8,7 @@ class AreasController < ApplicationController
     @ward = @postcode.ward
     @latitude = @postcode.lat
     @longitude = @postcode.lng
-    @members = @ward&&@ward.members
+    @members = @ward&&@ward.members.current
     @title = "Local information for #{@postcode.pretty_code}"
     respond_to do |format|
       format.html
