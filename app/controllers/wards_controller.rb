@@ -7,7 +7,7 @@ class WardsController < ApplicationController
   
   def index
     @council = Council.find(params[:council_id]) if params[:council_id]
-    @wards = @council ? @council.wards.current : Ward.current.paginate(:page => params[:page])
+    @wards = @council ? @council.wards.current : Ward.current.paginate(:page => params[:page], :include => :council)
     @title = "Current Wards"
     @title += " :: Page #{(params[:page]||1).to_i}" unless @council
   end

@@ -1,8 +1,7 @@
-<h1><%#= @council ? "#{basic_link_for(@council)} ::" : 'All' %> <%= @title %></h1>
+<h1><%= @council ? "#{basic_link_for(@council)} ::" : 'All' %> <%= @title %></h1>
 
 <div id='wards'>
-  <%#= render :partial => @wards %>
-<%= list_all @wards %>
+  <%= render :partial => @wards %>
 </div>
 
 <%= will_paginate @wards unless @council %>

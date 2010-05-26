@@ -3,7 +3,7 @@ require 'test_helper'
 class WardsControllerTest < ActionController::TestCase
 
   def setup
-    @ward = Factory(:ward)
+    @ward = Factory(:ward, :output_area_classification => @output_area_classification)
     @council = @ward.council
     @defunkt_ward = Factory(:ward, :council => @council, :name => 'defunkt ward', :defunkt => true)
     @another_council = Factory(:another_council)
@@ -12,10 +12,14 @@ class WardsControllerTest < ActionController::TestCase
     @ex_member = Factory(:member, :council => @council, :date_left => 1.month.ago)
     @ward.members << @member
     @ward.members << @ex_member
+    @output_area_classification = Factory(:output_area_classification)
   end
 
   # index test
   context "on GET to :index" do
+    setup do
+      @ward.update_attribute(:output_area_classification, @output_area_classification)
+    end
     
     context "with basic request and council_id" do
       setup do
@@ -38,8 +42,16 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "title", /current wards/i
       end
       
+      should "show include council in heading" do
+        assert_select "h1 a", /#{@council.title}/i
+      end
+      
       should 'list wards' do
-        assert_select 'a', @ward.title
+        assert_select '.ward a', @ward.title
+      end
+      
+      should 'not show council for ward' do
+        assert_select '.ward a', :text => /#{@council.title}/, :count => 0
       end
       
       should_eventually 'show link to include defunkt wards' do
@@ -48,6 +60,10 @@ class WardsControllerTest < ActionController::TestCase
       
       should 'not include pagination info' do
         assert_select "div.pagination", false
+      end
+      
+      should 'show output area classification' do
+        assert_select '.ward', /#{@output_area_classification.title}/
       end
       
     end
@@ -71,6 +87,10 @@ class WardsControllerTest < ActionController::TestCase
         
         should 'list wards' do
           assert_select 'a', @ward.title
+        end
+
+        should 'show council for ward' do
+          assert_select '.ward a', @ward.council.title
         end
 
       end
@@ -386,6 +406,7 @@ class WardsControllerTest < ActionController::TestCase
         @ward.update_attributes(:police_team => @police_team)
         @police_officer = Factory(:police_officer, :police_team => @police_team)
         @inactive_police_officer = Factory(:inactive_police_officer, :police_team => @police_team)
+        @ward.update_attribute(:output_area_classification, @output_area_classification)
         # @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average')
         # comparison_data = [{"date"=>"2008-12", "value"=>"42.2"}, {"date"=>"2009-01", "value"=>"51", 'force_value' => '2.5'}, {"date"=>"2009-02", "value"=>"3.14"}]
         # CrimeArea.any_instance.stubs(:crime_rate_comparison).returns(comparison_data)
@@ -398,6 +419,10 @@ class WardsControllerTest < ActionController::TestCase
 
       should "show link to committee" do
         assert_select "#committees a", /#{@committee.title}/
+      end
+
+      should "show output area classification" do
+        assert_select "#main_attributes", /#{@output_area_classification.title}/
       end
 
       should "show ward committee meetings" do
