@@ -259,7 +259,7 @@ end
 desc "Connect postcode and crime areas"
 task :connect_postcodes_and_crime_areas => :environment do
   Postcode.all(:conditions => "crime_area_id IS NULL AND country ='064'", :limit => 3000).each do |postcode|
-    response = NpiaUtilities::Client.new(:geocode_crime_area, :q => postcode.code).response
+    response = NpiaUtilities::Client.new(:geocode_crime_area, :q => postcode.code).response rescue nil
     begin
       next unless response && response['areas']['area']
       crime_areas = response['areas']['area']
