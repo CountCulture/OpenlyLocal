@@ -19,7 +19,7 @@ class MembersController < ApplicationController
          render :xml => @members.to_xml(:include => [:council, :ward, :twitter_account]) { |xml|
                     xml.tag! 'total-entries', @members.total_entries
                     xml.tag! 'per-page', @members.per_page
-                    xml.tag! 'page', params[:page].to_i
+                    xml.tag! 'page', (params[:page]||1).to_i
                   }
         end
       end
@@ -27,11 +27,11 @@ class MembersController < ApplicationController
         if @council 
           render :json => @members.to_json(:include => [:council, :ward, :twitter_account])
         else
-         render :json => { :page => (params[:page]||1).to_i,
-                           :per_page => @members.per_page,
-                           :total_entries => @members.total_entries,
-                           :members => @members.to_json(:include => [:council, :ward, :twitter_account])
-                         }
+          render :json => { :page => (params[:page]||1).to_i,
+                            :per_page => @members.per_page,
+                            :total_entries => @members.total_entries,
+                            :members => @members.to_json(:include => [:council, :ward, :twitter_account])
+                          }
                 
         end
       end

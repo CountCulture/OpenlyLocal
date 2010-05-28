@@ -27,54 +27,120 @@ class WardsControllerTest < ActionController::TestCase
     end
     
     context "with basic request and council_id" do
-      setup do
-        get :index, :council_id => @council.id
-      end
+      context 'in general' do
+        setup do
+          get :index, :council_id => @council.id
+        end
       
-      should_assign_to(:council) { @council }
-      should_respond_with :success
+        should_assign_to(:council) { @council }
+        should_respond_with :success
       
-      should 'assign only current wards' do
-        assert assigns(:wards).include?(@ward)
-        assert !assigns(:wards).include?(@defunkt_ward)
-      end
+        should 'assign only current wards' do
+          assert assigns(:wards).include?(@ward)
+          assert !assigns(:wards).include?(@defunkt_ward)
+        end
             
-      should 'not assign wards for other councils' do
-        assert !assigns(:wards).include?(@another_council_ward)
-      end
+        should 'not assign wards for other councils' do
+          assert !assigns(:wards).include?(@another_council_ward)
+        end
             
-      should "show title" do
-        assert_select "title", /current wards/i
+        should "show title" do
+          assert_select "title", /current wards/i
+        end
+      
+        should "include council in heading" do
+          assert_select "h1 a", /#{@council.title}/i
+        end
+      
+        should 'list wards' do
+          assert_select '.ward a', @ward.title
+        end
+      
+        should 'not show council for ward' do
+          assert_select '.ward a', :text => /#{@council.title}/, :count => 0
+        end
+      
+        should_eventually 'show link to include defunkt wards' do
+          assert_select 'a', /include old wards/i
+        end
+      
+        should 'not include pagination info' do
+          assert_select "div.pagination", false
+        end
+      
+        should 'show output area classification' do
+          assert_select '.ward', /#{@output_area_classification.title}/
+        end
+      
+        should 'show link to wards with same output area classification' do
+          assert_select ".ward a[href*=output_area_classifications/#{@output_area_classification.id}]"
+        end
       end
       
-      should "include council in heading" do
-        assert_select "h1 a", /#{@council.title}/i
+      context "with xml requested" do
+        setup do
+          get :index, :council_id => @council.id, :format => "xml"
+        end
+
+        should_assign_to(:council) { @council }
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/xml'
+
+        should 'assign only current wards' do
+          assert assigns(:wards).include?(@ward)
+          assert !assigns(:wards).include?(@defunkt_ward)
+        end
+
+        should 'not assign wards for other councils' do
+          assert !assigns(:wards).include?(@another_council_ward)
+        end
+
+        should "not include council in wards" do
+          assert_select "ward>council", false
+        end
+
+        should "include wards" do
+          assert_select "wards>ward>id"
+        end
+
+        should 'not include pagination info' do
+          assert_select "wards>total-entries", false
+        end
       end
-      
-      should 'list wards' do
-        assert_select '.ward a', @ward.title
+
+      context "with json requested" do
+        setup do
+          get :index, :council_id => @council.id, :format => "json"
+        end
+
+        should_assign_to(:council) { @council }
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/json'
+
+        should 'assign only current wards' do
+          assert assigns(:wards).include?(@ward)
+          assert !assigns(:wards).include?(@defunkt_ward)
+        end
+
+        should 'not assign wards for other councils' do
+          assert !assigns(:wards).include?(@another_council_ward)
+        end
+
+        should "not include council" do
+          assert_no_match %r(council\\\":), @response.body
+        end
+
+        should "include wards" do
+          assert_match %r(ward.+name.+#{@ward.name}), @response.body
+        end
+
+        should 'not include pagination info' do
+          assert_no_match %r(total_entries), @response.body
+        end
       end
-      
-      should 'not show council for ward' do
-        assert_select '.ward a', :text => /#{@council.title}/, :count => 0
-      end
-      
-      should_eventually 'show link to include defunkt wards' do
-        assert_select 'a', /include old wards/i
-      end
-      
-      should 'not include pagination info' do
-        assert_select "div.pagination", false
-      end
-      
-      should 'show output area classification' do
-        assert_select '.ward', /#{@output_area_classification.title}/
-      end
-      
-      should 'show link to wards with same output area classification' do
-        assert_select ".ward a[href*=output_area_classifications/#{@output_area_classification.id}]"
-      end
-      
+
     end
 
     context 'without council_id' do
@@ -154,82 +220,63 @@ class WardsControllerTest < ActionController::TestCase
           end
         end
       end
+      
+      context "with xml requested" do
+        setup do
+          get :index, :format => "xml"
+        end
+
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/xml'
+
+        should 'assign only current wards' do
+          assert assigns(:wards).include?(@ward)
+          assert !assigns(:wards).include?(@defunkt_ward)
+        end
+
+        should "include wards" do
+          assert_select "wards>ward>id"
+        end
+
+         should "include council for wards" do
+          assert_select "ward>council>id"
+        end
+
+        should 'include pagination info' do
+          assert_select "wards>total-entries"
+        end
+      end
+      
+      context "with json requested" do
+        setup do
+          get :index, :format => "json"
+        end
+
+        should_respond_with :success
+        should_render_without_layout
+        should_respond_with_content_type 'application/json'
+
+        should 'assign only current wards' do
+          assert assigns(:wards).include?(@ward)
+          assert !assigns(:wards).include?(@defunkt_ward)
+        end
+
+        should "include wards" do
+          assert_match %r(ward.+name.+#{@ward.name}), @response.body
+        end
+
+        should "include council for wards" do
+          assert_match %r(council\\\":), @response.body
+        end
+
+        should 'include pagination info' do
+          assert_match %r(total_entries), @response.body
+        end
+      end
+      
     end
-  #   context "with basic request and council_id and ex-members included" do
-  #     setup do
-  #       get :index, :council_id => @council.id, :include_ex_members => true
-  #     end
-  #     
-  #     should_assign_to(:members) { [@member, @ex_member] } # current and ex members
-  #     should_assign_to(:council) { @council }
-  #     should_respond_with :success
-  #     
-  #     should "show title" do
-  #       assert_select "title", /current and former members/i
-  #     end
-  #     
-  #     should "list all members" do
-  #       assert_select ".members .member a", @member.full_name
-  #       assert_select ".members .member a", @ex_member.full_name
-  #     end
-  #     
-  #     should "not show link to include ex_members" do
-  #       assert_select "a", :text => /include former members/i, :count => 0
-  #     end
-  #   end
-  #   
-  #   context "with xml requested and council_id provided" do
-  #     setup do
-  #       get :index, :council_id => @council.id, :format => "xml"
-  #     end
-  # 
-  #     should_assign_to(:members) { [@member] } # current members
-  #     should_assign_to(:council) { @council }
-  #     should_respond_with :success
-  #     should_render_without_layout
-  #     should_respond_with_content_type 'application/xml'
-  # 
-  #     should "include members" do
-  #       assert_select "members>member>id"
-  #     end
-  # 
-  #     should "include council" do
-  #       assert_select "members>member>council>id"
-  #     end
-  # 
-  #     should "include ward info" do
-  #       assert_select "member>ward>id"
-  #     end
-  #     
-  #     should 'not include pagination info' do
-  #       assert_select "members>total-entries", false
-  #     end
-  #   end
-  # 
-  #   context "with json requested and council_id provided" do
-  #     setup do
-  #       get :index, :council_id => @council.id, :format => "json"
-  #     end
-  # 
-  #     should_assign_to(:members) { [@member] } # current members
-  #     should_assign_to(:council) { @council }
-  #     should_respond_with :success
-  #     should_render_without_layout
-  #     should_respond_with_content_type 'application/json'
-  # 
-  #     should "include council" do
-  #       assert_match /council.+id/, @response.body
-  #     end
-  #     
-  #     should "include ward info" do
-  #       assert_match %r(ward.+name.+#{@ward.name}), @response.body
-  #     end
-  #     
-  #     should 'not include pagination info' do
-  #       assert_no_match %r(total_entries), @response.body
-  #     end
-  #   end
-  # 
+    
   #   context 'without council_id' do
   #     context 'in general' do
   #       setup do

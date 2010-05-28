@@ -11,6 +11,36 @@ class WardsController < ApplicationController
     @wards = @council ? @council.wards.current : Ward.restrict_to_oac(params).current.paginate(:page => params[:page], :include => :council)
     @title = @output_area_classification ? "#{@output_area_classification.title} Wards" : "Current Wards"
     @title += " :: Page #{(params[:page]||1).to_i}" unless @council
+    options = {:include => [:council]}
+    respond_to do |format|
+      format.html
+      format.xml do
+        if @council 
+         render :xml => @wards.to_xml
+        else
+         render :xml => @wards.to_xml(options) { |xml|
+                    xml.tag! 'total-entries', @wards.total_entries
+                    xml.tag! 'per-page', @wards.per_page
+                    xml.tag! 'page', (params[:page]||1).to_i
+                  }
+        end
+        
+      end
+      format.json do
+        if @council 
+          render :json => @wards.to_json
+        else
+          render :json => { :page => (params[:page]||1).to_i,
+                            :per_page => @wards.per_page,
+                            :total_entries => @wards.total_entries,
+                            :wards => @wards.to_json(options)
+                          }
+                
+        end
+        
+      end
+      # format.xml { render :xml => @wards.to_xml(:include => [:members, :committees, :meetings]) }
+    end
   end
   
   def show
