@@ -2,7 +2,9 @@
 	<%= link_to "All Wards", wards_url if @council||@output_area_classification %>
 </div>
 <h1><%= @council ? "#{basic_link_for(@council)} ::" : 'All' %> <%= @title %></h1>
-
+<%- if @output_area_classification -%>
+	<p class='more_info'><%= link_to 'More info about the ONS Output Area Classifications', 'http://www.statistics.gov.uk/about/methodology_by_theme/area_classification/', :class => 'external' %></p>
+<%- end -%>
 <div id='wards'>
   <%= render :partial => @wards %>
 </div>
