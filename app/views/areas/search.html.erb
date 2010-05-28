@@ -4,6 +4,7 @@
 
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :ward, link_for(@ward) %>
+  <%= attribute_tag :area_classification, link_to(@ward.output_area_classification.title, output_area_classification_wards_url(@ward.output_area_classification)) if @ward&&@ward.output_area_classification %>
   <%= attribute_tag :council, link_for(@council) %>
   <%= attribute_tag :county, link_for(@county) %>
   <%= attribute_tag :latitude, @latitude %>

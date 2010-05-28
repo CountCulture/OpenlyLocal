@@ -26,7 +26,7 @@ class Member < ActiveRecord::Base
   belongs_to :ward
   allow_access_to :committees, :via => [:uid, :normalised_title]
   allow_access_to :ward, :via => [:uid, :name]
-  named_scope :current, :conditions => "date_left IS NULL"
+  named_scope :current, :conditions => "date_left IS NULL", :include => [:twitter_account] # we nearly always want these
   named_scope :except_vacancies, :conditions => 'last_name NOT LIKE "vacan%" AND first_name NOT LIKE "vacan%"'
   alias_attribute :title, :full_name
   after_create :tweet_about_it

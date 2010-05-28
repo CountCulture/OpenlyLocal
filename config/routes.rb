@@ -34,6 +34,10 @@ ActionController::Routing::Routes.draw do |map|
     wards.resources :dataset_topics, :path_prefix => '/wards/:area_id', :requirements => {:area_type => "Ward"}, :only => [:show]
   end
   
+  map.resources :output_area_classifications do |oacs|
+    oacs.resources :wards, :only => [:index]
+  end
+  
   map.with_options({:path_prefix => "id", :requirements => {:redirect_from_resource => true}, :only => [:show]}) do |restype|
     restype.resources :councils
     restype.resources :members

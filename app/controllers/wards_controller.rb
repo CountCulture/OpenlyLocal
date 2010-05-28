@@ -7,8 +7,9 @@ class WardsController < ApplicationController
   
   def index
     @council = Council.find(params[:council_id]) if params[:council_id]
+    @output_area_classification = OutputAreaClassification.find(params[:output_area_classification_id]) if params[:output_area_classification_id]
     @wards = @council ? @council.wards.current : Ward.restrict_to_oac(params).current.paginate(:page => params[:page], :include => :council)
-    @title = "Current Wards"
+    @title = @output_area_classification ? "#{@output_area_classification.title} Wards" : "Current Wards"
     @title += " :: Page #{(params[:page]||1).to_i}" unless @council
   end
   

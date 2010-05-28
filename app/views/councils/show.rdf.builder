@@ -38,7 +38,7 @@ xml.tag! "rdf:RDF",
     
     # xml.tag! "geonames:population", @council.population unless @council.population.blank?
     
-    @wards.each do |ward|
+    @council.wards.each do |ward|
       xml.tag! "openlylocal:Ward", "rdf:resource" => resource_uri_for(ward)
     end
     @committees.each do |committee|
@@ -54,7 +54,7 @@ xml.tag! "rdf:RDF",
   end
   
   # show info on related items
-  @wards.each do |ward|
+  @council.wards.each do |ward|
     xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(ward) do
       xml.tag! "rdfs:label", ward.title
     end

@@ -70,7 +70,7 @@
   </div>
   <div id="wards" class="item_grouping">
     <h3><%= "Wards" %></h3>
-    <%= list_all @wards %>
+    <%= list_all @council.wards %>
   </div>
   <div id="meetings" class="item_grouping">
     <h3><%= link_to "Forthcoming Committee Meetings", meetings_path(:council_id => @council.id) %></h3>

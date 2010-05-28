@@ -15,6 +15,11 @@ class WardsControllerTest < ActionController::TestCase
     @output_area_classification = Factory(:output_area_classification)
   end
 
+  # routing tests
+  should "route with output_area_classification to index" do
+    assert_routing("output_area_classifications/42/wards", {:controller => "wards", :action => "index", :output_area_classification_id => "42"})
+  end
+  
   # index test
   context "on GET to :index" do
     setup do
@@ -42,7 +47,7 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "title", /current wards/i
       end
       
-      should "show include council in heading" do
+      should "include council in heading" do
         assert_select "h1 a", /#{@council.title}/i
       end
       
@@ -64,6 +69,10 @@ class WardsControllerTest < ActionController::TestCase
       
       should 'show output area classification' do
         assert_select '.ward', /#{@output_area_classification.title}/
+      end
+      
+      should 'show link to wards with same output area classification' do
+        assert_select ".ward a[href*=output_area_classifications/#{@output_area_classification.id}]"
       end
       
     end
@@ -134,6 +143,14 @@ class WardsControllerTest < ActionController::TestCase
 
           should 'show council for ward' do
             assert_select '.ward a', @ward.council.title
+          end
+          
+          should "include output area classification in heading" do
+            assert_select "h1", /#{@output_area_classification.title}/i
+          end
+
+          should 'not show output area classification' do
+            assert_select '.ward', :text => /#{@output_area_classification.title}/, :count => 0
           end
         end
       end

@@ -19,11 +19,10 @@ class CouncilsController < ApplicationController
   end
   
   def show
-    @members = @council.members.current
+    @members = @council.members.current(:include => [:twitter_account])
     @committees = @council.active_committees
     @meetings = @council.meetings.forthcoming.all(:limit => 11)
     @documents = @council.meeting_documents.all(:limit => 11)
-    @wards = @council.wards
     @party_breakdown = @council.party_breakdown
     @page_description = "Information and statistics about #{@council.title}"
     respond_to do |format|
@@ -60,14 +59,15 @@ class CouncilsController < ApplicationController
   
   private
   def find_council
+    includes = {:wards => [:output_area_classification]}
     @council = 
     case 
     when params[:snac_id]
-      Council.find_by_snac_id(params[:snac_id])
+      Council.find_by_snac_id(params[:snac_id], :include => includes)
     when params[:os_id]
-      Council.find_by_os_id(params[:os_id])
+      Council.find_by_os_id(params[:os_id], :include => includes)
     else
-      Council.find(params[:id])
+      Council.find(params[:id], :include => includes)
     end
   end
   

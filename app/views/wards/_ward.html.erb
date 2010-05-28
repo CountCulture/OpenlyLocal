@@ -1,3 +1,3 @@
 <%- div_for ward do -%>
-  <strong><%= link_for ward %></strong> <%= basic_link_for ward.council unless @council %> <%= "(#{ward.output_area_classification.title})" if ward.output_area_classification %>
+  <strong><%= link_for ward %></strong> <%= basic_link_for ward.council unless @council %> <%= "(#{link_to ward.output_area_classification.title, output_area_classification_wards_url(ward.output_area_classification)})" unless @output_area_classification||ward.output_area_classification.blank? %>
 <%- end -%>

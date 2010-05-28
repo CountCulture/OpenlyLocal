@@ -1,7 +1,7 @@
 <%- div_for @ward do -%>
   <h1><%= basic_link_for @council %>: <%= @title %> <em><%= council_page_for @ward %></em></h1>
   <dl id="main_attributes" class="attributes">
-    <%= attribute_tag :output_area_classification, @ward.output_area_classification.try(:title) %>
+    <%= attribute_tag :output_area_classification, link_to(@ward.output_area_classification.title, output_area_classification_wards_url(@ward.output_area_classification)) if @ward.output_area_classification %>
     <%= attribute_tag :ons_snac_ref, @ward.snac_id %>
     <%= attribute_tag :ons_gss_code, @ward.gss_code %>
     <%= attribute_tag :ordnance_survey_ref, @ward.os_id %>
