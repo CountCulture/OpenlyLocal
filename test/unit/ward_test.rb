@@ -111,7 +111,7 @@ class WardTest < ActiveSupport::TestCase
       end
     end
     
-    context 'should have defunkt named scope and' do
+    context 'should have defunkt named scope which' do
       setup do
         @council = @ward.council
         @defunkt_ward = Factory(:defunkt_ward, :council => @council)
@@ -121,7 +121,10 @@ class WardTest < ActiveSupport::TestCase
       end
       
       should 'return defunkt wards only' do
-        assert_equal [@defunkt_ward, @another_defunkt_ward], Ward.defunkt
+        defunkt_wards = Ward.defunkt
+        assert defunkt_wards.include?(@defunkt_ward)
+        assert defunkt_wards.include?(@another_defunkt_ward)
+        assert !defunkt_wards.include?(@ward)
       end
       
     end

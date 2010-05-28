@@ -1,5 +1,5 @@
 <li>
 	<strong><%= link_for list_item %></strong> 
 	<%= basic_link_for ward.council unless @council %> 
-	<%= "(#{link_to list_item.output_area_classification.title, output_area_classification_wards_url(list_item.output_area_classification), :class => 'output_area_classification_link'})" if list_item.output_area_classification %>
+	<%= link_to "(#{list_item.output_area_classification.title})", output_area_classification_wards_url(list_item.output_area_classification), :class => 'output_area_classification_link' if list_item.output_area_classification %>
 </li>

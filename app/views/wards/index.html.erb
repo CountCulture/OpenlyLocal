@@ -1,3 +1,6 @@
+<div class='breadcrumbs'>
+	<%= link_to "All Wards", wards_url if @council||@output_area_classification %>
+</div>
 <h1><%= @council ? "#{basic_link_for(@council)} ::" : 'All' %> <%= @title %></h1>
 
 <div id='wards'>

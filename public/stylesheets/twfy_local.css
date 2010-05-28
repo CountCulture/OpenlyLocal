@@ -337,6 +337,8 @@ body.councils .area a {
 #members li a {
 	font-weight: bold;
 }
+
+a.output_area_classification_link {color:#888;}
 /*Meeting formatting*/
 .past {color:#515151;}
 .past a {color:#282828;}

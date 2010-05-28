@@ -69,7 +69,7 @@
     <%= list_all @committees, :rel => "openlylocal:committee" %>
   </div>
   <div id="wards" class="item_grouping">
-    <h3><%= "Wards" %></h3>
+    <h3><%= link_to "Wards", wards_url(:council_id => @council.to_param) %></h3>
     <%= list_all @council.wards %>
   </div>
   <div id="meetings" class="item_grouping">
