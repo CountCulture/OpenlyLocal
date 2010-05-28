@@ -5,7 +5,7 @@ class WardsControllerTest < ActionController::TestCase
   def setup
     @ward = Factory(:ward, :output_area_classification => @output_area_classification)
     @council = @ward.council
-    @defunkt_ward = Factory(:ward, :council => @council, :name => 'defunkt ward', :defunkt => true)
+    @defunkt_ward = Factory(:ward, :council => @council, :name => 'defunkt ward', :defunkt => true, :output_area_classification => @output_area_classification)
     @another_council = Factory(:another_council)
     @another_council_ward = Factory(:ward, :council => @another_council)
     @member = Factory(:member, :council => @council)
@@ -81,10 +81,6 @@ class WardsControllerTest < ActionController::TestCase
           assert !assigns(:wards).include?(@defunkt_ward)
         end
 
-        should 'assign wards for all councils' do
-          assert assigns(:wards).include?(@another_council_ward)
-        end
-        
         should 'list wards' do
           assert_select 'a', @ward.title
         end
@@ -115,6 +111,32 @@ class WardsControllerTest < ActionController::TestCase
         end
       end
 
+      context 'with output_area_classification_id' do
+        context 'in general' do
+          setup do
+            get :index, :output_area_classification_id => @output_area_classification.id
+          end
+
+          should_respond_with :success
+
+          should 'assign only current wards' do
+            assert assigns(:wards).include?(@ward)
+            assert !assigns(:wards).include?(@defunkt_ward)
+          end
+
+          should 'assign only wards with correct output area classification' do
+            assert !assigns(:wards).include?(@another_council_ward)
+          end
+
+          should 'list wards' do
+            assert_select 'a', @ward.title
+          end
+
+          should 'show council for ward' do
+            assert_select '.ward a', @ward.council.title
+          end
+        end
+      end
     end
   #   context "with basic request and council_id and ex-members included" do
   #     setup do

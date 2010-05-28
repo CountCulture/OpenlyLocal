@@ -1,13 +1,11 @@
 class Ward < ActiveRecord::Base
   include ScrapedModel::Base
-  include AreaStatisticMethods
+  include AreaMethods
   belongs_to :council
   belongs_to :police_team
-  belongs_to :output_area_classification
   has_many :members
   has_many :committees
   has_many :meetings, :through => :committees
-  has_many :datapoints, :as => :area
   has_many :dataset_topics, :through => :datapoints
   has_many :polls, :as => :area, :order => "date_held DESC"
   has_one  :boundary, :as => :area

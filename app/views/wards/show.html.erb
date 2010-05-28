@@ -4,7 +4,7 @@
     <%= attribute_tag :output_area_classification, @ward.output_area_classification.try(:title) %>
     <%= attribute_tag :ons_snac_ref, @ward.snac_id %>
     <%= attribute_tag :ons_gss_code, @ward.gss_code %>
-    <%= attribute_tag :ordnance_survey_ref, @ward.os_id  %>
+    <%= attribute_tag :ordnance_survey_ref, @ward.os_id %>
     <%= attribute_tag :fix_my_street_reports, link_to(@ward.fix_my_street_url, @ward.fix_my_street_url) if @ward.fix_my_street_url  %>
   </dl>
   <%= render :partial => 'shared/grouped_datapoints', :locals => { :area => @ward } %>

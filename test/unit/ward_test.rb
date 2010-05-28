@@ -12,7 +12,6 @@ class WardTest < ActiveSupport::TestCase
     # should_validate_uniqueness_of :snac_id#, :allow_nil => true
     should_belong_to :council
     should_belong_to :police_team
-    should_belong_to :output_area_classification
     should_validate_presence_of :council_id
     should_have_many :members
     should_have_many :committees
@@ -31,6 +30,10 @@ class WardTest < ActiveSupport::TestCase
       assert Ward.respond_to?(:find_all_existing)
     end
     
+    should "include AreaMethods mixin" do
+      assert Ward.new.respond_to?(:grouped_datapoints)
+    end
+        
     context 'when validating uniqueness of name' do
       setup do
         @council_1 = Factory(:council, :name => "Council 1")
@@ -291,54 +294,6 @@ class WardTest < ActiveSupport::TestCase
 
       should "allow_access_to committees via normalised_title" do
         assert_equal [@old_committee.normalised_title], @ward.committee_normalised_titles
-      end
-    end
-
-    context "when getting grouped datapoints" do
-      setup do
-        @data_grouping = Factory(:dataset_topic_grouping, :title => "demographics")
-        @another_data_grouping = Factory(:dataset_topic_grouping, :title => "foo")
-        @another_ward = Factory(:ward, :name => "another ward", :council => @council)
-
-        @selected_topic_1 = Factory(:dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "b title")
-        @selected_topic_2 = Factory(:dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "a title")
-        @selected_topic_3 = Factory(:dataset_topic, :dataset_topic_grouping => @data_grouping, :title => "c title")
-        @unselected_topic = Factory(:dataset_topic)
-        @selected_dp_1 = Factory(:datapoint, :area => @ward, :dataset_topic => @selected_topic_1, :value => "3.99")
-        @selected_dp_2 = Factory(:datapoint, :area => @ward, :dataset_topic => @selected_topic_2, :value => "4.99")
-        @selected_dp_3 = Factory(:datapoint, :area => @ward, :dataset_topic => @selected_topic_3, :value => "2.99")
-        @unselected_dp = Factory(:datapoint, :area => @ward, :dataset_topic => @unselected_topic)
-        @wrong_ward_dp = Factory(:datapoint, :area => @another_ward, :dataset_topic => @selected_topic_1)
-      end
-
-      should "return hash of arrays" do
-        assert_kind_of Hash, @ward.grouped_datapoints
-        assert_kind_of Array, @ward.grouped_datapoints.values.first
-      end
-
-      should "use data groupings as keys" do
-        assert @ward.grouped_datapoints.keys.include?(@data_grouping)
-      end
-
-      should "return datapoints for topics in groupings" do
-        assert @ward.grouped_datapoints.values.flatten.include?(@selected_dp_1)
-      end
-
-      should "not return datapoints with topics not in groupings" do
-        assert !@ward.grouped_datapoints.values.flatten.include?(@unselected_dp)
-      end
-
-      should "not return datapoints for different areas" do
-        assert !@ward.grouped_datapoints.values.flatten.include?(@wrong_ward_dp)
-      end
-      
-      should "sort by associated topic order by default" do
-        assert_equal @selected_dp_2, @ward.grouped_datapoints[@data_grouping].first
-      end
-
-      should "return sorted if data_grouping has sort_by set" do
-        @data_grouping.update_attribute(:sort_by, "value")
-        assert_equal @selected_dp_3, @ward.grouped_datapoints[@data_grouping].first
       end
     end
 

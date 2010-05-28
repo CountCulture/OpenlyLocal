@@ -9,7 +9,7 @@ class Council < ActiveRecord::Base
     "Metropolitan Borough" => "http://en.wikipedia.org/wiki/Metropolitan_borough"
   }
   include PartyBreakdown
-  include AreaStatisticMethods
+  include AreaMethods
   include TwitterAccountMethods
   has_many :members, :order => "last_name"
   has_many :committees, :order => "title"
@@ -26,7 +26,6 @@ class Council < ActiveRecord::Base
   has_many :meeting_documents, :through => :meetings, :source => :documents, :select => "documents.id, documents.title, documents.precis, documents.url, documents.document_type, documents.document_owner_type, documents.document_owner_id, documents.created_at, documents.updated_at", :order => "documents.created_at DESC", :include => {:document_owner => :committee}
   has_many :past_meeting_documents, :through => :held_meetings, :source => :documents, :order => "documents.created_at DESC"
   has_many :services
-  has_many :datapoints, :as => :area
   has_many :dataset_topics, :through => :datapoints
   has_many :polls, :as => :area  
   belongs_to :parent_authority, :class_name => "Council", :foreign_key => "parent_authority_id"
@@ -36,7 +35,6 @@ class Council < ActiveRecord::Base
   belongs_to :portal_system
   belongs_to :police_force
   belongs_to :pension_fund
-  belongs_to :output_area_classification
   validates_presence_of :name
   validates_uniqueness_of :name
   named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? 
