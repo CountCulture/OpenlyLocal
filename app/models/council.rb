@@ -121,6 +121,11 @@ class Council < ActiveRecord::Base
     self
   end
   
+  # this means we can run party breakdown on council without it having to know about members association
+  def members_for_party_breakdown
+    members.current
+  end
+  
   def dbpedia_resource
     wikipedia_url.gsub(/en\.wikipedia.org\/wiki/, "dbpedia.org/resource") unless wikipedia_url.blank?
   end

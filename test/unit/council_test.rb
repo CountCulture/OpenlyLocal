@@ -102,7 +102,13 @@ class CouncilTest < ActiveSupport::TestCase
       Factory(:committee, :council => @council).members << @member
       assert_equal @member.memberships, @council.memberships
     end
-
+    
+    should 'alias current members as members_for_party_breakdown' do
+      Factory(:member, :council => @council)
+      Factory(:member, :council => @council, :date_left => 5.days.ago)
+      assert_equal @council.members.current, @council.members_for_party_breakdown
+    end
+    
     should "have many held meetings" do
       @committee = Factory(:committee, :council => @council)
       @held_meeting = Factory(:meeting, :council => @council, :committee => @committee)

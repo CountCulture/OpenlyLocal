@@ -1,7 +1,7 @@
 module PartyBreakdown
   
   def party_breakdown
-    party_groups = members.group_by{ |m| m.party.to_s }
+    party_groups = members_for_party_breakdown.group_by{ |m| m.party.to_s }
     return [] if party_groups.size==1 && (party_groups[nil]||party_groups[""]) # i.e. members but no parties
     if party_groups[nil]||party_groups[""]
       party_groups["Not known"] = party_groups[nil].to_a + party_groups[""].to_a

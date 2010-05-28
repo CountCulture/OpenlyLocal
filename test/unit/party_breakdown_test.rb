@@ -1,7 +1,7 @@
 require "test_helper"
 
 class PartyBreakdownTestModel# <ActiveRecord::Base
-  attr_accessor :members
+  attr_accessor :members_for_party_breakdown
   include PartyBreakdown
   # set_table_name "councils"
 end
@@ -16,32 +16,32 @@ class PartyBreakdownTest < ActiveSupport::TestCase
     context "when returning party breakdown" do
 
       should "return empty array if no members" do
-        @test_model.members = [] # members will normally be an AR asociation so will return empty array if no members
+        @test_model.members_for_party_breakdown = [] # members will normally be an AR asociation so will return empty array if no members
         assert_equal [], @test_model.party_breakdown
       end
   
       should "calculate breakdown from members list" do
-        @test_model.members = party_breakdown_array("Conservative" => 3, "Labour" => 6, "Independent" => 1)
+        @test_model.members_for_party_breakdown = party_breakdown_array("Conservative" => 3, "Labour" => 6, "Independent" => 1)
         assert_equal [[Party.new("Labour"), 6], [Party.new("Conservative"), 3],[Party.new("Independent"), 1]], @test_model.party_breakdown
       end
         
       should "return empty array if no party details for any members" do
-        @test_model.members = party_breakdown_array(nil => 3)
+        @test_model.members_for_party_breakdown = party_breakdown_array(nil => 3)
         assert_equal [], @test_model.party_breakdown
       end
         
       should "return 'not known' for members with no party" do
-        @test_model.members = party_breakdown_array("Conservative" => 3, nil => 1)
+        @test_model.members_for_party_breakdown = party_breakdown_array("Conservative" => 3, nil => 1)
         assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 1]], @test_model.party_breakdown
       end
         
       should "return 'not known' for members with blank party" do
-        @test_model.members = party_breakdown_array("Conservative" => 3, "" => 1)
+        @test_model.members_for_party_breakdown = party_breakdown_array("Conservative" => 3, "" => 1)
         assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 1]], @test_model.party_breakdown
       end
         
       should "return 'not known' for members with blank and nil parties" do
-        @test_model.members = party_breakdown_array("Conservative" => 3, nil => 1, "" => 1)
+        @test_model.members_for_party_breakdown = party_breakdown_array("Conservative" => 3, nil => 1, "" => 1)
         assert_equal [[Party.new("Conservative"), 3],[Party.new("Not known"), 2]], @test_model.party_breakdown
       end
     end
