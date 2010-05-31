@@ -9,16 +9,23 @@ require 'test_helper'
 
 class OsCoordsUtilitiesTest < Test::Unit::TestCase
   OriginalNameAndConvertedCoords = [ 
-    [372533.0, 188828.0], [51.597620, -2.397938]
+    [651409.903, 313177.27], [52.657570301933156, 1.717921580645096], [52.65797559953351, 1.7160665447977752]
   ]
   
-  context "The OsCoordsUtilities module" do
+  context "The OsCoordsNewUtilities module" do
+
+    should "convert OS northings and eastings to OSGB36 lat, long" do
+      os_coords = OriginalNameAndConvertedCoords.first
+      osgb36_lat_long = OsCoordsNewUtilities.ne_to_osgb36(os_coords.first, os_coords.last)
+      assert_in_delta OriginalNameAndConvertedCoords[1][0], osgb36_lat_long[0], 0.000001
+      assert_in_delta OriginalNameAndConvertedCoords[1][1], osgb36_lat_long[1], 0.000001
+    end
 
     should "convert OS northings and eastings to WGS84 lat, long" do
       os_coords = OriginalNameAndConvertedCoords.first
-      wgs84_lat_long = OsCoordsUtilities.convert_os_to_wgs84(os_coords.first, os_coords.last)
-      assert_in_delta OriginalNameAndConvertedCoords.last[0], wgs84_lat_long.first, 0.001
-      assert_in_delta OriginalNameAndConvertedCoords.last[1], wgs84_lat_long.last, 0.001
+      wgs84_lat_long = OsCoordsNewUtilities.convert_os_to_wgs84(os_coords.first, os_coords.last)
+      assert_in_delta OriginalNameAndConvertedCoords.last[0], wgs84_lat_long[0], 0.000001
+      assert_in_delta OriginalNameAndConvertedCoords.last[1], wgs84_lat_long[1], 0.000001
     end
 
   end

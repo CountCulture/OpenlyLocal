@@ -2,6 +2,7 @@ class WardsController < ApplicationController
   before_filter :authenticate, :except => [:show, :index]
   before_filter :find_ward, :except => [:index]
   before_filter :linked_data_available, :only => :show
+  before_filter :enable_google_maps, :only => :show
   helper :datapoints
   caches_action :show
   

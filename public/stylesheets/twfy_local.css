@@ -439,6 +439,11 @@ a.new_scraper_link {
 	width: 630px;
 }
 */
+#ward_map, #ward_map #map_canvas {
+	height:300px;
+	width:300px;
+}
+
 /*Dataset specific formatting*/
 /*NB Much of this can be deleted when move to new style datasets is completed*/
 #statistics {
@@ -551,17 +556,8 @@ p.crime_level {
 .crime_level.average { color:#036;}
 .crime_level.below_average { color:#628F68;}
 .crime_level.low { color:#277F33;}
-/*Hyperlocal formatting*/
-#new_hyperlocal_site label {
-	color:#666;
-}
-#new_hyperlocal_site .required label {
-	color:inherit;
-}
-#new_hyperlocal_site .required label:before {
-	content:"*";
-	color:#8a1f11;
-}
+
+/*Map formatting*/
 .map_outer {
 	border:1px solid #999;
 	float:right;
@@ -574,6 +570,18 @@ p.crime_level {
 #map_canvas {
 	height:500px;
 	width:450px;
+
+/*Hyperlocal formatting*/
+#new_hyperlocal_site label {
+	color:#666;
+}
+#new_hyperlocal_site .required label {
+	color:inherit;
+}
+#new_hyperlocal_site .required label:before {
+	content:"*";
+	color:#8a1f11;
+}
 }
 #hyperlocal_list_map, #hyperlocal_list_map #map_canvas {
 	height:650px;

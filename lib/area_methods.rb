@@ -28,11 +28,12 @@ module AreaMethods
     receiver.send :include, InstanceMethods
     receiver.belongs_to :output_area_classification
     receiver.has_many :datapoints, :as => :area
+    receiver.has_one :boundary, :as => :area
     receiver.named_scope :restrict_to_oac, lambda { |options| options[:output_area_classification_id] ? 
         { :conditions => {:output_area_classification_id  => options[:output_area_classification_id] } }: 
         { } 
       }
-    # receiver.delegate :in_full, :to => "address", :prefix => true, :allow_nil => true
+    receiver.delegate :hectares, :to => "boundary", :allow_nil => true
   end
 
 end

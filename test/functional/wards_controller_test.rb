@@ -431,6 +431,7 @@ class WardsControllerTest < ActionController::TestCase
       should "not show list of committees" do
         assert_select "#committees", false
       end
+      
       should "not show list of meetings" do
         assert_select "#meetings", false
       end
@@ -441,6 +442,10 @@ class WardsControllerTest < ActionController::TestCase
 
       should "not show statistics" do
         assert_select "#grouped_datapoints", false
+      end
+
+      should "show google maps" do
+        assert_select 'div#ward_map', false
       end
     end
 
@@ -559,20 +564,22 @@ class WardsControllerTest < ActionController::TestCase
           assert_select "#grouped_datapoints .religion.graphed_datapoints"
         end
       end
+      
+    end
 
-      # should 'show crime area' do
-      #   assert_select '#crime_area'
-      # end
-      # 
-      # should 'show crime stats in area' do
-      #   assert_select '#crime_area .crime_level', /below average/i
-      #   assert_select '#crime_area #crime_rates'
-      # end
-      # 
-      # should 'show comparison with force levels' do
-      #   assert_select '#crime_rates .force_value', '2.5'
-      # end
+    context "when ward has boundary" do
+      setup do
+        Factory(:boundary, :area => @ward)
+        get :show, :id => @ward.id
+      end
 
+      should "enable google maps" do
+        assert assigns(:enable_google_maps)
+      end
+
+      should "show google maps" do
+        assert_select 'div#ward_map'
+      end
     end
 
     context "with xml request" do

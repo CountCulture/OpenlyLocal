@@ -15,8 +15,19 @@ class AreaMethodsTest < ActiveSupport::TestCase
     end
     
     should_belong_to :output_area_classification
-    should_have_many :datapoints
+    should_have_one :boundary
      
+    context 'and boundary association' do
+      setup do
+        @boundary = Factory(:boundary, :area => @test_area)
+      end
+      
+      should 'be polymorphic as area' do
+        assert_equal @test_area, @boundary.area
+      end
+    end
+    
+    should_have_many :datapoints
     context 'and datapoints association' do
       setup do
         @datapoint = Factory(:datapoint, :area => @test_area)
@@ -24,6 +35,17 @@ class AreaMethodsTest < ActiveSupport::TestCase
       
       should 'be polymorphic as area' do
         assert_equal @test_area, @datapoint.area
+      end
+    end
+    
+    context 'when delegating hectares to boundary' do
+      should 'return boundary hectares from associated boundary' do
+        Factory(:boundary, :area => @test_area, :hectares => 42.5)
+        assert_equal 42.5, @test_area.hectares
+      end
+
+      should 'return nil when no associated boundary' do
+        assert_nil @test_area.hectares
       end
     end
     

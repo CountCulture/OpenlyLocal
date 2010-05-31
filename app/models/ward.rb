@@ -8,7 +8,6 @@ class Ward < ActiveRecord::Base
   has_many :meetings, :through => :committees
   has_many :dataset_topics, :through => :datapoints
   has_many :polls, :as => :area, :order => "date_held DESC"
-  has_one  :boundary, :as => :area
   named_scope :defunkt, :conditions => { :defunkt => true }
   named_scope :current, :conditions => { :defunkt => false }
   allow_access_to :members, :via => :uid

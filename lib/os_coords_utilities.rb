@@ -22,8 +22,8 @@ module OsCoordsUtilities
     # input metres, output radians
     north = north.to_f
     east = east.to_f
-    e0 = 400000           # easting of false origin
-    n0 = -100000          # northing of false origin
+    e0 = 400000.0           # easting of false origin
+    n0 = -100000.0          # northing of false origin
     f0 = 0.9996012717     # OSI scale factor on central meridian
     lam0 = -0.034906585039886591  # OSI false east in radians
     phi0 = 0.85521133347722145    # OSI false north in radians
@@ -114,7 +114,7 @@ module OsCoordsUtilities
   end
   
   def to_degrees(n)
-    n / (Math::PI / 180)
+    n * (180.0/ Math::PI)
   end
   
   def marc(bf0, n, phi0, phi)
