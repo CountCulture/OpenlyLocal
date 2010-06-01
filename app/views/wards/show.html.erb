@@ -4,35 +4,25 @@
 	  function initMap() {
 	    if (GBrowserIsCompatible()) {
 	      var map = new GMap2(document.getElementById("map_canvas"));
-	      // var lat = <%= (@ward.boundary.boundary_line.envelope.center.lat).to_f %>;
-	      // var lng = <%=  (@ward.boundary.boundary_line.envelope.center.lng).to_f %>;
-	      // var first_view = true;
-      
+
 	      map.addControl(new GSmallMapControl());
 	      map.addControl(new GMapTypeControl());
 	
-      	var boundary_line = <%= @ward.boundary.boundary_line.to_json %>;
+      	var boundary_line_coords = <%= @ward.boundary.boundary_line_coordinates.to_json %>;
       	var envelope = <%= @ward.boundary.boundary_line.envelope.to_json %>;
-				var raw_polygons = boundary_line.geometries[0].rings;
 				var polygons = [];
-				for (var i = raw_polygons.length - 1; i >= 0; i--){
+				for (var i = boundary_line_coords.length - 1; i >= 0; i--){
 					var polygon_points = [];
-					for (var j = raw_polygons[i].points.length - 1; j >= 0; j--){
-						polygon_points.push(new GLatLng(raw_polygons[i].points[j].y, raw_polygons[i].points[j].x));
+					for (var j = boundary_line_coords[i].length - 1; j >= 0; j--){
+						polygon_points.push(new GLatLng(boundary_line_coords[i][j][0], boundary_line_coords[i][j][1]));
 					};
 	        var polygon = new GPolygon(polygon_points, "#f33f00", 2, 1, "#ff0000", 0.2);
 					polygons.push(polygon);
 					map.addOverlay(polygon);    
 				};
-				// console.log(envelope);
-				// for (var i = first_polygon.points.length - 1; i >= 0; i--){
-				// 	polygon_points.push(new GLatLng(first_polygon.points[i].y, first_polygon.points[i].x));
-				// };
-				// var map_center = new GLatLng(envelope.center.y, envelope.center.x)
+				console.log(polygons)
 				var map_bounds = new GLatLngBounds(new GLatLng(envelope.lower_corner.y, envelope.lower_corner.x), new GLatLng(envelope.upper_corner.y, envelope.upper_corner.x))
-				// console.log(map_bounds)
 				map.setCenter(map_bounds.getCenter(), map.getBoundsZoomLevel(map_bounds));
-	      // drawCircle(map, center);
       
 	    }
 	  }

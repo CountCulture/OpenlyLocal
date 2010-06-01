@@ -50,27 +50,30 @@ task :import_ward_boundaries => :environment do
   shpfile = File.join(RAILS_ROOT, "db/boundary_line/district_borough_unitary_ward_region")
   i=0
   GeoRuby::Shp4r::ShpFile.open(shpfile) do |shp|
-          shp.each do |shape|
-            # break if i>3
-            geom = shape.geometry #a GeoRuby SimpleFeature
-            wsg84_polygons = geom.geometries.collect do |polygon|
-              wgs84_lat_long_groupings = polygon.rings.collect do |ring|
-                ring.points.collect{|pt| OsCoordsNewUtilities.convert_os_to_wgs84(pt.x,pt.y).reverse } # when creating from collections of coords supplied as x,y (where x is long, y lat)
-              end
-              Polygon.from_coordinates(wgs84_lat_long_groupings)
-            end
-            boundary_line = GeoRuby::SimpleFeatures::MultiPolygon.from_polygons(wsg84_polygons)
-            
-            att_data = shape.data #a Hash
-            # p att_data
-            if !att_data['CODE'].blank? && ward = Ward.find_by_snac_id(att_data['CODE'])
-              ward.create_boundary(:boundary_line => boundary_line, :hectares => att_data['HECTARES'])
-              puts "Udated ward: #{ward.name} with boundary"
-            else
-              puts "****Could not find ward for: #{att_data.inspect}"
-            end
-            # i += 1
-          end
+    shp.each do |shape|
+      # break if i>3
+      geom = shape.geometry #a GeoRuby SimpleFeature
+      next unless (geom.geometries.size > 1) || (geom.geometries.first.rings.size > 1)
+      puts "#{geom.geometries.size} Geometries, #{geom.geometries.first.rings.size} rings"
+      # wsg84_polygons = geom.geometries.collect do |polygon|
+      wgs84_lat_long_groupings = geom.geometries.first.rings.collect do |ring|
+        ring.points.collect{|pt| OsCoordsNewUtilities.convert_os_to_wgs84(pt.x,pt.y).reverse } # when creating from collections of coords supplied as x,y (where x is long, y lat)
+      end
+      wsg84_polygon = Polygon.from_coordinates(wgs84_lat_long_groupings)
+      # boundary_line = GeoRuby::SimpleFeatures::MultiPolygon.from_polygons(wsg84_polygons)
+      att_data = shape.data #a Hash
+      if !att_data['CODE'].blank? && ward = Ward.find_by_snac_id(att_data['CODE'])
+        begin
+          ward.create_boundary(:boundary_line => wsg84_polygon, :hectares => att_data['HECTARES'])
+          puts "Udated ward: #{ward.name} with boundary"
+        rescue Exception => e
+          puts "Error saving boundary: #{e.inspect}"
+        end
+      else
+        puts "****Could not find ward for: #{att_data.inspect}"
+      end
+      # i += 1
+    end
   end
   # postcode_files = Dir.new(File.join(RAILS_ROOT, 'db', 'csv_data', 'postcodes')).entries[2..-1]
 end

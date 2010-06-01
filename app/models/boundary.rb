@@ -15,4 +15,10 @@ class Boundary < ActiveRecord::Base
   def centrepoint
     boundary_line.envelope.center
   end
+  
+  def boundary_line_coordinates
+    boundary_line.rings.collect do |ring|
+      ring.collect{ |point| [point.lat, point.lng] }
+    end
+  end
 end
