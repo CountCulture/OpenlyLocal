@@ -307,7 +307,13 @@ Factory.define :contract do |f|
 end
 
 Factory.define :supplier do |f|
+  f.sequence(:name) { |n| "Supplier #{n}" }
   f.association :organisation, :factory => :police_force 
+end
+
+Factory.define :financial_transaction do |f|
+  # f.association :organisation, :factory => :police_force 
+  f.association :supplier
 end
 
 Factory.define :output_area_classification do |f|

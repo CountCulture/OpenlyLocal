@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100610153725) do
+ActiveRecord::Schema.define(:version => 20100610171621) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -293,6 +293,22 @@ ActiveRecord::Schema.define(:version => 20100610153725) do
 
   add_index "feed_entries", ["feed_owner_id", "feed_owner_type"], :name => "index_feed_entries_on_feed_owner_id_and_feed_owner_type"
   add_index "feed_entries", ["guid"], :name => "index_feed_entries_on_guid"
+
+  create_table "financial_transactions", :force => true do |t|
+    t.column "description", :text
+    t.column "uid", :string
+    t.column "supplier_id", :integer
+    t.column "date", :date
+    t.column "department_name", :string
+    t.column "service", :string
+    t.column "cost_centre", :string
+    t.column "source_url", :text
+    t.column "value", :float
+    t.column "transaction_type", :string
+    t.column "date_fuzziness", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "hyperlocal_groups", :force => true do |t|
     t.column "title", :string

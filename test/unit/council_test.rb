@@ -31,6 +31,8 @@ class CouncilTest < ActiveSupport::TestCase
     should_belong_to :pension_fund
     should_have_many :datapoints
     should_have_many :dataset_topics, :through => :datapoints
+    should_have_many :suppliers
+    should_have_many :financial_transactions, :through => :suppliers
     should_have_db_column :notes
     should_have_db_column :wikipedia_url
     should_have_db_column :ons_url
