@@ -47,4 +47,15 @@ class SupplierTest < ActiveSupport::TestCase
     end
     
   end
+  
+  context "An instance of the Supplier class" do
+    setup do
+      @supplier = Factory(:supplier)
+    end
+
+    should "alias name as title" do
+      assert_equal @supplier.name, @supplier.title
+    end
+
+  end
 end

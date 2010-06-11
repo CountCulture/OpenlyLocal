@@ -8,7 +8,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       @financial_transaction = Factory(:financial_transaction)
     end
     
-    should_validate_presence_of :supplier_id
+    should_validate_presence_of :supplier_id, :value, :date
     should_belong_to :supplier
     
     should_have_db_columns :value, 

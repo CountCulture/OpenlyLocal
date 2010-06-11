@@ -312,8 +312,9 @@ Factory.define :supplier do |f|
 end
 
 Factory.define :financial_transaction do |f|
-  # f.association :organisation, :factory => :police_force 
+  f.sequence(:date) {|n| n.days.ago}
   f.association :supplier
+  f.sequence(:value) {|n| 4.2*n}
 end
 
 Factory.define :output_area_classification do |f|

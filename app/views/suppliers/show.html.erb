@@ -1,0 +1,17 @@
+<h1><%= @title %></h1>
+
+<table class='statistics' id='financial_transactions'>
+  <%= content_tag :caption, "Money paid to this supplier by #{link_for @organisation }" %>
+  <tr><th>Date</th><th>Department</th><th>Category</th><th class='value'>Value</th></tr>
+  <%- @supplier.financial_transactions.each do |transaction| -%>
+    <tr class="transaction">
+      <td><%= transaction.date.to_s(:event_date) %></td>
+      <td><%= transaction.department_name||'not provided' %></td>
+      <td><%= transaction.service||'not provided' %></td>
+      <td class='value'>£<%= number_with_precision(transaction.value, :precision => 2, :delimiter => ',') %></td>
+    </tr>
+  <%- end -%>
+</table>
+<div class='source attribution'>
+  Source: <%#= link_to @poll.source, @poll.source, :class => 'external' %>
+</div>

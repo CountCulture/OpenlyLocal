@@ -1,6 +1,6 @@
 class FinancialTransaction < ActiveRecord::Base
   belongs_to :supplier
-  validates_presence_of :supplier_id
+  validates_presence_of :supplier_id, :value, :date
   
   # strips out commas and pound signs
   def value=(raw_value)
