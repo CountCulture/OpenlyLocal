@@ -1,21 +1,30 @@
-<h1><%= @title %></h1>
-<%- open_data_councils, no_open_data_councils = @councils.partition{ |c| c.open_data_url? } -%>
-<div id='open_data_councils'>
-  <h2>Councils with open data</h2>
-  <%- if open_data_councils.blank? -%>
-    <p class="alert">No councils found</p>
-  <%- else -%>
-    <%= render :partial => 'council', :collection => open_data_councils %>
-  <%- end -%>
-</div>
 
-<div id='no_open_data_councils'>
-  <h2>Councils without open data</h2>
-  <%- if no_open_data_councils.blank? -%>
-    <p class="alert">No councils found</p>
-  <%- else -%>
-    <%= render :partial => 'council', :collection => no_open_data_councils %>
-  <%- end -%>
-</div>
+<div id="open_data_dashboard">
+  <%- open_data_councils, no_open_data_councils = @councils.partition{ |c| c.open_data_url? } -%>
+  <h1><%= @title %></h1>
+  <div id="statistics">
+    <%= image_tag(Gchart.pie(:data => [open_data_councils.size, no_open_data_councils.size], :legend => ["Open Data", "No Open Data"], :bar_colors => ['003366', '8a1f11'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "Open Data dashboard graph") %>
+    <div class='in_words'>
+      <span class='value open'><%= open_data_councils.size %></span> out of <span class='value not_open'><%= open_data_councils.size.to_i + no_open_data_councils.size %></span> <span class='description'>local authorities publish open data</span>
+    </div>
+  </div>
+  <div id='open_data_councils'>
+    <h2>Councils with open data</h2>
+    <%- if open_data_councils.blank? -%>
+      <p class="alert">No councils found</p>
+    <%- else -%>
+      <%= render :partial => 'council', :collection => open_data_councils %>
+    <%- end -%>
+  </div>
 
-<%= render :partial => '/shared/api_info' %>
+  <div id='no_open_data_councils'>
+    <h2>Councils without open data</h2>
+    <%- if no_open_data_councils.blank? -%>
+      <p class="alert">No councils found</p>
+    <%- else -%>
+      <%= render :partial => 'council', :collection => no_open_data_councils %>
+    <%- end -%>
+  </div>
+
+  <%= render :partial => '/shared/api_info' %>
+</div>

@@ -354,8 +354,27 @@ body.councils .area a {
 }
 .open_data_link {
 	background: url(/images/od_80x15_blue.png) no-repeat;
-	padding-left: 82px;
+	padding: 1px 0px 1px 82px;
 }
+#open_data_dashboard #statistics {
+	width:auto;
+	border: 1px solid #ddd;
+	background: #eee;
+	padding: 6px;
+	}
+#open_data_dashboard .chart {float:left;}
+#open_data_dashboard .in_words {
+	float:left;
+	font-size: 2em;
+	width: 400px;
+	margin-left: 1em;}
+#open_data_dashboard .in_words .value {font-size: 4em;
+	line-height: 1em;}
+#open_data_dashboard .in_words .value.open {color: #036;}
+#open_data_dashboard .in_words .value.not_open {color: #8a1f11;}
+#open_data_dashboard .in_words .description {
+	line-height: 2em;
+	display:block;}
 a.output_area_classification_link {color:#888;}
 /*Meeting formatting*/
 .past {color:#515151;}
