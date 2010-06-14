@@ -2,8 +2,8 @@ require 'test_helper'
 
 class MemberTest < ActiveSupport::TestCase
   should_validate_presence_of :last_name, :url, :council_id
-  should_belong_to :council
-  should_belong_to :ward
+  should belong_to :council
+  should belong_to :ward
   should_have_many :memberships
   should_have_many :candidacies
   should_have_many :committees, :through => :memberships

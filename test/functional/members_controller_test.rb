@@ -23,7 +23,7 @@ class MembersControllerTest < ActionController::TestCase
       
       should_assign_to(:members) { [@member] } # current members
       should_assign_to(:council) { @council }
-      should_respond_with :success
+      should respond_with :success
       
       should "show title" do
         assert_select "title", /current members/i
@@ -50,7 +50,7 @@ class MembersControllerTest < ActionController::TestCase
       
       should_assign_to(:members) { [@member, @ex_member] } # current and ex members
       should_assign_to(:council) { @council }
-      should_respond_with :success
+      should respond_with :success
       
       should "show title" do
         assert_select "title", /current and former members/i
@@ -73,9 +73,9 @@ class MembersControllerTest < ActionController::TestCase
 
       should_assign_to(:members) { [@member] } # current members
       should_assign_to(:council) { @council }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
 
       should "include members" do
         assert_select "members>member>id"
@@ -101,9 +101,9 @@ class MembersControllerTest < ActionController::TestCase
 
       should_assign_to(:members) { [@member] } # current members
       should_assign_to(:council) { @council }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
 
       should "include council" do
         assert_match /council.+id/, @response.body
@@ -128,7 +128,7 @@ class MembersControllerTest < ActionController::TestCase
         end
       
         should_assign_to(:members) { [@member, @ex_member] } # current members
-        should_respond_with :success
+        should respond_with :success
       
         should "show title" do
           assert_select "title", /current members/i
@@ -194,9 +194,9 @@ class MembersControllerTest < ActionController::TestCase
             get :index, :format => "json"
           end
 
-          should_respond_with :success
+          should respond_with :success
           should_render_without_layout
-          should_respond_with_content_type 'application/json'
+          should respond_with_content_type 'application/json'
 
           should "include council" do
             assert_match /council.+id/, @response.body
@@ -230,9 +230,9 @@ class MembersControllerTest < ActionController::TestCase
        should_assign_to(:council) { @council }
        should_assign_to :committees
        should_assign_to(:forthcoming_meetings) { [@forthcoming_meeting] }
-       should_respond_with :success
-       should_render_template :show
-       should_respond_with_content_type 'text/html'
+       should respond_with :success
+       should render_template :show
+       should respond_with_content_type 'text/html'
        should "show member name in title" do
          assert_select "title", /#{@member.full_name}/
        end
@@ -279,9 +279,9 @@ class MembersControllerTest < ActionController::TestCase
        end
 
        should_assign_to(:member) { @member }
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'application/xml'
+       should respond_with_content_type 'application/xml'
 
        should "include committees" do
          assert_select "member>committees>committee"
@@ -302,9 +302,9 @@ class MembersControllerTest < ActionController::TestCase
        end
 
        should_assign_to(:member) { @member }
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'application/json'
+       should respond_with_content_type 'application/json'
        should "include committees" do
          assert_match /committees.+committee/, @response.body
        end
@@ -322,9 +322,9 @@ class MembersControllerTest < ActionController::TestCase
        end
 
        should_assign_to(:member) { @member }
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'text/calendar'
+       should respond_with_content_type 'text/calendar'
      end
      
      context "with rdf request" do
@@ -335,9 +335,9 @@ class MembersControllerTest < ActionController::TestCase
          end
 
          should_assign_to(:member) { @member }
-         should_respond_with :success
+         should respond_with :success
          should_render_without_layout
-         should_respond_with_content_type 'application/rdf+xml'
+         should respond_with_content_type 'application/rdf+xml'
 
          should "show rdf headers" do
            assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
@@ -393,9 +393,9 @@ class MembersControllerTest < ActionController::TestCase
          end
 
          should_assign_to(:member) { @member }
-         should_respond_with :success
+         should respond_with :success
          should_render_without_layout
-         should_respond_with_content_type 'application/rdf+xml'
+         should respond_with_content_type 'application/rdf+xml'
 
          should "not show personal info for member without info" do
            assert_match /rdf:Description.+foaf:name.+#{@member.full_name}/m, @response.body
@@ -421,7 +421,7 @@ class MembersControllerTest < ActionController::TestCase
        get :edit, :id => @member.id
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on get to :edit a scraper" do
@@ -431,9 +431,9 @@ class MembersControllerTest < ActionController::TestCase
      end
 
      should_assign_to :member
-     should_respond_with :success
-     should_render_template :edit
-     should_not_set_the_flash
+     should respond_with :success
+     should render_template :edit
+     should_not set_the_flash
      should "display a form" do
       assert_select "form#edit_member_#{@member.id}"
      end
@@ -452,7 +452,7 @@ class MembersControllerTest < ActionController::TestCase
                                  :name => "New name"}}
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on PUT to :update" do
@@ -478,7 +478,7 @@ class MembersControllerTest < ActionController::TestCase
        delete :destroy, :id => @member.id
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on delete to :destroy a member" do

@@ -9,8 +9,8 @@ class MeetingTest < ActiveSupport::TestCase
       @meeting = Factory(:meeting, :committee => @committee, :council => @council)
    end
 
-    should_belong_to :committee
-    should_belong_to :council # think about meeting should belong to council through committee
+    should belong_to :committee
+    should belong_to :council # think about meeting should belong to council through committee
     should_validate_presence_of :date_held
     should_validate_presence_of :committee_id
     should_validate_presence_of :council_id

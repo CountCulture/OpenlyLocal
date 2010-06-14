@@ -7,8 +7,8 @@ class OldDatapointTest < ActiveSupport::TestCase
     should_have_db_columns :data
     should_validate_presence_of :data, :old_dataset_id, :council_id
     
-    should_belong_to :council
-    should_belong_to :old_dataset
+    should belong_to :council
+    should belong_to :old_dataset
   end
   
   context "An OldDatapoint instance" do

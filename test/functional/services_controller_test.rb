@@ -18,8 +18,8 @@ class ServicesControllerTest < ActionController::TestCase
       
       should_assign_to :services
       should_assign_to :council
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
      
       should "show services in title" do
         assert_select "title", /links to services/i
@@ -63,8 +63,8 @@ class ServicesControllerTest < ActionController::TestCase
       
       should_assign_to :ldg_service
       should_assign_to :services
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       
       should "show ldg_service in title" do
         assert_select "title", /#{@ldg_service.title}/
@@ -89,9 +89,9 @@ class ServicesControllerTest < ActionController::TestCase
       
       should_assign_to :services
       should_assign_to :council
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       
       should "show services for council" do
         assert_select "services>service>title", @service.title
@@ -107,9 +107,9 @@ class ServicesControllerTest < ActionController::TestCase
       
       should_assign_to :services
       should_assign_to :council
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
       
       should "show services for council" do
         assert_match /service.+title.+#{@service.title}/, @response.body
@@ -124,8 +124,8 @@ class ServicesControllerTest < ActionController::TestCase
       
       should_assign_to(:services)
       should_assign_to :council
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
      
       should "show term in title" do
         assert_select "title", /foo/i
@@ -150,7 +150,7 @@ class ServicesControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id
       end
       should_assign_to :council
-      should_respond_with :success
+      should respond_with :success
       should "show message" do
         assert_select "p", /no services found/i
       end

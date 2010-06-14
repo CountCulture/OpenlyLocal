@@ -26,8 +26,8 @@ class DatapointsControllerTest < ActionController::TestCase
 
       should_assign_to(:datapoints) { [@datapoint_for_another_ward, @datapoint] }
       should_assign_to(:area) { @ward }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "show details for datapoint" do
         assert_select 'h1', /#{@datapoint.dataset_topic.title}/
@@ -82,8 +82,8 @@ class DatapointsControllerTest < ActionController::TestCase
 
       should_assign_to(:datapoints) { [@council_datapoint, @related_council_datapoint] }
       should_assign_to(:area) { @council }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "show details for datapoint" do
         assert_select 'h1', /#{@council_datapoint.dataset_topic.title}/

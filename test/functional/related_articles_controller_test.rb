@@ -7,8 +7,8 @@ class RelatedArticlesControllerTest < ActionController::TestCase
       get :new
     end
 
-    should_respond_with :success
-    should_render_template :new
+    should respond_with :success
+    should render_template :new
     should_render_with_layout
     
     should_assign_to :related_article

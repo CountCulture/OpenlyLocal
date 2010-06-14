@@ -15,8 +15,8 @@ class PoliceForcesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:police_forces) { PoliceForce.find(:all)}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "list police forces" do
         assert_select "li a", @police_force.name
       end
@@ -42,9 +42,9 @@ class PoliceForcesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:police_forces) { PoliceForce.find(:all) }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       should "not include npia_id" do
         assert_no_match /<npia-id/, @response.body
       end
@@ -56,9 +56,9 @@ class PoliceForcesControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:police_forces) { PoliceForce.find(:all) }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
     end
     
   end  
@@ -71,8 +71,8 @@ class PoliceForcesControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:police_force) { @police_force}
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     should_render_with_layout
   
     should "list all associated councils" do
@@ -111,9 +111,9 @@ class PoliceForcesControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:police_force) { @police_force}
-    should_respond_with :success
+    should respond_with :success
     should_render_without_layout
-    should_respond_with_content_type 'application/xml'
+    should respond_with_content_type 'application/xml'
     
     should "include attributes in response" do
       assert_select "police-force>address"
@@ -144,9 +144,9 @@ class PoliceForcesControllerTest < ActionController::TestCase
     end
    
     should_assign_to(:police_force) { @police_force}
-    should_respond_with :success
+    should respond_with :success
     should_render_without_layout
-    should_respond_with_content_type 'application/rdf+xml'
+    should respond_with_content_type 'application/rdf+xml'
    
     should "show rdf headers" do
       assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
@@ -191,9 +191,9 @@ class PoliceForcesControllerTest < ActionController::TestCase
        get :show, :id => @police_force.id, :format => "json"
      end
   
-     should_respond_with :success
+     should respond_with :success
      should_render_without_layout
-     should_respond_with_content_type 'application/json'
+     should respond_with_content_type 'application/json'
      
      should "include attributes in response" do
        assert_match /police_force\":.+address\":/, @response.body
@@ -218,7 +218,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
       get :new
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :new" do
@@ -228,8 +228,8 @@ class PoliceForcesControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:police_force)
-    should_respond_with :success
-    should_render_template :new
+    should respond_with :success
+    should render_template :new
   
     should "show form" do
       assert_select "form#new_police_force"
@@ -244,7 +244,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
          post :create, :police_force => {:name => "New Force", :url => "http:://new_force.com"}
        end
 
-       should_respond_with 401
+       should respond_with 401
      end
 
      context "with valid params" do
@@ -268,8 +268,8 @@ class PoliceForcesControllerTest < ActionController::TestCase
      
        should_not_change "PoliceForce.count"
        should_assign_to :police_force
-       should_render_template :new
-       should_not_set_the_flash
+       should render_template :new
+       should_not set_the_flash
      end
   
    end  
@@ -280,7 +280,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
        get :edit, :id => @police_force
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on GET to :edit with existing record" do
@@ -290,8 +290,8 @@ class PoliceForcesControllerTest < ActionController::TestCase
      end
   
      should_assign_to(:police_force)
-     should_respond_with :success
-     should_render_template :edit
+     should respond_with :success
+     should render_template :edit
   
      should "show form" do
        assert_select "form#edit_police_force_#{@police_force.id}"
@@ -305,7 +305,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
         put :update, :id => @police_force.id, :police_force => { :name => "New Name", :url => "http://new.name.com"}
       end
 
-      should_respond_with 401
+      should respond_with 401
     end
     
     context "with valid params" do
@@ -332,8 +332,8 @@ class PoliceForcesControllerTest < ActionController::TestCase
       should_not_change "PoliceForce.count"
       should_not_change "@police_force.reload.name"
       should_assign_to :police_force
-      should_render_template :edit
-      should_not_set_the_flash
+      should render_template :edit
+      should_not set_the_flash
     end
   
   end  

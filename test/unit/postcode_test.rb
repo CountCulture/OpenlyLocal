@@ -12,10 +12,10 @@ class PostcodeTest < ActiveSupport::TestCase
     should_validate_presence_of :code, :lat, :lng
     should_validate_uniqueness_of :code
     should_have_db_columns :quality, :lat, :lng, :country, :nhs_region, :nhs_health_authority, :county_id, :council_id, :ward_id
-    should_belong_to :ward
-    should_belong_to :council
-    should_belong_to :county
-    should_belong_to :crime_area
+    should belong_to :ward
+    should belong_to :council
+    should belong_to :county
+    should belong_to :crime_area
     
     should "act as mappable" do
       assert Postcode.respond_to?(:find_closest)

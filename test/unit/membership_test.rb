@@ -8,10 +8,10 @@ class MembershipTest < ActiveSupport::TestCase
     end
 
     should_validate_presence_of :member_id, :committee_id
-    should_belong_to :committee
-    # should_belong_to :council
-    should_belong_to :member
-    # should_belong_to :uid_member
+    should belong_to :committee
+    # should belong_to :council
+    should belong_to :member
+    # should belong_to :uid_member
     
   end
 end

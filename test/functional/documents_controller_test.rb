@@ -23,9 +23,9 @@ class DocumentsControllerTest < ActionController::TestCase
   
       should_assign_to(:council) { @council } 
       should_assign_to(:documents) { [@document, @another_document] }
-      should_respond_with :success
-      should_render_template :index
-      should_respond_with_content_type 'text/html'
+      should respond_with :success
+      should render_template :index
+      should respond_with_content_type 'text/html'
       
       should "list council documents" do
         assert_select "#documents ul a", @document.extended_title
@@ -53,7 +53,7 @@ class DocumentsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:documents) { [@another_document] }
-      should_respond_with :success
+      should respond_with :success
       
       should "have title" do
         assert_select "title", /Committee documents with 'foobar'/
@@ -68,9 +68,9 @@ class DocumentsControllerTest < ActionController::TestCase
       
       should_assign_to(:council) { @council } 
       should_assign_to(:documents) { [@document, @another_document] }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       should "return basic attributes only" do
         assert_select "document>title"
         assert_select "document>url"
@@ -86,9 +86,9 @@ class DocumentsControllerTest < ActionController::TestCase
       
       should_assign_to(:council) { @council } 
       should_assign_to(:documents) { [@document, @another_document] }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
     end
     
     context "with rss requested" do
@@ -98,9 +98,9 @@ class DocumentsControllerTest < ActionController::TestCase
       
       should_assign_to(:council) { @council } 
       should_assign_to(:documents) { [@document, @another_document] }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rss+xml'
+      should respond_with_content_type 'application/rss+xml'
       should "have title " do
         assert_select "title", "#{@council.title}: Committee documents"
       end
@@ -120,8 +120,8 @@ class DocumentsControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:document) { @document}
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     should_assign_to(:council) { @council }
   
     should "show document title in title" do
@@ -143,9 +143,9 @@ class DocumentsControllerTest < ActionController::TestCase
     end
     
     should_assign_to(:document) { @document}
-    should_respond_with :success
+    should respond_with :success
     should_render_without_layout
-    should_respond_with_content_type 'application/xml'
+    should respond_with_content_type 'application/xml'
     should "return full attributes only" do
       assert_select "document>title"
       assert_select "document>url"
@@ -160,9 +160,9 @@ class DocumentsControllerTest < ActionController::TestCase
     end
     
     should_assign_to(:document) { @document}
-    should_respond_with :success
+    should respond_with :success
     should_render_without_layout
-    should_respond_with_content_type 'application/json'
+    should respond_with_content_type 'application/json'
   end
   
 end

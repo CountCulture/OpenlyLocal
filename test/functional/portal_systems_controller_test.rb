@@ -12,7 +12,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
       get :index
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :index" do
@@ -22,8 +22,8 @@ class PortalSystemsControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:portal_systems) { PortalSystem.find(:all)}
-    should_respond_with :success
-    should_render_template :index
+    should respond_with :success
+    should render_template :index
     should "list portal systems" do
       assert_select "li a", @portal.name
     end
@@ -39,7 +39,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
       get :show, :id => @portal.id
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :show for first record" do
@@ -51,8 +51,8 @@ class PortalSystemsControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:portal_system) { @portal}
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     should_assign_to(:councils) { @portal.councils }
   
     should "list all councils" do
@@ -78,7 +78,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
       get :new
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :new" do
@@ -88,8 +88,8 @@ class PortalSystemsControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:portal_system)
-    should_respond_with :success
-    should_render_template :new
+    should respond_with :success
+    should render_template :new
   
     should "show form" do
       assert_select "form#new_portal_system"
@@ -104,7 +104,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
          post :create, :portal_system => {:name => "New Portal", :url => "http:://new_portal.com"}
        end
 
-       should_respond_with 401
+       should respond_with 401
      end
 
      context "with valid params" do
@@ -128,8 +128,8 @@ class PortalSystemsControllerTest < ActionController::TestCase
      
        should_not_change "PortalSystem.count"
        should_assign_to :portal_system
-       should_render_template :new
-       should_not_set_the_flash
+       should render_template :new
+       should_not set_the_flash
      end
   
    end  
@@ -140,7 +140,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
        get :edit, :id => @portal
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on GET to :edit with existing record" do
@@ -150,8 +150,8 @@ class PortalSystemsControllerTest < ActionController::TestCase
      end
   
      should_assign_to(:portal_system)
-     should_respond_with :success
-     should_render_template :edit
+     should respond_with :success
+     should render_template :edit
   
      should "show form" do
        assert_select "form#edit_portal_system_#{@portal.id}"
@@ -165,7 +165,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
         put :update, :id => @portal.id, :portal_system => { :name => "New Name", :url => "http://new.name.com"}
       end
 
-      should_respond_with 401
+      should respond_with 401
     end
     
     context "with valid params" do
@@ -192,8 +192,8 @@ class PortalSystemsControllerTest < ActionController::TestCase
       should_not_change "PortalSystem.count"
       should_not_change "@portal.reload.name"
       should_assign_to :portal_system
-      should_render_template :edit
-      should_not_set_the_flash
+      should render_template :edit
+      should_not set_the_flash
     end
   
   end  

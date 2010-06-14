@@ -34,8 +34,8 @@ class DatasetTopicsControllerTest < ActionController::TestCase
 
       should_assign_to :dataset_topic
       should_assign_to :datapoints
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       # should "return max 10 datapoints" do
       #   assert_equal 10, assigns(:datapoints).size
@@ -95,8 +95,8 @@ class DatasetTopicsControllerTest < ActionController::TestCase
         should_assign_to :dataset_topic
         should_assign_to :datapoints
         should_assign_to(:area) {@council_1}
-        should_respond_with :success
-        should_render_template :show
+        should respond_with :success
+        should render_template :show
       
         should "show show council name in title" do
           assert_select 'title', /#{@council_1.name}/
@@ -118,8 +118,8 @@ class DatasetTopicsControllerTest < ActionController::TestCase
 
         should_assign_to(:datapoints) { [@datapoint_for_another_ward, @datapoint] }
         should_assign_to(:area) { @ward }
-        should_respond_with :success
-        should_render_template :show
+        should respond_with :success
+        should render_template :show
 
         should "show details for datapoint" do
           assert_select 'h1', /#{@datapoint.dataset_topic.title}/
@@ -165,7 +165,7 @@ class DatasetTopicsControllerTest < ActionController::TestCase
       get :edit, :id => @dataset_topic.id
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on get to :edit a topic" do
@@ -175,9 +175,9 @@ class DatasetTopicsControllerTest < ActionController::TestCase
     end
 
     should_assign_to :dataset_topic
-    should_respond_with :success
-    should_render_template :edit
-    should_not_set_the_flash
+    should respond_with :success
+    should render_template :edit
+    should_not set_the_flash
     should "display a form" do
      assert_select "form#edit_dataset_topic_#{@dataset_topic.id}"
     end
@@ -194,7 +194,7 @@ class DatasetTopicsControllerTest < ActionController::TestCase
                      :dataset_topic => { :short_title => "New title"}}
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on PUT to :update" do
@@ -219,7 +219,7 @@ class DatasetTopicsControllerTest < ActionController::TestCase
       post :populate, :id => @dataset_topic.id
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on POST to :populate with auth" do

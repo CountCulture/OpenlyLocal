@@ -1,3 +1,4 @@
+<% div_for @council do  %>
 <h1><%= @council.name %></h1>
 <%= render :partial => 'party_breakdown' unless @party_breakdown.blank? %>
 <dl id="main_attributes" class="attributes">
@@ -87,3 +88,4 @@
 <%= render :partial => '/shared/api_info' %>
 <%= content_tag(:p, auto_link("Data sourced from #{@council.data_source_url} provided by #{@council.data_source_name}"), :class => "attribution") unless @council.data_source_url.blank? %>
 <%= timestamp_data_for @council %>
+<% end %>

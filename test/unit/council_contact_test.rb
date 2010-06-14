@@ -9,7 +9,7 @@ class CouncilContactTest < ActiveSupport::TestCase
       @approved_contact.approve
     end
     
-    should_belong_to :council 
+    should belong_to :council 
     should_validate_presence_of :name
     should_validate_presence_of :position
     should_validate_presence_of :email

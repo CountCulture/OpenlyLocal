@@ -8,7 +8,7 @@ class CrimeAreaTest < ActiveSupport::TestCase
       @crime_area = Factory(:crime_area)
     end
     
-    should_belong_to :police_force
+    should belong_to :police_force
     should_validate_presence_of :name, :uid, :police_force_id, :level
     should_validate_uniqueness_of :uid, :scoped_to => :police_force_id
     should_have_db_columns :crime_mapper_url, :feed_url, :crime_level_cf_national, :crime_rates, :total_crimes

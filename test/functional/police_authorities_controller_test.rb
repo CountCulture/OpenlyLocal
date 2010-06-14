@@ -15,8 +15,8 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:police_authorities) { PoliceAuthority.find(:all)}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "list police authorities" do
         assert_select "li a", @police_authority.name
       end
@@ -41,9 +41,9 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:police_authorities) { PoliceAuthority.find(:all) }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
     end
     
     context "with json requested" do
@@ -52,9 +52,9 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:police_authorities) { PoliceAuthority.find(:all) }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
     end
     
   end  
@@ -66,8 +66,8 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:police_authority) { @police_authority}
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     should_render_with_layout
   
     should "list all associated councils" do
@@ -100,9 +100,9 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:police_authority) { @police_authority}
-    should_respond_with :success
+    should respond_with :success
     should_render_without_layout
-    should_respond_with_content_type 'application/xml'
+    should respond_with_content_type 'application/xml'
     
     should "include attributes in response" do
       assert_select "police-authority>address"
@@ -129,9 +129,9 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
     end
    
     should_assign_to(:police_authority) { @police_authority}
-    should_respond_with :success
+    should respond_with :success
     should_render_without_layout
-    should_respond_with_content_type 'application/rdf+xml'
+    should respond_with_content_type 'application/rdf+xml'
    
     should "show rdf headers" do
       assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
@@ -176,9 +176,9 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
        get :show, :id => @police_authority.id, :format => "json"
      end
   
-     should_respond_with :success
+     should respond_with :success
      should_render_without_layout
-     should_respond_with_content_type 'application/json'
+     should respond_with_content_type 'application/json'
      
      should "include attributes in response" do
        assert_match /police_authority\":.+address\":/, @response.body
@@ -202,7 +202,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
        get :edit, :id => @police_authority.id
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on get to :edit a police_authority" do
@@ -212,9 +212,9 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
      end
 
      should_assign_to :police_authority
-     should_respond_with :success
-     should_render_template :edit
-     should_not_set_the_flash
+     should respond_with :success
+     should render_template :edit
+     should_not set_the_flash
      should "display a form" do
       assert_select "form#edit_police_authority_#{@police_authority.id}"
      end
@@ -228,7 +228,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
                       :police_authority => { :name => "New name"}}
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on PUT to :update" do

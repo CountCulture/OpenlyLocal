@@ -8,10 +8,12 @@ class CouncilsController < ApplicationController
     @councils = Council.find_by_params(params.except(:controller, :action, :format))
     @title = "All UK Local Authorities/Councils"
     @title += " in #{params[:region]||params[:country]}" if params[:region]||params[:country]
-    @title += " With Opened Up Data" unless params[:include_unparsed]
+    @title += " With Opened Up Data" unless params[:include_unparsed]||params[:show_open_status]
+    @title = "UK Councils Open Data scoreboard" if params[:show_open_status]
     @title += " With '#{params[:term]}' in name" if params[:term]
+    html_template = params[:show_open_status] ? 'open' : 'index'
     respond_to do |format|
-      format.html
+      format.html { render html_template }
       format.xml { render :xml => @councils.to_xml(:include => nil) }
       format.json { render :json =>  @councils.to_json }
       format.rdf

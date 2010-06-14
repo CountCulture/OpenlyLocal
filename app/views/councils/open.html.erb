@@ -1,0 +1,21 @@
+<h1><%= @title %></h1>
+<%- open_data_councils, no_open_data_councils = @councils.partition{ |c| c.open_data_url? } -%>
+<div id='open_data_councils'>
+  <h2>Councils with open data</h2>
+  <%- if open_data_councils.blank? -%>
+    <p class="alert">No councils found</p>
+  <%- else -%>
+    <%= render :partial => 'council', :collection => open_data_councils %>
+  <%- end -%>
+</div>
+
+<div id='no_open_data_councils'>
+  <h2>Councils without open data</h2>
+  <%- if no_open_data_councils.blank? -%>
+    <p class="alert">No councils found</p>
+  <%- else -%>
+    <%= render :partial => 'council', :collection => no_open_data_councils %>
+  <%- end -%>
+</div>
+
+<%= render :partial => '/shared/api_info' %>

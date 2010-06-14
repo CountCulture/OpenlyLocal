@@ -8,7 +8,7 @@ class PoliceOfficerTest < ActiveSupport::TestCase
       @police_officer = Factory(:police_officer)
     end
     
-    should_belong_to :police_team
+    should belong_to :police_team
     should_validate_presence_of :name
     should_validate_presence_of :police_team_id
     

@@ -16,10 +16,10 @@ class ToolsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:councils) { [@council]} # only parsed councils
-      should_respond_with :success
-      should_render_template :gadget
+      should respond_with :success
+      should render_template :gadget
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       
       should "list all parsed councils" do
         assert_select "UserPref>EnumValue[display_value=?]",  @council.name
@@ -44,10 +44,10 @@ class ToolsControllerTest < ActionController::TestCase
     end
       
     should_assign_to(:councils) { [@council]} # only parsed councils
-    should_respond_with :success
-    should_render_template :gadget
+    should respond_with :success
+    should render_template :gadget
     should_render_without_layout
-    should_respond_with_content_type 'application/xml'
+    should respond_with_content_type 'application/xml'
   end
     
   # ning test
@@ -64,10 +64,10 @@ class ToolsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:councils) { [@council]} # only parsed councils
-      should_respond_with :success
-      should_render_template :ning
+      should respond_with :success
+      should render_template :ning
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       
       should "list namespace for module" do
         assert_select "Module[xmlns:ning='http://developer.ning.com/opensocial/']"
@@ -99,10 +99,10 @@ class ToolsControllerTest < ActionController::TestCase
     end
 
     should_assign_to(:council) { @council}
-    should_respond_with :success
-    should_render_template :widget
+    should respond_with :success
+    should render_template :widget
     should_render_without_layout
-    should_respond_with_content_type 'text/javascript'
+    should respond_with_content_type 'text/javascript'
   end
 
   # context "on GET to :ning_test" do
@@ -114,10 +114,10 @@ class ToolsControllerTest < ActionController::TestCase
   #   end
   #     
   #   should_assign_to(:councils) { [@council]} # only parsed councils
-  #   should_respond_with :success
-  #   should_render_template :gadget
+  #   should respond_with :success
+  #   should render_template :gadget
   #   should_render_without_layout
-  #   should_respond_with_content_type 'application/xml'
+  #   should respond_with_content_type 'application/xml'
   # end
     
   

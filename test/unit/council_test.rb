@@ -25,29 +25,29 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :polls
     should_have_one :police_authority, :through => :police_force
     should_have_one :chief_executive
-    should_belong_to :parent_authority
-    should_belong_to :portal_system
-    should_belong_to :police_force
-    should_belong_to :pension_fund
+    should belong_to :parent_authority
+    should belong_to :portal_system
+    should belong_to :police_force
+    should belong_to :pension_fund
     should_have_many :datapoints
     should_have_many :dataset_topics, :through => :datapoints
     should_have_many :suppliers
     should_have_many :financial_transactions, :through => :suppliers
-    should_have_db_column :notes
-    should_have_db_column :wikipedia_url
-    should_have_db_column :ons_url
-    should_have_db_column :egr_id
-    should_have_db_column :wdtk_name
-    should_have_db_column :feed_url
-    should_have_db_column :data_source_url
-    should_have_db_column :data_source_name
-    should_have_db_column :snac_id
-    should_have_db_column :country
-    should_have_db_column :population
-    should_have_db_column :ldg_id
-    should_have_db_column :police_force_url
-    should_have_db_column :region
-    should_have_db_column :signed_up_for_1010
+    should have_db_column :notes
+    should have_db_column :wikipedia_url
+    should have_db_column :ons_url
+    should have_db_column :egr_id
+    should have_db_column :wdtk_name
+    should have_db_column :feed_url
+    should have_db_column :data_source_url
+    should have_db_column :data_source_name
+    should have_db_column :snac_id
+    should have_db_column :country
+    should have_db_column :population
+    should have_db_column :ldg_id
+    should have_db_column :police_force_url
+    should have_db_column :region
+    should have_db_column :signed_up_for_1010
     should_have_db_columns :annual_audit_letter, :open_data_url
 
     should "mixin PartyBreakdownSummary module" do
@@ -140,6 +140,10 @@ class CouncilTest < ActiveSupport::TestCase
 
       should "find unparsed councils by if requested" do
         assert_equal [@another_council, @council, @tricky_council], Council.find_by_params(:include_unparsed => true)
+      end
+
+      should "find unparsed councils by if requested to show_open_status" do
+        assert_equal [@another_council, @council, @tricky_council], Council.find_by_params(:show_open_status => true)
       end
 
       should "find parsed councils whose name matches term" do
@@ -383,6 +387,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
     end
+    
     context "when returning parsed status" do
       should "return true if it has members" do
         Factory(:member, :council => @council)
@@ -420,6 +425,17 @@ class CouncilTest < ActiveSupport::TestCase
     context "when returning openlylocal_url" do
       should "build from council.to_param and default domain" do
         assert_equal "http://#{DefaultDomain}/councils/#{@council.to_param}", @council.openlylocal_url
+      end
+    end
+    
+    context "when returning open_ata status" do
+      should "return no_open_data by default" do
+        assert_equal 'no_open_data', @council.open_data_status
+      end
+      
+      should 'return open_data if council has open data url' do
+        @council.open_data_url = 'http://council.gov.uk/open'
+        assert_equal 'open_data', @council.open_data_status
       end
     end
 

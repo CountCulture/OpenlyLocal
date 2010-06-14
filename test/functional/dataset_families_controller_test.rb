@@ -22,8 +22,8 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
       end
 
       should_assign_to :datasets
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
 
       should "list ons dataset families grouped by dataset" do
         assert_select "div#dataset_#{@dataset.id}" do
@@ -42,8 +42,8 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
       end
 
       should_assign_to :dataset_family
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "show ons dataset family title as page title" do
         assert_select "title", /#{@dataset_family.title}/
@@ -78,8 +78,8 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
 
       should_assign_to :dataset_family
       should_assign_to :datapoints
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
       
       should "show datapoints in table" do
         assert_select "table tr" do
@@ -115,8 +115,8 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
       should_assign_to :dataset_family
       should_assign_to(:area) { @council }
       should_assign_to(:datapoints) { [@datapoint, @datapoint_for_another_topic] }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "include ons dataset family in page title" do
         assert_select "title", /#{@dataset_family.title}/

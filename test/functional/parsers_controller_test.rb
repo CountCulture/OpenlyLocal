@@ -10,7 +10,7 @@ class ParsersControllerTest < ActionController::TestCase
       get :show, :id => @parser.id
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :show" do
@@ -23,8 +23,8 @@ class ParsersControllerTest < ActionController::TestCase
   
     should_assign_to :parser
     should_assign_to :scrapers
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
       
     should "show link to perform edit" do
       assert_select ".parser a", /edit/
@@ -53,8 +53,8 @@ class ParsersControllerTest < ActionController::TestCase
   
     should_assign_to :parser
     should_assign_to :scrapers
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     
     should "list associated scrapers" do
       assert_select "#scrapers a", @scraper.title
@@ -89,7 +89,7 @@ class ParsersControllerTest < ActionController::TestCase
       setup do
         get :new, :portal_system_id  => @portal_system.id, :result_model => "Member", :scraper_type => "ItemParser"
       end
-      should_respond_with 401
+      should respond_with 401
     end
     
     context "for basic parser" do
@@ -99,8 +99,8 @@ class ParsersControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:parser)
-      should_respond_with :success
-      should_render_template :new
+      should respond_with :success
+      should render_template :new
 
       should "show form" do
         assert_select "form#new_parser"
@@ -129,7 +129,7 @@ class ParsersControllerTest < ActionController::TestCase
           post :create, :parser => @parser_params
         end
 
-        should_respond_with 401
+        should respond_with 401
       end
       
        context "with valid params" do
@@ -153,8 +153,8 @@ class ParsersControllerTest < ActionController::TestCase
 
          should_not_change "Parser.count"
          should_assign_to :parser
-         should_render_template :new
-         should_not_set_the_flash
+         should render_template :new
+         should_not set_the_flash
        end
 
        context "with no scraper_type" do
@@ -165,8 +165,8 @@ class ParsersControllerTest < ActionController::TestCase
 
          should_not_change "Parser.count"
          should_assign_to :parser
-         should_render_template :new
-         should_not_set_the_flash
+         should render_template :new
+         should_not set_the_flash
        end
 
    end  
@@ -179,7 +179,7 @@ class ParsersControllerTest < ActionController::TestCase
       get :edit, :id  => @parser.id
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :edit" do
@@ -191,8 +191,8 @@ class ParsersControllerTest < ActionController::TestCase
     end
 
     should_assign_to(:parser)
-    should_respond_with :success
-    should_render_template :edit
+    should respond_with :success
+    should render_template :edit
     
     should "show form" do
       assert_select "form#edit_parser_#{@parser.id}"
@@ -216,7 +216,7 @@ class ParsersControllerTest < ActionController::TestCase
          put :update, :id => @parser.id, :parser => @parser_params
        end
 
-       should_respond_with 401
+       should respond_with 401
      end
      
       context "with valid params" do
@@ -245,7 +245,7 @@ class ParsersControllerTest < ActionController::TestCase
         should_not_change "Parser.count"
         should_not_change "@parser.reload.result_model"
         should_assign_to :parser
-        should_render_template :edit
+        should render_template :edit
         should_set_the_flash_to /Problem/
       end
 

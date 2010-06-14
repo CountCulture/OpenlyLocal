@@ -1,6 +1,10 @@
 /*Global formats*/
 /*See also blueprint styles*/
 h1 {font-size: 2em;}
+h2 {
+	color: #036;
+	border-bottom: 1px solid #036;
+	font-size: 1.7em;}
 h4 {margin-bottom: 0.625em;}
 a {
 	text-decoration: none;
@@ -150,7 +154,8 @@ body {
 #header h2 {
 	margin: 3px 6px;
 	color: #036;
-	line-height:50px; }
+	line-height:50px;
+	border-bottom: none; }
 #header h2 a {
 	text-decoration: none;
 	color: #69b;
@@ -277,7 +282,7 @@ div.item_grouping h4 {
 	margin-bottom: 0.5em;
 }
 /*Council formatting*/
-body.councils h1 {
+body.councils .council h1 {
 	float:left;}
 body.councils .extra_info {
 	max-width:620px;}
@@ -337,7 +342,20 @@ body.councils .area a {
 #members li a {
 	font-weight: bold;
 }
-
+#open_data_councils .council div.open_data, #no_open_data_councils .council div.no_open_data {
+	background: url(/images/tick.gif) no-repeat;
+	text-indent: -9000px;
+	width: 48px;
+	height: 48px;
+	float:left;
+}
+#no_open_data_councils .council div.no_open_data {
+	background-position:0 -48px;
+}
+.open_data_link {
+	background: url(/images/od_80x15_blue.png) no-repeat;
+	padding-left: 82px;
+}
 a.output_area_classification_link {color:#888;}
 /*Meeting formatting*/
 .past {color:#515151;}

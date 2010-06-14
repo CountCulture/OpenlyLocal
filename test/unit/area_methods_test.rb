@@ -14,7 +14,7 @@ class AreaMethodsTest < ActiveSupport::TestCase
       @test_area = TestAreaModel.create!
     end
     
-    should_belong_to :output_area_classification
+    should belong_to :output_area_classification
     should_have_one :boundary
      
     context 'and boundary association' do

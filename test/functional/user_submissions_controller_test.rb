@@ -11,8 +11,8 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:user_submission) { @user_submission}
-      should_respond_with :success
-      should_render_template :new
+      should respond_with :success
+      should render_template :new
       should_render_with_layout
 
       should "show title" do
@@ -40,7 +40,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:user_submission) { @user_submission}
-      should_respond_with :success
+      should respond_with :success
 
       should "associate council with user submission" do
         assert_equal @member.council, assigns(:user_submission).council
@@ -75,7 +75,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:user_submission) { @user_submission}
-      should_respond_with :success
+      should respond_with :success
 
       should "associate council with user submission" do
         assert_equal @council, assigns(:user_submission).council
@@ -104,8 +104,8 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:user_submission) { @user_submission}
-      should_respond_with :success
-      should_render_template :new
+      should respond_with :success
+      should render_template :new
       should_render_with_layout
 
       should "associate member with user submission" do
@@ -175,8 +175,8 @@ class UserSubmissionsControllerTest < ActionController::TestCase
      
        should_not_change "UserSubmission.count"
        should_assign_to :user_submission
-       should_render_template :new
-       should_not_set_the_flash
+       should render_template :new
+       should_not set_the_flash
      end
     
    end
@@ -193,7 +193,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
          get :edit, :id => @user_submission.id
        end
 
-       should_respond_with 401
+       should respond_with 401
      end
 
      context "in general" do
@@ -203,8 +203,8 @@ class UserSubmissionsControllerTest < ActionController::TestCase
        end
 
        should_assign_to(:user_submission) { @user_submission}
-       should_respond_with :success
-       should_render_template :edit
+       should respond_with :success
+       should render_template :edit
        should_render_with_layout
 
        should "show title" do
@@ -231,7 +231,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
                         :approve => "true" }
        end
 
-       should_respond_with 401
+       should respond_with 401
      end
 
      context "in general" do
@@ -309,7 +309,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
          delete :destroy, :id => @user_submission.id
        end
 
-       should_respond_with 401
+       should respond_with 401
      end
 
      context 'with auth' do

@@ -6,8 +6,8 @@ class InfoControllerTest < ActionController::TestCase
     setup do
       get :about_us
     end
-    should_respond_with :success
-    should_render_template :about_us
+    should respond_with :success
+    should render_template :about_us
     should_render_with_layout
     should "show pretty version of action name in title" do
       assert_select "title", /About Us :: Info/
@@ -18,8 +18,8 @@ class InfoControllerTest < ActionController::TestCase
     setup do
       get :resources
     end
-    should_respond_with :success
-    should_render_template :resources
+    should respond_with :success
+    should render_template :resources
     should_render_with_layout
     should "show pretty version of action name in title" do
       assert_select "title", /Resources :: Info/
@@ -30,8 +30,8 @@ class InfoControllerTest < ActionController::TestCase
     setup do
       get :vocab
     end
-    should_respond_with :success
-    should_render_template :vocab
+    should respond_with :success
+    should render_template :vocab
     should_render_without_layout
   end
   
@@ -39,8 +39,8 @@ class InfoControllerTest < ActionController::TestCase
     setup do
       get :licence_info
     end
-    should_respond_with :success
-    should_render_template :licence_info
+    should respond_with :success
+    should render_template :licence_info
     should_render_with_layout
   end
   
@@ -49,8 +49,8 @@ class InfoControllerTest < ActionController::TestCase
       Factory(:council)
       get :api
     end
-    should_respond_with :success
-    should_render_template :api
+    should respond_with :success
+    should render_template :api
     should_render_with_layout
     should_assign_to :sample_council
     

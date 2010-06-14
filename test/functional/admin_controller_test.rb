@@ -14,9 +14,9 @@ class AdminControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_respond_with :success
-      should_render_template :index
-      should_not_set_the_flash
+      should respond_with :success
+      should render_template :index
+      should_not set_the_flash
       should_assign_to(:hyperlocal_sites) {[@unapproved_site]}
       should_assign_to(:user_submissions) {[@user_submission]}
 
@@ -47,7 +47,7 @@ class AdminControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_respond_with 401
+      should respond_with 401
     end
     
   end

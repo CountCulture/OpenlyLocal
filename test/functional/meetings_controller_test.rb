@@ -36,9 +36,9 @@ class MeetingsControllerTest < ActionController::TestCase
   
       should_assign_to(:council) { @council } 
       should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting] }
-      should_respond_with :success
-      should_render_template :index
-      should_respond_with_content_type 'text/html'
+      should respond_with :success
+      should render_template :index
+      should respond_with_content_type 'text/html'
       
       should "list forthcoming meetings" do
         assert_select "#meetings ul a", @future_meeting.title
@@ -56,7 +56,7 @@ class MeetingsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting, @cancelled_committee_meeting] }
-      should_respond_with :success
+      should respond_with :success
       
       should "list all meetings" do
         assert_select "#meetings ul a", @meeting.title
@@ -74,7 +74,7 @@ class MeetingsControllerTest < ActionController::TestCase
     #   end
     #   
     #   should_assign_to(:meetings) { [@other_committee_meeting] }
-    #   should_respond_with :success
+    #   should respond_with :success
     #   
     #   should "have title" do
     #     assert_select "title", /Meetings for Another Committee/
@@ -88,9 +88,9 @@ class MeetingsControllerTest < ActionController::TestCase
         end
         should_assign_to(:council) { @council } 
         should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/xml'
+        should respond_with_content_type 'application/xml'
         should "show status of meeting" do
           assert_select "meetings>meeting>status" do
             assert_select "status", 2
@@ -104,9 +104,9 @@ class MeetingsControllerTest < ActionController::TestCase
         end
         should_assign_to(:council) { @council } 
         should_assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting, @cancelled_committee_meeting]}
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/xml'
+        should respond_with_content_type 'application/xml'
         should "show status of meeting" do
           assert_select "meetings>meeting>status" do
             assert_select "status", :text => /cancelled/, :count => 1
@@ -123,9 +123,9 @@ class MeetingsControllerTest < ActionController::TestCase
   
       should_assign_to(:council) { @council } 
       should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
     end
     
     context "with ics requested" do
@@ -135,9 +135,9 @@ class MeetingsControllerTest < ActionController::TestCase
   
       should_assign_to(:council) { @council } 
       should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'text/calendar'
+      should respond_with_content_type 'text/calendar'
     end
     
   end
@@ -152,8 +152,8 @@ class MeetingsControllerTest < ActionController::TestCase
 
       should_assign_to :meeting, :committee
       should_assign_to(:other_meetings) { [@future_meeting] }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
      
       should "show committee in title" do
         assert_select "title", /#{@committee.title}/
@@ -219,9 +219,9 @@ class MeetingsControllerTest < ActionController::TestCase
         end
 
         should_assign_to :meeting
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/xml'
+        should respond_with_content_type 'application/xml'
       end
       context "when meeting is cancelled" do
         should "show status is cancelled if meeting is cancelled" do
@@ -238,9 +238,9 @@ class MeetingsControllerTest < ActionController::TestCase
       end
     
       should_assign_to :meeting
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
     end
     
     context "with rdf requested" do
@@ -249,9 +249,9 @@ class MeetingsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:meeting) { @meeting }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rdf+xml'
+      should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body

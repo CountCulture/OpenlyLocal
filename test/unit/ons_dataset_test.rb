@@ -12,7 +12,7 @@ class OnsDatasetTest < ActiveSupport::TestCase
     should_validate_presence_of :dataset_family_id
     should_validate_uniqueness_of :start_date, :scoped_to => :dataset_family_id
 
-    should_belong_to :dataset_family
+    should belong_to :dataset_family
     
     should  "return date range as title" do
       assert_equal "#{@ons_dataset.start_date} - #{@ons_dataset.end_date}", @ons_dataset.title

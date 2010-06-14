@@ -14,7 +14,7 @@ class RelatedArticleTest < ActiveSupport::TestCase
     should_validate_presence_of :hyperlocal_site_id
     should_validate_presence_of :subject_type, :subject_id
     should_validate_uniqueness_of :url
-    should_belong_to :hyperlocal_site
+    should belong_to :hyperlocal_site
     should_have_db_columns :extract
     
     should 'belong to subject polymorphically' do

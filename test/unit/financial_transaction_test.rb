@@ -9,7 +9,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     end
     
     should_validate_presence_of :supplier_id, :value, :date
-    should_belong_to :supplier
+    should belong_to :supplier
     
     should_have_db_columns :value, 
                            :uid, 

@@ -14,8 +14,8 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:hyperlocal_groups) { HyperlocalGroup.find(:all)}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "list hyperlocal groups" do
         assert_select "li a", @hyperlocal_group.title
       end
@@ -44,8 +44,8 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
       end
 
       should_assign_to :hyperlocal_group
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "include hyperlocal group in page title" do
         assert_select "title", /#{@hyperlocal_group.title}/
@@ -67,7 +67,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
       get :new
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :new" do
@@ -77,8 +77,8 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:hyperlocal_group)
-    should_respond_with :success
-    should_render_template :new
+    should respond_with :success
+    should render_template :new
   
     should "show form" do
       assert_select "form#new_hyperlocal_group"
@@ -93,7 +93,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
          post :create, :hyperlocal_group => {:title => "New Hyperlocal Group", :url => "http:://hyperlocal_group.com"}
        end
 
-       should_respond_with 401
+       should respond_with 401
      end
 
      context "with valid params" do
@@ -117,8 +117,8 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
      
        should_not_change "HyperlocalGroup.count"
        should_assign_to :hyperlocal_group
-       should_render_template :new
-       should_not_set_the_flash
+       should render_template :new
+       should_not set_the_flash
      end
   
    end  
@@ -129,7 +129,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
       get :edit, :id => @hyperlocal_group.id
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on get to :edit a hyperlocal group" do
@@ -139,9 +139,9 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
     end
 
     should_assign_to :hyperlocal_group
-    should_respond_with :success
-    should_render_template :edit
-    should_not_set_the_flash
+    should respond_with :success
+    should render_template :edit
+    should_not set_the_flash
     should "display a form" do
      assert_select "form#edit_hyperlocal_group_#{@hyperlocal_group.id}"
     end
@@ -155,7 +155,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
                      :hyperlocal_group => { :title => "New title"}}
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on PUT to :update" do

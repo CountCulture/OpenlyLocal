@@ -13,7 +13,7 @@ class DatasetTest < ActiveSupport::TestCase
     should_validate_uniqueness_of :title
     should_have_many :dataset_families
     should_have_many :dataset_topics, :through => :dataset_families
-    should_belong_to :dataset_topic_grouping
+    should belong_to :dataset_topic_grouping
     
     should "return datasets belonging to a dataset_topic_grouping in_topic_grouping named scope" do
       @dataset_in_group = Factory(:dataset, :dataset_topic_grouping => Factory(:dataset_topic_grouping))

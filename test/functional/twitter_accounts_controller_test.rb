@@ -17,8 +17,8 @@ class TwitterAccountsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:twitter_accounts) { [@twitter_account] }
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "list twitter accounts" do
         assert_select "li a", @twitter_account.name
       end
@@ -50,8 +50,8 @@ class TwitterAccountsControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:twitter_account) { @twitter_account}
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     should_render_with_layout
   
     should "show title" do

@@ -113,7 +113,7 @@ class GenericControllerTest < ActionController::TestCase
       get :show, :council_id => @council.id, :redirect_from_resource => true, :foo => "bar"
     end
 
-    should_respond_with 303
+    should respond_with 303
     should_redirect_to("the given page without redirect_from_resource but with other params") {{:action => "show", :council_id => @council.id, :foo => "bar"}}
   end
   

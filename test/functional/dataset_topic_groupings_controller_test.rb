@@ -12,7 +12,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_respond_with 401
+      should respond_with 401
     end
     
     context "with basic request" do
@@ -22,8 +22,8 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:dataset_topic_groupings) { DatasetTopicGrouping.find(:all)}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "list Topic Groupings" do
         assert_select "li a", @dataset_topic_grouping.title
       end
@@ -43,7 +43,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
         get :show, :id => @dataset_topic_grouping.id
       end
 
-      should_respond_with 401
+      should respond_with 401
     end
 
     context "with basic request" do
@@ -55,8 +55,8 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
       end
 
       should_assign_to :dataset_topic_grouping
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "include Topic Grouping in page title" do
         assert_select "title", /#{@dataset_topic_grouping.title}/
@@ -77,7 +77,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
       get :new
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :new" do
@@ -87,8 +87,8 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
     end
 
     should_assign_to(:dataset_topic_grouping)
-    should_respond_with :success
-    should_render_template :new
+    should respond_with :success
+    should render_template :new
 
     should "show form" do
       assert_select "form#new_dataset_topic_grouping"
@@ -107,7 +107,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
          post :create, :dataset_topic_grouping => {:title => "New Topic Grouping"}
        end
 
-       should_respond_with 401
+       should respond_with 401
      end
 
      context "with valid params" do
@@ -131,8 +131,8 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
 
        should_not_change "DatasetTopicGrouping.count"
        should_assign_to :dataset_topic_grouping
-       should_render_template :new
-       should_not_set_the_flash
+       should render_template :new
+       should_not set_the_flash
      end
 
    end  
@@ -143,7 +143,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
       get :edit, :id => @dataset_topic_grouping.id
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on get to :edit a Topic Grouping" do
@@ -153,9 +153,9 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
     end
 
     should_assign_to :dataset_topic_grouping
-    should_respond_with :success
-    should_render_template :edit
-    should_not_set_the_flash
+    should respond_with :success
+    should render_template :edit
+    should_not set_the_flash
     should "display a form" do
      assert_select "form#edit_dataset_topic_grouping_#{@dataset_topic_grouping.id}"
     end
@@ -169,7 +169,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
                      :dataset_topic_grouping => { :title => "New title"}}
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on PUT to :update" do
@@ -194,7 +194,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
       delete :destroy, :id => @dataset_topic_grouping.id
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on delete to :destroy a dataset_topic_grouping" do

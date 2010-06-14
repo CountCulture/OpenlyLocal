@@ -17,7 +17,7 @@ class PollsControllerTest < ActionController::TestCase
         get :index
       end
       should_assign_to(:polls)
-      should_respond_with :success
+      should respond_with :success
       should_render_with_layout
       
       should 'list only first page of polls' do
@@ -39,9 +39,9 @@ class PollsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:polls)
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       
       should 'list first page of polls' do
         assert_select 'polls>poll', 30
@@ -63,9 +63,9 @@ class PollsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:polls)
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
       
       should 'list polls' do
         assert_match %r(polls.+poll.+id), @response.body
@@ -86,9 +86,9 @@ class PollsControllerTest < ActionController::TestCase
     #     get :index, :format => 'csv'
     #   end
     #   
-    #   should_respond_with :success
+    #   should respond_with :success
     #   should_render_without_layout
-    #   should_respond_with_content_type 'text/csv'
+    #   should respond_with_content_type 'text/csv'
     #   
     #   should 'list attributes in header' do
     #     assert_match %r(id,area_id), @response.body
@@ -119,7 +119,7 @@ class PollsControllerTest < ActionController::TestCase
 
         should_assign_to(:polls)
         should_assign_to(:council) { @council }
-        should_respond_with :success
+        should respond_with :success
         should_render_with_layout
 
         should 'not include non-council related wards' do
@@ -143,9 +143,9 @@ class PollsControllerTest < ActionController::TestCase
         end
 
         should_assign_to(:polls)
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/xml'
+        should respond_with_content_type 'application/xml'
 
         should 'list first page of polls' do
           assert_select 'polls>poll', 30
@@ -167,9 +167,9 @@ class PollsControllerTest < ActionController::TestCase
         end
 
         should_assign_to(:polls)
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/json'
+        should respond_with_content_type 'application/json'
 
         should 'list polls' do
           assert_match %r(polls.+poll.+id), @response.body
@@ -205,8 +205,8 @@ class PollsControllerTest < ActionController::TestCase
       should_assign_to(:poll) { @poll}
       should_assign_to(:council) { @area.council}
       should_assign_to(:total_votes) { 537 + 210 }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
       should_render_with_layout
 
       should "list associated area" do
@@ -245,9 +245,9 @@ class PollsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:poll) { @poll}
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       
       should 'list poll details' do
         assert_select 'poll>id'
@@ -270,9 +270,9 @@ class PollsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:poll)
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
       
       should 'list poll details' do
         assert_match %r(poll.+id), @response.body
@@ -296,9 +296,9 @@ class PollsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:poll) { @poll}
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rdf+xml'
+      should respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
@@ -351,9 +351,9 @@ class PollsControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:poll) { @poll}
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rdf+xml'
+      should respond_with_content_type 'application/rdf+xml'
      
       should "show poll is same as openelectiondata uri using ol_identifier" do
         assert_match /owl:sameAs.+rdf:resource.+openelectiondata.org\/id\/polls\/OL_#{@poll.area.id}\/#{@poll.date_held}\/member/, @response.body

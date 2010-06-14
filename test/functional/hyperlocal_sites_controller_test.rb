@@ -15,8 +15,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site]}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "list only approved hyperlocal sites" do
         assert_select "li a", @hyperlocal_site.title
         assert_select "li a", :text => @unapproved_hyperlocal_site.title, :count => 0
@@ -60,8 +60,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:hyperlocal_sites) {[@hyperlocal_site]}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       
       should 'show restriction in title' do
         assert_select "title", /independent hyperlocal sites in UK/i
@@ -79,8 +79,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:hyperlocal_sites) {[@another_hyperlocal_site]}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       
       should 'show restriction in title' do
         assert_select "title", /hyperlocal sites in Scotland/i
@@ -99,8 +99,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:hyperlocal_sites) {[@west_midlands_site]}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       
       should 'show restriction in title' do
         assert_select 'title', /hyperlocal sites in West Midlands/i
@@ -123,8 +123,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:hyperlocal_sites) { }
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
 
       should 'show location in title' do
         assert_select "title", /100 Spear st, San Francisco, CA/i
@@ -151,8 +151,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site] }
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
 
       should 'show location in title' do
         assert_select "title", /foo/i
@@ -170,9 +170,9 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site] }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       should "not include email address" do
         assert_select "email", false
       end
@@ -184,9 +184,9 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:hyperlocal_sites) {  [@hyperlocal_site, @another_hyperlocal_site] }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
       should "not include email address" do
         assert_no_match /email\:/, @response.body
       end
@@ -201,9 +201,9 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:hyperlocal_sites) {  [@hyperlocal_site, @another_hyperlocal_site] }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rss+xml'
+      should respond_with_content_type 'application/rss+xml'
       should "have title " do
         assert_select "title", "Latest Hyperlocal Sites in UK &amp; Ireland"
       end
@@ -233,9 +233,9 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site] }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       
       should "generate custom search title" do
         assert_xml_select 'CustomSearchEngine>Title' do
@@ -263,9 +263,9 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
       
       should_assign_to(:hyperlocal_sites) { [@hyperlocal_site, @another_hyperlocal_site] }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       
       should "generate custom search title" do
         assert_xml_select 'CustomSearchEngine>Title' do
@@ -293,7 +293,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
           get :custom_search_results
         end
         
-        should_respond_with :success
+        should respond_with :success
         should_render_with_layout
         should "have title " do
           assert_select "title", /Hyperlocal Sites Search Results/i
@@ -314,8 +314,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
 
       should_assign_to :hyperlocal_site
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "include hyperlocal site in page title" do
         assert_select "title", /#{@hyperlocal_site.title}/
@@ -350,8 +350,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
 
       should_assign_to :hyperlocal_site
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "show link to hyperlocal_sites in council region" do
         assert_select "a.region[href*='region=West+Midlands']", /West Midlands/
@@ -420,8 +420,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:hyperlocal_site)
-    should_respond_with :success
-    should_render_template :new
+    should respond_with :success
+    should render_template :new
   
     should "show title" do
       assert_select "title", /new hyperlocal site/i
@@ -476,8 +476,8 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
      
        should_not_change "HyperlocalSite.count"
        should_assign_to :hyperlocal_site
-       should_render_template :new
-       should_not_set_the_flash
+       should render_template :new
+       should_not set_the_flash
      end
   
      context "with approved_flag set to true" do
@@ -498,7 +498,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       get :edit, :id => @hyperlocal_site.id
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on get to :edit a hyperlocal site" do
@@ -508,9 +508,9 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     end
 
     should_assign_to :hyperlocal_site
-    should_respond_with :success
-    should_render_template :edit
-    should_not_set_the_flash
+    should respond_with :success
+    should render_template :edit
+    should_not set_the_flash
     should "display a form" do
      assert_select "form#edit_hyperlocal_site_#{@hyperlocal_site.id}"
     end
@@ -535,7 +535,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
                      :hyperlocal_site => { :title => "New title"}}
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on PUT to :update" do
@@ -587,7 +587,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       delete :destroy, :id => @hyperlocal_site.id
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on delete to :destroy a hyperlocal_site" do

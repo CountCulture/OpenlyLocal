@@ -33,7 +33,7 @@ class WardsControllerTest < ActionController::TestCase
         end
       
         should_assign_to(:council) { @council }
-        should_respond_with :success
+        should respond_with :success
       
         should 'assign only current wards' do
           assert assigns(:wards).include?(@ward)
@@ -83,9 +83,9 @@ class WardsControllerTest < ActionController::TestCase
         end
 
         should_assign_to(:council) { @council }
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/xml'
+        should respond_with_content_type 'application/xml'
 
         should 'assign only current wards' do
           assert assigns(:wards).include?(@ward)
@@ -115,9 +115,9 @@ class WardsControllerTest < ActionController::TestCase
         end
 
         should_assign_to(:council) { @council }
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/json'
+        should respond_with_content_type 'application/json'
 
         should 'assign only current wards' do
           assert assigns(:wards).include?(@ward)
@@ -149,7 +149,7 @@ class WardsControllerTest < ActionController::TestCase
           get :index
         end
       
-        should_respond_with :success
+        should respond_with :success
       
         should 'assign only current wards' do
           assert assigns(:wards).include?(@ward)
@@ -192,7 +192,7 @@ class WardsControllerTest < ActionController::TestCase
             get :index, :output_area_classification_id => @output_area_classification.id
           end
 
-          should_respond_with :success
+          should respond_with :success
 
           should 'assign only current wards' do
             assert assigns(:wards).include?(@ward)
@@ -226,9 +226,9 @@ class WardsControllerTest < ActionController::TestCase
           get :index, :format => "xml"
         end
 
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/xml'
+        should respond_with_content_type 'application/xml'
 
         should 'assign only current wards' do
           assert assigns(:wards).include?(@ward)
@@ -253,9 +253,9 @@ class WardsControllerTest < ActionController::TestCase
           get :index, :format => "json"
         end
 
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/json'
+        should respond_with_content_type 'application/json'
 
         should 'assign only current wards' do
           assert assigns(:wards).include?(@ward)
@@ -287,7 +287,7 @@ class WardsControllerTest < ActionController::TestCase
   #       end
   #     
   #       should_assign_to(:members) { [@member, @ex_member] } # current members
-  #       should_respond_with :success
+  #       should respond_with :success
   #     
   #       should "show title" do
   #         assert_select "title", /current members/i
@@ -353,9 +353,9 @@ class WardsControllerTest < ActionController::TestCase
   #           get :index, :format => "json"
   #         end
   # 
-  #         should_respond_with :success
+  #         should respond_with :success
   #         should_render_without_layout
-  #         should_respond_with_content_type 'application/json'
+  #         should respond_with_content_type 'application/json'
   # 
   #         should "include council" do
   #           assert_match /council.+id/, @response.body
@@ -408,8 +408,8 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:ward) { @ward }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "show ward in title" do
         assert_select "title", /#{@ward.title}/
@@ -456,8 +456,8 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:ward) { @ward }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "show ward in title" do
         assert_select "title", /#{@ward.title}/
@@ -472,8 +472,8 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:ward) { @ward }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "show ward in title" do
         assert_select "title", /#{@ward.title}/
@@ -506,7 +506,7 @@ class WardsControllerTest < ActionController::TestCase
         get :show, :id => @ward.id
       end
 
-      should_respond_with :success
+      should respond_with :success
 
       should "show link to committee" do
         assert_select "#committees a", /#{@committee.title}/
@@ -591,9 +591,9 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should_assign_to :ward
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
 
       should "include members in response" do
         assert_select "ward member"
@@ -621,9 +621,9 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should_assign_to :ward
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rdf+xml'
+      should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
@@ -677,9 +677,9 @@ class WardsControllerTest < ActionController::TestCase
       end
 
       should_assign_to :ward
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rdf+xml'
+      should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
@@ -710,9 +710,9 @@ class WardsControllerTest < ActionController::TestCase
        end
 
        should_assign_to :ward
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'application/json'
+       should respond_with_content_type 'application/json'
 
        should "include members in response" do
          assert_match /ward\":.+members\":/, @response.body
@@ -736,7 +736,7 @@ class WardsControllerTest < ActionController::TestCase
        get :edit, :id => @ward.id
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on get to :edit a topic" do
@@ -746,9 +746,9 @@ class WardsControllerTest < ActionController::TestCase
      end
 
      should_assign_to :ward
-     should_respond_with :success
-     should_render_template :edit
-     should_not_set_the_flash
+     should respond_with :success
+     should render_template :edit
+     should_not set_the_flash
      should "display a form" do
       assert_select "form#edit_ward_#{@ward.id}"
      end
@@ -767,7 +767,7 @@ class WardsControllerTest < ActionController::TestCase
                                  :name => "New name"}}
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on PUT to :update" do
@@ -793,7 +793,7 @@ class WardsControllerTest < ActionController::TestCase
        delete :destroy, :id => @ward.id
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on delete to :destroy a ward" do

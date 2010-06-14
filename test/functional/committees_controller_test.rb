@@ -22,8 +22,8 @@ class CommitteesControllerTest < ActionController::TestCase
        end
 
        should_assign_to :committee
-       should_respond_with :success
-       should_render_template :show
+       should respond_with :success
+       should render_template :show
       
        should "show committee in title" do
          assert_select "title", /#{@committee.title}/
@@ -62,8 +62,8 @@ class CommitteesControllerTest < ActionController::TestCase
        end
 
        should_assign_to :committee
-       should_respond_with :success
-       should_render_template :show
+       should respond_with :success
+       should render_template :show
       
        should "show link to ward" do
          assert_select ".extra_info a", /#{@ward.name}/
@@ -84,9 +84,9 @@ class CommitteesControllerTest < ActionController::TestCase
        end
 
        should_assign_to :committee
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'application/xml'
+       should respond_with_content_type 'application/xml'
        
        should "include members in response" do
          assert_select "committee member"
@@ -107,9 +107,9 @@ class CommitteesControllerTest < ActionController::TestCase
        end
 
        should_assign_to :committee
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'application/json'
+       should respond_with_content_type 'application/json'
        
        should "include members in response" do
          assert_match /committee\":.+members\":/, @response.body
@@ -130,9 +130,9 @@ class CommitteesControllerTest < ActionController::TestCase
        end
 
        should_assign_to(:committee) { @committee }
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'text/calendar'
+       should respond_with_content_type 'text/calendar'
      end
      
      context "with rdf request" do
@@ -141,9 +141,9 @@ class CommitteesControllerTest < ActionController::TestCase
        end
 
        should_assign_to(:committee) { @committee }
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'application/rdf+xml'
+       should respond_with_content_type 'application/rdf+xml'
 
        should "show rdf headers" do
          assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
@@ -193,8 +193,8 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should_assign_to :committees
        should_assign_to(:council) { @council }
-       should_respond_with :success
-       should_render_template :index
+       should respond_with :success
+       should render_template :index
 
        should "show council in title" do
          assert_select "title", /#{@council.title}/
@@ -232,8 +232,8 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should_assign_to :committees
        should_assign_to(:council) { @council }
-       should_respond_with :success
-       should_render_template :index
+       should respond_with :success
+       should render_template :index
 
        should "not show link to include inactive committees" do
          assert_select "a[href*=include_inactive]", :text =>/include inactive/i, :count =>0
@@ -255,9 +255,9 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should_assign_to :committees
        should_assign_to(:council) { @council }
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'application/xml'
+       should respond_with_content_type 'application/xml'
        
        should "list committees" do
          assert_select "committees>committee>title", @committee.title
@@ -279,9 +279,9 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should_assign_to :committees
        should_assign_to(:council) { @council }
-       should_respond_with :success
+       should respond_with :success
        should_render_without_layout
-       should_respond_with_content_type 'application/json'
+       should respond_with_content_type 'application/json'
        
        should "list committees" do
          assert_match /committees\":.+title\":\"#{@committee.title}/, @response.body
@@ -300,7 +300,7 @@ class CommitteesControllerTest < ActionController::TestCase
    
    context "on GET to :index without council_id" do
 
-     # should_respond_with :failure
+     # should respond_with :failure
      should "raise an exception" do
        assert_raise(ActiveRecord::RecordNotFound) { get :index }
      end

@@ -16,8 +16,8 @@ class CommitteeTest < ActiveSupport::TestCase
     should_have_many :memberships
     should_have_many :members, :through => :memberships
     should_have_many :related_articles
-    should_belong_to :council
-    should_belong_to :ward
+    should belong_to :council
+    should belong_to :ward
     should_have_named_scope :active
     
     should "include ScraperModel mixin" do

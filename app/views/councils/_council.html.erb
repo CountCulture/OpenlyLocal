@@ -1,4 +1,5 @@
     <%- div_for council do -%>
+    <%= content_tag( :div, council.open_data_status.titleize, :class => council.open_data_status) if params[:show_open_status] %>
       <div class='area'>
         <%= council.region? ? "#{link_to council.region, params.merge(:region => council.region) }, " : '' %><%= link_to council.country, params.merge(:country => council.country) %>
       </div>
@@ -7,5 +8,6 @@
         <span class="address"><%= council.address %></span>, <span class='telephone'><%= council.telephone %></span>, <%= link_to(council.url, council.url, :class => 'external') if council.url? %>
         <%= link_to("News feed", council.feed_url, :class => "feed") if council.feed_url? %>
         <%= twitter_link_for(council.twitter_account_name) %> 
+        <%= link_to("Open Data", council.open_data_url, :class => "open_data_link") if council.open_data_url? %> 
       </div>
     <%- end -%>

@@ -8,8 +8,8 @@ class UserSubmissionTest < ActiveSupport::TestCase
       @user_submission = Factory(:user_submission)
     end
     
-    should_belong_to :council
-    should_belong_to :member
+    should belong_to :council
+    should belong_to :member
     should_validate_presence_of :council_id
     should_have_db_columns :twitter_account_name, :member_name, :blog_url, :facebook_account_name, :linked_in_account_name, :approved
     should_not_allow_mass_assignment_of :approved

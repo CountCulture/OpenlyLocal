@@ -8,7 +8,7 @@ class PoliceTeamTest < ActiveSupport::TestCase
       @police_team = Factory(:police_team)
     end
     
-    should_belong_to :police_force
+    should belong_to :police_force
     should_have_many :police_officers
     should_have_many :wards
     should_validate_presence_of :uid

@@ -11,7 +11,7 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
     should_validate_presence_of :name
     should_validate_presence_of :police_force_id
     should_validate_uniqueness_of :name, :police_force_id
-    should_belong_to :police_force
+    should belong_to :police_force
     should_have_many :councils, :through => :police_force
     
     should_have_db_column :url

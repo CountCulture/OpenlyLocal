@@ -42,9 +42,9 @@ class AreasControllerTest < ActionController::TestCase
       should_assign_to(:ward) { @ward }
       should_assign_to(:members) { [@member_1] }
 
-      should_respond_with :success
-      should_render_template :search
-      should_respond_with_content_type 'text/html'
+      should respond_with :success
+      should render_template :search
+      should respond_with_content_type 'text/html'
       
       should 'show nice postcode in title' do
         assert_select 'title', /ZA13 3SL/
@@ -91,7 +91,7 @@ class AreasControllerTest < ActionController::TestCase
           get :search, :postcode => 'za13 3sl'
         end
         
-        should_respond_with :success
+        should respond_with :success
 
         should "show link to committee" do
           assert_select "#committees a", /#{@committee.title}/
@@ -163,9 +163,9 @@ class AreasControllerTest < ActionController::TestCase
 
         should_assign_to(:postcode) { @postcode }
 
-        should_respond_with :success
-        should_render_template :search
-        should_respond_with_content_type 'text/html'
+        should respond_with :success
+        should render_template :search
+        should respond_with_content_type 'text/html'
 
 
         should 'show crime area' do
@@ -206,9 +206,9 @@ class AreasControllerTest < ActionController::TestCase
         should_assign_to(:ward) { @ward }
         should_assign_to(:members) { [@member_1] }
 
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/xml'
+        should respond_with_content_type 'application/xml'
 
         should "return postcode" do
           assert_select "postcode>code", @postcode.code
@@ -255,9 +255,9 @@ class AreasControllerTest < ActionController::TestCase
         should_assign_to(:ward) { @ward }
         should_assign_to(:members) { [@member_1] }
 
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/json'
+        should respond_with_content_type 'application/json'
 
         should "include councillors in response" do
           assert_match /postcode\":.+members\":.+id/m, @response.body
@@ -303,7 +303,7 @@ class AreasControllerTest < ActionController::TestCase
         get :search, :postcode => 'foo1'
       end
   
-      should_respond_with :success
+      should respond_with :success
       should_render_with_layout
       should 'say so' do
         assert_select '.alert', /couldn't find postcode/i
@@ -315,7 +315,7 @@ class AreasControllerTest < ActionController::TestCase
         get :search, :postcode => nil
       end
   
-      should_respond_with :success
+      should respond_with :success
       should_render_with_layout
       should 'say so' do
         assert_select '.alert', /couldn't find postcode/i
@@ -328,7 +328,7 @@ class AreasControllerTest < ActionController::TestCase
         get :search, :postcode => "#{@another_postcode.code}"
       end
   
-      should_respond_with :success
+      should respond_with :success
       should_render_with_layout
       should 'say no info about this area' do
         assert_select '.alert', /No info/i

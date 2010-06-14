@@ -17,9 +17,9 @@ class MainControllerTest < ActionController::TestCase
     end
   
     should_assign_to :councils
-    should_respond_with :success
-    should_render_template :index
-    should_not_set_the_flash
+    should respond_with :success
+    should render_template :index
+    should_not set_the_flash
     
     should "have basic title" do
       assert_select "title", /Openly Local.+Local Government/

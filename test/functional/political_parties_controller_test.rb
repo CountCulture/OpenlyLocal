@@ -14,8 +14,8 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:political_parties) { PoliticalParty.all}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "list political parties" do
         assert_select "li", /#{@political_party.name}/
       end
@@ -32,7 +32,7 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
       get :edit, :id => @political_party
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
   
   context "on GET to :edit with existing record" do
@@ -42,8 +42,8 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:political_party)
-    should_respond_with :success
-    should_render_template :edit
+    should respond_with :success
+    should render_template :edit
   
     should "show form" do
       assert_select "form#edit_political_party_#{@political_party.id}"
@@ -57,7 +57,7 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
         put :update, :id => @political_party.id, :political_party => { :name => "New Name", :url => "http://new.name.com"}
       end
 
-      should_respond_with 401
+      should respond_with 401
     end
     
     context "with valid params" do
@@ -84,8 +84,8 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
       should_not_change "PoliceForce.count"
       should_not_change "@political_party.reload.name"
       should_assign_to :political_party
-      should_render_template :edit
-      should_not_set_the_flash
+      should render_template :edit
+      should_not set_the_flash
     end
   
   end

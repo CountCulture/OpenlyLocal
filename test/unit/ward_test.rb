@@ -10,8 +10,8 @@ class WardTest < ActiveSupport::TestCase
     should_validate_presence_of :name
     # should_validate_uniqueness_of :name, :scoped_to => [:council_id, :defunkt] #note doesn't seem to take any notice of defunkt_scope so tested properly below
     # should_validate_uniqueness_of :snac_id#, :allow_nil => true
-    should_belong_to :council
-    should_belong_to :police_team
+    should belong_to :council
+    should belong_to :police_team
     should_validate_presence_of :council_id
     should_have_many :members
     should_have_many :committees
@@ -20,7 +20,7 @@ class WardTest < ActiveSupport::TestCase
     should_have_many :polls
     should_have_many :dataset_topics, :through => :datapoints
     should_have_one  :boundary
-    should_belong_to :crime_area
+    should belong_to :crime_area
     should_have_db_column :uid
     should_have_db_column :snac_id
     should_have_db_column :url

@@ -4,7 +4,7 @@ class ParserTest < Test::Unit::TestCase
   
   context "The Parser class" do
     should_have_many :scrapers
-    should_belong_to :portal_system
+    should belong_to :portal_system
     should_validate_presence_of :result_model
     should_validate_presence_of :scraper_type
     should_allow_values_for :result_model, "Member", "Committee", "Meeting", "Ward"

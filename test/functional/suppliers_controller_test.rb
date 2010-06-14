@@ -12,8 +12,8 @@ class SuppliersControllerTest < ActionController::TestCase
     end
 
     should_assign_to(:supplier) { @supplier}
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     should_assign_to(:organisation) { @organisation }
 
     should "show supplier name in title" do
@@ -35,9 +35,9 @@ class SuppliersControllerTest < ActionController::TestCase
     end
 
     should_assign_to(:supplier) { @supplier }
-    should_respond_with :success
+    should respond_with :success
     should_render_without_layout
-    should_respond_with_content_type 'application/xml'
+    should respond_with_content_type 'application/xml'
     # should "return full attributes only" do
     #   assert_select "document>title"
     #   assert_select "document>url"
@@ -52,9 +52,9 @@ class SuppliersControllerTest < ActionController::TestCase
     end
 
     should_assign_to(:supplier) { @supplier }
-    should_respond_with :success
+    should respond_with :success
     should_render_without_layout
-    should_respond_with_content_type 'application/json'
+    should respond_with_content_type 'application/json'
   end
 
 end

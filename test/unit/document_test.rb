@@ -14,7 +14,7 @@ class DocumentTest < ActiveSupport::TestCase
     should_validate_presence_of :url
     should_validate_presence_of :document_owner_id
     should_validate_presence_of :document_owner_type
-    should_belong_to :document_owner
+    should belong_to :document_owner
     should_have_db_column :raw_body, :precis
     
     should "validate presence of body" do

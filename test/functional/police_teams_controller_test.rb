@@ -15,8 +15,8 @@ class PoliceTeamsControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:police_team) { @police_team}
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     should_render_with_layout
   
     should "show police_team in title" do

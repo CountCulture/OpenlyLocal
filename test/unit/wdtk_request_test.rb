@@ -11,7 +11,7 @@ class WdtkRequestTest < ActiveSupport::TestCase
     end
     should_validate_presence_of :title, :council_id
     should_validate_uniqueness_of :url
-    should_belong_to :council
+    should belong_to :council
     
     should "by default return most recently updated first" do
       new_record = Factory(:wdtk_request, :council => @council)

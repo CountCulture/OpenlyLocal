@@ -13,8 +13,8 @@ class ScraperTest < ActiveSupport::TestCase
     setup do
       @scraper = Factory.create(:scraper)
     end
-    should_belong_to :parser
-    should_belong_to :council
+    should belong_to :parser
+    should belong_to :council
     should_validate_presence_of :council_id
     should_accept_nested_attributes_for :parser
 

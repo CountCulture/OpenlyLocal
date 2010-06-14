@@ -9,6 +9,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/all', :controller => "councils", :action => "index", :include_unparsed => true
   map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"
   map.connect 'councils/all.json', :controller => "councils", :action => "index", :include_unparsed => true, :format => "json"
+  map.connect 'councils/open', :controller => "councils", :action => "index", :show_open_status => true
+  map.connect 'councils/open.xml', :controller => "councils", :action => "index", :show_open_status => true, :format => "xml"
+  map.connect 'councils/open.json', :controller => "councils", :action => "index", :show_open_status => true, :format => "json"
   
   # map.connect 'meetings.:format', :controller => "meetings", :action => "index"
   # map.connect 'meetings', :controller => "meetings", :action => "index"

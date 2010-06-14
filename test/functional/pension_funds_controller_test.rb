@@ -14,8 +14,8 @@ class PensionFundsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:pension_funds) { PensionFund.find(:all)}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "list pension funds" do
         assert_select "li a", @pension_fund.name
       end
@@ -39,9 +39,9 @@ class PensionFundsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:pension_funds) { PensionFund.find(:all) }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
     end
 
     context "with json requested" do
@@ -50,9 +50,9 @@ class PensionFundsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:pension_funds) { PensionFund.find(:all) }
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
     end
   end
   
@@ -64,8 +64,8 @@ class PensionFundsControllerTest < ActionController::TestCase
     end
   
     should_assign_to(:pension_fund) { @pension_fund}
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     should_render_with_layout
   
     should 'show title' do
@@ -85,7 +85,7 @@ class PensionFundsControllerTest < ActionController::TestCase
       get :edit, :id => @pension_fund.id
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on get to :edit a pension_fund" do
@@ -95,9 +95,9 @@ class PensionFundsControllerTest < ActionController::TestCase
     end
 
     should_assign_to :pension_fund
-    should_respond_with :success
-    should_render_template :edit
-    should_not_set_the_flash
+    should respond_with :success
+    should render_template :edit
+    should_not set_the_flash
     should "display a form" do
      assert_select "form#edit_pension_fund_#{@pension_fund.id}"
     end
@@ -111,7 +111,7 @@ class PensionFundsControllerTest < ActionController::TestCase
                      :pension_fund => { :name => "New name"}}
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on PUT to :update" do

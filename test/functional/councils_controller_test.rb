@@ -28,6 +28,12 @@ class CouncilsControllerTest < ActionController::TestCase
       assert_routing("councils/all.json", {:controller => "councils", :action => "index", :include_unparsed => true , :format => "json" })
     end
     
+    should "route open councils to index with show_open_status true" do
+      assert_routing("councils/open", {:controller => "councils", :action => "index", :show_open_status => true})
+      assert_routing("councils/open.xml", {:controller => "councils", :action => "index", :show_open_status => true , :format => "xml" })
+      assert_routing("councils/open.json", {:controller => "councils", :action => "index", :show_open_status => true , :format => "json" })
+    end
+    
     should "route regular resource routes for index action" do
       assert_routing("councils", {:controller => "councils", :action => "index"})
       assert_routing("councils.xml", {:controller => "councils", :action => "index", :format => "xml" })
@@ -46,8 +52,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:councils) { [@council]} # only parsed councils
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "have appropriate title" do
         assert_select "title", /UK Local Authorities\/Councils With Opened Up Data/
       end
@@ -76,8 +82,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:councils) { Council.find(:all, :order => "name")} # all councils
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "class unparsed councils as unparsed" do
         assert_select "#councils .unparsed", @another_council.name
       end
@@ -89,6 +95,28 @@ class CouncilsControllerTest < ActionController::TestCase
       end
     end
     
+    context "when showing open_status" do
+      setup do
+        @another_council.update_attribute(:open_data_url, 'http://anothercouncil.gov.uk/open')
+        get :index, :show_open_status => true
+      end
+  
+      should_assign_to(:councils) { Council.find(:all, :order => "name")} # all councils
+      should respond_with :success
+      should render_template :open
+      should "identify those with open data" do
+        assert_select ".council .open_data"
+      end
+      
+      should "identify those without open data" do
+        assert_select ".council .no_open_data"
+      end
+      
+      should "have appropriate title" do
+        assert_select "title", /open data scoreboard/i
+      end
+    end
+    
     context "with search term" do
       setup do
         @member = Factory(:member, :council => @another_council) # make another_council parsed
@@ -96,8 +124,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:councils) { [@council] }
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "have appropriate title" do
         assert_select "title", /UK Local Authorities\/Councils With Opened Up Data With \'Any\'/i
       end
@@ -109,7 +137,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:councils) { [@another_council] }
-      should_respond_with :success
+      should respond_with :success
       should "have appropriate title" do
         assert_select "title", /UK Local Authorities\/Councils With \'Anot\'/i
       end
@@ -120,7 +148,7 @@ class CouncilsControllerTest < ActionController::TestCase
         get :index, :term => "foobar"
       end
   
-      should_respond_with :success
+      should respond_with :success
       should "show message" do
         assert_select "p.alert", /No councils found/i
       end
@@ -134,8 +162,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:councils) { [@another_council] }
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "have appropriate title" do
         assert_select "title", /UK Local Authorities\/Councils in North-West/i
       end
@@ -148,9 +176,9 @@ class CouncilsControllerTest < ActionController::TestCase
         end
 
         should_assign_to(:councils) { [@council]}
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/xml'
+        should respond_with_content_type 'application/xml'
       end
       
       context "and search term" do
@@ -160,9 +188,9 @@ class CouncilsControllerTest < ActionController::TestCase
         end
 
         should_assign_to(:councils) { [@council] }
-        should_respond_with :success
+        should respond_with :success
         should_render_without_layout
-        should_respond_with_content_type 'application/xml'
+        should respond_with_content_type 'application/xml'
       end
     end
     
@@ -172,9 +200,9 @@ class CouncilsControllerTest < ActionController::TestCase
       end
   
       should_assign_to(:councils) { [@council]}
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
     end
     
     context "with rdf request and missing attributes" do
@@ -182,9 +210,9 @@ class CouncilsControllerTest < ActionController::TestCase
         get :index, :format => "rdf"
       end
      
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rdf+xml'
+      should respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
@@ -232,7 +260,7 @@ class CouncilsControllerTest < ActionController::TestCase
         get :show, :id => @council.id, :redirect_from_resource => true
       end
 
-      should_respond_with 303
+      should respond_with 303
       should_redirect_to("the council show page") {council_url(:id => @council.id)}
     end
     
@@ -243,8 +271,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:council) { @council}
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
       should_assign_to(:members) { @council.members.current }
       should_assign_to(:committees) { [@committee] }
       
@@ -325,8 +353,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:council) { @council }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "show council in title" do
         assert_select "title", /#{@council.title}/
@@ -340,8 +368,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:council) { @council }
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "show council in title" do
         assert_select "title", /#{@council.title}/
@@ -354,9 +382,9 @@ class CouncilsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:council) { @council}
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/xml'
+      should respond_with_content_type 'application/xml'
       
       should "show associated members" do
         assert_select "council>members>member>first-name", @member.first_name
@@ -386,9 +414,9 @@ class CouncilsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:council) { @council}
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/json'
+      should respond_with_content_type 'application/json'
 
       should "show associated members" do
         assert_match /member.+#{@member.first_name}/, @response.body
@@ -415,9 +443,9 @@ class CouncilsControllerTest < ActionController::TestCase
       end
      
       should_assign_to :council
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rdf+xml'
+      should respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
         assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
@@ -506,9 +534,9 @@ class CouncilsControllerTest < ActionController::TestCase
       end
      
       should_assign_to :council
-      should_respond_with :success
+      should respond_with :success
       should_render_without_layout
-      should_respond_with_content_type 'application/rdf+xml'
+      should respond_with_content_type 'application/rdf+xml'
      
       should "show relationship with child authorities" do
         assert_match /rdf:Description.+\/id\/councils\/#{@council.id}.+openlylocal:isParentAuthorityOf.+\/id\/councils\/#{@another_council.id}/m, @response.body
@@ -634,7 +662,7 @@ class CouncilsControllerTest < ActionController::TestCase
       get :new
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
   
   context "on GET to :new" do
@@ -644,8 +672,8 @@ class CouncilsControllerTest < ActionController::TestCase
     end
 
     should_assign_to(:council)
-    should_respond_with :success
-    should_render_template :new
+    should respond_with :success
+    should render_template :new
 
     should "show form" do
       assert_select "form#new_council"
@@ -668,7 +696,7 @@ class CouncilsControllerTest < ActionController::TestCase
          post :create, :council => @council_params
        end
 
-       should_respond_with 401
+       should respond_with 401
      end
      
      context "with valid params" do
@@ -677,7 +705,7 @@ class CouncilsControllerTest < ActionController::TestCase
          post :create, :council => @council_params
        end
      
-       should_change "Council.count", :by => 1
+       should_create :council
        should_assign_to :council
        should_redirect_to( "the show page for council") { council_path(assigns(:council)) }
        should_set_the_flash_to "Successfully created council"
@@ -692,8 +720,8 @@ class CouncilsControllerTest < ActionController::TestCase
      
        should_not_change( "Number of councils" ){"Council.count"}
        should_assign_to :council
-       should_render_template :new
-       should_not_set_the_flash
+       should render_template :new
+       should_not set_the_flash
      end
    end  
 
@@ -703,7 +731,7 @@ class CouncilsControllerTest < ActionController::TestCase
        get :edit, :id => @council
      end
 
-     should_respond_with 401
+     should respond_with 401
    end
 
    context "on GET to :edit with existing record" do
@@ -713,8 +741,8 @@ class CouncilsControllerTest < ActionController::TestCase
      end
 
      should_assign_to(:council)
-     should_respond_with :success
-     should_render_template :edit
+     should respond_with :success
+     should render_template :edit
 
      should "show form" do
        assert_select "form#edit_council_#{@council.id}"
@@ -733,7 +761,7 @@ class CouncilsControllerTest < ActionController::TestCase
         put :update, :id => @council.id, :council => @council_params
       end
 
-      should_respond_with 401
+      should respond_with 401
     end
     
     context "with valid params" do
@@ -760,8 +788,8 @@ class CouncilsControllerTest < ActionController::TestCase
       should_not_change "Council.count"
       should_not_change "@council.reload.name"
       should_assign_to :council
-      should_render_template :edit
-      should_not_set_the_flash
+      should render_template :edit
+      should_not set_the_flash
     end
 
   end  

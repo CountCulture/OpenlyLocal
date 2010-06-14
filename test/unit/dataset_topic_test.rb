@@ -9,8 +9,8 @@ class DatasetTopicTest < ActiveSupport::TestCase
     should_validate_presence_of :title
     # should_validate_presence_of :ons_uid
     should_validate_presence_of :dataset_family_id
-    should_belong_to :dataset_family
-    should_belong_to :dataset_topic_grouping
+    should belong_to :dataset_family
+    should belong_to :dataset_topic_grouping
     should_have_many :datapoints
     should_have_db_column :muid, :description, :data_date, :short_title
     

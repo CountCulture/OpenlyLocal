@@ -9,7 +9,7 @@ class ScrapersControllerTest < ActionController::TestCase
       get :index
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
   
   context "on GET to :index" do
@@ -26,9 +26,9 @@ class ScrapersControllerTest < ActionController::TestCase
   
     should_assign_to( :councils_with_scrapers) { [@council2, @council1 ] }
     should_assign_to( :councils_without_scrapers) { [@council3] }
-    should_respond_with :success
-    should_render_template :index
-    should_not_set_the_flash
+    should respond_with :success
+    should render_template :index
+    should_not set_the_flash
     
     should "list all councils with scrapers" do
       assert_select "#councils #with_scrapers" do
@@ -74,7 +74,7 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :show for first record" do
@@ -87,8 +87,8 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   
     should_assign_to :scraper
-    should_respond_with :success
-    should_render_template :show
+    should respond_with :success
+    should render_template :show
     
     should "show scraper title in page title" do
       assert_select "title", /#{@scraper.title}/
@@ -140,7 +140,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   
     should_assign_to :scraper, :results
-    should_respond_with :success
+    should respond_with :success
     
     should "show summary of successful results" do
       assert_select "#results" do
@@ -168,7 +168,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
     
     should_assign_to :scraper
-    should_respond_with :success
+    should respond_with :success
     
     should "show summary of problems" do
       assert_select "div.errorExplanation" do
@@ -188,7 +188,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
     
     should_assign_to :scraper, :results
-    should_respond_with :success
+    should respond_with :success
     
     should "show summary of problems" do
       assert_select "div.errorExplanation" do
@@ -238,7 +238,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   
     should_assign_to :scraper, :results, :results_summary
-    should_respond_with :success
+    should respond_with :success
     should_change "Member.count", :by => 1
     
     should "show summary of successful results" do
@@ -273,7 +273,7 @@ class ScrapersControllerTest < ActionController::TestCase
     
     should_assign_to :scraper, :results
     should_change "Member.count", :by => 1 # => Not two
-    should_respond_with :success
+    should respond_with :success
     should "show summary of problems" do
       assert_select "div.member div.errorExplanation" do
         assert_select "li", "Url can't be blank"
@@ -295,7 +295,7 @@ class ScrapersControllerTest < ActionController::TestCase
       get :new, :type  => "InfoScraper", :council_id => @council.id
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on GET to :new with no scraper type given" do
@@ -331,9 +331,9 @@ class ScrapersControllerTest < ActionController::TestCase
       end
   
       should_assign_to :scraper
-      should_respond_with :success
-      should_render_template :new
-      should_not_set_the_flash
+      should respond_with :success
+      should render_template :new
+      should_not set_the_flash
       should_render_a_form
   
       should "assign given type of scraper" do
@@ -408,9 +408,9 @@ class ScrapersControllerTest < ActionController::TestCase
       end
   
       should_assign_to :scraper
-      should_respond_with :success
-      should_render_template :new
-      should_not_set_the_flash
+      should respond_with :success
+      should render_template :new
+      should_not set_the_flash
       should_render_a_form
   
       should "assign given type of scraper" do
@@ -434,9 +434,9 @@ class ScrapersControllerTest < ActionController::TestCase
       end
     
       should_assign_to :scraper 
-      should_respond_with :success
-      should_render_template :new
-      should_not_set_the_flash
+      should respond_with :success
+      should render_template :new
+      should_not set_the_flash
       should_render_a_form
       
       should "assign appropriate parser to scraper" do
@@ -475,9 +475,9 @@ class ScrapersControllerTest < ActionController::TestCase
       end
     
       should_assign_to :scraper 
-      should_respond_with :success
-      should_render_template :new
-      should_not_set_the_flash
+      should respond_with :success
+      should render_template :new
+      should_not set_the_flash
       should_render_a_form
       
       should "assign appropriate parser to scraper" do
@@ -512,9 +512,9 @@ class ScrapersControllerTest < ActionController::TestCase
       end
     
       should_assign_to :scraper 
-      should_respond_with :success
-      should_render_template :new
-      should_not_set_the_flash
+      should respond_with :success
+      should render_template :new
+      should_not set_the_flash
       should_render_a_form
       
       should "assign appropriate fresh parser to scraper" do
@@ -562,7 +562,7 @@ class ScrapersControllerTest < ActionController::TestCase
         post :create, { :type => "InfoScraper", :scraper => @scraper_params }
       end
 
-      should_respond_with 401
+      should respond_with 401
     end
     
     context "with no scraper type given" do
@@ -662,7 +662,7 @@ class ScrapersControllerTest < ActionController::TestCase
       get :edit, :id => @scraper.id
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on get to :edit a scraper" do
@@ -673,9 +673,9 @@ class ScrapersControllerTest < ActionController::TestCase
     end
     
     should_assign_to :scraper
-    should_respond_with :success
-    should_render_template :edit
-    should_not_set_the_flash
+    should respond_with :success
+    should render_template :edit
+    should_not set_the_flash
     should_render_a_form
     
     should "show nested form for parser " do
@@ -698,8 +698,8 @@ class ScrapersControllerTest < ActionController::TestCase
     end
     
     should_assign_to :scraper
-    should_respond_with :success
-    should_render_template :edit
+    should respond_with :success
+    should render_template :edit
     
     should "not show link to write new parser" do
       assert_select "form p.alert a", :text => /add new/i, :count => 0 
@@ -717,7 +717,7 @@ class ScrapersControllerTest < ActionController::TestCase
                                    :parser_attributes => { :id => @scraper.parser.id, :description => "new parsing description", :item_parser => "some code" }}}
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
   
   context "on PUT to :update" do
@@ -750,7 +750,7 @@ class ScrapersControllerTest < ActionController::TestCase
       delete :destroy, :id => @scraper.id
     end
   
-    should_respond_with 401
+    should respond_with 401
   end
   
   context "on delete to :destroy a scraper" do

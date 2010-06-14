@@ -25,8 +25,8 @@ class DatasetsControllerTest < ActionController::TestCase
       end
 
       should_assign_to(:datasets) { Dataset.all}
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
       should "list datasets" do
         assert_select "li a", @dataset.title
       end
@@ -47,8 +47,8 @@ class DatasetsControllerTest < ActionController::TestCase
       end
 
       should_assign_to :dataset
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
 
       should "include statistical dataset in page title" do
         assert_select "title", /#{@dataset.title}/
@@ -77,8 +77,8 @@ class DatasetsControllerTest < ActionController::TestCase
 
       should_assign_to :dataset
       should_assign_to :datapoints
-      should_respond_with :success
-      should_render_template :show
+      should respond_with :success
+      should render_template :show
       
       should "show council datapoints in table" do
         assert_select "table.statistics tr", /#{@council_1.name}/ do
@@ -111,8 +111,8 @@ class DatasetsControllerTest < ActionController::TestCase
 
         should_assign_to :dataset
         should_assign_to(:area) { @council }
-        should_respond_with :success
-        should_render_template :show
+        should respond_with :success
+        should render_template :show
         
         should "assign to datapoints bare datapoints with correct values in desc order" do
            dps = assigns(:datapoints)
@@ -155,7 +155,7 @@ class DatasetsControllerTest < ActionController::TestCase
       get :edit, :id => @dataset.id
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on get to :edit a Dataset" do
@@ -165,9 +165,9 @@ class DatasetsControllerTest < ActionController::TestCase
     end
 
     should_assign_to :dataset
-    should_respond_with :success
-    should_render_template :edit
-    should_not_set_the_flash
+    should respond_with :success
+    should render_template :edit
+    should_not set_the_flash
     should "display a form" do
      assert_select "form#edit_dataset_#{@dataset.id}"
     end
@@ -181,7 +181,7 @@ class DatasetsControllerTest < ActionController::TestCase
                      :dataset => { :title => "New title"}}
     end
 
-    should_respond_with 401
+    should respond_with 401
   end
 
   context "on PUT to :update a Dataset" do

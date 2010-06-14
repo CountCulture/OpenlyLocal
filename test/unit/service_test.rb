@@ -13,8 +13,8 @@ class ServiceTest < ActiveSupport::TestCase
       @another_service = Factory(:service, :title => "Bar Service", :council => @council) # category 'Foo 1'
     end
     
-    should_belong_to :council
-    should_belong_to :ldg_service
+    should belong_to :council
+    should belong_to :ldg_service
     should_validate_presence_of :council_id 
     should_validate_presence_of :title 
     should_validate_presence_of :url
