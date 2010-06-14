@@ -6,9 +6,8 @@ class SuppliersController < ApplicationController
     @title = @supplier.title
     respond_to do |format|
       format.html
-      format.xml { render :xml => @supplier.to_xml }
-      format.json { render :as_json => @supplier.to_xml }
-      # format.rss { render :layout => false }
+      format.xml { render :xml => @supplier.to_xml(:include => :financial_transactions) }
+      format.json { render :as_json => @supplier.to_xml(:include => :financial_transactions) }
     end
     
   end

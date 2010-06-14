@@ -23,10 +23,7 @@ class SuppliersControllerTest < ActionController::TestCase
     should "show list financial transactions" do
       assert_select "#financial_transactions .value", /#{@financial_transaction.value}/
     end
-    # 
-    # should "show link to other documents" do
-    #   assert_select "p.extra_info a[href='/documents?council_id=#{@council.id}']", /other committee documents/i
-    # end 
+
   end  
 
   context "with xml requested" do
@@ -38,12 +35,9 @@ class SuppliersControllerTest < ActionController::TestCase
     should respond_with :success
     should_render_without_layout
     should respond_with_content_type 'application/xml'
-    # should "return full attributes only" do
-    #   assert_select "document>title"
-    #   assert_select "document>url"
-    #   assert_select "document>openlylocal-url"
-    #   assert_select "document>body"
-    # end
+    should "include financial_transactions" do
+      assert_select "supplier>financial-transactions>financial-transaction>id", "#{@financial_transaction.id}"
+    end
   end
 
   context "with json requested" do
@@ -55,6 +49,9 @@ class SuppliersControllerTest < ActionController::TestCase
     should respond_with :success
     should_render_without_layout
     should respond_with_content_type 'application/json'
+    should "include financial_transactions" do
+      assert_match /supplier\":.+financial_transactions\":.+id\":#{@financial_transaction.id}/, @response.body
+    end
   end
 
 end
