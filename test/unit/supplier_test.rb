@@ -90,6 +90,30 @@ class SupplierTest < ActiveSupport::TestCase
         assert_equal 'http://companiesopen.org/uk/012345/companies_house', @supplier.companies_house_url
       end
       
+      should "return nil if company_number -1" do
+        @supplier.company_number = '-1'
+        assert_nil @supplier.companies_house_url
+      end
+      
+    end
+
+    context 'when returning company_number' do
+      should 'return nil if blank?' do
+        assert_nil @supplier.company_number
+        @supplier.company_number = ''
+        assert_nil @supplier.company_number
+      end
+      
+      should "return company_number if set" do
+        @supplier.company_number = '012345'
+        assert_equal '012345', @supplier.company_number
+      end
+      
+      should "return nil if company_number -1" do
+        @supplier.company_number = '-1'
+        assert_nil @supplier.company_number
+      end
+      
     end
 
   end

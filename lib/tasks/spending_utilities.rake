@@ -33,7 +33,7 @@ end
 
 desc "Match suppliers to compaies"
 task :match_suppliers_to_companies => :environment do
-  unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (name LIKE '%Ltd%' OR name LIKE '%Limited%' OR name LIKE '%PLC%')", :limit => 5)
+  unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (name LIKE '%Ltd%' OR name LIKE '%Limited%' OR name LIKE '%PLC%') AND name !='-1'", :limit => 200)
   unmatched_suppliers.each do |supplier|
     normalised_name = supplier.name.sub(/\bT\/A\b.+/i, '').gsub(/\(.+\)/,'').squish
     client = HTTPClient.new
@@ -45,14 +45,15 @@ task :match_suppliers_to_companies => :environment do
     elsif (possibles = Hpricot(resp.body.content).search('li a')) && possibles.size > 0
       puts "Found #{possibles.size} possible results for #{supplier.name}: #{possibles.collect(&:inner_text).join(', ')}"
       if likely = possibles.detect{|p| Supplier.normalise_title(p.inner_text) == Supplier.normalise_title(supplier.name)}
-      supplier.update_attribute(:company_number, likely[:href].scan(/\/(\d+)\//).to_s)
-      puts "Chosen and used company number from #{likely.inner_text}"
+        supplier.update_attribute(:company_number, likely[:href].scan(/\/(\d+)\//).to_s)
+        puts "Chosen and used company number from #{likely.inner_text}"
       else
         puts '** No suitable match found'
+        supplier.update_attribute(:company_number, '-1')
       end
     else
       puts "** No results for #{supplier.name}."
-      # puts "** Response content: #{resp.body.content}"
+      supplier.update_attribute(:company_number, '-1')
     end
     puts "=======================\n"
     sleep 2 # give server a break

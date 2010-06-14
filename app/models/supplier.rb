@@ -15,9 +15,14 @@ class Supplier < ActiveRecord::Base
     TitleNormaliser.normalise_title(semi_normed_title).downcase
   end
   
+  # overwrites normal accessor to return nil if company_number attribute is blank or '-1' (which is used to denote failed search)
+  def company_number
+    (self[:company_number].blank? || self[:company_number] == '-1') ? nil : self[:company_number]
+  end
+  
   # returns companies_house url via companies open house redirect
   def companies_house_url
-    "http://companiesopen.org/uk/#{company_number}/companies_house" if company_number?
+    "http://companiesopen.org/uk/#{company_number}/companies_house" unless company_number.blank?
   end
   
 end
