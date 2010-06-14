@@ -10,7 +10,7 @@ class OldDatasetTest < ActiveSupport::TestCase
 
     should_have_db_columns :title, :source, :key, :query, :description, :originator, :originator_url, :summary_column, :last_checked
     should_validate_presence_of :title, :key, :query
-    should_have_many :old_datapoints
+    should have_many :old_datapoints
 
     should "have base_url" do
       assert_match /spreadsheets.google/, OldDataset::BASE_URL

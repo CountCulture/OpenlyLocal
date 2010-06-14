@@ -1,5 +1,10 @@
 <h1><%= @title %></h1>
 
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :company_number, link_to(@supplier.company_number, @supplier.companies_house_url) if @supplier.company_number? %>
+  <%= attribute_tag :website, link_to(@supplier.url, @supplier.url) if @supplier.url? %>
+</dl>
+
 <table class='statistics' id='financial_transactions'>
   <%= content_tag :caption, "Money paid to this supplier by #{link_for @organisation }" %>
   <tr><th>Date</th><th>Department</th><th>Category</th><th class='value'>Value</th></tr>
@@ -12,6 +17,4 @@
     </tr>
   <%- end -%>
 </table>
-<div class='source attribution'>
-  Source: <%#= link_to @poll.source, @poll.source, :class => 'external' %>
-</div>
+

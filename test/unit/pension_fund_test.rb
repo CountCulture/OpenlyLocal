@@ -8,7 +8,7 @@ class PensionFundTest < ActiveSupport::TestCase
       @pension_fund = Factory(:pension_fund)
     end
     
-    should_have_many :councils 
+    should have_many :councils 
     should_validate_presence_of :name
     should_validate_uniqueness_of :name
     

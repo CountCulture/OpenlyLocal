@@ -27,7 +27,7 @@ class AreaMethodsTest < ActiveSupport::TestCase
       end
     end
     
-    should_have_many :datapoints
+    should have_many :datapoints
     context 'and datapoints association' do
       setup do
         @datapoint = Factory(:datapoint, :area => @test_area)

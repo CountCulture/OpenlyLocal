@@ -4,10 +4,10 @@ class MemberTest < ActiveSupport::TestCase
   should_validate_presence_of :last_name, :url, :council_id
   should belong_to :council
   should belong_to :ward
-  should_have_many :memberships
-  should_have_many :candidacies
-  should_have_many :committees, :through => :memberships
-  should_have_many :related_articles
+  should have_many :memberships
+  should have_many :candidacies
+  should have_many :committees, :through => :memberships
+  should have_many :related_articles
   should_have_named_scope :current, :conditions => "date_left IS NULL"
   should_have_db_columns :address, :blog_url, :facebook_account_name, :linked_in_account_name
   

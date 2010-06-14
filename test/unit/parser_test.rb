@@ -3,7 +3,7 @@ require 'test_helper'
 class ParserTest < Test::Unit::TestCase
   
   context "The Parser class" do
-    should_have_many :scrapers
+    should have_many :scrapers
     should belong_to :portal_system
     should_validate_presence_of :result_model
     should_validate_presence_of :scraper_type

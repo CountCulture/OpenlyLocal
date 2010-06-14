@@ -16,7 +16,7 @@ class MeetingTest < ActiveSupport::TestCase
     should_validate_presence_of :council_id
     should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
     should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
-    should_have_many :related_articles
+    should have_many :related_articles
     should_have_db_columns :venue
     should_have_db_columns :status
     should_validate_uniqueness_of :date_held, :scoped_to => [:council_id, :committee_id]

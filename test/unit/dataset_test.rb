@@ -11,8 +11,8 @@ class DatasetTest < ActiveSupport::TestCase
     should_have_db_columns :title, :description, :url, :originator, :originator_url, :notes, :licence
     should_validate_presence_of :title, :originator
     should_validate_uniqueness_of :title
-    should_have_many :dataset_families
-    should_have_many :dataset_topics, :through => :dataset_families
+    should have_many :dataset_families
+    should have_many :dataset_topics, :through => :dataset_families
     should belong_to :dataset_topic_grouping
     
     should "return datasets belonging to a dataset_topic_grouping in_topic_grouping named scope" do

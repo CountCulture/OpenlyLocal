@@ -31,7 +31,7 @@ class AddressMethodsTest < ActiveSupport::TestCase
 
     end
     
-    should_have_many :former_addresses
+    should have_many :former_addresses
     
     context 'and former_addresses association' do
       should 'include former addresses' do

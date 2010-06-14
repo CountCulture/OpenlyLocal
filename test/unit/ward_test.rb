@@ -13,12 +13,12 @@ class WardTest < ActiveSupport::TestCase
     should belong_to :council
     should belong_to :police_team
     should_validate_presence_of :council_id
-    should_have_many :members
-    should_have_many :committees
-    should_have_many :meetings, :through => :committees
-    should_have_many :datapoints
-    should_have_many :polls
-    should_have_many :dataset_topics, :through => :datapoints
+    should have_many :members
+    should have_many :committees
+    should have_many :meetings, :through => :committees
+    should have_many :datapoints
+    should have_many :polls
+    should have_many :dataset_topics, :through => :datapoints
     should_have_one  :boundary
     should belong_to :crime_area
     should_have_db_column :uid

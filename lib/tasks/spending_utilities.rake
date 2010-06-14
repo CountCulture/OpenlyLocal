@@ -1,3 +1,6 @@
+require 'open-uri'
+require 'hpricot'
+require 'httpclient'
 desc "Import Windsor & Maidenhead Supplier Payments"
 task :import_windsor_and_maidenhead_supplier_payments => :environment do
   wandm = Council.first(:conditions => "name LIKE '%Windsor%'")
@@ -25,5 +28,33 @@ task :import_windsor_and_maidenhead_supplier_payments => :environment do
                                               :source_url => 'http://www.rbwm.gov.uk/web/finance_payments_to_suppliers.htm'
                                             )
     end
+  end
+end
+
+desc "Match suppliers to compaies"
+task :match_suppliers_to_companies => :environment do
+  unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (name LIKE '%Ltd%' OR name LIKE '%Limited%' OR name LIKE '%PLC%')", :limit => 5)
+  unmatched_suppliers.each do |supplier|
+    normalised_name = supplier.name.sub(/\bT\/A\b.+/i, '').gsub(/\(.+\)/,'').squish
+    client = HTTPClient.new
+    resp = client.get("http://companiesopen.org/search?q=#{CGI.escape normalised_name}")
+    if resp.status == 303
+      company_number = resp.header["Location"].first.scan(/\/(\d+)\//).to_s
+      supplier.update_attribute(:company_number, company_number)
+      puts "Updated #{supplier.name} with company number #{company_number}"
+    elsif (possibles = Hpricot(resp.body.content).search('li a')) && possibles.size > 0
+      puts "Found #{possibles.size} possible results for #{supplier.name}: #{possibles.collect(&:inner_text).join(', ')}"
+      if likely = possibles.detect{|p| Supplier.normalise_title(p.inner_text) == Supplier.normalise_title(supplier.name)}
+      supplier.update_attribute(:company_number, likely[:href].scan(/\/(\d+)\//).to_s)
+      puts "Chosen and used company number from #{likely.inner_text}"
+      else
+        puts '** No suitable match found'
+      end
+    else
+      puts "** No results for #{supplier.name}."
+      # puts "** Response content: #{resp.body.content}"
+    end
+    puts "=======================\n"
+    sleep 2 # give server a break
   end
 end

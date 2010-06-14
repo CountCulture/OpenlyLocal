@@ -9,8 +9,8 @@ class PoliceTeamTest < ActiveSupport::TestCase
     end
     
     should belong_to :police_force
-    should_have_many :police_officers
-    should_have_many :wards
+    should have_many :police_officers
+    should have_many :wards
     should_validate_presence_of :uid
     should_validate_presence_of :name
     should_validate_presence_of :police_force_id

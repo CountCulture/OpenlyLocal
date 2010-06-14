@@ -13,7 +13,7 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_validate_presence_of :email
     should belong_to :hyperlocal_group
     should belong_to :council
-    should_have_many :feed_entries
+    should have_many :feed_entries
     should_allow_values_for :platform, "Ning"
     should_not_allow_values_for :platform, "foo"
     should_not_allow_mass_assignment_of :approved

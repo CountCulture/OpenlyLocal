@@ -10,9 +10,9 @@ class DatasetFamilyTest < ActiveSupport::TestCase
     should_validate_presence_of :source_type
     should_validate_presence_of :dataset_id
     should_have_and_belong_to_many :ons_subjects
-    should_have_many :ons_datasets
-    should_have_many :dataset_topics
-    should_have_many :datapoints, :through => :dataset_topics
+    should have_many :ons_datasets
+    should have_many :dataset_topics
+    should have_many :datapoints, :through => :dataset_topics
     should belong_to :dataset
     should_have_db_column :calculation_method
   end 

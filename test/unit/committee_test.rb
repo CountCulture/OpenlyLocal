@@ -10,12 +10,12 @@ class CommitteeTest < ActiveSupport::TestCase
 
     should_validate_presence_of :title, :url, :uid, :council_id
     should_validate_uniqueness_of :title, :scoped_to => :council_id
-    should_have_many :meetings
-    should_have_many :meeting_documents, :through => :meetings
+    should have_many :meetings
+    should have_many :meeting_documents, :through => :meetings
     should_have_one  :next_meeting
-    should_have_many :memberships
-    should_have_many :members, :through => :memberships
-    should_have_many :related_articles
+    should have_many :memberships
+    should have_many :members, :through => :memberships
+    should have_many :related_articles
     should belong_to :council
     should belong_to :ward
     should_have_named_scope :active
