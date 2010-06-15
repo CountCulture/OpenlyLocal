@@ -35,6 +35,14 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_equal 34567.23, Factory(:financial_transaction, :value => '34,567.23').value
       end
       
+      should "strip out spaces" do
+        assert_equal 34567.23, Factory(:financial_transaction, :value => '34, 567.23 ').value
+      end
+      
+      should "treat brackets as negative numbers" do
+        assert_equal -34567.23, Factory(:financial_transaction, :value => '(34,567.23)').value
+      end
+      
       should "strip out pound signs" do
         assert_equal 3467.23, Factory(:financial_transaction, :value => '£3467.23').value
       end

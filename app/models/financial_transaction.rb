@@ -4,6 +4,12 @@ class FinancialTransaction < ActiveRecord::Base
   
   # strips out commas and pound signs
   def value=(raw_value)
-    self[:value] = raw_value.is_a?(String) ? raw_value.gsub(/£|,/,'') : raw_value
+    self[:value] =
+    if raw_value.is_a?(String)
+      cleaned_up_value = raw_value.gsub(/£|,|\s/,'')
+      cleaned_up_value.match(/^\(([\d\.]+)\)$/) ? "-#{$1}" : cleaned_up_value
+    else
+      raw_value
+    end
   end
 end
