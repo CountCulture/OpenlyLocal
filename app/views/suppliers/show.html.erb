@@ -1,3 +1,6 @@
+<div class='breadcrumbs'>
+  <%= link_to 'All suppliers', suppliers_path %> &gt; <%= link_to "Suppliers to #{@organisation.title}", suppliers_path(:organisation_type => @organisation.class.to_s, :organisation_id => @organisation.id) %>
+</div>
 <h1><%= @title %></h1>
 
 <dl id="main_attributes" class="attributes">

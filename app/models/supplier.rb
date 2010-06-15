@@ -1,6 +1,6 @@
 class Supplier < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
-  has_many :financial_transactions
+  has_many :financial_transactions, :order => 'date'
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
   alias_attribute :title, :name

@@ -11,21 +11,22 @@ class PoliceForceTest < ActiveSupport::TestCase
     should have_many :councils
     should have_many :police_teams
     should have_many :crime_areas
-    should_have_one :police_authority 
+    should have_many :suppliers
+    should have_one :police_authority 
     should_validate_presence_of :name
     should_validate_uniqueness_of :name
     should_validate_presence_of :url
     should_validate_uniqueness_of :url
     
-    should_have_db_column :wikipedia_url
-    should_have_db_column :telephone
-    should_have_db_column :address
-    should_have_db_column :wdtk_name
-    should_have_db_column :npia_id
-    should_have_db_column :facebook_account_name
-    should_have_db_column :youtube_account_name
-    should_have_db_column :feed_url
-    should_have_db_column :crime_map
+    should have_db_column :wikipedia_url
+    should have_db_column :telephone
+    should have_db_column :address
+    should have_db_column :wdtk_name
+    should have_db_column :npia_id
+    should have_db_column :facebook_account_name
+    should have_db_column :youtube_account_name
+    should have_db_column :feed_url
+    should have_db_column :crime_map
     
     should "include TwitterAccountMethods mixin" do
       assert Member.new.respond_to?(:twitter_account_name)
