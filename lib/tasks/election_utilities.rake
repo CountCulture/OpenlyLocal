@@ -140,3 +140,32 @@ task :search_wikipedia_for_parties => :environment do
   end
 end
 
+desc "Import May 2002 London Election Results"
+task :import_london_2002_election_results => :environment do
+  council_name, ward_name, council, ward, poll, wards = nil, nil, nil, nil, nil, nil #initialize variables
+  councils = Council.find_all_by_authority_type('London Borough')
+  political_parties = PoliticalParty.all
+  FasterCSV.foreach(File.join(RAILS_ROOT, 'db/csv_data/London_LA_Election_Results_May_2_2002.csv'), :headers => true) do |row|
+    if council_name != row["Borough"]
+      council_name = row["Borough"]
+      council = councils.detect{|c| Council.normalise_title(c.name) == Council.normalise_title(row["Borough"])}
+      wards = council.wards
+      puts "=======\nStarted importing results for #{council.name}"
+    end
+    if ward_name != row["Ward"]
+      ward_name = row["Ward"]
+      if ward = wards.detect{ |w| TitleNormaliser.normalise_title(w.title) == TitleNormaliser.normalise_title(ward_name) }
+        poll = ward.polls.find_or_create_by_date_held(:date_held => "02-05-2002".to_date, :position => "Member", :source => "http://data.london.gov.uk/datastore/package/council-elections-candidate-results-ward-2002")
+        puts "Now importing results for ward: #{ward.name}"
+      else
+        puts "****Can't match: #{ward_name}"
+      end
+    end
+    last_name, first_name  = row["Candidate name"].split(',').collect{ |n| n.strip }
+    political_party = row["Party"].to_i.to_s == row["Party"] ? political_parties.detect{ |p| p.electoral_commission_uid == row["Party"] } : political_parties.detect{ |p| p.matches_name?(row["Party"]) }
+    party = political_party ? nil : row["Party"]
+    elected = !!row["Elected"]
+    poll.candidacies.create!(:elected => elected, :last_name => last_name, :first_name => first_name, :votes => row["Votes"], :political_party => political_party, :party => party)
+  end
+end
+
