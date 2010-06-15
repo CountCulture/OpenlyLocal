@@ -1,6 +1,7 @@
 require 'open-uri'
 require 'hpricot'
 require 'httpclient'
+
 desc "Import Windsor & Maidenhead Supplier Payments"
 task :import_windsor_and_maidenhead_supplier_payments => :environment do
   wandm = Council.first(:conditions => "name LIKE '%Windsor%'")
@@ -31,7 +32,37 @@ task :import_windsor_and_maidenhead_supplier_payments => :environment do
   end
 end
 
-desc "Match suppliers to compaies"
+desc "Import GLA Supplier Payments"
+task :import_gla_supplier_payments => :environment do
+  gla = Council.first(:conditions => {:name => 'Greater London Authority'})
+  suppliers = gla.suppliers
+  periods = %w(08_2009)
+  periods.each do |period|
+    puts "Adding transactions for #{period}"
+    FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/gla/#{period}.csv"), :headers => true) do |row|
+      supplier = suppliers.detect{ |s| s.name == row['Supplier']}
+      next unless supplier || row['Supplier'] # skip empty rows
+      unless supplier
+        supplier ||= gla.suppliers.create!(:name => row['Supplier'])
+        suppliers << supplier # add to list so we don't create again
+        puts "Added new supplier: #{supplier.name}"
+      end
+      date, date_fuzziness = row['Date'].blank? ? ["15-#{period.gsub('_','-')}".to_date, 15] : [row['Date'].gsub('/','-'), nil]# if no date give it date in the middle of the month and add appropriate date fuzziness
+      supplier.financial_transactions.create!(:uid => row['Doc No'],
+                                              :date => date,
+                                              :date_fuzziness => date_fuzziness,
+                                              :value => row['Amount'],
+                                              :transaction_type => row['Type'],
+                                              # :department_name => row['Directorate'],
+                                              # :cost_centre => row['Cost Centre'],
+                                              :service => row['Expense Description'],
+                                              :source_url => 'http://www.london.gov.uk/who-runs-london/greater-london-authority/expenditure-over-1000'
+                                            )
+    end
+  end
+end
+
+desc "Match suppliers to companies"
 task :match_suppliers_to_companies => :environment do
   unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (name LIKE '%Ltd%' OR name LIKE '%Limited%' OR name LIKE '%PLC%') AND name !='-1'", :limit => 200)
   unmatched_suppliers.each do |supplier|

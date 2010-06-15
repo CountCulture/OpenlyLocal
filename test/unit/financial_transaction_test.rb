@@ -29,6 +29,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 
       should "assign value as expected" do
         assert_equal 34567.23, Factory(:financial_transaction, :value => 34567.23).value
+        assert_equal -34567.23, Factory(:financial_transaction, :value => -34567.23).value
       end
       
       should "strip out commas" do

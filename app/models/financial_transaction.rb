@@ -1,5 +1,5 @@
 class FinancialTransaction < ActiveRecord::Base
-  belongs_to :supplier
+  belongs_to :supplier, :dependent => :destroy
   validates_presence_of :supplier_id, :value, :date
   
   # strips out commas and pound signs
