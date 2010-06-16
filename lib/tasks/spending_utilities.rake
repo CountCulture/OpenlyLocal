@@ -90,3 +90,11 @@ task :match_suppliers_to_companies => :environment do
     sleep 2 # give server a break
   end
 end
+
+desc "Move supplier info to company model"
+task :move_supplier_info_to_company => :environment do
+  Supplier.all(:conditions => "company_number IS NOT NULL AND company_number != '-1'").each do |supplier|
+    company = Company.find_or_create_by_company_number(:company_number => supplier.company_number, :title => supplier.name, :url => supplier.url)
+    supplier.update_attribute(:company, company)
+  end
+end

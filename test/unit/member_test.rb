@@ -1,7 +1,9 @@
 require 'test_helper'
 
 class MemberTest < ActiveSupport::TestCase
-  should_validate_presence_of :last_name, :url, :council_id
+  should validate_presence_of :last_name
+  should validate_presence_of :url
+  should validate_presence_of :council_id
   should belong_to :council
   should belong_to :ward
   should have_many :memberships
@@ -182,6 +184,18 @@ class MemberTest < ActiveSupport::TestCase
 
       should "alias full_name as title" do
         assert_equal @member.full_name, @named_member.title
+      end
+    end
+    
+    context "when parsing reversed_full_name" do
+      setup do
+        NameParser.stubs(:parse).returns(:first_name => "Fred", :last_name => "Scuttle", :name_title => "Prof", :qualifications => "PhD")
+        @named_member = new_member(:full_name => "Fred Scuttle")
+      end
+
+      should "split at comma, reverse and send to parser" do
+        NameParser.expects(:parse).with("Fred K.L Scuttleman").returns(stub_everything)
+        new_member(:reversed_full_name => "Scuttleman, Fred K.L")
       end
     end
     

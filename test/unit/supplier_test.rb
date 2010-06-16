@@ -10,6 +10,7 @@ class SupplierTest < ActiveSupport::TestCase
     end
     
     should have_many :financial_transactions
+    should belong_to :company
     should_validate_presence_of :organisation_type, :organisation_id
     
     should_have_db_columns :uid, :name, :company_number, :url
@@ -47,24 +48,9 @@ class SupplierTest < ActiveSupport::TestCase
     end
     
     context "when normalising title" do
-      setup do
-        @original_title_and_normalised_title = {
-          "Foo Bar & Baz" => "foo bar and baz",
-          "Foo Bar & Baz Ltd" => "foo bar and baz limited",
-          "Foo Bar & Baz Ltd." => "foo bar and baz limited",
-          "Foo Bar & Baz PLC" => "foo bar and baz plc",
-          "Foo Bar & Baz Public Limited Company" => "foo bar and baz plc",
-          "Foo Bar & Baz (South) Limited" => "foo bar and baz (south) limited",
-          "Foo Bar & Baz (South & NORTH) Limited" => "foo bar and baz (south and north) limited",
-          "Foo Bar & Baz Ltd t/a bar foo" => "foo bar and baz limited",
-          "Foo Bar & Baz Ltd T/A bar foo" => "foo bar and baz limited"
-        }
-      end
-      
       should "normalise title" do
-        @original_title_and_normalised_title.each do |orig_title, normalised_title|
-          assert_equal( normalised_title, Supplier.normalise_title(orig_title), "failed for #{orig_title}")
-        end
+        TitleNormaliser.expects(:normalise_company_title).with('foo bar')
+        Supplier.normalise_title('foo bar')
       end
     end
   end
@@ -78,25 +64,6 @@ class SupplierTest < ActiveSupport::TestCase
       assert_equal @supplier.name, @supplier.title
     end
     
-    context 'when returning companies_house_url' do
-      should 'return nil by default' do
-        assert_nil @supplier.companies_house_url
-        @supplier.company_number = ''
-        assert_nil @supplier.companies_house_url
-      end
-      
-      should "return companies open house url if company_number set" do
-        @supplier.company_number = '012345'
-        assert_equal 'http://companiesopen.org/uk/012345/companies_house', @supplier.companies_house_url
-      end
-      
-      should "return nil if company_number -1" do
-        @supplier.company_number = '-1'
-        assert_nil @supplier.companies_house_url
-      end
-      
-    end
-
     context 'when returning company_number' do
       should 'return nil if blank?' do
         assert_nil @supplier.company_number

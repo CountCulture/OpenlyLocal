@@ -1,10 +1,10 @@
 <div class='breadcrumbs'>
   <%= link_to 'All suppliers', suppliers_path %> &gt; <%= link_to "Suppliers to #{@organisation.title}", suppliers_path(:organisation_type => @organisation.class.to_s, :organisation_id => @organisation.id) %>
 </div>
-<h1><%= @title %></h1>
+<h1><%= basic_link_for(@supplier.company) || @supplier.title %></h1>
 
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :company_number, link_to(@supplier.company_number, @supplier.companies_house_url) if @supplier.company_number? %>
+  <%= attribute_tag :company_number, link_to(@supplier.company_number, @supplier.company) if @supplier.company %>
   <%= attribute_tag :website, link_to(@supplier.url, @supplier.url) if @supplier.url? %>
 </dl>
 

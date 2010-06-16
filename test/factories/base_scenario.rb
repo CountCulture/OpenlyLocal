@@ -302,6 +302,13 @@ Factory.define :related_article do |f|
   f.association :subject, :factory => :member 
 end
 
+Factory.define :output_area_classification do |f|
+  f.title "Prosperous Area"
+  f.sequence(:uid) { |n| "1.2.#{n}" }
+  f.level 2
+  f.area_type 'Council'
+end
+
 Factory.define :contract do |f|
   f.association :organisation, :factory => :police_force 
 end
@@ -317,10 +324,7 @@ Factory.define :financial_transaction do |f|
   f.sequence(:value) {|n| 4.2*n}
 end
 
-Factory.define :output_area_classification do |f|
-  f.title "Prosperous Area"
-  f.sequence(:uid) { |n| "1.2.#{n}" }
-  f.level 2
-  f.area_type 'Council'
+Factory.define :company do |f|
+  f.sequence(:title) { |n| "Company #{n}" }
 end
 
