@@ -3,7 +3,7 @@
   <div id="navigation">
     <%= link_to "All Councils", councils_path %>
     <%= link_to "Hyperlocal Sites Directory", hyperlocal_sites_path %>
-    <%= link_to "Open Data scoreboard", councils_path %>
+    <%= link_to "Open Data scoreboard", :controller => 'councils', :show_open_status => true %>
     <%= render :partial => 'shared/area_search_form' %>
   </div>
 </div>
