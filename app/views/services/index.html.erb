@@ -1,4 +1,4 @@
-<h1>Links to <%= basic_link_for @council %> Services</h1>
+<h1><%= @council ? "Links to #{basic_link_for(@council)} Services" : @title %></h1>
 <%= render :partial => 'services_search' if @council %>
 <%= content_tag(:p, link_to("Show all services", services_path(:council_id => @council.id))) if params[:term] %>
 <%- if @services.blank? -%>
@@ -16,7 +16,9 @@
   <%- end -%>
   <div id="services">
     <%- for category in @services -%>
-      <h3><a name="<%= category[0].parameterize %>"><%= category[0] %></a></h3>
+      <%- if @council -%>
+        <h3><a name="<%= category[0].parameterize %>"><%= category[0] %></a></h3>
+      <%- end -%>
       <ul class="<%= category[0].parameterize %>">
         <%- for service in category[1] -%>
           <li><%= link_to (@council ? service.title : service.council.title), service.url, :class => "external" %></li>

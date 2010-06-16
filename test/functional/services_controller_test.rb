@@ -58,6 +58,9 @@ class ServicesControllerTest < ActionController::TestCase
     
     context "with basic request and ldg_service" do
       setup do
+        @another_council = Factory(:another_council, :name => 'Zcouncil') #make sure comes after @council name
+        @another_council_service = Factory(:service, :category => @service.category, :title => "Bar service", :ldg_service => @ldg_service, :council => @another_council)
+        
         get :index, :ldg_service_id => @service.ldg_service_id
       end
       
@@ -72,6 +75,10 @@ class ServicesControllerTest < ActionController::TestCase
       
       should "list councils in links" do
         assert_select "div#services li a", @council.title
+      end
+      
+      should 'list service on order of council name' do
+        assert_equal @council, assigns(:services).first.last.first.council
       end
       
       should "list links to services" do
