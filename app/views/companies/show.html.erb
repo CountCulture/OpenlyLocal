@@ -1,13 +1,21 @@
 <h1><%= @company.title %></h1>
 
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :companies_house, link_to(@company.company_number, @company.companies_house_url) if @company.company_number? %>
+  <%= attribute_tag :companies_house, link_to(@company.company_number, @company.companies_house_url, :class => 'external') if @company.company_number? %>
+  <%= attribute_tag :company_type, @company.company_type %>
+  <%= attribute_tag :incorporation_date, @company.incorporation_date %>
+  <%= attribute_tag :status, @company.status %>
   <%= attribute_tag :website, link_to(@company.url, @company.url) if @company.url? %>
+  <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@company.wikipedia_url), @company.wikipedia_url, :class => 'external') if @company.wikipedia_url? %>
 </dl>
 
 <div id="relationships">
   <h3>Supplier to:</h3>
-  <%= list_all @company.suppliers %>
+  <ul>
+    <%- @company.suppliers.each do |supplier| -%>
+      <li><%= link_for supplier, :text => supplier.organisation.title %></li>
+      <%- end -%>
+  </ul>
 </div>
 
 <%= render :partial => '/shared/api_info' %>

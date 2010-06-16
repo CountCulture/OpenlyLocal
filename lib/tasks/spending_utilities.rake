@@ -98,3 +98,4 @@ task :move_supplier_info_to_company => :environment do
     supplier.update_attribute(:company, company)
   end
 end
+

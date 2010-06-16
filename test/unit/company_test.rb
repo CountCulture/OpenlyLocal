@@ -14,6 +14,10 @@ class CompanyTest < ActiveSupport::TestCase
     should have_db_column :company_number
     should have_db_column :url
     should have_db_column :normalised_title
+    should have_db_column :status
+    should have_db_column :wikipedia_url
+    should have_db_column :company_type
+    should have_db_column :incorporation_date
 
     context "when normalising title" do
       should "normalise title" do
