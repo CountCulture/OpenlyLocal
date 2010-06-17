@@ -19,8 +19,8 @@ class CouncilTest < ActiveSupport::TestCase
     should have_many :officers
     should have_many :services
     should have_many :child_authorities
-    should have_many :meeting_documents, :through => :meetings
-    should have_many :past_meeting_documents, :through => :held_meetings
+    should_have_many :meeting_documents, :through => :meetings
+    should_have_many :past_meeting_documents, :through => :held_meetings
     should have_many :feed_entries
     should have_many :polls
     should_have_one :police_authority, :through => :police_force
@@ -30,9 +30,9 @@ class CouncilTest < ActiveSupport::TestCase
     should belong_to :police_force
     should belong_to :pension_fund
     should have_many :datapoints
-    should have_many :dataset_topics, :through => :datapoints
+    should_have_many :dataset_topics, :through => :datapoints
     should have_many :suppliers
-    should have_many :financial_transactions, :through => :suppliers
+    should_have_many :financial_transactions, :through => :suppliers
     should have_db_column :notes
     should have_db_column :wikipedia_url
     should have_db_column :ons_url

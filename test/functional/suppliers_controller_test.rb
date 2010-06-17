@@ -146,6 +146,10 @@ class SuppliersControllerTest < ActionController::TestCase
         should 'show link to sort by total_spend' do
           assert_select 'a.sort', /total spend/i
         end
+        
+        should 'show overview of spending' do
+          assert_select '#overview', /suppliers/i
+        end
       end
       
       context 'when sorting by total_spend' do

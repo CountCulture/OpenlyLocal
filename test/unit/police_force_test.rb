@@ -12,6 +12,7 @@ class PoliceForceTest < ActiveSupport::TestCase
     should have_many :police_teams
     should have_many :crime_areas
     should have_many :suppliers
+    should_have_many :financial_transactions, :through => :suppliers
     should have_one :police_authority 
     should_validate_presence_of :name
     should_validate_uniqueness_of :name

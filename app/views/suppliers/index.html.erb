@@ -2,13 +2,20 @@
   <%= link_to 'All suppliers', suppliers_path if @organisation %> 
 </div>
 <h1><%= @title %></h1>
-
-<%- content_tag(:p, :class => 'restriction') do  -%>
+<p class='restriction'>
   <%= params[:order] == 'total_spend' ? link_to('Sort by Name', params.merge(:order => 'name'), :class => 'sort' ) : link_to('Sort by Total Spend', params.merge(:order => 'total_spend'), :class => 'sort' ) %>
+</p>
+
+<%- if @organisation -%>
+    <dl id="overview" class="attributes">
+      <%= attribute_tag :number_of_suppliers, @organisation.suppliers.count %>
+      <%= attribute_tag :number_of_transactions, @organisation.financial_transactions.count %>
+    </dl>
 <%- end -%>
 
-<%= list_all @suppliers %>
-
+<div id='relationships'>
+  <%= list_all @suppliers %>
+</div>
 <%= will_paginate @suppliers %>
 
 <%= render :partial => '/shared/api_info' %>
