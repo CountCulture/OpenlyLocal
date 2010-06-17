@@ -3,9 +3,10 @@ require 'test_helper'
 class SuppliersControllerTest < ActionController::TestCase
   def setup
     @supplier = Factory(:supplier)
-    @another_supplier = Factory(:supplier)
-    @financial_transaction = Factory(:financial_transaction, :supplier => @supplier)
     @organisation = @supplier.organisation
+    @another_supplier = Factory(:supplier, :name => 'A supplier')
+    @another_supplier_same_org = Factory(:supplier, :name => 'Another supplier', :organisation => @organisation)
+    @financial_transaction = Factory(:financial_transaction, :supplier => @supplier, :value => 42)
   end
   
   # index test
@@ -16,7 +17,7 @@ class SuppliersControllerTest < ActionController::TestCase
         get :index
       end
       
-      should_assign_to(:suppliers) { [@supplier, @another_supplier] }
+      should_assign_to(:suppliers)
       should respond_with :success
       
       should "show title" do
@@ -25,6 +26,33 @@ class SuppliersControllerTest < ActionController::TestCase
       
       should 'list suppliers' do
         assert_select 'a.supplier_link', @supplier.name
+      end
+      
+      should 'order by name' do
+        assert_equal @another_supplier, assigns(:suppliers).first
+      end
+      
+      should 'show link to sort by total_spend' do
+        assert_select 'a.sort', /total spend/i
+      end
+            
+    end
+    
+    context 'when sorting by total_spend' do
+      setup do
+        get :index, :order => 'total_spend'
+      end
+      
+      should_assign_to(:suppliers)
+      should respond_with :success
+      
+      
+      should 'order by total_spend' do
+        assert_equal @supplier, assigns(:suppliers).first
+      end
+            
+      should 'show link to sort by name' do
+        assert_select 'a.sort', /name/i
       end
             
     end
@@ -82,7 +110,7 @@ class SuppliersControllerTest < ActionController::TestCase
         should respond_with_content_type 'application/json'
         
         should 'include pagination info' do
-          assert_match %r(total_entries.+32), @response.body
+          assert_match %r(total_entries.+33), @response.body
           assert_match %r(per_page), @response.body
           assert_match %r(page.+1), @response.body
         end
@@ -92,22 +120,55 @@ class SuppliersControllerTest < ActionController::TestCase
     
     context "with basic request and organisation details" do
       setup do
-        get :index, :organisation_id => @organisation.id, :organisation_type => @organisation.class.to_s
+        
+      end
+      context "in general" do
+        setup do
+          get :index, :organisation_id => @organisation.id, :organisation_type => @organisation.class.to_s
+        end
+
+        should_assign_to(:suppliers)
+        should_assign_to(:organisation) { @organisation }
+        should respond_with :success
+
+        should "show title" do
+          assert_select "title", /suppliers/i
+        end
+
+        should 'list suppliers' do
+          assert_select 'a.supplier_link', @supplier.name
+        end
+        
+        should 'order by name' do
+          assert_equal @another_supplier_same_org, assigns(:suppliers).first
+        end
+
+        should 'show link to sort by total_spend' do
+          assert_select 'a.sort', /total spend/i
+        end
       end
       
-      should_assign_to(:suppliers) { [@supplier] }
-      should_assign_to(:organisation) { @organisation }
-      should respond_with :success
-      
-      should "show title" do
-        assert_select "title", /suppliers/i
+      context 'when sorting by total_spend' do
+        setup do
+          get :index, :organisation_id => @organisation.id, :organisation_type => @organisation.class.to_s, :order => 'total_spend'
+        end
+
+        should_assign_to(:suppliers)
+        should respond_with :success
+
+
+        should 'order by total_spend' do
+          assert_equal @supplier, assigns(:suppliers).first
+        end
+
+        should 'show link to sort by name' do
+          assert_select 'a.sort', /name/i
+        end
+
       end
-      
-      should 'list suppliers' do
-        assert_select 'a.supplier_link', @supplier.name
-      end
-            
-    end
+         
+    end    
+    
   end
   
   context "on GET to :show" do
