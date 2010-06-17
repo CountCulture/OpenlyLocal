@@ -1,5 +1,5 @@
 <h1><%= @title %></h1>
-<%- content_tag(:p, :class => 'more_info') do  -%>
+<%- content_tag(:p, :class => 'restriction') do  -%>
   <%= params[:include_unparsed] ? link_to('back to all parsed councils', :include_unparsed => nil) : link_to('include unparsed councils', params.merge(:include_unparsed => true)) %>
 <%- end -%>
 <div id='councils'>

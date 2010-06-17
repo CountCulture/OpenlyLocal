@@ -105,11 +105,25 @@ p.more_info, a.more_info{
 p.more_info a, a.more_info{
 margin-left:2em;
 }
-
 .more_info a:after, a.more_info:after {
 	content: "»"; }
 td.more_info a:after {
 	content: normal; }
+p.more_info, a.more_info{
+	text-align:right;
+	font-style: italic;
+}
+p.restriction a {
+border:1px solid #ddd;
+background-color: #eee;
+padding: 2px 6px;
+}
+p.restriction a:hover {
+background-color: #036;
+text-decoration:none;
+color:#fff;
+}
+
 .citation {
 	vertical-align: super;
 	font-size: 80%;

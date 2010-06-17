@@ -1,5 +1,5 @@
+<div class="breadcrumbs"><%= link_to "All Police Authorities", police_authorities_path %></div>
 <h1><%= h @police_authority.name %></h1>
-<p class="more_info"><%= link_to "All Police Authorities", police_authorities_path %></p>
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :authority_for, link_for(@police_authority.police_force) %>
   <%= attribute_tag :address, @police_authority.address %>
