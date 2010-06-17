@@ -133,6 +133,7 @@ class SuppliersControllerTest < ActionController::TestCase
   context "with xml requested" do
     setup do
       @company = Factory(:company)
+      @supplier.update_attribute(:company, @company)
       get :show, :id => @supplier.id, :format => "xml"
     end
 

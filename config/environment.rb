@@ -45,7 +45,7 @@ Rails::Initializer.run do |config|
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
   # Add additional load paths for your own custom dirs
-  # config.load_paths += %W( #{RAILS_ROOT}/extras )
+  config.load_paths += %W( #{RAILS_ROOT}/app/models/observers )
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
@@ -82,7 +82,7 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # Please note that observers generated using script/generate observer need to have an _observer suffix
-  # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
+  config.active_record.observers = :financial_transaction_observer
 end
 require 'open-uri'
 

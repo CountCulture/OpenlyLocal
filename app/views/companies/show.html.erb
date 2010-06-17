@@ -13,7 +13,7 @@
   <h3>Supplier to:</h3>
   <ul>
     <%- @company.suppliers.each do |supplier| -%>
-      <li><%= link_for supplier, :text => supplier.organisation.title %></li>
+      <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> (Total spend: <span class='value'>£<%= number_with_precision(supplier.total_spend, :precision => 2, :delimiter => ',') %>)</li>
       <%- end -%>
   </ul>
 </div>

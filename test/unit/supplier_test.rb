@@ -13,7 +13,12 @@ class SupplierTest < ActiveSupport::TestCase
     should belong_to :company
     should_validate_presence_of :organisation_type, :organisation_id
     
-    should_have_db_columns :uid, :name, :company_number, :url
+    should have_db_column :uid
+    should have_db_column :url
+    should have_db_column :name
+    should have_db_column :company_number
+    should have_db_column :total_spend
+    should have_db_column :recent_spend
     
     should 'belong to organisation polymorphically' do
       organisation = Factory(:council)
@@ -64,6 +69,20 @@ class SupplierTest < ActiveSupport::TestCase
       assert_equal @supplier.name, @supplier.title
     end
     
+    context 'when saving' do
+      
+      should 'calculate total_spend' do
+        @supplier.expects(:calculated_total_spend).returns(42.1)
+        @supplier.save!
+      end
+      
+      should 'update total_spend with calculated_total_spend' do
+        @supplier.stubs(:calculated_total_spend).returns(42.1)
+        @supplier.save!
+        assert_equal 42.1, @supplier.reload.total_spend
+      end
+    end
+    
     context 'when returning company_number' do
       should 'return nil if blank?' do
         assert_nil @supplier.company_number
@@ -80,7 +99,20 @@ class SupplierTest < ActiveSupport::TestCase
         @supplier.company_number = '-1'
         assert_nil @supplier.company_number
       end
-      
+    end
+    
+    context "when returning calculated_total_spend" do
+      setup do
+        @another_supplier = Factory(:supplier)
+        @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 123.45)
+        @financial_transaction_2 = Factory(:financial_transaction, :supplier => @supplier, :value => -32.1)
+        @financial_transaction_2 = Factory(:financial_transaction, :supplier => @supplier, :value => 22.1)
+        @unrelated_financial_transaction = Factory(:financial_transaction, :supplier => @another_supplier, :value => 22.1)
+      end
+
+      should "sum all financial transactions for supplier" do
+        assert_in_delta (123.45 - 32.1 + 22.1), @supplier.calculated_total_spend, 2 ** -10
+      end
     end
 
   end

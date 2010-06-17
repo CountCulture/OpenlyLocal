@@ -20,12 +20,9 @@ class FinancialTransactionTest < ActiveSupport::TestCase
                            :cost_centre, 
                            :service, 
                            :transaction_type, 
-                           :source_url,
                            :date_fuzziness
+                           
     context "when setting value" do
-      setup do
-        
-      end
 
       should "assign value as expected" do
         assert_equal 34567.23, Factory(:financial_transaction, :value => 34567.23).value
@@ -49,5 +46,28 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
     end
     
+    context 'when setting department' do
+      should 'squish spaces' do
+        assert_equal 'Foo Department', Factory.build(:financial_transaction, :department_name => ' Foo   Department   ').department_name
+      end
+      
+      should 'replace mispellings' do
+        assert_equal 'Children\'s Department', Factory.build(:financial_transaction, :department_name => 'Childrens\' Department ').department_name
+        assert_equal 'Children\'s Department', Factory.build(:financial_transaction, :department_name => 'Childrens Department ').department_name
+      end
+    end
+    
+    context "when saving" do
+      setup do
+        @supplier = @financial_transaction.supplier
+        @another_financial_transaction = Factory(:financial_transaction, :description => 'foobar***', :supplier => @supplier, :value => 42)
+      end
+
+      should "update total_spend of associated supplier" do
+        @financial_transaction.value = 31
+        @financial_transaction.save!
+        assert_equal 73, @supplier.reload.total_spend
+      end
+    end
   end
 end
