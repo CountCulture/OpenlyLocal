@@ -48,7 +48,9 @@ class CouncilTest < ActiveSupport::TestCase
     should have_db_column :police_force_url
     should have_db_column :region
     should have_db_column :signed_up_for_1010
-    should_have_db_columns :annual_audit_letter, :open_data_url
+    should have_db_column :annual_audit_letter
+    should have_db_column :open_data_url
+    should have_db_column :open_data_licence
 
     should "mixin PartyBreakdownSummary module" do
       assert Council.new.respond_to?(:party_breakdown)

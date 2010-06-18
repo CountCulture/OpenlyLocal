@@ -120,6 +120,11 @@
   </p>
   
   <p>
+    <%= f.label :open_data_licence %>
+    <%= f.select :open_data_licence, Licences.collect{|k,v| [v.first, k]}, { :include_blank => true } %>
+  </p>
+  
+  <p>
     <%= f.label :data_source_url %>
     <%= f.text_field :data_source_url %>
   </p>

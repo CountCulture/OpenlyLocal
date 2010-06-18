@@ -51,6 +51,10 @@ Regions = { 'North East'                => ['A', 276700],
 # NESS_IDS = {'England' => 276693, 'Northern Ireland' => 276696, 'Scotland' => 276694, 'Wales' => 276695}
 AllowedCountries = ['England', 'Northern Ireland', 'Scotland', 'Wales']
 
-Licences = {'CC0' => ['Creative Commons CC0 Universal', 'http://creativecommons.org/publicdomain/zero/1.0/'],
-            'CCBY30' => ['Creative Commons By Attribution 3.0', 'http://creativecommons.org/licenses/by/3.0/'],
-            'CCBYNC30' => ['Creative Commons Attribution-Noncommercial 3.0', 'http://creativecommons.org/licenses/by-nc/3.0/']}
+Licences = {'CC0' => ['Creative Commons CC0 Universal', 'http://creativecommons.org/publicdomain/zero/1.0/', 'open'],
+            'CCBY30' => ['Creative Commons By Attribution 3.0', 'http://creativecommons.org/licenses/by/3.0/', 'open'],
+            'CCBYNC30' => ['Creative Commons Attribution-Noncommercial 3.0', 'http://creativecommons.org/licenses/by-nc/3.0/', 'semi_open'],
+            'DATAGOVUK' => ['Data.gov.uk open licence', 'http://data.gov.uk/terms-and-conditions', 'open'],
+            'ADHOCNC' => ['Ad Hoc Attribution-Noncommercial', nil, 'semi_open'],
+            'ADHOCBY' => ['Ad Hoc Attribution only', nil, 'open']
+            }

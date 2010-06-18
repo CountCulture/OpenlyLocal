@@ -261,7 +261,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
 
       should respond_with 303
-      should_redirect_to("the council show page") {council_url(:id => @council.id)}
+      should redirect_to("the council show page") {council_url(:id => @council.id)}
     end
     
     context "with basic request" do
@@ -707,7 +707,7 @@ class CouncilsControllerTest < ActionController::TestCase
      
        should_create :council
        should_assign_to :council
-       should_redirect_to( "the show page for council") { council_path(assigns(:council)) }
+       should redirect_to( "the show page for council") { council_path(assigns(:council)) }
        should_set_the_flash_to "Successfully created council"
      
      end
@@ -770,11 +770,11 @@ class CouncilsControllerTest < ActionController::TestCase
         put :update, :id => @council.id, :council => @council_params
       end
     
-      should_not_change "Council.count"
+      should_not_change( "The number of councils") {Council.count}
       should_change "@council.reload.name", :to => "New Name for SomeCouncil"
       should_change "@council.reload.url", :to => "http://somecouncil.gov.uk/new"
       should_assign_to :council
-      should_redirect_to( "the show page for council") { council_path(assigns(:council)) }
+      should redirect_to( "the show page for council") { council_path(assigns(:council)) }
       should_set_the_flash_to "Successfully updated council"
     
     end
@@ -785,9 +785,8 @@ class CouncilsControllerTest < ActionController::TestCase
         put :update, :id => @council.id, :council => {:name => ""}
       end
     
-      should_not_change "Council.count"
-      should_not_change "@council.reload.name"
-      should_assign_to :council
+      should_not_change("The council name") { @council.reload.name }
+      should assign_to :council
       should render_template :edit
       should_not set_the_flash
     end
