@@ -36,14 +36,18 @@ desc "Import GLA Supplier Payments"
 task :import_gla_supplier_payments => :environment do
   gla = Council.first(:conditions => {:name => 'Greater London Authority'})
   suppliers = gla.suppliers
-  periods = %w(08_2009)
+  
+  periods = Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'gla'))[2..-1].collect{ |p| p.sub('.csv','') }
+  puts "About to add data for #{periods.size} periods"
   periods.each do |period|
-    puts "Adding transactions for #{period}"
+    puts "=============\nAdding transactions for #{period}"
     FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/gla/#{period}.csv"), :headers => true) do |row|
-      supplier = suppliers.detect{ |s| s.name == row['Supplier']}
-      next unless supplier || row['Supplier'] # skip empty rows
-      unless supplier
-        supplier ||= gla.suppliers.create!(:name => row['Supplier'])
+      supplier = suppliers.detect{ |s| s.name == (row['Supplier']||row['Vendor'])}
+      next unless supplier || row['Supplier']||row['Vendor'] # skip empty rows
+      if supplier
+        puts "Matched existing supplier: #{supplier.title}"
+      else
+        supplier ||= gla.suppliers.create!(:name => row['Supplier']||row['Vendor'])
         suppliers << supplier # add to list so we don't create again
         puts "Added new supplier: #{supplier.name}"
       end
@@ -52,7 +56,7 @@ task :import_gla_supplier_payments => :environment do
                                               :date => date,
                                               :date_fuzziness => date_fuzziness,
                                               :value => row['Amount'],
-                                              :transaction_type => row['Type'],
+                                              :transaction_type => row['Doc Type'],
                                               # :department_name => row['Directorate'],
                                               # :cost_centre => row['Cost Centre'],
                                               :service => row['Expense Description'],
@@ -64,7 +68,7 @@ end
 
 desc "Match suppliers to companies"
 task :match_suppliers_to_companies => :environment do
-  unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (name LIKE '%Ltd%' OR name LIKE '%Limited%' OR name LIKE '%PLC%') AND company_number !='-1'", :limit => 200)
+  unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (name LIKE '%Ltd%' OR name LIKE '%Limited%' OR name LIKE '%PLC%')", :limit => 200)
   unmatched_suppliers.each do |supplier|
     normalised_name = supplier.name.sub(/\bT\/A\b.+/i, '').gsub(/\(.+\)/,'').squish
     client = HTTPClient.new
