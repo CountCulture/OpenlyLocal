@@ -119,6 +119,28 @@ class SupplierTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning associateds" do
+      setup do
+        @company = Factory(:company)
+        @supplier.update_attribute(:company, @company)
+        @sibling_supplier = Factory(:supplier, :company => @company)
+        @sole_supplier = Factory(:supplier, :company => Factory(:company))
+      end
+
+      should "return suppliers belong to same company" do
+        assert_equal [@sibling_supplier], @supplier.associateds
+      end
+      
+      should "return empty array if no company for supplier" do
+        assert_equal [], Factory(:supplier).associateds
+      end
+      
+      should "return empty array if no other suppliers for company" do
+        assert_equal [], @sole_supplier.associateds
+      end
+      
+    end
+    
     context "when returning calculated_total_spend" do
       setup do
         @another_supplier = Factory(:supplier)

@@ -1,16 +1,25 @@
+<%= render :partial => 'shared/experimental_flash' %>
+
 <div class='breadcrumbs'>
   <%= link_to 'All suppliers', suppliers_path %> &gt; <%= link_to "Suppliers to #{@organisation.title}", suppliers_path(:organisation_type => @organisation.class.to_s, :organisation_id => @organisation.id) %>
 </div>
-<h1><%= basic_link_for(@supplier.company) || @supplier.title %></h1>
+<h1><%= basic_link_for(@supplier.company) || @supplier.title %><%= link_to(' (full details)', @supplier.company) if @supplier.company %></h1>
 <%- if @supplier.company -%>
-  <div id="company_details_div">
-    <h4>About this company (<%= link_to('full details', @supplier.company) %>)</h4>
-      <dl id="company_details" class="attributes">
-        <%= attribute_tag :company_number, link_to(@supplier.company.company_number, @supplier.company) %>
-        <%= attribute_tag :website, link_to(@supplier.url, @supplier.url) if @supplier.url? || @supplier.company.url? %>
-      </dl>
-
+<div id="company_info">
+  <dl id="company_details" class="attributes">
+    <%= attribute_tag :company_number, link_to(@supplier.company.company_number, @supplier.company) %>
+    <%= attribute_tag :website, link_to(@supplier.url, @supplier.url) if @supplier.url? || @supplier.company.url? %>
+  </dl>
+  <div id="company_suppliers" class='clear'>
+    <h4>Other councils supplied by <%= basic_link_for(@supplier.company) %></h4>
+    <ul>
+      <%- @supplier.associateds.each do |supplier| -%>
+        <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> (Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %>)</li>
+      <%- end -%>
+    </ul>
   </div>
+</div>
+
 <%- end -%>
 
 <table class='statistics' id='financial_transactions'>
@@ -25,5 +34,8 @@
     </tr>
   <%- end -%>
 </table>
+<div id="summary_statistics">
+  <p><strong>Total Spend</strong> £<%= number_with_delimiter(@supplier.total_spend.to_i) %>, <%#= @supplier.average_monthly_spend %></p>
+</div>
 
 <%= render :partial => '/shared/api_info' %>

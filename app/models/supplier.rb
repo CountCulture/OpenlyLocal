@@ -21,6 +21,12 @@ class Supplier < ActiveRecord::Base
     financial_transactions.sum(:value)
   end
   
+  # returns associated suppliers (i.e. those with same company)
+  def associateds
+    return [] unless company
+    company.suppliers - [self]
+  end
+  
   # overwrites normal accessor to return nil if company_number attribute is blank or '-1' (which is used to denote failed search)
   def company_number
     (self[:company_number].blank? || self[:company_number] == '-1') ? nil : self[:company_number]
