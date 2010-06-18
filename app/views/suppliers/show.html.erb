@@ -39,7 +39,7 @@
       <td><%= transaction.date.to_s(:event_date) %></td>
       <td><%= transaction.department_name||'not provided' %></td>
       <td><%= transaction.service||'not provided' %></td>
-      <td class='value'>£<%= number_with_precision(transaction.value, :precision => 2, :delimiter => ',') %></td>
+      <td class='value'><%= basic_link_for transaction , :text => number_to_currency(transaction.value, :unit => "£") %></td>
     </tr>
   <%- end -%>
 </table>

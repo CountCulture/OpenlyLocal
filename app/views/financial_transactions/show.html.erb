@@ -1,0 +1,16 @@
+<%= render :partial => 'shared/experimental_flash' %>
+
+<div class='breadcrumbs'>
+  <%= link_to 'All suppliers', suppliers_path %> &gt; <%= link_to "Suppliers to #{@supplier.organisation.title}", suppliers_path(:organisation_type => @supplier.organisation.class.to_s, :organisation_id => @supplier.organisation.id) %> &gt; <%= link_for @supplier %>
+</div>
+<h1>Payment <%= @financial_transaction.uid if @financial_transaction.uid? %></h1>
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :from, link_for(@supplier.organisation) %>
+  <%= attribute_tag :to, link_for(@supplier) %>
+  <%= attribute_tag :for, "£#{number_with_precision(@financial_transaction.value, :precision => 2, :delimiter => ',')}" %>
+  <%= attribute_tag :on, @financial_transaction.date.to_date.to_s(:event_date) %>
+</dl>
+
+
+
+<%= render :partial => '/shared/api_info' %>

@@ -4,6 +4,18 @@ class FinancialTransaction < ActiveRecord::Base
   
   CommonMispellings = { %w(Childrens Childrens') => "Children's" }
   
+  def department_name=(raw_name)
+    CommonMispellings.each do |mispellings,correct|
+      mispellings.each do |m|
+        raw_name.sub!(Regexp.new(Regexp.escape("#{m}\s")),"#{correct} ")
+      end
+    end 
+    self[:department_name] = raw_name.squish
+  end
+  
+  def title
+    (uid? ? "Transaction #{uid}" : "Transaction") + " with #{supplier.title} on #{date.to_s(:event_date)}"
+  end
   
   # strips out commas and pound signs
   def value=(raw_value)
@@ -14,15 +26,6 @@ class FinancialTransaction < ActiveRecord::Base
     else
       raw_value
     end
-  end
-  
-  def department_name=(raw_name)
-    CommonMispellings.each do |mispellings,correct|
-      mispellings.each do |m|
-        raw_name.sub!(Regexp.new(Regexp.escape("#{m}\s")),"#{correct} ")
-      end
-    end 
-    self[:department_name] = raw_name.squish
   end
   
 end

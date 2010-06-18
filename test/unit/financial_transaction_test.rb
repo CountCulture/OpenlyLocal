@@ -20,43 +20,60 @@ class FinancialTransactionTest < ActiveSupport::TestCase
                            :cost_centre, 
                            :service, 
                            :transaction_type, 
-                           :date_fuzziness
-                           
+                           :date_fuzziness  
+  end
+  
+  context 'an instance of the FinancialTransaction class' do
+    setup do
+      @financial_transaction = Factory(:financial_transaction)
+    end
+    
+    context 'when returning title' do
+      should 'use date' do
+        assert_equal "Transaction with #{@financial_transaction.supplier.title} on #{@financial_transaction.date.to_s(:event_date)}", @financial_transaction.title
+      end
+      
+      should 'use date and uid when uid is set' do
+        @financial_transaction.uid = '1234A'
+        assert_equal "Transaction 1234A with #{@financial_transaction.supplier.title} on #{@financial_transaction.date.to_s(:event_date)}", @financial_transaction.title
+      end
+    end
+    
     context "when setting value" do
 
       should "assign value as expected" do
         assert_equal 34567.23, Factory(:financial_transaction, :value => 34567.23).value
         assert_equal -34567.23, Factory(:financial_transaction, :value => -34567.23).value
       end
-      
+
       should "strip out commas" do
         assert_equal 34567.23, Factory(:financial_transaction, :value => '34,567.23').value
       end
-      
+
       should "strip out spaces" do
         assert_equal 34567.23, Factory(:financial_transaction, :value => '34, 567.23 ').value
       end
-      
+
       should "treat brackets as negative numbers" do
         assert_equal -34567.23, Factory(:financial_transaction, :value => '(34,567.23)').value
       end
-      
+
       should "strip out pound signs" do
         assert_equal 3467.23, Factory(:financial_transaction, :value => '£3467.23').value
       end
     end
-    
+
     context 'when setting department' do
       should 'squish spaces' do
         assert_equal 'Foo Department', Factory.build(:financial_transaction, :department_name => ' Foo   Department   ').department_name
       end
-      
+
       should 'replace mispellings' do
         assert_equal 'Children\'s Department', Factory.build(:financial_transaction, :department_name => 'Childrens\' Department ').department_name
         assert_equal 'Children\'s Department', Factory.build(:financial_transaction, :department_name => 'Childrens Department ').department_name
       end
     end
-    
+
     context "when saving" do
       setup do
         @supplier = @financial_transaction.supplier
@@ -69,5 +86,5 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_equal 73, @supplier.reload.total_spend
       end
     end
-  end
+  end                      
 end
