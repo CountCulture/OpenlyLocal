@@ -593,6 +593,8 @@ class CouncilsControllerTest < ActionController::TestCase
 
         Council.any_instance.stubs(:party_breakdown => [[Party.new("Conservative"), 4], [Party.new("Labour"), 3]])
         @council.child_authorities << @another_council # add parent/child relationship
+        @supplier = Factory(:supplier, :organisation => @council)
+        @financial_transaction = Factory(:financial_transaction, :supplier => @supplier)
       end
       
       should "show party breakdown" do
@@ -631,6 +633,10 @@ class CouncilsControllerTest < ActionController::TestCase
 
       end
             
+      should "show list biggest suppliers" do
+        get :show, :id => @council.id
+        assert_select "#suppliers li a", /#{@supplier.title}/
+      end
       # context "with xml requested" do
       #   setup do
       #     @datapoint.stubs(:summary => ["heading_1", "data_1"])

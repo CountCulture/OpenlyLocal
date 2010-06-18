@@ -84,6 +84,11 @@
     <%= list_all @documents[0..9], :rel => "openlylocal:committee", :extended => true %>
     <%= content_tag(:p, link_to("See more", documents_path(:council_id => @council.id)), :class => "more_info") if @documents.size > 10 %>
   </div>
+  <div id="suppliers" class="item_grouping">
+    <h3><%= link_to "Biggest Suppliers", suppliers_path(:organisation_type => 'Council', :organisation_id => @council.id, :order => 'total_spend') %></h3>
+    <%= list_all @council.suppliers.all(:limit => 10, :order => 'total_spend DESC') %>
+    <%= content_tag(:p, link_to("See more", suppliers_path(:organisation_type => 'Council', :organisation_id => @council.id, :order => 'total_spend')), :class => "more_info") %>
+  </div>
 </div>
 <%= render :partial => '/shared/api_info' %>
 <%= content_tag(:p, auto_link("Data sourced from #{@council.data_source_url} provided by #{@council.data_source_name}"), :class => "attribution") unless @council.data_source_url.blank? %>
