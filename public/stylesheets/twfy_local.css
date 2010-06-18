@@ -259,11 +259,13 @@ body.councils .extra_info  {
 	width: 5em;
 }
 dl#main_attributes {
+	margin-top: 2em;
+}
+dl.attributes {
 	clear:left;
-	margin: 2em 0;
-	float:left;
+	margin: 0 0 2em 0;
 	width:450px;
-	
+	float:left;
 }
 .attributes dt {
 	float: left;

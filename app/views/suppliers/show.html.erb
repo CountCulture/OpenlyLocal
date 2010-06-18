@@ -2,11 +2,16 @@
   <%= link_to 'All suppliers', suppliers_path %> &gt; <%= link_to "Suppliers to #{@organisation.title}", suppliers_path(:organisation_type => @organisation.class.to_s, :organisation_id => @organisation.id) %>
 </div>
 <h1><%= basic_link_for(@supplier.company) || @supplier.title %></h1>
+<%- if @supplier.company -%>
+  <div id="company_details_div">
+    <h4>About this company (<%= link_to('full details', @supplier.company) %>)</h4>
+      <dl id="company_details" class="attributes">
+        <%= attribute_tag :company_number, link_to(@supplier.company.company_number, @supplier.company) %>
+        <%= attribute_tag :website, link_to(@supplier.url, @supplier.url) if @supplier.url? || @supplier.company.url? %>
+      </dl>
 
-<dl id="main_attributes" class="attributes">
-  <%= attribute_tag :company_number, link_to(@supplier.company_number, @supplier.company) if @supplier.company %>
-  <%= attribute_tag :website, link_to(@supplier.url, @supplier.url) if @supplier.url? %>
-</dl>
+  </div>
+<%- end -%>
 
 <table class='statistics' id='financial_transactions'>
   <%= content_tag :caption, "Money paid to this supplier by #{link_for @organisation }" %>
