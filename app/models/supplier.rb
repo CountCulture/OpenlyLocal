@@ -21,6 +21,13 @@ class Supplier < ActiveRecord::Base
     financial_transactions.sum(:value)
   end
   
+  def calculated_average_monthly_spend
+    return if financial_transactions.blank?
+    oldest, newest = self.financial_transactions.values_at(0,-1) #nb we already get in date order
+    months_covered = (newest.date.year - oldest.date.year) * 12 + (newest.date.month - oldest.date.month) + 1 # add one because we want the number of months covered, not just the difference
+    financial_transactions.sum(:value)/(months_covered)
+  end
+  
   # returns associated suppliers (i.e. those with same company)
   def associateds
     return [] unless company

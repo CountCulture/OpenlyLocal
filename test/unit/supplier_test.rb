@@ -141,17 +141,33 @@ class SupplierTest < ActiveSupport::TestCase
       
     end
     
-    context "when returning calculated_total_spend" do
+    context "when calculating total_spend" do
       setup do
         @another_supplier = Factory(:supplier)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 123.45)
         @financial_transaction_2 = Factory(:financial_transaction, :supplier => @supplier, :value => -32.1)
-        @financial_transaction_2 = Factory(:financial_transaction, :supplier => @supplier, :value => 22.1)
+        @financial_transaction_3 = Factory(:financial_transaction, :supplier => @supplier, :value => 22.1)
         @unrelated_financial_transaction = Factory(:financial_transaction, :supplier => @another_supplier, :value => 22.1)
       end
 
       should "sum all financial transactions for supplier" do
         assert_in_delta (123.45 - 32.1 + 22.1), @supplier.calculated_total_spend, 2 ** -10
+      end
+    end
+
+    context "when calculating average_monthly_spend" do
+      setup do
+        @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 123.45, :date => 11.months.ago)
+        @financial_transaction_2 = Factory(:financial_transaction, :supplier => @supplier, :value => -32.1, :date => 3.months.ago)
+        @financial_transaction_3 = Factory(:financial_transaction, :supplier => @supplier, :value => 22.1, :date => 5.months.ago)
+      end
+
+      should "divide calculated_total_spend by number of months" do
+        assert_in_delta (123.45 - 32.1 + 22.1)/(8+1), @supplier.reload.calculated_average_monthly_spend, 2 ** -10 
+      end
+      
+      should "retrun nil when no transactions" do
+        assert_nil Factory(:supplier).calculated_average_monthly_spend
       end
     end
 
