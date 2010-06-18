@@ -512,6 +512,23 @@ div#dataset_data th {
 div#dataset_data table {
 	width:auto;}
 
+/*Spending specific formatting*/
+#dashboard {
+	float: right;
+	width:300px;
+	padding:6px;
+	overflow:auto;
+	border: 1px solid #ddd;
+	background: #eee;
+	text-align:right;
+}
+#dashboard .value {
+	font-size: 3em;
+	color: #8a1f11;
+}
+#dashboard .description {
+	font-size: 1.2em;
+}
 /*Ness Statistics formatting*/
 #grouped_datapoints {
 	clear:both;
@@ -723,7 +740,7 @@ ul#hyperlocal_sites li li{
 }
 
 .breadcrumbs {
-	margin-bottom: 0;
+	margin-bottom: 3px;
 }
 /*Autocomplete styling*/
 .ac_results {

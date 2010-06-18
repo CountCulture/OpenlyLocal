@@ -64,7 +64,7 @@ end
 
 desc "Match suppliers to companies"
 task :match_suppliers_to_companies => :environment do
-  unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (name LIKE '%Ltd%' OR name LIKE '%Limited%' OR name LIKE '%PLC%') AND name !='-1'", :limit => 200)
+  unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (name LIKE '%Ltd%' OR name LIKE '%Limited%' OR name LIKE '%PLC%') AND company_number !='-1'", :limit => 200)
   unmatched_suppliers.each do |supplier|
     normalised_name = supplier.name.sub(/\bT\/A\b.+/i, '').gsub(/\(.+\)/,'').squish
     client = HTTPClient.new
