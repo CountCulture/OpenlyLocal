@@ -18,7 +18,7 @@ class SupplierTest < ActiveSupport::TestCase
     should have_db_column :name
     should have_db_column :company_number
     should have_db_column :total_spend
-    should have_db_column :recent_spend
+    should have_db_column :average_monthly_spend
     
     should 'belong to organisation polymorphically' do
       organisation = Factory(:council)
@@ -80,6 +80,17 @@ class SupplierTest < ActiveSupport::TestCase
         @supplier.stubs(:calculated_total_spend).returns(42.1)
         @supplier.save!
         assert_equal 42.1, @supplier.reload.total_spend
+      end
+      
+      should 'calculate average_monthly_spend' do
+        @supplier.expects(:calculated_average_monthly_spend).returns(63.4)
+        @supplier.save!
+      end
+      
+      should 'update total_spend with calculated_total_spend' do
+        @supplier.stubs(:calculated_average_monthly_spend).returns(63.4)
+        @supplier.save!
+        assert_equal 63.4, @supplier.reload.average_monthly_spend
       end
     end
     

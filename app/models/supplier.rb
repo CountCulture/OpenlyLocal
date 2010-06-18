@@ -4,7 +4,7 @@ class Supplier < ActiveRecord::Base
   has_many :financial_transactions, :order => 'date'
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
-  before_save :update_total_spend
+  before_save :update_spending_info
   after_create :match_with_existing_company
   alias_attribute :title, :name
   
@@ -40,8 +40,9 @@ class Supplier < ActiveRecord::Base
   end
   
   private
-  def update_total_spend
+  def update_spending_info
     self.total_spend = calculated_total_spend
+    self.average_monthly_spend = calculated_average_monthly_spend
   end
   
   def match_with_existing_company

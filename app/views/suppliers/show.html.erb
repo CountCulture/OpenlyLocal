@@ -14,7 +14,7 @@
     <h4>Other councils supplied by <%= basic_link_for(@supplier.company) %></h4>
     <ul>
       <%- @supplier.associateds.each do |supplier| -%>
-        <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> (Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %>)</li>
+        <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> (Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %>, Average monthly spend: <span class='value'>£<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %>)</li>
       <%- end -%>
     </ul>
   </div>
@@ -35,7 +35,7 @@
   <%- end -%>
 </table>
 <div id="summary_statistics">
-  <p><strong>Total Spend</strong> £<%= number_with_delimiter(@supplier.total_spend.to_i) %>, <%#= @supplier.average_monthly_spend %></p>
+  <p><strong>Total Spend</strong> £<%= number_with_delimiter(@supplier.total_spend.to_i) %>, <strong>Average Monthly Spend</strong> £<%= number_with_delimiter(@supplier.average_monthly_spend.to_i) %></p>
 </div>
 
 <%= render :partial => '/shared/api_info' %>
