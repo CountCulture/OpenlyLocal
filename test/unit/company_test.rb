@@ -25,6 +25,14 @@ class CompanyTest < ActiveSupport::TestCase
         Company.normalise_title('foo bar')
       end
     end
+    
+    context "when matching title" do
+      should "find company that matches normalised title" do
+        raw_title = ' Foo &  Bar Ltd.'
+        Company.expects(:first).with(:conditions => {:normalised_title => TitleNormaliser.normalise_company_title(raw_title)})
+        Company.matches_title(raw_title)
+      end
+    end
   end
   
   context "An instance of the Company class" do

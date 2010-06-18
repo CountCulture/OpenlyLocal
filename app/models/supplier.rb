@@ -5,6 +5,7 @@ class Supplier < ActiveRecord::Base
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
   before_save :update_total_spend
+  after_create :match_with_existing_company
   alias_attribute :title, :name
   
   def validate
@@ -28,5 +29,11 @@ class Supplier < ActiveRecord::Base
   private
   def update_total_spend
     self.total_spend = calculated_total_spend
+  end
+  
+  def match_with_existing_company
+    if company = Company.matches_title(name)
+      update_attribute(:company, company)
+    end
   end
 end

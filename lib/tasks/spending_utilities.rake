@@ -99,3 +99,32 @@ task :move_supplier_info_to_company => :environment do
   end
 end
 
+desc "Import LB Richmond Supplier Payments"
+task :import_richmond_supplier_payments => :environment do
+  richmond = Council.first(:conditions => "name LIKE '%Richmond%'")
+  suppliers = richmond.suppliers
+  periods = %w(05_2010)
+  periods.each do |period|
+    puts "Adding transactions for #{period}"
+    FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/lb_richmond/supplier_payments_#{period}.csv"), :headers => true) do |row|
+            supplier = suppliers.detect{ |s| s.name == row['Supplier']}
+            next unless supplier || row['Supplier'] # skip empty rows
+            unless supplier
+              supplier ||= richmond.suppliers.create!(:name => row['Supplier'])
+              suppliers << supplier # add to list so we don't create again
+              puts "Added new supplier: #{supplier.name}"
+            end
+            date, date_fuzziness = row['Date'].blank? ? ["15-#{period.gsub('_','-')}".to_date, 15] : [row['Date'].gsub('/','-'), nil]# if no date give it date in the middle of the month and add appropriate date fuzziness
+            supplier.financial_transactions.create!(:uid => row['Doc No'],
+                                                    :date => date,
+                                                    :date_fuzziness => date_fuzziness,
+                                                    :value => row['Amount'],
+                                                    :transaction_type => row['Type'],
+                                                    :department_name => row['Directorate'],
+                                                    # :cost_centre => row['Cost Centre'],
+                                                    :service => row['Service'],
+                                                    :source_url => 'http://www.richmond.gov.uk/home/council_government_and_democracy/council/council_payments_to_suppliers.htm'
+                                                  )
+          end
+        end
+      end

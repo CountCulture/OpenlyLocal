@@ -83,6 +83,24 @@ class SupplierTest < ActiveSupport::TestCase
       end
     end
     
+    context 'after creating' do
+      setup do
+        @company = Factory(:company)
+      end
+      
+      should 'try to match against company' do
+        Company.expects(:matches_title).with('Foo company')
+        Factory(:supplier, :name => 'Foo company')
+      end
+      
+      should 'and should associate with returned company' do
+        Company.stubs(:matches_title).returns(@company)
+        supplier = Factory(:supplier, :name => 'Foo company')
+        assert_equal @company, supplier.company
+      end
+      
+    end
+    
     context 'when returning company_number' do
       should 'return nil if blank?' do
         assert_nil @supplier.company_number
