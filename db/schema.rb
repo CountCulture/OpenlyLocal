@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100618101355) do
+ActiveRecord::Schema.define(:version => 20100618202833) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -24,6 +24,8 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
     t.column "former", :boolean, :default => false
   end
 
+  add_index "addresses", ["addressee_id", "addressee_type"], :name => "index_addresses_on_addressee_id_and_addressee_type"
+
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
     t.column "area_id", :integer
@@ -32,6 +34,8 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
     t.column "boundary_line", :multi_polygon
     t.column "hectares", :float
   end
+
+  add_index "boundaries", ["area_id", "area_type"], :name => "index_boundaries_on_area_id_and_area_type"
 
   create_table "candidates", :force => true do |t|
     t.column "poll_id", :integer
@@ -104,6 +108,8 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
     t.column "updated_at", :datetime
   end
 
+  add_index "contracts", ["organisation_id", "organisation_type"], :name => "index_contracts_on_organisation_id_and_organisation_type"
+
   create_table "council_contacts", :force => true do |t|
     t.column "name", :string
     t.column "position", :string
@@ -160,6 +166,8 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
   add_index "councils", ["portal_system_id"], :name => "index_councils_on_portal_system_id"
   add_index "councils", ["parent_authority_id"], :name => "index_councils_on_parent_authority_id"
+  add_index "councils", ["pension_fund_id"], :name => "index_councils_on_pension_fund_id"
+  add_index "councils", ["output_area_classification_id"], :name => "index_councils_on_output_area_classification_id"
 
   create_table "county_region", :options=>'ENGINE=MyISAM', :force => true do |t|
     t.column "name", :string
@@ -196,6 +204,8 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
     t.column "crime_rates", :text
     t.column "total_crimes", :text
   end
+
+  add_index "crime_areas", ["police_force_id"], :name => "index_crime_areas_on_police_force_id"
 
   create_table "crime_types", :force => true do |t|
     t.column "uid", :string
@@ -298,6 +308,8 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
     t.column "licence", :string
   end
 
+  add_index "datasets", ["dataset_topic_grouping_id"], :name => "index_datasets_on_dataset_topic_grouping_id"
+
   create_table "delayed_jobs", :force => true do |t|
     t.column "priority", :integer, :default => 0
     t.column "attempts", :integer, :default => 0
@@ -396,6 +408,8 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
   end
+
+  add_index "financial_transactions", ["supplier_id"], :name => "index_financial_transactions_on_supplier_id"
 
   create_table "hyperlocal_groups", :force => true do |t|
     t.column "title", :string
@@ -719,6 +733,9 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
     t.column "updated_at", :datetime
   end
 
+  add_index "related_articles", ["hyperlocal_site_id"], :name => "index_related_articles_on_hyperlocal_site_id"
+  add_index "related_articles", ["subject_id", "subject_type"], :name => "index_related_articles_on_subject_id_and_subject_type"
+
   create_table "scrapers", :force => true do |t|
     t.column "url", :string
     t.column "parser_id", :integer
@@ -767,6 +784,8 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
     t.column "total_spend", :float
     t.column "average_monthly_spend", :float
   end
+
+  add_index "suppliers", ["organisation_id", "organisation_type"], :name => "index_suppliers_on_organisation_id_and_organisation_type"
 
   create_table "taggings", :force => true do |t|
     t.column "tag_id", :integer
@@ -835,6 +854,7 @@ ActiveRecord::Schema.define(:version => 20100618101355) do
 
   add_index "wards", ["council_id"], :name => "index_wards_on_council_id"
   add_index "wards", ["police_team_id"], :name => "index_wards_on_police_team_id"
+  add_index "wards", ["output_area_classification_id"], :name => "index_wards_on_output_area_classification_id"
 
   create_table "wdtk_requests", :force => true do |t|
     t.column "title", :string
