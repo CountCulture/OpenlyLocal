@@ -116,7 +116,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
          post :create, :dataset_topic_grouping => {:title => "New Topic Grouping"}
        end
 
-       should_change "DatasetTopicGrouping.count", :by => 1
+       should_change("The number of DatasetTopicGroupings", :by => 1) { DatasetTopicGrouping.count }
        should_assign_to :dataset_topic_grouping
        should_redirect_to( "the show page for dataset_topic_grouping") { dataset_topic_grouping_url(assigns(:dataset_topic_grouping)) }
        should_set_the_flash_to /Successfully created/
@@ -129,7 +129,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
          post :create, :dataset_topic_grouping => {:title => ""}
        end
 
-       should_not_change "DatasetTopicGrouping.count"
+       should_not_change("The number of DatasetTopicGroupings") { DatasetTopicGrouping.count }
        should_assign_to :dataset_topic_grouping
        should render_template :new
        should_not set_the_flash

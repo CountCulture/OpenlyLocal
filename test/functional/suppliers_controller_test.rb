@@ -198,7 +198,7 @@ class SuppliersControllerTest < ActionController::TestCase
   context "with xml requested" do
     setup do
       @company = Factory(:company)
-      @supplier.update_attribute(:company, @company)
+      @supplier.update_attribute(:payee, @company)
       get :show, :id => @supplier.id, :format => "xml"
     end
 
@@ -207,7 +207,7 @@ class SuppliersControllerTest < ActionController::TestCase
     should_render_without_layout
     should respond_with_content_type 'application/xml'
     should "include company" do
-      assert_select "supplier>company>id", "#{@company.id}"
+      assert_select "supplier>payee>id", "#{@company.id}"
     end
     should "include financial_transactions" do
       assert_select "supplier>financial-transactions>financial-transaction>id", "#{@financial_transaction.id}"

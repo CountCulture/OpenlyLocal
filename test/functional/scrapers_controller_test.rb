@@ -239,7 +239,7 @@ class ScrapersControllerTest < ActionController::TestCase
   
     should_assign_to :scraper, :results, :results_summary
     should respond_with :success
-    should_change "Member.count", :by => 1
+    should_change("The number of members", :by => 1) { Member.count }
     
     should "show summary of successful results" do
       assert_select "#results_summary" do
@@ -272,7 +272,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
     
     should_assign_to :scraper, :results
-    should_change "Member.count", :by => 1 # => Not two
+    should_change("The number of members", :by => 1) { Member.count }# => Not two
     should respond_with :success
     should "show summary of problems" do
       assert_select "div.member div.errorExplanation" do
@@ -334,7 +334,6 @@ class ScrapersControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :new
       should_not set_the_flash
-      should_render_a_form
   
       should "assign given type of scraper" do
         assert_kind_of InfoScraper, assigns(:scraper)
@@ -411,7 +410,6 @@ class ScrapersControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :new
       should_not set_the_flash
-      should_render_a_form
   
       should "assign given type of scraper" do
         assert_kind_of ItemScraper, assigns(:scraper)
@@ -437,7 +435,6 @@ class ScrapersControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :new
       should_not set_the_flash
-      should_render_a_form
       
       should "assign appropriate parser to scraper" do
         assert_equal @parser, assigns(:scraper).parser
@@ -478,7 +475,6 @@ class ScrapersControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :new
       should_not set_the_flash
-      should_render_a_form
       
       should "assign appropriate parser to scraper" do
         assert_equal @parser, assigns(:scraper).parser
@@ -515,7 +511,6 @@ class ScrapersControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :new
       should_not set_the_flash
-      should_render_a_form
       
       should "assign appropriate fresh parser to scraper" do
         assert assigns(:scraper).parser.new_record?
@@ -587,7 +582,7 @@ class ScrapersControllerTest < ActionController::TestCase
           post :create, { :type => "InfoScraper", :scraper => @scraper_params }
         end
       
-        should_change "Scraper.count", :by => 1
+        should_change('The number of scrapers', :by => 1) { Scraper.count }
         should_assign_to :scraper
         should_redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
         should_set_the_flash_to "Successfully created scraper"
@@ -596,7 +591,7 @@ class ScrapersControllerTest < ActionController::TestCase
           assert_kind_of InfoScraper, assigns(:scraper)
         end
       
-        should_change "Parser.count", :by => 1
+        should_change('The number of parsers', :by => 1) { Parser.count }
       
         should "save parser description" do
           assert_equal "new parser", assigns(:scraper).parser.description
@@ -617,7 +612,7 @@ class ScrapersControllerTest < ActionController::TestCase
           post :create, { :type => "InfoScraper", :scraper => @exist_scraper_params }
         end
       
-        should_change "Scraper.count", :by => 1
+        should_change('The number of scrapers', :by => 1) { Scraper.count }
         should_assign_to :scraper
         should_redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
         should_set_the_flash_to "Successfully created scraper"
@@ -626,7 +621,7 @@ class ScrapersControllerTest < ActionController::TestCase
           assert_kind_of InfoScraper, assigns(:scraper)
         end
       
-        should_not_change "Parser.count"
+        should_not_change("The number of parsers") { Parser.count }
       
         should "associate existing parser to scraper " do
           assert_equal @existing_parser, assigns(:scraper).parser
@@ -640,8 +635,8 @@ class ScrapersControllerTest < ActionController::TestCase
           post :create, { :type => "InfoScraper", :scraper => @scraper_params.merge(:parser_id => @existing_parser.id ) }
         end
       
-        should_change "Scraper.count", :by => 1
-        should_change "Parser.count", :by => 1
+        should_change('The number of scrapers', :by => 1) { Scraper.count }
+        should_change('The number of parsers', :by => 1) { Parser.count }
         should_assign_to :scraper
         should_redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
         should_set_the_flash_to "Successfully created scraper"
@@ -676,7 +671,6 @@ class ScrapersControllerTest < ActionController::TestCase
     should respond_with :success
     should render_template :edit
     should_not set_the_flash
-    should_render_a_form
     
     should "show nested form for parser " do
       assert_select "input[type=hidden][value=?]#scraper_parser_attributes_id", @scraper.parser.id

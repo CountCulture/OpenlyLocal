@@ -459,7 +459,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
          post :create, :hyperlocal_site => @attributes
        end
      
-       should_change "HyperlocalSite.count", :by => 1
+       should_change("The number of Hyperlocal Sites", :by => 1) {HyperlocalSite.count}
        should_assign_to :hyperlocal_site
        should_redirect_to( "the hyperlocal_sites index page") { hyperlocal_sites_url }
        should_set_the_flash_to /Successfully submitted/i
@@ -474,7 +474,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
          post :create, :hyperlocal_site => {:title => "New Hyperlocal Site"}
        end
      
-       should_not_change "HyperlocalSite.count"
+       should_not_change("The number of Hyperlocal Sites") { HyperlocalSite.count }
        should_assign_to :hyperlocal_site
        should render_template :new
        should_not set_the_flash

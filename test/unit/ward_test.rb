@@ -15,10 +15,10 @@ class WardTest < ActiveSupport::TestCase
     should_validate_presence_of :council_id
     should have_many :members
     should have_many :committees
-    should have_many :meetings, :through => :committees
+    should have_many :meetings#, :through => :committees
     should have_many :datapoints
     should have_many :polls
-    should have_many :dataset_topics, :through => :datapoints
+    should have_many :dataset_topics#, :through => :datapoints
     should_have_one  :boundary
     should belong_to :crime_area
     should_have_db_column :uid

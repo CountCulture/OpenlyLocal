@@ -3,24 +3,24 @@
 <div class='breadcrumbs'>
   <%= link_to 'All suppliers', suppliers_path %> &gt; <%= link_to "Suppliers to #{@organisation.title}", suppliers_path(:organisation_type => @organisation.class.to_s, :organisation_id => @organisation.id) %> &gt; <%= @supplier.title %>
 </div>
-<h1><%= basic_link_for(@supplier.company) || @supplier.title %><%= link_to(' (full details)', @supplier.company) if @supplier.company %></h1>
+<h1><%= basic_link_for(@supplier.payee) || @supplier.title %><%= link_to(' (full details)', @supplier.payee) if @supplier.payee %></h1>
 
 <div id='dashboard' class='dashboard'>
   <h4>
-    Spent by <%= link_for @organisation %> with <%= basic_link_for(@supplier.company) || @supplier.title %>
+    Spent by <%= link_for @organisation %> with <%= basic_link_for(@supplier.payee) || @supplier.title %>
   </h4>
   <div id='total_spend' class='spending_figure'><strong class=description>Total spend</strong> <span class='value'>£<%= number_with_delimiter(@supplier.total_spend.to_i) %></span></div>
   <div id='total_spend' class='spending_figure'><strong class=description>Average monthly spend</strong> <span class='value'>£<%= number_with_delimiter(@supplier.average_monthly_spend.to_i) %></span></div>
 </div>
 
-<%- if @supplier.company -%>
+<%- if @supplier.payee -%>
 <div id="company_info">
   <dl id="company_details" class="attributes">
-    <%= attribute_tag :company_number, link_to(@supplier.company.company_number, @supplier.company) %>
-    <%= attribute_tag :website, link_to(@supplier.url, @supplier.url) if @supplier.url? || @supplier.company.url? %>
+    <%= attribute_tag :company_number, link_to(@supplier.payee.company_number, @supplier.payee) %>
+    <%= attribute_tag :website, link_to(@supplier.url, @supplier.url) if @supplier.url? || @supplier.payee.url? %>
   </dl>
   <div id="company_suppliers" class='clear-left'>
-    <h4>Other councils supplied by <%= basic_link_for(@supplier.company) %></h4>
+    <h4>Other councils supplied by <%= basic_link_for(@supplier.payee) %></h4>
     <ul>
       <%- @supplier.associateds.each do |supplier| -%>
         <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> (Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %>, Average monthly spend: <span class='value'>£<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %>)</li>

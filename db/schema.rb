@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100618202833) do
+ActiveRecord::Schema.define(:version => 20100619093644) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -780,9 +780,10 @@ ActiveRecord::Schema.define(:version => 20100618202833) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "url", :string
-    t.column "company_id", :integer
+    t.column "payee_id", :integer
     t.column "total_spend", :float
     t.column "average_monthly_spend", :float
+    t.column "payee_type", :string
   end
 
   add_index "suppliers", ["organisation_id", "organisation_type"], :name => "index_suppliers_on_organisation_id_and_organisation_type"

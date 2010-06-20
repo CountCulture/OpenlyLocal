@@ -11,14 +11,13 @@ class CommitteeTest < ActiveSupport::TestCase
     should_validate_presence_of :title, :url, :uid, :council_id
     should_validate_uniqueness_of :title, :scoped_to => :council_id
     should have_many :meetings
-    should have_many :meeting_documents, :through => :meetings
+    should have_many :meeting_documents#, :through => :meetings
     should_have_one  :next_meeting
     should have_many :memberships
-    should have_many :members, :through => :memberships
+    should have_many :members#, :through => :memberships
     should have_many :related_articles
     should belong_to :council
     should belong_to :ward
-    should_have_named_scope :active
     
     should "include ScraperModel mixin" do
       assert Committee.respond_to?(:find_all_existing)

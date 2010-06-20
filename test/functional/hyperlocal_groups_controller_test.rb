@@ -102,7 +102,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
          post :create, :hyperlocal_group => {:title => "New Hyperlocal Group", :url => "http:://hyperlocal_group.com"}
        end
      
-       should_change "HyperlocalGroup.count", :by => 1
+       should_change( "The number of Hyperlocal groups", :by => 1) { HyperlocalGroup.count }
        should_assign_to :hyperlocal_group
        should_redirect_to( "the show page for hyperlocal_group") { hyperlocal_group_url(assigns(:hyperlocal_group)) }
        should_set_the_flash_to /Successfully created/
@@ -115,7 +115,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
          post :create, :hyperlocal_group => {:title => ""}
        end
      
-       should_not_change "HyperlocalGroup.count"
+       should_not_change( "The number of Hyperlocal groups") { HyperlocalGroup.count }
        should_assign_to :hyperlocal_group
        should render_template :new
        should_not set_the_flash

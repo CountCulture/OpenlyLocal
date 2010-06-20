@@ -1,5 +1,5 @@
 class Company < ActiveRecord::Base
-  has_many :suppliers
+  has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
   validates_presence_of :title
   before_save :normalise_title
   

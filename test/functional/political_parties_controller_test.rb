@@ -66,9 +66,9 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
         put :update, :id => @political_party.id, :political_party => { :name => "New Name", :url => "http://new.name.com"}
       end
     
-      should_not_change "PoliceForce.count"
-      should_change "@political_party.reload.name", :to => "New Name"
-      should_change "@political_party.reload.url", :to => "http://new.name.com"
+      should_not_change("The number of political parties") { PoliticalParty.count }
+      should_change( "The name of the political party", :to => "New Name") { @political_party.reload.name }
+      should_change( "The url of the political party", :to => "http://new.name.com") { @political_party.reload.url }
       should_assign_to :political_party
       should_redirect_to( "the index page for political parties") { political_parties_path }
       should_set_the_flash_to "Successfully updated political party"
@@ -81,8 +81,8 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
         put :update, :id => @political_party.id, :political_party => {:name => ""}
       end
     
-      should_not_change "PoliceForce.count"
-      should_not_change "@political_party.reload.name"
+      should_not_change("The number of political parties") { PoliticalParty.count }
+      should_not_change("The name of the political party") { @political_party.reload.name }
       should_assign_to :political_party
       should render_template :edit
       should_not set_the_flash

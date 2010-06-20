@@ -467,7 +467,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
         @test_model.save_without_losing_dirty
       end
       
-      should_change "TestScrapedModel.count", :by => 1
+      should_change("The number of test_scraped_models", :by => 1) { TestScrapedModel.count }
       should "save record" do
         assert !@test_model.new_record?
       end

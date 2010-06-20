@@ -113,7 +113,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
          post :create, :portal_system => {:name => "New Portal", :url => "http:://new_portal.com"}
        end
      
-       should_change "PortalSystem.count", :by => 1
+       should_change("The number of portal_systems", :by => 1) { PortalSystem.count }
        should_assign_to :portal_system
        should_redirect_to( "the show page for portal_system") { portal_system_path(assigns(:portal_system)) }
        should_set_the_flash_to "Successfully created portal system"
@@ -126,7 +126,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
          post :create, :portal_system => {:url => "http:://new_portal.com"}
        end
      
-       should_not_change "PortalSystem.count"
+       should_not_change("The number of portal_systems") { PortalSystem.count } 
        should_assign_to :portal_system
        should render_template :new
        should_not set_the_flash
@@ -174,9 +174,9 @@ class PortalSystemsControllerTest < ActionController::TestCase
         put :update, :id => @portal.id, :portal_system => { :name => "New Name", :url => "http://new.name.com"}
       end
     
-      should_not_change "PortalSystem.count"
-      should_change "@portal.reload.name", :to => "New Name"
-      should_change "@portal.reload.url", :to => "http://new.name.com"
+      should_not_change("The number of portal_systems") { PortalSystem.count } 
+      should_change("The portal_system name", :to => "New Name") { @portal.reload.name }
+      should_change("The portal_system url", :to => "http://new.name.com") { @portal.reload.url }
       should_assign_to :portal_system
       should_redirect_to( "the show page for portal system") { portal_system_path(assigns(:portal_system)) }
       should_set_the_flash_to "Successfully updated portal system"
@@ -189,8 +189,8 @@ class PortalSystemsControllerTest < ActionController::TestCase
         put :update, :id => @portal.id, :portal_system => {:name => ""}
       end
     
-      should_not_change "PortalSystem.count"
-      should_not_change "@portal.reload.name"
+      should_not_change("The number of portal_systems") { PortalSystem.count } 
+      should_not_change("The portal_system name") { @portal.reload.name }
       should_assign_to :portal_system
       should render_template :edit
       should_not set_the_flash

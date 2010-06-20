@@ -1,6 +1,7 @@
 class Supplier < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
-  belongs_to :company
+  belongs_to :payee, :polymorphic => true
+  # belongs_to :company
   has_many :financial_transactions, :order => 'date'
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
@@ -30,8 +31,8 @@ class Supplier < ActiveRecord::Base
   
   # returns associated suppliers (i.e. those with same company)
   def associateds
-    return [] unless company
-    company.suppliers - [self]
+    return [] unless payee
+    payee.supplying_relationships - [self]
   end
   
   # overwrites normal accessor to return nil if company_number attribute is blank or '-1' (which is used to denote failed search)
@@ -47,7 +48,7 @@ class Supplier < ActiveRecord::Base
   
   def match_with_existing_company
     if company = Company.matches_title(name)
-      update_attribute(:company, company)
+      update_attribute(:payee, company)
     end
   end
 end

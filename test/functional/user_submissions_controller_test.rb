@@ -142,7 +142,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
          post :create, :user_submission => @attributes
        end
      
-       should_change "UserSubmission.count", :by => 1
+       should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
        should_assign_to :user_submission
        should_redirect_to( "the page for the council") { council_url(@council) }
        should_set_the_flash_to /Successfully submitted/i
@@ -155,7 +155,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
           post :create, :user_submission => { :twitter_account_name => "foobar", :member_id => @member.id }
         end
 
-        should_change "UserSubmission.count", :by => 1
+        should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
         should_assign_to :user_submission
         should_redirect_to( "the page for the member's council") { council_url(@council) }
         should_set_the_flash_to /Successfully submitted/i
@@ -173,7 +173,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
          post :create, :user_submission => {:twitter_account_name => "foo"}
        end
      
-       should_not_change "UserSubmission.count"
+       should_not_change("The number of user_submissions") { UserSubmission.count }
        should_assign_to :user_submission
        should render_template :new
        should_not set_the_flash

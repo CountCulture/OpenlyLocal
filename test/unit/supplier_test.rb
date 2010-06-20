@@ -10,7 +10,7 @@ class SupplierTest < ActiveSupport::TestCase
     end
     
     should have_many :financial_transactions
-    should belong_to :company
+    # should belong_to :company
     should_validate_presence_of :organisation_type, :organisation_id
     
     should have_db_column :uid
@@ -23,6 +23,11 @@ class SupplierTest < ActiveSupport::TestCase
     should 'belong to organisation polymorphically' do
       organisation = Factory(:council)
       assert_equal organisation, Factory(:supplier, :organisation => organisation).organisation
+    end
+    
+    should 'belong to payee polymorphically' do
+      payee = Factory(:company)
+      assert_equal payee, Factory(:supplier, :payee => payee).payee
     end
     
     should 'require either name or uid to be present' do
@@ -107,7 +112,7 @@ class SupplierTest < ActiveSupport::TestCase
       should 'and should associate with returned company' do
         Company.stubs(:matches_title).returns(@company)
         supplier = Factory(:supplier, :name => 'Foo company')
-        assert_equal @company, supplier.company
+        assert_equal @company, supplier.payee
       end
       
     end
@@ -132,10 +137,10 @@ class SupplierTest < ActiveSupport::TestCase
     
     context "when returning associateds" do
       setup do
-        @company = Factory(:company)
-        @supplier.update_attribute(:company, @company)
-        @sibling_supplier = Factory(:supplier, :company => @company)
-        @sole_supplier = Factory(:supplier, :company => Factory(:company))
+        @payee = Factory(:company)
+        @supplier.update_attribute(:payee, @payee)
+        @sibling_supplier = Factory(:supplier, :payee => @payee)
+        @sole_supplier = Factory(:supplier, :payee => Factory(:company))
       end
 
       should "return suppliers belong to same company" do

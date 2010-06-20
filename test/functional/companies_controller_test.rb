@@ -3,7 +3,7 @@ require 'test_helper'
 class CompaniesControllerTest < ActionController::TestCase
   def setup
     @company = Factory(:company)
-    @supplier = Factory(:supplier, :company => @company)
+    @supplier = Factory(:supplier, :payee => @company)
   end
   
   context "on GET to :show" do
@@ -36,11 +36,11 @@ class CompaniesControllerTest < ActionController::TestCase
     should_render_without_layout
     should respond_with_content_type 'application/xml'
     should "include suppliers" do
-      assert_select "suppliers>supplier>id", "#{@supplier.id}"
+      assert_select "supplying-relationships>supplying-relationship>id", "#{@supplier.id}"
     end
     
-    should "include supplier organisations" do
-      assert_select "suppliers>supplier>organisation>id", "#{@supplier.organisation.id}"
+    should "include supplying organisations" do
+      assert_select "supplying-relationships>supplying-relationship>organisation>id", "#{@supplier.organisation.id}"
     end
   end
 
@@ -53,8 +53,8 @@ class CompaniesControllerTest < ActionController::TestCase
     should respond_with :success
     should_render_without_layout
     should respond_with_content_type 'application/json'
-    should "include suppliers" do
-      assert_match /suppliers\":.+id\":#{@supplier.id}/, @response.body
+    should "include supplying organisations" do
+      assert_match /supplying_relationships\":.+id\":#{@supplier.id}/, @response.body
     end
   end
 

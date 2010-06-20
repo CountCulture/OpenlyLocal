@@ -777,8 +777,8 @@ class CouncilsControllerTest < ActionController::TestCase
       end
     
       should_not_change( "The number of councils") {Council.count}
-      should_change "@council.reload.name", :to => "New Name for SomeCouncil"
-      should_change "@council.reload.url", :to => "http://somecouncil.gov.uk/new"
+      should_change("The council name", :to => "New Name for SomeCouncil") {@council.reload.name}
+      should_change("The council url", :to => "http://somecouncil.gov.uk/new") {@council.reload.url}
       should_assign_to :council
       should redirect_to( "the show page for council") { council_path(assigns(:council)) }
       should_set_the_flash_to "Successfully updated council"

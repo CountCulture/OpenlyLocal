@@ -138,7 +138,7 @@ class ParsersControllerTest < ActionController::TestCase
            post :create, :parser => @parser_params
          end
 
-         should_change "Parser.count", :by => 1
+         should_change("Parser count", :by => 1) {Parser.count}
          should_assign_to :parser
          should_redirect_to( "the show page for parser") { parser_path(assigns(:parser)) }
          should_set_the_flash_to "Successfully created parser"
@@ -151,7 +151,7 @@ class ParsersControllerTest < ActionController::TestCase
            post :create, :parser => @parser_params.except(:result_model)
          end
 
-         should_not_change "Parser.count"
+         should_not_change ('The number of parsers') { Parser.count }
          should_assign_to :parser
          should render_template :new
          should_not set_the_flash
@@ -163,7 +163,7 @@ class ParsersControllerTest < ActionController::TestCase
            post :create, :parser => @parser_params.except(:scraper_type)
          end
 
-         should_not_change "Parser.count"
+         should_not_change ('The number of parsers') { Parser.count }
          should_assign_to :parser
          should render_template :new
          should_not set_the_flash
@@ -225,7 +225,7 @@ class ParsersControllerTest < ActionController::TestCase
           put :update, :id => @parser.id, :parser => @parser_params
         end
 
-        should_not_change "Parser.count"
+        should_not_change ('The number of parsers') { Parser.count }
         should_change "@parser.reload.description", :to => "New Description"
         should_change "@parser.reload.result_model", :to => "Committee"
         should_change "@parser.reload.item_parser", :to => "foo=\"new_bar\""
@@ -242,8 +242,8 @@ class ParsersControllerTest < ActionController::TestCase
           put :update, :id => @parser.id, :parser => {:result_model => ""}
         end
 
-        should_not_change "Parser.count"
-        should_not_change "@parser.reload.result_model"
+        should_not_change ('The number of parsers') { Parser.count }
+        should_not_change ('The result_model') { @parser.reload.result_model }
         should_assign_to :parser
         should render_template :edit
         should_set_the_flash_to /Problem/

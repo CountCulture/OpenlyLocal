@@ -16,7 +16,11 @@ class ScraperTest < ActiveSupport::TestCase
     should belong_to :parser
     should belong_to :council
     should_validate_presence_of :council_id
-    should_accept_nested_attributes_for :parser
+    # should_accept_nested_attributes_for :parser
+    
+    should "should_accept_nested_attributes_for parser" do
+      assert Scraper.instance_methods.include?("parser_attributes=")
+    end
 
     should "define ScraperError as child of StandardError" do
       assert_equal StandardError, Scraper::ScraperError.superclass
@@ -155,7 +159,7 @@ class ScraperTest < ActiveSupport::TestCase
       assert_equal [], @scraper.instance_variable_get(:@results)
     end
     
-    should_not_allow_mass_assignment_of :results
+    should_not allow_mass_assignment_of :results
 
     should "have parsing_results accessor" do
       @scraper.instance_variable_set(:@parsing_results, "foo")

@@ -253,7 +253,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
          post :create, :police_force => {:name => "New Force", :url => "http:://new_force.com"}
        end
      
-       should_change "PoliceForce.count", :by => 1
+       should_change("The number of police_forces", :by => 1) { PoliceForce.count }
        should_assign_to :police_force
        should_redirect_to( "the show page for police_force") { police_force_path(assigns(:police_force)) }
        should_set_the_flash_to "Successfully created police force"
@@ -266,7 +266,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
          post :create, :police_force => {:url => "http:://new_force.com"}
        end
      
-       should_not_change "PoliceForce.count"
+       should_not_change("The number of police_forces") { PoliceForce.count }
        should_assign_to :police_force
        should render_template :new
        should_not set_the_flash
@@ -314,9 +314,9 @@ class PoliceForcesControllerTest < ActionController::TestCase
         put :update, :id => @police_force.id, :police_force => { :name => "New Name", :url => "http://new.name.com"}
       end
     
-      should_not_change "PoliceForce.count"
-      should_change "@police_force.reload.name", :to => "New Name"
-      should_change "@police_force.reload.url", :to => "http://new.name.com"
+      should_not_change("The number of police_forces") { PoliceForce.count }
+      should_change("The police_force name", :to => "New Name") { @police_force.reload.name }
+      should_change("The police_force url", :to => "http://new.name.com") { @police_force.reload.url }
       should_assign_to :police_force
       should_redirect_to( "the show page for police force") { police_force_path(assigns(:police_force)) }
       should_set_the_flash_to "Successfully updated police force"
@@ -329,8 +329,8 @@ class PoliceForcesControllerTest < ActionController::TestCase
         put :update, :id => @police_force.id, :police_force => {:name => ""}
       end
     
-      should_not_change "PoliceForce.count"
-      should_not_change "@police_force.reload.name"
+      should_not_change("The number of police_forces") { PoliceForce.count }
+      should_not_change("The police_force name") { @police_force.reload.name }
       should_assign_to :police_force
       should render_template :edit
       should_not set_the_flash

@@ -12,7 +12,7 @@ class DatasetFamilyTest < ActiveSupport::TestCase
     should_have_and_belong_to_many :ons_subjects
     should have_many :ons_datasets
     should have_many :dataset_topics
-    should have_many :datapoints, :through => :dataset_topics
+    should have_many :datapoints#, :through => :dataset_topics
     should belong_to :dataset
     should_have_db_column :calculation_method
   end 

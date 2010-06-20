@@ -4,10 +4,10 @@ class CompanyTest < ActiveSupport::TestCase
   context "The Company class" do
     setup do
       @company = Factory(:company)
-      # @supplier = Factory(:supplier, :company => @company)
+      # @supplier = Factory(:supplier, :payee => @company)
     end
   
-    should have_many :suppliers
+    should have_many :supplying_relationships
     should_validate_presence_of :title
   
     should have_db_column :title
