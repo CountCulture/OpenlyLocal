@@ -32,4 +32,29 @@ class CouncilsHelperTest < ActionView::TestCase
     end
   end
   
+  context "open_data_link_for helper method" do
+    setup do
+      @council = Factory(:council)
+    end
+    
+    should 'return nil if no open_data_url' do
+      assert_nil open_data_link_for(@council)
+    end
+
+    should "link to open_data_url with open_data status if open_data_url" do
+      @council.open_data_url = 'http://foo.gov.uk/open'
+      @council.stubs(:open_data_status).returns('foo_open')
+      @council.stubs(:open_data_licence_name).returns('Creative Commons Attribution-Noncommercial 3.0')
+      expected_link = link_to("Open Data page", 'http://foo.gov.uk/open', :class => "foo_open open_data_link", :title => 'Creative Commons Attribution-Noncommercial 3.0')
+      assert_dom_equal expected_link, open_data_link_for(@council)
+    end
+    
+    should "link to open_data_url with semi-open status if open_data_url but no licence" do
+      @council.open_data_url = 'http://foo.gov.uk/open'
+      expected_link = link_to("Open Data page", 'http://foo.gov.uk/open', :class => "semi_open_data open_data_link", :title => 'Not explicitly licensed')
+      assert_dom_equal expected_link, open_data_link_for(@council)
+    end
+    
+  end
+  
 end

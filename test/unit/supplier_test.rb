@@ -104,7 +104,7 @@ class SupplierTest < ActiveSupport::TestCase
         @company = Factory(:company)
       end
       
-      should 'try to match against company' do
+      should 'try to match against company if company' do
         Company.expects(:matches_title).with('Foo company')
         Factory(:supplier, :name => 'Foo company')
       end
@@ -117,6 +117,19 @@ class SupplierTest < ActiveSupport::TestCase
       
     end
     
+    context "when matching against existing possible payees" do
+      context "and name is company-like" do
+        setup do
+          @supplier.name = 'Foo Ltd'
+        end
+
+        should "try to match against company" do
+          Company.expects(:matches_title).with('Foo Ltd')
+          @supplier.match_possible_payee
+        end
+        
+      end
+    end
     context 'when returning company_number' do
       should 'return nil if blank?' do
         assert_nil @supplier.company_number

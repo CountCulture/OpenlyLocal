@@ -144,8 +144,12 @@ class Council < ActiveRecord::Base
     "http://#{DefaultDomain}/councils/#{to_param}"
   end
   
+  def open_data_licence_name
+    Licences[open_data_licence]&&Licences[open_data_licence].first
+  end
+  
   def open_data_status
-    open_data_url? ? 'open_data' : 'no_open_data'
+    open_data_url? ? (Licences[open_data_licence]&&Licences[open_data_licence].last == 'open' ? 'open_data' : 'semi_open_data') : 'no_open_data'
   end
   
   # A council is considered to be parsed if it has members. Note it is very inefficient to check members 

@@ -31,11 +31,20 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "area_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
-    t.column "boundary_line", :multi_polygon
+    t.column "boundary_line", :polygon
     t.column "hectares", :float
   end
 
   add_index "boundaries", ["area_id", "area_type"], :name => "index_boundaries_on_area_id_and_area_type"
+
+  create_table "boundaries_copy", :force => true do |t|
+    t.column "area_type", :string
+    t.column "area_id", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+    t.column "boundary_line", :multi_polygon
+    t.column "hectares", :float
+  end
 
   create_table "candidates", :force => true do |t|
     t.column "poll_id", :integer
@@ -65,6 +74,8 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "description", :text
     t.column "ward_id", :integer
     t.column "normalised_title", :string
+    t.column "organisation_type", :string
+    t.column "organisation_id", :integer
   end
 
   add_index "committees", ["council_id"], :name => "index_committees_on_council_id"
@@ -169,27 +180,6 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
   add_index "councils", ["pension_fund_id"], :name => "index_councils_on_pension_fund_id"
   add_index "councils", ["output_area_classification_id"], :name => "index_councils_on_output_area_classification_id"
 
-  create_table "county_region", :options=>'ENGINE=MyISAM', :force => true do |t|
-    t.column "name", :string
-    t.column "area_code", :string
-    t.column "descriptio", :string
-    t.column "file_name", :string
-    t.column "number", :integer
-    t.column "number0", :integer
-    t.column "polygon_id", :integer
-    t.column "unit_id", :integer
-    t.column "code", :string
-    t.column "hectares", :float
-    t.column "area", :float
-    t.column "type_code", :string
-    t.column "descript0", :string
-    t.column "type_cod0", :string
-    t.column "descript1", :string
-    t.column "the_geom", :multi_polygon, :null => false
-  end
-
-  add_index "county_region", ["the_geom"], :name => "index_county_region_on_the_geom", :spatial=> true 
-
   create_table "crime_areas", :force => true do |t|
     t.column "uid", :string
     t.column "police_force_id", :integer
@@ -215,16 +205,6 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "updated_at", :datetime
   end
 
-  create_table "data_periods", :force => true do |t|
-    t.column "start_date", :date
-    t.column "end_date", :date
-  end
-
-  create_table "data_periods_dataset_families", :id => false, :force => true do |t|
-    t.column "data_period_id", :integer
-    t.column "dataset_family_id", :integer
-  end
-
   create_table "datapoints", :force => true do |t|
     t.column "value", :float
     t.column "dataset_topic_id", :integer
@@ -232,24 +212,10 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "area_type", :string
-    t.column "data_period_id", :integer
   end
 
   add_index "datapoints", ["dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
   add_index "datapoints", ["area_id", "area_type"], :name => "index_datapoints_on_area_id_and_area_type"
-
-  create_table "datapoints_copy", :force => true do |t|
-    t.column "value", :float
-    t.column "dataset_topic_id", :integer
-    t.column "area_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "area_type", :string
-    t.column "data_period_id", :integer
-  end
-
-  add_index "datapoints_copy", ["dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
-  add_index "datapoints_copy", ["area_id", "area_type"], :name => "index_datapoints_on_area_id_and_area_type"
 
   create_table "dataset_families", :force => true do |t|
     t.column "title", :string
@@ -323,44 +289,6 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "updated_at", :datetime
   end
 
-  create_table "district_borough_unitary_region", :primary_key => "ID", :options=>'ENGINE=MyISAM', :force => true do |t|
-    t.column "NAME", :string
-    t.column "AREA_CODE", :string
-    t.column "DESCRIPTIO", :string
-    t.column "FILE_NAME", :string
-    t.column "NUMBER", :integer, :limit => 8
-    t.column "NUMBER0", :integer, :limit => 8
-    t.column "POLYGON_ID", :integer, :limit => 8
-    t.column "UNIT_ID", :integer, :limit => 8
-    t.column "CODE", :string
-    t.column "HECTARES", :float
-    t.column "AREA", :float
-    t.column "TYPE_CODE", :string
-    t.column "DESCRIPT0", :string
-    t.column "TYPE_COD0", :string
-    t.column "DESCRIPT1", :string
-    t.column "ogc_geom", :geometry
-  end
-
-  create_table "district_borough_unitary_ward_region", :primary_key => "ID", :options=>'ENGINE=MyISAM', :force => true do |t|
-    t.column "NAME", :string
-    t.column "AREA_CODE", :string
-    t.column "DESCRIPTIO", :string
-    t.column "FILE_NAME", :string
-    t.column "NUMBER", :integer, :limit => 8
-    t.column "NUMBER0", :integer, :limit => 8
-    t.column "POLYGON_ID", :integer, :limit => 8
-    t.column "UNIT_ID", :integer, :limit => 8
-    t.column "CODE", :string
-    t.column "HECTARES", :float
-    t.column "AREA", :float
-    t.column "TYPE_CODE", :string
-    t.column "DESCRIPT0", :string
-    t.column "TYPE_COD0", :string
-    t.column "DESCRIPT1", :string
-    t.column "ogc_geom", :geometry
-  end
-
   create_table "documents", :force => true do |t|
     t.column "title", :string
     t.column "body", :text, :limit => 16777215
@@ -374,7 +302,7 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "precis", :text
   end
 
-  add_index "documents", ["document_owner_id", "document_owner_type"], :name => "index_documents_on_document_owner_id_and_document_owner_type"
+  add_index "documents", ["document_owner_type", "document_owner_id"], :name => "index_documents_on_document_owner_type_and_document_owner_id"
 
   create_table "feed_entries", :force => true do |t|
     t.column "title", :string
@@ -463,6 +391,8 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "url", :string
     t.column "venue", :text
     t.column "status", :string
+    t.column "organisation_type", :string
+    t.column "organisation_id", :integer
   end
 
   add_index "meetings", ["council_id"], :name => "index_meetings_on_council_id"
@@ -489,6 +419,8 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "blog_url", :string
     t.column "facebook_account_name", :string
     t.column "linked_in_account_name", :string
+    t.column "organisation_type", :string
+    t.column "organisation_id", :integer
   end
 
   add_index "members", ["council_id"], :name => "index_members_on_council_id"
@@ -516,6 +448,8 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "url", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "organisation_type", :string
+    t.column "organisation_id", :integer
   end
 
   add_index "officers", ["council_id"], :name => "index_officers_on_council_id"
@@ -752,6 +686,8 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "notes", :text
     t.column "referrer_url", :string
     t.column "cookie_url", :string
+    t.column "organisation_type", :string
+    t.column "organisation_id", :integer
   end
 
   add_index "scrapers", ["id", "type"], :name => "index_scrapers_on_id_and_type"
@@ -848,6 +784,8 @@ ActiveRecord::Schema.define(:version => 20100619093644) do
     t.column "ness_id", :string
     t.column "gss_code", :string
     t.column "police_team_id", :integer
+    t.column "organisation_type", :string
+    t.column "organisation_id", :integer
     t.column "output_area_classification_id", :integer
     t.column "defunkt", :boolean, :default => false
     t.column "crime_area_id", :integer

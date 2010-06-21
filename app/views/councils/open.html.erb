@@ -1,30 +1,26 @@
 
 <div id="open_data_dashboard">
-  <%- open_data_councils, no_open_data_councils = @councils.partition{ |c| c.open_data_url? } -%>
+  <%- councils_with_status = @councils.group_by(&:open_data_status) -%>
   <h1><%= @title %></h1>
   <div id="statistics">
-    <%= image_tag(Gchart.pie(:data => [open_data_councils.size, no_open_data_councils.size], :legend => ["Open Data", "No Open Data"], :bar_colors => ['003366', '8a1f11'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "Open Data dashboard graph") %>
+    <%= image_tag(Gchart.pie(:data => councils_with_status.values.collect(&:size), :legend => councils_with_status.keys.collect(&:titleize), :bar_colors => ['003366', '8a1f11'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "Open Data dashboard graph") %>
     <div class='in_words'>
-      <span class='value open'><%= open_data_councils.size %></span> out of <span class='value not_open'><%= open_data_councils.size.to_i + no_open_data_councils.size %></span> <span class='description'>local authorities publish open data</span>
+      <span class='value open'><%= [councils_with_status['open_data']].flatten.size.to_i + [councils_with_status['semi_open_data']].flatten.size.to_i %></span> out of 
+			<span class='value not_open'><%= @councils.size %></span> <span class='description'>local authorities publish open data 
+				<em>(but only <%= [councils_with_status['open_data']].flatten.size %> are are <%= link_to "truly open", "http://opendefinition.org/", :class => 'external' %>)</em>
+			</span>
     </div>
   </div>
-  <div id='open_data_councils'>
-    <h2>Councils with open data</h2>
-    <%- if open_data_councils.blank? -%>
+<%- %w(open_data semi_open_data no_open_data).each do |status| -%>
+  <div id='<%= status %>_councils' class='open_data_council_grouping'>
+    <h2>Councils with <%= status.gsub('_', ' ') %></h2>
+    <%- if councils_with_status[status].blank? -%>
       <p class="alert">No councils found</p>
     <%- else -%>
-      <%= render :partial => 'council', :collection => open_data_councils %>
+      <%= render :partial => 'council', :collection => councils_with_status[status] %>
     <%- end -%>
   </div>
-
-  <div id='no_open_data_councils'>
-    <h2>Councils without open data</h2>
-    <%- if no_open_data_councils.blank? -%>
-      <p class="alert">No councils found</p>
-    <%- else -%>
-      <%= render :partial => 'council', :collection => no_open_data_councils %>
-    <%- end -%>
-  </div>
+<%- end -%>
 
   <%= render :partial => '/shared/api_info' %>
 </div>

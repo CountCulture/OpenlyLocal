@@ -430,14 +430,37 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
     
-    context "when returning open_ata status" do
+    context "when returning open_data status" do
       should "return no_open_data by default" do
         assert_equal 'no_open_data', @council.open_data_status
       end
       
-      should 'return open_data if council has open data url' do
+      should 'return semi_open_data if council has open data url and open_data_licence is nil' do
         @council.open_data_url = 'http://council.gov.uk/open'
+        assert_equal 'semi_open_data', @council.open_data_status
+      end
+      
+      should 'return open_data if council has open data url and open_data_licence is open' do
+        @council.open_data_url = 'http://council.gov.uk/open'
+        @council.open_data_licence = 'CCBY30'
         assert_equal 'open_data', @council.open_data_status
+      end
+      
+      should 'return semi_open_data if council has open data url and open_data_licence is semi_open' do
+        @council.open_data_url = 'http://council.gov.uk/open'
+        @council.open_data_licence = 'CCBYNC30'
+        assert_equal 'semi_open_data', @council.open_data_status
+      end
+    end
+
+    context "when returning open_data licence name" do
+      should "return nil by default" do
+        assert_nil @council.open_data_licence_name
+      end
+      
+      should 'return licence details associated with licence' do
+        @council.open_data_licence = 'CCBY30'
+        assert_equal 'Creative Commons By Attribution 3.0', @council.open_data_licence_name
       end
     end
 

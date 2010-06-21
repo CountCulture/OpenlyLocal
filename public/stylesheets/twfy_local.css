@@ -49,7 +49,7 @@ a.external:hover {
 a.feed, a.rss {
 	background: transparent url(../images/feed_icon.gif) no-repeat scroll left top;
 	margin-left:2px;
-	padding: 2px 0px 2px 18px;
+	padding: 1px 0px 1px 18px;
 	 }
 a.feed.twitter {
 	background: transparent url(../images/twitter_icon.png) no-repeat scroll left top;
@@ -358,7 +358,7 @@ body.councils .area a {
 #members li a {
 	font-weight: bold;
 }
-#open_data_councils .council div.open_data, #no_open_data_councils .council div.no_open_data {
+.open_data_council_grouping .council div.open_data_status {
 	background: url(/images/tick.gif) no-repeat;
 	text-indent: -9000px;
 	width: 48px;
@@ -368,8 +368,15 @@ body.councils .area a {
 #no_open_data_councils .council div.no_open_data {
 	background-position:0 -48px;
 }
+#semi_open_data_councils .council div.semi_open_data {
+	background-position:0 -96px;
+}
 .open_data_link {
 	background: url(/images/od_80x15_blue.png) no-repeat;
+	padding: 1px 0px 1px 82px;
+}
+.open_data_link.semi_open_data {
+	background: url(/images/semi_open_data.png) no-repeat;
 	padding: 1px 0px 1px 82px;
 }
 #open_data_dashboard #statistics {
@@ -389,7 +396,7 @@ body.councils .area a {
 #open_data_dashboard .in_words .value.open {color: #036;}
 #open_data_dashboard .in_words .value.not_open {color: #8a1f11;}
 #open_data_dashboard .in_words .description {
-	line-height: 2em;
+	line-height: 1.5em;
 	display:block;}
 a.output_area_classification_link {color:#888;}
 /*Meeting formatting*/
