@@ -3,11 +3,11 @@
   <%- councils_with_status = @councils.group_by(&:open_data_status) -%>
   <h1><%= @title %></h1>
   <div id="statistics">
-    <%= image_tag(Gchart.pie(:data => %w(open_data semi_open_data no_open_data).collect{|s| councils_with_status[s].size}, :legend => %w(open_data semi_open_data no_open_data).collect(&:titleize), :bar_colors => ['003366', 'a9c0db', '8a1f11'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "Open Data dashboard graph") %>
+    <%= image_tag(Gchart.pie(:data => %w(open_data semi_open_data no_open_data).collect{|s| [councils_with_status[s]].flatten.nitems}, :legend => %w(open_data semi_open_data no_open_data).collect(&:titleize), :bar_colors => ['003366', 'a9c0db', '8a1f11'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "Open Data dashboard graph") %>
     <div class='in_words'>
-      <span class='value open'><%= [councils_with_status['open_data']].flatten.size.to_i + [councils_with_status['semi_open_data']].flatten.size.to_i %></span> out of 
+      <span class='value open'><%= [councils_with_status['open_data']].flatten.nitems.to_i + [councils_with_status['semi_open_data']].flatten.nitems.to_i %></span> out of 
 			<span class='value not_open'><%= @councils.size %></span> <span class='description'>local authorities publish open data 
-				<em>(but only <%= [councils_with_status['open_data']].flatten.size %> are are <%= link_to "truly open", "http://opendefinition.org/", :class => 'external' %>)</em>
+				<em>(but only <%= [councils_with_status['open_data']].flatten.nitems %> are are <%= link_to "truly open", "http://opendefinition.org/", :class => 'external' %>)</em>
 			</span>
     </div>
   </div>

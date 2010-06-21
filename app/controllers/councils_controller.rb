@@ -6,10 +6,10 @@ class CouncilsController < ApplicationController
   
   def index
     @councils = Council.find_by_params(params.except(:controller, :action, :format))
-    @title = "All UK Local Authorities/Councils"
-    @title += " in #{params[:region]||params[:country]}" if params[:region]||params[:country]
+    @title = params[:show_open_status] ? "UK Councils Open Data Scoreboard" : "All UK Local Authorities/Councils"
     @title += " With Opened Up Data" unless params[:include_unparsed]||params[:show_open_status]
-    @title = "UK Councils Open Data scoreboard" if params[:show_open_status]
+    @title += " :: #{params[:region]||params[:country]}" if params[:region]||params[:country]
+    # @title = "UK Councils Open Data scoreboard" if params[:show_open_status]
     @title += " With '#{params[:term]}' in name" if params[:term]
     html_template = params[:show_open_status] ? 'open' : 'index'
     respond_to do |format|

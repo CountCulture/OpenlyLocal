@@ -98,12 +98,19 @@ class CouncilsControllerTest < ActionController::TestCase
     context "when showing open_status" do
       setup do
         @another_council.update_attributes(:open_data_url => 'http://anothercouncil.gov.uk/open', :open_data_licence => 'CCBY30')
+        @semi_open_council = Factory(:council, :name => 'SemiOpen', :open_data_url => 'http://semiopencouncil.gov.uk/open')
         get :index, :show_open_status => true
       end
   
       should assign_to(:councils) { Council.find(:all, :order => "name")} # all councils
       should respond_with :success
       should render_template :open
+      
+      should 'summarize number of councils with open data' do
+        assert_select '#open_data_dashboard', /2.+out of.+3.+local authorities publish open data/m
+        assert_select '#open_data_dashboard', /only 1 are.+truly open/m
+      end
+      
       should "identify those with open data" do
         assert_select ".council .open_data"
       end
@@ -114,6 +121,28 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should "have appropriate title" do
         assert_select "title", /open data scoreboard/i
+      end
+    end
+    
+    context "when showing open_status and restricting to region" do
+      setup do
+        @another_council.update_attributes(:open_data_url => 'http://anothercouncil.gov.uk/open', :open_data_licence => 'CCBY30', :region => 'North-West')
+        get :index, :region => "North-West", :show_open_status => true
+      end
+        
+      should "show region in title" do
+        assert_select "title", /North-West/i
+      end
+    end
+    
+    context "when showing open_status and no open data councils" do
+      setup do
+        @another_council.update_attributes(:open_data_url => 'http://anothercouncil.gov.uk/open', :open_data_licence => 'CCBY30') #this is semi-open
+        get :index, :region => "North-West", :show_open_status => true
+      end
+        
+      should "show say so" do
+        assert_select '#open_data_dashboard', /only 0 are.+truly open/i
       end
     end
     
@@ -165,7 +194,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :index
       should "have appropriate title" do
-        assert_select "title", /UK Local Authorities\/Councils in North-West/i
+        assert_select "title", /UK Local Authorities\/Councils With Opened Up Data :: North-West/i
       end
     end
     
