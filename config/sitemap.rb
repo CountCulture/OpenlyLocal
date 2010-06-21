@@ -20,6 +20,9 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
   # add '/councils'
   sitemap.add councils_path, :priority => 0.7, :changefreq => 'daily'
 
+  # add '/councils/open'
+  sitemap.add '/councils/open', :priority => 0.7, :changefreq => 'daily'
+
   # add '/hyperlocal_sites'
   sitemap.add hyperlocal_sites_path, :priority => 0.7, :changefreq => 'daily'
 
