@@ -40,6 +40,17 @@ class Supplier < ActiveRecord::Base
     (self[:company_number].blank? || self[:company_number] == '-1') ? nil : self[:company_number]
   end
   
+  def possible_payee
+    case name
+    when /Ltd|Limited|PLC/i
+      Company.matches_title(name)
+    when /Police Authority/i
+      PoliceAuthority.find_first_by_name(name)
+    when /Council|(London Borough)|(City of)/
+      Council.find_first_by_normalised_title(Council.normalise_title(name))
+    end
+  end
+  
   private
   def update_spending_info
     self.total_spend = calculated_total_spend

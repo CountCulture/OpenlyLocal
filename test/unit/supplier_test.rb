@@ -125,11 +125,33 @@ class SupplierTest < ActiveSupport::TestCase
 
         should "try to match against company" do
           Company.expects(:matches_title).with('Foo Ltd')
-          @supplier.match_possible_payee
+          @supplier.possible_payee
         end
-        
+      end
+      
+      context "and name is police authority like" do
+        setup do
+          @supplier.name = 'Foo Police Authority'
+        end
+
+        should "try to match against police authority" do
+          PoliceAuthority.expects(:find_first_by_name).with('Foo Police Authority')
+          @supplier.possible_payee
+        end
+      end
+      
+      context "and name is council-like" do
+        setup do
+          @supplier.name = 'Foo Council'
+        end
+
+        should "try to match against police authority" do
+          Council.expects(:find_first_by_normalised_title).with('foo')
+          @supplier.possible_payee
+        end
       end
     end
+    
     context 'when returning company_number' do
       should 'return nil if blank?' do
         assert_nil @supplier.company_number

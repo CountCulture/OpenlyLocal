@@ -7,6 +7,7 @@ class CouncilTest < ActiveSupport::TestCase
     setup do
       @council = Factory(:council)
     end
+    
     should_validate_presence_of :name
     should_validate_uniqueness_of :name
     should have_many :members
@@ -51,6 +52,7 @@ class CouncilTest < ActiveSupport::TestCase
     should have_db_column :annual_audit_letter
     should have_db_column :open_data_url
     should have_db_column :open_data_licence
+    should have_db_column :normalised_title
 
     should "mixin PartyBreakdownSummary module" do
       assert Council.new.respond_to?(:party_breakdown)
@@ -335,6 +337,19 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal "http://#{DefaultDomain}/id/councils/#{@council.id}", @council.resource_uri
     end
     
+    context "when saving" do
+      should "normalise title" do
+        @council.expects(:normalise_title)
+        @council.save!
+      end
+
+      should "save normalised title" do
+        @council.title = "Vale of White Horse District Council"
+        @council.save!
+        assert_equal "vale of white horse", @council.reload.normalised_title
+      end
+    end
+
     context "when returning foaf version of telephone number" do
 
       should "return nil if telephone blank" do

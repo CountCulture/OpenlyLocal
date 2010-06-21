@@ -40,9 +40,14 @@ class Council < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
   named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? 
-                      { :select => 'councils.*, COUNT(members.id) AS member_count', :joins =>'LEFT JOIN members ON members.council_id = councils.id', :group => "councils.id" } : 
-                      {:joins => :members, :group => "councils.id", :select => 'councils.*, COUNT(members.id) AS member_count'} }
+                      { :select => 'councils.*, COUNT(members.id) AS member_count', 
+                        :joins =>'LEFT JOIN members ON members.council_id = councils.id', 
+                        :group => "councils.id" } : 
+                      { :joins => :members, 
+                        :group => "councils.id", 
+                        :select => 'councils.*, COUNT(members.id) AS member_count'} }
   default_scope :order => 'councils.name' # fully specify councils.name, in case clashes with another model we're including
+  before_save :normalise_title
   alias_attribute :title, :name
   alias_method :old_to_xml, :to_xml
   
@@ -235,6 +240,11 @@ class Council < ActiveRecord::Base
       end
     end
     { :updates => update_count }
+  end
+  
+  private
+  def normalise_title
+    self.normalised_title = self.class.normalise_title(title)
   end
   
 end
