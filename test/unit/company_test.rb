@@ -40,6 +40,12 @@ class CompanyTest < ActiveSupport::TestCase
       @company = Factory(:company)
     end
 
+    
+    should "use title when converting to_param" do
+      @company.title = "some title-with/stuff"
+      assert_equal "#{@company.id}-some-title-with-stuff", @company.to_param
+    end
+
     context "when saving" do
       should "normalise title" do
         @company.expects(:normalise_title)

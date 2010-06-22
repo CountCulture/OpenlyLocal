@@ -51,6 +51,10 @@ class Supplier < ActiveRecord::Base
     end
   end
   
+  def to_param
+    "#{id}-#{title.parameterize}"
+  end
+  
   private
   def update_spending_info
     self.total_spend = calculated_total_spend

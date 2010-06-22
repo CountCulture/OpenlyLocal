@@ -28,7 +28,7 @@ class HyperlocalGroupTest < ActiveSupport::TestCase
       @hyperlocal_group = Factory(:hyperlocal_group)
     end
     
-    should "include title in to_param method" do
+    should "use title when converting to_param" do
       @hyperlocal_group.title = "some title-with/stuff"
       assert_equal "#{@hyperlocal_group.id}-some-title-with-stuff", @hyperlocal_group.to_param
     end

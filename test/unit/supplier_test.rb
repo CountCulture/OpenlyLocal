@@ -74,6 +74,11 @@ class SupplierTest < ActiveSupport::TestCase
       assert_equal @supplier.name, @supplier.title
     end
     
+    should "use title when converting to_param" do
+      @supplier.title = "some title-with/stuff"
+      assert_equal "#{@supplier.id}-some-title-with-stuff", @supplier.to_param
+    end
+
     context 'when saving' do
       
       should 'calculate total_spend' do

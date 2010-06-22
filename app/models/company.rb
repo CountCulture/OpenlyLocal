@@ -18,6 +18,10 @@ class Company < ActiveRecord::Base
     "http://companiesopen.org/uk/#{company_number}/companies_house" if company_number?
   end
   
+  def to_param
+    "#{id}-#{title.parameterize}"
+  end
+  
   private
   def normalise_title
     self.normalised_title = self.class.normalise_title(title)
