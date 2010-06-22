@@ -140,7 +140,7 @@ class SupplierTest < ActiveSupport::TestCase
         end
 
         should "try to match against police authority" do
-          PoliceAuthority.expects(:find_first_by_name).with('Foo Police Authority')
+          PoliceAuthority.expects(:find_by_name).with('Foo Police Authority')
           @supplier.possible_payee
         end
       end
