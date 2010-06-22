@@ -4,7 +4,8 @@ class SuppliersController < ApplicationController
     @organisation = params[:organisation_type].constantize.find(params[:organisation_id]) if params[:organisation_type] && params[:organisation_id]
     @title = @organisation ? "Suppliers to #{@organisation.title}" : 'Suppliers to Local Authorities'
     sort_order = params[:order] == 'total_spend' ? 'total_spend DESC' : 'name'
-    @suppliers = @organisation ? @organisation.suppliers.paginate(:page => params[:page], :order => sort_order) : Supplier.paginate(:page => params[:page], :order => sort_order)
+    @suppliers = @organisation ? @organisation.suppliers.paginate(:page => params[:page], :order => sort_order) : 
+                                 Supplier.paginate(:page => params[:page], :order => sort_order)
     @title += " :: Page #{(params[:page]||1).to_i}"
     respond_to do |format|
       format.html
@@ -28,7 +29,7 @@ class SuppliersController < ApplicationController
   def show
     @supplier = Supplier.find(params[:id])
     @organisation = @supplier.organisation
-    @title = @supplier.title
+    @title = "#{@supplier.title} :: Supplier to #{@organisation.title}"
     respond_to do |format|
       format.html
       format.xml { render :xml => @supplier.to_xml(:include => [:financial_transactions, :payee]) }

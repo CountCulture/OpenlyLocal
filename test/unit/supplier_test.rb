@@ -105,14 +105,14 @@ class SupplierTest < ActiveSupport::TestCase
       end
       
       should 'try to match against company if company' do
-        Company.expects(:matches_title).with('Foo company')
+        Supplier.any_instance.expects(:possible_payee)
         Factory(:supplier, :name => 'Foo company')
       end
       
-      should 'and should associate with returned company' do
-        Company.stubs(:matches_title).returns(@company)
+      should 'and should associate with returned body' do
+        Supplier.any_instance.expects(:possible_payee).returns(@company)
         supplier = Factory(:supplier, :name => 'Foo company')
-        assert_equal @company, supplier.payee
+        assert_equal @company, supplier.reload.payee
       end
       
     end
@@ -146,7 +146,7 @@ class SupplierTest < ActiveSupport::TestCase
         end
 
         should "try to match against police authority" do
-          Council.expects(:find_first_by_normalised_title).with('foo')
+          Council.expects(:find_by_normalised_title).with('foo')
           @supplier.possible_payee
         end
       end

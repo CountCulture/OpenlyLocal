@@ -47,7 +47,7 @@ class Supplier < ActiveRecord::Base
     when /Police Authority/i
       PoliceAuthority.find_first_by_name(name)
     when /Council|(London Borough)|(City of)/
-      Council.find_first_by_normalised_title(Council.normalise_title(name))
+      Council.find_by_normalised_title(Council.normalise_title(name))
     end
   end
   
@@ -58,8 +58,8 @@ class Supplier < ActiveRecord::Base
   end
   
   def match_with_existing_company
-    if company = Company.matches_title(name)
-      update_attribute(:payee, company)
+    if payee = possible_payee
+      update_attribute(:payee, payee)
     end
   end
 end

@@ -176,23 +176,106 @@ class SuppliersControllerTest < ActionController::TestCase
   end
   
   context "on GET to :show" do
-    setup do
-      get :show, :id => @supplier.id
+    context "in general" do
+      setup do
+        get :show, :id => @supplier.id
+      end
+
+      should_assign_to(:supplier) { @supplier}
+      should respond_with :success
+      should render_template :show
+      should_assign_to(:organisation) { @organisation }
+
+      should "show supplier name in title" do
+        assert_select "title", /#{@supplier.title}/
+      end
+
+      should "show organisation name in title" do
+        assert_select "title", /#{@supplier.organisation.title}/
+      end
+
+      should "list financial transactions" do
+        assert_select "#financial_transactions .value", /#{@financial_transaction.value}/
+      end
     end
+    
+    context "when supplier is company" do
+      setup do
+        @company = Factory(:company, :company_number => '12345')
+        @another_supplying_relationship = Factory(:supplier, :payee => @company)
+        @supplier.update_attribute(:payee, @company)
+        get :show, :id => @supplier.id
+      end
 
-    should_assign_to(:supplier) { @supplier}
-    should respond_with :success
-    should render_template :show
-    should_assign_to(:organisation) { @organisation }
+      should_assign_to(:supplier) { @supplier}
+      should respond_with :success
+      should render_template :show
+      should_assign_to(:organisation) { @organisation }
 
-    should "show supplier name in title" do
-      assert_select "title", /#{@supplier.title}/
+      should "show company details" do
+        assert_select ".company_number", /12345/
+      end
+
+      should "link to company" do
+        assert_select "#payee_info a[href*=/companies/#{@company.id}]"
+      end
+
+      should "list other councils supplied by company" do
+        assert_select "#other_supplying_relationships a", /#{@another_supplying_relationship.organisation.title}/
+      end
     end
+    
+    context "when supplier is a council" do
+      setup do
+        @council = Factory(:council)
+        @another_supplying_relationship = Factory(:supplier, :payee => @council)
+        @supplier.update_attribute(:payee, @council)
+        get :show, :id => @supplier.id
+      end
 
-    should "show list financial transactions" do
-      assert_select "#financial_transactions .value", /#{@financial_transaction.value}/
+      should_assign_to(:supplier) { @supplier}
+      should respond_with :success
+      should render_template :show
+      should_assign_to(:organisation) { @organisation }
+
+      should "council details" do
+        assert_select ".authority_type", /#{@council.authority_type}/
+      end
+
+      should "link to company" do
+        assert_select "#payee_info a[href*=/councils/#{@council.id}]"
+      end
+
+      should "list other councils supplied by council" do
+        assert_select "#other_supplying_relationships a", /#{@another_supplying_relationship.organisation.title}/
+      end
     end
+    
+    context "when supplier is a police_authority" do
+      setup do
+        @police_authority = Factory(:police_authority)
+        @another_supplying_relationship = Factory(:supplier, :payee => @police_authority)
+        @supplier.update_attribute(:payee, @police_authority)
+        get :show, :id => @supplier.id
+      end
 
+      should_assign_to(:supplier) { @supplier}
+      should respond_with :success
+      should render_template :show
+      should_assign_to(:organisation) { @organisation }
+
+      should "police_authority details" do
+        assert_select ".authority_for", /#{@police_authority.police_force.title}/
+      end
+
+      should "link to company" do
+        assert_select "#payee_info a[href*=/police_authorities/#{@police_authority.id}]"
+      end
+
+      should "list other councils supplied by council" do
+        assert_select "#other_supplying_relationships a", /#{@another_supplying_relationship.organisation.title}/
+      end
+    end
   end  
 
   context "with xml requested" do

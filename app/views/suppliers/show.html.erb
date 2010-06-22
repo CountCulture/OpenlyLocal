@@ -14,16 +14,15 @@
 </div>
 
 <%- if @supplier.payee -%>
-<div id="company_info">
-  <dl id="company_details" class="attributes">
-    <%= attribute_tag :company_number, link_to(@supplier.payee.company_number, @supplier.payee) %>
-    <%= attribute_tag :website, link_to(@supplier.url, @supplier.url) if @supplier.url? || @supplier.payee.url? %>
-  </dl>
-  <div id="company_suppliers" class='clear-left'>
+<div id="payee_info">
+  <%= render :partial => "#{@supplier.payee.class.to_s.underscore.pluralize}/attributes", :object => @supplier.payee %>
+  
+  <div id="other_supplying_relationships" class='clear-left'>
     <h4>Other councils supplied by <%= basic_link_for(@supplier.payee) %></h4>
     <ul>
       <%- @supplier.associateds.each do |supplier| -%>
-        <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> (Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %>, Average monthly spend: <span class='value'>£<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %>)</li>
+        <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> 
+          (Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %></span>, Average monthly spend: <span class='value'>£<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %>)</span></li>
       <%- end -%>
     </ul>
   </div>

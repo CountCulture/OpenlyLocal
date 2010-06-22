@@ -1,0 +1,13 @@
+<dl id="main_attributes" class="attributes">
+  <%- attribute_tag :website do -%>
+    <%= link_to attributes.url, attributes.url, :class => :external %> 
+    <%= link_to("News feed", attributes.feed_url, :class => "feed") if attributes.feed_url %>
+    <%= twitter_link_for(attributes.twitter_account_name) %>
+  <%- end -%>
+  <%- attribute_tag :authority_type do -%>
+    <%= attributes.authority_type %> <%= help_link_to(attributes.authority_type_help_url) %>
+  <%- end -%>
+  <%= attribute_tag :address, attributes.address %>
+  <%= attribute_tag( :telephone, content_tag(:span, attributes.telephone, :about => attributes.foaf_telephone)) unless attributes.telephone.blank? %>
+  <%= attribute_tag :wikipedia_url, link_to(URI.unescape(attributes.wikipedia_url), attributes.wikipedia_url, :class => 'external') if attributes.wikipedia_url? %>
+</dl>

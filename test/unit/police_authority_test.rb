@@ -13,6 +13,7 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
     should_validate_uniqueness_of :name, :police_force_id
     should belong_to :police_force
     should have_many :councils#, :through => :police_force
+    should have_many :supplying_relationships
     
     should_have_db_column :url
     should_have_db_column :wikipedia_url

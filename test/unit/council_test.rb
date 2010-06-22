@@ -34,6 +34,7 @@ class CouncilTest < ActiveSupport::TestCase
     should_have_many :dataset_topics, :through => :datapoints
     should have_many :suppliers
     should_have_many :financial_transactions, :through => :suppliers
+    should have_many :supplying_relationships
     should have_db_column :notes
     should have_db_column :wikipedia_url
     should have_db_column :ons_url
