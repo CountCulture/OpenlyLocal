@@ -1,6 +1,6 @@
 class PoliceForce < ActiveRecord::Base
   include ResourceMethods
-  include TwitterAccountMethods
+  include SocialNetworkingUtilities::Base
   has_many :councils
   has_many :police_teams
   has_many :crime_areas

@@ -8,7 +8,7 @@ class AdminControllerTest < ActionController::TestCase
         @unapproved_site = Factory(:hyperlocal_site)
         @approved_site = Factory(:approved_hyperlocal_site)
         @another_council = Factory(:another_council)
-        @user_submission = Factory(:user_submission, :council => @another_council, :member_name => "Foo Bar")
+        @user_submission = Factory(:user_submission)
         @council_contact = Factory(:council_contact, :council => @another_council)
         stub_authentication
         get :index
@@ -29,7 +29,7 @@ class AdminControllerTest < ActionController::TestCase
       end
       
       should "list user_submissions" do
-        assert_select "#user_submissions li a", /#{@another_council.name}/
+        assert_select "#user_submissions li a", /#{@user_submission.title}/
       end
       
       should "list councils without wards" do

@@ -1,0 +1,6 @@
+      <%- @user_submission.submission_details.attributes.each do |attribute_name, value| -%>
+        <p>
+          <%= detail_form.label attribute_name %>
+          <%= detail_form.text_field attribute_name %>
+        </p>
+      <%- end -%>

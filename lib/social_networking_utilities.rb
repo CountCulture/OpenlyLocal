@@ -6,6 +6,25 @@ module SocialNetworkingUtilities
   Parsers = { :twitter_account_name => TwitterRegexp, 
               :facebook_account_name => FacebookRegexp,
               :youtube_account_name => YoutubeRegexp }
+  
+  module Base
+    module ClassMethods
+    end
+    
+    module InstanceMethods
+      def update_social_networking_details(details)
+        non_nil_attribs = details.attributes.delete_if { |k,v| v.blank? }
+        update_attributes(non_nil_attribs)
+      end
+      
+    end
+    
+    def self.included(receiver)
+      receiver.extend         ClassMethods
+      receiver.send :include, InstanceMethods
+      receiver.send :include, TwitterAccountMethods
+    end
+  end            
               
   # Finds social networking, news_feeds on given page
   class Finder

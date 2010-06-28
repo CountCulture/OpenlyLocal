@@ -34,3 +34,9 @@ class TestJoinedModel <ActiveRecord::Base
   has_many :test_scraped_models, :through => :test_join_models
   allow_access_to :test_scraped_models, :via => [:uid, :normalised_title]
 end
+
+class TestModelWithSocialNetworking <ActiveRecord::Base
+  include SocialNetworkingUtilities::Base
+  set_table_name "members"
+end
+

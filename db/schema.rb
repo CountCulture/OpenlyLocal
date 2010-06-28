@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100621120834) do
+ActiveRecord::Schema.define(:version => 20100622152645) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -822,7 +822,7 @@ ActiveRecord::Schema.define(:version => 20100621120834) do
 
   create_table "user_submissions", :force => true do |t|
     t.column "twitter_account_name", :string
-    t.column "council_id", :integer
+    t.column "item_id", :integer
     t.column "member_id", :integer
     t.column "member_name", :string
     t.column "blog_url", :string
@@ -831,10 +831,12 @@ ActiveRecord::Schema.define(:version => 20100621120834) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "approved", :boolean, :default => false
+    t.column "submission_details", :text
+    t.column "item_type", :string
   end
 
   add_index "user_submissions", ["member_id"], :name => "index_user_submissions_on_member_id"
-  add_index "user_submissions", ["council_id"], :name => "index_user_submissions_on_council_id"
+  add_index "user_submissions", ["item_id"], :name => "index_user_submissions_on_council_id"
 
   create_table "wards", :force => true do |t|
     t.column "name", :string

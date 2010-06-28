@@ -2,6 +2,79 @@ require 'test_helper'
 
 class SocialNetworkingUtilitiesTest < ActiveSupport::TestCase
   
+  context 'A class that mixes in SocialNetworkingUtilities::Base' do
+    should 'mixin TwitterAccountMethods' do
+      assert TestModelWithSocialNetworking.new.respond_to?(:twitter_account)
+    end
+    
+    should 'have update_social_networking_details method' do
+      assert TestModelWithSocialNetworking.new.respond_to?(:update_social_networking_details)
+    end
+    
+    context 'and when updating social networking details' do
+      setup do
+        @test_model = TestModelWithSocialNetworking.create!
+        @test_model_with_existing_details = TestModelWithSocialNetworking.create!(:twitter_account_name => 'foo', :blog_url => 'http://foo.com/blog', :facebook_account_name => 'baz123')
+        @new_details = SocialNetworkingDetails.new(:twitter_account_name => 'bar', :blog_url => 'http://bar.com/blog', :facebook_account_name => 'baz456')
+      end
+      
+      should 'set twitter account if not set' do
+        @test_model.update_social_networking_details(@new_details)
+        assert_equal 'bar', @test_model.reload.twitter_account_name
+      end
+      
+      should 'update twitter account if set' do
+        @test_model_with_existing_details.update_social_networking_details(@new_details)
+        assert_equal 'bar', @test_model_with_existing_details.reload.twitter_account_name
+      end
+      
+      should 'not delete existing twitter account if nil given for twitter_account_name' do
+        @test_model_with_existing_details.update_social_networking_details(SocialNetworkingDetails.new(:twitter_account_name => nil))
+        assert_equal 'foo', @test_model_with_existing_details.reload.twitter_account_name
+      end
+      
+      should 'set blog url if not set' do
+        @test_model.update_social_networking_details(@new_details)
+        assert_equal 'http://bar.com/blog', @test_model.reload.blog_url
+      end
+      
+      should 'update blog url if set' do
+        @test_model_with_existing_details.update_social_networking_details(@new_details)
+        assert_equal 'http://bar.com/blog', @test_model_with_existing_details.reload.blog_url
+      end
+      
+      should 'not delete existing blog_url if nil given for blog_url' do
+        @test_model_with_existing_details.update_social_networking_details(SocialNetworkingDetails.new(:blog_url => nil))
+        assert_equal 'http://foo.com/blog', @test_model_with_existing_details.reload.blog_url
+      end
+      
+      should 'set facebook account if not set' do
+        @test_model.update_social_networking_details(@new_details)
+        assert_equal 'baz456', @test_model.reload.facebook_account_name
+      end
+            
+      should 'update facebook account if set' do
+        @test_model_with_existing_details.update_social_networking_details(@new_details)
+        assert_equal 'baz456', @test_model_with_existing_details.reload.facebook_account_name
+      end
+      
+      should 'not delete existing facebook_account_name if nil given for facebook_account_name' do
+        @test_model_with_existing_details.update_social_networking_details(SocialNetworkingDetails.new(:facebook_account_name => nil))
+        assert_equal 'baz123', @test_model_with_existing_details.reload.facebook_account_name
+      end
+      
+      should 'return true by default' do
+        @test_model.update_social_networking_details(@new_details)
+        @test_model_with_existing_details.update_social_networking_details(@new_details)
+      end
+      
+      should 'return false if problem updating_attributes' do
+        @test_model.stubs(:update_attributes).returns(false)
+        assert_equal false, @test_model.update_social_networking_details(@new_details)
+      end
+    end
+  end
+
   context "An instance of the Finder class" do
     setup do
       @finder = SocialNetworkingUtilities::Finder.new("http://foo.com")

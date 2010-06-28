@@ -30,7 +30,11 @@ class PoliceForceTest < ActiveSupport::TestCase
     should have_db_column :crime_map
     
     should "include TwitterAccountMethods mixin" do
-      assert Member.new.respond_to?(:twitter_account_name)
+      assert @police_force.respond_to?(:twitter_account_name)
+    end
+    
+    should "include SocialNetworkingUtilities::Base mixin" do
+      assert @police_force.respond_to?(:update_social_networking_details)
     end
     
     should 'have one force_crime_area' do

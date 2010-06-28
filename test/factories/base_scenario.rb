@@ -274,8 +274,9 @@ Factory.define :twitter_account do |f|
 end
 
 Factory.define :user_submission do |f|
-  f.association :council
-  f.member_name 'Fred Flintstone'
+  f.association :item, :factory => :police_force
+  f.submission_type 'social_networking_details'
+  f.submission_details( { :twitter_account_name => 'foo' })
 end
 
 Factory.define :council_contact do |f|
