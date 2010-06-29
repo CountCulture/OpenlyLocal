@@ -21,8 +21,8 @@ class ParsersControllerTest < ActionController::TestCase
       get :show, :id => @parser.id
     end
   
-    should_assign_to :parser
-    should_assign_to :scrapers
+    should assign_to :parser
+    should assign_to :scrapers
     should respond_with :success
     should render_template :show
       
@@ -51,8 +51,8 @@ class ParsersControllerTest < ActionController::TestCase
       get :show, :id => @parser.id
     end
   
-    should_assign_to :parser
-    should_assign_to :scrapers
+    should assign_to :parser
+    should assign_to :scrapers
     should respond_with :success
     should render_template :show
     
@@ -98,7 +98,7 @@ class ParsersControllerTest < ActionController::TestCase
         get :new, :portal_system_id  => @portal_system.id, :result_model => "Member", :scraper_type => "ItemParser"
       end
       
-      should_assign_to(:parser)
+      should assign_to(:parser)
       should respond_with :success
       should render_template :new
 
@@ -139,9 +139,9 @@ class ParsersControllerTest < ActionController::TestCase
          end
 
          should_change("Parser count", :by => 1) {Parser.count}
-         should_assign_to :parser
-         should_redirect_to( "the show page for parser") { parser_path(assigns(:parser)) }
-         should_set_the_flash_to "Successfully created parser"
+         should assign_to :parser
+         should redirect_to( "the show page for parser") { parser_path(assigns(:parser)) }
+         should set_the_flash.to "Successfully created parser"
 
        end
        
@@ -152,7 +152,7 @@ class ParsersControllerTest < ActionController::TestCase
          end
 
          should_not_change ('The number of parsers') { Parser.count }
-         should_assign_to :parser
+         should assign_to :parser
          should render_template :new
          should_not set_the_flash
        end
@@ -164,7 +164,7 @@ class ParsersControllerTest < ActionController::TestCase
          end
 
          should_not_change ('The number of parsers') { Parser.count }
-         should_assign_to :parser
+         should assign_to :parser
          should render_template :new
          should_not set_the_flash
        end
@@ -190,7 +190,7 @@ class ParsersControllerTest < ActionController::TestCase
       get :edit, :id  => @parser.id
     end
 
-    should_assign_to(:parser)
+    should assign_to(:parser)
     should respond_with :success
     should render_template :edit
     
@@ -226,13 +226,13 @@ class ParsersControllerTest < ActionController::TestCase
         end
 
         should_not_change ('The number of parsers') { Parser.count }
-        should_change "@parser.reload.description", :to => "New Description"
-        should_change "@parser.reload.result_model", :to => "Committee"
-        should_change "@parser.reload.item_parser", :to => "foo=\"new_bar\""
-        should_change "@parser.reload.attribute_parser", :to => {:newfoo => "barbar"}
-        should_assign_to :parser
-        should_redirect_to( "the show page for parser") { parser_path(assigns(:parser)) }
-        should_set_the_flash_to "Successfully updated parser"
+        should_change("parser description", :to => "New Description") { @parser.reload.description }
+        should_change("parser result_model", :to => "Committee") { @parser.reload.result_model }
+        should_change("parser item_parser", :to => "foo=\"new_bar\"") { @parser.reload.item_parser }
+        should_change("parser attribute_parser", :to => {:newfoo => "barbar"}) { @parser.reload.attribute_parser }
+        should assign_to :parser
+        should redirect_to( "the show page for parser") { parser_path(assigns(:parser)) }
+        should set_the_flash.to "Successfully updated parser"
 
       end
 
@@ -244,9 +244,9 @@ class ParsersControllerTest < ActionController::TestCase
 
         should_not_change ('The number of parsers') { Parser.count }
         should_not_change ('The result_model') { @parser.reload.result_model }
-        should_assign_to :parser
+        should assign_to :parser
         should render_template :edit
-        should_set_the_flash_to /Problem/
+        should set_the_flash.to /Problem/
       end
 
   end  

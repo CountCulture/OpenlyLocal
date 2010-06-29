@@ -14,7 +14,7 @@ class MembersHelperTest < ActionView::TestCase
     
     should 'show link to add social_networking_info if none known' do
       @member.facebook_account_name = nil
-      assert_equal "None known. #{link_to('Add social networking info now?', new_user_submission_path(:member_id => @member.id))}", social_networking_links_for(@member)
+      assert_equal "None known. #{link_to('Add social networking info now?', new_user_submission_path(:item_id => @member.id, :item_type => 'Member', :submission_type => 'social_networking_details'))}", social_networking_links_for(@member)
     end
     
     should 'return all social networking links for member' do

@@ -23,8 +23,6 @@ class UserSubmission < ActiveRecord::Base
   
   # Get submission_details object to run approve method, and then update approved flag with result
   def approve
-    puts "**** about to run UserSubmission#approve on #{self.inspect}"
-    puts "**** result of approval on  #{submission_details.inspect} = #{submission_details.approve(self)}"
     update_attribute(:approved, submission_details.approve(self))
   end
   

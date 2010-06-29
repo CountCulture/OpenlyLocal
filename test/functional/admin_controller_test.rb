@@ -29,7 +29,7 @@ class AdminControllerTest < ActionController::TestCase
       end
       
       should "list user_submissions" do
-        assert_select "#user_submissions li a", /#{@user_submission.title}/
+        assert_select "#user_submissions li", /#{@user_submission.title}/
       end
       
       should "list councils without wards" do
