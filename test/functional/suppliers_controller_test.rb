@@ -197,6 +197,10 @@ class SuppliersControllerTest < ActionController::TestCase
       should "list financial transactions" do
         assert_select "#financial_transactions .value", /#{@financial_transaction.value}/
       end
+      
+      should "show link to add company details" do
+        assert_select 'a[href*=user_submissions/new]', /add/i
+      end
     end
     
     context "when supplier is company" do
@@ -222,6 +226,10 @@ class SuppliersControllerTest < ActionController::TestCase
 
       should "list other councils supplied by company" do
         assert_select "#other_supplying_relationships a", /#{@another_supplying_relationship.organisation.title}/
+      end
+      
+      should "not show link to add company details" do
+        assert_select 'a[href*=user_submissions/new]', false
       end
     end
     

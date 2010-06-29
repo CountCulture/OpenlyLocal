@@ -1,7 +1,6 @@
 class Supplier < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
-  # belongs_to :company
   has_many :financial_transactions, :order => 'date'
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
@@ -34,10 +33,11 @@ class Supplier < ActiveRecord::Base
     return [] unless payee
     payee.supplying_relationships - [self]
   end
-  
-  # overwrites normal accessor to return nil if company_number attribute is blank or '-1' (which is used to denote failed search)
-  def company_number
-    (self[:company_number].blank? || self[:company_number] == '-1') ? nil : self[:company_number]
+    
+  # convenience method for assigning company given company number. Creates company if no company with given company_number exists
+  def company_number=(comp_no)
+    company = Company.find_or_create_by_company_number(comp_no)
+    update_attribute(:payee, company)
   end
   
   def possible_payee
@@ -53,6 +53,11 @@ class Supplier < ActiveRecord::Base
   
   def to_param
     "#{id}-#{title.parameterize}"
+  end
+  
+  def update_supplier_details(details)
+    non_nil_attribs = details.attributes.delete_if { |k,v| v.blank? }
+    update_attributes(non_nil_attribs)
   end
   
   private

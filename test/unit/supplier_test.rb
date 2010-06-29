@@ -16,7 +16,7 @@ class SupplierTest < ActiveSupport::TestCase
     should have_db_column :uid
     should have_db_column :url
     should have_db_column :name
-    should have_db_column :company_number
+    should have_db_column :failed_payee_search
     should have_db_column :total_spend
     should have_db_column :average_monthly_spend
     
@@ -97,7 +97,7 @@ class SupplierTest < ActiveSupport::TestCase
         @supplier.save!
       end
       
-      should 'update total_spend with calculated_total_spend' do
+      should 'update average_monthly_spend with calculated_average_monthly_spend' do
         @supplier.stubs(:calculated_average_monthly_spend).returns(63.4)
         @supplier.save!
         assert_equal 63.4, @supplier.reload.average_monthly_spend
@@ -157,24 +157,39 @@ class SupplierTest < ActiveSupport::TestCase
       end
     end
     
-    context 'when returning company_number' do
-      should 'return nil if blank?' do
-        assert_nil @supplier.company_number
-        @supplier.company_number = ''
-        assert_nil @supplier.company_number
+    context 'when assigning company_number' do
+      setup do
+        @existing_company = Factory(:company)
       end
       
-      should "return company_number if set" do
-        @supplier.company_number = '012345'
-        assert_equal '012345', @supplier.company_number
+      context "and company with given number already exists" do
+        setup do
+          @old_company_count = Company.count
+          @supplier.company_number = @existing_company.company_number
+        end
+        
+        should 'not create new company' do
+          assert_equal @old_company_count, Company.count
+        end
+        
+        should 'associate with company with given company number' do
+          assert_equal @existing_company, @supplier.payee
+        end
+        
       end
       
-      should "return nil if company_number -1" do
-        @supplier.company_number = '-1'
-        assert_nil @supplier.company_number
+      context "and company not found" do
+        
+        should "create new company with given id" do
+          assert_difference "Company.count", 1 do
+             @supplier.company_number = '012345'
+          end
+          assert_equal '012345', @supplier.payee.company_number
+        end
       end
+      
     end
-    
+        
     context "when returning associateds" do
       setup do
         @payee = Factory(:company)
@@ -225,6 +240,44 @@ class SupplierTest < ActiveSupport::TestCase
       should "retrun nil when no transactions" do
         assert_nil Factory(:supplier).calculated_average_monthly_spend
       end
+    end
+    
+    context 'and when updating supplier details' do
+      
+      
+      setup do
+        @new_details = SupplierDetails.new(:url => 'http://foo.com', :company_number => '01234')
+      end
+      
+      should 'set website if not set' do
+        @supplier.update_supplier_details(@new_details)
+        assert_equal 'http://foo.com', @supplier.reload.url
+      end
+      
+      should 'update website if set' do
+        @supplier.update_attribute(:url, 'htp://bar.com')
+        @supplier.update_supplier_details(@new_details)
+        assert_equal 'http://foo.com', @supplier.reload.url
+      end
+      
+      should 'assign company with given company number' do
+        @supplier.update_supplier_details(@new_details)
+        assert_equal '01234', @supplier.reload.payee.company_number
+      end
+      
+      should 'not delete existing url if nil given for url' do
+        @supplier.update_attribute(:url, 'htp://bar.com')
+        @supplier.update_supplier_details(SupplierDetails.new(:url => nil))
+        assert_equal 'htp://bar.com', @supplier.reload.url
+      end
+      
+      should 'not delete existing company if nil given for company_number' do
+        @company = Factory(:company)
+        @supplier.update_attribute(:payee, @company)
+        @supplier.update_supplier_details(SupplierDetails.new(:company_number => nil))
+        assert_equal @company, @supplier.reload.payee
+      end
+      
     end
 
   end

@@ -3,7 +3,7 @@
 <div class='breadcrumbs'>
   <%= link_to 'All suppliers', suppliers_path %> &gt; <%= link_to "Suppliers to #{@organisation.title}", suppliers_path(:organisation_type => @organisation.class.to_s, :organisation_id => @organisation.id) %> &gt; <%= @supplier.title %>
 </div>
-<h1><%= basic_link_for(@supplier.payee) || @supplier.title %><%= link_to(' (full details)', @supplier.payee) if @supplier.payee %></h1>
+<h1><%= @supplier.title %> <%= link_to('(full details)', @supplier.payee) if @supplier.payee %></h1>
 
 <div id='dashboard' class='dashboard'>
   <h4>
@@ -14,20 +14,27 @@
 </div>
 
 <%- if @supplier.payee -%>
-<div id="payee_info">
-  <%= render :partial => "#{@supplier.payee.class.to_s.underscore.pluralize}/attributes", :object => @supplier.payee %>
+  <div id="payee_info">
+    <h3>Information about this supplier</h3>
+    <%= render :partial => "#{@supplier.payee.class.to_s.underscore.pluralize}/attributes", :object => @supplier.payee %>
   
-  <div id="other_supplying_relationships" class='clear-left'>
-    <h4>Other councils supplied by <%= basic_link_for(@supplier.payee) %></h4>
-    <ul>
-      <%- @supplier.associateds.each do |supplier| -%>
-        <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> 
-          (Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %></span>, Average monthly spend: <span class='value'>£<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %>)</span></li>
+    <div id="other_supplying_relationships" class='clear-left'>
+      <h4>Other councils supplied by <%= basic_link_for(@supplier.payee) %></h4>
+      <%- if @supplier.associateds.blank? -%>
+        <p>Not known</p>
+      <%- else -%>
+        <ul>
+          <%- @supplier.associateds.each do |supplier| -%>
+            <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> 
+              (Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %></span>, Average monthly spend: <span class='value'>£<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %>)</span></li>
+          <%- end -%>
+        </ul>
       <%- end -%>
-    </ul>
+    </div>
   </div>
-</div>
-
+<%- else -%>
+<p class='alert'>No information known about this company/supplier. Help us identify this supplier</p>
+<p class="request_for_help"><%= link_to "Add info now", new_user_submission_path(:item_id => @supplier.id, :item_type => 'Supplier', :submission_type => 'supplier_details'), :class => 'button' %></p>
 <%- end -%>
 
 <table class='statistics' id='financial_transactions'>

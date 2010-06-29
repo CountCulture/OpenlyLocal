@@ -326,6 +326,7 @@ Factory.define :financial_transaction do |f|
 end
 
 Factory.define :company do |f|
-  f.sequence(:title) { |n| "Company #{n}" }
+  # f.sequence(:title) { |n| "Company #{n}" }
+  f.sequence(:company_number) {|n| 100+n }
 end
 

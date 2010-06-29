@@ -1,6 +1,6 @@
 class Company < ActiveRecord::Base
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
-  validates_presence_of :title
+  validates_presence_of :company_number
   before_save :normalise_title
   
   # matches normalised version of given title with
@@ -19,11 +19,16 @@ class Company < ActiveRecord::Base
   end
   
   def to_param
-    "#{id}-#{title.parameterize}"
+    self[:title] ? "#{id}-#{title.parameterize}" : id.to_s
+  end
+  
+  def title
+    self[:title] || "Company number #{company_number}"
   end
   
   private
   def normalise_title
-    self.normalised_title = self.class.normalise_title(title)
+    self.normalised_title = self.class.normalise_title(title) unless self[:title].blank?
+    true # always save
   end
 end

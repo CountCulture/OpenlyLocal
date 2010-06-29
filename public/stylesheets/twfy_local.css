@@ -95,6 +95,17 @@ a.button:hover, .button-to input:hover {
 	border:1px solid #a11;
 	cursor: pointer;
 }
+.request_for_help a.button {
+	font-size:1.6em;
+	padding: 2px 6px;
+	border-color:#8A1F11;
+	font-weight:bold;
+}
+.request_for_help a.button:hover {
+	background-color:#8A1F11;
+	color:#fff;
+	text-decoration:none;
+}
 a.help img {
 	vertical-align:top;
 }
