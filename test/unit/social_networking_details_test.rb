@@ -59,5 +59,6 @@ class SocialNetworkingDetailsTest < ActiveSupport::TestCase
         end
       end
     end
+
   end
 end

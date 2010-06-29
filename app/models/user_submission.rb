@@ -23,6 +23,8 @@ class UserSubmission < ActiveRecord::Base
   
   # Get submission_details object to run approve method, and then update approved flag with result
   def approve
+    puts "**** about to run UserSubmission#approve on #{self.inspect}"
+    puts "**** result of approval on  #{submission_details.inspect} = #{submission_details.approve(self)}"
     update_attribute(:approved, submission_details.approve(self))
   end
   
@@ -43,7 +45,7 @@ class UserSubmission < ActiveRecord::Base
   end
   
   def title
-    "Update #{submission_type.humanize} for #{item.title}"
+    "#{submission_type.humanize} for #{item.title}"
   end
   
   def twitter_account_name=(name)

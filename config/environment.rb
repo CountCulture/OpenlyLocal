@@ -86,6 +86,8 @@ Rails::Initializer.run do |config|
 end
 require 'open-uri'
 
+Dir.glob(RAILS_ROOT + '/app/models/user_submission_types/*') {|file| require File.basename(file, '.rb')} #YAML serialisation requires this in order to instantiate objects properly on deserialisation
+
 # require 'twitter/console'
 
 # set default host for Action mailer so can have urls in emails

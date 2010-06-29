@@ -34,6 +34,10 @@ class MemberTest < ActiveSupport::TestCase
       assert Member.new.respond_to?(:twitter_account_name)
     end
     
+    should "include SocialNetworkingUtilities::Base mixin" do
+      assert Member.new.respond_to?(:update_social_networking_details)
+    end
+    
     context "when returning current members" do
       setup do
         @ex_member = Factory(:old_member, :council => Factory(:another_council))
@@ -381,47 +385,7 @@ class MemberTest < ActiveSupport::TestCase
     should "override included twitter_list_name to return ukcouncillors" do
       assert_equal "ukcouncillors", @member.twitter_list_name
     end
-    
-    context "when updating from user_submission" do
-      setup do
-        @member = Factory(:member)
-        @council = @member.council
-        @user_submission = Factory(:user_submission, :council => @council, :twitter_account_name => "foo", :facebook_account_name => "baz", :linked_in_account_name => "bar", :blog_url => "http://blog.com")
-      end
-      
-      should "update member with twitter_name" do
-        @member.update_from_user_submission(@user_submission)
-        assert_equal "foo", @member.reload.twitter_account_name
-      end
-      
-      should "update member with blog_url" do
-        @member.update_from_user_submission(@user_submission)
-        assert_equal "http://blog.com", @member.reload.blog_url
-      end
-      
-      should "update member with facebook_account_name" do
-        @member.update_from_user_submission(@user_submission)
-        assert_equal "baz", @member.reload.facebook_account_name
-      end
-      
-      should "return true if successful" do
-        assert @member.update_from_user_submission(@user_submission)
-      end
-      
-      context "and attributes already set" do
-        setup do
-          @user_submission.update_attribute(:blog_url, "")
-          @member.update_attribute(:blog_url, "http://foo.com")
-        end
         
-        should "not overwrite when user_submission values are blank" do
-          @member.update_from_user_submission(@user_submission)
-          assert_equal "http://foo.com", @member.reload.blog_url
-        end
-        
-      end
-    end
-    
     # NB This is not really necessary any more as all management of twitter lists is handle by TwitterAccount class
     context "in managing membership of ukcouncillors twitter list" do
       setup do

@@ -248,7 +248,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
        setup do
          stub_authentication
          put :update, { :id => @user_submission.id,
-                        :user_submission => { :approve => "true" } }
+                        :approve => "true" }
        end
      
        should_redirect_to( "the admin page") { admin_url }

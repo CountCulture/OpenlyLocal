@@ -2,7 +2,7 @@
 
 class Member < ActiveRecord::Base
   include ScrapedModel::Base
-  include TwitterAccountMethods
+  include SocialNetworkingUtilities::Base
   validates_presence_of :last_name, :uid, :council_id
   validates_presence_of :url, :unless => :ex_member?
   validates_uniqueness_of :uid, :scope => :council_id # uid is unique id number assigned by council. It's possible that some councils may not assign them (e.g. GLA), but cross that bridge...
@@ -73,14 +73,6 @@ class Member < ActiveRecord::Base
   
   def status
     vacancy? ? 'vacancy' : (ex_member? ? 'ex_member' : nil)
-  end
-  
-  #updates member from user submitted user_submission
-  def update_from_user_submission(submission=nil)
-    attribs = { :twitter_account_name => submission.twitter_account_name, 
-                :blog_url => submission.blog_url,
-                :facebook_account_name => submission.facebook_account_name }.delete_if { |k,v| v.blank? }
-    update_attributes(attribs)
   end
   
   def vacancy?

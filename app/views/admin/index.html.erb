@@ -7,17 +7,19 @@
 
 <div id="user_submissions" class='item_grouping'>
   <h3>User Submissions</h3>
-    <%#- @user_submissions.each do |submission| -%>
-      <%= list_all @user_submissions %>
-      <!-- <li> -->
-        <strong><%#= twitter_link_for(submission.twitter_account_name) %></strong>
+  <ul>    
+    <%- @user_submissions.each do |submission| -%>
+      <%#= list_all @user_submissions %>
+      <li>
+        <strong><%= submission.title %></strong>
         <%#= basic_link_for submission.item %>
         <%#= basic_link_for(submission.member) || submission.member_name %>
-        <%#= link_to "edit", edit_user_submission_path(submission), :class => "edit button" %> 
-        <%#= button_to "approve", user_submission_path(submission, :approve => true), :confirm => "Are you sure?", :method => :put %>
-        <%#= button_to "delete", user_submission_path(submission), :confirm => "Are you sure?", :method => :delete %>
-      <!-- </li> -->
-    <%#- end -%>
+        <%= link_to "edit", edit_user_submission_path(submission), :class => "edit button" %> 
+        <%= button_to "approve", user_submission_path(submission, :approve => true), :confirm => "Are you sure?", :method => :put %>
+        <%= button_to "delete", user_submission_path(submission), :confirm => "Are you sure?", :method => :delete %>
+      </li>
+    <%- end -%>
+  </ul>
 </div>
 
 <div id="council_contacts" class='item_grouping'>
