@@ -9,6 +9,7 @@ class CompanyTest < ActiveSupport::TestCase
   
     should have_many :supplying_relationships
     should validate_presence_of :company_number
+    should validate_uniqueness_of :company_number
   
     should have_db_column :title
     should have_db_column :company_number
@@ -31,6 +32,35 @@ class CompanyTest < ActiveSupport::TestCase
         raw_title = ' Foo &  Bar Ltd.'
         Company.expects(:first).with(:conditions => {:normalised_title => TitleNormaliser.normalise_company_title(raw_title)})
         Company.matches_title(raw_title)
+      end
+    end
+    
+    context "when match or creating from company_number" do
+      setup do
+        @existing_company = Factory(:company, :company_number => "00123456")
+      end
+
+      should "return company with given company number" do
+        assert_equal @existing_company, Company.match_or_create_from_company_number("00123456")
+      end
+      
+      should "return company that matches company after required leading zeros have been added" do
+        assert_equal @existing_company, Company.match_or_create_from_company_number("123456")
+        assert_equal @existing_company, Company.match_or_create_from_company_number("0123456")
+      end
+      
+      context "and company doesn't exist" do
+        should "create company with given company number" do
+          assert_difference "Company.count", 1 do
+            Company.match_or_create_from_company_number("07654321")
+          end
+          assert Company.find_by_company_number("07654321")
+        end
+        
+        should 'normalize company_number when creating company' do
+          Company.match_or_create_from_company_number("7654321")
+          assert Company.find_by_company_number("07654321")
+        end
       end
     end
     
@@ -79,24 +109,12 @@ class CompanyTest < ActiveSupport::TestCase
         assert_nil @company.reload.normalised_title
       end
     end
-
+    
     context 'when returning companies_house_url' do
-      # should 'return nil by default' do
-      #   assert_nil @company.companies_house_url
-      #   @company.company_number = ''
-      #   assert_nil @company.companies_house_url
-      # end
-      
-      should "return companies open house url if company_number set" do
+      should "return companies open house url" do
         @company.company_number = '012345'
         assert_equal 'http://companiesopen.org/uk/012345/companies_house', @company.companies_house_url
       end
-      
-      # should "return nil if company_number -1" do
-      #   @company.company_number = '-1'
-      #   assert_nil @company.companies_house_url
-      # end
-      
     end
 
   end

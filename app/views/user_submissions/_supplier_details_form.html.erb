@@ -1,6 +1,11 @@
-      <%- @user_submission.submission_details.attributes.each do |attribute_name, value| -%>
-        <p>
-          <%= detail_form.label attribute_name %>
-          <%= detail_form.text_field attribute_name %>
-        </p>
-      <%- end -%>
+<p>
+  <%= link_to "Search Google for #{@user_submission.item.title}", "http://www.google.co.uk/search?q=#{CGI.escape @user_submission.item.title}", :class => 'external' %>
+</p>
+<p>
+  <%= detail_form.label :company_number %>
+  <%= detail_form.text_field :company_number %>
+</p>
+<p>
+  <%= detail_form.label :url, "Website" %>
+  <%= detail_form.text_field :url %>
+</p>

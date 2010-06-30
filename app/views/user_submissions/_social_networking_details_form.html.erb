@@ -3,10 +3,6 @@
   <%#= f.select :member_id, @user_submission.council.members.all.collect{ |m| [m.title, m.id] }, { :include_blank => true } %>
 </p>
 <%#- else -%>
-  <p class='required'>
-    <%#= detail_form.label :member_name %>
-    <%#= detail_form.text_field :member_name %>
-  </p>
   <p>
     <%= detail_form.label :twitter_account_name %>
     <%= detail_form.text_field :twitter_account_name %>

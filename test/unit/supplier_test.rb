@@ -159,34 +159,41 @@ class SupplierTest < ActiveSupport::TestCase
     
     context 'when assigning company_number' do
       setup do
-        @existing_company = Factory(:company)
+        @company = Factory(:company)
       end
       
-      context "and company with given number already exists" do
-        setup do
-          @old_company_count = Company.count
-          @supplier.company_number = @existing_company.company_number
-        end
-        
-        should 'not create new company' do
-          assert_equal @old_company_count, Company.count
-        end
-        
-        should 'associate with company with given company number' do
-          assert_equal @existing_company, @supplier.payee
-        end
-        
+      should 'match or create company from company number' do
+        Company.expects(:match_or_create_from_company_number).with('123456')
+        @supplier.company_number = '123456'
       end
       
-      context "and company not found" do
-        
-        should "create new company with given id" do
-          assert_difference "Company.count", 1 do
-             @supplier.company_number = '012345'
-          end
-          assert_equal '012345', @supplier.payee.company_number
-        end
+      should 'associate returned company with given company number' do
+        Company.stubs(:match_or_create_from_company_number).returns(@company)
+        assert_equal @company, @supplier.reload.payee
       end
+      
+      # context "and company with given number already exists" do
+      #   setup do
+      #     @old_company_count = Company.count
+      #     @supplier.company_number = @existing_company.company_number
+      #   end
+      #   
+      #   should 'not create new company' do
+      #     assert_equal @old_company_count, Company.count
+      #   end
+      #   
+      #   
+      # end
+      # 
+      # context "and company not found" do
+      #   
+      #   should "create new company with given id" do
+      #     assert_difference "Company.count", 1 do
+      #        @supplier.company_number = '012345'
+      #     end
+      #     assert_equal '012345', @supplier.payee.company_number
+      #   end
+      # end
       
     end
         
