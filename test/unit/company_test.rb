@@ -20,6 +20,10 @@ class CompanyTest < ActiveSupport::TestCase
     should have_db_column :company_type
     should have_db_column :incorporation_date
     
+    should 'mixin AddressMethods module' do
+      assert @company.respond_to?(:address_in_full)
+    end
+
     context "when normalising title" do
       should "normalise title" do
         TitleNormaliser.expects(:normalise_company_title).with('foo bar')
@@ -110,6 +114,32 @@ class CompanyTest < ActiveSupport::TestCase
       end
     end
     
+    context "when populating basic info" do
+      setup do
+        resp_hash = {:title => 'FOOCORP', :status => 'active', :status => 'Active', :incorporation_date => '1990-02-21', :company_type => 'Private Limited Company', :address_in_full => "501 BEAUMONT LEYS LANE\nLEICESTER\nLEICESTERSHIRE\nLE4 2BN" }
+        CompanyUtilities::Client.any_instance.stubs(:get_basic_info).returns(resp_hash)
+      end
+
+      should "fetch info using CompanyUtilities" do
+        CompanyUtilities::Client.any_instance.expects(:get_basic_info).with(@company.company_number)
+        @company.populate_basic_info
+      end
+      
+      should "update company with info from CompanyUtilities" do
+        @company.populate_basic_info
+        assert_equal 'FOOCORP', @company.title
+        assert_equal '1990-02-21'.to_date, @company.incorporation_date
+        assert_equal 'Private Limited Company', @company.company_type
+        assert_equal 'Active', @company.status
+      end
+      
+      should 'add address for company' do
+        @company.populate_basic_info
+        assert_kind_of Address, address = @company.address
+        assert_equal "501 BEAUMONT LEYS LANE, LEICESTER, LEICESTERSHIRE, LE4 2BN", address.in_full
+      end
+    end
+
     context 'when returning companies_house_url' do
       should "return companies open house url" do
         @company.company_number = '012345'

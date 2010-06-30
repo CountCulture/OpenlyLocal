@@ -1,4 +1,5 @@
 class Company < ActiveRecord::Base
+  include AddressMethods
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
   validates_presence_of :company_number
   validates_uniqueness_of :company_number
@@ -21,6 +22,11 @@ class Company < ActiveRecord::Base
   # returns companies_house url via companies open house redirect
   def companies_house_url
     "http://companiesopen.org/uk/#{company_number}/companies_house" if company_number?
+  end
+  
+  def populate_basic_info
+    basic_info = CompanyUtilities::Client.new.get_basic_info(company_number)
+    update_attributes(basic_info)
   end
   
   def to_param
