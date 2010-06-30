@@ -1,12 +1,7 @@
 <div class="breadcrumbs"><%= link_to "All Police Authorities", police_authorities_path %></div>
 <h1><%= h @police_authority.name %></h1>
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :authority_for, link_for(@police_authority.police_force) %>
-  <%= attribute_tag :address, @police_authority.address %>
-  <%= attribute_tag :telephone, @police_authority.telephone %>
-  <%= attribute_tag :website, link_to(@police_authority.url, @police_authority.url, :class => "external") %>
-  <%= attribute_tag :annual_audit_letter, link_to(@police_authority.annual_audit_letter, :class => 'external') if @police_authority.annual_audit_letter? %>
-  <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@police_authority.wikipedia_url), @police_authority.wikipedia_url, :class => 'external') unless @police_authority.wikipedia_url.blank? %>
+  <%= render :partial => 'attributes', :object => @police_authority %>
 </dl>
   <%- unless @police_authority.wdtk_name.blank? -%>
   <div class="extra_info">

@@ -1,8 +1,7 @@
-<dl id="main_attributes" class="attributes">
-  <%= attribute_tag :company_number, link_to(attributes.company_number, attributes.companies_house_url, :class => 'external') if attributes.company_number? %>
-  <%= attribute_tag :company_type, attributes.company_type %>
-  <%= attribute_tag :incorporation_date, attributes.incorporation_date %>
-  <%= attribute_tag :status, attributes.status %>
-  <%= attribute_tag :website, link_to(attributes.url, attributes.url) if attributes.url? %>
-  <%= attribute_tag :wikipedia_url, link_to(URI.unescape(attributes.wikipedia_url), attributes.wikipedia_url, :class => 'external') if attributes.wikipedia_url? %>
-</dl>
+<%= attribute_tag :company_number, link_to(attributes.company_number, attributes.companies_house_url, :class => 'external') if attributes.company_number? %>
+<%= attribute_tag :company_type, attributes.company_type %>
+<%= attribute_tag :incorporation_date, attributes.incorporation_date %>
+<%= attribute_tag :status, attributes.status %>
+<%= attribute_tag :registered_address, attributes.address_in_full %>
+<%= attribute_tag :website, link_to(attributes.url, attributes.url) if attributes.url? %>
+<%= attribute_tag :wikipedia_url, link_to(URI.unescape(attributes.wikipedia_url), attributes.wikipedia_url, :class => 'external') if attributes.wikipedia_url? %>

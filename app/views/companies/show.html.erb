@@ -1,8 +1,9 @@
 <%= render :partial => 'shared/experimental_flash' %>
 <h1><%= @company.title %></h1>
 
-<%= render :partial => 'attributes', :object => @company %>
-
+<dl id="main_attributes" class="attributes">
+  <%= render :partial => 'attributes', :object => @company %>
+</dl>
 <div id="relationships">
   <h3>Supplier to:</h3>
   <ul>

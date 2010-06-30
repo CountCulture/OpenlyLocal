@@ -1,8 +1,6 @@
-<dl id="main_attributes" class="attributes">
-  <%= attribute_tag :authority_for, link_for(attributes.police_force) %>
-  <%= attribute_tag :address, attributes.address %>
-  <%= attribute_tag :telephone, attributes.telephone %>
-  <%= attribute_tag :website, link_to(attributes.url, attributes.url, :class => "external") %>
-  <%= attribute_tag :annual_audit_letter, link_to(attributes.annual_audit_letter, :class => 'external') if attributes.annual_audit_letter? %>
-  <%= attribute_tag :wikipedia_url, link_to(URI.unescape(attributes.wikipedia_url), attributes.wikipedia_url, :class => 'external') unless attributes.wikipedia_url.blank? %>
-</dl>
+<%= attribute_tag :authority_for, link_for(attributes.police_force) %>
+<%= attribute_tag :address, attributes.address %>
+<%= attribute_tag :telephone, attributes.telephone %>
+<%= attribute_tag :website, link_to(attributes.url, attributes.url, :class => "external") %>
+<%= attribute_tag :annual_audit_letter, link_to(attributes.annual_audit_letter, :class => 'external') if attributes.annual_audit_letter? %>
+<%= attribute_tag :wikipedia_url, link_to(URI.unescape(attributes.wikipedia_url), attributes.wikipedia_url, :class => 'external') unless attributes.wikipedia_url.blank? %>

@@ -16,12 +16,14 @@
 <%- if @supplier.payee -%>
   <div id="payee_info">
     <h3>Information about this supplier</h3>
-    <%= render :partial => "#{@supplier.payee.class.to_s.underscore.pluralize}/attributes", :object => @supplier.payee %>
-  
+    <dl id="<%= @supplier.payee.class.to_s.underscore %>_attributes" class="attributes">
+      <%= attribute_tag :full_name, @supplier.payee[:title] %>
+      <%= render :partial => "#{@supplier.payee.class.to_s.underscore.pluralize}/attributes", :object => @supplier.payee %>
+    </dl>
     <div id="other_supplying_relationships" class='clear-left'>
       <h4>Other councils supplied by <%= basic_link_for(@supplier.payee) %></h4>
       <%- if @supplier.associateds.blank? -%>
-        <p>Not known</p>
+        <p>None known</p>
       <%- else -%>
         <ul>
           <%- @supplier.associateds.each do |supplier| -%>
@@ -33,7 +35,7 @@
     </div>
   </div>
 <%- else -%>
-<p class='alert'>No information known about this company/supplier. Help us identify this supplier</p>
+<p class='alert'>No information known about this supplier. Help us identify this company/supplier</p>
 <p class="request_for_help"><%= link_to "Add info now", new_user_submission_path(:item_id => @supplier.id, :item_type => 'Supplier', :submission_type => 'supplier_details'), :class => 'button' %></p>
 <%- end -%>
 
