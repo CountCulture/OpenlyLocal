@@ -169,6 +169,7 @@ class SupplierTest < ActiveSupport::TestCase
       
       should 'associate returned company with given company number' do
         Company.stubs(:match_or_create_from_company_number).returns(@company)
+        @supplier.company_number = '123456'
         assert_equal @company, @supplier.reload.payee
       end
       
@@ -267,9 +268,9 @@ class SupplierTest < ActiveSupport::TestCase
         assert_equal 'http://foo.com', @supplier.reload.url
       end
       
-      should 'assign company with given company number' do
+      should 'assign company with (normalised version of) given company number' do
         @supplier.update_supplier_details(@new_details)
-        assert_equal '01234', @supplier.reload.payee.company_number
+        assert_equal '00001234', @supplier.reload.payee.company_number
       end
       
       should 'not delete existing url if nil given for url' do

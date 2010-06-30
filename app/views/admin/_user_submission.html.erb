@@ -1,0 +1,8 @@
+<li>
+  <strong><%= user_submission.title %></strong>
+  <%#= basic_link_for submission.item %>
+  <%#= basic_link_for(submission.member) || submission.member_name %>
+  <%= link_to "edit", edit_user_submission_path(user_submission), :class => "edit button" %> 
+  <%= button_to "approve", user_submission_path(user_submission, :approve => true), :confirm => "Are you sure?", :method => :put %>
+  <%= button_to "delete", user_submission_path(user_submission), :confirm => "Are you sure?", :method => :delete %>
+</li>

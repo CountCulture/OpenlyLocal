@@ -9,15 +9,7 @@
   <h3>User Submissions</h3>
   <ul>    
     <%- @user_submissions.each do |submission| -%>
-      <%#= list_all @user_submissions %>
-      <li>
-        <strong><%= submission.title %></strong>
-        <%#= basic_link_for submission.item %>
-        <%#= basic_link_for(submission.member) || submission.member_name %>
-        <%= link_to "edit", edit_user_submission_path(submission), :class => "edit button" %> 
-        <%= button_to "approve", user_submission_path(submission, :approve => true), :confirm => "Are you sure?", :method => :put %>
-        <%= button_to "delete", user_submission_path(submission), :confirm => "Are you sure?", :method => :delete %>
-      </li>
+      <%= render :partial => 'user_submission' %>
     <%- end -%>
   </ul>
 </div>
