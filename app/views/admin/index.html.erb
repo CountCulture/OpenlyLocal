@@ -8,9 +8,7 @@
 <div id="user_submissions" class='item_grouping'>
   <h3>User Submissions</h3>
   <ul>    
-    <%- @user_submissions.each do |submission| -%>
-      <%= render :partial => 'user_submission' %>
-    <%- end -%>
+    <%= render :partial => 'user_submission', :collection => @user_submissions %>
   </ul>
 </div>
 
