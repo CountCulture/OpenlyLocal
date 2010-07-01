@@ -760,6 +760,32 @@ ul#hyperlocal_sites li li{
 .breadcrumbs {
 	margin-bottom: 3px;
 }
+
+/*admin page*/
+.admin #user_submissions {
+	background: #eee;
+	padding: 3px 6px;
+	margin-bottom:1em;
+	margin-right: 1em;
+	font-size:90%;
+}
+.admin .user_submission {
+	border-bottom: 2px solid #fff;
+}
+.admin .user_submission h4 {
+	border-bottom: none;
+}
+.admin .buttons {
+	text-align: right;
+}
+.admin dl.attributes {
+	width: 280px;
+	margin-bottom:0;
+}
+.admin .attributes dd {
+	width:auto;
+}
+
 /*Autocomplete styling*/
 .ac_results {
 	padding: 0px;

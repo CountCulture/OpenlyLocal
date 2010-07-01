@@ -30,6 +30,21 @@ class SupplierTest < ActiveSupport::TestCase
       assert_equal payee, Factory(:supplier, :payee => payee).payee
     end
     
+    context "should have unmatched named_scope which" do
+      setup do
+        @payee = Factory(:company)
+        @supplier_with_payee = Factory(:supplier, :payee => @payee)
+      end
+      
+      should 'include suppliers without payees' do
+        assert Supplier.unmatched.include?(@supplier)
+      end
+      
+      should 'not include suppliers with payees' do
+        assert !Supplier.unmatched.include?(@supplier_with_payee)
+      end
+    end
+    
     should 'require either name or uid to be present' do
       invalid_supplier = Factory.build(:supplier, :name => nil, :uid => nil)
       assert !invalid_supplier.valid?

@@ -4,6 +4,7 @@ class Supplier < ActiveRecord::Base
   has_many :financial_transactions, :order => 'date'
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
+  named_scope :unmatched, :conditions => {:payee_id => nil}
   before_save :update_spending_info
   after_create :match_with_existing_company
   alias_attribute :title, :name

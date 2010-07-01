@@ -1,8 +1,13 @@
-<li>
-  <strong><%= user_submission.title %></strong>
-  <%#= basic_link_for submission.item %>
-  <%#= basic_link_for(submission.member) || submission.member_name %>
-  <%= link_to "edit", edit_user_submission_path(user_submission), :class => "edit button" %> 
-  <%= button_to "approve", user_submission_path(user_submission, :approve => true), :confirm => "Are you sure?", :method => :put %>
-  <%= button_to "delete", user_submission_path(user_submission), :confirm => "Are you sure?", :method => :delete %>
-</li>
+<%- div_for user_submission do -%>
+  <h4><strong><%= user_submission.submission_type.humanize %></strong> for <%= basic_link_for user_submission.item %></h4>
+  <dl class="attributes">
+    <%- user_submission.submission_details.attributes.each do |k,v| -%>
+      <%= attribute_tag k, v %>
+    <%- end -%>
+  </dl>
+  <div class='buttons'>
+    <%= link_to "edit", edit_user_submission_path(user_submission), :class => "edit button" %> 
+    <%= button_to "approve", user_submission_path(user_submission, :approve => true), :confirm => "Are you sure?", :method => :put %>
+    <%= button_to "delete", user_submission_path(user_submission), :confirm => "Are you sure?", :method => :delete %>
+  </div>
+<%- end -%>
