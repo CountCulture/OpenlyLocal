@@ -9,7 +9,7 @@ class UserSubmissionsController < ApplicationController
   end
   
   def create
-    @user_submission = UserSubmission.new(params[:user_submission])
+    @user_submission = UserSubmission.new(params[:user_submission].merge(:ip_address => request.remote_ip))
     @user_submission.save!
     flash[:notice] = "Details successfully submitted. We will review it ASAP" #" and will <a href='http://twitter.com/OpenlyLocal'>tweet</a> when it is approved"
     redirect_to @user_submission.item

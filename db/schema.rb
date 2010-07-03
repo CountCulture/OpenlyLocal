@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100629181109) do
+ActiveRecord::Schema.define(:version => 20100703093109) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -833,6 +833,8 @@ ActiveRecord::Schema.define(:version => 20100629181109) do
     t.column "approved", :boolean, :default => false
     t.column "submission_details", :text
     t.column "item_type", :string
+    t.column "ip_address", :string
+    t.column "notes", :text
   end
 
   add_index "user_submissions", ["member_id"], :name => "index_user_submissions_on_member_id"

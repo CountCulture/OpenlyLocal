@@ -11,7 +11,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
         get :new, :submission_type => 'social_networking_details', :item_type => 'Council', :item_id => @item.id
       end
       
-      should_assign_to(:user_submission)
+      should assign_to(:user_submission)
       should respond_with :success
       should render_template :new
       should_render_with_layout
@@ -57,7 +57,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
     #     get :new, :council_id => @member.council.id
     #   end
     #   
-    #   should_assign_to(:user_submission) { @user_submission }
+    #   should assign_to(:user_submission) { @user_submission }
     #   should respond_with :success
     # 
     #   should "associate council with user submission" do
@@ -92,7 +92,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
     #     get :new, :council_id => @council.id
     #   end
     #   
-    #   should_assign_to(:user_submission) { @user_submission}
+    #   should assign_to(:user_submission) { @user_submission}
     #   should respond_with :success
     # 
     #   should "associate council with user submission" do
@@ -124,11 +124,14 @@ class UserSubmissionsControllerTest < ActionController::TestCase
     
     context "with valid params" do
        setup do
-         post :create, :user_submission => {:item_id => @item.id, :item_type => 'Council', :submission_type => 'social_networking_details', :submission_details => {:twitter_account_name => 'fooman'}}
+         post :create, :user_submission => { :item_id => @item.id, 
+                                             :item_type => 'Council', 
+                                             :submission_type => 'social_networking_details', 
+                                             :submission_details => {:twitter_account_name => 'fooman'}}
        end
      
        should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
-       should_assign_to :user_submission
+       should assign_to :user_submission
        should_redirect_to( "the page for the council") { council_url(@item) }
        should set_the_flash.to /Successfully submitted/i
         
@@ -141,7 +144,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
   #       end
   # 
   #       should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
-  #       should_assign_to :user_submission
+  #       should assign_to :user_submission
   #       should_redirect_to( "the page for the member's council") { council_url(@council) }
   #       should set_the_flash.to /Successfully submitted/i
   #       
@@ -159,7 +162,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
        end
      
        should_not_change("The number of user_submissions") { UserSubmission.count }
-       should_assign_to :user_submission
+       should assign_to :user_submission
        should render_template :new
        should_not set_the_flash
      end
@@ -187,7 +190,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
          get :edit, :id => @user_submission.id
        end
   
-       should_assign_to(:user_submission) { @user_submission}
+       should assign_to(:user_submission) { @user_submission}
        should respond_with :success
        should render_template :edit
        should_render_with_layout
