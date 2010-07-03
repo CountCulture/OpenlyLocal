@@ -14,7 +14,24 @@
 <%- end -%>
 
 <div id='relationships'>
-  <%= list_all @suppliers %>
+  <table id="crime_rates" class='statistics'>
+    <caption>Suppliers</caption>
+    <tr>
+      <th><%= link_to('Supplier name', params.merge(:order => 'name'), :class => 'sort' ) %></th>
+      <th>Supplying to</th>
+      <th class='value'><%= link_to('Total spend', params.merge(:order => 'name'), :class => 'total_spend' ) %></th>
+      <th class='average value'>Average monthly spend</th>
+    </tr>
+    <%- @suppliers.each do |supplier| -%>
+      <tr>
+        <td class='name'><strong><%= basic_link_for supplier %></strong></td>
+        <td class='payer name'><%= basic_link_for supplier.organisation %></td>
+        <td class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i, :delimiter => ',') %></td>
+        <td class='average value'>£<%= number_with_delimiter(supplier.average_monthly_spend.to_i, :delimiter => ',') %></td>
+      </tr>
+    <%- end -%>
+  </table>
+  <%#= list_all @suppliers %>
 </div>
 <%= will_paginate @suppliers %>
 

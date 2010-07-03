@@ -17,7 +17,7 @@ class SuppliersControllerTest < ActionController::TestCase
         get :index
       end
       
-      should_assign_to(:suppliers)
+      should assign_to(:suppliers)
       should respond_with :success
       
       should "show title" do
@@ -43,7 +43,7 @@ class SuppliersControllerTest < ActionController::TestCase
         get :index, :order => 'total_spend'
       end
       
-      should_assign_to(:suppliers)
+      should assign_to(:suppliers)
       should respond_with :success
       
       
@@ -83,7 +83,7 @@ class SuppliersControllerTest < ActionController::TestCase
 
         should assign_to(:suppliers)
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
 
         should "include suppliers" do
@@ -106,7 +106,7 @@ class SuppliersControllerTest < ActionController::TestCase
 
         should assign_to(:suppliers)
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/json'
         
         should 'include pagination info' do
@@ -127,8 +127,8 @@ class SuppliersControllerTest < ActionController::TestCase
           get :index, :organisation_id => @organisation.id, :organisation_type => @organisation.class.to_s
         end
 
-        should_assign_to(:suppliers)
-        should_assign_to(:organisation) { @organisation }
+        should assign_to(:suppliers)
+        should assign_to(:organisation) { @organisation }
         should respond_with :success
 
         should "show title" do
@@ -157,7 +157,7 @@ class SuppliersControllerTest < ActionController::TestCase
           get :index, :organisation_id => @organisation.id, :organisation_type => @organisation.class.to_s, :order => 'total_spend'
         end
 
-        should_assign_to(:suppliers)
+        should assign_to(:suppliers)
         should respond_with :success
 
 
@@ -181,10 +181,10 @@ class SuppliersControllerTest < ActionController::TestCase
         get :show, :id => @supplier.id
       end
 
-      should_assign_to(:supplier) { @supplier}
+      should assign_to(:supplier) { @supplier}
       should respond_with :success
       should render_template :show
-      should_assign_to(:organisation) { @organisation }
+      should assign_to(:organisation) { @organisation }
 
       should "show supplier name in title" do
         assert_select "title", /#{@supplier.title}/
@@ -211,10 +211,10 @@ class SuppliersControllerTest < ActionController::TestCase
         get :show, :id => @supplier.id
       end
 
-      should_assign_to(:supplier) { @supplier}
+      should assign_to(:supplier) { @supplier}
       should respond_with :success
       should render_template :show
-      should_assign_to(:organisation) { @organisation }
+      should assign_to(:organisation) { @organisation }
 
       should "show company details" do
         assert_select ".company_number", /12345/
@@ -241,10 +241,10 @@ class SuppliersControllerTest < ActionController::TestCase
         get :show, :id => @supplier.id
       end
 
-      should_assign_to(:supplier) { @supplier}
+      should assign_to(:supplier) { @supplier}
       should respond_with :success
       should render_template :show
-      should_assign_to(:organisation) { @organisation }
+      should assign_to(:organisation) { @organisation }
 
       should "council details" do
         assert_select ".authority_type", /#{@council.authority_type}/
@@ -267,10 +267,10 @@ class SuppliersControllerTest < ActionController::TestCase
         get :show, :id => @supplier.id
       end
 
-      should_assign_to(:supplier) { @supplier}
+      should assign_to(:supplier) { @supplier}
       should respond_with :success
       should render_template :show
-      should_assign_to(:organisation) { @organisation }
+      should assign_to(:organisation) { @organisation }
 
       should "police_authority details" do
         assert_select ".authority_for", /#{@police_authority.police_force.title}/
@@ -293,9 +293,9 @@ class SuppliersControllerTest < ActionController::TestCase
       get :show, :id => @supplier.id, :format => "xml"
     end
 
-    should_assign_to(:supplier) { @supplier }
+    should assign_to(:supplier) { @supplier }
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/xml'
     should "include company" do
       assert_select "supplier>payee>id", "#{@company.id}"
@@ -310,9 +310,9 @@ class SuppliersControllerTest < ActionController::TestCase
       get :show, :id => @supplier.id, :format => "json"
     end
 
-    should_assign_to(:supplier) { @supplier }
+    should assign_to(:supplier) { @supplier }
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/json'
     should "include financial_transactions" do
       assert_match /supplier\":.+financial_transactions\":.+id\":#{@financial_transaction.id}/, @response.body
