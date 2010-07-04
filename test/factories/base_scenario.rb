@@ -330,3 +330,7 @@ Factory.define :company do |f|
   f.sequence(:company_number) {|n| 100+n }
 end
 
+Factory.define :quango do |f|
+  f.sequence(:title) { |n| "Quango #{n}" }
+end
+

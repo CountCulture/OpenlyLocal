@@ -129,6 +129,14 @@ task :import_richmond_supplier_payments => :environment do
                                                     :service => row['Service'],
                                                     :source_url => 'http://www.richmond.gov.uk/home/council_government_and_democracy/council/council_payments_to_suppliers.htm'
                                                   )
-          end
-        end
-      end
+    end
+  end
+end
+
+desc "Import NDPBs"
+task :import_ndpbs => :environment do
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/ndpbs.csv"), :headers => true) do |row|
+    Quango.find_or_create_by_title(:title => row['Name'], :quango_type => 'NDPB', :quango_subtype => row['QuangoSubType'], :sponsoring_organisation => row['SponsoringBody'])
+  end
+end
+

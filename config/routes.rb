@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :quangos
+
   map.resources :financial_transactions
 
   map.resources :companies
