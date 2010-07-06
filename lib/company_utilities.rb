@@ -14,6 +14,21 @@ module CompanyUtilities
         :status => resp_hash['company_status']
       }.delete_if{|k,v| v.blank?}
     end
+    
+    def find_company_from_name(name)
+      resp_array = JSON.parse(_http_get("http://companiesopen.org/search?q=#{CGI.escape name}&f=js")) rescue nil
+      return unless resp_array.is_a?(Array)
+      resp_array.collect do |company_info|
+        { :title => company_info['company']['name'],
+          :company_number => company_info['company']['company_number'],
+          :wikipedia_url => company_info['company']['wikipedia_url'],
+          :company_type => company_info['company']['company_category'],
+          :incorporation_date => company_info['company']['incorporation_date'],
+          :address_in_full => company_info['company']['address'],
+          :status => company_info['company']['company_status']
+        }.delete_if{|k,v| v.blank?}
+      end
+    end
 
     protected
     def _http_get(url)
