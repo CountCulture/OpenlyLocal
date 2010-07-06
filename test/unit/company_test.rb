@@ -29,6 +29,16 @@ class CompanyTest < ActiveSupport::TestCase
         TitleNormaliser.expects(:normalise_company_title).with('foo bar')
         Company.normalise_title('foo bar')
       end
+      
+      should "replace '&' with 'and'" do
+        TitleNormaliser.expects(:normalise_company_title).with('foo and bar')
+        Company.normalise_title('foo & bar')
+      end
+      
+      should "replace '&' with no space with space-separated 'and'" do
+        TitleNormaliser.expects(:normalise_company_title).with('foo and bar')
+        Company.normalise_title('foo&bar')
+      end
     end
     
     context "when matching title" do
