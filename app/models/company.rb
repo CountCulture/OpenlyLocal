@@ -14,7 +14,7 @@ class Company < ActiveRecord::Base
     find_or_create_by_company_number(normalise_company_number(number_string))
   end
   
-  # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising supplier titles
+  # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising company titles
   def self.normalise_title(raw_title)
     TitleNormaliser.normalise_company_title(raw_title.gsub(/\s?&\s?/, ' and '))
   end

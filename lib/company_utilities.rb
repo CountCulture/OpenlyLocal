@@ -17,7 +17,7 @@ module CompanyUtilities
     
     def find_company_from_name(name)
       resp_array = JSON.parse(_http_get("http://companiesopen.org/search?q=#{CGI.escape name}&f=js")) rescue nil
-      return unless resp_array.is_a?(Array)
+      return if resp_array.blank?
       resp_array.collect do |company_info|
         { :title => company_info['company']['name'],
           :company_number => company_info['company']['company_number'],

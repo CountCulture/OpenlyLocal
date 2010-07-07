@@ -18,6 +18,12 @@ class Supplier < ActiveRecord::Base
     TitleNormaliser.normalise_company_title(raw_title)
   end
   
+  # returns associated suppliers (i.e. those with same company)
+  def associateds
+    return [] unless payee
+    payee.supplying_relationships - [self]
+  end
+  
   def calculated_total_spend
     financial_transactions.sum(:value)
   end
@@ -29,16 +35,19 @@ class Supplier < ActiveRecord::Base
     financial_transactions.sum(:value)/(months_covered)
   end
   
-  # returns associated suppliers (i.e. those with same company)
-  def associateds
-    return [] unless payee
-    payee.supplying_relationships - [self]
-  end
-    
   # convenience method for assigning company given company number. Creates company if no company with given company_number exists
   def company_number=(comp_no)
     company = Company.match_or_create_from_company_number(comp_no)
     update_attribute(:payee, company)
+  end
+  
+  def find_and_associate_new_company
+    return unless (possible_companies = CompanyUtilities::Client.new.find_company_from_name(title) || (title.match(/&/) ? CompanyUtilities::Client.new.find_company_from_name(title.gsub(/\s?&\s?/, ' and ')) : nil))
+    matched_company = possible_companies.size == 1 ? possible_companies.first : 
+                                                     possible_companies.detect{ |pc| Company.normalise_title(pc[:title]) == Company.normalise_title(title) }
+    return unless matched_company
+    self.payee = Company.create!(matched_company)
+    self.save!
   end
   
   def possible_payee
