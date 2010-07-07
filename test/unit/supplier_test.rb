@@ -408,7 +408,6 @@ class SupplierTest < ActiveSupport::TestCase
     
     context 'and when updating supplier details' do
       
-      
       setup do
         @new_details = SupplierDetails.new(:url => 'http://foo.com', :company_number => '01234')
       end

@@ -17,6 +17,11 @@ class SupplierDetailsTest < ActiveSupport::TestCase
       assert @supplier_details.respond_to?(:company_number=)
     end
     
+    should 'have wikipedia_url accessor' do
+      assert @supplier_details.respond_to?(:wikipedia_url)
+      assert @supplier_details.respond_to?(:wikipedia_url=)
+    end
+    
     context 'when approving' do
       setup do
         @item = Factory(:supplier)
@@ -24,7 +29,7 @@ class SupplierDetailsTest < ActiveSupport::TestCase
         @supplier_details_object = @user_submission.submission_details
       end
       
-      should 'update item associated with user_submission with social networking details' do
+      should 'update item associated with user_submission with supplier details' do
         @item.expects(:update_supplier_details).with(@supplier_details_object)
         
         @supplier_details_object.approve(@user_submission)

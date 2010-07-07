@@ -273,6 +273,7 @@ class CouncilTest < ActiveSupport::TestCase
         @original_title_and_normalised_title = {
           "London Borough of Brent" => "brent",
           "City of Westminster" => "westminster",
+          "Westminster City Council" => "westminster",
           "Leeds City Council" => "leeds",
           "Royal Borough of Kingston-upon Thames" => "kingston upon thames",
           "Wolverhampton Metropolitan Borough Council" => "wolverhampton",
