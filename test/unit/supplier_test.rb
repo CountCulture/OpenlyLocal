@@ -203,7 +203,7 @@ class SupplierTest < ActiveSupport::TestCase
       
       context "and no company is returned" do
         setup do
-          CompanyUtilities::Client.any_instance.stubs(:find_company_from_name).returns(nil)
+          CompanyUtilities::Client.any_instance.stubs(:find_company_from_name) # => returns nil still
         end
       
         should "not create company" do
@@ -215,6 +215,12 @@ class SupplierTest < ActiveSupport::TestCase
         should "not associate company with supplier" do
           @supplier.find_and_associate_new_company
           assert_nil @supplier.reload.payee
+        end
+        
+        should "mark supplier as failed_payee_search" do
+          CompanyUtilities::Client.any_instance.expects(:find_company_from_name) # => returns nil still
+          @supplier.find_and_associate_new_company
+          assert @supplier.reload.failed_payee_search?
         end
         
         context "and supplier name has ampersand in it" do
@@ -249,6 +255,12 @@ class SupplierTest < ActiveSupport::TestCase
             assert_no_difference "Company.count" do
               @supplier.find_and_associate_new_company
             end
+          end
+          
+          should "mark supplier as failed_payee_search" do
+            CompanyUtilities::Client.any_instance.expects(:find_company_from_name) # => returns nil still
+            @supplier.find_and_associate_new_company
+            assert @supplier.reload.failed_payee_search?
           end
           
         end
