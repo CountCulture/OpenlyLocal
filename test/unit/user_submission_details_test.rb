@@ -46,8 +46,8 @@ class UserSubmissionDetailsTest < ActiveSupport::TestCase
       assert !@child_submission_details.attribute_names.include?('foo')
     end
     
-    should 'returns attribute values keyed to attribute names as attributes' do
-      assert_equal( {'dummy' => 'bar', 'another_dummy' => 'baz'}, @child_submission_details.attributes)
+    should 'returns attribute values keyed to symbolized version of attribute names as attributes' do
+      assert_equal( {:dummy => 'bar', :another_dummy => 'baz'}, @child_submission_details.attributes)
     end
         
     should 'have stub approve method' do

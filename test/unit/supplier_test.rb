@@ -401,7 +401,7 @@ class SupplierTest < ActiveSupport::TestCase
         assert_in_delta (123.45 - 32.1 + 22.1)/(8+1), @supplier.reload.calculated_average_monthly_spend, 2 ** -10 
       end
       
-      should "retrun nil when no transactions" do
+      should "return nil when no transactions" do
         assert_nil Factory(:supplier).calculated_average_monthly_spend
       end
     end
@@ -409,29 +409,87 @@ class SupplierTest < ActiveSupport::TestCase
     context 'and when updating supplier details' do
       
       setup do
-        @new_details = SupplierDetails.new(:url => 'http://foo.com', :company_number => '01234')
+        @new_details = SupplierDetails.new(:url => 'http://foo.com', :company_number => '01234', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo')
       end
       
-      should 'set website if not set' do
-        @supplier.update_supplier_details(@new_details)
-        assert_equal 'http://foo.com', @supplier.reload.url
+      context "in general" do
+
+        should "create new company" do
+          assert_difference "Company.count", 1 do
+            @supplier.update_supplier_details(@new_details)
+          end
+        end
+        
+        should "associate new company with supplier" do
+          @supplier.update_supplier_details(@new_details)
+          assert_kind_of Company, c = @supplier.reload.payee
+          assert_equal "00001234", c.company_number
+        end
+        
+        should "assign url and wikipedia_url to new company" do
+          @supplier.update_supplier_details(@new_details)
+          assert_equal 'http://foo.com', @supplier.payee.url
+          assert_equal 'http://en.wikipedia.org/wiki/foo', @supplier.payee.wikipedia_url
+        end
+        
+        should "return true" do
+          assert @supplier.update_supplier_details(@new_details)
+        end
       end
       
-      should 'update website if set' do
-        @supplier.update_attribute(:url, 'htp://bar.com')
-        @supplier.update_supplier_details(@new_details)
-        assert_equal 'http://foo.com', @supplier.reload.url
+      
+      context "when company with given company number already exists" do
+        setup do
+          @existing_company = Factory(:company, :company_number => '00001234')
+        end
+
+        should "not create new company" do
+          assert_no_difference "Company.count" do
+            @supplier.update_supplier_details(@new_details)
+          end
+        end
+
+        should "associate existing company with supplier" do
+          @supplier.update_supplier_details(@new_details)
+          assert_equal @existing_company, @supplier.reload.payee
+        end
+        
+        # should "assign url and wikipedia_url to new company" do
+        #   @supplier.update_supplier_details(@new_details)
+        #   assert_equal 'http://foo.com', @existing_company.url
+        #   assert_equal 'http://en.wikipedia.org/wiki/foo', @existing_company.wikipedia_url
+        # end
+        
+        should "return true" do
+          assert @supplier.update_supplier_details(@new_details)
+        end
       end
       
+      context 'when missing essential data' do
+        should 'return false' do
+          assert !@supplier.update_supplier_details(SupplierDetails.new(:company_number => ''))
+        end
+      end
+      # should 'set website if not set' do
+      #   @supplier.update_supplier_details(@new_details)
+      #   assert_equal 'http://foo.com', @supplier.reload.url
+      # end
+      # 
+      # should 'update website if set' do
+      #   @supplier.update_attribute(:url, 'htp://bar.com')
+      #   @supplier.update_supplier_details(@new_details)
+      #   assert_equal 'http://foo.com', @supplier.reload.url
+      # end
+      # 
       should 'assign company with (normalised version of) given company number' do
         @supplier.update_supplier_details(@new_details)
         assert_equal '00001234', @supplier.reload.payee.company_number
       end
       
       should 'not delete existing url if nil given for url' do
-        @supplier.update_attribute(:url, 'htp://bar.com')
+        @supplier.update_attribute(:url, 'http://bar.com')
         @supplier.update_supplier_details(SupplierDetails.new(:url => nil))
-        assert_equal 'htp://bar.com', @supplier.reload.url
+        assert_equal 'http://bar.com', @supplier.reload.url
       end
       
       should 'not delete existing company if nil given for company_number' do

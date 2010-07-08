@@ -41,6 +41,19 @@ class CompanyTest < ActiveSupport::TestCase
       end
     end
     
+    context "when normalising company_number" do
+      should "add required leading zeros" do
+        assert_equal '00001234', Company.normalise_company_number('1234')
+        assert_equal '00001234', Company.normalise_company_number('001234')
+      end
+      
+      should "return nil if company_number blank" do
+        assert_nil Company.normalise_company_number(nil)
+        assert_nil Company.normalise_company_number('')
+      end
+      
+    end
+    
     context "when matching title" do
       should "find company that matches normalised title" do
         raw_title = ' Foo &  Bar Ltd.'
@@ -74,6 +87,46 @@ class CompanyTest < ActiveSupport::TestCase
         should 'normalize company_number when creating company' do
           Company.match_or_create_from_company_number("7654321")
           assert Company.find_by_company_number("07654321")
+        end
+      end
+    end
+    
+    context "when match or creating from params" do
+      setup do
+        @existing_company = Factory(:company, :company_number => "00123456")
+      end
+
+      should "return company with given company number" do
+        assert_equal @existing_company, Company.match_or_create(:company_number => "00123456")
+      end
+      
+      should "return company that matches normalised version of company number" do
+        assert_equal @existing_company, Company.match_or_create(:company_number => "123456")
+        assert_equal @existing_company, Company.match_or_create(:company_number => "0123456")
+      end
+      
+      context "and company doesn't exist" do
+        should "create company with given company number" do
+          assert_difference "Company.count", 1 do
+            Company.match_or_create(:company_number => "07654321")
+          end
+          assert Company.find_by_company_number("07654321")
+        end
+        
+        should 'normalize company_number when creating company' do
+          c = Company.match_or_create(:company_number => "7654321")
+          assert_equal "07654321", c.reload.company_number
+        end
+        
+        should 'assign other attributes' do
+          c = Company.match_or_create(:company_number => "7654321", :url => 'http://foo.com', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo')
+          assert_equal 'http://foo.com', c.url
+          assert_equal 'http://en.wikipedia.org/wiki/foo', c.wikipedia_url
+        end
+        
+        should 'not create company number if no company number' do
+          c = Company.match_or_create(:url => 'http://foo.com', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo')
+          assert_nil c.company_number
         end
       end
     end

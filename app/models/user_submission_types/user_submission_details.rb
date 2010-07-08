@@ -16,7 +16,7 @@ class UserSubmissionDetails
   
   def attributes
     attrib_hash = {}
-    attribute_names.each{ |a| attrib_hash[a] = self.send(a)  }
+    attribute_names.each{ |a| attrib_hash[a.to_sym] = self.send(a)  }
     attrib_hash
   end
   

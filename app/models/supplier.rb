@@ -71,7 +71,11 @@ class Supplier < ActiveRecord::Base
   
   def update_supplier_details(details)
     non_nil_attribs = details.attributes.delete_if { |k,v| v.blank? }
-    update_attributes(non_nil_attribs)
+    company = Company.match_or_create(non_nil_attribs)
+    unless company.new_record? # it hasn't successfully saved
+      self.payee = company
+      self.save
+    end
   end
   
   private
