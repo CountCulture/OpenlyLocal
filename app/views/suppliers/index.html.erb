@@ -19,7 +19,7 @@
     <tr>
       <th><%= link_to('Supplier name', params.merge(:order => 'name'), :class => 'sort' ) %></th>
       <th>Supplying to</th>
-      <th class='value'><%= link_to('Total spend', params.merge(:order => 'name'), :class => 'total_spend' ) %></th>
+      <th class='value'><%= link_to('Total spend', params.merge(:order => 'total_spend'), :class => 'total_spend' ) %></th>
       <th class='average value'>Average monthly spend</th>
     </tr>
     <%- @suppliers.each do |supplier| -%>
