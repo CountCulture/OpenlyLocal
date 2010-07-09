@@ -23,7 +23,7 @@ module NameParser
     result_hash
   end
   
-  #strips spaces and converts unicode spaces (Gpricot turns non-breaking spaces into these) to spaces
+  #strips spaces and converts unicode spaces (Hpricot turns non-breaking spaces into these) to spaces
   def strip_all_spaces(text)
     text.gsub(/&nbsp;|\xC2\xA0|\xA0/, ' ').strip
   end

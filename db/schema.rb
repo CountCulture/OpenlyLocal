@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100703223752) do
+ActiveRecord::Schema.define(:version => 20100709075549) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -442,6 +442,23 @@ ActiveRecord::Schema.define(:version => 20100703223752) do
 
   add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"
   add_index "hyperlocal_sites", ["council_id"], :name => "index_hyperlocal_sites_on_council_id"
+
+  create_table "investigations", :force => true do |t|
+    t.column "uid", :string
+    t.column "url", :string
+    t.column "organisation_name", :string
+    t.column "raw_html", :text
+    t.column "standards_body", :string
+    t.column "title", :string
+    t.column "subjects", :string
+    t.column "date_received", :date
+    t.column "date_completed", :date
+    t.column "allegation", :text
+    t.column "result", :text
+    t.column "case_details", :text
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "ldg_services", :force => true do |t|
     t.column "category", :string
