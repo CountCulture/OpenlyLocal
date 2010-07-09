@@ -1,0 +1,32 @@
+<div class="breadcrumbs"><%= link_to "All investigations/reports", investigations_path %></div>
+<h1><%= h @investigation.title %></h1>
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :organisation, @investigation.organisation_name %>
+  <%= attribute_tag :subjects, @investigation.subjects %>
+  <%= attribute_tag :date_received, @investigation.date_received %>
+  <%= attribute_tag :date_completed, @investigation.date_completed %>
+  <%= attribute_tag :report_url, link_to(@investigation.url, @investigation.url, :class => 'external') if @investigation.url? %>
+</dl>
+
+<br class='clear'/>
+<div id="allegation">
+  <h2>Complaint/issue</h2>
+  <p>
+    <%= @investigation.allegation %>
+  </p>
+</div>
+
+<div id="result">
+  <h2>Result/Adjudication</h2>
+  <p>
+    <%= @investigation.result %>
+  </p>
+  
+</div>
+
+<div id="report">
+  <h2>Report</h2>
+  <div class="document_body">
+    <%= @investigation.case_details %>
+  </div>
+</div>
