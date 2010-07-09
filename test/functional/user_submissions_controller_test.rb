@@ -264,6 +264,22 @@ class UserSubmissionsControllerTest < ActionController::TestCase
        should "mark user_submission as approved" do
          assert @user_submission.reload.approved?
        end
+       
+       context "and updating fails" do
+         setup do
+           stub_authentication
+           @user_submission.submission_details.class.any_instance.stubs(:approve).returns(false)
+           put :update, { :id => @user_submission.id,
+                          :approve => "true" }
+         end
+
+         should_redirect_to( "the admin page") { admin_url }
+         should set_the_flash.to /Problem updating/i
+
+         should "keep user_submission as unapproved" do
+           assert !@user_submission.reload.approved?
+         end
+       end
      end
      
    end

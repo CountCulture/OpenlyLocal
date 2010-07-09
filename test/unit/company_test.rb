@@ -4,7 +4,6 @@ class CompanyTest < ActiveSupport::TestCase
   context "The Company class" do
     setup do
       @company = Factory(:company)
-      # @supplier = Factory(:supplier, :payee => @company)
     end
   
     should have_many :supplying_relationships
@@ -61,51 +60,28 @@ class CompanyTest < ActiveSupport::TestCase
         Company.matches_title(raw_title)
       end
     end
-    
-    context "when match or creating from company_number" do
-      setup do
-        @existing_company = Factory(:company, :company_number => "00123456")
-      end
-
-      should "return company with given company number" do
-        assert_equal @existing_company, Company.match_or_create_from_company_number("00123456")
-      end
-      
-      should "return company that matches company after required leading zeros have been added" do
-        assert_equal @existing_company, Company.match_or_create_from_company_number("123456")
-        assert_equal @existing_company, Company.match_or_create_from_company_number("0123456")
-      end
-      
-      context "and company doesn't exist" do
-        should "create company with given company number" do
-          assert_difference "Company.count", 1 do
-            Company.match_or_create_from_company_number("07654321")
-          end
-          assert Company.find_by_company_number("07654321")
-        end
         
-        should 'normalize company_number when creating company' do
-          Company.match_or_create_from_company_number("7654321")
-          assert Company.find_by_company_number("07654321")
-        end
-      end
-    end
-    
-    context "when match or creating from params" do
+    context "when matching or creating from params" do
       setup do
-        @existing_company = Factory(:company, :company_number => "00123456")
+        @existing_company = Factory(:company, :company_number => "00012345")
       end
 
       should "return company with given company number" do
-        assert_equal @existing_company, Company.match_or_create(:company_number => "00123456")
+        assert_equal @existing_company, Company.match_or_create(:company_number => "00012345")
       end
       
       should "return company that matches normalised version of company number" do
-        assert_equal @existing_company, Company.match_or_create(:company_number => "123456")
-        assert_equal @existing_company, Company.match_or_create(:company_number => "0123456")
+        assert_equal @existing_company, Company.match_or_create(:company_number => "12345")
+        assert_equal @existing_company, Company.match_or_create(:company_number => "012345")
+      end
+      
+      should "not add company to delayed_job queue for fetching more details" do
+        Delayed::Job.expects(:enqueue).never
+        Company.match_or_create(:company_number => "0123456")
       end
       
       context "and company doesn't exist" do
+        
         should "create company with given company number" do
           assert_difference "Company.count", 1 do
             Company.match_or_create(:company_number => "07654321")
@@ -128,6 +104,12 @@ class CompanyTest < ActiveSupport::TestCase
           c = Company.match_or_create(:url => 'http://foo.com', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo')
           assert_nil c.company_number
         end
+        
+        should 'add company to delayed_job queue for fetching more details' do
+          Delayed::Job.expects(:enqueue).with(kind_of(Company))
+          Company.match_or_create(:company_number => "07654321")
+        end
+
       end
     end
     
@@ -139,7 +121,7 @@ class CompanyTest < ActiveSupport::TestCase
     end
     
     context "when returning title" do
-
+  
       should "use title attribute by default" do
         @company.update_attribute(:title, 'Foo Incorp')
         assert_equal 'Foo Incorp', @company.title
@@ -154,17 +136,17 @@ class CompanyTest < ActiveSupport::TestCase
       @company.title = "some title-with/stuff"
       assert_equal "#{@company.id}-some-title-with-stuff", @company.to_param
     end
-
+  
     should "skip title when converting to_param if title doesn't exist" do
       assert_equal @company.id.to_s, @company.to_param
     end
-
+  
     context "when saving" do
       should "normalise title" do
         @company.expects(:normalise_title)
         @company.save!
       end
-
+  
       should "save normalised title" do
         @company.title = "Foo & Baz Ltd."
         @company.save!
@@ -182,7 +164,7 @@ class CompanyTest < ActiveSupport::TestCase
         resp_hash = {:title => 'FOOCORP', :status => 'active', :status => 'Active', :incorporation_date => '1990-02-21', :company_type => 'Private Limited Company', :address_in_full => "501 BEAUMONT LEYS LANE\nLEICESTER\nLEICESTERSHIRE\nLE4 2BN" }
         CompanyUtilities::Client.any_instance.stubs(:get_basic_info).returns(resp_hash)
       end
-
+  
       should "fetch info using CompanyUtilities" do
         CompanyUtilities::Client.any_instance.expects(:get_basic_info).with(@company.company_number)
         @company.populate_basic_info
@@ -202,13 +184,18 @@ class CompanyTest < ActiveSupport::TestCase
         assert_equal "501 BEAUMONT LEYS LANE, LEICESTER, LEICESTERSHIRE, LE4 2BN", address.in_full
       end
     end
-
+  
+    should 'alias populate_basic_info as perform' do
+      @company.expects(:populate_basic_info)
+      @company.perform
+    end
+    
     context 'when returning companies_house_url' do
       should "return companies open house url" do
         @company.company_number = '012345'
         assert_equal 'http://companiesopen.org/uk/012345/companies_house', @company.companies_house_url
       end
     end
-
+  
   end
 end

@@ -435,6 +435,7 @@ class SupplierTest < ActiveSupport::TestCase
         should "return true" do
           assert @supplier.update_supplier_details(@new_details)
         end
+        
       end
       
       

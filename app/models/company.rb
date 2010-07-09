@@ -10,13 +10,11 @@ class Company < ActiveRecord::Base
     first(:conditions => {:normalised_title => normalise_title(raw_title)})
   end
   
-  def self.match_or_create_from_company_number(number_string)
-    find_or_create_by_company_number(normalise_company_number(number_string))
-  end
-  
   def self.match_or_create(params={})
     params[:company_number] =  normalise_company_number(params[:company_number])
-    find_or_create_by_company_number(params) #use normalised version of company number
+    company = find_or_create_by_company_number(params) #use normalised version of company number
+    Delayed::Job.enqueue(company) if company.instance_variable_get(:@new_record_before_save)
+    company
   end
   
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising company titles
@@ -31,6 +29,11 @@ class Company < ActiveRecord::Base
   # returns companies_house url via companies open house redirect
   def companies_house_url
     "http://companiesopen.org/uk/#{company_number}/companies_house" if company_number?
+  end
+  
+  # alias populate_basic_info as perform so that this gets run when doing delayed_job on a company
+  def perform
+    populate_basic_info
   end
   
   def populate_basic_info
