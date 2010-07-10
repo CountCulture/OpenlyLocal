@@ -16,11 +16,11 @@ class Document < ActiveRecord::Base
     self[:document_type] || "Document"
   end
   
-  def calculated_precis
-    stripped_text = ActionController::Base.helpers.strip_tags(body).gsub(/[\t\r\n]+ *[\t\r\n]+/,"\n")
-    ActionController::Base.helpers.truncate(stripped_text, :length => 500)
-  end
-  
+  # def calculated_precis
+  #   stripped_text = ActionController::Base.helpers.strip_tags(body).gsub(/[\t\r\n]+ *[\t\r\n]+/,"\n")
+  #   ActionController::Base.helpers.truncate(stripped_text, :length => 500)
+  # end
+  # 
   def title
     self[:title] || "#{document_type} for #{document_owner.extended_title}"
   end
@@ -35,21 +35,22 @@ class Document < ActiveRecord::Base
   
   protected
   def sanitize_body
-    return if raw_body.blank?
-    uncommented_body = raw_body.gsub(/<\!--.*?-->/mi, '').gsub(/<\!\[.*?\]>/mi, '') # remove comments otherwise they are escape by sanitizer and show in browser
-    sanitized_body = ActionController::Base.helpers.sanitize(uncommented_body)
-    base_url = url&&url.sub(/\/[^\/]+$/,'/')
-    doc = Hpricot(sanitized_body)
-    doc.search("a[@href]").each do |link|
-      link[:href].match(/^http:|^mailto:/) ? link : link.set_attribute(:href, "#{base_url}#{link[:href]}")
-      link.set_attribute(:class, 'external')
-    end
-    doc.search('img').remove
-    self.body = doc.to_html
+    self.body = DocumentUtilities.sanitize(raw_body, :base_url => url)
+  #   # return if raw_body.blank?
+  #   # uncommented_body = raw_body.gsub(/<\!--.*?-->/mi, '').gsub(/<\!\[.*?\]>/mi, '') # remove comments otherwise they are escape by sanitizer and show in browser
+  #   # sanitized_body = ActionController::Base.helpers.sanitize(uncommented_body)
+  #   # base_url = url&&url.sub(/\/[^\/]+$/,'/')
+  #   # doc = Hpricot(sanitized_body)
+  #   # doc.search("a[@href]").each do |link|
+  #   #   link[:href].match(/^http:|^mailto:/) ? link : link.set_attribute(:href, "#{base_url}#{link[:href]}")
+  #   #   link.set_attribute(:class, 'external')
+  #   # end
+  #   # doc.search('img').remove
+  #   # self.body = doc.to_html
   end
   
   private
   def update_precis
-    self.precis = calculated_precis
+    self.precis = DocumentUtilities.precis(body)
   end
 end

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class NpiaUtilitiesTest < ActiveSupport::TestCase
+class CompanyUtilitiesTest < ActiveSupport::TestCase
 
   context "A Client instance" do
     setup do

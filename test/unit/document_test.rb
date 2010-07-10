@@ -9,13 +9,14 @@ class DocumentTest < ActiveSupport::TestCase
     @doc_owner = Factory(:meeting, :council => @committee.council, :committee => @committee)
     @document = Factory(:document, :document_owner => @doc_owner)
   end
-  context "The Document class" do
-    
-    should_validate_presence_of :url
-    should_validate_presence_of :document_owner_id
-    should_validate_presence_of :document_owner_type
+  
+  context "The Document class" do  
+    should validate_presence_of :url
+    should validate_presence_of :document_owner_id
+    should validate_presence_of :document_owner_type
     should belong_to :document_owner
-    should_have_db_column :raw_body, :precis
+    should have_db_column :raw_body
+    should have_db_column :precis
     
     should "validate presence of body" do
       # we have to test this explicitly as shoulda macro gives other 
@@ -44,13 +45,13 @@ class DocumentTest < ActiveSupport::TestCase
     context 'when saving' do
       should 'calculate precis' do
         unsaved_doc = Factory.build(:document, :document_owner => @doc_owner)
-        unsaved_doc.expects(:calculated_precis).returns('Hello World')
+        DocumentUtilities.expects(:precis).with(unsaved_doc.raw_body).returns('Hello World')
         unsaved_doc.save!
       end
       
-      should 'save calculated precis' do
+      should 'save precis' do
         unsaved_doc = Factory.build(:document, :document_owner => @doc_owner)
-        unsaved_doc.stubs(:calculated_precis).returns('Hello World')
+        DocumentUtilities.stubs(:precis).returns('Hello World')
         unsaved_doc.save!
         assert_equal 'Hello World', unsaved_doc.reload.precis
       end
@@ -100,66 +101,9 @@ class DocumentTest < ActiveSupport::TestCase
           @document.expects(:sanitize_body)
           @document.save!
         end
+        
       end
 
-      context "when sanitizing body text" do
-        setup do
-          raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a> and a <a href='mailto:foo@test.com'>mailto link</a>. Also <script> something dodgy</script> here and <img src='http://council.gov.uk/image' /> image and some <!--[if !supportLists]-->cruft<!--[endif]--> <![if !supportLists]>here<![endif]>"
-          @document.attributes = {:url => "http://www.council.gov.uk/document/some_page.htm?q=something", :raw_body => raw_text}
-          @document.send(:sanitize_body)
-        end
-
-        should "convert relative urls to absolute ones based on url" do
-          assert_match /with <a href="http:\/\/www\.council\.gov\.uk\/document\/councillor22/, @document.body
-        end
-
-        should "not change urls of absolute links" do
-          assert_match /an <a href=\"http:\/\/external\.com\/dummy\"/, @document.body
-        end
-
-        should "not change urls of mailto links" do
-          assert_match /a <a href=\"mailto:foo@test\.com/, @document.body
-        end
-
-        should "add external class to all links" do
-          assert_match /councillor22\" class=\"external/, @document.body
-          assert_match /dummy\" class=\"external/, @document.body
-        end
-
-        should "remove images" do
-          assert_match /and  image/, @document.body
-        end
-        
-        should "remove comments" do
-          assert_match /some cruft/, @document.body
-          assert_match /cruft here/, @document.body
-        end
-      end
-      
-      context "when returning calculated_precis" do
-        setup do
-          raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a>.\n\r\n\n\n   \r\n\tAlso <script> something dodgy</script> here \r\nand <img src='http://council.gov.uk/image' /> image"
-          @document.attributes = {:url => "http://www.council.gov.uk/document/some_page.htm?q=something", :raw_body => raw_text*20}
-          @document.save!
-        end
-
-        should "remove all tags" do
-          assert_no_match %r(<.+>), @document.calculated_precis
-        end
-        
-        should "not remove text in tags" do
-          assert_match %r(some stylized text with relative link), @document.calculated_precis
-        end
-        
-        should "trim multiple line spaces to single space" do
-          assert_match %r(absolute link.\nAlso), @document.calculated_precis
-        end
-        
-        should "trim to 500 chars in length" do
-          assert_equal 500, @document.calculated_precis.length
-        end
-      end
-      
     end
     
     context "when converting document to_xml" do
@@ -184,57 +128,5 @@ class DocumentTest < ActiveSupport::TestCase
       end
     end
     
-    # context "when setting body" do
-    #   setup do
-    #     @document = Document.new
-    #   end
-    # 
-    #   should "store raw text in raw_body" do
-    #     assert_equal "raw <font='Helvetica'>text</font>", Document.new(:body => "raw <font='Helvetica'>text</font>").raw_body
-    #   end
-    #   
-    #   should "sanitize raw text" do
-    #     @document.expects(:sanitize_body).with("raw <font='Helvetica'>text</font>")
-    #     @document.body = "raw <font='Helvetica'>text</font>"
-    #   end
-    #   
-    #   should "store sanitized text in body" do
-    #     @document.stubs(:sanitize_body).returns("sanitized text")
-    #     @document.body = "raw text"
-    #     assert_equal "sanitized text", @document.body
-    #   end
-    #   
-    #   should "not raise exception when setting body to nil" do
-    #     assert_nothing_raised(Exception) { @document.body = nil }
-    #   end
-    # end
-    
-    # context "when sanitizing body text" do
-    #   setup do
-    #     @raw_text = "some <font='Helvetica'>stylized text</font> with <a href='councillor22'>relative link</a> and an <a href='http://external.com/dummy'>absolute link</a>. Also <script> something dodgy</script> here"
-    #     @document = Document.new(:url => "http://www.council.gov.uk/document/some_page.htm?q=something")
-    #   end
-    #   
-    #   should "convert relative urls to absolute ones based on url" do
-    #     assert_match /with <a href="http:\/\/www\.council\.gov\.uk\/document\/councillor22/, @document.send(:sanitize_body, @raw_text)
-    #   end
-    #   
-    #   should "not change urls of absolute links" do
-    #     assert_match /an <a href=\"http:\/\/external\.com\/dummy\"/, @document.send(:sanitize_body, @raw_text)
-    #   end
-    #   
-    #   should "add external class to all links" do
-    #     assert_match /councillor22\" class=\"external/, @document.send(:sanitize_body, @raw_text)
-    #     assert_match /dummy\" class=\"external/, @document.send(:sanitize_body, @raw_text)
-    #   end
-    #   
-    #   should "remove images" do
-    #     assert_match /with  image/, @document.send(:sanitize_body, "text with <img src='http://council.gov.uk/image' /> image")
-    #   end
-    # end
-    
-    # should "delegate council to document_owner" do
-    #   assert_equal @doc_owner.council, @document.council
-    # end
   end
 end
