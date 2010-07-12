@@ -21,8 +21,8 @@ class MembersControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id
       end
       
-      should_assign_to(:members) { [@member] } # current members
-      should_assign_to(:council) { @council }
+      should assign_to(:members) { [@member] } # current members
+      should assign_to(:council) { @council }
       should respond_with :success
       
       should "show title" do
@@ -48,8 +48,8 @@ class MembersControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :include_ex_members => true
       end
       
-      should_assign_to(:members) { [@member, @ex_member] } # current and ex members
-      should_assign_to(:council) { @council }
+      should assign_to(:members) { [@member, @ex_member] } # current and ex members
+      should assign_to(:council) { @council }
       should respond_with :success
       
       should "show title" do
@@ -71,10 +71,10 @@ class MembersControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :format => "xml"
       end
 
-      should_assign_to(:members) { [@member] } # current members
-      should_assign_to(:council) { @council }
+      should assign_to(:members) { [@member] } # current members
+      should assign_to(:council) { @council }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
 
       should "include members" do
@@ -99,10 +99,10 @@ class MembersControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :format => "json"
       end
 
-      should_assign_to(:members) { [@member] } # current members
-      should_assign_to(:council) { @council }
+      should assign_to(:members) { [@member] } # current members
+      should assign_to(:council) { @council }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
 
       should "include council" do
@@ -127,7 +127,7 @@ class MembersControllerTest < ActionController::TestCase
           get :index
         end
       
-        should_assign_to(:members) { [@member, @ex_member] } # current members
+        should assign_to(:members) { [@member, @ex_member] } # current members
         should respond_with :success
       
         should "show title" do
@@ -195,7 +195,7 @@ class MembersControllerTest < ActionController::TestCase
           end
 
           should respond_with :success
-          should_render_without_layout
+          should_not render_with_layout
           should respond_with_content_type 'application/json'
 
           should "include council" do
@@ -226,10 +226,10 @@ class MembersControllerTest < ActionController::TestCase
          get :show, :id => @member.id
        end
 
-       should_assign_to(:member) { @member }
-       should_assign_to(:council) { @council }
-       should_assign_to :committees
-       should_assign_to(:forthcoming_meetings) { [@forthcoming_meeting] }
+       should assign_to(:member) { @member }
+       should assign_to(:council) { @council }
+       should assign_to :committees
+       should assign_to(:forthcoming_meetings) { [@forthcoming_meeting] }
        should respond_with :success
        should render_template :show
        should respond_with_content_type 'text/html'
@@ -278,9 +278,9 @@ class MembersControllerTest < ActionController::TestCase
          get :show, :id => @member.id, :format => "xml"
        end
 
-       should_assign_to(:member) { @member }
+       should assign_to(:member) { @member }
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'application/xml'
 
        should "include committees" do
@@ -301,9 +301,9 @@ class MembersControllerTest < ActionController::TestCase
          get :show, :id => @member.id, :format => "json"
        end
 
-       should_assign_to(:member) { @member }
+       should assign_to(:member) { @member }
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'application/json'
        should "include committees" do
          assert_match /committees.+committee/, @response.body
@@ -321,9 +321,9 @@ class MembersControllerTest < ActionController::TestCase
          get :show, :id => @member.id, :format => "ics"
        end
 
-       should_assign_to(:member) { @member }
+       should assign_to(:member) { @member }
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'text/calendar'
      end
      
@@ -334,9 +334,9 @@ class MembersControllerTest < ActionController::TestCase
            get :show, :id => @member.id, :format => "rdf"
          end
 
-         should_assign_to(:member) { @member }
+         should assign_to(:member) { @member }
          should respond_with :success
-         should_render_without_layout
+         should_not render_with_layout
          should respond_with_content_type 'application/rdf+xml'
 
          should "show rdf headers" do
@@ -392,9 +392,9 @@ class MembersControllerTest < ActionController::TestCase
            get :show, :id => @member.id, :format => "rdf"
          end
 
-         should_assign_to(:member) { @member }
+         should assign_to(:member) { @member }
          should respond_with :success
-         should_render_without_layout
+         should_not render_with_layout
          should respond_with_content_type 'application/rdf+xml'
 
          should "not show personal info for member without info" do
@@ -430,7 +430,7 @@ class MembersControllerTest < ActionController::TestCase
        get :edit, :id => @member.id
      end
 
-     should_assign_to :member
+     should assign_to :member
      should respond_with :success
      should render_template :edit
      should_not set_the_flash
@@ -463,8 +463,8 @@ class MembersControllerTest < ActionController::TestCase
                                    :full_name => "New name"}}
      end
 
-     should_assign_to :member
-     should_redirect_to( "the show page for member") { member_path(@member.reload) }
+     should assign_to :member
+     should redirect_to( "the show page for member") { member_path(@member.reload) }
      should_set_the_flash_to "Successfully updated member"
 
      should "update member" do
@@ -491,7 +491,7 @@ class MembersControllerTest < ActionController::TestCase
      should "destroy member" do
        assert_nil Member.find_by_id(@member.id)
      end
-     should_redirect_to ( "the council page") { council_url(@council) }
+     should redirect_to ( "the council page") { council_url(@council) }
      should_set_the_flash_to "Successfully destroyed member"
    end
 end
