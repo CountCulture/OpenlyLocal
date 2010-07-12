@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100711153454) do
+ActiveRecord::Schema.define(:version => 20100712112051) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -443,10 +443,16 @@ ActiveRecord::Schema.define(:version => 20100711153454) do
   add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"
   add_index "hyperlocal_sites", ["council_id"], :name => "index_hyperlocal_sites_on_council_id"
 
+  create_table "investigation_subject_connections", :force => true do |t|
+    t.column "investigation_id", :integer
+    t.column "subject_id", :integer
+    t.column "subject_type", :string
+  end
+
   create_table "investigations", :force => true do |t|
     t.column "uid", :string
     t.column "url", :string
-    t.column "organisation_name", :string
+    t.column "related_organisation_name", :string
     t.column "raw_html", :text
     t.column "standards_body", :string
     t.column "title", :string
@@ -459,8 +465,8 @@ ActiveRecord::Schema.define(:version => 20100711153454) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "full_report_url", :string
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
+    t.column "related_organisation_type", :string
+    t.column "related_organisation_id", :integer
   end
 
   create_table "ldg_services", :force => true do |t|

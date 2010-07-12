@@ -19,7 +19,7 @@ class InvestigationsControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :index
       should "list investigations" do
-        assert_select "li a", @investigation.title
+        assert_select "li a", /#{@investigation.title}/
       end
   
       should "show share block" do

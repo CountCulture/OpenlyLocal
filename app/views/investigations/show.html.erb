@@ -1,7 +1,7 @@
 <div class="breadcrumbs"><%= link_to "All investigations/reports", investigations_path %></div>
 <h1><%= h @investigation.title %></h1>
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :organisation, @investigation.organisation_name %>
+  <%= attribute_tag :organisation, @investigation.related_organisation_name %>
   <%= attribute_tag :subjects, @investigation.subjects %>
   <%= attribute_tag :date_received, @investigation.date_received %>
   <%= attribute_tag :date_completed, @investigation.date_completed %>
@@ -30,3 +30,5 @@
     <%= @investigation.case_details %>
   </div>
 </div>
+
+<%= render :partial => '/shared/api_info' %>

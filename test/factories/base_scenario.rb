@@ -336,6 +336,12 @@ end
 
 Factory.define :investigation do |f|
   f.sequence(:standards_body) { |n| "SBE" }
-  f.sequence(:organisation_name) { |n| "Some Council" }
+  f.sequence(:related_organisation_name) { |n| "Some Council" }
+  f.sequence(:title) { |n| "AB#{n}" }
+end
+
+Factory.define :investigation_subject_connection do |f|
+  f.association :investigation
+  f.association :subject, :factory => :police_force
 end
 
