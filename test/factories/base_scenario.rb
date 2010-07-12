@@ -27,6 +27,14 @@ Factory.define :another_parser, :parent => :parser do |f|
   f.scraper_type 'InfoScraper'
 end
 
+Factory.define :csv_parser do |f|
+  # f.item_parser  'foo="bar"'
+  f.attribute_mapping( { :directorate => 'Directorate', :supplier_name => 'Supplier Name', :transaction_id => 'TransactionID', :value_for_foo => 'bar' })
+  f.result_model 'TestScrapedModel'
+  f.scraper_type 'InfoScraper'
+  # f.attribute_mapper({:foo => "\"bar\"", :foo1 => "\"bar1\""})
+end
+
 Factory.define :council do |f|
   f.name 'Anytown'
   f.url 'http://www.anytown.gov.uk'
@@ -327,21 +335,21 @@ end
 
 Factory.define :company do |f|
   # f.sequence(:title) { |n| "Company #{n}" }
-  f.sequence(:company_number) {|n| 100+n }
-end
-
-Factory.define :quango do |f|
-  f.sequence(:title) { |n| "Quango #{n}" }
-end
-
-Factory.define :investigation do |f|
-  f.sequence(:standards_body) { |n| "SBE" }
-  f.sequence(:related_organisation_name) { |n| "Some Council" }
-  f.sequence(:title) { |n| "AB#{n}" }
-end
-
-Factory.define :investigation_subject_connection do |f|
-  f.association :investigation
-  f.association :subject, :factory => :police_force
+	  f.sequence(:company_number) {|n| 100+n }
+	end
+	
+	Factory.define :quango do |f|
+	  f.sequence(:title) { |n| "Quango #{n}" }
+	end
+	
+	Factory.define :investigation do |f|
+	  f.sequence(:standards_body) { |n| "SBE" }
+	  f.sequence(:related_organisation_name) { |n| "Some Council" }
+	  f.sequence(:title) { |n| "AB#{n}" }
+	end
+	
+	Factory.define :investigation_subject_connection do |f|
+	  f.association :investigation
+	  f.association :subject, :factory => :police_force
 end
 

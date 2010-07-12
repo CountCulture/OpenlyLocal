@@ -230,27 +230,36 @@ class UserSubmissionTest < ActiveSupport::TestCase
       end
 
       context "and user_submission_details returns false" do
-
-        should "not mark user_submission as approved" do
+        setup do
           submission_details = @user_submission.submission_details
           submission_details.stubs(:approve).returns(false)
+        end
 
+        should "not mark user_submission as approved" do
           @user_submission.approve
           assert !@user_submission.approved?
+        end
+
+        should "return false" do
+          assert !@user_submission.approve
         end
 
       end
 
       context "and user_submission_details returns true" do
-
-        should "mark user_submission as approved" do
+        setup do
           submission_details = @user_submission.submission_details
           submission_details.stubs(:approve).returns(true)
+        end
 
+        should "mark user_submission as approved" do
           @user_submission.approve
           assert @user_submission.approved?
         end
 
+        should "return true" do
+          assert @user_submission.approve
+        end
       end
     #   context "and member set" do
     #     setup do

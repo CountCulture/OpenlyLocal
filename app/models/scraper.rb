@@ -35,6 +35,15 @@ class Scraper < ActiveRecord::Base
     "#{result_model} #{getting} scraper for #{council.short_name}"
   end
   
+  def parser_attributes=(attribs={})
+    parser_type = attribs[:type] || 'Parser'
+    if parser
+      self.parser.attributes = attribs
+    else
+      self.parser = parser_type.constantize.new(attribs)
+    end
+  end
+  
   def parsing_errors
     parser.errors
   end

@@ -268,12 +268,12 @@ class UserSubmissionsControllerTest < ActionController::TestCase
        context "and updating fails" do
          setup do
            stub_authentication
-           @user_submission.submission_details.class.any_instance.stubs(:approve).returns(false)
+           @user_submission.submission_details.class.any_instance.expects(:approve).returns(false)
            put :update, { :id => @user_submission.id,
                           :approve => "true" }
          end
 
-         should_redirect_to( "the admin page") { admin_url }
+         should_redirect_to( "the edit page for the user submission") { edit_user_submission_url(@user_submission) }
          should set_the_flash.to /Problem updating/i
 
          should "keep user_submission as unapproved" do

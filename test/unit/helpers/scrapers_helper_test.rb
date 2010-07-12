@@ -119,4 +119,48 @@ class ScrapersHelperTest < ActionView::TestCase
     end
   end
      
+  context "existing_scraper_links helper method" do
+    setup do
+      @scraper = Factory(:scraper, :last_scraped => 2.days.ago)
+      @council = @scraper.council
+    end
+
+    should "return array" do
+      assert_kind_of Array, existing_scraper_links(@council)
+    end
+    
+    should "return array of links for council's scrapers" do
+      assert_equal link_for(@scraper), existing_scraper_links(@council).first
+    end
+    
+    should "return links for all existing scrapers" do
+      assert_equal 1, existing_scraper_links(@council).size
+    end
+    
+    # should "return links for all possible scrapers" do
+    #   assert_equal Scraper::SCRAPER_TYPES.size*Parser::ALLOWED_RESULT_CLASSES.size, scraper_links_for_council(@council).size
+    # end
+    # 
+    # should "class as problem if scraper is problematic" do
+    #   @scraper.class.any_instance.stubs(:problematic?).returns(true)
+    #   assert_equal link_for(@scraper, :class => "problematic"), scraper_links_for_council(@council).first
+    # end
+    # 
+    # should "class as stale if scraper is stale" do
+    #   @scraper.class.any_instance.stubs(:stale?).returns(true)
+    #   assert_equal link_for(@scraper, :class => "stale"), scraper_links_for_council(@council).first
+    # end
+    # 
+    # should "class as problem and stale if scraper is problematic and stale" do
+    #   @scraper.class.any_instance.stubs(:stale?).returns(true)
+    #   @scraper.class.any_instance.stubs(:problematic?).returns(true)
+    #   assert_equal link_for(@scraper, :class => "stale problematic"), scraper_links_for_council(@council).first
+    # end
+    # 
+    # should "return links for not yet created scrapers" do
+    #   links = scraper_links_for_council(@council)
+    #   assert links.include?(link_to("Add Committee item scraper for #{@council.name} council", new_scraper_path(:council_id => @council.id, :result_model => "Committee", :type => "ItemScraper"), :class => "new_scraper_link")) 
+    # end
+  end
+     
 end

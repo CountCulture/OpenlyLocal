@@ -15,7 +15,7 @@ class ScraperTest < ActiveSupport::TestCase
     end
     should belong_to :parser
     should belong_to :council
-    should_validate_presence_of :council_id
+    should validate_presence_of :council_id
     # should_accept_nested_attributes_for :parser
     
     should "should_accept_nested_attributes_for parser" do
@@ -99,6 +99,61 @@ class ScraperTest < ActiveSupport::TestCase
     
     should "not be problematic by default" do
       assert !@scraper.problematic?
+    end
+    
+    context "when assigning parser attributes" do
+      setup do
+        @parser_attributes =  { :result_model => "Committee", 
+                                :scraper_type => "InfoScraper",
+                                :item_parser => "new code",
+                                :attribute_parser_object => [{"attrib_name" => "baz", "parsing_code" => "baz1"}] }        
+        @csv_parser_attributes = { :result_model => "Committee", 
+                                   :scraper_type => "InfoScraper",
+                                   :type => 'CsvParser', 
+                                   :attribute_mapping => {:foo => "FooName"} }        
+        @blank_scraper = Factory.build(:scraper, :council => @scraper.council, :parser => nil)
+      end
+      
+      context "in general" do
+        setup do
+          @blank_scraper.parser_attributes = @parser_attributes
+        end
+
+        should 'initialise base parser by default' do
+          assert_kind_of Parser, @blank_scraper.parser
+        end
+
+        should "initialize parser with given attributes" do
+          assert_equal "Committee", @blank_scraper.parser.result_model
+          assert_equal( {:baz => 'baz1'}, @blank_scraper.parser.attribute_parser)
+        end
+      end
+      
+      context "and CsvParser type specified" do
+        setup do
+          @blank_scraper.parser_attributes = @csv_parser_attributes
+        end
+
+        should 'intialize CsvParser' do
+          assert_kind_of CsvParser, @blank_scraper.parser
+        end
+        
+        should 'intialize with given attributes' do
+          assert_equal( {:foo => "FooName"}, @blank_scraper.parser.attribute_mapping)
+        end
+      end
+      
+      context "and parser already exists" do
+        setup do
+          @scraper.parser_attributes = @parser_attributes
+        end
+
+        should 'update existing parser with given attributes' do
+          assert_equal @parser, @scraper.parser
+          assert_equal "new code", @scraper.parser.item_parser
+        end
+      end
+      
     end
     
     context "when returning status" do
@@ -383,67 +438,72 @@ class ScraperTest < ActiveSupport::TestCase
     context "when processing" do
       setup do
         @parser = @scraper.parser
-        Parser.any_instance.stubs(:results).returns([{ :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
         @scraper.stubs(:_data).returns("something")
       end
-      
-      should "get data from url" do
-        @scraper.url = 'http://www.anytown.gov.uk/members/bob'
-        @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob")
-        @scraper.process
-      end
-      
-      should "pass data to associated parser" do
-        @parser.expects(:process).with("something", anything).returns(stub_everything)
-        @scraper.process
-      end
 
-      should "pass self to associated parser" do
-        @parser.expects(:process).with(anything, @scraper).returns(stub_everything)
-        @scraper.process
-      end
+      context "in general" do
+        setup do
+          Parser.any_instance.stubs(:results).returns([{ :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
+        end
 
-      should "return self" do
-        assert_equal @scraper, @scraper.process
-      end
-      
-      should "build new or update existing instance of result_class with parser results and scraper council" do
-        dummy_scraped_obj = TestScrapedModel.new
-        
-        TestScrapedModel.expects(:build_or_update).with([{:title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id }).returns([dummy_scraped_obj])
-        dummy_scraped_obj.expects(:save).never
-        @scraper.process
-      end
-      
-      should "validate instances of result_class" do
-        TestScrapedModel.any_instance.expects(:valid?)
-        @scraper.process
-      end
-      
-      should "store instances of scraped_object_result in results" do
-        dummy_scraped_obj = TestScrapedModel.new(:title => "Fred Flintstone")
-        TestScrapedModel.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_scraped_obj)])
-        results = @scraper.process.results
-        assert_kind_of ScrapedObjectResult, results.first
-        assert_match /new/, results.first.status
-        assert_equal "TestScrapedModel", results.first.base_object_klass
-        assert_equal "Fred Flintstone", results.first.title
-      end
-      
-      should "not update last_scraped attribute" do
-        @scraper.process
-        assert_nil @scraper.reload.last_scraped
-      end
-      
-      should "not mark scraper as problematic" do
-        @scraper.process
-        assert !@scraper.reload.problematic?
-      end
-      
-      should "clear set problematic flag if no problems" do
-        @scraper.update_attribute(:problematic, true)
-        @scraper.process
-        assert !@scraper.reload.problematic?
+        should "get data from url" do
+          @scraper.url = 'http://www.anytown.gov.uk/members/bob'
+          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob")
+          @scraper.process
+        end
+
+        should "pass data to associated parser" do
+          @parser.expects(:process).with("something", anything).returns(stub_everything)
+          @scraper.process
+        end
+
+        should "pass self to associated parser" do
+          @parser.expects(:process).with(anything, @scraper).returns(stub_everything)
+          @scraper.process
+        end
+
+        should "return self" do
+          assert_equal @scraper, @scraper.process
+        end
+
+        should "build new or update existing instance of result_class with parser results and scraper council" do
+          dummy_scraped_obj = TestScrapedModel.new
+
+          TestScrapedModel.expects(:build_or_update).with([{:title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id }).returns([dummy_scraped_obj])
+          dummy_scraped_obj.expects(:save).never
+          @scraper.process
+        end
+
+        should "validate instances of result_class" do
+          TestScrapedModel.any_instance.expects(:valid?)
+          @scraper.process
+        end
+
+        should "store instances of scraped_object_result in results" do
+          dummy_scraped_obj = TestScrapedModel.new(:title => "Fred Flintstone")
+          TestScrapedModel.stubs(:build_or_update).returns([ScrapedObjectResult.new(dummy_scraped_obj)])
+          results = @scraper.process.results
+          assert_kind_of ScrapedObjectResult, results.first
+          assert_match /new/, results.first.status
+          assert_equal "TestScrapedModel", results.first.base_object_klass
+          assert_equal "Fred Flintstone", results.first.title
+        end
+
+        should "not update last_scraped attribute" do
+          @scraper.process
+          assert_nil @scraper.reload.last_scraped
+        end
+
+        should "not mark scraper as problematic" do
+          @scraper.process
+          assert !@scraper.reload.problematic?
+        end
+
+        should "clear set problematic flag if no problems" do
+          @scraper.update_attribute(:problematic, true)
+          @scraper.process
+          assert !@scraper.reload.problematic?
+        end
       end
       
       context "and problem parsing" do
@@ -453,6 +513,7 @@ class ScraperTest < ActiveSupport::TestCase
 
         should "not build or update instance of result_class if no results" do
           TestScrapedModel.expects(:build_or_update).never
+          @scraper.process
         end
         
         should "mark scraper as problematic" do
@@ -494,6 +555,9 @@ class ScraperTest < ActiveSupport::TestCase
       end
 
       context "and saving results" do
+        setup do
+          Parser.any_instance.stubs(:results).returns([{ :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
+        end
 
         should "return self" do
           assert_equal @scraper, @scraper.process(:save_results => true)
@@ -544,6 +608,60 @@ class ScraperTest < ActiveSupport::TestCase
 
     end
     
+    context "when processing with csv_parser" do
+      setup do
+        @csv_parser = Factory(:csv_parser)
+        @scraper.update_attribute(:parser, @csv_parser)
+        Parser.any_instance.stubs(:results).returns([{ :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }] )
+        @scraper.stubs(:_data).returns("something")
+      end
+      
+      should "get data from url" do
+        @scraper.url = 'http://www.anytown.gov.uk/members/bob'
+        @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob")
+        @scraper.process
+      end
+      
+      should "pass data to associated parser" do
+        @csv_parser.expects(:process).with("something", anything).returns(stub_everything)
+        @scraper.process
+      end
+
+      should "pass self to associated parser" do
+        @csv_parser.expects(:process).with(anything, @scraper).returns(stub_everything)
+        @scraper.process
+      end
+
+      should "return self" do
+        assert_equal @scraper, @scraper.process
+      end
+      
+      context "and problem parsing" do
+        setup do
+          FasterCSV.stubs(:new).raises
+          # @csv_parser.update_attribute(:attribute_mapping, {:fo})
+        end
+
+        should "not build or update instance of result_class if no results" do
+          TestScrapedModel.expects(:build_or_update).never
+          @scraper.process
+        end
+        
+        should "mark scraper as problematic" do
+          @scraper.process
+          assert @scraper.reload.problematic?
+        end
+        
+        should "not clear set problematic flag " do
+          @scraper.update_attribute(:problematic, true)
+          @scraper.process
+          assert @scraper.reload.problematic?
+        end
+
+      end
+      
+    end
+
     context "when running perform" do
       setup do
         @scraper.stubs(:process).returns(@scraper)

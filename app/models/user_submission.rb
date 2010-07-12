@@ -17,13 +17,14 @@ class UserSubmission < ActiveRecord::Base
   # end
 
   def validate
-    # errors.add_to_base("Member info is missing") if member_name.blank? && member_id.blank?
     errors.add_to_base("Missing required info") unless submission_details&&submission_details.valid?
   end
   
   # Get submission_details object to run approve method, and then update approved flag with result
   def approve
-    update_attribute(:approved, submission_details.approve(self))
+    res = submission_details.approve(self)
+    update_attribute(:approved, res)
+    res
   end
   
   def submission_details=(attribs)

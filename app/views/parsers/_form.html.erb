@@ -27,7 +27,8 @@
   </p>
   <div id="parser_attribute_parser">
     <h3>Attribute parser <em>(base item is 'item')</em></h3>
-    <%= render :partial => 'attrib', :collection => @parser.attribute_parser_object %>
+		<%- partial_attribs = @parser.kind_of?(CsvParser) ? { :partial => 'csv_parser_attrib', :collection => @parser.attribute_mapping_object } : { :partial => 'attrib', :collection => @parser.attribute_parser_object } -%>
+    <%= render partial_attribs %>
   </div>
   <br class="clear-left">
   <p>

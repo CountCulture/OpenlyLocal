@@ -28,12 +28,18 @@ class ScrapersController < ApplicationController
     raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type]) && params[:council_id]
     @council = Council.find(params[:council_id])
     @scraper = params[:type].constantize.new(:council_id => @council.id)
+    parser_type = params.delete(:parser_type) || 'Parser'
     parser = @council.portal_system_id ? Parser.find_by_portal_system_id_and_result_model_and_scraper_type(@council.portal_system_id, params[:result_model], params[:type]) : nil
-    parser ? (@scraper.parser = parser) : @scraper.build_parser(:result_model => params[:result_model], :scraper_type => params[:type])
+    @scraper.parser = parser ? parser : 
+                               parser_type.constantize.new( :result_model => params[:result_model], 
+                                                            :scraper_type => params[:type])
   end
   
   def create
     raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type])
+    # parser_type = params[:scraper].delete(:parser_type) || 'Parser'
+    # parser = parser_type.constantize.new(params.delete(:parser_attributes))
+    # @scraper = params[:type].constantize.new(params[:scraper].merge( :parser => parser))
     @scraper = params[:type].constantize.new(params[:scraper])
     @scraper.save!
     flash[:notice] = "Successfully created scraper"
@@ -46,7 +52,7 @@ class ScrapersController < ApplicationController
   
   def update
     @scraper = Scraper.find(params[:id])
-    @scraper.update_attributes!(params[:scraper])
+    @scraper.update_attributes(params[:scraper])
     flash[:notice] = "Successfully updated scraper"
     redirect_to scraper_url(@scraper)
   end

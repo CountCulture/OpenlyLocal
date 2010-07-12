@@ -60,7 +60,9 @@
         </p>
         <div id="parser_attribute_parser">
           <h3>Attribute parser</h3>
-          <%= render :partial => 'attrib', :collection => (@scraper.portal_parser? ? [Parser::AttribObject.new] : @scraper.parser.attribute_parser_object) %>
+					<%- partial_attribs = @scraper.parser.kind_of?(CsvParser) ? { :partial => 'csv_parser_attrib', :collection => @scraper.parser.attribute_mapping_object } : { :partial => 'attrib', :collection => @scraper.parser.attribute_parser_object } -%>
+			    <%= render partial_attribs %>
+          <%#= render :partial => 'attrib', :collection => (@scraper.portal_parser? ? [Parser::AttribObject.new] : @scraper.parser.attribute_mapping_object) %>
         </div>
         <br class="clear-left">
         <p>
@@ -76,5 +78,6 @@
   <%= f.submit "Submit" %>
 <% end -%>
 <div style="display:none">
-  <%= render :partial => 'attrib', :object => Parser::AttribObject.new %>
+  <%= render :partial => 'attrib', :object => Parser::AttribObject.new unless @scraper.parser.kind_of?(CsvParser) %>
+  <%= render :partial => 'csv_parser_attrib', :object => CsvParser::MappingObject.new if @scraper.parser.kind_of?(CsvParser)%>
 </div>

@@ -125,7 +125,7 @@ class ParserTest < Test::Unit::TestCase
         assert_equal "bar", @parser.send(:eval_parsing_code, code_to_parse("foo='bar'"))
       end
       
-      should "raise execption if problem evaluating code" do
+      should "raise excaption if problem evaluating code" do
         assert_raise(NameError) { @parser.send(:eval_parsing_code, code_to_parse("foo")) }
       end
       

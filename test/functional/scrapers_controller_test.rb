@@ -24,8 +24,8 @@ class ScrapersControllerTest < ActionController::TestCase
       get :index
     end
   
-    should_assign_to( :councils_with_scrapers) { [@council2, @council1 ] }
-    should_assign_to( :councils_without_scrapers) { [@council3] }
+    should assign_to( :councils_with_scrapers) { [@council2, @council1 ] }
+    should assign_to( :councils_without_scrapers) { [@council3] }
     should respond_with :success
     should render_template :index
     should_not set_the_flash
@@ -86,7 +86,7 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id
     end
   
-    should_assign_to :scraper
+    should assign_to :scraper
     should respond_with :success
     should render_template :show
     
@@ -114,6 +114,24 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   end
   
+  context "on GET to :show with CSV parser" do
+    setup do
+      @csv_parser = Factory(:csv_parser)
+      @scraper = Factory(:scraper, :parser => @csv_parser)
+      stub_authentication
+      get :show, :id => @scraper.id
+    end
+  
+    should assign_to :scraper
+    should respond_with :success
+    should render_template :show
+    
+    should "show details of parser" do
+      assert_select "title", /#{@scraper.title}/
+    end
+    
+  end
+  
   context "on GET to :show with :dry_run" do
     setup do
       @scraper = Factory(:scraper)
@@ -139,7 +157,8 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id, :dry_run => true
     end
   
-    should_assign_to :scraper, :results
+    should assign_to :scraper
+    should assign_to :results
     should respond_with :success
     
     should "show summary of successful results" do
@@ -167,7 +186,7 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id, :dry_run => true
     end
     
-    should_assign_to :scraper
+    should assign_to :scraper
     should respond_with :success
     
     should "show summary of problems" do
@@ -187,7 +206,8 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id, :dry_run => true
     end
     
-    should_assign_to :scraper, :results
+    should assign_to :scraper
+    should assign_to :results
     should respond_with :success
     
     should "show summary of problems" do
@@ -237,7 +257,9 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id, :process => "immediately"
     end
   
-    should_assign_to :scraper, :results, :results_summary
+    should assign_to :scraper
+    should assign_to :results
+    should assign_to :results_summary
     should respond_with :success
     should_change("The number of members", :by => 1) { Member.count }
     
@@ -271,7 +293,8 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id, :process => "immediately"
     end
     
-    should_assign_to :scraper, :results
+    should assign_to :scraper
+    should assign_to :results
     should_change("The number of members", :by => 1) { Member.count }# => Not two
     should respond_with :success
     should "show summary of problems" do
@@ -330,7 +353,7 @@ class ScrapersControllerTest < ActionController::TestCase
         get :new, :type  => "InfoScraper", :council_id => @council.id
       end
   
-      should_assign_to :scraper
+      should assign_to :scraper
       should respond_with :success
       should render_template :new
       should_not set_the_flash
@@ -400,13 +423,40 @@ class ScrapersControllerTest < ActionController::TestCase
       end
     end
     
+    context "for basic scraper with given result model and parser_type" do
+      setup do
+        stub_authentication
+        get :new, :type  => "InfoScraper", :council_id => @council.id, :result_model => "Committee", :parser_type => 'CsvParser'
+      end
+  
+      should "build csv_parser from params" do
+        assert assigns(:scraper).parser.new_record?
+        assert_kind_of CsvParser, assigns(:scraper).parser
+        assert_equal "Committee", assigns(:scraper).result_model
+        assert_equal "InfoScraper", assigns(:scraper).parser.scraper_type
+      end
+  
+      should "show result_model select box in form" do
+        assert_select "select#scraper_parser_attributes_result_model" do
+          assert_select "option[value='Committee'][selected='selected']"
+        end
+      end
+      
+      should "show nested form for csv_parser" do
+        assert_select "textarea#scraper_parser_attributes_item_parser"
+        assert_select "input#scraper_parser_attributes_attribute_mapping_object__attrib_name"
+        assert_select "input#scraper_parser_attributes_attribute_mapping_object__column_name"
+      end
+  
+    end
+    
     context "for basic item_scraper" do
       setup do
         stub_authentication
         get :new, :type  => "ItemScraper", :council_id => @council.id
       end
   
-      should_assign_to :scraper
+      should assign_to :scraper
       should respond_with :success
       should render_template :new
       should_not set_the_flash
@@ -431,7 +481,7 @@ class ScrapersControllerTest < ActionController::TestCase
         get :new, :type  => "ItemScraper", :result_model => @parser.result_model, :council_id => @council.id
       end
     
-      should_assign_to :scraper 
+      should assign_to :scraper 
       should respond_with :success
       should render_template :new
       should_not set_the_flash
@@ -471,7 +521,7 @@ class ScrapersControllerTest < ActionController::TestCase
         get :new, :type  => "ItemScraper", :result_model => @parser.result_model, :council_id => @council.id, :dedicated_parser => true
       end
     
-      should_assign_to :scraper 
+      should assign_to :scraper 
       should respond_with :success
       should render_template :new
       should_not set_the_flash
@@ -507,7 +557,7 @@ class ScrapersControllerTest < ActionController::TestCase
         get :new, :type  => "ItemScraper", :result_model => "Meeting", :council_id => @council.id
       end
     
-      should_assign_to :scraper 
+      should assign_to :scraper 
       should respond_with :success
       should render_template :new
       should_not set_the_flash
@@ -583,9 +633,9 @@ class ScrapersControllerTest < ActionController::TestCase
         end
       
         should_change('The number of scrapers', :by => 1) { Scraper.count }
-        should_assign_to :scraper
-        should_redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
-        should_set_the_flash_to "Successfully created scraper"
+        should assign_to :scraper
+        should redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
+        should set_the_flash.to "Successfully created scraper"
       
         should "save as given scraper type" do
           assert_kind_of InfoScraper, assigns(:scraper)
@@ -606,6 +656,48 @@ class ScrapersControllerTest < ActionController::TestCase
         end
       end
       
+      context "and new csv_parser" do
+        setup do
+          @csv_scraper_params = { :council_id => @council.id, 
+                                  :url => "http://anytown.com/committees", 
+                                  :parser_attributes => { :result_model => "Committee", 
+                                                          :scraper_type => "InfoScraper",
+                                                          :type => 'CsvParser', 
+                                                          :item_parser => "some code",
+                                                          :description => "new parser", 
+                                                          :attribute_mapping => {:foo => "FooName"} }}
+          stub_authentication
+          post :create, { :type => "InfoScraper", :scraper => @csv_scraper_params }
+        end
+      
+        should_change('The number of scrapers', :by => 1) { Scraper.count }
+        should assign_to :scraper
+        should redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
+        should set_the_flash.to "Successfully created scraper"
+      
+        should "save as given scraper type" do
+          assert_kind_of InfoScraper, assigns(:scraper)
+        end
+      
+        should_change('The number of parsers', :by => 1) { Parser.count }
+      
+        should "save parser description" do
+          assert_equal "new parser", assigns(:scraper).parser.description
+        end
+      
+        should "save parser item_parser" do
+          assert_equal "some code", assigns(:scraper).parser.item_parser
+        end
+      
+        should "save parser as csv_parser" do
+          assert_kind_of CsvParser, assigns(:scraper).parser
+        end
+      
+        should "save parser attribute_parser" do
+          assert_equal({"foo" => "FooName"}, assigns(:scraper).parser.attribute_mapping)
+        end
+      end
+      
       context "and existing parser" do
         setup do
           stub_authentication
@@ -613,9 +705,9 @@ class ScrapersControllerTest < ActionController::TestCase
         end
       
         should_change('The number of scrapers', :by => 1) { Scraper.count }
-        should_assign_to :scraper
-        should_redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
-        should_set_the_flash_to "Successfully created scraper"
+        should assign_to :scraper
+        should redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
+        should set_the_flash.to "Successfully created scraper"
       
         should "save as given scraper type" do
           assert_kind_of InfoScraper, assigns(:scraper)
@@ -637,9 +729,9 @@ class ScrapersControllerTest < ActionController::TestCase
       
         should_change('The number of scrapers', :by => 1) { Scraper.count }
         should_change('The number of parsers', :by => 1) { Parser.count }
-        should_assign_to :scraper
-        should_redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
-        should_set_the_flash_to "Successfully created scraper"
+        should assign_to :scraper
+        should redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
+        should set_the_flash.to "Successfully created scraper"
       
         should "save parser description from new details" do
           assert_equal "new parser", assigns(:scraper).parser.description
@@ -667,7 +759,7 @@ class ScrapersControllerTest < ActionController::TestCase
       get :edit, :id => @scraper.id
     end
     
-    should_assign_to :scraper
+    should assign_to :scraper
     should respond_with :success
     should render_template :edit
     should_not set_the_flash
@@ -691,7 +783,7 @@ class ScrapersControllerTest < ActionController::TestCase
       get :edit, :id => @scraper.id
     end
     
-    should_assign_to :scraper
+    should assign_to :scraper
     should respond_with :success
     should render_template :edit
     
@@ -724,9 +816,9 @@ class ScrapersControllerTest < ActionController::TestCase
                                    :parser_attributes => { :id => @scraper.parser.id, :description => "new parsing description", :item_parser => "some code" }}}
     end
   
-    should_assign_to :scraper
-    should_redirect_to( "the show page for scraper") { scraper_path(@scraper) }
-    should_set_the_flash_to "Successfully updated scraper"
+    should assign_to :scraper
+    should redirect_to( "the show page for scraper") { scraper_path(@scraper) }
+    should set_the_flash.to "Successfully updated scraper"
     
     should "update scraper" do
       assert_equal "http://anytown.com/new_committees", @scraper.reload.url
@@ -758,8 +850,8 @@ class ScrapersControllerTest < ActionController::TestCase
     should "destroy scraper" do
       assert_nil Scraper.find_by_id(@scraper.id)
     end
-    should_redirect_to ( "the scrapers page") { scrapers_url(:anchor => "council_#{@scraper.council_id}") }
-    should_set_the_flash_to "Successfully destroyed scraper"
+    should redirect_to( "the scrapers page") { scrapers_url(:anchor => "council_#{@scraper.council_id}") }
+    should set_the_flash.to "Successfully destroyed scraper"
   end
   
 end

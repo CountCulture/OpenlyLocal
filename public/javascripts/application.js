@@ -33,6 +33,21 @@ $(document).ready( function() {
 				event.preventDefault();					
 		});
 
+		$('a.add_new_scraper').click(function(event){
+			var resultModels = ['Committee', 'Member', 'Meeting', 'Ward'];
+			var scraperList = '';
+			var cDiv = $(this).parents('div.council')[0];
+			var cId = cDiv.id.replace('council_','');
+			for (var i=0; i < resultModels.length; i++) {
+				scraperList += '<li><a href="/scrapers/new?type=ItemScraper&result_model=' + resultModels[i]+ '&council_id='+ cId + '">Add ' + resultModels[i] + ' ItemScraper for this council</a></li>';
+				scraperList += '<li><a href="/scrapers/new?type=InfoScraper&result_model=' + resultModels[i]+ '&council_id='+ cId + '">Add ' + resultModels[i] + ' InfoScraper for this council</a></li>';
+			};
+			scraperList += '<li><a href="/scrapers/new?type=ItemScraper&parser_type=CsvParser&council_id='+ cId + '">Add CsvParser ItemScraper for this council</a></li>';
+			scraperList += '<li><a href="/scrapers/new?type=IfoScraper&parser_type=CsvParser&council_id='+ cId + '">Add CsvParser InfoScraper for this council</a></li>';
+			$(cDiv).find('ul').append(scraperList);
+		  event.preventDefault();					
+		});
+		
 		$('a.delete_parent_div').live("click", function(event){
 			  $(this).parents('div:first').remove();
 				event.preventDefault();					

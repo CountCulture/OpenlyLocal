@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100712112051) do
+ActiveRecord::Schema.define(:version => 20100712132051) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -617,6 +617,8 @@ ActiveRecord::Schema.define(:version => 20100712112051) do
     t.column "related_model", :string
     t.column "scraper_type", :string
     t.column "path", :string
+    t.column "type", :string
+    t.column "attribute_mapping", :text
   end
 
   add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"

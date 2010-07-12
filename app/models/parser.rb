@@ -1,7 +1,7 @@
 # attributes item_parser, title, attribute_parser
 
 class Parser < ActiveRecord::Base
-  ALLOWED_RESULT_CLASSES = %w(Member Committee Meeting Ward TestScrapedModel)
+  ALLOWED_RESULT_CLASSES = %w(Member Committee Meeting Ward TestScrapedModel FinancialTransaction)
   AttribObject = Struct.new(:attrib_name, :parsing_code, :to_param)
   validates_presence_of :result_model
   validates_presence_of :scraper_type
@@ -18,6 +18,7 @@ class Parser < ActiveRecord::Base
   end
   
   def attribute_parser_object=(params)
+    # return if params.blank?
     result_hash = {}
     params.each do |a|
       result_hash[a["attrib_name"].to_sym] = a["parsing_code"]
@@ -87,4 +88,9 @@ class Parser < ActiveRecord::Base
     thread.value # wait for the thread to finish and return value
   end
   
+  private
+  # Override defaults to allow type to be set via forms
+  # def attributes_protected_by_default
+  #   super - [self.class.inheritance_column]
+  # end
 end

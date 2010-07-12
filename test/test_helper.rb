@@ -50,6 +50,10 @@ class ActiveSupport::TestCase
     IO.read(File.join([RAILS_ROOT + "/test/fixtures/dummy_responses/#{response_name}.xml"]))
   end
 
+  def dummy_csv_data(response_name)
+    IO.read(File.join([RAILS_ROOT + "/test/fixtures/dummy_responses/#{response_name}.csv"]))
+  end
+
   # These two methods allow you to use assert_select on an xml document without getting errors all over the place. Taken from http://weblog.jamisbuck.org/2007/1/4/assert_xml_select
   def xml_document
     @xml_document ||= HTML::Document.new(@response.body, false, true)

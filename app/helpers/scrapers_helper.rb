@@ -39,4 +39,8 @@ module ScrapersHelper
     existing_scraper_links + new_scraper_links
   end
   
+  def existing_scraper_links(council)
+    council.scrapers.collect{ |s| link_for(s, :class => s.status) }
+  end
+  
 end
