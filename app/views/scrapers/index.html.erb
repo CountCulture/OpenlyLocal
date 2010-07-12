@@ -5,7 +5,7 @@
     <h3>Councils without scrapers</h3>
     <%- for council in @councils_without_scrapers -%>
       <%- div_for council do -%>
-        <h4><%= link_for council, :name => dom_id(council) %></h4>
+        <h4><%= basic_link_for council, :name => dom_id(council) %></h4>
         <p>
           <%= "<strong>Portal System</strong> #{link_for(council.portal_system)}<br />" if council.portal_system %>
           <%= council_page_for council %> :: 
@@ -19,7 +19,7 @@
   <div id="with_scrapers">
     <%- for council in @councils_with_scrapers -%>
       <%- div_for council do -%>
-        <h3><%= link_for council, :name => dom_id(council) %> <em><%= council_page_for council %> &nbsp;&nbsp;<%= link_to "edit", edit_council_path(council) %></em></h3>
+        <h3><%= basic_link_for council, :name => dom_id(council) %> <em><%= council_page_for council %> &nbsp;&nbsp;<%= link_to "edit", edit_council_path(council) %></em></h3>
         <p> 
 					<%= link_to "Add scrapers", "#", :class => "add_new_scraper" %>
 					<%= ":: <strong>Portal System</strong> #{link_for(council.portal_system)}"if council.portal_system %>
