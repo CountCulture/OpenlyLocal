@@ -41,28 +41,34 @@ class FeedEntriesControllerTest < ActionController::TestCase
         assert_select "#api_info"
       end
       
-      should 'show title' do
+      should 'show appropriate title' do
         assert_select "title", /news stories/i
+        assert_select "title", /hyperlocal sites/i
       end
     end
         
     context "with xml request" do
       setup do
-        get :index, :format => "xml"
+        get :index, :format => "xml", :restrict_to => 'hyperlocal_sites'
       end
 
-      should_assign_to(:feed_entries) { FeedEntry.find(:all) }
+      should_assign_to(:feed_entries)
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
+      
+      should "include feed_entries" do
+        assert_select "feed-entries>feed-entry>id"
+      end
+
     end
     
     context "with json requested" do
       setup do
-        get :index, :format => "json"
+        get :index, :format => "json", :restrict_to => 'hyperlocal_sites'
       end
   
-      should_assign_to(:feed_entries) { FeedEntry.find(:all) }
+      should_assign_to(:feed_entries)
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -70,12 +76,12 @@ class FeedEntriesControllerTest < ActionController::TestCase
     
     context 'when enough results' do
       setup do
-        30.times { Factory(:feed_entry) }
+        30.times { Factory(:feed_entry, :feed_owner => @hyperlocal_site) }
       end
 
       context 'in general' do
         setup do
-          get :index
+          get :index, :restrict_to => 'hyperlocal_sites'
         end
 
         should 'show pagination links' do
@@ -89,21 +95,13 @@ class FeedEntriesControllerTest < ActionController::TestCase
 
       context "with xml requested" do
         setup do
-          get :index, :format => "xml"
+          get :index, :format => "xml", :restrict_to => 'hyperlocal_sites'
         end
 
         should assign_to(:feed_entries)
         should respond_with :success
         should_not render_with_layout
         should respond_with_content_type 'application/xml'
-
-        should "include feed_entries" do
-          assert_select "feed-entries>feed-entry>id"
-        end
-
-        # should_eventually "include organisation" do
-        #   assert_select "suppliers>supplier>organisation>id"
-        # end
 
         should 'include pagination info' do
           assert_select "feed-entries>total-entries"
@@ -112,7 +110,7 @@ class FeedEntriesControllerTest < ActionController::TestCase
 
       context "with json requested" do
         setup do
-          get :index, :format => "json"
+          get :index, :format => "json", :restrict_to => 'hyperlocal_sites'
         end
 
         should assign_to(:feed_entries)

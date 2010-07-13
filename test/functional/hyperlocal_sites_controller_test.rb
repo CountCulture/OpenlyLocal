@@ -276,7 +276,6 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       should "generate custom search info" do
         assert_xml_select "Annotations>Annotation", 2 do
           assert_select "Annotation[about='#{@hyperlocal_site.url}/*']"
-          puts css_select("Label")
           assert_select "Label[name='openlylocal_cse_hyperlocal_100spearstsanfranciscoca']"
         end
       end
@@ -462,7 +461,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
        should_change("The number of Hyperlocal Sites", :by => 1) {HyperlocalSite.count}
        should assign_to :hyperlocal_site
        should_redirect_to( "the hyperlocal_sites index page") { hyperlocal_sites_url }
-       should set_the_flash /Successfully submitted/i
+       should set_the_flash.to(/Successfully submitted/i)
         
        should "set approved flag to false by default" do
          assert !HyperlocalSite.find_by_title(@attributes[:title]).approved?
@@ -548,7 +547,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
 
       should assign_to :hyperlocal_site
       should_redirect_to( "the show page for hyperlocal_site") { hyperlocal_site_url(@hyperlocal_site.reload) }
-      should set_the_flash /Successfully updated/
+      should set_the_flash.to( /Successfully updated/)
 
       should "update hyperlocal_site" do
         assert_equal "New title", @hyperlocal_site.reload.title
@@ -601,7 +600,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       assert_nil HyperlocalSite.find_by_id(@hyperlocal_site.id)
     end
     should_redirect_to ( "the admin page") { admin_url }
-    should set_the_flash /Successfully destroyed/
+    should set_the_flash.to( /Successfully destroyed/)
   end
     
 end

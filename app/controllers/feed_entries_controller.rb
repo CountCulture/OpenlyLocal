@@ -2,7 +2,7 @@ class FeedEntriesController < ApplicationController
   
   def index
     @feed_entries = FeedEntry.restrict_to(params[:restrict_to]).paginate(:page => params[:page])
-    @title = 'Latest hyperlocal news stories'
+    @title = "Latest news stories from #{params[:restrict_to].humanize}"
     @title += " :: Page #{(params[:page]||1).to_i}"
     respond_to do |format|
       format.html
