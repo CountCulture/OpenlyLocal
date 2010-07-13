@@ -6,22 +6,57 @@ class FeedEntryTest < ActiveSupport::TestCase
   context "The FeedEntry class" do
     setup do
       @feed_entry = Factory(:feed_entry)
+      @hyperlocal_site = Factory(:hyperlocal_site)
+      @council = Factory(:council)
+      @hyperlocal_feed_entry = Factory(:feed_entry, :feed_owner => @hyperlocal_site)
+      @council_feed_entry = Factory(:feed_entry, :feed_owner => @council)
     end
     
-    should_validate_presence_of :title
-    should_validate_presence_of :guid
-    should_validate_presence_of :url
-    should_have_db_columns :lat, :lng
+    should validate_presence_of :title
+    should validate_presence_of :guid
+    should validate_presence_of :url
+    should have_db_column :lat
+    should have_db_column :lng
     
     should "belong to polymorphic feed owner" do
-      council = Factory(:council)
-      assert_equal council, Factory(:feed_entry, :feed_owner => council).reload.feed_owner
+      assert_equal @council, @council_feed_entry.reload.feed_owner
     end
     
     should "acts as taggable" do
       assert FeedEntry.respond_to?(:tagged_with)
     end
     
+    context 'restict_to named scope' do
+      should 'not restrict if nil passed' do
+        entries = FeedEntry.restrict_to(nil)
+        assert entries.include?(@feed_entry)
+        assert entries.include?(@hyperlocal_feed_entry)
+        assert entries.include?(@council_feed_entry)
+      end
+      
+      should "restrict to hyperlocal_sites if 'hyperlocal_sites' passed" do
+        entries = FeedEntry.restrict_to('hyperlocal_sites')
+        assert !entries.include?(@feed_entry)
+        assert entries.include?(@hyperlocal_feed_entry)
+        assert !entries.include?(@council_feed_entry)
+      end
+      
+      should "restrict to councils if 'councils' passed" do
+        entries = FeedEntry.restrict_to('councils')
+        assert !entries.include?(@feed_entry)
+        assert !entries.include?(@hyperlocal_feed_entry)
+        assert entries.include?(@council_feed_entry)
+      end
+            
+    end
+    
+    context "when returning entries for blog" do
+      
+      should "return entries with no feed_owner" do
+        assert_equal [@feed_entry], FeedEntry.for_blog
+      end
+    end
+
     context 'when assigning point' do
       should 'convert to lat long' do
         @feed_entry.point = '45.256 -71.92'
@@ -37,17 +72,6 @@ class FeedEntryTest < ActiveSupport::TestCase
       
       should 'not raise exception if nil' do
         assert_nothing_raised(Exception) { @feed_entry.point = nil }
-      end
-    end
-
-    context "when returning entries for blog" do
-      setup do
-        owner = Factory(:council)
-        owned_entry = Factory(:feed_entry, :feed_owner => owner)
-      end
-      
-      should "return entries with no feed_owner" do
-        assert_equal [@feed_entry], FeedEntry.for_blog
       end
     end
 
@@ -150,7 +174,7 @@ class FeedEntryTest < ActiveSupport::TestCase
       
       context "and asked to update from feed_owner" do
         setup do
-          @owner = Factory(:council, :feed_url => "bar.com")
+          @owner = Factory(:police_force, :feed_url => "bar.com")
         end
         
         should "use Feedzirra to get and parse feed from owner's feed_url" do
@@ -178,7 +202,7 @@ class FeedEntryTest < ActiveSupport::TestCase
         dummy_entry_1 = stub_everything(:title => "Entry 1", :summary => "Entry 1 summary", :url => "foo.com/entry_1", :published => 3.days.ago, :id => "entry_1")
         dummy_entry_2 = stub_everything(:title => "Entry 2", :summary => "Entry 2 summary", :url => "foo.com/entry_2", :published => 5.days.ago, :id => "entry_2")
         Feedzirra::Feed.stubs(:fetch_and_parse).returns(stub(:entries => [dummy_entry_1, dummy_entry_2]))
-        @council = Factory(:council, :feed_url => "bar.com")
+        @council = Factory(:police_force, :feed_url => "bar.com")
         Council.stubs(:all).returns([@council])
       end
       

@@ -1,0 +1,9 @@
+<h1>Latest hyperlocal news stories</h1>
+
+<div id="feed_entries" class="feed_entries">
+  <%= render :partial => 'feed_entry', :collection => @feed_entries %>
+</div>
+
+<%= will_paginate @feed_entries %>
+
+<%= render :partial => '/shared/api_info' %>

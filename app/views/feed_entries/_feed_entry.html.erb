@@ -1,0 +1,9 @@
+<%- div_for feed_entry do -%>
+  <div class="dateline">
+    <span class="date"><%= feed_entry.published_at&&feed_entry.published_at.to_s(:custom_short) %></span> <%= link_for feed_entry.feed_owner if controller.controller_name == 'feed_entries' %> <%= content_tag(:span, feed_entry.tag_list.join(', '), :class => 'tags') unless (controller.controller_name == 'main' || feed_entry.tag_list.blank?) %>
+  </div>
+  <h4><%= link_to h(feed_entry.title), feed_entry.url, :class => "external" %> <%= link_to(image_tag('map_icon.png'), "http://maps.google.co.uk/maps?q=#{feed_entry.lat},+#{feed_entry.lng}+(#{URI.escape(feed_entry.title)})&iwloc=A&hl=en") if feed_entry.lat?&&feed_entry.lng? %></h4>
+  <div class="info">
+    <%= truncate(feed_entry.summary.try(:squish), :length => 150) %>
+  </div>
+<%- end -%>

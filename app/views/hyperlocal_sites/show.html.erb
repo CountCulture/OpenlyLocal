@@ -51,7 +51,7 @@
 <%- unless @hyperlocal_site.feed_entries.blank? -%>
   <div id="feed_entries" class="feed_entries">
     <h3>Latest Posts</h3>
-    <%= render :partial => 'shared/feed_entry', :collection => @hyperlocal_site.feed_entries %>
+    <%= render :partial => 'feed_entries/feed_entry', :collection => @hyperlocal_site.feed_entries %>
   </div>
 <%- end -%>
 

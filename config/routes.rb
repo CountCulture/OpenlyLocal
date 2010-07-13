@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :feed_entries
+
   map.resources :investigations
 
   map.resources :quangos

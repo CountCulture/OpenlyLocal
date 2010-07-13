@@ -1,6 +1,6 @@
 <div id="site_news" class="feed_entries">
   <h3><%= link_to "Openly Local news", "http://countculture.wordpress.com" %> <%= link_to image_tag("feed_icon.gif", :alt => "RSS feed"), BlogFeedUrl %></h3>
-  <%= render :partial => 'shared/feed_entry', :collection => @news_items %>
+  <%= render :partial => 'feed_entries/feed_entry', :collection => @news_items %>
 </div>
 <div class='intro'>
   <p><strong>Openly Local</strong> is a new project to develop an open and unified way of accessing Local Government information.</p>

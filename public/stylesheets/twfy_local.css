@@ -164,7 +164,12 @@ form.button-to, form.button-to div {
 	display:inline;
 }
 .intro {font-weight:bold;}
-
+.tags {
+	background: transparent url(../images/tag_icon.png) no-repeat scroll left top;
+	margin-left:2px;
+	padding: 1px 0px 1px 18px;
+	color:#666;
+}
 /*General template format*/
 body {
 	background-color:#ddd; }
@@ -318,7 +323,7 @@ body.councils .council h1 {
 body.councils .extra_info {
 	max-width:620px;}
 
-body.councils .council {
+body.councils .council, #feed_entries .feed_entry {
 border-bottom:1px solid #ddd;
 margin-bottom:6px;
 }
@@ -328,7 +333,7 @@ margin-bottom:3px;
 body.councils .council h4 a.parsed {
 font-weight:bold;
 }
-body.councils .area a {
+body.councils .area, .feed_entry .dateline {
 	text-transform: uppercase;
 	color: #8a1f11;
 	font-size: 0.85em;
@@ -711,16 +716,22 @@ ul#hyperlocal_sites li li{
 .related_article .source a {
 	text-transform: uppercase;
 	color: #8a1f11;
-	font-size: 0.85em;
+	font-size: 0.88em;
 }
 
 /*Feed entries*/
 .feed_entries .feed_entry h4 {
 	margin-bottom:0;
-	margin-top:6px;
+	font-family: Georgia,"Times New Roman",Times,serif;
+	font-weight:bold;
+	font-size:1.3em;
+/*	margin-top:6px;*/
 }
-.feed_entries .feed_entry {
-	font-size:90%;
+.feed_entries .hyperlocal_site_link {
+	font-weight:bold;
+}
+.feed_entries .feed_entry h4 a{
+	color:#333;
 }
 #feed_entries {
 	clear:left;
@@ -733,6 +744,7 @@ ul#hyperlocal_sites li li{
 	padding:6px;
 	width:260px;
 	margin-left: 1em;
+	font-size:90%;
 	}
 #site_news h3 {
 	background-color:#ddd;

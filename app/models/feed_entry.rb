@@ -3,6 +3,7 @@ class FeedEntry < ActiveRecord::Base
   acts_as_taggable
   validates_presence_of :guid, :url, :title
   named_scope :for_blog, :conditions => "feed_owner_type IS NULL AND feed_owner_id IS NULL"
+  named_scope :restrict_to, lambda { |restricted_type| restricted_type ?  { :conditions => {:feed_owner_type => restricted_type.classify} } : { } }
   default_scope :order => "published_at DESC"
   
   def self.update_from_feed(owner_or_url)
