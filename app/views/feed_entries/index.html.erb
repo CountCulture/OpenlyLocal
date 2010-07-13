@@ -1,5 +1,11 @@
+<%- if params[:restrict_to] -%>
+  <div class='breadcrumbs'>
+    <%= link_to "All #{params[:restrict_to].gsub(/_/, ' ').capitalize}", :controller => params[:restrict_to] %> 
+    <%= ">> #{link_to 'All stories', :restrict_to => params[:restrict_to]}" if params[:tagged_with] %> 
+  </div>
+<%- end -%>
 <h1><%= @title %></h1>
-<p class='alert'>Click on tags to restrict to stories tagged with that category</p>
+<%= content_tag :p, 'Click on tags to restrict to stories tagged with that category', :class => 'alert' unless params[:tagged_with] %>
 
 <div id="feed_entries" class="feed_entries">
   <%= render :partial => 'feed_entry', :collection => @feed_entries %>

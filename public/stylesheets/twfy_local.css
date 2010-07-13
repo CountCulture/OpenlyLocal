@@ -168,6 +168,8 @@ form.button-to, form.button-to div {
 	background: transparent url(../images/tag_icon.png) no-repeat scroll left top;
 	margin-left:2px;
 	padding: 1px 0px 1px 18px;
+}
+.tags a {
 	color:#666;
 }
 /*General template format*/
