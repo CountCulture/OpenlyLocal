@@ -776,7 +776,12 @@ ul#hyperlocal_sites li li{
 .breadcrumbs {
 	margin-bottom: 3px;
 }
-
+.new_feature {
+	font-size: 120%;
+	font-weight: bold;
+	background: url(/images/new_flash_red.gif) no-repeat;
+	padding-left: 36px;
+}
 /*admin page*/
 .admin #user_submissions {
 	background: #eee;

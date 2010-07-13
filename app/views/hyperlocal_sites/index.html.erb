@@ -57,6 +57,7 @@
 </div>
 
 <p class='alert'><%= link_to "Add your hyperlocal site now", new_hyperlocal_site_path %></p>
+<p class='new_feature'>See our new <%= link_to 'Hyperlocal News Stream', feed_entries_path(:restrict_to => 'hyperlocal_sites') %></p>
 <%- form_tag hyperlocal_sites_path, :id => "location_search", :method => :get do -%>
   <h4>Find hyperlocal sites closest to...</h4>
   <%= text_field_tag :location, params[:location], :class => "location_search" %>

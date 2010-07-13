@@ -8,7 +8,9 @@ class FeedEntriesControllerTest < ActionController::TestCase
       @hyperlocal_site = Factory(:hyperlocal_site)
       @council = Factory(:council)
       @hyperlocal_feed_entry = Factory(:feed_entry, :feed_owner => @hyperlocal_site)
+      @tagged_hyperlocal_feed_entry = Factory(:feed_entry, :feed_owner => @hyperlocal_site, :tag_list => 'foo,bar')
       @council_feed_entry = Factory(:feed_entry, :feed_owner => @council)
+      @tagged_council_feed_entry = Factory(:feed_entry, :feed_owner => @council, :tag_list => 'foo,baz')
     end
     
     context "with basic request" do
@@ -72,6 +74,27 @@ class FeedEntriesControllerTest < ActionController::TestCase
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
+    end
+    
+    context "when restricted to tag" do
+      setup do
+        get :index, :restrict_to => 'hyperlocal_sites', :tagged_with => 'foo'
+      end
+
+      should respond_with :success
+      should render_template :index
+
+      should 'restrict to given type' do
+        assert assigns(:feed_entries).include?(@tagged_hyperlocal_feed_entry)
+        assert !assigns(:feed_entries).include?(@hyperlocal_feed_entry)
+        assert !assigns(:feed_entries).include?(@feed_entry)
+        assert !assigns(:feed_entries).include?(@council_feed_entry)
+        assert !assigns(:feed_entries).include?(@tagged_council_feed_entry)
+      end
+
+      should 'show tag in title' do
+        assert_select "title", /tagged with \'foo\'/i
+      end
     end
     
     context 'when enough results' do
