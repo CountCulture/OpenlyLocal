@@ -40,6 +40,7 @@
       <legend>Parser details</legend>
       <% f.fields_for :parser, (@scraper.portal_parser? ? Parser.new(:result_model => params[:result_model], :scraper_type => @scraper.class.to_s) : @scraper.parser) do |pf| %>
         <%= pf.hidden_field :scraper_type %>
+        <%= pf.hidden_field :type %>
         <p>
           <%= pf.label :result_model, "Result Model <em>Kind of object you're scraping for</em>" %>
           <%= pf.select("result_model", Parser::ALLOWED_RESULT_CLASSES.collect{ |c| [c,c] }, { :include_blank => true }) %>
@@ -62,7 +63,6 @@
           <h3>Attribute parser</h3>
 					<%- partial_attribs = @scraper.parser.kind_of?(CsvParser) ? { :partial => 'csv_parser_attrib', :collection => @scraper.parser.attribute_mapping_object } : { :partial => 'attrib', :collection => @scraper.parser.attribute_parser_object } -%>
 			    <%= render partial_attribs %>
-          <%#= render :partial => 'attrib', :collection => (@scraper.portal_parser? ? [Parser::AttribObject.new] : @scraper.parser.attribute_mapping_object) %>
         </div>
         <br class="clear-left">
         <p>

@@ -8,6 +8,14 @@ class CsvParser < Parser
     self.attribute_mapping.collect { |k,v| MappingObject.new(k.to_s, v) }.sort{ |a,b| a.attrib_name <=> b.attrib_name }
   end
   
+  def attribute_mapping_object=(params)
+    result_hash = {}
+    params.each do |a|
+      result_hash[a["attrib_name"].to_sym] = a["column_name"]
+    end
+    self.attribute_mapping = result_hash
+  end
+  
   def process(raw_data, scraper=nil)
     result_array = []
     rows = FasterCSV.new(raw_data, :headers => true)

@@ -665,7 +665,7 @@ class ScrapersControllerTest < ActionController::TestCase
                                                           :type => 'CsvParser', 
                                                           :item_parser => "some code",
                                                           :description => "new parser", 
-                                                          :attribute_mapping => {:foo => "FooName"} }}
+                                                          :attribute_mapping_object => [{"attrib_name" => "foo", "column_name" => "FooName"}] }}
           stub_authentication
           post :create, { :type => "InfoScraper", :scraper => @csv_scraper_params }
         end
@@ -694,7 +694,7 @@ class ScrapersControllerTest < ActionController::TestCase
         end
       
         should "save parser attribute_parser" do
-          assert_equal({"foo" => "FooName"}, assigns(:scraper).parser.attribute_mapping)
+          assert_equal({:foo => "FooName"}, assigns(:scraper).parser.attribute_mapping)
         end
       end
       

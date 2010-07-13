@@ -9,7 +9,7 @@ class SupplierTest < ActiveSupport::TestCase
       @organisation = @supplier.organisation
     end
     
-    should have_many :financial_transactions
+    should have_many(:financial_transactions).dependent(:destroy)
     # should belong_to :company
     should_validate_presence_of :organisation_type, :organisation_id
     

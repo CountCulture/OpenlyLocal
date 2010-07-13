@@ -54,7 +54,7 @@ class CsvParserTest < ActiveSupport::TestCase
         end
       end
       
-      context "when attribute_parser is blank" do
+      context "when attribute_mapping is blank" do
         setup do
           @empty_attribute_mapping_object = CsvParser.new.attribute_mapping_object
         end
@@ -72,6 +72,22 @@ class CsvParserTest < ActiveSupport::TestCase
         end
       end
       
+      context "when given attribute_mapping info from form params" do
+
+        should "convert to attribute_mapping hash" do
+          @parser.attribute_mapping_object = [{ "attrib_name" => "title",
+                                               "column_name" => "A title"},
+                                             { "attrib_name" => "description",
+                                               "column_name" => "A longer description"}]
+          assert_equal({ :title => "A title", :description => "A longer description" }, @parser.attribute_mapping)
+        end
+
+        should "set attribute_parser to empty hash if no form_params" do
+          @parser.attribute_mapping_object = []
+          assert_equal({}, @parser.attribute_mapping)
+        end
+      end
+
     end
     
     

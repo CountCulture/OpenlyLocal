@@ -110,7 +110,7 @@ class ScraperTest < ActiveSupport::TestCase
         @csv_parser_attributes = { :result_model => "Committee", 
                                    :scraper_type => "InfoScraper",
                                    :type => 'CsvParser', 
-                                   :attribute_mapping => {:foo => "FooName"} }        
+                                   :attribute_mapping_object => [{"attrib_name" => "foo", "column_name" => "FooName"}] }        
         @blank_scraper = Factory.build(:scraper, :council => @scraper.council, :parser => nil)
       end
       

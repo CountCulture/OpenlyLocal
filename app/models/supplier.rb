@@ -1,7 +1,7 @@
 class Supplier < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
-  has_many :financial_transactions, :order => 'date'
+  has_many :financial_transactions, :order => 'date', :dependent => :destroy
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
   named_scope :unmatched, :conditions => {:payee_id => nil}
