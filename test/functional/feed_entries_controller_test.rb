@@ -56,7 +56,7 @@ class FeedEntriesControllerTest < ActionController::TestCase
 
       should_assign_to(:feed_entries)
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
       
       should "include feed_entries" do
@@ -72,7 +72,7 @@ class FeedEntriesControllerTest < ActionController::TestCase
   
       should_assign_to(:feed_entries)
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
     end
     
