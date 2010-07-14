@@ -525,6 +525,15 @@ a.new_scraper_link {
 	height:300px;
 	width:300px;
 }
+#ward_comparison .ward {
+	width: 320px;
+	float:left;
+	margin-right:12px;
+}
+#ward_comparison .attributes dd { width: 200px;}
+#ward_comparison .attributes dt { width: 100px;}
+#ward_comparison .map_canvas {width:300px; height:300px;}
+#ward_comparison .map_outer {width:300px; height:300px;}
 
 /*Dataset specific formatting*/
 /*NB Much of this can be deleted when move to new style datasets is completed*/

@@ -32,7 +32,7 @@ class WardsControllerTest < ActionController::TestCase
           get :index, :council_id => @council.id
         end
       
-        should_assign_to(:council) { @council }
+        should assign_to(:council) { @council }
         should respond_with :success
       
         should 'assign only current wards' do
@@ -82,9 +82,9 @@ class WardsControllerTest < ActionController::TestCase
           get :index, :council_id => @council.id, :format => "xml"
         end
 
-        should_assign_to(:council) { @council }
+        should assign_to(:council) { @council }
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
 
         should 'assign only current wards' do
@@ -114,9 +114,9 @@ class WardsControllerTest < ActionController::TestCase
           get :index, :council_id => @council.id, :format => "json"
         end
 
-        should_assign_to(:council) { @council }
+        should assign_to(:council) { @council }
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/json'
 
         should 'assign only current wards' do
@@ -227,7 +227,7 @@ class WardsControllerTest < ActionController::TestCase
         end
 
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
 
         should 'assign only current wards' do
@@ -254,7 +254,7 @@ class WardsControllerTest < ActionController::TestCase
         end
 
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/json'
 
         should 'assign only current wards' do
@@ -286,7 +286,7 @@ class WardsControllerTest < ActionController::TestCase
   #         get :index
   #       end
   #     
-  #       should_assign_to(:members) { [@member, @ex_member] } # current members
+  #       should assign_to(:members) { [@member, @ex_member] } # current members
   #       should respond_with :success
   #     
   #       should "show title" do
@@ -354,7 +354,7 @@ class WardsControllerTest < ActionController::TestCase
   #         end
   # 
   #         should respond_with :success
-  #         should_render_without_layout
+  #         should_not render_with_layout
   #         should respond_with_content_type 'application/json'
   # 
   #         should "include council" do
@@ -407,7 +407,7 @@ class WardsControllerTest < ActionController::TestCase
         get :show, :id => @ward.id
       end
 
-      should_assign_to(:ward) { @ward }
+      should assign_to(:ward) { @ward }
       should respond_with :success
       should render_template :show
 
@@ -455,7 +455,7 @@ class WardsControllerTest < ActionController::TestCase
         get :show, :snac_id => @ward.snac_id
       end
 
-      should_assign_to(:ward) { @ward }
+      should assign_to(:ward) { @ward }
       should respond_with :success
       should render_template :show
 
@@ -471,7 +471,7 @@ class WardsControllerTest < ActionController::TestCase
         get :show, :os_id => @ward.os_id
       end
 
-      should_assign_to(:ward) { @ward }
+      should assign_to(:ward) { @ward }
       should respond_with :success
       should render_template :show
 
@@ -482,27 +482,8 @@ class WardsControllerTest < ActionController::TestCase
 
     context "with basic request when ward has additional attributes" do
       setup do
-        @ward.committees << @committee = Factory(:committee, :council => @council)
-        @meeting = Factory(:meeting, :committee => @committee, :council => @council)
-        @datapoint = Factory(:datapoint, :area => @ward)
-        @another_datapoint = Factory(:datapoint, :area => @ward)
-        @graphed_datapoint = Factory(:datapoint, :area => @ward)
-        @graphed_datapoint_topic = @graphed_datapoint.dataset_topic       
-        dummy_grouped_datapoints = { stub_everything(:title => "demographics") => [@datapoint], 
-                                     stub_everything(:title => "misc", :display_as => "in_words") => [@another_datapoint], 
-                                     stub_everything(:title => "religion", :display_as => "graph") => [@graphed_datapoint]
-                                    }
-        @poll = Factory(:poll, :area => @ward)
-        @police_team = Factory(:police_team)
-        @ward.update_attributes(:police_team => @police_team)
-        @police_officer = Factory(:police_officer, :police_team => @police_team)
-        @inactive_police_officer = Factory(:inactive_police_officer, :police_team => @police_team)
-        @ward.update_attribute(:output_area_classification, @output_area_classification)
-        # @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average')
-        # comparison_data = [{"date"=>"2008-12", "value"=>"42.2"}, {"date"=>"2009-01", "value"=>"51", 'force_value' => '2.5'}, {"date"=>"2009-02", "value"=>"3.14"}]
-        # CrimeArea.any_instance.stubs(:crime_rate_comparison).returns(comparison_data)
-        # @ward.update_attribute(:crime_area, @crime_area)
-        Ward.any_instance.stubs(:grouped_datapoints).returns(dummy_grouped_datapoints)
+        setup_additional_ward_attributes
+        Ward.any_instance.stubs(:grouped_datapoints).returns(@dummy_grouped_datapoints)
         get :show, :id => @ward.id
       end
 
@@ -567,6 +548,78 @@ class WardsControllerTest < ActionController::TestCase
       
     end
 
+    context "when comparing with another ward" do
+      setup do
+        @another_ward = Factory(:ward, :council => @ward.council, :name => 'Another Ward')
+        setup_additional_ward_attributes
+        Ward.any_instance.stubs(:grouped_datapoints).returns(@dummy_grouped_datapoints)
+        get :show, :id => @ward.id, :compare_with => @another_ward.id
+      end
+
+      should respond_with :success
+      should assign_to(:comparison_ward) { @another_ward }
+      should render_template :comparison
+      
+      should "show both ward" do
+        assert_select "div#ward_#{@ward.id}"
+        assert_select "div#ward_#{@another_ward.id}"
+      end
+      # 
+      # should "show output area classification" do
+      #   assert_select "#main_attributes", /#{@output_area_classification.title}/
+      # end
+      # 
+      # should "show ward committee meetings" do
+      #   assert_select "#meetings li", /#{@meeting.title}/
+      # end
+      # 
+      # should "show link to police neighbourhood officers" do
+      #   assert_select "#police_team" do
+      #     assert_select 'li', /#{@police_officer.name}/
+      #   end
+      # end
+
+      # should "not show link to inactive police neighbourhood officers" do
+      #   assert_select "#police_team" do
+      #     assert_select 'li', :text => /#{@inactive_police_officer.name}/, :count => 0
+      #   end
+      # end
+      # 
+      # should "show link to polls" do
+      #   assert_select "#polls a.poll_link"
+      # end
+      # 
+      # should "show statistics" do
+      #   assert_select "#grouped_datapoints"
+      # end
+      # 
+      # context "when showing statistics" do
+      #   should "show datapoints grouped by topic group" do
+      #     assert_select "#grouped_datapoints" do
+      #       assert_select ".demographics a", @datapoint.title
+      #       assert_select ".stats_in_words a", @another_datapoint.title
+      #     end
+      #   end
+      # 
+      #   should "show link to more info on data" do
+      #     assert_select "#grouped_datapoints .datapoint a[href=?]", "/wards/#{@ward.to_param}/dataset_topics/#{@datapoint.dataset_topic.id}"
+      #   end
+      #   
+      #   should "not show datapoint groups with no data" do
+      #     assert_select "#grouped_datapoints .foo", false
+      #   end
+      # 
+      #   should "show graphs for those groups that should be graphed" do
+      #     assert_select "#grouped_datapoints .graphed_datapoints #religion_graph"
+      #   end
+      # 
+      #   should "show data in table with graphed_table class for groups that should be graphed" do
+      #     assert_select "#grouped_datapoints .religion.graphed_datapoints"
+      #   end
+      # end
+      
+    end
+
     context "when ward has boundary" do
       setup do
         Factory(:boundary, :area => @ward)
@@ -590,9 +643,9 @@ class WardsControllerTest < ActionController::TestCase
         get :show, :id => @ward.id, :format => "xml"
       end
 
-      should_assign_to :ward
+      should assign_to :ward
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
 
       should "include members in response" do
@@ -620,9 +673,9 @@ class WardsControllerTest < ActionController::TestCase
         get :show, :id => @ward.id, :format => "rdf"
       end
 
-      should_assign_to :ward
+      should assign_to :ward
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
@@ -676,9 +729,9 @@ class WardsControllerTest < ActionController::TestCase
         get :show, :id => @ward.id, :format => "rdf"
       end
 
-      should_assign_to :ward
+      should assign_to :ward
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
@@ -709,9 +762,9 @@ class WardsControllerTest < ActionController::TestCase
          get :show, :id => @ward.id, :format => "json"
        end
 
-       should_assign_to :ward
+       should assign_to :ward
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'application/json'
 
        should "include members in response" do
@@ -745,7 +798,7 @@ class WardsControllerTest < ActionController::TestCase
        get :edit, :id => @ward.id
      end
 
-     should_assign_to :ward
+     should assign_to :ward
      should respond_with :success
      should render_template :edit
      should_not set_the_flash
@@ -778,9 +831,9 @@ class WardsControllerTest < ActionController::TestCase
                                  :name => "New name"}}
      end
 
-     should_assign_to :ward
-     should_redirect_to( "the show page for ward") { ward_path(@ward.reload) }
-     should_set_the_flash_to "Successfully updated ward"
+     should assign_to :ward
+     should redirect_to( "the show page for ward") { ward_path(@ward.reload) }
+     should set_the_flash.to "Successfully updated ward"
 
      should "update ward" do
        assert_equal "New name", @ward.reload.name
@@ -806,7 +859,31 @@ class WardsControllerTest < ActionController::TestCase
      should "destroy ward" do
        assert_nil Ward.find_by_id(@ward.id)
      end
-     should_redirect_to ( "the council page") { council_url(@council) }
-     should_set_the_flash_to "Successfully destroyed ward"
+     should redirect_to ( "the council page") { council_url(@council) }
+     should set_the_flash.to "Successfully destroyed ward"
    end
+   
+   def setup_additional_ward_attributes
+     @ward.committees << @committee = Factory(:committee, :council => @council)
+     @meeting = Factory(:meeting, :committee => @committee, :council => @council)
+     @datapoint = Factory(:datapoint, :area => @ward)
+     @another_datapoint = Factory(:datapoint, :area => @ward)
+     @graphed_datapoint = Factory(:datapoint, :area => @ward)
+     @graphed_datapoint_topic = @graphed_datapoint.dataset_topic       
+     @dummy_grouped_datapoints = { stub_everything(:title => "demographics") => [@datapoint], 
+                                  stub_everything(:title => "misc", :display_as => "in_words") => [@another_datapoint], 
+                                  stub_everything(:title => "religion", :display_as => "graph") => [@graphed_datapoint]
+                                 }
+     @poll = Factory(:poll, :area => @ward)
+     @police_team = Factory(:police_team)
+     @ward.update_attributes(:police_team => @police_team)
+     @police_officer = Factory(:police_officer, :police_team => @police_team)
+     @inactive_police_officer = Factory(:inactive_police_officer, :police_team => @police_team)
+     @ward.update_attribute(:output_area_classification, @output_area_classification)
+     # @crime_area = Factory(:crime_area, :crime_level_cf_national => 'below_average')
+     # comparison_data = [{"date"=>"2008-12", "value"=>"42.2"}, {"date"=>"2009-01", "value"=>"51", 'force_value' => '2.5'}, {"date"=>"2009-02", "value"=>"3.14"}]
+     # CrimeArea.any_instance.stubs(:crime_rate_comparison).returns(comparison_data)
+     # @ward.update_attribute(:crime_area, @crime_area)
+   end
+   
 end

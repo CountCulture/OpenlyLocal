@@ -1,0 +1,97 @@
+<%- if @ward.boundary -%>
+	<script type="text/javascript" charset="utf-8">
+	  function initMap() {
+	    if (GBrowserIsCompatible()) {
+	      var ward_map = new GMap2(document.getElementById("map_canvas"));
+        var alt_ward_map = new GMap2(document.getElementById("alt_map_canvas"));
+
+      	var ward_boundary_line_coords = <%= @ward.boundary.boundary_line_coordinates.to_json %>;
+      	var ward_envelope = <%= @ward.boundary.boundary_line.envelope.to_json %>;
+      	var alt_boundary_line_coords = <%= @comparison_ward.boundary.boundary_line_coordinates.to_json %>;
+      	var alt_envelope = <%= @comparison_ward.boundary.boundary_line.envelope.to_json %>;
+        drawWardMap(ward_map, ward_boundary_line_coords, ward_envelope);
+        drawWardMap(alt_ward_map, alt_boundary_line_coords, alt_envelope);
+	    }
+	  }
+	  
+	  function drawWardMap (map, boundary_line_coords, envelope)
+	  {
+			var polygons = [];
+			for (var i = boundary_line_coords.length - 1; i >= 0; i--){
+				var polygon_points = [];
+				for (var j = boundary_line_coords[i].length - 1; j >= 0; j--){
+					polygon_points.push(new GLatLng(boundary_line_coords[i][j][0], boundary_line_coords[i][j][1]));
+				};
+        var polygon = new GPolygon(polygon_points, "#f33f00", 2, 1, "#ff0000", 0.2);
+				polygons.push(polygon);
+				map.addOverlay(polygon);    
+			};
+      map.addControl(new GSmallMapControl());
+      map.addControl(new GMapTypeControl());
+			var map_bounds = new GLatLngBounds(new GLatLng(envelope.lower_corner.y, envelope.lower_corner.x), new GLatLng(envelope.upper_corner.y, envelope.upper_corner.x))
+			map.setCenter(map_bounds.getCenter(), map.getBoundsZoomLevel(map_bounds));
+	  }
+  
+	</script>
+<%- end -%>
+<div id="ward_comparison">
+  <h1><%= basic_link_for @council %>: <%= @title %> <em><%= council_page_for @ward %></em></h1>
+  <%- div_for @ward do -%>
+    <h2><%= link_for @ward %></h2>
+    <div id="ward_map" class="map_outer">
+    	  <div id="map_canvas" class="map_canvas"></div>
+    </div>
+    
+    <div id="ward_attributes" class="attributes">
+      <%= attribute_tag :council, link_for( @ward.council) %>
+      <%= attribute_tag :area, "#{@ward.boundary.hectares} hectares" if @ward.boundary %>
+      <%= attribute_tag :classification, "#{link_to(@ward.output_area_classification.title, output_area_classification_wards_url(@ward.output_area_classification))} #{help_link_to('http://www.statistics.gov.uk/about/methodology_by_theme/area_classification/')}" if @ward.output_area_classification %>
+    </div>
+    <div id="members" class="item_grouping">
+      <h3>Councillors for this ward</h3>
+      <%= list_all @ward.members %>
+    </div>
+
+    <%= render :partial => 'shared/grouped_datapoints', :locals => { :area => @ward } %>
+    <%- if @ward.police_team -%>
+      <div id="police_team" class="item_grouping">
+        <h3><%= link_to('Neighbourhood Police Team', @ward.police_team) %> </h3>
+        <ul>
+          <%- @ward.police_team.police_officers.active.each do |officer| -%>
+            <li><%= officer.title %></li>
+          <%- end -%>
+        </ul>
+      </div>
+    <%- end -%>
+
+  <%- end -%>
+  
+  <%- div_for @comparison_ward do -%>
+    <h2><%= link_for @comparison_ward %></h2>
+    <div id="alternative_ward_map" class="map_outer">
+  	  <div id="alt_map_canvas" class="map_canvas"></div>
+    </div>
+    
+    <div id="alternative_ward_attributes" class="attributes">
+      <%= attribute_tag :council, link_for( @comparison_ward.council) %>
+      <%= attribute_tag :area, "#{@comparison_ward.boundary.hectares} hectares" if @comparison_ward.boundary %>
+      <%= attribute_tag :classification, "#{link_to(@comparison_ward.output_area_classification.title, output_area_classification_wards_url(@comparison_ward.output_area_classification))} #{help_link_to('http://www.statistics.gov.uk/about/methodology_by_theme/area_classification/')}" if @comparison_ward.output_area_classification %>
+    </div>
+    <div id="members" class="item_grouping">
+      <h3>Councillors for this ward</h3>
+      <%= list_all @comparison_ward.members %>
+    </div>
+    
+    <%= render :partial => 'shared/grouped_datapoints', :locals => { :area => @comparison_ward } %>
+    <%- if @comparison_ward.police_team -%>
+      <div id="police_team" class="item_grouping">
+        <h3><%= link_to('Neighbourhood Police Team', @comparison_ward.police_team) %> </h3>
+        <ul>
+          <%- @comparison_ward.police_team.police_officers.active.each do |officer| -%>
+            <li><%= officer.title %></li>
+          <%- end -%>
+        </ul>
+      </div>
+    <%- end -%>
+  <%- end -%>
+</div>

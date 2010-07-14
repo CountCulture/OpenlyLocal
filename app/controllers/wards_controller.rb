@@ -46,11 +46,12 @@ class WardsController < ApplicationController
   
   def show
     @council = @ward.council
+    @comparison_ward = Ward.find(params[:compare_with]) if params[:compare_with]
     @members = @ward.members.current
     @committees = @ward.committees
     @title = "#{@ward.name} ward"
     respond_to do |format|
-      format.html
+      format.html { render :template => @comparison_ward ? 'wards/comparison' : 'wards/show' }
       format.xml { render :xml => @ward.to_xml(:include => [:members, :committees, :meetings]) }
       format.rdf 
       format.json { render :json => @ward.to_json(:include => [:members, :committees, :meetings]) }
