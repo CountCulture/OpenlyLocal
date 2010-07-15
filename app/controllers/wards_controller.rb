@@ -49,7 +49,7 @@ class WardsController < ApplicationController
     @comparison_ward = Ward.find(params[:compare_with]) if params[:compare_with]
     @members = @ward.members.current
     @committees = @ward.committees
-    @title = "#{@ward.name} ward"
+    @title = @comparison_ward ? "Ward comparison: #{@ward.name} & #{@comparison_ward.name}": "#{@ward.name} ward"
     respond_to do |format|
       format.html { render :template => @comparison_ward ? 'wards/comparison' : 'wards/show' }
       format.xml { render :xml => @ward.to_xml(:include => [:members, :committees, :meetings]) }

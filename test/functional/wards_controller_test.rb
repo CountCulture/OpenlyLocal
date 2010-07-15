@@ -564,10 +564,10 @@ class WardsControllerTest < ActionController::TestCase
         assert_select "div#ward_#{@ward.id}"
         assert_select "div#ward_#{@another_ward.id}"
       end
-      # 
-      # should "show output area classification" do
-      #   assert_select "#main_attributes", /#{@output_area_classification.title}/
-      # end
+      
+      should "show title" do
+        assert_select "title", /ward comparison/i
+      end
       # 
       # should "show ward committee meetings" do
       #   assert_select "#meetings li", /#{@meeting.title}/

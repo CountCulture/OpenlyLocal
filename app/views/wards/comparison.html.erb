@@ -35,7 +35,7 @@
 	</script>
 <%- end -%>
 <div id="ward_comparison">
-  <h1><%= basic_link_for @council %>: <%= @title %> <em><%= council_page_for @ward %></em></h1>
+  <h1>Ward Comparison <%= link_for @ward %> &amp; <%= link_for @comparison_ward %></h1>
   <%- div_for @ward do -%>
     <h2><%= link_for @ward %></h2>
     <div id="ward_map" class="map_outer">
