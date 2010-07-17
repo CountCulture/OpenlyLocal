@@ -291,6 +291,8 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       assert ft.save
       assert ft.errors.empty?
       assert !ft.supplier.new_record?
+      assert_in_delta 32.40, ft.supplier.total_spend, 2 ** -10
+      assert_in_delta 32.40, ft.supplier.average_monthly_spend, 2 ** -10
     end
   end                      
 end
