@@ -44,7 +44,7 @@
   <tr><th>Date</th><th>Department</th><th>Category</th><th class='value'>Value</th></tr>
   <%- @supplier.financial_transactions.each do |transaction| -%>
     <tr class="transaction">
-      <td><%= transaction.date.to_s(:event_date) %></td>
+      <td><%= date_with_fuzziness_for(transaction) %></td>
       <td><%= transaction.department_name||'not provided' %></td>
       <td><%= transaction.service||'not provided' %></td>
       <td class='value'><%= basic_link_for transaction , :text => number_to_currency(transaction.value, :unit => "£") %></td>
