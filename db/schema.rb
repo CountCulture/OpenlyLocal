@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100712132051) do
+ActiveRecord::Schema.define(:version => 20100717172208) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -343,6 +343,8 @@ ActiveRecord::Schema.define(:version => 20100712132051) do
     t.column "date_fuzziness", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "invoice_number", :string
+    t.column "csv_line_number", :integer
   end
 
   add_index "financial_transactions", ["supplier_id"], :name => "index_financial_transactions_on_supplier_id"
@@ -763,7 +765,7 @@ ActiveRecord::Schema.define(:version => 20100712132051) do
     t.column "uid", :string
     t.column "organisation_type", :string
     t.column "organisation_id", :integer
-    t.column "failed_payee_search", :string
+    t.column "failed_payee_search", :string, :default => "0"
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "url", :string
