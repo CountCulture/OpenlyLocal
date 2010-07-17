@@ -13,16 +13,18 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should validate_presence_of :date
     should belong_to :supplier
     
-    should_have_db_columns :value, 
-                           :uid, 
-                           :description, 
-                           :date, 
-                           :department_name, 
-                           :source_url, 
-                           :cost_centre, 
-                           :service, 
-                           :transaction_type, 
-                           :date_fuzziness
+    should have_db_column :value 
+    should have_db_column :uid 
+    should have_db_column :description 
+    should have_db_column :date
+    should have_db_column :department_name 
+    should have_db_column :source_url
+    should have_db_column :cost_centre 
+    should have_db_column :service
+    should have_db_column :transaction_type
+    should have_db_column :invoice_number
+    should have_db_column :csv_line_number
+    should have_db_column :date_fuzziness
     
     should 'validate presence of supplier_id' do
       # NB Shoulda macro not working for some reason

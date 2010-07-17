@@ -69,13 +69,6 @@ class FinancialTransaction < ActiveRecord::Base
   private
   def save_associated_supplier
     supplier&&supplier.save&&(self.supplier_id=supplier.id)
-    # if supplier.save
-    #   # p supplier, self
-    #    self.supplier_id = supplier.id #update with supplier ir
-    #    true
-    #  else
-    #    false
-    # end
   end
   
 end

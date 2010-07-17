@@ -25,7 +25,7 @@ class CouncilTest < ActiveSupport::TestCase
     should have_many :feed_entries
     should have_many :polls
     should_have_one :police_authority, :through => :police_force
-    should_have_one :chief_executive
+    should have_one :chief_executive
     should belong_to :parent_authority
     should belong_to :portal_system
     should belong_to :police_force
@@ -271,6 +271,8 @@ class CouncilTest < ActiveSupport::TestCase
     context "when normalising title" do
       setup do
         @original_title_and_normalised_title = {
+          "Edinburgh Council" => "edinburgh",
+          "EDINBURGH COUNCIL" => "edinburgh",
           "London Borough of Brent" => "brent",
           "City of Westminster" => "westminster",
           "Westminster City Council" => "westminster",

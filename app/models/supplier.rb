@@ -71,7 +71,7 @@ class Supplier < ActiveRecord::Base
       Company.matches_title(name)
     when /Police Authority/i
       PoliceAuthority.find_by_name(name)
-    when /Council|(London Borough)|(City of)/
+    when /Council|(London Borough)|(City of)/i
       Council.find_by_normalised_title(Council.normalise_title(name))
     end
   end

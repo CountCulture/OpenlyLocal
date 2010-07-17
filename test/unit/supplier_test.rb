@@ -11,7 +11,8 @@ class SupplierTest < ActiveSupport::TestCase
     
     should have_many(:financial_transactions).dependent(:destroy)
     # should belong_to :company
-    should validate_presence_of :organisation_type, :organisation_id
+    should validate_presence_of :organisation_type
+    should validate_presence_of :organisation_id
     
     should have_db_column :uid
     should have_db_column :url
@@ -213,10 +214,17 @@ class SupplierTest < ActiveSupport::TestCase
           @supplier.name = 'Foo Council'
         end
 
-        should "try to match against police authority" do
+        should "try to match against council" do
           Council.expects(:find_by_normalised_title).with('foo')
           @supplier.possible_payee
         end
+        
+        should "ignore case" do
+          @supplier.name = 'FOO COUNCIL'
+          Council.expects(:find_by_normalised_title).with('foo')
+          @supplier.possible_payee
+        end
+        
       end
     end
     
