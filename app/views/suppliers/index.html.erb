@@ -3,9 +3,13 @@
 </div>
 <h1><%= @title %></h1>
 <p class='intro'>Note: Councils often call the same supplier different names. Where they are a company we have tried to match up against an actual company. <br />Please help by choosing a company without details and adding the company number (this <a href="http://www.out-law.com/page-431" title="The UK's E-Commerce Regulations" class="external">should be on their website</a>)</p>
-<p class='restriction'>
+<div class='restriction'>
+	<% form_tag({:action => "index"}, {:class => "form", :method => :get}) do %>
+		<%= text_field_tag :name_filter, params[:name_filter] %>
+	  <%= submit_tag "Search for supplier", :id => "submit", :name => "submit", :class => "form_submit"  %>
+	<% end -%>
   <%= params[:order] == 'total_spend' ? link_to('Sort by Name', params.merge(:order => 'name'), :class => 'sort' ) : link_to('Sort by Total Spend', params.merge(:order => 'total_spend'), :class => 'sort' ) %>
-</p>
+</div>
 
 <%- if @organisation -%>
     <dl id="overview" class="attributes">
@@ -18,9 +22,9 @@
   <table id="suppliers" class='statistics'>
     <caption>Suppliers</caption>
     <tr>
-      <th><%= link_to('Supplier name', params.merge(:order => 'name'), :class => 'sort' ) %></th>
+      <th><%= link_to('Supplier name', params.merge(:order => 'name'), :class => 'sort', :title => "Sort by name" ) %></th>
       <th>Supplying to</th>
-      <th class='value'><%= link_to('Total spend', params.merge(:order => 'total_spend'), :class => 'total_spend' ) %></th>
+      <th class='value'><%= link_to('Total spend', params.merge(:order => 'total_spend'), :class => 'total_spend', :title => "Sort by total spend" ) %></th>
       <th class='average value'>Average monthly spend</th>
     </tr>
     <%- @suppliers.each do |supplier| -%>

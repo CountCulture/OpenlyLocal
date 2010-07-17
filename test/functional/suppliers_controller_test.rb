@@ -4,7 +4,7 @@ class SuppliersControllerTest < ActionController::TestCase
   def setup
     @supplier = Factory(:supplier)
     @organisation = @supplier.organisation
-    @another_supplier = Factory(:supplier, :name => 'A supplier')
+    @another_supplier = Factory(:supplier, :name => 'another supplier')
     @another_supplier_same_org = Factory(:supplier, :name => 'Another supplier', :organisation => @organisation)
     @financial_transaction = Factory(:financial_transaction, :supplier => @supplier, :value => 42)
   end
@@ -55,6 +55,22 @@ class SuppliersControllerTest < ActionController::TestCase
         assert_select 'a.sort', /name/i
       end
             
+    end
+    
+    context 'when searching by name' do
+      setup do
+        get :index, :name_filter => 'Anoth'
+      end
+      
+      should assign_to(:suppliers)
+      should respond_with :success
+      
+      
+      should 'return only those matching filter' do
+        assert assigns(:suppliers).include?(@another_supplier)
+        assert !assigns(:suppliers).include?(@supplier)
+      end
+                        
     end
     
     context 'when enough results' do

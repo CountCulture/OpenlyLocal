@@ -5,6 +5,9 @@ class Supplier < ActiveRecord::Base
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
   named_scope :unmatched, :conditions => {:payee_id => nil}
+  named_scope :filter_by, lambda { |filter_hash| filter_hash[:name] ? 
+                                  { :conditions => ["name LIKE ?", "%#{filter_hash[:name]}%"] } : 
+                                  {} }
   before_save :update_spending_info
   after_create :match_with_existing_company
   alias_attribute :title, :name

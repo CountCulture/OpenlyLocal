@@ -46,6 +46,36 @@ class SupplierTest < ActiveSupport::TestCase
       end
     end
     
+    context "should have filter_by named_scope which" do
+      setup do
+        @payee = Factory(:company)
+        @another_supplier = Factory(:supplier, :name => 'Another Supplier')
+      end
+      
+      should 'return all suppliers by default' do
+        assert Supplier.filter_by({}).include?(@supplier)
+        assert Supplier.filter_by({}).include?(@another_supplier)
+      end
+      
+      should 'return all suppliers when name is nil' do
+        assert Supplier.filter_by({:name => nil}).include?(@supplier)
+      end
+      
+      should 'return those with names like given name' do
+        assert Supplier.filter_by(:name => 'anoth').include?(@another_supplier)
+        assert !Supplier.filter_by(:name => 'anoth').include?(@supplier)
+      end
+
+      should 'return those with names like given name ignoring case' do
+        assert Supplier.filter_by(:name => 'ANOTH').include?(@another_supplier)
+      end
+
+      should 'return those with names like given name position of match' do
+        assert Supplier.filter_by(:name => 'nothe').include?(@another_supplier)
+      end
+    end
+    
+    
     should 'require either name or uid to be present' do
       invalid_supplier = Factory.build(:supplier, :name => nil, :uid => nil)
       assert !invalid_supplier.valid?
