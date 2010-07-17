@@ -93,6 +93,19 @@ class CsvParserTest < ActiveSupport::TestCase
     
     context "when processing" do
       
+      setup do
+        @dummy_org = stub()
+        @dummy_scraper = stub_everything(:council => @dummy_org)
+      end
+	        
+	    should "return self" do
+        assert_equal @parser, @parser.process(@csv_rawdata,@dummy_scraper)
+      end
+    
+      should "have scraper accessor" do
+        flunk      
+      end
+      
       should "return self" do
         assert_equal @parser, @parser.process(@csv_rawdata)
       end
@@ -105,7 +118,7 @@ class CsvParserTest < ActiveSupport::TestCase
       
       context 'and results' do
         setup do
-          @processed_data = @parser.process(@csv_rawdata).results
+          @processed_data = @parser.process(@csv_rawdata, @dummy_scraper).results
         end
         
         should 'be an array of hashes' do
@@ -126,6 +139,13 @@ class CsvParserTest < ActiveSupport::TestCase
           assert !@processed_data.any?{ |r| r.all?{ |k,v| v.blank?  }  }
           assert_equal 'Zychem Ltd', @processed_data.last[:supplier_name]
         end
+
+	      should 'assign scraper council to attributes as organisation' do
+	        # *************
+	        # NB Ultimately this will not be necessary as it should be set in scraper
+	        # *************
+	        assert_equal @dummy_org, @processed_data.first[:organisation]
+	      end
       end
       
       context "and problems occur when parsing" do

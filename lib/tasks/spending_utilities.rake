@@ -140,3 +140,23 @@ task :import_ndpbs => :environment do
   end
 end
 
+desc "Import Surrey CC Supplier Payments"
+task :import_surrey_supplier_payments => :environment do
+  surrey = Council.first(:conditions => "name LIKE '%Surrey%'")
+  date = "30-04-2010".to_date
+  puts "Adding transactions for Sutton"
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/surrey_cc/surrey_cc_spending_april_may_2010.csv"), :headers => true) do |row|
+    ft = FinancialTransaction.new(:date => date,
+                                       :date_fuzziness => 30,
+                                       :value => row['Total Value (Net)'],
+                                       :supplier_name => row['Vendor Name'],
+                                       :supplier_uid => row['Vendor Number'],
+                                       :organisation => surrey,
+                                       :service => row['Material Group'],
+                                       :source_url => 'http://www.surreycc.gov.uk/sccwebsite/sccwspages.nsf/LookupWebPagesByTITLE_RTF/Opening+the+books+on+the+cost+of+goods+and+services?opendocument'
+                                       )
+    ft.save!                                  
+    puts "."
+  end
+end
+

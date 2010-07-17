@@ -11,7 +11,7 @@ class SupplierTest < ActiveSupport::TestCase
     
     should have_many(:financial_transactions).dependent(:destroy)
     # should belong_to :company
-    should_validate_presence_of :organisation_type, :organisation_id
+    should validate_presence_of :organisation_type, :organisation_id
     
     should have_db_column :uid
     should have_db_column :url
@@ -78,6 +78,54 @@ class SupplierTest < ActiveSupport::TestCase
         Supplier.normalise_title('foo bar')
       end
     end
+    
+    context "when finding_from_params" do
+      setup do
+        @existing_supplier = Factory(:supplier, :name => 'Foo Company')
+        @organisation = @existing_supplier.organisation
+        @another_org_supplier = Factory(:supplier, :name => 'Bar Company')
+        @another_org = @another_org_supplier.organisation
+        @existing_supplier_with_uid = Factory(:supplier, :name => 'Bar Company', :uid => 'ab123', :organisation => @organisation)
+        @another_org_supplier_with_uid_and_no_name = Factory(:supplier, :name => nil, :uid => 'bc456', :organisation => @another_org)
+      end
+      
+      should "return supplier with given name found for organisation" do
+        assert_equal @existing_supplier, Supplier.find_from_params(:organisation => @organisation, :name => 'Foo Company')
+      end
+      
+      should "return supplier with given uid ignoring title if uid given" do
+        assert_equal @existing_supplier_with_uid, Supplier.find_from_params(:organisation => @organisation, :uid => 'ab123', :name => 'Foo Company')
+      end
+
+      should "raise exception if no organisation" do
+        assert_raise(NoMethodError) { Supplier.find_from_params(:name => 'Foo Company') }
+      end
+      
+      should "return nil if no supplier with given name found for organisation" do
+        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => 'Foo Company')
+      end
+      
+      should "not search using uid if uid blank" do
+        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => 'Foo Company', :uid => '')
+        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => 'Foo Company', :uid => nil)
+        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => nil, :uid => nil)
+      end
+      
+      should "search using name if uid blank" do
+        assert_equal @existing_supplier, Supplier.find_from_params(:organisation => @organisation, :name => 'Foo Company', :uid => '')
+        assert_equal @existing_supplier, Supplier.find_from_params(:organisation => @organisation, :name => 'Foo Company', :uid => nil)
+      end
+      
+      should "not search using name if name blank" do
+        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => '', :uid => 'ab123')
+        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => nil, :uid => 'ab123')
+      end
+      
+      should "search using uid if name blank" do
+        assert_equal @another_org_supplier_with_uid_and_no_name, Supplier.find_from_params(:organisation => @another_org, :name => '', :uid => 'bc456')
+        assert_equal @another_org_supplier_with_uid_and_no_name, Supplier.find_from_params(:organisation => @another_org, :name => nil, :uid => 'bc456')
+      end
+   end
   end
   
   context "An instance of the Supplier class" do

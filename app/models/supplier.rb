@@ -12,6 +12,17 @@ class Supplier < ActiveRecord::Base
   def validate
     errors.add_to_base('Either a name or uid is required') if name.blank? && uid.blank?
   end
+  
+  # Finds supplier given params, one of which must be :organisation (and that organisation 
+  # should have_many suppliers). If a :uid is supplied, checks 
+  # suppliers belonging to organisation with uid and if not for suppliers with matching name
+  def self.find_from_params(params)
+    if params[:uid].blank?
+      params[:name].blank? ? nil : params[:organisation].suppliers.find_by_name(params[:name])
+    else
+      params[:organisation].suppliers.find_by_uid(params[:uid])
+    end 
+  end
 
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising supplier titles
   def self.normalise_title(raw_title)
