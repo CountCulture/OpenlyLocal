@@ -1,7 +1,7 @@
 class CouncilsController < ApplicationController
-  before_filter :authenticate, :except => [:index, :show]
+  before_filter :authenticate, :except => [:index, :show, :spending]
   before_filter :linked_data_available, :only => :show
-  before_filter :find_council, :except => [:index, :new, :create]
+  before_filter :find_council, :except => [:index, :new, :create, :spending]
   caches_action :index, :show, :cache_path => Proc.new { |controller| controller.params }
   
   def index
@@ -57,6 +57,13 @@ class CouncilsController < ApplicationController
     redirect_to council_path(@council)
   rescue
     render :action => "edit"
+  end
+  
+  def spending
+    @councils = Council.all(:joins => :suppliers, :group => "councils.id")
+    @suppliers = Supplier.all(:order => 'total_spend DESC', :limit => 10)
+    @financial_transactions = FinancialTransaction.all(:order => 'value DESC', :limit => 10)
+    @title = "Council Spending Dashboard"
   end
   
   private

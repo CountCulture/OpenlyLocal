@@ -206,7 +206,7 @@ class CouncilsControllerTest < ActionController::TestCase
 
         should assign_to(:councils) { [@council]}
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
       end
       
@@ -218,7 +218,7 @@ class CouncilsControllerTest < ActionController::TestCase
 
         should assign_to(:councils) { [@council] }
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
       end
     end
@@ -230,7 +230,7 @@ class CouncilsControllerTest < ActionController::TestCase
   
       should assign_to(:councils) { [@council]}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
     end
     
@@ -240,7 +240,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
      
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
@@ -412,7 +412,7 @@ class CouncilsControllerTest < ActionController::TestCase
 
       should assign_to(:council) { @council}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
       
       should "show associated members" do
@@ -444,7 +444,7 @@ class CouncilsControllerTest < ActionController::TestCase
 
       should assign_to(:council) { @council}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
 
       should "show associated members" do
@@ -473,7 +473,7 @@ class CouncilsControllerTest < ActionController::TestCase
      
       should assign_to :council
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
@@ -564,7 +564,7 @@ class CouncilsControllerTest < ActionController::TestCase
      
       should assign_to :council
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rdf+xml'
      
       should "show relationship with child authorities" do
@@ -743,7 +743,7 @@ class CouncilsControllerTest < ActionController::TestCase
        should_create :council
        should assign_to :council
        should redirect_to( "the show page for council") { council_path(assigns(:council)) }
-       should_set_the_flash_to "Successfully created council"
+       should set_the_flash.to "Successfully created council"
      
      end
      
@@ -810,7 +810,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should_change("The council url", :to => "http://somecouncil.gov.uk/new") {@council.reload.url}
       should assign_to :council
       should redirect_to( "the show page for council") { council_path(assigns(:council)) }
-      should_set_the_flash_to "Successfully updated council"
+      should set_the_flash.to "Successfully updated council"
     
     end
     
@@ -828,4 +828,65 @@ class CouncilsControllerTest < ActionController::TestCase
 
   end  
 
+  
+  context "on GET to :spending" do
+    should "route open councils to index with show_open_status true" do
+      assert_routing("councils/spending", {:controller => "councils", :action => "spending"})
+    end
+    
+    context "in general" do
+      setup do
+        @high_spending_council = Factory(:council, :name => "High Spender")
+        @supplier_1 = Factory(:supplier, :organisation => @another_council)
+        @high_spending_supplier = Factory(:supplier, :organisation => @high_spending_council)
+        @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
+        @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
+        get :spending
+      end
+
+      should respond_with :success
+      should render_template :spending
+      should_not set_the_flash
+      
+      should 'assign to councils those councils with spending data' do
+        assert_equal 2, assigns(:councils).size
+        assert assigns(:councils).include?(@another_council)
+        assert !assigns(:councils).include?(@council)
+      end
+
+      should 'assign to suppliers ordered by total spend' do
+        assert assigns(:suppliers).include?(@supplier_1)
+        assert assigns(:suppliers).include?(@high_spending_supplier)
+        assert_equal @high_spending_supplier, assigns(:suppliers).first
+      end
+
+      should 'assign to financial_transactions ordered by size' do
+        assert assigns(:financial_transactions).include?(@financial_transaction_1)
+        assert assigns(:financial_transactions).include?(@financial_transaction_2)
+        assert_equal @financial_transaction_2, assigns(:financial_transactions).first
+      end
+
+      # should 'order councils by spend' do
+      #   assert assigns(:councils).include?(@another_council)
+      #   assert !assigns(:councils).include?(@council)
+      # end
+
+      should "have basic title" do
+        assert_select "title", /spending dashboard/i
+      end
+      
+      should 'list councils' do
+        assert_select '#councils li a', /#{@another_council.title}/
+      end
+      
+      should 'list suppliers' do
+        assert_select '#suppliers li a', /#{@supplier_1.title}/
+      end
+      
+      should 'list transactions' do
+        assert_select '#financial_transactions li a', /#{@supplier_1.title}/
+      end
+    end
+  end
+  
 end

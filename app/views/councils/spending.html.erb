@@ -1,0 +1,30 @@
+<h1><%= @title %></h1>
+
+<div id='dashboard' class='dashboard'>
+  <h4>
+    Overview
+  </h4>
+  <div id='supplier_count' class='spending_figure'><span class='value'><%= number_with_delimiter(Supplier.count) %></span> <strong class=description>Suppliers</strong></div>
+  <div id='transaction_count' class='spending_figure'><span class='value'><%= number_with_delimiter(FinancialTransaction.count) %></span> <strong class=description>Financial Transactions</strong></div>
+</div>
+
+<div id="councils" class="item_grouping">
+	<h3>Councils with spending data</h3>
+	<ul>
+		<%- @councils.each do |council| -%>
+			<li>
+				<strong><%= basic_link_for council %></strong> <%= number_with_delimiter(council.suppliers.count) %> suppliers, <%= number_with_delimiter(council.financial_transactions.count) %> transactions
+			</li>
+		<%- end -%>
+	</ul>
+</div>
+
+<div id="suppliers" class="item_grouping">
+	<h3>Biggest suppliers</h3>
+	<%= list_all @suppliers %>
+</div>
+
+<div id="financial_transactions" class="item_grouping">
+	<h3>Biggest single transactions</h3>
+	<%= list_all @financial_transactions %>
+</div>

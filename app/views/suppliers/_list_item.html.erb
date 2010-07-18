@@ -1,3 +1,3 @@
 <li>
-  <strong><%= link_for list_item %></strong> (Total spend: <span class='value'>£<%= number_with_delimiter(list_item.total_spend.to_i, :delimiter => ',') %></span>, Average monthly spend: <span class='value'>£<%= number_with_delimiter(list_item.average_monthly_spend.to_i, :delimiter => ',') %></span>)
+  <strong><%= link_for list_item %></strong> (<span class='value'>£<%= number_with_delimiter(list_item.total_spend.to_i) %> in total</span>, <span class='value'>£<%= number_with_delimiter(list_item.average_monthly_spend.to_i) %></span> per month)
 </li>
