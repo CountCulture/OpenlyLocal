@@ -585,6 +585,7 @@ div#dataset_data table {
 #grouped_datapoints table, table.statistics {
 background-color: #eee;
 clear:left;
+margin-bottom:0;
 }
 #grouped_datapoints td, table.statistics td {
 	border-bottom: 1px solid #fff;

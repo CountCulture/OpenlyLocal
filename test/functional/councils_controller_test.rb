@@ -880,11 +880,11 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should 'list suppliers' do
-        assert_select '#suppliers li a', /#{@supplier_1.title}/
+        assert_select '#suppliers a', /#{@supplier_1.title}/
       end
       
       should 'list transactions' do
-        assert_select '#financial_transactions li a', /#{@supplier_1.title}/
+        assert_select '#financial_transactions a', /#{@supplier_1.title}/
       end
     end
   end

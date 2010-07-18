@@ -500,6 +500,46 @@ class ApplicationHelperTest < ActionView::TestCase
     
   end
   
+  context "basic_table helper method" do
+    setup do
+      @headings = %w(bar baz)
+      @data = [[4,3], ["a", "b"], [nil, "d"]]
+      @basic_table_params = { :caption => "Foo Data", :headings => @headings, :data => @data }
+      @table = basic_table(@basic_table_params)
+      @parsed_table = Hpricot(@table)
+    end
+    
+    should "return table" do
+      assert @parsed_table.at('table')
+    end
+    
+    should "give use given caption" do
+      assert_equal "Foo Data", @parsed_table.at('table caption').inner_text
+    end
+    
+    should "use given headings" do
+      assert @parsed_table.at('table th[text()=bar]')
+      assert @parsed_table.at('table th[text()=baz]')
+    end
+    
+    should "user given data" do
+      assert_equal 3, @parsed_table.search('table tr[td]').size
+    end
+    
+    should "not show link to more by default" do
+      assert !@parsed_table.at('a.more_info')
+    end
+    
+    should "show link to more if given" do
+      assert Hpricot(basic_table(@basic_table_params.merge(:more_info_url => '/bar'))).at('.more_info a')
+    end
+    
+    should "use more info url in caption when link given" do
+      assert Hpricot(basic_table(@basic_table_params.merge(:more_info_url => '/bar'))).at('caption a')
+    end
+    
+  end
+  
   context "the formatted_datapoint_value helper method" do
     should "return nil if value blank" do
       assert_nil formatted_datapoint_value(stub_everything)

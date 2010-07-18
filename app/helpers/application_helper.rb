@@ -13,6 +13,26 @@ module ApplicationHelper
       [dt,dd].join(' ')
     end
   end
+  
+  def basic_table(params={})
+    content=''
+    content << content_tag(:caption, params[:more_info_url] ? link_to(params[:caption], params[:more_info_url]): params[:caption])
+    content << content_tag(:tr) do
+      params[:headings].collect do |heading|
+        content_tag(:th, heading)
+      end
+    end
+    content << 
+    params[:data].collect do |row|
+      content_tag(:tr) do
+        row.collect do |datum| 
+          content_tag(:td, datum)
+        end
+      end
+    end.to_s
+    content_tag(:table, :class => 'statistics') { content }  +
+      (params[:more_info_url] ? content_tag(:p, link_to('see more', params[:more_info_url]), :class => 'more_info') : '')
+  end
 
   def council_page_for(obj, options={})
     return if obj.url.blank?

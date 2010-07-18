@@ -8,8 +8,8 @@
   <div id='transaction_count' class='spending_figure'><span class='value'><%= number_with_delimiter(FinancialTransaction.count) %></span> <strong class=description>Financial Transactions</strong></div>
 </div>
 
-<div id="councils" class="item_grouping">
-	<h3>Councils with spending data</h3>
+<div id="councils">
+	<h3><%= @councils.size %> councils with spending data</h3>
 	<ul>
 		<%- @councils.each do |council| -%>
 			<li>
@@ -19,12 +19,22 @@
 	</ul>
 </div>
 
-<div id="suppliers" class="item_grouping">
-	<h3>Biggest suppliers</h3>
-	<%= list_all @suppliers %>
-</div>
+<div id="relationships">
+	<div id="suppliers" class="item_grouping">
+		<!-- <h3>Biggest suppliers</h3> -->
+		<%= basic_table :caption => 'Biggest suppliers', 
+										:headings => ['Name', 'Total spend', 'Per month'], 
+										:data => @suppliers.collect{ |s| [basic_link_for(s), "£#{number_with_delimiter(s.total_spend.to_i)}", "£#{number_with_delimiter(s.average_monthly_spend.to_i)}"] },
+										:more_info_url => suppliers_path %>
+		<%#= list_all @suppliers %>
+	</div>
 
-<div id="financial_transactions" class="item_grouping">
-	<h3>Biggest single transactions</h3>
-	<%= list_all @financial_transactions %>
+	<div id="financial_transactions" class="item_grouping">
+		<!-- <h3>Biggest single transactions</h3> -->
+		<%#= list_all @financial_transactions %>
+		<%= basic_table :caption => 'Biggest transactions', 
+										:headings => ['Supplier', 'Council', 'Value'], 
+										:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), basic_link_for(t.organisation), link_to("£#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
+										:more_info_url => financial_transactions_path %>
+	</div>
 </div>
