@@ -10,6 +10,7 @@ class SupplierTest < ActiveSupport::TestCase
     end
     
     should have_many(:financial_transactions).dependent(:destroy)
+    should have_one(:spending_stat).dependent(:destroy)
     # should belong_to :company
     should validate_presence_of :organisation_type
     should validate_presence_of :organisation_id
