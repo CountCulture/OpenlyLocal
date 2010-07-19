@@ -1,0 +1,4 @@
+<% form_tag({:action => "index", :controller => 'suppliers'}, {:class => "form", :method => :get}) do %>
+	<%= text_field_tag :name_filter, params[:name_filter] %>
+  <%= submit_tag "Search for supplier", :id => "submit", :name => "submit", :class => "form_submit"  %>
+<% end -%>
