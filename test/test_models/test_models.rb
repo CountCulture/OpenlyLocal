@@ -40,3 +40,8 @@ class TestModelWithSocialNetworking <ActiveRecord::Base
   set_table_name "members"
 end
 
+class TestModelWithSpendingStat <ActiveRecord::Base
+  include SpendingStatUtilities::Base
+  set_table_name "suppliers"
+end
+

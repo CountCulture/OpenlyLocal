@@ -23,6 +23,10 @@ class SupplierTest < ActiveSupport::TestCase
     should have_db_column :name
     should have_db_column :failed_payee_search
     
+    should 'mixin SpendingStatUtilities::Base' do
+      assert @supplier.respond_to?(:spending_stat)
+    end
+    
     should 'belong to organisation polymorphically' do
       organisation = Factory(:council)
       assert_equal organisation, Factory(:supplier, :organisation => organisation).organisation
@@ -75,30 +79,6 @@ class SupplierTest < ActiveSupport::TestCase
       should 'return those with names like given name position of match' do
         assert Supplier.filter_by(:name => 'nothe').include?(@another_supplier)
       end
-    end
-    
-    should "delegate total_spend to spending_stat" do
-      assert_equal @spending_stat.total_spend, @supplier.total_spend
-    end
-    
-    should "return for total_spend if no spending_stat" do
-      assert_nil Supplier.new.total_spend
-    end
-    
-    should "delegate average_monthly_spend to spending_stat" do
-      assert_equal @spending_stat.average_monthly_spend, @supplier.average_monthly_spend
-    end
-    
-    should "return for average_monthly_spend if no spending_stat" do
-      assert_nil Supplier.new.average_monthly_spend
-    end
-    
-    should "delegate average_transaction_value to spending_stat" do
-      assert_equal @spending_stat.average_transaction_value, @supplier.average_transaction_value
-    end
-    
-    should "return for average_transaction_value if no spending_stat" do
-      assert_nil Supplier.new.average_transaction_value
     end
     
     should 'require either name or uid to be present' do
@@ -198,42 +178,6 @@ class SupplierTest < ActiveSupport::TestCase
       assert_equal "#{@supplier.id}-some-title-with-stuff", @supplier.to_param
     end
 
-    context 'when saving' do
-      
-      context "and no associated spending stat" do
-        setup do
-          @supplier.spending_stat.destroy
-          @supplier.reload
-        end
-        
-        should "create spending stat" do
-          assert_difference "SpendingStat.count", 1 do
-            @supplier.save
-          end
-          assert @supplier.spending_stat
-          assert !@supplier.spending_stat.new_record?
-        end
-        
-        should "queue created spending stat for updating" do
-          Delayed::Job.expects(:enqueue).with(kind_of(SpendingStat))
-          @supplier.save
-        end
-      end
-      
-      context "and associated spending_stat exists" do
-        # @supplier already has one
-        should "not create new spending_stat" do
-          assert_no_difference "SpendingStat.count" do
-            @supplier.save
-          end
-        end
-        should "queue created spending stat for updating" do
-          Delayed::Job.expects(:enqueue).with(kind_of(SpendingStat))
-          @supplier.save
-        end
-      end
-    end
-    
     context 'after creating' do
       setup do
         @company = Factory(:company)

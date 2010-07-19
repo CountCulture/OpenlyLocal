@@ -2,17 +2,18 @@ class Supplier < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
   has_many :financial_transactions, :order => 'date', :dependent => :destroy
-  has_one :spending_stat, :as => :organisation, :dependent => :destroy
+  include SpendingStatUtilities::Base
+  # has_one :spending_stat, :as => :organisation, :dependent => :destroy
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
   named_scope :unmatched, :conditions => {:payee_id => nil}
   named_scope :filter_by, lambda { |filter_hash| filter_hash[:name] ? 
                                   { :conditions => ["name LIKE ?", "%#{filter_hash[:name]}%"] } : 
                                   {} }
-  before_save :update_spending_stat
+  # before_save :update_spending_stat
   after_create :match_with_existing_company
   alias_attribute :title, :name
-  delegate :total_spend, :average_monthly_spend, :average_transaction_value, :to => :spending_stat, :allow_nil => true
+  # delegate :total_spend, :average_monthly_spend, :average_transaction_value, :to => :spending_stat, :allow_nil => true
   
   def validate
     errors.add_to_base('Either a name or uid is required') if name.blank? && uid.blank?
@@ -84,11 +85,6 @@ class Supplier < ActiveRecord::Base
   end
   
   private
-  def update_spending_stat
-    create_spending_stat unless spending_stat
-    Delayed::Job.enqueue(spending_stat)
-  end
-  
   def match_with_existing_company
     if payee = possible_payee
       update_attribute(:payee, payee)
