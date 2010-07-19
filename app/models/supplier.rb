@@ -9,9 +9,10 @@ class Supplier < ActiveRecord::Base
   named_scope :filter_by, lambda { |filter_hash| filter_hash[:name] ? 
                                   { :conditions => ["name LIKE ?", "%#{filter_hash[:name]}%"] } : 
                                   {} }
-  before_save :update_spending_info
+  before_save :update_spending_stat
   after_create :match_with_existing_company
   alias_attribute :title, :name
+  delegate :total_spend, :average_monthly_spend, :average_transaction_value, :to => :spending_stat, :allow_nil => true
   
   def validate
     errors.add_to_base('Either a name or uid is required') if name.blank? && uid.blank?
@@ -37,17 +38,6 @@ class Supplier < ActiveRecord::Base
   def associateds
     return [] unless payee
     payee.supplying_relationships - [self]
-  end
-  
-  def calculated_total_spend
-    financial_transactions.sum(:value)
-  end
-  
-  def calculated_average_monthly_spend
-    return if financial_transactions.blank?
-    oldest, newest = self.financial_transactions.values_at(0,-1) #nb we already get in date order
-    months_covered = (newest.date.year - oldest.date.year) * 12 + (newest.date.month - oldest.date.month) + 1 # add one because we want the number of months covered, not just the difference
-    financial_transactions.sum(:value)/(months_covered)
   end
   
   # convenience method for assigning company given company number. Creates company if no company with given company_number exists
@@ -94,9 +84,9 @@ class Supplier < ActiveRecord::Base
   end
   
   private
-  def update_spending_info
-    self.total_spend = calculated_total_spend
-    self.average_monthly_spend = calculated_average_monthly_spend
+  def update_spending_stat
+    create_spending_stat unless spending_stat
+    Delayed::Job.enqueue(spending_stat)
   end
   
   def match_with_existing_company

@@ -7,6 +7,9 @@ class SupplierTest < ActiveSupport::TestCase
     setup do
       @supplier = Factory(:supplier)
       @organisation = @supplier.organisation
+      @spending_stat = @supplier.create_spending_stat(:total_spend => 543.2,
+                                                      :average_monthly_spend => 32.1,
+                                                      :average_transaction_value => 55.4)
     end
     
     should have_many(:financial_transactions).dependent(:destroy)
@@ -19,8 +22,6 @@ class SupplierTest < ActiveSupport::TestCase
     should have_db_column :url
     should have_db_column :name
     should have_db_column :failed_payee_search
-    should have_db_column :total_spend
-    should have_db_column :average_monthly_spend
     
     should 'belong to organisation polymorphically' do
       organisation = Factory(:council)
@@ -76,6 +77,29 @@ class SupplierTest < ActiveSupport::TestCase
       end
     end
     
+    should "delegate total_spend to spending_stat" do
+      assert_equal @spending_stat.total_spend, @supplier.total_spend
+    end
+    
+    should "return for total_spend if no spending_stat" do
+      assert_nil Supplier.new.total_spend
+    end
+    
+    should "delegate average_monthly_spend to spending_stat" do
+      assert_equal @spending_stat.average_monthly_spend, @supplier.average_monthly_spend
+    end
+    
+    should "return for average_monthly_spend if no spending_stat" do
+      assert_nil Supplier.new.average_monthly_spend
+    end
+    
+    should "delegate average_transaction_value to spending_stat" do
+      assert_equal @spending_stat.average_transaction_value, @supplier.average_transaction_value
+    end
+    
+    should "return for average_transaction_value if no spending_stat" do
+      assert_nil Supplier.new.average_transaction_value
+    end
     
     should 'require either name or uid to be present' do
       invalid_supplier = Factory.build(:supplier, :name => nil, :uid => nil)
@@ -157,7 +181,7 @@ class SupplierTest < ActiveSupport::TestCase
         assert_equal @another_org_supplier_with_uid_and_no_name, Supplier.find_from_params(:organisation => @another_org, :name => '', :uid => 'bc456')
         assert_equal @another_org_supplier_with_uid_and_no_name, Supplier.find_from_params(:organisation => @another_org, :name => nil, :uid => 'bc456')
       end
-   end
+    end
   end
   
   context "An instance of the Supplier class" do
@@ -176,26 +200,37 @@ class SupplierTest < ActiveSupport::TestCase
 
     context 'when saving' do
       
-      should 'calculate total_spend' do
-        @supplier.expects(:calculated_total_spend).returns(42.1)
-        @supplier.save!
+      context "and no associated spending stat" do
+        setup do
+          @supplier.spending_stat.destroy
+          @supplier.reload
+        end
+        
+        should "create spending stat" do
+          assert_difference "SpendingStat.count", 1 do
+            @supplier.save
+          end
+          assert @supplier.spending_stat
+          assert !@supplier.spending_stat.new_record?
+        end
+        
+        should "queue created spending stat for updating" do
+          Delayed::Job.expects(:enqueue).with(kind_of(SpendingStat))
+          @supplier.save
+        end
       end
       
-      should 'update total_spend with calculated_total_spend' do
-        @supplier.stubs(:calculated_total_spend).returns(42.1)
-        @supplier.save!
-        assert_equal 42.1, @supplier.reload.total_spend
-      end
-      
-      should 'calculate average_monthly_spend' do
-        @supplier.expects(:calculated_average_monthly_spend).returns(63.4)
-        @supplier.save!
-      end
-      
-      should 'update average_monthly_spend with calculated_average_monthly_spend' do
-        @supplier.stubs(:calculated_average_monthly_spend).returns(63.4)
-        @supplier.save!
-        assert_equal 63.4, @supplier.reload.average_monthly_spend
+      context "and associated spending_stat exists" do
+        # @supplier already has one
+        should "not create new spending_stat" do
+          assert_no_difference "SpendingStat.count" do
+            @supplier.save
+          end
+        end
+        should "queue created spending stat for updating" do
+          Delayed::Job.expects(:enqueue).with(kind_of(SpendingStat))
+          @supplier.save
+        end
       end
     end
     
@@ -461,36 +496,6 @@ class SupplierTest < ActiveSupport::TestCase
         assert_equal [], @sole_supplier.associateds
       end
       
-    end
-    
-    context "when calculating total_spend" do
-      setup do
-        @another_supplier = Factory(:supplier)
-        @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 123.45)
-        @financial_transaction_2 = Factory(:financial_transaction, :supplier => @supplier, :value => -32.1)
-        @financial_transaction_3 = Factory(:financial_transaction, :supplier => @supplier, :value => 22.1)
-        @unrelated_financial_transaction = Factory(:financial_transaction, :supplier => @another_supplier, :value => 22.1)
-      end
-
-      should "sum all financial transactions for supplier" do
-        assert_in_delta (123.45 - 32.1 + 22.1), @supplier.calculated_total_spend, 2 ** -10
-      end
-    end
-
-    context "when calculating average_monthly_spend" do
-      setup do
-        @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 123.45, :date => 11.months.ago)
-        @financial_transaction_2 = Factory(:financial_transaction, :supplier => @supplier, :value => -32.1, :date => 3.months.ago)
-        @financial_transaction_3 = Factory(:financial_transaction, :supplier => @supplier, :value => 22.1, :date => 5.months.ago)
-      end
-
-      should "divide calculated_total_spend by number of months" do
-        assert_in_delta (123.45 - 32.1 + 22.1)/(8+1), @supplier.reload.calculated_average_monthly_spend, 2 ** -10 
-      end
-      
-      should "return nil when no transactions" do
-        assert_nil Factory(:supplier).calculated_average_monthly_spend
-      end
     end
     
     context 'and when updating supplier details' do

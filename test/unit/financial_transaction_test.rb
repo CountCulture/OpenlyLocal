@@ -55,13 +55,12 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         end
       end
       
-      should "update total_spend of associated supplier" do
+      should "queue spending_stat of associated supplier for updating" do
         @supplier = @financial_transaction.supplier
+        @supplier.save!
+        @spending_stat = @supplier.spending_stat
+        Delayed::Job.expects(:enqueue).with(@spending_stat)
         @another_financial_transaction = Factory(:financial_transaction, :description => 'foobar***', :supplier => @supplier, :value => 42)
-
-        @financial_transaction.value = 31
-        @financial_transaction.save!
-        assert_equal 73, @supplier.reload.total_spend
       end
       
     end
@@ -293,8 +292,6 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       assert ft.save
       assert ft.errors.empty?
       assert !ft.supplier.new_record?
-      assert_in_delta 32.40, ft.supplier.total_spend, 2 ** -10
-      assert_in_delta 32.40, ft.supplier.average_monthly_spend, 2 ** -10
     end
   end                      
 end

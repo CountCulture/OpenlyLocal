@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100718183126) do
+ActiveRecord::Schema.define(:version => 20100718222427) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -780,8 +780,6 @@ ActiveRecord::Schema.define(:version => 20100718183126) do
     t.column "updated_at", :datetime
     t.column "url", :string
     t.column "payee_id", :integer
-    t.column "total_spend", :float
-    t.column "average_monthly_spend", :float
     t.column "payee_type", :string
   end
 

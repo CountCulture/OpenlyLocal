@@ -334,22 +334,25 @@ Factory.define :financial_transaction do |f|
 end
 
 Factory.define :company do |f|
-  # f.sequence(:title) { |n| "Company #{n}" }
-	  f.sequence(:company_number) {|n| 100+n }
-	end
-	
-	Factory.define :quango do |f|
-	  f.sequence(:title) { |n| "Quango #{n}" }
-	end
-	
-	Factory.define :investigation do |f|
-	  f.sequence(:standards_body) { |n| "SBE" }
-	  f.sequence(:related_organisation_name) { |n| "Some Council" }
-	  f.sequence(:title) { |n| "AB#{n}" }
-	end
-	
-	Factory.define :investigation_subject_connection do |f|
-	  f.association :investigation
-	  f.association :subject, :factory => :police_force
+# f.sequence(:title) { |n| "Company #{n}" }
+  f.sequence(:company_number) {|n| 100+n }
 end
 
+Factory.define :quango do |f|
+  f.sequence(:title) { |n| "Quango #{n}" }
+end
+
+Factory.define :investigation do |f|
+  f.sequence(:standards_body) { |n| "SBE" }
+  f.sequence(:related_organisation_name) { |n| "Some Council" }
+  f.sequence(:title) { |n| "AB#{n}" }
+end
+
+Factory.define :investigation_subject_connection do |f|
+  f.association :investigation
+  f.association :subject, :factory => :police_force
+end
+
+Factory.define :spending_stat do |f|
+  f.association :organisation, :factory => :supplier
+end
