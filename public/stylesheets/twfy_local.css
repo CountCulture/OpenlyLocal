@@ -406,6 +406,7 @@ body.councils .area, .feed_entry .dateline {
 	border: 1px solid #ddd;
 	background: #eee;
 	padding: 6px;
+	margin-bottom:1em;
 	}
 .dashboard .chart {float:left;}
 .dashboard .in_words {
