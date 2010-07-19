@@ -16,17 +16,22 @@ module ApplicationHelper
   
   def basic_table(params={})
     content=''
+    classes = params[:classes] || []
     content << content_tag(:caption, params[:more_info_url] ? link_to(params[:caption], params[:more_info_url]): params[:caption])
+    i = 0
     content << content_tag(:tr) do
       params[:headings].collect do |heading|
-        content_tag(:th, heading)
+        i+=1
+        content_tag(:th, heading, :class => classes[i-1])
       end
     end
     content << 
     params[:data].collect do |row|
+      i = 0
       content_tag(:tr) do
         row.collect do |datum| 
-          content_tag(:td, datum)
+          i+=1
+          content_tag(:td, datum, :class => classes[i-1])
         end
       end
     end.to_s

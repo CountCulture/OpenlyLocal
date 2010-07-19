@@ -538,6 +538,12 @@ class ApplicationHelperTest < ActionView::TestCase
       assert Hpricot(basic_table(@basic_table_params.merge(:more_info_url => '/bar'))).at('caption a')
     end
     
+    should "use given classes on table headers and rows" do
+      parsed_table = Hpricot(basic_table(@basic_table_params.merge(:classes => ['foo','bar'])))
+      assert_equal ['foo','bar'], parsed_table.search('th').collect{|th| th[:class]}
+      assert parsed_table.search('td').in_groups_of(2).all?{ |g| g.collect{|td| td[:class]} == ['foo','bar']}
+    end
+    
   end
   
   context "the formatted_datapoint_value helper method" do

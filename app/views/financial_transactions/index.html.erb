@@ -3,9 +3,9 @@
 
 <div id="financial_transactions">
 	<!-- <h3>Biggest single transactions</h3> -->
-	<%#= list_all @financial_transactions %>
 	<%= basic_table :caption => 'Biggest transactions', 
 									:headings => ['Supplier', 'Council', 'Value'], 
+									:classes => ['name', nil, 'value'],
 									:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), basic_link_for(t.organisation), link_to("£#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
 									:more_info_url => financial_transactions_path %>
 </div>
