@@ -86,7 +86,7 @@
   </div>
   <div id="suppliers" class="item_grouping">
     <h3><%= link_to "Biggest Suppliers", suppliers_path(:organisation_type => 'Council', :organisation_id => @council.id, :order => 'total_spend') %></h3>
-    <%#= list_all @council.suppliers.all(:limit => 10, :order => 'total_spend DESC') %>
+    <%= list_all @council.suppliers.all(:joins => :spending_stat, :limit => 10, :order => 'spending_stats.total_spend DESC') %>
     <%= content_tag(:p, link_to("See more", suppliers_path(:organisation_type => 'Council', :organisation_id => @council.id, :order => 'total_spend')), :class => "more_info") %>
   </div>
 </div>
