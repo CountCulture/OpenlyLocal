@@ -1,0 +1,15 @@
+<h1><%= @title %></h1>
+
+
+<div id="financial_transactions">
+	<!-- <h3>Biggest single transactions</h3> -->
+	<%#= list_all @financial_transactions %>
+	<%= basic_table :caption => 'Biggest transactions', 
+									:headings => ['Supplier', 'Council', 'Value'], 
+									:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), basic_link_for(t.organisation), link_to("£#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
+									:more_info_url => financial_transactions_path %>
+</div>
+
+<%= will_paginate @financial_transactions %>
+
+<%= render :partial => '/shared/api_info' %>
