@@ -2,28 +2,30 @@
 <div id="open_data_dashboard">
   <%- councils_with_status = @councils.group_by(&:open_data_status) -%>
   <h1><%= @title %></h1>
-  <div id="statistics">
-    <%= image_tag(Gchart.pie(:data => %w(open_data semi_open_data no_open_data).collect{|s| [councils_with_status[s]].flatten.nitems}, :legend => %w(open_data semi_open_data no_open_data).collect(&:titleize), :bar_colors => ['003366', 'a9c0db', '8a1f11'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "Open Data dashboard graph") %>
-    <div class='in_words'>
-      <span class='value open'><%= [councils_with_status['open_data']].flatten.nitems.to_i + [councils_with_status['semi_open_data']].flatten.nitems.to_i %></span> out of 
-			<span class='value not_open'><%= @councils.size %></span> <span class='description'>local authorities publish open data 
-				<em>(but only <%= [councils_with_status['open_data']].flatten.nitems %> are are <%= link_to "truly open", :anchor => "definitions" %>)</em>
-			</span>
-    </div>
-  </div>
-<%- %w(open_data semi_open_data no_open_data).each do |status| -%>
-  <div id='<%= status %>_councils' class='open_data_council_grouping'>
-    <h2>Councils with <%= status.gsub('_', ' ') %></h2>
-    <%- if councils_with_status[status].blank? -%>
-      <p class="alert">No councils found</p>
-    <%- else -%>
-      <%= render :partial => 'council', :collection => councils_with_status[status] %>
-    <%- end -%>
-  </div>
-<%- end -%>
+	<div class="dashboard">
+	  <div id="statistics">
+	    <%= image_tag(Gchart.pie(:data => %w(open_data semi_open_data no_open_data).collect{|s| [councils_with_status[s]].flatten.nitems}, :legend => %w(open_data semi_open_data no_open_data).collect(&:titleize), :bar_colors => ['003366', 'a9c0db', '8a1f11'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "Open Data dashboard graph") %>
+	    <div class='in_words'>
+	      <span class='value open'><%= [councils_with_status['open_data']].flatten.nitems.to_i + [councils_with_status['semi_open_data']].flatten.nitems.to_i %></span> out of 
+				<span class='value not_open'><%= @councils.size %></span> <span class='description'>local authorities publish open data 
+					<em>(but only <%= [councils_with_status['open_data']].flatten.nitems %> are are <%= link_to "truly open", :anchor => "definitions" %>)</em>
+				</span>
+	    </div>
+	  </div>
+	</div>
+	<%- %w(open_data semi_open_data no_open_data).each do |status| -%>
+	  <div id='<%= status %>_councils' class='open_data_council_grouping'>
+	    <h2>Councils with <%= status.gsub('_', ' ') %></h2>
+	    <%- if councils_with_status[status].blank? -%>
+	      <p class="alert">No councils found</p>
+	    <%- else -%>
+	      <%= render :partial => 'council', :collection => councils_with_status[status] %>
+	    <%- end -%>
+	  </div>
+	<%- end -%>
 
-<a name='definitions'></a>
-<h4>Notes</h4>
+	<a name='definitions'></a>
+	<h4>Notes</h4>
   <ul>
     <li>Sites that are open are ones publishing a page on their website listing the open data sets they publish. If we&#x27;re missing your council&#x27;s entry, please <%= mail_to "countculture@gmail.com", 'email us', :encode => "javascript" %>.</li>
     <li>Fully open means with a licence that explictly allows free and open reuse, including commercial reuse, and at the most applies share-alike and attribution restrictions to the data (see <a href="http://opendefinition.org/" title="Open Knowledge Definition" class="external">here</a>). An example is the <a href="http://data.gov.uk/terms-and-conditions" class="external">data.gov.uk licence</a>.</li>

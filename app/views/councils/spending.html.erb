@@ -1,40 +1,39 @@
-<h1><%= @title %></h1>
-
-<div id='dashboard' class='dashboard'>
-  <h4>
-    Overview
-  </h4>
-  <div id='supplier_count' class='spending_figure'><span class='value'><%= number_with_delimiter(Supplier.count) %></span> <strong class=description>Suppliers</strong></div>
-  <div id='transaction_count' class='spending_figure'><span class='value'><%= number_with_delimiter(FinancialTransaction.count) %></span> <strong class=description>Financial Transactions</strong></div>
-</div>
-
-<div id="councils">
-	<h3><%= @councils.size %> councils with spending data</h3>
-	<ul>
-		<%- @councils.each do |council| -%>
-			<li>
-				<strong><%= basic_link_for council %></strong> <%= number_with_delimiter(council.suppliers.count) %> suppliers, <%= number_with_delimiter(council.financial_transactions.count) %> transactions
-			</li>
-		<%- end -%>
-	</ul>
-</div>
-
-<div id="relationships">
-	<div id="suppliers" class="item_grouping">
-		<!-- <h3>Biggest suppliers</h3> -->
-		<%= basic_table :caption => 'Biggest suppliers', 
-										:headings => ['Name', 'Total spend', 'Per month'], 
-										:data => @suppliers.collect{ |s| [basic_link_for(s), "£#{number_with_delimiter(s.total_spend.to_i)}", "£#{number_with_delimiter(s.average_monthly_spend.to_i)}"] },
-										:more_info_url => suppliers_path %>
-		<%#= list_all @suppliers %>
+<div id='spanding_data_dashboard' class='dashboard'>
+	<h1><%= @title %></h1>
+	
+	<div class="dashboard">
+	  <div id="statistics">
+	    <div class='in_words'>
+			  <div id='council_count' class='spending_count'><span class='value'><%= @councils.size %></span> <strong class=description>Councils</strong></div>
+			  <div id='supplier_count' class='spending_count'><span class='value'><%= number_with_delimiter(Supplier.count) %></span> <strong class=description>Suppliers</strong></div>
+			  <div id='transaction_count' class='spending_count'><span class='value'><%= number_with_delimiter(FinancialTransaction.count) %></span> <strong class=description>Financial Transactions</strong></div>
+	    </div>
+	  </div>
 	</div>
 
-	<div id="financial_transactions" class="item_grouping">
-		<!-- <h3>Biggest single transactions</h3> -->
-		<%#= list_all @financial_transactions %>
-		<%= basic_table :caption => 'Biggest transactions', 
-										:headings => ['Supplier', 'Council', 'Value'], 
-										:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), basic_link_for(t.organisation), link_to("£#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
-										:more_info_url => financial_transactions_path %>
+	<div id="relationships">
+		<div id="councils" class="item_grouping">
+			<%= basic_table :caption => 'Councils with spending data', 
+											:headings => ['Name', 'Total spend', 'Per month'], 
+											:data => @councils.collect{ |c| [basic_link_for(c), "£#{number_with_delimiter(c.total_spend.to_i)}", "£#{number_with_delimiter(c.average_monthly_spend.to_i)}"] } %>
+			<p>See also <%= link_to "Open Data Scoreboard", '/councils/open' %> and Armchair Auditor <a href="http://armchairauditor.co.uk/scoreboard" class="external">Spending Data Scoreboard</a></p>
+		</div>
+	
+		<div id="suppliers" class="item_grouping">
+			<%= basic_table :caption => 'Biggest suppliers', 
+											:headings => ['Name', 'Total spend', 'Per month'], 
+											:data => @suppliers.collect{ |s| [basic_link_for(s), "£#{number_with_delimiter(s.total_spend.to_i)}", "£#{number_with_delimiter(s.average_monthly_spend.to_i)}"] },
+											:more_info_url => suppliers_path %>
+			<%#= list_all @suppliers %>
+		</div>
+
+		<div id="financial_transactions" class="item_grouping">
+			<!-- <h3>Biggest single transactions</h3> -->
+			<%#= list_all @financial_transactions %>
+			<%= basic_table :caption => 'Biggest transactions', 
+											:headings => ['Supplier', 'Council', 'Value'], 
+											:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), basic_link_for(t.organisation), link_to("£#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
+											:more_info_url => financial_transactions_path %>
+		</div>
 	</div>
 </div>

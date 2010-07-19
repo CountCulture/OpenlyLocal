@@ -401,25 +401,31 @@ body.councils .area, .feed_entry .dateline {
 	background: url(/images/semi_open_data.png) no-repeat;
 	padding: 1px 0px 1px 82px;
 }
-#open_data_dashboard #statistics {
+.dashboard #statistics {
 	width:auto;
 	border: 1px solid #ddd;
 	background: #eee;
 	padding: 6px;
 	}
-#open_data_dashboard .chart {float:left;}
-#open_data_dashboard .in_words {
+.dashboard .chart {float:left;}
+.dashboard .in_words {
 	float:left;
 	font-size: 2em;
-	width: 400px;
 	margin-left: 1em;}
-#open_data_dashboard .in_words .value {font-size: 4em;
+#open_data_dashboard .in_words {
+	width: 400px;
+}
+.dashboard .in_words .value {font-size: 4em;
 	line-height: 1em;}
-#open_data_dashboard .in_words .value.open {color: #036;}
-#open_data_dashboard .in_words .value.not_open {color: #8a1f11;}
-#open_data_dashboard .in_words .description {
+.dashboard .in_words .value {color: #036;}
+.dashboard .in_words .value.not_open {color: #8a1f11;}
+.dashboard .in_words .description {
 	line-height: 1.5em;
 	display:block;}
+.dashboard .spending_count {
+	float:left;
+	margin-right:3em;
+	text-align:right;}
 a.output_area_classification_link {color:#888;}
 /*Meeting formatting*/
 .past {color:#515151;}
@@ -551,7 +557,7 @@ div#dataset_data table {
 	width:auto;}
 
 /*Spending specific formatting*/
-#dashboard {
+#supplier_dashboard {
 	float: right;
 	width:300px;
 	padding:6px;
@@ -560,11 +566,11 @@ div#dataset_data table {
 	background: #eee;
 	text-align:right;
 }
-#dashboard .value {
+#supplier_dashboard .value {
 	font-size: 3em;
 	color: #8a1f11;
 }
-#dashboard .description {
+#supplier_dashboard .description {
 	font-size: 1.2em;
 }
 /*Ness Statistics formatting*/

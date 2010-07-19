@@ -5,7 +5,7 @@
 </div>
 <h1><%= @supplier.title %> <%= link_to('(full details)', @supplier.payee) if @supplier.payee %></h1>
 
-<div id='dashboard' class='dashboard'>
+<div id='supplier_dashboard' class='dashboard'>
   <h4>
     Spent by <%= link_for @organisation %> with <%= basic_link_for(@supplier.payee) || @supplier.title %>
   </h4>

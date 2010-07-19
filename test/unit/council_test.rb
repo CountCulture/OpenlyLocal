@@ -67,6 +67,10 @@ class CouncilTest < ActiveSupport::TestCase
       assert Council.new.respond_to?(:grouped_datapoints)
     end
         
+    should "mixin SpendingStat::Base module" do
+      assert Council.new.respond_to?(:spending_stat)
+    end
+
     context "should have parsed named_scope which" do
       setup do
         @another_council = Factory(:another_council)
