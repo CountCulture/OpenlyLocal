@@ -18,6 +18,7 @@
     <h3>Information about this supplier</h3>
     <dl id="<%= @supplier.payee.class.to_s.underscore %>_attributes" class="attributes">
       <%= attribute_tag :full_name, @supplier.payee[:title] %>
+      <%= attribute_tag :supplier_ref, @supplier.uid %>
       <%= render :partial => "#{@supplier.payee.class.to_s.underscore.pluralize}/attributes", :object => @supplier.payee %>
     </dl>
     <div id="other_supplying_relationships" class='clear-left'>

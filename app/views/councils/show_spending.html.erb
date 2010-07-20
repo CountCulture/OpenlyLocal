@@ -30,15 +30,15 @@
 												:headings => ['Name', 'Total spend', 'Per month'], 
 												:classes => ['name', 'value', 'value'],
 												:data => @suppliers.collect{ |s| [basic_link_for(s), "&pound;#{number_with_delimiter(s.total_spend.to_i)}", "&pound;#{number_with_delimiter(s.average_monthly_spend.to_i)}"] },
-												:more_info_url => suppliers_path %>
+												:more_info_url => suppliers_path(:organisation_id => @council.id, :organisation_type => 'Council') %>
 			</div>
 
 			<div id="financial_transactions" class="item_grouping">
 				<%= basic_table :caption => 'Biggest transactions', 
-												:headings => ['Supplier', 'Council', 'Value'], 
-												:classes => ['name', nil, 'value'],
-												:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), basic_link_for(t.organisation), link_to("&pound;#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
-												:more_info_url => financial_transactions_path %>
+												:headings => ['Supplier', 'Service', 'Value'], 
+												:classes => ['name', 'description', 'value'],
+												:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), t.service||'Not known', link_to("&pound;#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
+												:more_info_url => financial_transactions_path(:organisation_id => @council.id, :organisation_type => 'Council') %>
 			</div>
 		</div>
 	<%- end -%>

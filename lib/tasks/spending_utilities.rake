@@ -107,10 +107,11 @@ desc "Import LB Richmond Supplier Payments"
 task :import_richmond_supplier_payments => :environment do
   richmond = Council.first(:conditions => "name LIKE '%Richmond%'")
   suppliers = richmond.suppliers
-  periods = %w(05_2010)
+  periods = %w(06_2010)
   periods.each do |period|
     puts "Adding transactions for #{period}"
-    FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/lb_richmond/supplier_payments_#{period}.csv"), :headers => true) do |row|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_richmond/supplier_payments_#{period}.csv"), :headers => true) do |csv_file|
+      csv_file.each do |row|
             supplier = suppliers.detect{ |s| s.name == row['Supplier']}
             next unless supplier || row['Supplier'] # skip empty rows
             unless supplier
@@ -122,13 +123,16 @@ task :import_richmond_supplier_payments => :environment do
             supplier.financial_transactions.create!(:uid => row['Doc No'],
                                                     :date => date,
                                                     :date_fuzziness => date_fuzziness,
-                                                    :value => row['Amount'],
-                                                    :transaction_type => row['Type'],
+                                                    :value => row['Value'],
+                                                    :csv_line_number => csv_file.lineno,
+                                                    # :transaction_type => row['Type'],
                                                     :department_name => row['Directorate'],
                                                     # :cost_centre => row['Cost Centre'],
-                                                    :service => row['Service'],
-                                                    :source_url => 'http://www.richmond.gov.uk/home/council_government_and_democracy/council/council_payments_to_suppliers.htm'
+                                                    :service => row['Type of Expenditure'],
+                                                    :source_url => 'http://www.richmond.gov.uk/june_expenses.csv'
                                                   )
+    end
+
     end
   end
 end
