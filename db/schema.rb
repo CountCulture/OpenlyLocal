@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100719115919) do
+ActiveRecord::Schema.define(:version => 20100720203800) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -386,6 +386,9 @@ ActiveRecord::Schema.define(:version => 20100719115919) do
     t.column "subject_type", :string
   end
 
+  add_index "investigation_subject_connections", ["investigation_id"], :name => "index_investigation_subject_connections_on_investigation_id"
+  add_index "investigation_subject_connections", ["subject_id", "subject_type"], :name => "index_investigation_subject_connections_on_subject"
+
   create_table "investigations", :force => true do |t|
     t.column "uid", :string
     t.column "url", :string
@@ -405,6 +408,8 @@ ActiveRecord::Schema.define(:version => 20100719115919) do
     t.column "related_organisation_type", :string
     t.column "related_organisation_id", :integer
   end
+
+  add_index "investigations", ["related_organisation_id", "related_organisation_type"], :name => "index_investigations_on_related_organisation"
 
   create_table "ldg_services", :force => true do |t|
     t.column "category", :string
@@ -565,6 +570,7 @@ ActiveRecord::Schema.define(:version => 20100719115919) do
   end
 
   add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"
+  add_index "parsers", ["id", "type"], :name => "index_parsers_on_id_and_type"
 
   create_table "pension_funds", :force => true do |t|
     t.column "name", :string
@@ -770,6 +776,8 @@ ActiveRecord::Schema.define(:version => 20100719115919) do
     t.column "average_transaction_value", :float
   end
 
+  add_index "spending_stats", ["organisation_id", "organisation_type"], :name => "index_spending_stats_on_organisation"
+
   create_table "suppliers", :force => true do |t|
     t.column "name", :string
     t.column "uid", :string
@@ -784,6 +792,7 @@ ActiveRecord::Schema.define(:version => 20100719115919) do
   end
 
   add_index "suppliers", ["organisation_id", "organisation_type"], :name => "index_suppliers_on_organisation_id_and_organisation_type"
+  add_index "suppliers", ["payee_id", "payee_type"], :name => "index_suppliers_on_payee_id_and_payee_type"
 
   create_table "taggings", :force => true do |t|
     t.column "tag_id", :integer
@@ -835,6 +844,7 @@ ActiveRecord::Schema.define(:version => 20100719115919) do
 
   add_index "user_submissions", ["member_id"], :name => "index_user_submissions_on_member_id"
   add_index "user_submissions", ["item_id"], :name => "index_user_submissions_on_council_id"
+  add_index "user_submissions", ["item_id", "item_type"], :name => "index_user_submissions_on_item_id_and_item_type"
 
   create_table "wards", :force => true do |t|
     t.column "name", :string
