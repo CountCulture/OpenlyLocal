@@ -1,5 +1,5 @@
 class CouncilsController < ApplicationController
-  before_filter :authenticate, :except => [:index, :show, :spending]
+  before_filter :authenticate, :except => [:index, :show, :spending, :show_spending]
   before_filter :linked_data_available, :only => :show
   before_filter :find_council, :except => [:index, :new, :create, :spending]
   caches_action :index, :show, :cache_path => Proc.new { |controller| controller.params }
@@ -64,6 +64,12 @@ class CouncilsController < ApplicationController
     @suppliers = Supplier.all(:joins => :spending_stat, :order => 'spending_stats.total_spend DESC', :limit => 10)
     @financial_transactions = FinancialTransaction.all(:order => 'value DESC', :limit => 10)
     @title = "Council Spending Dashboard"
+  end
+  
+  def show_spending
+    @suppliers = @council.suppliers.all(:joins => :spending_stat, :order => 'spending_stats.total_spend DESC', :limit => 10)
+    @financial_transactions = @council.financial_transactions.all(:order => 'value DESC', :limit => 10)
+    @title = "Spending Dashboard :: #{@council.title}"
   end
   
   private

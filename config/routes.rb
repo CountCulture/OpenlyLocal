@@ -1,5 +1,4 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :feed_entries
 
   map.resources :investigations
 
@@ -22,6 +21,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/open', :controller => "councils", :action => "index", :show_open_status => true
   map.connect 'councils/open.xml', :controller => "councils", :action => "index", :show_open_status => true, :format => "xml"
   map.connect 'councils/open.json', :controller => "councils", :action => "index", :show_open_status => true, :format => "json"
+  map.connect 'councils/:id/spending', :controller => "councils", :action => "show_spending"
   
   # map.connect 'meetings.:format', :controller => "meetings", :action => "index"
   # map.connect 'meetings', :controller => "meetings", :action => "index"
@@ -29,7 +29,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'hyperlocal_sites/custom_search.xml', :controller => "hyperlocal_sites", :action => "index", :custom_search => true, :format => "xml"
   map.resources :hyperlocal_sites, :collection => { :custom_search_results => :get }
   
-  map.resources :committees, :documents, :hyperlocal_groups, :hyperlocal_sites, :members, :datapoints, :dataset_topic_groupings, :parsers, :pension_funds, :portal_systems, :police_forces, :police_authorities, :police_teams, :political_parties, :polls, :services, :twitter_accounts, :user_submissions, :wards
+  map.resources :committees, :documents, :hyperlocal_groups, :hyperlocal_sites, :members, :datapoints, :dataset_topic_groupings, :parsers, :pension_funds, :portal_systems, :police_forces, :police_authorities, :police_teams, :political_parties, :polls, :services, :twitter_accounts, :user_submissions, :wards, :feed_entries
   
   map.resources :related_articles, :only => [:new, :create, :index]
 

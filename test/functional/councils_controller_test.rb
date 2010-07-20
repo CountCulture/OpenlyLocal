@@ -830,7 +830,7 @@ class CouncilsControllerTest < ActionController::TestCase
 
   
   context "on GET to :spending" do
-    should "route open councils to index with show_open_status true" do
+    should "route councils spending to spending action" do
       assert_routing("councils/spending", {:controller => "councils", :action => "spending"})
     end
     
@@ -841,6 +841,7 @@ class CouncilsControllerTest < ActionController::TestCase
         @high_spending_supplier = Factory(:supplier, :organisation => @high_spending_council)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
+        SpendingStat.all.each(&:perform) # update all spending stats
         get :spending
       end
 
@@ -876,7 +877,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should 'list councils' do
-        assert_select '#councils li a', /#{@another_council.title}/
+        assert_select '#councils tr a', /#{@another_council.title}/
       end
       
       should 'list suppliers' do
@@ -885,6 +886,73 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should 'list transactions' do
         assert_select '#financial_transactions a', /#{@supplier_1.title}/
+      end
+    end
+  end
+  
+  context "on GET to :show_spending" do
+    should "route open councils to index with show_open_status true" do
+      assert_routing("councils/1/spending", {:controller => "councils", :action => "show_spending", :id => "1"})
+    end
+    
+    context "in general" do
+      setup do
+        @supplier_1 = Factory(:supplier, :organisation => @council)
+        @high_spending_supplier = Factory(:supplier, :organisation => @council)
+        @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
+        @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
+        get :show_spending, :id => @council.id
+      end
+
+      should respond_with :success
+      should render_template :show_spending
+      should_not set_the_flash
+      should assign_to :council
+
+      # should 'assign to suppliers ordered by total spend' do
+      #   assert assigns(:suppliers).include?(@supplier_1)
+      #   assert assigns(:suppliers).include?(@high_spending_supplier)
+      #   assert_equal @high_spending_supplier, assigns(:suppliers).first
+      # end
+      # 
+      # should 'assign to financial_transactions ordered by size' do
+      #   assert assigns(:financial_transactions).include?(@financial_transaction_1)
+      #   assert assigns(:financial_transactions).include?(@financial_transaction_2)
+      #   assert_equal @financial_transaction_2, assigns(:financial_transactions).first
+      # end
+
+      should "have basic title" do
+        assert_select "title", /spending dashboard/i
+      end
+      
+      should "include council in basic title" do
+        assert_select "title", /#{@council.title}/i
+      end
+      
+      should 'list suppliers' do
+        assert_select '#suppliers a', /#{@supplier_1.title}/
+      end
+      
+      should 'list transactions' do
+        assert_select '#financial_transactions a', /#{@supplier_1.title}/
+      end
+    end
+    
+    context "and no spending data" do
+      setup do
+        get :show_spending, :id => @another_council.id
+      end
+
+      should respond_with :success
+      should render_template :show_spending
+      should_not set_the_flash
+      should assign_to :council
+
+      should "show message" do
+        assert_select "p.alert", /spending data/i
+      end
+      should "not show dashboard" do
+        assert_select "div.dashboard", false
       end
     end
   end

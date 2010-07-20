@@ -427,6 +427,24 @@ body.councils .area, .feed_entry .dateline {
 	float:left;
 	margin-right:3em;
 	text-align:right;}
+#council_spending_dashboard .in_words .value {
+	font-size: 3.3em;
+	line-height: 1em;}
+.dashboard .in_words .explanation {
+	float:left;
+}
+#council_spending_dashboard .in_words .explanation .value {
+	font-size: 1.4em;}
+#council_spending_dashboard .spending_count {
+	float:none;
+	margin-right:0;
+	font-size:0.9em;}
+#council_spending_dashboard .explanation .description {
+	display:inline;}
+#council_spending_dashboard #total_spend {
+	margin-right:1em;
+	float:left;
+}		
 a.output_area_classification_link {color:#888;}
 /*Meeting formatting*/
 .past {color:#515151;}
