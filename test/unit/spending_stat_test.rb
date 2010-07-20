@@ -49,12 +49,53 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal 432.1, @spending_stat.reload.average_monthly_spend
       end
     end
+    
+    context "when returning earliest_transaction_date" do
+      should "return first date" do
+        assert_equal 11.months.ago.to_date, @spending_stat.earliest_transaction_date
+      end
+      
+      context "and date has fuzziness" do
+        setup do
+          @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 23.45, :date => 12.months.ago, :date_fuzziness => 45)
+        end
 
+        should "should return date less fuziness" do
+          assert_equal (12.months.ago.to_date - 45.days), @spending_stat.earliest_transaction_date
+        end
+      end
+    end
+
+    context "when returning latest_transaction_date" do
+      should "return first date" do
+        assert_equal 3.months.ago.to_date, @spending_stat.latest_transaction_date
+      end
+      
+      context "and date has fuzziness" do
+        setup do
+          @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 23.45, :date => 2.months.ago, :date_fuzziness => 45)
+        end
+
+        should "should return date less fuziness" do
+          assert_equal (2.months.ago.to_date + 45.days), @spending_stat.latest_transaction_date
+        end
+      end
+    end
+    
+    context "when returning months_covered" do
+      should "return number of months between earliest_transaction_date and latest_transaction_date" do
+        @spending_stat.expects(:earliest_transaction_date).at_least_once.returns(5.months.ago)
+        @spending_stat.expects(:latest_transaction_date).at_least_once.returns(45.days.ago)
+        assert_equal 5, @spending_stat.months_covered
+      end
+    end
+    
     context "when calculating total_spend" do
       should "sum all financial transactions for organisation" do
         assert_in_delta (123.45 - 32.1 + 22.1), @spending_stat.calculated_total_spend, 2 ** -10
       end
     end
+    
     context "when calculating average_monthly_spend" do
 
       should "divide calculated_total_of spend for organisation by number of months" do

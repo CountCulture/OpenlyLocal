@@ -14,7 +14,10 @@
 		  <div id="statistics">
 		    <div class='in_words'>
 			
-				  <div id='total_spend' class='spending_count'><span class='value'>&pound;<%= number_with_delimiter(@council.total_spend.to_i) %></span> <strong class=description>Spent</strong></div>
+				  <div id='total_spend' class='spending_count'>
+						<span class='value'>&pound;<%= number_with_delimiter(@council.total_spend.to_i) %></span> 
+						<strong class=description>Spent in <%= @council.spending_stat.months_covered %> months since <%= @council.spending_stat.earliest_transaction_date.strftime("%b %Y") %></strong>
+					</div>
 					<div class="explanation">
 					  <div id='average_monthly_spend' class='spending_count'><span class='value'>&pound;<%= number_with_delimiter(@council.average_monthly_spend.to_i) %></span> <strong class=description>Spent per month</strong></div>
 					  <div id='supplier_count' class='spending_count'><span class='value'><%= number_with_delimiter(@council.suppliers.count) %></span> <strong class=description>Suppliers</strong></div>
