@@ -164,3 +164,31 @@ task :import_surrey_supplier_payments => :environment do
   end
 end
 
+desc "Import Uttlesford Supplier Payments"
+task :import_uttlesford_supplier_payments => :environment do
+  uttlesford = Council.first(:conditions => "name LIKE '%Uttlesford%'")
+  puts "Adding transactions for Uttlesford"
+  supplier, transactions = nil, []
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/uttlesford/june_2010.csv"), :headers => true) do |row|
+    if supplier_name = row["Supplier Name"]
+      transactions.each do |ft_row|
+        ft = FinancialTransaction.new(     :date => row["Date"].gsub('/','-'),
+                                           :value => ft_row['Value'],
+                                           :cost_centre => ft_row["Cost Centre"],
+                                           :supplier_name => supplier_name,
+                                           :uid => ft_row['Doc Ref'],
+                                           :organisation => uttlesford,
+                                           :service => ft_row["Cost Centre Description"],
+                                           :source_url => 'http://www.uttlesford.gov.uk/uttlesford/file/Supplier%20Payments%20Greater%20than%20500%20June%202010.xls'
+                                           )
+        ft.save!                                  
+        puts "."
+        transactions = [] # reset
+      end
+    else
+      transactions << row
+    end
+  end
+end
+
+
