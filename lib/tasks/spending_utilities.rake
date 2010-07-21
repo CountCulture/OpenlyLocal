@@ -191,4 +191,30 @@ task :import_uttlesford_supplier_payments => :environment do
   end
 end
 
+desc "Import King's Lynn & West Norfolk Payments"
+task :import_kl_and_wn_payments => :environment do
+  klandwn = Council.first(:conditions => "name LIKE '%West Norfolk%'")
+  puts "Adding transactions for King's Lynn & West Norfolk"
+  ['April 2010', 'May 2010'].each do |period|
+    puts "Adding transactions for #{period}"
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/kl_and_w_norfolk/Payments to Suppliers #{period}.csv"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => row['PAYMENT DATE'].sub('-10','-2010').gsub('/', '-'),
+                                      :value => row['PAYMENT'],
+                                      :supplier_name => row['SUPPLIER NAME'],
+                                      :organisation => klandwn,
+                                      :csv_line_number => csv_file.lineno,
+                                      :service => row['SERVICE/ACTIVITY'],
+                                      :description => row['DETAIL'],
+                                      :transaction_type => row['TYPE'],
+                                      :source_url => "http://www.west-norfolk.gov.uk/files/Payments%20to%20Suppliers%20#{period.gsub(' ','%20')}.csv"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end
+  end
+  klandwn.spending_stat.perform
+end
+
 
