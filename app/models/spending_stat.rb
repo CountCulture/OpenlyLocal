@@ -1,6 +1,7 @@
 class SpendingStat < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
   validates_presence_of :organisation_type, :organisation_id
+  serialize :spend_by_month
   
   def calculated_average_monthly_spend
     return if organisation.financial_transactions.blank?

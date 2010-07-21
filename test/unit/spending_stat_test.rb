@@ -20,7 +20,11 @@ class SpendingStatTest < ActiveSupport::TestCase
     should have_db_column :total_spend
     should have_db_column :average_monthly_spend
     should have_db_column :average_transaction_value
-
+    should have_db_column :spend_by_month
+    
+    should 'serialize spend_by_month' do
+      assert_equal ['foo', 'bar'], Factory(:spending_stat, :spend_by_month => ['foo', 'bar']).reload.spend_by_month 
+    end
   end
   
   context "An instance of the SpendingStat class" do
