@@ -40,7 +40,7 @@
 				<%= basic_table :caption => 'Biggest transactions', 
 												:headings => ['Supplier', 'Service', 'Value'], 
 												:classes => ['name', 'description', 'value'],
-												:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), t.service||'Not known', link_to("&pound;#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
+												:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), t.full_description||'Not known', link_to("&pound;#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
 												:more_info_url => financial_transactions_path(:organisation_id => @council.id, :organisation_type => 'Council') %>
 			</div>
 		</div>

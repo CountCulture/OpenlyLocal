@@ -118,6 +118,31 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning full description" do
+
+      should "return nil by if description and service blank" do
+        assert_nil @financial_transaction.full_description
+        @financial_transaction.attributes = {:description => '', :service => ''}
+        assert_nil @financial_transaction.full_description
+      end
+      
+      should "return description if description not blank" do
+        @financial_transaction.description = 'foo description'
+        assert_equal 'foo description', @financial_transaction.full_description
+      end
+      
+      should "return service if service not blank" do
+        @financial_transaction.service = 'bar service'
+        assert_equal 'bar service', @financial_transaction.full_description
+      end
+      
+      should "return description and service if descriptiopn and service not blank" do
+        @financial_transaction.description = 'foo description'
+        @financial_transaction.service = 'bar service'
+        assert_equal 'foo description (bar service)', @financial_transaction.full_description
+      end
+    end
+    
     context "when returning organisation" do
 
       should "return supplier organisation" do
@@ -135,7 +160,6 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_nil FinancialTransaction.new.organisation
       end
     end
-
 
    context 'when setting supplier_name' do
      setup do

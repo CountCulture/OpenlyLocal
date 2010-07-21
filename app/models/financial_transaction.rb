@@ -15,20 +15,18 @@ class FinancialTransaction < ActiveRecord::Base
     self[:department_name] = raw_name.squish
   end
   
+  def full_description
+    return unless description? || service?
+    description? ? (service? ? "#{description} (#{service})": description ) : service 
+  end
+  
   # As financial transactions are often create from CSV files, we need to set supplier 
   # organisation directly, and also org may be known after the Supplier Name, so only update supplier if org 
 	def organisation=(org)
-    # supplier.organisation = org if supplier
-    # @organisation = org
 	  if supplier 
-      # p supplier,org
-      # unless supplier.organisation
-      # self.supplier = org.suppliers.find_from_params(:name => supplier.name, :uid => supplier.uid, :organisation => org)
       exist_supplier = org.suppliers.find_from_params(:name => supplier.name, :uid => supplier.uid, :organisation => org)
       self.supplier = exist_supplier || supplier
       self.supplier.organisation = org unless exist_supplier# end
-      # p self, self.supplier
-      # (supplier = org.suppliers.find_by_name(name)) unless supplier.organisation
     else
       @organisation = org
     end
