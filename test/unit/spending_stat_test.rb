@@ -52,6 +52,19 @@ class SpendingStatTest < ActiveSupport::TestCase
         @spending_stat.perform
         assert_equal 432.1, @spending_stat.reload.average_monthly_spend
       end
+      
+      should "should calculate spend_by_month" do
+        @spending_stat.expects(:calculated_spend_by_month)
+        @spending_stat.perform
+      end
+      
+      should "should update with spend_by_month" do
+        dummy_spend_by_month = [3.days.ago.to_date, 32.1]
+        @spending_stat.stubs(:calculated_spend_by_month).returns(dummy_spend_by_month)
+        @spending_stat.perform
+        assert_equal dummy_spend_by_month, @spending_stat.reload.spend_by_month
+      end
+
     end
     
     context "when returning earliest_transaction_date" do
@@ -109,6 +122,46 @@ class SpendingStatTest < ActiveSupport::TestCase
       should "return nil when no transactions" do
         assert_nil Factory(:spending_stat).calculated_average_monthly_spend
       end
+    end
+    
+    context "when calculating spend_by_month" do
+      setup do
+        @new_ft = Factory(:financial_transaction, :date => (@financial_transaction_1.date.beginning_of_month + 8.days), :supplier => @supplier, :value => 199)
+        @calc_sp = @spending_stat.calculated_spend_by_month
+      end
+      
+      should "return array of arrays" do
+        assert_kind_of Array, @calc_sp
+        assert_kind_of Array, @calc_sp.first
+      end
+      
+      should 'use dates as first elements of sub-arrays' do
+        assert_kind_of Date, @calc_sp.first.first
+      end
+      
+      should 'return floats as second element of sub-arrays' do
+        assert_kind_of Float, @calc_sp.first[1]
+      end
+      
+      should 'return first-of-month as date' do
+        assert @calc_sp.collect{ |a| a.first }.all?{ |d| d == d.beginning_of_month } 
+      end
+      
+      should 'have sort in date order' do
+        assert_equal @financial_transaction_1.date.beginning_of_month.to_date, @calc_sp.first.first 
+        assert_equal @financial_transaction_2.date.beginning_of_month.to_date, @calc_sp.last.first 
+      end
+      
+      should 'aggregate transactions for each month' do
+        assert_in_delta 199.0+123.45, @calc_sp.first[1], 2 ** -10
+      end
+      
+      should 'fill in missing months' do
+        assert_equal 11-3+1, @calc_sp.size
+        assert_equal (@financial_transaction_1.date.beginning_of_month.to_date + 45.days).beginning_of_month.to_date, @calc_sp[1].first
+        assert_nil @calc_sp[1][1]
+      end
+      
     end
     
     

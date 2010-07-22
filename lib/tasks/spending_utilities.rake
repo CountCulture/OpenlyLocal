@@ -194,8 +194,10 @@ end
 desc "Import King's Lynn & West Norfolk Payments"
 task :import_kl_and_wn_payments => :environment do
   klandwn = Council.first(:conditions => "name LIKE '%West Norfolk%'")
+  periods = ['April 2010', 'May 2010']
+  periods = ['June 2010']
   puts "Adding transactions for King's Lynn & West Norfolk"
-  ['April 2010', 'May 2010'].each do |period|
+  periods.each do |period|
     puts "Adding transactions for #{period}"
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/kl_and_w_norfolk/Payments to Suppliers #{period}.csv"), :headers => true) do |csv_file|
       csv_file.each do |row|
