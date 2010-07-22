@@ -19,7 +19,37 @@ class FinancialTransactionsHelperTest < ActionView::TestCase
     should "return range of months if 30 days of fuzziness" do
       assert_equal "Mar-Apr 2008", date_with_fuzziness_for(stub_everything(:date => "2008-04-1".to_date, :date_fuzziness => 30))
     end
+  end
+  
+  context "spend_by_month_graph helper_method" do
+    setup do
+      @spend_by_month_data = [['01-02-2009'.to_date, 123.4],['01-03-2009'.to_date, nil],['01-04-2009'.to_date, 42.3]]
+    end
+
+    should "should get bar chart for party breakdown array" do
+      Gchart.expects(:bar).returns("http://foo.com//graph")
+      spend_by_month_graph(@spend_by_month_data)
+    end
     
+    should "should use numbers from party breakdown" do
+      Gchart.expects(:bar).with(has_entry( :data => [123.4,0,42.3])).returns("http://foo.com//graph")
+      spend_by_month_graph(@spend_by_month_data)
+    end
+    
+    should "should use Months and Years for legends" do
+      Gchart.expects(:bar).with(has_entry( :legend => ["Feb 09", "Mar 09", "Apr 09"])).returns("http://foo.com//graph")
+      spend_by_month_graph(@spend_by_month_data)
+    end
+    
+    # should "should use party colours in legend replacing nil colours with spare colours" do
+    #   Gchart.expects(:pie).with(has_entry( :bar_colors => [Party.new("Labour").colour, Party.new("Conservative").colour, "66442233", "66442244"])).returns("http://foo.com//graph")
+    #   party_breakdown_graph(@breakdown)
+    # end
+    
+    should "return image tag using graph url as as src" do
+      Gchart.stubs(:bar).returns("http://foo.com//graph")
+      assert_dom_equal image_tag("http://foo.com//graph", :class => "chart", :alt => "Spend By Month Chart"), spend_by_month_graph(@spend_by_month_data)
+    end
   end
   
   private

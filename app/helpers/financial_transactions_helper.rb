@@ -14,4 +14,12 @@ module FinancialTransactionsHelper
       obj.date.strftime("#{(1+obj.date.month/3).ordinalize} quarter %Y")
     end
   end
+  
+  def spend_by_month_graph(spend_data)
+    spare_colours = (3..13).collect { |i| "664422#{i.to_s(16).upcase*2}" } # iterate through numbers, turning them in to hex and adding to base colour
+    months, data = spend_data.transpose
+    # colours = parties.collect{ |p| p.colour || spare_colours.shift } # use spare colours if no colour
+    image_tag(Gchart.bar(:data => data.collect(&:to_f), :legend => months.collect{ |m| m.to_s(:month_and_year) }, :size => "450x200"), :class => "chart", :alt => "Spend By Month Chart")
+    
+  end
 end
