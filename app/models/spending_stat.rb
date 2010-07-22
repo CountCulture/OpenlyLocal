@@ -12,8 +12,11 @@ class SpendingStat < ActiveRecord::Base
   def calculated_spend_by_month
     return if organisation.financial_transactions.count == 0
     res_hsh = {}
-    fuzzy_fts, normal_fts = organisation.financial_transactions.partition{ |ft| ft.date_fuzziness? }
-    normal_fts.each{ |ft| res_hsh[ft.date.beginning_of_month] = res_hsh[ft.date.beginning_of_month].to_f + ft.value}
+    # normal_fts = organisation.financial_transactions.all(:conditions => 'date_fuzziness IS NULL')
+    normal_fts = organisation.financial_transactions.sum(:value, :group=>'last_day(date)', :conditions => 'date_fuzziness IS NULL', :order => 'date')
+    
+    fuzzy_fts = organisation.financial_transactions.all(:conditions => 'date_fuzziness IS NOT NULL')
+    normal_fts.each{ |ft| res_hsh[ft.first.to_date.beginning_of_month] = res_hsh[ft.first.to_date.beginning_of_month].to_f + ft.last}
     fuzzy_fts.each do |fft|
       fft.averaged_date_and_value.each do |avg_dv|
         res_hsh[avg_dv.first.beginning_of_month] = res_hsh[avg_dv.first.beginning_of_month].to_f + avg_dv.last
@@ -62,7 +65,4 @@ class SpendingStat < ActiveRecord::Base
     (later_date.year - early_date.year) * 12 + (later_date.month - early_date.month)
   end
   
-  def average_from_fuzzy_date_transaction(ft)
-    
-  end
 end
