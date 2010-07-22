@@ -125,41 +125,70 @@ class SpendingStatTest < ActiveSupport::TestCase
     end
     
     context "when calculating spend_by_month" do
-      setup do
-        @new_ft = Factory(:financial_transaction, :date => (@financial_transaction_1.date.beginning_of_month + 8.days), :supplier => @supplier, :value => 199)
-        @calc_sp = @spending_stat.calculated_spend_by_month
+      context "in general" do
+        setup do
+          @new_ft = Factory(:financial_transaction, :date => (@financial_transaction_1.date.beginning_of_month + 8.days), :supplier => @supplier, :value => 199)
+          @calc_sp = @spending_stat.calculated_spend_by_month
+        end
+        
+        should 'return nil if no transactions' do
+          assert_nil Factory(:supplier).spending_stat.calculated_spend_by_month
+        end
+
+        should "return array of arrays" do
+          assert_kind_of Array, @calc_sp
+          assert_kind_of Array, @calc_sp.first
+        end
+
+        should 'use dates as first elements of sub-arrays' do
+          assert_kind_of Date, @calc_sp.first.first
+        end
+
+        should 'return floats as second element of sub-arrays' do
+          assert_kind_of Float, @calc_sp.first[1]
+        end
+
+        should 'return first-of-month as date' do
+          assert @calc_sp.collect{ |a| a.first }.all?{ |d| d == d.beginning_of_month } 
+        end
+
+        should 'have sort in date order' do
+          assert_equal @financial_transaction_1.date.beginning_of_month.to_date, @calc_sp.first.first 
+          assert_equal @financial_transaction_2.date.beginning_of_month.to_date, @calc_sp.last.first 
+        end
+
+        should 'aggregate transactions for each month' do
+          assert_in_delta 199.0+123.45, @calc_sp.first[1], 2 ** -10
+        end
+
+        should 'fill in missing months' do
+          assert_equal 11-3+1, @calc_sp.size
+          assert_equal (@financial_transaction_1.date.beginning_of_month.to_date + 45.days).beginning_of_month.to_date, @calc_sp[1].first
+          assert_nil @calc_sp[1][1]
+        end
+
+        should "return array of single array if just one transaction" do
+          assert_equal [[@unrelated_financial_transaction.date.beginning_of_month.to_date, @unrelated_financial_transaction.value]], @another_supplier.spending_stat.calculated_spend_by_month
+        end
       end
       
-      should "return array of arrays" do
-        assert_kind_of Array, @calc_sp
-        assert_kind_of Array, @calc_sp.first
-      end
-      
-      should 'use dates as first elements of sub-arrays' do
-        assert_kind_of Date, @calc_sp.first.first
-      end
-      
-      should 'return floats as second element of sub-arrays' do
-        assert_kind_of Float, @calc_sp.first[1]
-      end
-      
-      should 'return first-of-month as date' do
-        assert @calc_sp.collect{ |a| a.first }.all?{ |d| d == d.beginning_of_month } 
-      end
-      
-      should 'have sort in date order' do
-        assert_equal @financial_transaction_1.date.beginning_of_month.to_date, @calc_sp.first.first 
-        assert_equal @financial_transaction_2.date.beginning_of_month.to_date, @calc_sp.last.first 
-      end
-      
-      should 'aggregate transactions for each month' do
-        assert_in_delta 199.0+123.45, @calc_sp.first[1], 2 ** -10
-      end
-      
-      should 'fill in missing months' do
-        assert_equal 11-3+1, @calc_sp.size
-        assert_equal (@financial_transaction_1.date.beginning_of_month.to_date + 45.days).beginning_of_month.to_date, @calc_sp[1].first
-        assert_nil @calc_sp[1][1]
+      context "when there are dates with fuzziness" do
+        setup do
+          @fuzzy_ft_1 = Factory(:financial_transaction, :date => (@financial_transaction_1.date.beginning_of_month + 14.days), :date_fuzziness => 43, :supplier => @supplier, :value => 99)
+          @calc_sp = @spending_stat.calculated_spend_by_month
+        end
+
+        should "return entry for every month concerned" do
+          assert_equal 10, @calc_sp.size
+          assert_equal (@fuzzy_ft_1.date - 30.days).beginning_of_month.to_date, @calc_sp.first.first # spans 3 months so first should be prior month
+        end
+        
+        should "split average across months concerned" do
+          assert_in_delta 33.0, @calc_sp.first.last, 2 ** -10
+        end
+        should "add average to any non-fuzzy transactions" do
+          assert_in_delta 33.0+123.45, @calc_sp[1].last, 2 ** -10
+        end
       end
       
     end

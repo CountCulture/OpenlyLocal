@@ -6,6 +6,18 @@ class FinancialTransaction < ActiveRecord::Base
     
   CommonMispellings = { %w(Childrens Childrens') => "Children's" }
   
+  def averaged_date_and_value
+    return [date, value] unless date_fuzziness?
+    first_date, last_date = (date - date_fuzziness), (date + date_fuzziness)
+    if (first_date.month == last_date.month) && (first_date.year == last_date.year)
+      [date, value] 
+    else
+      month_span = difference_in_months_between_dates(first_date, last_date)
+      average = value/(month_span+1)
+      (0..month_span).collect{ |i| [first_date.advance(:months => i), average] }
+    end
+  end
+  
   def department_name=(raw_name)
     CommonMispellings.each do |mispellings,correct|
       mispellings.each do |m|
@@ -69,4 +81,7 @@ class FinancialTransaction < ActiveRecord::Base
     supplier&&supplier.save&&(self.supplier_id=supplier.id)
   end
   
+  def difference_in_months_between_dates(early_date,later_date)
+    (later_date.year - early_date.year) * 12 + (later_date.month - early_date.month)
+  end
 end

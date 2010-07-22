@@ -81,7 +81,41 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_equal "Transaction 1234A with #{@financial_transaction.supplier.title} on #{@financial_transaction.date.to_s(:event_date)}", @financial_transaction.title
       end
     end
+     
+    context "when returning averaged_date_and_value" do
+      should "return date and value of transaction by default" do
+        assert_equal [@financial_transaction.date, @financial_transaction.value], @financial_transaction.averaged_date_and_value
+      end
+      
+      context "and financial_transaction has date_fuzziness" do
+
+        should "return date and value of transaction when it doesn't go over more than one month" do
+          slightly_fuzzy_ft = Factory(:financial_transaction, :date_fuzziness => 5, :date => '10-12-2009')
+          assert_equal ['10-12-2009'.to_date, slightly_fuzzy_ft.value], slightly_fuzzy_ft.averaged_date_and_value
+        end
         
+        should "return dates and values of transaction averaged over time time period extends over more than one month" do
+          quite_fuzzy_ft = Factory(:financial_transaction, :date_fuzziness => 15, :date => '10-12-2009')
+          averaged_results = quite_fuzzy_ft.averaged_date_and_value
+          assert_equal 2, averaged_results.size
+          assert_equal '25-11-2009'.to_date, averaged_results.first.first #doesn't really matter what day is as we wo't use that
+          assert_equal '25-12-2009'.to_date, averaged_results.last.first
+          assert_in_delta quite_fuzzy_ft.value/2, averaged_results.first.last, 2 ** -10
+          assert_in_delta quite_fuzzy_ft.value/2, averaged_results.last.last, 2 ** -10
+        end
+        
+        should "return dates and values of transaction averaged over time time period extends over several months" do
+          quite_fuzzy_ft = Factory(:financial_transaction, :date_fuzziness => 43, :date => '10-15-2009')
+          averaged_results = quite_fuzzy_ft.averaged_date_and_value
+          assert_equal 2, averaged_results.size
+          assert_equal '25-11-2009'.to_date, averaged_results.first.first #doesn't really matter what day is as we wo't use that
+          assert_equal '25-12-2009'.to_date, averaged_results.last.first
+          assert_in_delta quite_fuzzy_ft.value/2, averaged_results.first.last, 2 ** -10
+          assert_in_delta quite_fuzzy_ft.value/2, averaged_results.last.last, 2 ** -10
+        end
+      end
+    end 
+    
     context "when setting value" do
 
       should "assign value as expected" do

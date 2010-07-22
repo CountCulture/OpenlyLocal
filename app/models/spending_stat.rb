@@ -10,8 +10,16 @@ class SpendingStat < ActiveRecord::Base
   
   # Returns array of arrays, corresponding to spend per month. The array is 
   def calculated_spend_by_month
+    return if organisation.financial_transactions.count == 0
     res_hsh = {}
-    organisation.financial_transactions.each{ |ft| res_hsh[ft.date.beginning_of_month] ||= 0.0; res_hsh[ft.date.beginning_of_month] += ft.value}
+    fuzzy_fts, normal_fts = organisation.financial_transactions.partition{ |ft| ft.date_fuzziness? }
+    normal_fts.each{ |ft| res_hsh[ft.date.beginning_of_month] = res_hsh[ft.date.beginning_of_month].to_f + ft.value}
+    fuzzy_fts.each do |fft|
+      fft.averaged_date_and_value.each do |avg_dv|
+        res_hsh[avg_dv.first.beginning_of_month] = res_hsh[avg_dv.first.beginning_of_month].to_f + avg_dv.last
+      end
+    end
+    
     months_with_vals = res_hsh.sort
     
     first_month, last_month = months_with_vals.first, months_with_vals.last
@@ -52,5 +60,9 @@ class SpendingStat < ActiveRecord::Base
   private
   def difference_in_months_between_dates(early_date,later_date)
     (later_date.year - early_date.year) * 12 + (later_date.month - early_date.month)
+  end
+  
+  def average_from_fuzzy_date_transaction(ft)
+    
   end
 end
