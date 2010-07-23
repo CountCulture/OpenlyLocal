@@ -83,15 +83,15 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     end
      
     context "when returning averaged_date_and_value" do
-      should "return date and value of transaction by default" do
-        assert_equal [@financial_transaction.date, @financial_transaction.value], @financial_transaction.averaged_date_and_value
+      should "return array with just date and value array if no date_fuzziness for transaction" do
+        assert_equal [[@financial_transaction.date, @financial_transaction.value]], @financial_transaction.averaged_date_and_value
       end
       
       context "and financial_transaction has date_fuzziness" do
 
-        should "return date and value of transaction when it doesn't go over more than one month" do
+        should "return arrary of single date and value array when it doesn't go over more than one month" do
           slightly_fuzzy_ft = Factory(:financial_transaction, :date_fuzziness => 5, :date => '10-12-2009')
-          assert_equal ['10-12-2009'.to_date, slightly_fuzzy_ft.value], slightly_fuzzy_ft.averaged_date_and_value
+          assert_equal [['10-12-2009'.to_date, slightly_fuzzy_ft.value]], slightly_fuzzy_ft.averaged_date_and_value
         end
         
         should "return dates and values of transaction averaged over time time period extends over more than one month" do
@@ -104,14 +104,14 @@ class FinancialTransactionTest < ActiveSupport::TestCase
           assert_in_delta quite_fuzzy_ft.value/2, averaged_results.last.last, 2 ** -10
         end
         
-        should "return dates and values of transaction averaged over time time period extends over several months" do
-          quite_fuzzy_ft = Factory(:financial_transaction, :date_fuzziness => 43, :date => '10-15-2009')
+        should "return averaged dates and values of transaction if period extends over several months" do
+          quite_fuzzy_ft = Factory(:financial_transaction, :date_fuzziness => 43, :date => '10-12-2009')
           averaged_results = quite_fuzzy_ft.averaged_date_and_value
-          assert_equal 2, averaged_results.size
-          assert_equal '25-11-2009'.to_date, averaged_results.first.first #doesn't really matter what day is as we wo't use that
-          assert_equal '25-12-2009'.to_date, averaged_results.last.first
-          assert_in_delta quite_fuzzy_ft.value/2, averaged_results.first.last, 2 ** -10
-          assert_in_delta quite_fuzzy_ft.value/2, averaged_results.last.last, 2 ** -10
+          assert_equal 4, averaged_results.size
+          assert_equal '28-10-2009'.to_date, averaged_results.first.first #doesn't really matter what day is as we wo't use that
+          assert_equal '28-01-2010'.to_date, averaged_results.last.first
+          assert_in_delta quite_fuzzy_ft.value/4, averaged_results.first.last, 2 ** -10
+          assert_in_delta quite_fuzzy_ft.value/4, averaged_results.last.last, 2 ** -10
         end
       end
     end 

@@ -194,7 +194,7 @@ end
 desc "Import King's Lynn & West Norfolk Payments"
 task :import_kl_and_wn_payments => :environment do
   klandwn = Council.first(:conditions => "name LIKE '%West Norfolk%'")
-  periods = ['April 2010', 'May 2010']
+  # periods = ['April 2010', 'May 2010']
   periods = ['June 2010']
   puts "Adding transactions for King's Lynn & West Norfolk"
   periods.each do |period|
@@ -218,5 +218,4 @@ task :import_kl_and_wn_payments => :environment do
   end
   klandwn.spending_stat.perform
 end
-
-
+    

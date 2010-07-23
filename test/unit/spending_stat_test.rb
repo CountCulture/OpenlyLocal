@@ -189,6 +189,17 @@ class SpendingStatTest < ActiveSupport::TestCase
         should "add average to any non-fuzzy transactions" do
           assert_in_delta 33.0+123.45, @calc_sp[1].last, 2 ** -10
         end
+        
+        context "but still only single month" do
+          setup do
+            @fuzzy_ft_2 = Factory(:financial_transaction, :date => (@financial_transaction_1.date.beginning_of_month + 14.days), :date_fuzziness => 3, :supplier => @supplier, :value => 66)
+            # @calc_sp = 
+          end
+
+          should "not raise expection" do
+            assert_nothing_raised(Exception) { @spending_stat.calculated_spend_by_month }
+          end
+        end
       end
       
     end
