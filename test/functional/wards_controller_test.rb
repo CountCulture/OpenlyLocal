@@ -79,6 +79,7 @@ class WardsControllerTest < ActionController::TestCase
       
       context "with xml requested" do
         setup do
+          @ward.update_attributes(:output_area_classification => Factory(:output_area_classification))
           get :index, :council_id => @council.id, :format => "xml"
         end
 
@@ -245,6 +246,10 @@ class WardsControllerTest < ActionController::TestCase
 
         should 'include pagination info' do
           assert_select "wards>total-entries"
+        end
+        
+        should "include output_area_classification in response" do
+          assert_select "wards>ward>output-area-classification>id"
         end
       end
       
@@ -637,7 +642,7 @@ class WardsControllerTest < ActionController::TestCase
 
     context "with xml request" do
       setup do
-        @ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo")
+        @ward.update_attributes(:police_neighbourhood_url => "http://met.gov.uk/foo", :output_area_classification => Factory(:output_area_classification))
         @ward.committees << @committee = Factory(:committee, :council => @council)
         @meeting = Factory(:meeting, :committee => @committee, :council => @council)
         get :show, :id => @ward.id, :format => "xml"
@@ -662,6 +667,10 @@ class WardsControllerTest < ActionController::TestCase
 
       should "include police_neighbourhood_url in response" do
         assert_select "ward police-neighbourhood-url"
+      end
+      
+      should "include output_area_classification in response" do
+        assert_select "ward output-area-classification>id"
       end
     end
 

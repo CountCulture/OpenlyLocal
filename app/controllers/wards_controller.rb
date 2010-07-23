@@ -12,7 +12,7 @@ class WardsController < ApplicationController
     @wards = @council ? @council.wards.current : Ward.restrict_to_oac(params).current.paginate(:page => params[:page], :include => :council)
     @title = @output_area_classification ? "#{@output_area_classification.title} Wards" : "Current Wards"
     @title += " :: Page #{(params[:page]||1).to_i}" unless @council
-    options = {:include => [:council]}
+    options = {:include => [:council, :output_area_classification]}
     respond_to do |format|
       format.html
       format.xml do
@@ -52,9 +52,9 @@ class WardsController < ApplicationController
     @title = @comparison_ward ? "Ward comparison: #{@ward.name} & #{@comparison_ward.name}": "#{@ward.name} ward"
     respond_to do |format|
       format.html { render :template => @comparison_ward ? 'wards/comparison' : 'wards/show' }
-      format.xml { render :xml => @ward.to_xml(:include => [:members, :committees, :meetings]) }
+      format.xml { render :xml => @ward.to_xml(:include => [:members, :committees, :meetings, :output_area_classification]) }
       format.rdf 
-      format.json { render :json => @ward.to_json(:include => [:members, :committees, :meetings]) }
+      format.json { render :json => @ward.to_json(:include => [:members, :committees, :meetings, :output_area_classification]) }
     end
   end
   
