@@ -6,6 +6,10 @@
   <%= detail_form.text_field :company_number %>
 </p>
 <p>
+  <%= detail_form.label :source_for_info, 'Source for info <em>(maybe URL containing company number)</em>' %>
+  <%= detail_form.text_field :source_for_info %>
+</p>
+<p>
   <%= detail_form.label :url, "Website" %>
   <%= detail_form.text_field :url %>
 </p>

@@ -17,6 +17,11 @@ class SupplierDetailsTest < ActiveSupport::TestCase
       assert @supplier_details.respond_to?(:company_number=)
     end
     
+    should 'have source_url accessor' do
+      assert @supplier_details.respond_to?(:source_for_info)
+      assert @supplier_details.respond_to?(:source_for_info=)
+    end
+    
     should 'have wikipedia_url accessor' do
       assert @supplier_details.respond_to?(:wikipedia_url)
       assert @supplier_details.respond_to?(:wikipedia_url=)
