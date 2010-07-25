@@ -408,7 +408,7 @@ body.councils .area, .feed_entry .dateline {
 	padding: 6px;
 	margin-bottom:1em;
 	}
-.dashboard .chart {float:left;}
+.dashboard .chart, #spend_by_month {float:left;}
 .dashboard .in_words {
 	float:left;
 	font-size: 2em;

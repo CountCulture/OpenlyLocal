@@ -37,7 +37,8 @@ task :import_gla_supplier_payments => :environment do
   gla = Council.first(:conditions => {:name => 'Greater London Authority'})
   suppliers = gla.suppliers
   
-  periods = Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'gla'))[2..-1].collect{ |p| p.sub('.csv','') }
+  # periods = Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'gla'))[2..-1].collect{ |p| p.sub('.csv','') }
+  periods = %w(01_2009 05_2010)
   puts "About to add data for #{periods.size} periods"
   periods.each do |period|
     puts "=============\nAdding transactions for #{period}"
@@ -45,7 +46,7 @@ task :import_gla_supplier_payments => :environment do
       supplier = suppliers.detect{ |s| s.name == (row['Supplier']||row['Vendor'])}
       next unless supplier || row['Supplier']||row['Vendor'] # skip empty rows
       if supplier
-        puts "Matched existing supplier: #{supplier.title}"
+        # puts "Matched existing supplier: #{supplier.title}"
       else
         supplier ||= gla.suppliers.create!(:name => row['Supplier']||row['Vendor'])
         suppliers << supplier # add to list so we don't create again
