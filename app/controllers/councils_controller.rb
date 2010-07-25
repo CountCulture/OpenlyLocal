@@ -69,7 +69,7 @@ class CouncilsController < ApplicationController
   def show_spending
     @suppliers = @council.suppliers.all(:joins => :spending_stat, :order => 'spending_stats.total_spend DESC', :limit => 10)
     @financial_transactions = @council.financial_transactions.all(:order => 'value DESC', :limit => 10)
-    @title = "Spending Dashboard :: #{@council.title}"
+    @title = "Spending Dashboard"
   end
   
   private

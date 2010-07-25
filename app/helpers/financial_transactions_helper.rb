@@ -16,10 +16,31 @@ module FinancialTransactionsHelper
   end
   
   def spend_by_month_graph(spend_data)
+    return if spend_data.blank?
     spare_colours = (3..13).collect { |i| "664422#{i.to_s(16).upcase*2}" } # iterate through numbers, turning them in to hex and adding to base colour
     months, data = spend_data.transpose
-    # colours = parties.collect{ |p| p.colour || spare_colours.shift } # use spare colours if no colour
-    image_tag(Gchart.bar(:data => data.collect(&:to_f), :legend => months.collect{ |m| m.to_s(:month_and_year) }, :size => "450x200"), :class => "chart", :alt => "Spend By Month Chart")
+    data = data.collect(&:to_i)
+    column_width = ((240-data.size)/(data.size)).to_i
+    max_value = data.max
+    rounded_no_above_max = ("%10.1e" % max_value).strip.sub(/(\d\.\d)/){|m|(m.to_f+0.1).to_s}.to_f.to_i
     
+    x_axis_labels = [0, currency_for_graph(rounded_no_above_max/2), currency_for_graph(rounded_no_above_max)]
+    y_axis_labels = []
+    gaps_between_y_labels = 50/column_width + 1
+    months.each_with_index{ |d,i| y_axis_labels << (i%gaps_between_y_labels == 0 ? d.to_s(:month_and_year) : nil)}
+    image_tag(Gchart.bar( :data => data, 
+                          :axis_with_labels => 'x,y',
+                          :axis_labels => [ y_axis_labels, x_axis_labels], 
+                          :size => "320x200",
+                          :max_value => rounded_no_above_max,
+                          # :bar_colors => 'BBCCDD',
+                          :bar_width_and_spacing => { :spacing => 1, :width =>column_width }
+                          ), 
+              :class => "chart", :alt => "Spend By Month Chart")
+  end
+  
+  def currency_for_graph(number)
+    number < 1000000 ? number_to_currency(number, :precision => 0, :unit => "&pound;") : 
+                        "#{number_to_currency(number/1000000.0, :precision => 1, :unit => "&pound;")}m"
   end
 end

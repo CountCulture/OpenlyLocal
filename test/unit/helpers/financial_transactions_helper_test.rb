@@ -31,24 +31,29 @@ class FinancialTransactionsHelperTest < ActionView::TestCase
       spend_by_month_graph(@spend_by_month_data)
     end
     
-    should "should use numbers from party breakdown" do
-      Gchart.expects(:bar).with(has_entry( :data => [123.4,0,42.3])).returns("http://foo.com//graph")
+    should "should use integer numbers from party breakdown" do
+      Gchart.expects(:bar).with(has_entry( :data => [123, 0, 42])).returns("http://foo.com//graph")
       spend_by_month_graph(@spend_by_month_data)
     end
     
-    should "should use Months and Years for legends" do
-      Gchart.expects(:bar).with(has_entry( :legend => ["Feb 09", "Mar 09", "Apr 09"])).returns("http://foo.com//graph")
+    should "should use Months and Years for y-axis" do
+      Gchart.expects(:bar).with { |params| params[:axis_labels].first == ["Feb 09", "Mar 09", "Apr 09"] }.returns("http://foo.com//graph")
       spend_by_month_graph(@spend_by_month_data)
     end
     
-    # should "should use party colours in legend replacing nil colours with spare colours" do
-    #   Gchart.expects(:pie).with(has_entry( :bar_colors => [Party.new("Labour").colour, Party.new("Conservative").colour, "66442233", "66442244"])).returns("http://foo.com//graph")
-    #   party_breakdown_graph(@breakdown)
-    # end
+    should "skip entries in y-axis if enough points" do
+      Gchart.expects(:bar).with { |params| params[:axis_labels].first == ['Feb 09', nil, 'Apr 09', nil, 'Jun 09'] }.returns("http://foo.com//graph")
+      spend_by_month_graph(@spend_by_month_data+[['01-05-2009'.to_date, 33.0],['01-06-2009'.to_date, 21.0]])
+    end
     
     should "return image tag using graph url as as src" do
       Gchart.stubs(:bar).returns("http://foo.com//graph")
       assert_dom_equal image_tag("http://foo.com//graph", :class => "chart", :alt => "Spend By Month Chart"), spend_by_month_graph(@spend_by_month_data)
+    end
+    
+    should "return nil if no data" do
+      assert_nil spend_by_month_graph(nil)
+      assert_nil spend_by_month_graph([])
     end
   end
   
