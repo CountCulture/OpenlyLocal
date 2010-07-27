@@ -219,4 +219,29 @@ task :import_kl_and_wn_payments => :environment do
   end
   klandwn.spending_stat.perform
 end
+
+# Service Area,Expenditure Type,Vendor Name,Entry Date,Ref.Doc., Expenditure
+desc "Import Barnet Payments"
+task :import_barnet_payments => :environment do
+  barnet = Council.first(:conditions => "name LIKE '%Barnet%'")
+  puts "Adding transactions for Barnet"
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_barnet/expenditure_by_supplier_apr_to_jun_10.csv"), :headers => true) do |csv_file|
+    csv_file.each do |row|
+      ft = FinancialTransaction.new(:date => row['Entry Date'],
+                                    :value => row['Expenditure'],
+                                    :supplier_name => row['Vendor Name'],
+                                    :organisation => barnet,
+                                    :csv_line_number => csv_file.lineno + 2, #we've deleted first two lines which we comments
+                                    :department_name => row['Service Area'],
+                                    :service => row['Expenditure Type'],
+                                    :uid => row['Ref.Doc.'],
+                                    :source_url => "http://www.barnet.gov.uk/expenditure_by_supplier_apr_to_jun_10.csv"
+                                    )
+      ft.save!                                  
+      puts "."
+    end
+  end
+  barnet.spending_stat.perform
+end
+    
     
