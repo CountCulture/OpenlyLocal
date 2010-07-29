@@ -234,6 +234,20 @@ class CouncilsControllerTest < ActionController::TestCase
       should respond_with_content_type 'application/json'
     end
     
+    context "with json requested and callback given" do
+      setup do
+        get :index, :callback => 'foo', :format => "json"
+      end
+  
+      should respond_with :success
+      should_not render_with_layout
+      should respond_with_content_type 'application/json'
+      
+      should 'wrap json with callback' do
+        assert_match /foo\({\"councils/, @response.body
+      end
+    end
+    
     context "with rdf request and missing attributes" do
       setup do
         get :index, :format => "rdf"

@@ -5,7 +5,7 @@ class CouncilsController < ApplicationController
   caches_action :index, :show, :cache_path => Proc.new { |controller| controller.params }
   
   def index
-    @councils = Council.find_by_params(params.except(:controller, :action, :format))
+    @councils = Council.find_by_params(params.except(:controller, :action, :format, :callback))
     @title = params[:show_open_status] ? "UK Councils Open Data Scoreboard" : "All UK Local Authorities/Councils"
     @title += " With Opened Up Data" unless params[:include_unparsed]||params[:show_open_status]
     @title += " :: #{params[:region]||params[:country]}" if params[:region]||params[:country]
@@ -15,7 +15,7 @@ class CouncilsController < ApplicationController
     respond_to do |format|
       format.html { render html_template }
       format.xml { render :xml => @councils.to_xml(:include => nil) }
-      format.json { render :json =>  @councils.to_json }
+      format.json { render :as_json =>  @councils.to_xml(:include => nil) }
       format.rdf
     end
   end
