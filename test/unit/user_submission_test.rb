@@ -10,11 +10,9 @@ class UserSubmissionTest < ActiveSupport::TestCase
     end
     
     should belong_to :item
-    # should belong_to :member
     should validate_presence_of :item_id
     should validate_presence_of :item_type
     should validate_presence_of :submission_details
-    # should_have_db_columns :twitter_account_name, :member_name, :blog_url, :facebook_account_name, :linked_in_account_name, :approved
     should have_db_column :submission_details
     should have_db_column :ip_address
     should have_db_column :notes

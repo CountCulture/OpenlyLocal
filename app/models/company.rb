@@ -12,7 +12,7 @@ class Company < ActiveRecord::Base
   
   def self.match_or_create(params={})
     params[:company_number] =  normalise_company_number(params[:company_number])
-    company = find_or_create_by_company_number(params) #use normalised version of company number
+    company = find_or_create_by_company_number(params) # use normalised version of company number
     Delayed::Job.enqueue(company) if company.instance_variable_get(:@new_record_before_save)
     company
   end

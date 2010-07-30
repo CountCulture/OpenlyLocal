@@ -445,7 +445,10 @@ class SupplierTest < ActiveSupport::TestCase
     context 'and when updating supplier details' do
       
       setup do
-        @new_details = SupplierDetails.new(:url => 'http://foo.com', :company_number => '01234', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo')
+        @new_details = SupplierDetails.new( :url => 'http://foo.com', 
+                                            :company_number => '01234', 
+                                            :wikipedia_url => 'http://en.wikipedia.org/wiki/foo', 
+                                            :source_for_info => 'http://foo.com/about_us')
       end
       
       context "in general" do
