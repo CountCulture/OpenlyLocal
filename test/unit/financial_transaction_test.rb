@@ -71,6 +71,26 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       @financial_transaction = Factory(:financial_transaction)
     end
     
+    should "delegate supplier_name to supplier" do
+      assert_equal @financial_transaction.supplier.name, @financial_transaction.supplier_name
+    end
+    
+    should "delegate supplier_openlylocal_url to supplier" do
+      assert_equal @financial_transaction.supplier.openlylocal_url, @financial_transaction.supplier_openlylocal_url
+    end
+    
+    should "delegate organisation_name to supplier organisation" do
+      assert_equal @financial_transaction.supplier.organisation.name, @financial_transaction.organisation_name
+    end
+    
+    should "delegate organisation_openlylocal_url to supplier organisation" do
+      assert_equal @financial_transaction.supplier.organisation.openlylocal_url, @financial_transaction.organisation_openlylocal_url
+    end
+    
+    should "delegate organisation_type to supplier organisation_type" do
+      assert_equal @financial_transaction.supplier.organisation_type, @financial_transaction.organisation_type
+    end
+    
     context 'when returning title' do
       should 'use date' do
         assert_equal "Transaction with #{@financial_transaction.supplier.title} on #{@financial_transaction.date.to_s(:event_date)}", @financial_transaction.title
@@ -80,6 +100,10 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         @financial_transaction.uid = '1234A'
         assert_equal "Transaction 1234A with #{@financial_transaction.supplier.title} on #{@financial_transaction.date.to_s(:event_date)}", @financial_transaction.title
       end
+    end
+    
+    should 'return correct url as openlylocal_url' do
+      assert_equal "http://#{DefaultDomain}/financial_transactions/#{@financial_transaction.to_param}", @financial_transaction.openlylocal_url
     end
      
     context "when returning averaged_date_and_value" do
@@ -170,7 +194,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_equal 'bar service', @financial_transaction.full_description
       end
       
-      should "return description and service if descriptiopn and service not blank" do
+      should "return description and service if description and service not blank" do
         @financial_transaction.description = 'foo description'
         @financial_transaction.service = 'bar service'
         assert_equal 'foo description (bar service)', @financial_transaction.full_description
@@ -194,25 +218,58 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_nil FinancialTransaction.new.organisation
       end
     end
+    
+    context "when returning csv data" do
+      setup do
+        @financial_transaction.description = "Some transaction"
+      end
+      should "return array" do
+        assert_kind_of Array, @financial_transaction.csv_data
+      end
+      
+      should "return same number of elements as CsvMappings" do
+        assert_equal FinancialTransaction::CsvMappings.size, @financial_transaction.csv_data.size
+      end
+      
+      should "map attributes to csv heading" do
+        expected_position = FinancialTransaction.csv_headings.index(:description)
+        assert_equal "Some transaction", @financial_transaction.csv_data[expected_position]
+      end
+      
+      should "map non-attributes to csv heading" do
+        expected_position = FinancialTransaction.csv_headings.index(:supplier_openlylocal_id)
+        assert_equal @financial_transaction.supplier_id, @financial_transaction.csv_data[expected_position]
+      end
+      
+      should "output date as ISO 8601" do
+        expected_position = FinancialTransaction.csv_headings.index(:date)
+        assert_equal @financial_transaction.reload.date.to_s(:db), @financial_transaction.csv_data[expected_position]
+      end
+      
+      should "output datetime as ISO 8601" do
+        expected_position = FinancialTransaction.csv_headings.index(:created_at)
+        assert_equal @financial_transaction.created_at.iso8601, @financial_transaction.csv_data[expected_position]
+      end
+    end
 
-   context 'when setting supplier_name' do
-     setup do
-       @existing_supplier = Factory(:supplier, :name => 'Foo Supplier')
-       @organisation = @existing_supplier.organisation
-     end
-     
-     context 'and organisation not set' do
-       setup do
-         @fin_trans = FinancialTransaction.new
-       end
-       
-       should 'should not try to find supplier' do
-         Supplier.expects(:find).never
-         @fin_trans.supplier_name = 'Foo Supplier'
-       end
-       
-       should "should instantiate new supplier if it doesn't exist" do
-         @fin_trans.supplier_name = 'Bar Supplier'
+    context 'when setting supplier_name' do
+      setup do
+        @existing_supplier = Factory(:supplier, :name => 'Foo Supplier')
+        @organisation = @existing_supplier.organisation
+      end
+      
+      context 'and organisation not set' do
+        setup do
+          @fin_trans = FinancialTransaction.new
+        end
+        
+        should 'should not try to find supplier' do
+          Supplier.expects(:find).never
+          @fin_trans.supplier_name = 'Foo Supplier'
+        end
+        
+        should "should instantiate new supplier if it doesn't exist" do
+          @fin_trans.supplier_name = 'Bar Supplier'
 	        assert_kind_of Supplier, supplier = @fin_trans.supplier
 	        assert_equal 'Bar Supplier', supplier.name
 	      end

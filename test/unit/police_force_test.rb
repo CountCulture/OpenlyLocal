@@ -82,6 +82,10 @@ class PoliceForceTest < ActiveSupport::TestCase
         assert_equal "tel:+44-162-384-298", @police_force.foaf_telephone
       end
     end
-  end
   
+    should 'return correct url as openlylocal_url' do
+      assert_equal "http://#{DefaultDomain}/police_forces/#{@police_force.to_param}", @police_force.openlylocal_url
+    end
+  end
+   
 end

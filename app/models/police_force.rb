@@ -14,4 +14,8 @@ class PoliceForce < ActiveRecord::Base
   default_scope :order => 'name'
   alias_attribute :title, :name
   
+  def openlylocal_url
+    "http://#{DefaultDomain}/police_forces/#{to_param}"
+  end
+
 end

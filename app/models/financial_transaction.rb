@@ -3,8 +3,43 @@ class FinancialTransaction < ActiveRecord::Base
   before_validation :save_associated_supplier
   validates_presence_of :value, :date, :supplier_id
   attr_reader :organisation
+  delegate :name, :openlylocal_url, :to => :supplier, :prefix => true
+  delegate :name, :id, :openlylocal_url, :to => :organisation, :prefix => :organisation
+  delegate :organisation_type, :to => :supplier
     
   CommonMispellings = { %w(Childrens Childrens') => "Children's" }
+  
+  # Maps CSV headings to attributes. If same then only one entry
+  CsvMappings = [[:openlylocal_id, :id],
+                 [:openlylocal_url],
+                 [:transaction_id, :uid],
+                 [:source_url],
+                 [:csv_line_number],
+                 [:date],
+                 [:date_fuzziness],
+                 [:value],
+                 [:organisation_name],
+                 [:organisation_openlylocal_id, :organisation_id],
+                 [:organisation_type],
+                 [:organisation_openlylocal_url],
+                 [:supplier_name],
+                 [:supplier_openlylocal_id, :supplier_id],
+                 [:supplier_openlylocal_url],
+                 [:cost_centre],
+                 [:service],
+                 [:transaction_type],
+                 [:invoice_number],
+                 [:department_name],
+                 [:description],
+                 # [:openlylocal_company_id],
+                 # [:openlylocal_company_url],
+                 # [:company_number],
+                 [:created_at],
+                 [:updated_at]]
+  
+  def self.csv_headings
+    CsvMappings.map(&:first)
+  end
   
   def averaged_date_and_value
     return [[date, value]] unless date_fuzziness?
@@ -15,6 +50,20 @@ class FinancialTransaction < ActiveRecord::Base
       month_span = difference_in_months_between_dates(first_date, last_date)
       average = value/(month_span+1)
       (0..month_span).collect{ |i| [first_date.advance(:months => i), average] }
+    end
+  end
+  
+  def csv_data
+    CsvMappings.collect do |m|
+      val = self.send(m.last)
+      case val
+      when Time
+        val.iso8601
+      when Date
+        val.to_s(:db)
+      else
+        val
+      end
     end
   end
   
@@ -32,6 +81,10 @@ class FinancialTransaction < ActiveRecord::Base
     description? ? (service? ? "#{description} (#{service})": description ) : service 
   end
   
+  def openlylocal_url
+    "http://#{DefaultDomain}/financial_transactions/#{to_param}"
+  end
+
   # As financial transactions are often create from CSV files, we need to set supplier 
   # organisation directly, and also org may be known after the Supplier Name, so only update supplier if org 
 	def organisation=(org)

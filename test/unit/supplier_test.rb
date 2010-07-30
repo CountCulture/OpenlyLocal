@@ -173,6 +173,10 @@ class SupplierTest < ActiveSupport::TestCase
       assert_equal @supplier.name, @supplier.title
     end
     
+    should 'return correct url as openlylocal_url' do
+      assert_equal "http://#{DefaultDomain}/suppliers/#{@supplier.to_param}", @supplier.openlylocal_url
+    end
+     
     should "use title when converting to_param" do
       @supplier.title = "some title-with/stuff"
       assert_equal "#{@supplier.id}-some-title-with-stuff", @supplier.to_param

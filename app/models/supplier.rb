@@ -60,6 +60,10 @@ class Supplier < ActiveRecord::Base
     self.save!
   end
   
+  def openlylocal_url
+    "http://#{DefaultDomain}/suppliers/#{to_param}"
+  end
+
   def possible_payee
     case name
     when /Ltd|Limited|PLC/i

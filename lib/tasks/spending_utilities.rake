@@ -244,4 +244,22 @@ task :import_barnet_payments => :environment do
   barnet.spending_stat.perform
 end
     
-    
+desc "Export CSV version of spending data"
+task :export_csv_spending_data  => :environment do
+  require 'zip/zipfilesystem'
+  dir = File.join(RAILS_ROOT, "public/councils")
+  csv_file = File.join(dir, "spending.csv")
+  Dir.mkdir(dir) unless File.directory?(dir)
+  FasterCSV.open(csv_file, "w") do |csv|
+    csv << (headings = FinancialTransaction::CsvMappings.collect{ |m| m.first })
+    FinancialTransaction.find_each do |financial_transaction|
+      csv << financial_transaction.csv_data
+    end
+  end
+
+  Zip::ZipFile.open("#{csv_file}.zip", Zip::ZipFile::CREATE) {
+    |zipfile|
+    zipfile.add('spending.csv', csv_file)
+  }
+  
+end  
