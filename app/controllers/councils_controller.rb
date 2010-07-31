@@ -5,7 +5,7 @@ class CouncilsController < ApplicationController
   caches_action :index, :show, :cache_path => Proc.new { |controller| controller.params }
   
   def index
-    @councils = Council.find_by_params(params.except(:controller, :action, :format, :callback))
+    @councils = Council.find_by_params(params.except(:controller, :action, :format, :callback, :_))
     @title = params[:show_open_status] ? "UK Councils Open Data Scoreboard" : "All UK Local Authorities/Councils"
     @title += " With Opened Up Data" unless params[:include_unparsed]||params[:show_open_status]
     @title += " :: #{params[:region]||params[:country]}" if params[:region]||params[:country]
