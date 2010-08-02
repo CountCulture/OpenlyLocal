@@ -263,3 +263,30 @@ task :export_csv_spending_data  => :environment do
   }
   File.delete(csv_file)
 end  
+
+desc "Import Islington Payments"
+task :import_islington_payments => :environment do
+  islington = Council.first(:conditions => "name LIKE '%Islington%'")
+  periods = ['04_2010', '05_2010']
+  puts "Adding transactions for Islington"
+  periods.each do |period|
+    puts "Adding transactions for #{period}"
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_islington/#{period}.csv"), :headers => true) do |csv_file|
+      date = "14_#{period}".gsub('_','-').to_date
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => date,
+                                      :date_fuzziness => 13,
+                                      :value => row['Gross Amount'],
+                                      :supplier_name => row['Supplier Name'],
+                                      :organisation => islington,
+                                      :service => row['Nominal description'],
+                                      :source_url => "http://www.islington.gov.uk/DownloadableDocuments/CouncilandDemocracy/Pdf/#{Date::MONTHNAMES[date.month].downcase}_published_version.pdf"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end
+  end
+  islington.spending_stat.perform
+end
+
