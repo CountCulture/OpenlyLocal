@@ -201,6 +201,20 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning value_with_two_dec_places" do
+
+      should "return value as string with two decimal places" do
+        assert_equal '123.45', FinancialTransaction.new(:value => 123.45123).value_to_two_dec_places
+        assert_equal '123456.79', FinancialTransaction.new(:value => 123456.789).value_to_two_dec_places
+        assert_equal '123456.00', FinancialTransaction.new(:value => 123456).value_to_two_dec_places
+        assert_equal '123456.00', FinancialTransaction.new(:value => 123456.0).value_to_two_dec_places
+      end
+
+      should "return nil when no value" do
+        assert_nil FinancialTransaction.new.value_to_two_dec_places
+      end
+    end
+    
     context "when returning organisation" do
 
       should "return supplier organisation" do

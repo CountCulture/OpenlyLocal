@@ -261,5 +261,5 @@ task :export_csv_spending_data  => :environment do
     |zipfile|
     zipfile.add('spending.csv', csv_file)
   }
-  
+  File.delete(csv_file)
 end  

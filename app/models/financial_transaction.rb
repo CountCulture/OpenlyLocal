@@ -17,7 +17,7 @@ class FinancialTransaction < ActiveRecord::Base
                  [:csv_line_number],
                  [:date],
                  [:date_fuzziness],
-                 [:value],
+                 [:value, :value_to_two_dec_places],
                  [:organisation_name],
                  [:organisation_openlylocal_id, :organisation_id],
                  [:organisation_type],
@@ -127,6 +127,10 @@ class FinancialTransaction < ActiveRecord::Base
     else
       raw_value
     end
+  end
+
+  def value_to_two_dec_places
+    value && ("%.2f" % value)
   end
   
   private
