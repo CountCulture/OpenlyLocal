@@ -247,7 +247,7 @@ end
 desc "Export CSV version of spending data"
 task :export_csv_spending_data  => :environment do
   require 'zip/zipfilesystem'
-  dir = File.join(RAILS_ROOT, "public/councils")
+  dir = File.join(RAILS_ROOT, "db/data/downloads/")
   csv_file = File.join(dir, "spending.csv")
   Dir.mkdir(dir) unless File.directory?(dir)
   FasterCSV.open(csv_file, "w") do |csv|
