@@ -17,10 +17,11 @@ class PoliceForcesControllerTest < ActionController::TestCase
       should_assign_to(:police_forces) { PoliceForce.find(:all)}
       should respond_with :success
       should render_template :index
+      
       should "list police forces" do
         assert_select "li a", @police_force.name
       end
-
+      
       should "show share block" do
         assert_select "#share_block"
       end
@@ -67,6 +68,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
   context "on GET to :show" do
     setup do
       @police_team = Factory(:police_team, :police_force => @police_force)
+      @defunkt_police_team = Factory(:police_team, :police_force => @police_force, :defunkt => true)
       get :show, :id => @police_force.id
     end
   
@@ -82,11 +84,15 @@ class PoliceForcesControllerTest < ActionController::TestCase
     end
     
     should "list all associated police_teams" do
-      assert_select "#police_teams li", @police_force.police_teams.size do
+      assert_select "#police_teams li", @police_force.police_teams.current.size do
         assert_select "a", @police_team.title
       end
     end
     
+    should "not list defunkt teams" do
+      assert_select "a", :text => @defunkt_police_team.name, :count => 0
+    end
+
     should "show police_force in title" do
       assert_select "title", /#{@police_force.name}/
     end

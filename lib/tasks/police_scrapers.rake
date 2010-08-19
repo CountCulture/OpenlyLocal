@@ -23,11 +23,8 @@ desc "Populate Police Teams from NPIA api"
 task :populate_police_teams => :environment do
   police_forces = PoliceForce.all(:conditions => 'npia_id IS NOT NULL')
   police_forces.each do |force|
-    puts "About to update police teams for #{force.title}"
-    existing_teams = force.police_teams.current
     teams = NpiaUtilities::Client.new(:teams, :force => force.npia_id).response
     teams["team"].collect{|t| {:name => t["name"], :uid => t["id"]}}.each do |team|
-      # if existing_teams.detect 
       force.police_teams.find_or_create_by_name_and_uid(team)
     end
   end
