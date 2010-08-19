@@ -1,5 +1,5 @@
 class FinancialTransaction < ActiveRecord::Base
-  belongs_to :supplier, :dependent => :destroy
+  belongs_to :supplier
   before_validation :save_associated_supplier
   validates_presence_of :value, :date, :supplier_id
   attr_reader :organisation
