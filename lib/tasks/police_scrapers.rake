@@ -211,7 +211,9 @@ end
 
 desc "Connect Wards and Police Teams"
 task :connect_wards_and_police_teams  => :environment do
-  wards_without_police_teams = Ward.all(:include => [:boundary, :council], :conditions => "police_team_id IS NULL AND snac_id IS NOT NULL")
+  wards_without_current_police_teams = Ward.all(:include => [:boundary, :council], :conditions => "police_team_id IS NULL AND snac_id IS NOT NULL")
+  defunkt_teams = PoliceTeam.defunkt.all
+  wards_without_current_police_teams += defunkt_teams.collect{ |t| t.wards }.flatten
   police_forces = PoliceForce.all
   wards_without_police_teams.each do |ward|
     next if ward.council.authority_type == 'County' || !ward.boundary
