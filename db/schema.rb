@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100721152821) do
+ActiveRecord::Schema.define(:version => 20100819173354) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -173,6 +173,7 @@ ActiveRecord::Schema.define(:version => 20100721152821) do
     t.column "open_data_url", :string
     t.column "open_data_licence", :string
     t.column "normalised_title", :string
+    t.column "wdtk_id", :integer
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
@@ -308,6 +309,11 @@ ActiveRecord::Schema.define(:version => 20100721152821) do
     t.column "raw_body", :text, :limit => 16777215
     t.column "document_type", :string
     t.column "precis", :text
+    t.column "filetype", :string
+    t.column "original_file_name", :string
+    t.column "original_content_type", :string
+    t.column "original_file_size", :integer
+    t.column "original_updated_at", :datetime
   end
 
   add_index "documents", ["document_owner_type", "document_owner_id"], :name => "index_documents_on_document_owner_type_and_document_owner_id"
@@ -637,6 +643,7 @@ ActiveRecord::Schema.define(:version => 20100721152821) do
     t.column "updated_at", :datetime
     t.column "lat", :float
     t.column "lng", :float
+    t.column "defunkt", :boolean, :default => false
   end
 
   add_index "police_teams", ["police_force_id"], :name => "index_police_teams_on_police_force_id"

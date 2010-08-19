@@ -6,6 +6,8 @@ class PoliceTeamTest < ActiveSupport::TestCase
   context "The PoliceTeam class" do
     setup do
       @police_team = Factory(:police_team)
+      @police_force = @police_team.police_force
+      @defunkt_police_team = Factory(:police_team, :defunkt => true)
     end
     
     should belong_to :police_force
@@ -15,7 +17,27 @@ class PoliceTeamTest < ActiveSupport::TestCase
     should_validate_presence_of :name
     should_validate_presence_of :police_force_id
     
-    should_have_db_columns :url, :description, :lat, :lng    
+    should_have_db_columns :url, :description, :lat, :lng
+    
+    context 'should have defunkt named scope which' do
+      
+      should 'return defunkt teams only' do
+        defunkt_teams = PoliceTeam.defunkt
+        assert !defunkt_teams.include?(@police_team)
+        assert defunkt_teams.include?(@defunkt_police_team)
+      end
+      
+    end
+    
+    context 'should have current named scope and' do
+      
+      should 'return current wards only' do
+        current_teams = PoliceTeam.current
+        assert current_teams.include?(@police_team)
+        assert !current_teams.include?(@defunkt_police_team)
+      end
+      
+    end
   end
   
   context "A PoliceTeam instance" do
@@ -86,5 +108,6 @@ class PoliceTeamTest < ActiveSupport::TestCase
       assert_kind_of PoliceOfficer, officers.first
     end
   end
+
   end
 end

@@ -14,10 +14,10 @@ class PoliceForceTest < ActiveSupport::TestCase
     should have_many :suppliers
     should_have_many :financial_transactions, :through => :suppliers
     should have_one :police_authority 
-    should_validate_presence_of :name
-    should_validate_uniqueness_of :name
-    should_validate_presence_of :url
-    should_validate_uniqueness_of :url
+    should validate_presence_of :name
+    should validate_uniqueness_of :name
+    should validate_presence_of :url
+    should validate_uniqueness_of :url
     
     should have_db_column :wikipedia_url
     should have_db_column :telephone
@@ -85,6 +85,54 @@ class PoliceForceTest < ActiveSupport::TestCase
   
     should 'return correct url as openlylocal_url' do
       assert_equal "http://#{DefaultDomain}/police_forces/#{@police_force.to_param}", @police_force.openlylocal_url
+    end
+    
+    context "when updating police_teams" do
+      setup do
+        dummy_response = { "team"=> [ {"name"=>"Cotham", "id"=>"BC173"}, 
+                                      {"name"=>"Redland", "id"=>"BC174"}, 
+                                      {"name"=>"Bishopston", "id"=>"BC175"}, 
+                                      {"name"=>"Kingsdown", "id"=>"BC190"} ]
+                                    }
+        
+        NpiaUtilities::Client.any_instance.stubs(:response).returns(dummy_response)
+      end
+
+      should "make call to NPIA api" do
+        NpiaUtilities::Client.expects(:new).with(:teams, :force => @police_force.npia_id).returns(stub_everything)
+        @police_force.update_teams
+      end
+
+      should "create teams for force" do
+        assert_difference 'PoliceTeam.count', 4 do
+          @police_force.update_teams
+        end
+      end
+
+      should "update existing teams" do
+        existing_team = Factory(:police_team, :police_force => @police_force, :name => 'Foo Team', :uid => 'BC174')
+        assert_difference 'PoliceTeam.count', 3 do
+          @police_force.update_teams
+        end
+        assert_equal 'Redland', existing_team.reload.name
+      end
+
+      should "mark orphan teams as defunkt" do
+        orphan_team = Factory(:police_team, :police_force => @police_force, :name => 'Foo Team', :uid => 'BC170')
+        @police_force.update_teams
+        assert orphan_team.reload.defunkt?
+      end
+
+      should "not raise error if no teams found for force" do
+        NpiaUtilities::Client.any_instance.expects(:response).returns('team' => [])
+        assert_nothing_raised(Exception) { @police_force.update_teams }
+      end
+
+      should "return all teams for force" do
+        assert_kind_of Array, teams = @police_force.update_teams
+        assert_equal 4, teams.size
+        assert_kind_of PoliceTeam, teams.first
+      end
     end
   end
    

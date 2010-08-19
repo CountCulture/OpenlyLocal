@@ -4,6 +4,8 @@ class PoliceTeam < ActiveRecord::Base
   has_many :police_officers
   has_many :wards
   validates_presence_of :name, :uid, :police_force_id
+  named_scope :defunkt, :conditions => { :defunkt => true }
+  named_scope :current, :conditions => { :defunkt => false }
   default_scope :order => 'name'
   alias_attribute :title, :name
   
