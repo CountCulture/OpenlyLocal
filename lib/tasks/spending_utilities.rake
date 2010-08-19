@@ -290,3 +290,30 @@ task :import_islington_payments => :environment do
   islington.spending_stat.perform
 end
 
+desc "Import Bedford Payments"
+task :import_bedford_payments => :environment do
+  bedford = Council.first(:conditions => "name LIKE '%Bedford Borough%'")
+  periods = ['04_2010', '05_2010', '06_2010', '07_2010']
+  puts "Adding transactions for Bedford"
+  periods.each do |period|
+    puts "Adding transactions for #{period}"
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/bedford/Invoices_#{period}.csv"), :headers => true) do |csv_file|
+      date = "14_#{period}".gsub('_','-').to_date
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => date,
+                                      :date_fuzziness => 13,
+                                      :value => row['Amount'],
+                                      :supplier_name => row['Supplier'],
+                                      :department_name => row['Directorate'],
+                                      :organisation => bedford,
+                                      :uid => row['TransNo'],
+                                      :source_url => "http://www.bedford.gov.uk/council_and_democracy/council_budgets_and_spending/supplier_payments.aspx"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end
+  end
+  bedford.spending_stat.perform
+end
+
