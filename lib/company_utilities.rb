@@ -15,6 +15,19 @@ module CompanyUtilities
       }.delete_if{|k,v| v.blank?}
     end
     
+    def get_vat_info(vat_number)
+      return if vat_number.blank?
+      doc = Hpricot(_http_get("http://ec.europa.eu/taxation_customs/vies/viesquer.do?ms=GB&iso=GB&vat=#{vat_number}"))
+      info = doc.at('table.vat.answer ~ table')
+      title = info.at('td[text()*=Name]').next_sibling.inner_text.squish
+      address = info.at('td[text()*=Address]').next_sibling.at('font').inner_html.gsub(/(<br \/>)+/, ', ').squish
+      { :title => title,
+        :address_in_full => address }
+    rescue Exception => e
+      RAILS_DEFAULT_LOGGER.debug "Problem getting info for VAT number #{vat_number}: #{e.inspect}"
+      return nil
+    end
+    
     def find_company_from_name(name)
       resp_array = JSON.parse(_http_get("http://companiesopen.org/search?q=#{CGI.escape name}&f=js")) rescue nil
       return if resp_array.blank?

@@ -398,6 +398,22 @@ class SupplierTest < ActiveSupport::TestCase
         @supplier.company_number = '123456'
         assert_equal @company, @supplier.reload.payee
       end
+      
+      context "and supplier already has associated company" do
+        setup do
+          @supplier.update_attribute(:payee, @company)
+        end
+
+        should 'not match or create company from company number' do
+          Company.expects(:match_or_create).never
+          @supplier.company_number = '123456'
+        end
+        
+        should "update company with company number" do
+          @supplier.company_number = '123456'
+          assert_equal '123456', @company.reload.company_number 
+        end
+      end
     end
         
     context 'when assigning vat_number' do
@@ -414,6 +430,22 @@ class SupplierTest < ActiveSupport::TestCase
         Company.stubs(:match_or_create).returns(@company)
         @supplier.vat_number = '123456'
         assert_equal @company, @supplier.reload.payee
+      end
+      
+      context "and supplier already has associated company" do
+        setup do
+          @supplier.update_attribute(:payee, @company)
+        end
+
+        should 'not match or create company from company number' do
+          Company.expects(:match_or_create).never
+          @supplier.vat_number = '123456'
+        end
+        
+        should "update company with company number" do
+          @supplier.vat_number = '123456'
+          assert_equal '123456', @company.reload.vat_number 
+        end
       end
     end
         

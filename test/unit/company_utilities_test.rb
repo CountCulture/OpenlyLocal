@@ -48,6 +48,41 @@ EOF
       end
     end
     
+    context "when getting info from vat_number" do
+      setup do
+        @dummy_response = dummy_html_response(:eu_vat_number_success)
+        
+        @client.stubs(:_http_get).returns(@dummy_response)
+      end
+
+      should "return nil if vat number blank?" do
+        assert_nil @client.get_vat_info('')
+        assert_nil @client.get_vat_info(nil)
+      end
+
+      should "fetch info from Eu Vat service" do
+        @client.expects(:_http_get).with('http://ec.europa.eu/taxation_customs/vies/viesquer.do?ms=GB&iso=GB&vat=02472621').returns(@dummy_response)
+        @client.get_vat_info('02472621')
+      end
+
+      should "return nil if problem parsing info" do
+        @client.expects(:_http_get).with('http://ec.europa.eu/taxation_customs/vies/viesquer.do?ms=GB&iso=GB&vat=02472621').returns('foo"')
+        assert_nil @client.get_vat_info('02472621')
+      end
+
+      should "return nil if vat number not found parsing info" do
+        @client.expects(:_http_get).with('http://ec.europa.eu/taxation_customs/vies/viesquer.do?ms=GB&iso=GB&vat=02472621').returns(dummy_html_response(:eu_vat_number_failure))
+        assert_nil @client.get_vat_info('02472621')
+      end
+
+      should "extract info from page" do
+        assert_kind_of Hash, resp = @client.get_vat_info('02472621')
+        assert_equal "MASTERCRATE LTD", resp[:title]
+        assert_equal "CANNON WHARFE, 35 EVELYN STREET, SURREY QUAYS, LONDON, SE8 5RT", resp[:address_in_full]
+      end
+
+    end
+
     context "when finding from name" do
       setup do
         @dummy_json =<<-EOF
