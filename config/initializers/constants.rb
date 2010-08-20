@@ -54,6 +54,7 @@ AllowedCountries = ['England', 'Northern Ireland', 'Scotland', 'Wales']
 Licences = {'CC0' => ['Creative Commons CC0 Universal', 'http://creativecommons.org/publicdomain/zero/1.0/', 'open'],
             'CCBY30' => ['Creative Commons By Attribution 3.0', 'http://creativecommons.org/licenses/by/3.0/', 'open'],
             'CCBYSA20' => ['Creative Commons Attribution-Share Alike 2.0', 'http://creativecommons.org/licenses/by-sa/2.0/', 'open'],
+            'CCBYSA30' => ['Creative Commons Attribution-Share Alike 3.0 Unported', 'http://creativecommons.org/licenses/by-sa/3.0/', 'open'],
             'CCBYNC30' => ['Creative Commons Attribution-Noncommercial 3.0', 'http://creativecommons.org/licenses/by-nc/3.0/', 'semi_open'],
             'CCBYNCSA30' => ['Creative Commons Attribution-Noncommercial-Share Alike 3.0', 'http://creativecommons.org/licenses/by-nc-sa/3.0/', 'semi_open'],
             'DATAGOVUK' => ['Data.gov.uk open licence', 'http://data.gov.uk/terms-and-conditions', 'open'],
