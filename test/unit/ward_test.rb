@@ -20,11 +20,12 @@ class WardTest < ActiveSupport::TestCase
     should have_many :polls
     should have_many :dataset_topics#, :through => :datapoints
     should_have_one  :boundary
-    should belong_to :crime_area
-    should_have_db_column :uid
-    should_have_db_column :snac_id
-    should_have_db_column :url
-    should_have_db_columns :police_neighbourhood_url, :crime_area_id
+    # should belong_to :crime_area
+    should have_db_column :uid
+    should have_db_column :snac_id
+    should have_db_column :url
+    should have_db_column :police_neighbourhood_url
+    should have_db_column :crime_area_id
 
     should "include ScraperModel mixin" do
       assert Ward.respond_to?(:find_all_existing)
@@ -33,7 +34,15 @@ class WardTest < ActiveSupport::TestCase
     should "include AreaMethods mixin" do
       assert Ward.new.respond_to?(:grouped_datapoints)
     end
-        
+    
+    should 'not belong to defunkt police team' do
+      police_team = Factory(:police_team)
+      @ward.update_attribute(:police_team, police_team)
+      assert_equal police_team, @ward.police_team
+      police_team.update_attribute(:defunkt, true)
+      assert_nil @ward.police_team(true)
+    end
+    
     context 'when validating uniqueness of name' do
       setup do
         @council_1 = Factory(:council, :name => "Council 1")

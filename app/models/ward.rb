@@ -2,7 +2,7 @@ class Ward < ActiveRecord::Base
   include ScrapedModel::Base
   include AreaMethods
   belongs_to :council
-  belongs_to :police_team
+  belongs_to :police_team, :conditions => {:defunkt => false}
   has_many :members
   has_many :committees
   has_many :meetings, :through => :committees
