@@ -213,9 +213,9 @@ desc "Connect Wards and Police Teams"
 task :connect_wards_and_police_teams  => :environment do
   defunkt_teams = PoliceTeam.defunkt.all
   wards_without_current_police_teams = Ward.all(:include => [:boundary, :council], :conditions => "police_team_id IS NULL AND snac_id IS NOT NULL")
-                                        + defunkt_teams.collect{ |t| t.wards }.flatten
+                                        + defunkt_teams.collect{ |t| t.wards }.flatten.compact
   police_forces = PoliceForce.all
-  wards_without_police_teams.each do |ward|
+  wards_without_current_police_teams.each do |ward|
     next if ward.council.authority_type == 'County' || !ward.boundary
     centrepoint = ward.boundary.centrepoint
     client = NpiaUtilities::Client.new(:geocode_team, :q => [centrepoint.lat, centrepoint.lng].join(','))

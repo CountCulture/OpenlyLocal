@@ -7,8 +7,6 @@ class CompanyTest < ActiveSupport::TestCase
     end
   
     should have_many :supplying_relationships
-    should validate_presence_of :company_number
-    should validate_uniqueness_of :company_number
   
     should have_db_column :title
     should have_db_column :company_number
@@ -18,11 +16,44 @@ class CompanyTest < ActiveSupport::TestCase
     should have_db_column :wikipedia_url
     should have_db_column :company_type
     should have_db_column :incorporation_date
+    should have_db_column :vat_number
     
     should 'mixin AddressMethods module' do
       assert @company.respond_to?(:address_in_full)
     end
-
+    
+    context "when validating" do
+      should "require presence of company_number or vat_number" do
+        company = Company.new(:company_number => '1234')
+        assert company.valid?
+        company.attributes = {:company_number => nil, :vat_number => 'ab123'}
+        assert company.valid?
+        company.vat_number = nil
+        assert !company.valid?
+      end
+      
+      should "validate uniqueness of non-blank company_number" do
+        dup_company = Factory.build(:company, :company_number => @company.company_number)
+        another_dup_company = Factory.build(:company, :company_number => nil, :vat_number => 'cd456')
+        assert !dup_company.valid?
+        assert_equal 'has already been taken', dup_company.errors[:company_number]
+        @company.update_attributes(:company_number => nil, :vat_number => 'ab123' )
+        assert another_dup_company.valid?
+      end
+      
+      should "validate uniqueness of non-blank vat_number" do
+        dup_company = Factory.build(:company, :company_number => '4567') # vat number is nil
+        another_dup_company = Factory.build(:company, :company_number => nil, :vat_number => 'ab123')
+        assert dup_company.valid? # don't check if nil
+        @company.update_attributes(:company_number => nil, :vat_number => 'ab123' )
+        assert !another_dup_company.valid?
+        assert_equal 'has already been taken', another_dup_company.errors[:vat_number]
+      end
+      
+      # should_validate_uniqueness_of :company_number
+      # should_validate_uniqueness_of(:vat_number).case_insensitive
+    end
+    
     context "when normalising title" do
       should "normalise title" do
         TitleNormaliser.expects(:normalise_company_title).with('foo bar')
@@ -64,10 +95,15 @@ class CompanyTest < ActiveSupport::TestCase
     context "when matching or creating from params" do
       setup do
         @existing_company = Factory(:company, :company_number => "00012345")
+        @existing_co_with_vat_no = Factory(:company, :company_number => nil, :vat_number => '1234')
       end
 
       should "return company with given company number" do
         assert_equal @existing_company, Company.match_or_create(:company_number => "00012345")
+      end
+      
+      should "return company with given vat number" do
+        assert_equal @existing_co_with_vat_no, Company.match_or_create(:vat_number => "1234")
       end
       
       should "return company that matches normalised version of company number" do
@@ -94,13 +130,20 @@ class CompanyTest < ActiveSupport::TestCase
           assert_equal "07654321", c.reload.company_number
         end
         
+        should "create company with given vat_number" do
+          assert_difference "Company.count", 1 do
+            Company.match_or_create(:vat_number => "7654321")
+          end
+          assert Company.find_by_vat_number("7654321")
+        end
+        
         should 'assign other attributes' do
           c = Company.match_or_create(:company_number => "7654321", :url => 'http://foo.com', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo')
           assert_equal 'http://foo.com', c.url
           assert_equal 'http://en.wikipedia.org/wiki/foo', c.wikipedia_url
         end
         
-        should 'not create company number if no company number' do
+        should 'not create company number if no company number and no vat number' do
           c = Company.match_or_create(:url => 'http://foo.com', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo')
           assert_nil c.company_number
         end

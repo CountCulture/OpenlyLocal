@@ -389,39 +389,32 @@ class SupplierTest < ActiveSupport::TestCase
       end
       
       should 'match or create company from company number' do
-        Company.expects(:match_or_create_from_company_number).with('123456')
+        Company.expects(:match_or_create).with(:company_number => '123456')
         @supplier.company_number = '123456'
       end
       
       should 'associate returned company with given company number' do
-        Company.stubs(:match_or_create_from_company_number).returns(@company)
+        Company.stubs(:match_or_create).returns(@company)
         @supplier.company_number = '123456'
         assert_equal @company, @supplier.reload.payee
       end
+    end
+        
+    context 'when assigning vat_number' do
+      setup do
+        @company = Factory(:company, :vat_number => '123456')
+      end
       
-      # context "and company with given number already exists" do
-      #   setup do
-      #     @old_company_count = Company.count
-      #     @supplier.company_number = @existing_company.company_number
-      #   end
-      #   
-      #   should 'not create new company' do
-      #     assert_equal @old_company_count, Company.count
-      #   end
-      #   
-      #   
-      # end
-      # 
-      # context "and company not found" do
-      #   
-      #   should "create new company with given id" do
-      #     assert_difference "Company.count", 1 do
-      #        @supplier.company_number = '012345'
-      #     end
-      #     assert_equal '012345', @supplier.payee.company_number
-      #   end
-      # end
+      should 'match or create company from company number' do
+        Company.expects(:match_or_create).with(:vat_number => '123456')
+        @supplier.vat_number = '123456'
+      end
       
+      should 'associate returned company with given company number' do
+        Company.stubs(:match_or_create).returns(@company)
+        @supplier.vat_number = '123456'
+        assert_equal @company, @supplier.reload.payee
+      end
     end
         
     context "when returning associateds" do

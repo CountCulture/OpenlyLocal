@@ -13,6 +13,7 @@
   <%= attribute_tag :service, @financial_transaction.service %>
   <%= attribute_tag :description, @financial_transaction.description %>
   <%= attribute_tag :transaction_id, @financial_transaction.uid %>
+  <%= attribute_tag :invoice_number, @financial_transaction.invoice_number %>
   <%= attribute_tag :source, 
 										(@financial_transaction.csv_line_number ? "Line #{@financial_transaction.csv_line_number} of ": '') + 
 										link_to(@financial_transaction.source_url, @financial_transaction.source_url) if @financial_transaction.source_url? %>

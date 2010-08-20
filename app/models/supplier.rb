@@ -43,7 +43,7 @@ class Supplier < ActiveRecord::Base
   
   # convenience method for assigning company given company number. Creates company if no company with given company_number exists
   def company_number=(comp_no)
-    company = Company.match_or_create_from_company_number(comp_no)
+    company = Company.match_or_create(:company_number => comp_no)
     update_attribute(:payee, company)
   end
   
@@ -86,6 +86,12 @@ class Supplier < ActiveRecord::Base
       self.payee = company
       self.save
     end
+  end
+  
+  # convenience method for assigning company given vat number. Creates company if no company with given vat_number exists
+  def vat_number=(vat_number)
+    company = Company.match_or_create(:vat_number => vat_number)
+    update_attribute(:payee, company)
   end
   
   private

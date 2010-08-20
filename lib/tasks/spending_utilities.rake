@@ -294,7 +294,7 @@ desc "Import Bedford Payments"
 task :import_bedford_payments => :environment do
   bedford = Council.first(:conditions => "name LIKE '%Bedford Borough%'")
   periods = ['04_2010', '05_2010', '06_2010', '07_2010']
-  puts "Adding transactions for Bedford"
+  puts "Adding transactions for Barnet"
   periods.each do |period|
     puts "Adding transactions for #{period}"
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/bedford/Invoices_#{period}.csv"), :headers => true) do |csv_file|
@@ -315,5 +315,58 @@ task :import_bedford_payments => :environment do
     end
   end
   bedford.spending_stat.perform
+end
+
+desc "Import Bromley Payments"
+task :import_bromley_payments => :environment do
+  bromley = Council.first(:conditions => "name LIKE '%Bromley%'")
+  puts "Adding transactions for Bromley"
+  date = "14-06-2010"
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_bromley/PaymentstosuppliersJun10Invoices.csv"), :headers => true) do |csv_file|
+    csv_file.each do |row|
+      ft = FinancialTransaction.new(:date => date,
+                                    :date_fuzziness => 13,
+                                    :value => row['Invoice amount'],
+                                    :supplier_name => row['Supplier name'],
+                                    :organisation => bromley,
+                                    :csv_line_number => csv_file.lineno + 2, #we've deleted first two lines which were comments
+                                    :department_name => row['Portfolio'],
+                                    :service => row['Service area'],
+                                    :uid => row['Payment reference number'],
+                                    :invoice_number => row['Invoice reference number'],
+                                    :description => row['Expense type'],
+                                    :source_url => "http://www.bromley.gov.uk/NR/rdonlyres/7D69F0B1-E5DB-4757-9ACD-ED4719529249/0/PaymentstosuppliersJun10Invoices.csv"
+                                    )
+      ft.save!                                  
+      puts "."
+    end
+  end
+  bromley.spending_stat.perform
+end
+
+desc "Import Kensington & Chelsea Payments"
+task :import_bromley_payments => :environment do
+  kandc = Council.first(:conditions => "name LIKE '%Chelsea%'")
+  puts "Adding transactions for Kensington & Chelsea"
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_kandc/PaymentsSchedule010410-300610.csv"), :headers => true) do |csv_file|
+    csv_file.each do |row|
+      ft = FinancialTransaction.new(:date => date,
+                                    :date_fuzziness => 13,
+                                    :value => row['Invoice amount'],
+                                    :supplier_name => row['Supplier name'],
+                                    :organisation => kandc,
+                                    :csv_line_number => csv_file.lineno + 2, #we've deleted first two lines which were comments
+                                    :department_name => row['Portfolio'],
+                                    :service => row['Service area'],
+                                    :uid => row['Payment reference number'],
+                                    :invoice_number => row['Invoice reference number'],
+                                    :description => row['Expense type'],
+                                    :source_url => "http://www.rbkc.gov.uk/files/PaymentsSchedule010410-300610.csv"
+                                    )
+      ft.save!                                  
+      puts "."
+    end
+  end
+  kandc.spending_stat.perform
 end
 

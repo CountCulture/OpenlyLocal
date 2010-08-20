@@ -1,9 +1,12 @@
 class Company < ActiveRecord::Base
   include AddressMethods
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
-  validates_presence_of :company_number
-  validates_uniqueness_of :company_number
+  validates_uniqueness_of :company_number, :vat_number, :allow_blank => true
   before_save :normalise_title
+  
+  def validate
+    errors.add_to_base('Either the company number or vat number must be present') unless (company_number? || vat_number?)
+  end
   
   # matches normalised version of given title with
   def self.matches_title(raw_title)
@@ -11,8 +14,8 @@ class Company < ActiveRecord::Base
   end
   
   def self.match_or_create(params={})
-    params[:company_number] =  normalise_company_number(params[:company_number])
-    company = find_or_create_by_company_number(params) # use normalised version of company number
+    params[:company_number] = normalise_company_number(params[:company_number]) if params[:company_number] # use normalised version of company number
+    company = params[:company_number].blank? ? (params[:vat_number].blank? ? Company.new(params) : find_or_create_by_vat_number(params)) : find_or_create_by_company_number(params) 
     Delayed::Job.enqueue(company) if company.instance_variable_get(:@new_record_before_save)
     company
   end
