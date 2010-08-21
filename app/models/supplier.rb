@@ -2,18 +2,16 @@ class Supplier < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
   has_many :financial_transactions, :order => 'date', :dependent => :destroy
+  after_create :queue_for_matching_with_payee
   include SpendingStatUtilities::Base
-  # has_one :spending_stat, :as => :organisation, :dependent => :destroy
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
   named_scope :unmatched, :conditions => {:payee_id => nil}
   named_scope :filter_by, lambda { |filter_hash| filter_hash[:name] ? 
                                   { :conditions => ["name LIKE ?", "%#{filter_hash[:name]}%"] } : 
                                   {} }
-  # before_save :update_spending_stat
-  after_create :match_with_existing_company
+
   alias_attribute :title, :name
-  # delegate :total_spend, :average_monthly_spend, :average_transaction_value, :to => :spending_stat, :allow_nil => true
   
   def validate
     errors.add_to_base('Either a name or uid is required') if name.blank? && uid.blank?
@@ -51,21 +49,17 @@ class Supplier < ActiveRecord::Base
     end
   end
   
-  # def find_and_associate_new_company
-  #   possible_companies = CompanyUtilities::Client.new.find_company_from_name(title) || 
-  #                          (title.match(/&/) ? CompanyUtilities::Client.new.find_company_from_name(title.gsub(/\s?&\s?/, ' and ')) : nil)
-  #   if possible_companies && (matched_company = possible_companies.size == 1 ? possible_companies.first : 
-  #                                                    possible_companies.detect{ |pc| Company.normalise_title(pc[:title]) == Company.normalise_title(title) })
-  #   else
-  #     update_attribute(:failed_payee_search, true)
-  #     return
-  #   end
-  #   self.payee = Company.create!(matched_company)
-  #   self.save!
-  # end
-  
   def openlylocal_url
     "http://#{DefaultDomain}/suppliers/#{to_param}"
+  end
+
+  # alias populate_basic_info as perform so that this gets run when doing delayed_job on a company
+  def perform
+    if payee = possible_payee
+      update_attribute(:payee, payee)
+    else
+      update_attribute(:failed_payee_search, true)
+    end
   end
 
   def possible_payee
@@ -103,9 +97,7 @@ class Supplier < ActiveRecord::Base
   end
   
   private
-  def match_with_existing_company
-    if payee = possible_payee
-      update_attribute(:payee, payee)
-    end
+  def queue_for_matching_with_payee
+    Delayed::Job.enqueue(self)
   end
 end

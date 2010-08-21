@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100820113638) do
+ActiveRecord::Schema.define(:version => 20100821203207) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -36,15 +36,6 @@ ActiveRecord::Schema.define(:version => 20100820113638) do
   end
 
   add_index "boundaries", ["area_id", "area_type"], :name => "index_boundaries_on_area_id_and_area_type"
-
-  create_table "boundaries_copy", :force => true do |t|
-    t.column "area_type", :string
-    t.column "area_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "boundary_line", :multi_polygon
-    t.column "hectares", :float
-  end
 
   create_table "candidates", :force => true do |t|
     t.column "poll_id", :integer
@@ -792,7 +783,7 @@ ActiveRecord::Schema.define(:version => 20100820113638) do
     t.column "uid", :string
     t.column "organisation_type", :string
     t.column "organisation_id", :integer
-    t.column "failed_payee_search", :string, :default => "0"
+    t.column "failed_payee_search", :boolean, :default => false
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "url", :string

@@ -187,19 +187,43 @@ class SupplierTest < ActiveSupport::TestCase
         @company = Factory(:company)
       end
       
-      should 'try to match against company if company' do
-        Supplier.any_instance.expects(:possible_payee)
+      should 'queue for matching with payee' do
+        Delayed::Job.stubs(:enqueue) # stub out otherdelayed jobs
+        Delayed::Job.expects(:enqueue).with(kind_of(Supplier))
         Factory(:supplier, :name => 'Foo company')
       end
-      
-      should 'and should associate with returned body' do
-        Supplier.any_instance.expects(:possible_payee).returns(@company)
-        supplier = Factory(:supplier, :name => 'Foo company')
-        assert_equal @company, supplier.reload.payee
-      end
-      
+            
     end
     
+    context "when performing" do
+      setup do
+        @dummy_payee = Factory(:company)
+      end
+      
+      should "try to match against possible payee" do
+        @supplier.expects(:possible_payee)
+        @supplier.perform
+      end
+      
+      should "update payee with possible payee" do
+        @supplier.stubs(:possible_payee).returns(@dummy_payee)
+        @supplier.perform
+        assert_equal @dummy_payee, @supplier.payee
+      end
+      
+      should "not flag supplier as failed_payee_search if payee returned" do
+        @supplier.stubs(:possible_payee).returns(@dummy_payee)
+        @supplier.perform
+        assert !@supplier.failed_payee_search
+      end
+      
+      should "flag supplier as failed_payee_search if no payee returned" do
+        @supplier.stubs(:possible_payee) # returns nil
+        @supplier.perform
+        assert @supplier.failed_payee_search?
+      end
+    end
+
     context "when matching against existing possible payees" do
       context "and name is company-like" do
         setup do
@@ -241,80 +265,7 @@ class SupplierTest < ActiveSupport::TestCase
         
       end
     end
-    
-    # context "when finding and associating new company from name" do
-    # 
-    #   should "associate company with supplier" do
-    #     CompanyUtilities::Client.any_instance.expects(:find_company_from_name).with('Spikes Cavell and Company Ltd').returns(@company_response) # then returns company response
-    #     @supplier.find_and_associate_new_company
-    #     assert company = @supplier.reload.payee
-    #     assert_equal "SPIKES CAVELL AND COMPANY LIMITED", company.title
-    #     assert_equal "06398324", company.company_number
-    #   end
-    #   
-    #   should "not create company if no company" do
-    #     CompanyUtilities::Client.any_instance.expects(:find_company_from_name) # => returns nil still
-    #     assert_no_difference "Company.count" do
-    #       @supplier.find_and_associate_new_company
-    #     end
-    #   end
-    #   
-    #   should "mark supplier as failed_payee_search" do
-    #     CompanyUtilities::Client.any_instance.expects(:find_company_from_name) # => returns nil still
-    #     @supplier.find_and_associate_new_company
-    #     assert @supplier.reload.failed_payee_search?
-    #   end
-    #   
-    # end
-    #   end
-    #   
-    #   context "and several companies are returned" do
-    #     setup do
-    #       @supplier.update_attribute(:title, 'Spikes Cavell Analytic Ltd')
-    #       company_response = [{:status=>"Active", :company_number=>"06398324", :title=>"SPIKES CAVELL & COMPANY LIMITED", :company_type=>"Private Limited Company", :address_in_full=>"1 NORTHBROOK PLACE\nNEWBURY\nBERKSHIRE\nRG14 1DQ", :incorporation_date=>"2007-10-15"}, {:status=>"Active", :company_number=>"04917291", :title=>"SPIKES CAVELL ANALYTIC LIMITED", :company_type=>"Private Limited Company", :address_in_full=>"1 NORTHBROOK PLACE\nNEWBURY\nBERKSHIRE\nRG14 1DQ", :incorporation_date=>"2003-10-01"}]
-    #       CompanyUtilities::Client.any_instance.stubs(:find_company_from_name).returns(company_response)
-    #     end
-    #   
-    #     should "create company" do
-    #       assert_difference "Company.count", 1 do
-    #         @supplier.find_and_associate_new_company
-    #       end
-    #     end
-    #     
-    #     should "match company with matching normalised title" do
-    #       @supplier.find_and_associate_new_company
-    #       assert Company.find_by_company_number('04917291')
-    #       assert !Company.find_by_company_number('06398324')
-    #     end
-    #     
-    #   
-    #     should "associate company with supplier" do
-    #       @supplier.find_and_associate_new_company
-    #       assert company = @supplier.reload.payee
-    #       assert_equal "SPIKES CAVELL ANALYTIC LIMITED", company.title
-    #       assert_equal "04917291", company.company_number
-    #     end
-    #     
-    #     context "and no matching normalised title" do
-    #       setup do
-    #         @supplier.update_attribute(:title, 'Spikes Cavell Analytic')
-    #       end
-    #       
-    #       should "not create company" do
-    #         assert_no_difference "Company.count" do
-    #           @supplier.find_and_associate_new_company
-    #         end
-    #       end
-    #       
-    #       should "not associate company with supplier" do
-    #         @supplier.find_and_associate_new_company
-    #         assert_nil @supplier.payee
-    #       end
-    #     end
-    #   end
-    #   
-    # end
-    
+        
     context 'when assigning company_number' do
       setup do
         @company = Factory(:company)
