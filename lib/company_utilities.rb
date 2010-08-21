@@ -1,6 +1,15 @@
 module CompanyUtilities
   
   class Client
+    
+    def company_from_name(name)
+      return unless poss_companies = (find_possible_companies_from_name(name) || (name.match(/&/) ? find_possible_companies_from_name(name.gsub(/\s?&\s?/, ' and ')) : nil))
+      if poss_companies.size == 1
+        poss_companies.first
+      else
+        poss_companies.detect{ |pc| Company.normalise_title(pc[:title]) == Company.normalise_title(name) }
+      end
+    end
 
     def get_basic_info(company_number)
       return if company_number.blank?
@@ -28,7 +37,7 @@ module CompanyUtilities
       return nil
     end
     
-    def find_company_from_name(name)
+    def find_possible_companies_from_name(name)
       resp_array = JSON.parse(_http_get("http://companiesopen.org/search?q=#{CGI.escape name}&f=js")) rescue nil
       return if resp_array.blank?
       resp_array.collect do |company_info|

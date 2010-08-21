@@ -83,7 +83,7 @@ EOF
 
     end
 
-    context "when finding from name" do
+    context "when finding possible companies from name" do
       setup do
         @dummy_json =<<-EOF
 [{"company":{"wikipedia_url":null,"name":"SPIKES CAVELL & COMPANY LIMITED","country_code":"uk","company_number":"06398324","company_category":"Private Limited Company","updated_at":"2010-07-05T20:59:11Z","url":null,"logo_image_url":null,"id":65724,"company_status":"Active","address":"1 NORTHBROOK PLACE\\nNEWBURY\\nBERKSHIRE\\nRG14 1DQ","incorporation_date":"2007-10-15","created_at":"2010-07-05T20:59:11Z"}},{"company":{"wikipedia_url":null,"name":"SPIKES CAVELL ANALYTIC LIMITED","country_code":"uk","company_number":"04917291","company_category":"Private Limited Company","updated_at":"2010-07-05T20:59:13Z","url":null,"logo_image_url":null,"id":65725,"company_status":"Active","address":"1 NORTHBROOK PLACE\\nNEWBURY\\nBERKSHIRE\\nRG14 1DQ","incorporation_date":"2003-10-01","created_at":"2010-07-05T20:59:13Z"}}]
@@ -93,16 +93,16 @@ EOF
 
       should "fetch info from CompaniesOpenHouse" do
         @client.expects(:_http_get).with('http://companiesopen.org/search?q=Foo+Bar&f=js')
-        @client.find_company_from_name('Foo Bar')
+        @client.find_possible_companies_from_name('Foo Bar')
       end
       
       should "return nil if problem parsing info" do
         @client.expects(:_http_get).with('http://companiesopen.org/search?q=Foo+Bar&f=js').returns('foo"')
-        assert_nil @client.find_company_from_name('Foo Bar')
+        assert_nil @client.find_possible_companies_from_name('Foo Bar')
       end
       
       should "return info from CompaniesOpenHouse as array of hashes" do
-        assert_kind_of Array, resp = @client.find_company_from_name('Foo Bar')
+        assert_kind_of Array, resp = @client.find_possible_companies_from_name('Foo Bar')
         assert_kind_of Hash, first_co = resp.first
         assert_equal "SPIKES CAVELL & COMPANY LIMITED", first_co[:title]
         assert_equal "06398324", first_co[:company_number]
@@ -114,8 +114,73 @@ EOF
       end
       
       should 'strip nil values from CompaniesOpenHouse' do
-        assert !@client.find_company_from_name('Foo Bar').first.keys.include?(:wikipedia_url)
+        assert !@client.find_possible_companies_from_name('Foo Bar').first.keys.include?(:wikipedia_url)
       end
+    end
+
+    context "when finding company from name" do
+      setup do
+        @company_response = [{:status=>"Active", :company_number=>"06398324", :title=>"SPIKES CAVELL & COMPANY LIMITED", :company_type=>"Private Limited Company", :address_in_full=>"1 NORTHBROOK PLACE\nNEWBURY\nBERKSHIRE\nRG14 1DQ", :incorporation_date=>"2007-10-15"}]
+        @multi_company_response = [{:status=>"Active", :company_number=>"06398324", :title=>"SPIKES CAVELL & COMPANY LIMITED", :company_type=>"Private Limited Company", :address_in_full=>"1 NORTHBROOK PLACE\nNEWBURY\nBERKSHIRE\nRG14 1DQ", :incorporation_date=>"2007-10-15"}, 
+                                   {:status=>"Active", :company_number=>"04917291", :title=>"SPIKES CAVELL ANALYTIC LIMITED", :company_type=>"Private Limited Company", :address_in_full=>"1 NORTHBROOK PLACE\nNEWBURY\nBERKSHIRE\nRG14 1DQ", :incorporation_date=>"2003-10-01"}]
+      end
+
+      should 'search using CompaniesUtilities and name' do
+        CompanyUtilities::Client.any_instance.expects(:find_possible_companies_from_name).with('Foo Co')
+        CompanyUtilities::Client.new.company_from_name('Foo Co')
+      end
+      
+      context "and single company is returned" do
+        setup do
+          CompanyUtilities::Client.any_instance.stubs(:find_possible_companies_from_name).returns(@company_response)
+        end
+
+        should "return company info" do
+          resp = CompanyUtilities::Client.new.company_from_name('Foo Co')
+          assert_equal @company_response.first, resp
+        end
+      end
+      
+      context "and several companies are returned" do
+        setup do
+          CompanyUtilities::Client.any_instance.stubs(:find_possible_companies_from_name).returns(@multi_company_response)
+        end
+
+        should "match company matching normalised title" do
+          resp = CompanyUtilities::Client.new.company_from_name('Spikes Cavell Analytic Ltd')
+          assert_equal @multi_company_response[1], resp
+        end
+        
+        should "return nil if no match" do
+          assert_nil CompanyUtilities::Client.new.company_from_name('Spikes Cavell Foo Ltd')
+        end
+      end
+      
+      context "and no company is returned" do
+        setup do
+          CompanyUtilities::Client.any_instance.stubs(:find_possible_companies_from_name) # => returns nil still
+        end
+      
+        should "normally return nil" do
+          assert_nil CompanyUtilities::Client.new.company_from_name('Foo Co')
+        end
+      
+        context "and name has ampersand in it" do
+
+          should "make second call replacing ampersand with 'and'" do
+            CompanyUtilities::Client.any_instance.expects(:find_possible_companies_from_name).with('Foo and Bar Ltd').returns(@company_response) # then returns company response
+            CompanyUtilities::Client.new.company_from_name('Foo & Bar Ltd')
+          end
+      
+          should "return company info" do
+            CompanyUtilities::Client.any_instance.stubs(:find_possible_companies_from_name).with('Foo and Bar Ltd').returns(@company_response)
+            resp = CompanyUtilities::Client.new.company_from_name('Foo & Bar Ltd')
+            assert_equal @company_response.first, resp
+          end
+          
+        end
+      end
+
     end
   end
 end

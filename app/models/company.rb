@@ -9,8 +9,12 @@ class Company < ActiveRecord::Base
   end
   
   # matches normalised version of given title with
-  def self.matches_title(raw_title)
-    first(:conditions => {:normalised_title => normalise_title(raw_title)})
+  def self.from_title(raw_title)
+    if existing_company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
+      return existing_company 
+    elsif company_info = CompanyUtilities::Client.new.find_company_from_name(raw_title)
+      Company.create!(company_info)
+    end
   end
   
   def self.match_or_create(params={})
@@ -40,7 +44,11 @@ class Company < ActiveRecord::Base
   end
   
   def populate_basic_info
-    basic_info = CompanyUtilities::Client.new.get_basic_info(company_number)
+    if company_number
+      basic_info = CompanyUtilities::Client.new.get_basic_info(company_number)
+    else
+      basic_info = CompanyUtilities::Client.new.get_vat_info(vat_number)
+    end
     update_attributes(basic_info)
   end
   

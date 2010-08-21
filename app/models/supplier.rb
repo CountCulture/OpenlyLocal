@@ -51,18 +51,18 @@ class Supplier < ActiveRecord::Base
     end
   end
   
-  def find_and_associate_new_company
-    possible_companies = CompanyUtilities::Client.new.find_company_from_name(title) || 
-                           (title.match(/&/) ? CompanyUtilities::Client.new.find_company_from_name(title.gsub(/\s?&\s?/, ' and ')) : nil)
-    if possible_companies && (matched_company = possible_companies.size == 1 ? possible_companies.first : 
-                                                     possible_companies.detect{ |pc| Company.normalise_title(pc[:title]) == Company.normalise_title(title) })
-    else
-      update_attribute(:failed_payee_search, true)
-      return
-    end
-    self.payee = Company.create!(matched_company)
-    self.save!
-  end
+  # def find_and_associate_new_company
+  #   possible_companies = CompanyUtilities::Client.new.find_company_from_name(title) || 
+  #                          (title.match(/&/) ? CompanyUtilities::Client.new.find_company_from_name(title.gsub(/\s?&\s?/, ' and ')) : nil)
+  #   if possible_companies && (matched_company = possible_companies.size == 1 ? possible_companies.first : 
+  #                                                    possible_companies.detect{ |pc| Company.normalise_title(pc[:title]) == Company.normalise_title(title) })
+  #   else
+  #     update_attribute(:failed_payee_search, true)
+  #     return
+  #   end
+  #   self.payee = Company.create!(matched_company)
+  #   self.save!
+  # end
   
   def openlylocal_url
     "http://#{DefaultDomain}/suppliers/#{to_param}"
@@ -71,7 +71,7 @@ class Supplier < ActiveRecord::Base
   def possible_payee
     case name
     when /Ltd|Limited|PLC/i
-      Company.matches_title(name)
+      Company.from_title(name)
     when /Police Authority/i
       PoliceAuthority.find_by_name(name)
     when /Council|(London Borough)|(City of)/i
