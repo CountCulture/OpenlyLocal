@@ -12,7 +12,7 @@ class Company < ActiveRecord::Base
   def self.from_title(raw_title)
     if existing_company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
       return existing_company 
-    elsif company_info = CompanyUtilities::Client.new.find_company_from_name(raw_title)
+    elsif company_info = CompanyUtilities::Client.new.company_from_name(raw_title)
       Company.create!(company_info)
     end
   end

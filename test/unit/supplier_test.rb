@@ -220,7 +220,7 @@ class SupplierTest < ActiveSupport::TestCase
       should "flag supplier as failed_payee_search if no payee returned" do
         @supplier.stubs(:possible_payee) # returns nil
         @supplier.perform
-        assert @supplier.failed_payee_search?
+        assert @supplier.failed_payee_search
       end
     end
 

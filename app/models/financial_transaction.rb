@@ -91,7 +91,7 @@ class FinancialTransaction < ActiveRecord::Base
 	  if supplier 
       exist_supplier = org.suppliers.find_from_params(:name => supplier.name, :uid => supplier.uid, :organisation => org)
       self.supplier = exist_supplier || supplier
-      self.supplier.organisation = org unless exist_supplier# end
+      self.supplier.organisation = org unless exist_supplier
     else
       @organisation = org
     end
@@ -104,14 +104,18 @@ class FinancialTransaction < ActiveRecord::Base
 	# As financial transactions are often create from CSV files, we need to set supplier 
 	# from supplied params, and when doing so may not not associated organisation
 	def supplier_name=(name)
-    # self.supplier = organisation ? (organisation.suppliers.find_by_name(name) || Supplier.new(:name => name, :organisation => organisation)) : Supplier.new(:name => name)
     self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_name(name) || Supplier.new) unless self.supplier
 	  self.supplier.name = name
 	end
 	
 	def supplier_uid=(uid)
-    # self.supplier = organisation ? (organisation.suppliers.find_by_uid(uid) || Supplier.new(:name => uid, :organisation => organisation)) : Supplier.new(:uid => uid)
 	  self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
+	end
+
+	def supplier_vat_number=(vat_number)
+	  self.supplier = supplier ? (supplier.vat_number = vat_number; supplier) : Supplier.new(:vat_number => vat_number)
+    # self.supplier = organisation ? (organisation.suppliers.find_by_uid(uid) || Supplier.new(:name => uid, :organisation => organisation)) : Supplier.new(:uid => uid)
+    # self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
 	end
 
   def title

@@ -413,6 +413,44 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 	      
 	    end
 	  end
+
+    context "when setting supplier vat number" do
+      setup do
+        @fin_trans = FinancialTransaction.new
+      end
+
+      should "create company with given VAT number" do
+        assert_difference "Company.count", 1 do
+          @fin_trans.supplier_vat_number = 'GB12345'
+        end
+        assert Company.find_by_vat_number('GB12345')
+      end
+      
+      should "not create company if one exists with given VAT number" do
+        Factory(:company, :vat_number => 'GB12345')
+        assert_no_difference "Company.count" do
+          @fin_trans.supplier_vat_number = 'GB12345'
+        end
+      end
+      
+      should "instantiate supplier if not set yet" do
+        @fin_trans.supplier_vat_number = 'GB12345'
+        assert_kind_of Supplier, @fin_trans.supplier
+      end
+      
+      should "not instantiate new supplier if set" do
+        @fin_trans.supplier_name = 'Bar Supplier'
+        @fin_trans.supplier_vat_number = 'GB12345'
+        assert_equal 'Bar Supplier', @fin_trans.supplier.name
+      end
+      
+      should "associate company with supplier" do
+        @fin_trans.supplier_vat_number = 'GB12345'
+        assert_kind_of Company, @fin_trans.supplier.payee
+        assert_equal 'GB12345', @fin_trans.supplier.payee.vat_number
+      end
+      
+    end
     
     should 'be able to be created when supplied with necessary supplier params' do
       # This is sort of integration test for whole lifecycle of saving with supplier info, as happens when parsing csv files

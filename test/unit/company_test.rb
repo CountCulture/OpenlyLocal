@@ -100,11 +100,11 @@ class CompanyTest < ActiveSupport::TestCase
       context "and no company matches normalised title" do
         setup do
           @company_attribs = {:status=>"Active", :company_number=>"06398324", :title=>"SPIKES CAVELL & COMPANY LIMITED", :company_type=>"Private Limited Company", :address_in_full=>"1 NORTHBROOK PLACE\nNEWBURY\nBERKSHIRE\nRG14 1DQ", :incorporation_date=>"2007-10-15"}
-          CompanyUtilities::Client.any_instance.stubs(:find_company_from_name).returns(@company_attribs)
+          CompanyUtilities::Client.any_instance.stubs(:company_from_name).returns(@company_attribs)
         end
 
         should "get companies matching name" do
-          CompanyUtilities::Client.any_instance.expects(:find_company_from_name).with('Foo')
+          CompanyUtilities::Client.any_instance.expects(:company_from_name).with('Foo')
           Company.from_title('Foo')
         end
         
@@ -124,7 +124,7 @@ class CompanyTest < ActiveSupport::TestCase
 
         context "but no company is returned" do
           setup do
-            CompanyUtilities::Client.any_instance.stubs(:find_company_from_name) # => returns nil still
+            CompanyUtilities::Client.any_instance.stubs(:company_from_name) # => returns nil still
           end
         
           should "not create company" do
