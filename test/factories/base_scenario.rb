@@ -342,6 +342,11 @@ Factory.define :quango do |f|
   f.sequence(:title) { |n| "Quango #{n}" }
 end
 
+Factory.define :charity do |f|
+  f.sequence(:title) { |n| "Charity #{n}" }
+  f.sequence(:charity_number) { |n| n+1000000 }
+end
+
 Factory.define :investigation do |f|
   f.sequence(:standards_body) { |n| "SBE" }
   f.sequence(:related_organisation_name) { |n| "Some Council" }

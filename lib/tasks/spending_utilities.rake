@@ -345,22 +345,22 @@ task :import_bromley_payments => :environment do
 end
 
 desc "Import Kensington & Chelsea Payments"
-task :import_bromley_payments => :environment do
+task :import_kandc_payments => :environment do
   kandc = Council.first(:conditions => "name LIKE '%Chelsea%'")
   puts "Adding transactions for Kensington & Chelsea"
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_kandc/PaymentsSchedule010410-300610.csv"), :headers => true) do |csv_file|
     csv_file.each do |row|
-      ft = FinancialTransaction.new(:date => date,
+      ft = FinancialTransaction.new(:date => row['Supplier invoice date'].gsub('/', '-'),
                                     :date_fuzziness => 13,
-                                    :value => row['Invoice amount'],
-                                    :supplier_name => row['Supplier name'],
+                                    :value => row['Total Invoice amount excl VAT'],
+                                    :supplier_name => row['Supplier mailing name'],
                                     :organisation => kandc,
-                                    :csv_line_number => csv_file.lineno + 2, #we've deleted first two lines which were comments
-                                    :department_name => row['Portfolio'],
-                                    :service => row['Service area'],
-                                    :uid => row['Payment reference number'],
-                                    :invoice_number => row['Invoice reference number'],
-                                    :description => row['Expense type'],
+                                    :csv_line_number => csv_file.lineno, #we've deleted first two lines which were comments
+                                    :department_name => row['Business Groups'],
+                                    :service => row['Service Area'],
+                                    :supplier_uid => row['RBKC Supplier No'],
+                                    :invoice_number => row['Supplier Invoice Reference number'],
+                                    :supplier_vat_number => row['VAT No'],
                                     :source_url => "http://www.rbkc.gov.uk/files/PaymentsSchedule010410-300610.csv"
                                     )
       ft.save!                                  

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100821203207) do
+ActiveRecord::Schema.define(:version => 20100822163003) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -54,6 +54,18 @@ ActiveRecord::Schema.define(:version => 20100821203207) do
   add_index "candidates", ["poll_id"], :name => "index_candidates_on_poll_id"
   add_index "candidates", ["political_party_id"], :name => "index_candidates_on_political_party_id"
   add_index "candidates", ["member_id"], :name => "index_candidates_on_member_id"
+
+  create_table "charities", :force => true do |t|
+    t.column "title", :string
+    t.column "activities", :text
+    t.column "charity_number", :string
+    t.column "website", :string
+    t.column "email", :string
+    t.column "telephone", :string
+    t.column "date_registered", :date
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "committees", :force => true do |t|
     t.column "title", :string
@@ -166,6 +178,7 @@ ActiveRecord::Schema.define(:version => 20100821203207) do
     t.column "open_data_licence", :string
     t.column "normalised_title", :string
     t.column "wdtk_id", :integer
+    t.column "vat_number", :string
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
@@ -712,6 +725,7 @@ ActiveRecord::Schema.define(:version => 20100821203207) do
     t.column "disbanded_on", :date
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "vat_number", :string
   end
 
   create_table "related_articles", :force => true do |t|

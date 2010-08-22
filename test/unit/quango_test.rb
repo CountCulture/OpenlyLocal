@@ -16,5 +16,6 @@ class QuangoTest < ActiveSupport::TestCase
     should have_db_column :setup_on
     should have_db_column :disbanded_on
     should have_db_column :wdtk_name
+    should have_db_column :vat_number
   end
 end
