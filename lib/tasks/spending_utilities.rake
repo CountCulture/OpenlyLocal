@@ -351,7 +351,6 @@ task :import_kandc_payments => :environment do
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_kandc/PaymentsSchedule010410-300610.csv"), :headers => true) do |csv_file|
     csv_file.each do |row|
       ft = FinancialTransaction.new(:date => row['Supplier invoice date'].gsub('/', '-'),
-                                    :date_fuzziness => 13,
                                     :value => row['Total Invoice amount excl VAT'],
                                     :supplier_name => row['Supplier mailing name'],
                                     :organisation => kandc,
@@ -370,3 +369,76 @@ task :import_kandc_payments => :environment do
   kandc.spending_stat.perform
 end
 
+desc "Import Spotlight on Spend data"
+task :import_spotlight_on_spend_data => :environment do
+  council_files = Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'spotlight_on_spend'))[2..-1]
+  
+  council_files.each do |council_file|
+    council = Council.find_by_normalised_title(Council.normalise_title(council_file.sub(/ line level.+/,'')))
+    puts "Adding transactions for #{council.title}"
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/spotlight_on_spend/#{council_file}"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => row['Invoice/Item Date'].gsub('/', '-'),
+                                      :value => row['Item Amount (Net)'],
+                                      :supplier_name => row['Payee'],
+                                      :organisation => council,
+                                      :csv_line_number => csv_file.lineno, 
+                                      :department_name => row['Department'],
+                                      :invoice_number => row['Invoice ID'],
+                                      :source_url => "http://spotlightonspend-rawdata.s3.amazonaws.com/#{council_file.sub('.csv','.zip').gsub(' ', '%20')}"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end
+    council.spending_stat.perform
+  end
+end
+
+desc "Import Devon County Council Payments"
+task :import_devon_cc_payments => :environment do
+  devon = Council.first(:conditions => "name LIKE '%Devon %'")
+  puts "Adding transactions for Devon County Council"
+  periods = %w(may10 june10 july10)
+  periods.each do |period|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/devon_cc/finance-payments-over500-#{period}.csv"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => row['Payment Date'].gsub('/', '-'),
+                                      :value => row['Total Excl VAT'],
+                                      :supplier_name => row['Creditor Name'],
+                                      :supplier_uid => row['Creditor No'],
+                                      :organisation => devon,
+                                      :csv_line_number => csv_file.lineno,
+                                      :uid => row['Payment Number'],
+                                      :source_url => "http://www.devon.gov.uk/finance-payments-over500-#{period}.xls"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end
+  end
+  devon.spending_stat.perform
+end
+
+desc "Import Lewes Payments"
+task :import_lewes_payments => :environment do
+  lewes = Council.first(:conditions => "name LIKE '%Lewes%'")
+  puts "Adding transactions for Lewes"
+  date = "14-06-2010"
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lewes/1011_Payments.csv"), :headers => true) do |csv_file|
+    csv_file.each do |row|
+      ft = FinancialTransaction.new(:date => row['Date'].gsub('/', '-'),
+                                    :value => row['Amount'],
+                                    :supplier_name => row['Supplier'],
+                                    :organisation => lewes,
+                                    :csv_line_number => csv_file.lineno,
+                                    :department_name => row['Section'],
+                                    :uid => row['Ref'],
+                                    :source_url => "http://www.lewes.gov.uk/Files/1011_Payments.csv"
+                                    )
+      ft.save!                                  
+      puts "."
+    end
+  end
+  lewes.spending_stat.perform
+end
