@@ -68,8 +68,10 @@ class Supplier < ActiveRecord::Base
       Company.from_title(name)
     when /Police Authority/i
       PoliceAuthority.find_by_name(name)
-    when /Council|(London Borough)|(City of)/i
+    when /Council|(London Borough)|(City of)|(London Authority)/i
       Council.find_by_normalised_title(Council.normalise_title(name))
+    else
+      Charity.find_by_title(name)||Quango.find_by_title(name)
     end
   end
   

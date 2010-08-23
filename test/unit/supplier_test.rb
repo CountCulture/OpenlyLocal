@@ -264,6 +264,16 @@ class SupplierTest < ActiveSupport::TestCase
         end
         
       end
+      
+      should "try to match against charities" do
+        Charity.expects(:find_by_title).with(@supplier.name)
+        @supplier.possible_payee
+      end
+      
+      should "try to match against quangos" do
+        Quango.expects(:find_by_title).with(@supplier.name)
+        @supplier.possible_payee
+      end
     end
         
     context 'when assigning company_number' do

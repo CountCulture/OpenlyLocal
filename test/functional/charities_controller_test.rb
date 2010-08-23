@@ -21,17 +21,6 @@ class CharitiesControllerTest < ActionController::TestCase
         assert_select "title", /#{@charity.title}/
       end
 
-      # should "show organisation name in title" do
-      #   assert_select "title", /#{@quango.organisation.title}/
-      # end
-      # 
-      # should "list financial transactions" do
-      #   assert_select "#financial_transactions .value", /#{@financial_transaction.value}/
-      # end
-      # 
-      # should "show link to add company details" do
-      #   assert_select 'a[href*=user_submissions/new]', /add/i
-      # end
     end
     
   end
