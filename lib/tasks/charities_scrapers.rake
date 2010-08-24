@@ -39,11 +39,14 @@ task :get_charity_details => :environment do
     telephone = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_lblPhone').inner_text.scan(/[\d\s]+/).to_s.squish
     email = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlEmail').inner_text.squish
     website = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlWebsite')[:href] == 'http://' ? nil : contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlWebsite')[:href]
-    overview_redirect_url = base_url + contact_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnCharityOverview')[:href]
-    resp = client.get(overview_redirect_url)
-    overview_url = "http://www.charitycommission.gov.uk" + resp.header["Location"].first
-    activities = Hpricot(open(overview_url)).at('#ctl00_MainContent_ucDisplay_ucActivities_ucTextAreaInput_txtTextEntry').inner_text.squish
-    
+    begin
+      overview_redirect_url = base_url + contact_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnCharityOverview')[:href]
+      resp = client.get(overview_redirect_url)
+      overview_url = "http://www.charitycommission.gov.uk" + resp.header["Location"].first
+      activities = Hpricot(open(overview_url)).at('#ctl00_MainContent_ucDisplay_ucActivities_ucTextAreaInput_txtTextEntry').inner_text.squish
+    rescue Exception => e
+      puts "Problem get overview for charity #{charity.title} (#{charity.charity_number}): #{e.inspect}\n#{e.backtrace}"
+    end
     date_registered = Hpricot(open(base_url + "CharityFramework.aspx?RegisteredCharityNumber=#{charity.charity_number}")).at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish
     attribs = {:activities => activities, :telephone => telephone, :email => email, :website => website, :date_registered => date_registered, :charity_commission_url => overview_url}.delete_if{ |k,v| v.blank?}
     puts "Updating #{charity.title} with: #{attribs.inspect}"
