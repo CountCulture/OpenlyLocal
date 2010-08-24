@@ -491,3 +491,21 @@ end
 #   end
 #   walsall.spending_stat.perform
 # end
+desc "Import Wandsworth Supplier Payments"
+task :import_wandsworth_supplier_payments => :environment do
+  wandsworth = Council.first(:conditions => "name LIKE '%Wandsworth%'")
+  date = "14-07-2010".to_date
+  puts "Adding transactions for Wandsworth"
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/lb_wandsworth/july20100811.csv"), :headers => true) do |row|
+    ft = FinancialTransaction.new(:date => date,
+                                       :date_fuzziness => 13,
+                                       :value => row['Sum of Amount'],
+                                       :supplier_name => row['Payee'],
+                                       :organisation => wandsworth,
+                                       :source_url => 'http://www.wandsworth.gov.uk/download/3362/july_2010_expenditure_items'
+                                       )
+    ft.save!                                  
+    puts "."
+  end
+  wandsworth.spending_stat.perform
+end
