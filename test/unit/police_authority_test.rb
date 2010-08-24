@@ -15,12 +15,13 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
     should have_many :councils#, :through => :police_force
     should have_many :supplying_relationships
     
-    should_have_db_column :url
-    should_have_db_column :wikipedia_url
-    should_have_db_column :telephone
-    should_have_db_column :address
-    should_have_db_column :wdtk_name
-    should_have_db_column :annual_audit_letter
+    should have_db_column :url
+    should have_db_column :wikipedia_url
+    should have_db_column :telephone
+    should have_db_column :address
+    should have_db_column :wdtk_name
+    should have_db_column :annual_audit_letter
+    should have_db_column :vat_number
         
   end
   

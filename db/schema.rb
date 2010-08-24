@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100824141055) do
+ActiveRecord::Schema.define(:version => 20100824142901) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -608,6 +608,7 @@ ActiveRecord::Schema.define(:version => 20100824141055) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "annual_audit_letter", :string
+    t.column "vat_number", :string
   end
 
   add_index "police_authorities", ["police_force_id"], :name => "index_police_authorities_on_police_force_id"
