@@ -102,6 +102,29 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning related" do
+      setup do
+        @related_1 = Factory(:financial_transaction, :supplier => @financial_transaction.supplier, :date => 1.year.ago)
+        @related_2 = Factory(:financial_transaction, :supplier => @financial_transaction.supplier)
+        @unrelated_1 = Factory(:financial_transaction, :supplier => Factory(:supplier))
+      end
+
+      should "return only related transactions" do
+        related = @financial_transaction.related
+        assert related.include?(@related_1)
+        assert related.include?(@related_2)
+        assert !related.include?(@unrelated_1)
+      end
+      
+      should 'not include self' do 
+        assert !@financial_transaction.related.include?(@financial_transaction)
+      end
+      
+      should 'return most recent first' do 
+        assert_equal @related_2, @financial_transaction.related.first
+      end
+    end
+    
     should 'return correct url as openlylocal_url' do
       assert_equal "http://#{DefaultDomain}/financial_transactions/#{@financial_transaction.to_param}", @financial_transaction.openlylocal_url
     end

@@ -23,6 +23,7 @@ class FinancialTransactionsController < ApplicationController
   
   def show
     @financial_transaction = FinancialTransaction.find(params[:id])
+    @related_transactions = @financial_transaction.related
     @supplier = @financial_transaction.supplier
     @organisation = @supplier.organisation
     @title = "#{@financial_transaction.title} :: #{@organisation.title}"

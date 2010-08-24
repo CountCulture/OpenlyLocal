@@ -114,9 +114,32 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
       should "show financial_transaction title" do
         assert_select "title", /#{@financial_transaction.reload.title}/ # for some reason reading title as ActiveSupport with Timzeon and so putting time in there. reloading seems to fix it.
       end
-
+      
+      should "not show related financial transactions if none" do
+        assert_select '#related_transactions', false
+      end
     end  
 
+    context "when related transactions" do
+
+      setup do
+        @related_transaction = Factory(:financial_transaction, :supplier => @supplier)
+        get :show, :id => @financial_transaction.id
+      end
+
+      should_assign_to(:financial_transaction) { @financial_transaction }
+      should respond_with :success
+      should render_template :show
+      should_assign_to(:supplier) { @supplier }
+
+      should "show financial_transaction title" do
+        assert_select "title", /#{@financial_transaction.reload.title}/ # for some reason reading title as ActiveSupport with Timzeon and so putting time in there. reloading seems to fix it.
+      end
+      
+      should "show related financial transactions" do
+        assert_select '#related_transactions'
+      end
+    end  
     context "with xml requested" do
       setup do
         get :show, :id => @financial_transaction.id, :format => "xml"

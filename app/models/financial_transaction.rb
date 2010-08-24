@@ -101,6 +101,11 @@ class FinancialTransaction < ActiveRecord::Base
 	 supplier&&supplier.organisation||@organisation
 	end
 	
+  # returns related transactions, i.e. same supplying relationship (default ten)
+	def related(options={})
+	 supplier.financial_transactions.all(:order => 'date DESC', :limit => 11) - [self]
+	end
+	
 	# As financial transactions are often create from CSV files, we need to set supplier 
 	# from supplied params, and when doing so may not not associated organisation
 	def supplier_name=(name)

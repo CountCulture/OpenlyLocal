@@ -31,7 +31,7 @@
 											:headings => ['Name', 'Total spend', 'Per month'], 
 											:classes => ['name', 'value', 'value'],
 											:data => @suppliers.collect{ |s| [basic_link_for(s), "£#{number_with_delimiter(s.total_spend.to_i)}", "£#{number_with_delimiter(s.average_monthly_spend.to_i)}"] },
-											:more_info_url => suppliers_path %>
+											:more_info_url => suppliers_path(:order => 'total_spend') %>
 		</div>
 
 		<div id="financial_transactions" class="item_grouping">
