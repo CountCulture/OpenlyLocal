@@ -18,5 +18,6 @@ class CharityTest < ActiveSupport::TestCase
     should validate_presence_of :charity_number
     should validate_presence_of :title
     should validate_uniqueness_of :charity_number
+    should have_db_column :vat_number
   end
 end

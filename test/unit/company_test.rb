@@ -217,6 +217,11 @@ class CompanyTest < ActiveSupport::TestCase
       should "use company number if title is nil" do
         assert_equal "Company number #{@company.company_number}", @company.title
       end
+      
+      should "use vat number if title and company_number is nil" do
+        @company.update_attributes(:company_number => nil, :vat_number => 'GB1234')
+        assert_equal "Company with VAT number GB1234", @company.title
+      end
     end
     
     should "use title when converting to_param" do
