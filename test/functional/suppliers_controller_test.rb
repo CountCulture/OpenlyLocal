@@ -300,6 +300,24 @@ class SuppliersControllerTest < ActionController::TestCase
         assert_select "#other_supplying_relationships a", /#{@another_supplying_relationship.organisation.title}/
       end
     end
+    
+    context "when supplier is charity" do
+      setup do
+        @charity = Factory(:charity, :charity_number => 'cn12345')
+        @another_supplying_relationship = Factory(:supplier, :payee => @charity)
+        @supplier.update_attribute(:payee, @charity)
+        get :show, :id => @supplier.id
+      end
+
+      should assign_to(:supplier) { @supplier}
+      should respond_with :success
+      should render_template :show
+      should assign_to(:organisation) { @organisation }
+
+      should "show charity details" do
+        assert_select ".charity_number", /cn12345/
+      end
+    end
   end  
 
   context "with xml requested" do

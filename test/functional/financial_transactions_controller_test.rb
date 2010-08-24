@@ -140,6 +140,7 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
         assert_select '#related_transactions'
       end
     end  
+    
     context "with xml requested" do
       setup do
         get :show, :id => @financial_transaction.id, :format => "xml"

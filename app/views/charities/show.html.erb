@@ -1,9 +1,6 @@
 <h1><%= @charity.title %></h1>
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :charity_number, link_to(@charity.charity_number, @charity.charity_commission_url, :class => "external") %>
-  <%= attribute_tag :date_registered, @charity.date_registered %>
-  <%= attribute_tag :telephone, @charity.telephone %>
-  <%= attribute_tag :website, link_to(@charity.website, @charity.website, :class => "external") if @charity.website? %>
+	<%= render :partial => "attributes", :object => @company %>
 </dl>
 
 <p class=intro><%= @charity.activities %></p>

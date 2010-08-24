@@ -1,0 +1,4 @@
+<%= attribute_tag :charity_number, (attributes.charity_commission_url? ? link_to(attributes.charity_number,attributes.charity_commission_url, :class => "external") : attributes.charity_number) %>
+<%= attribute_tag :date_registered, attributes.date_registered %>
+<%= attribute_tag :telephone, attributes.telephone %>
+<%= attribute_tag :website, link_to(attributes.website, attributes.website, :class => "external") if attributes.website? %>

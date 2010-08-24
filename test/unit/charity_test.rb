@@ -4,9 +4,10 @@ class CharityTest < ActiveSupport::TestCase
 
   context "The Charity class" do
     setup do
-      @quango = Factory(:charity)
+      @charity = Factory(:charity)
     end
-    
+    should have_many :supplying_relationships
+
     should have_db_column :title
     should have_db_column :activities
     should have_db_column :charity_number
