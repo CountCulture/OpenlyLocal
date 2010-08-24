@@ -371,10 +371,11 @@ end
 
 desc "Import Spotlight on Spend data"
 task :import_spotlight_on_spend_data => :environment do
-  council_files = Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'spotlight_on_spend'))[2..-1]
+  council_files = Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'spotlight_on_spend')).select{ |f| f.match('csv') }
   
   council_files.each do |council_file|
     council = Council.find_by_normalised_title(Council.normalise_title(council_file.sub(/ line level.+/,'')))
+    next unless council.suppliers.count == 0
     puts "Adding transactions for #{council.title}"
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/spotlight_on_spend/#{council_file}"), :headers => true) do |csv_file|
       csv_file.each do |row|
@@ -442,3 +443,51 @@ task :import_lewes_payments => :environment do
   end
   lewes.spending_stat.perform
 end
+
+desc "Import Wigan Payments"
+task :import_wigan_payments => :environment do
+  wigan = Council.first(:conditions => "name LIKE '%Wigan%'")
+  puts "Adding transactions for Wigan"
+  date = "14-06-2010"
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/wigan/SupplierPuchases-April-June2010.csv"), :headers => true) do |csv_file|
+    csv_file.each do |row|
+      ft = FinancialTransaction.new(:date => row['Transaction Date'].gsub('/', '-'),
+                                    :value => row['Amount'],
+                                    :supplier_name => row['Suplpier Name'],
+                                    :organisation => wigan,
+                                    :csv_line_number => csv_file.lineno,
+                                    :department_name => row['Department'],
+                                    :service => row['Service Area'],
+                                    :invoice_number => row['Invoice Number'],
+                                    :source_url => "http://www.wigan.gov.uk/pub/SupplierPuchases-April-June2010.csv"
+                                    )
+      ft.save!                                  
+      puts "."
+    end
+  end
+  wigan.spending_stat.perform
+end
+
+# desc "Import Walsall Payments"
+# task :import_walsall_payments => :environment do
+#   walsall = Council.first(:conditions => "name LIKE '%Walsall%'")
+#   puts "Adding transactions for Wigan"
+#   date = "14-06-2010"
+#   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/walsall/SupplierPuchases-April-June2010.csv"), :headers => true) do |csv_file|
+#     csv_file.each do |row|
+#       ft = FinancialTransaction.new(:date => row['Transaction Date'].gsub('/', '-'),
+#                                     :value => row['Amount'],
+#                                     :supplier_name => row['Suplpier Name'],
+#                                     :organisation => walsall,
+#                                     :csv_line_number => csv_file.lineno,
+#                                     :department_name => row['Department'],
+#                                     :service => row['Service Area'],
+#                                     :invoice_number => row['Invoice Number'],
+#                                     :source_url => "http://www.wigan.gov.uk/pub/SupplierPuchases-April-June2010.csv"
+#                                     )
+#       ft.save!                                  
+#       puts "."
+#     end
+#   end
+#   walsall.spending_stat.perform
+# end

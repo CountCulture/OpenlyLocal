@@ -20,7 +20,7 @@ module FinancialTransactionsHelper
     spare_colours = (3..13).collect { |i| "664422#{i.to_s(16).upcase*2}" } # iterate through numbers, turning them in to hex and adding to base colour
     months, data = spend_data.transpose
     data = data.collect(&:to_i)
-    column_width = ((240-data.size)/(data.size)).to_i
+    column_width = ((240-data.size)/(data.size)).to_i + 1 #ensure column width is at least 1
     max_value = data.max
     rounded_no_above_max = ("%10.1e" % max_value).strip.sub(/(\d\.\d)/){|m|(m.to_f+0.1).to_s}.to_f.to_i
     
