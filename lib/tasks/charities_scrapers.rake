@@ -35,6 +35,9 @@ task :get_charity_details => :environment do
   base_url = "http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/"
   Charity.find_each(:conditions => {:date_registered => nil}) do |charity|
     client = HTTPClient.new
+    p "About to get info for #{charity.title} (#{charity.charity_number})"
+    initial_url = base_url + "ContactAndTrustees.aspx?RegisteredCharityNumber=#{charity.charity_number}" + ENV['URL_SUFFIX'].to_s
+    p "fetching info from #{initial_url}"
     contact_page = Hpricot(open(base_url + "ContactAndTrustees.aspx?RegisteredCharityNumber=#{charity.charity_number}"))
     telephone = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_lblPhone').inner_text.scan(/[\d\s]+/).to_s.squish
     email = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlEmail').inner_text.squish
