@@ -318,6 +318,24 @@ class SuppliersControllerTest < ActionController::TestCase
         assert_select ".charity_number", /cn12345/
       end
     end
+
+    context "when supplier is quango" do
+      setup do
+        @quango = Factory(:quango, :sponsoring_organisation => 'Dept Foo')
+        @another_supplying_relationship = Factory(:supplier, :payee => @quango)
+        @supplier.update_attribute(:payee, @quango)
+        get :show, :id => @supplier.id
+      end
+
+      should assign_to(:supplier) { @supplier}
+      should respond_with :success
+      should render_template :show
+      should assign_to(:organisation) { @organisation }
+
+      should "show quango details" do
+        assert_select ".sponsoring_organisation"
+      end
+    end
   end  
 
   context "with xml requested" do

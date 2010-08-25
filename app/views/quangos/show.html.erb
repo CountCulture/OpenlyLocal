@@ -1,9 +1,4 @@
 <h1><%= @quango.title %></h1>
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :quango_type, @quango.quango_type %>
-  <%= attribute_tag :sponsoring_organisation, @quango.sponsoring_organisation %>
-  <%#= attribute_tag :telephone, @quango.telephone %>
-  <%#= attribute_tag :address, @quango.address %>
-  <%= attribute_tag :website, link_to(@quango.website, @quango.website, :class => "external") if @quango.website? %>
-  <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@quango.wikipedia_url), @quango.wikipedia_url, :class => 'external') if @quango.wikipedia_url? %>
+<%= render :partial => 'attributes', :object => @quango %>
 </dl>

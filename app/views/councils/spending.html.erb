@@ -23,7 +23,7 @@
 											:headings => ['Name', 'Total spend', 'Per month'], 
 											:classes => ['name', 'value', 'value'],
 											:data => @councils.collect{ |c| [link_to(c.title, :controller => 'councils', :action => 'show_spending', :id => c.to_param), "£#{number_with_delimiter(c.total_spend.to_i)}", "£#{number_with_delimiter(c.average_monthly_spend.to_i)}"] } %>
-			<p>See also <%= link_to "Open Data Scoreboard", '/councils/open' %> and Armchair Auditor <a href="http://armchairauditor.co.uk/scoreboard" class="external">Spending Data Scoreboard</a></p>
+			<p>See also <%= link_to "Open Data Scoreboard", '/councils/open' %> and <a href="https://spreadsheets.google.com/ccc?key=0AhOqra7su40fdEgtaG4yVFZGVjdYREVIWmprX2dENkE&hl=en_GB" class="external">Local Spending Data Scoreboard</a></p>
 		</div>
 	
 		<div id="suppliers" class="item_grouping">

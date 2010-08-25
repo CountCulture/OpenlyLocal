@@ -5,6 +5,7 @@ class QuangoTest < ActiveSupport::TestCase
     setup do
       @quango = Factory(:quango)
     end
+    should have_many :supplying_relationships
     
     should have_db_column :title
     should have_db_column :quango_type
@@ -17,5 +18,6 @@ class QuangoTest < ActiveSupport::TestCase
     should have_db_column :disbanded_on
     should have_db_column :wdtk_name
     should have_db_column :vat_number
+    
   end
 end
