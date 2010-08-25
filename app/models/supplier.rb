@@ -52,6 +52,11 @@ class Supplier < ActiveRecord::Base
   def openlylocal_url
     "http://#{DefaultDomain}/suppliers/#{to_param}"
   end
+  
+  # strip excess spaces and UTF8 spaces from name
+  def name=(raw_name)
+    self[:name] = NameParser.strip_all_spaces(raw_name) if raw_name
+  end
 
   # alias populate_basic_info as perform so that this gets run when doing delayed_job on a company
   def perform

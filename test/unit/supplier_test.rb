@@ -181,6 +181,20 @@ class SupplierTest < ActiveSupport::TestCase
       @supplier.title = "some title-with/stuff"
       assert_equal "#{@supplier.id}-some-title-with-stuff", @supplier.to_param
     end
+    
+    context "when assigning name" do
+      setup do
+        
+      end
+
+      should "remove excess spaces" do
+        assert_equal 'Foo Bar Supplier', Supplier.new(:name => "   Foo#{160.chr}Bar Supplier\n  ").name
+      end
+      
+      should "not fail when name is nil" do
+        assert_nothing_raised(Exception) { Supplier.new(:name => nil) }
+      end
+    end
 
     context 'after creating' do
       setup do
