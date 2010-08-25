@@ -38,7 +38,7 @@ task :get_charity_details => :environment do
     p "About to get info for #{charity.title} (#{charity.charity_number})"
     initial_url = base_url + "ContactAndTrustees.aspx?RegisteredCharityNumber=#{charity.charity_number}" + ENV['URL_SUFFIX'].to_s
     p "fetching info from #{initial_url}"
-    contact_page = Hpricot(open(base_url + "ContactAndTrustees.aspx?RegisteredCharityNumber=#{charity.charity_number}"))
+    contact_page = Hpricot(open(initial_url))
     telephone = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_lblPhone').inner_text.scan(/[\d\s]+/).to_s.squish
     email = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlEmail').inner_text.squish
     website = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlWebsite')[:href] == 'http://' ? nil : contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlWebsite')[:href]
