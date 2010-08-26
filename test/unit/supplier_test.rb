@@ -183,9 +183,6 @@ class SupplierTest < ActiveSupport::TestCase
     end
     
     context "when assigning name" do
-      setup do
-        
-      end
 
       should "remove excess spaces" do
         assert_equal 'Foo Bar Supplier', Supplier.new(:name => "   Foo#{160.chr}Bar Supplier\n  ").name

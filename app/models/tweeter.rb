@@ -8,11 +8,6 @@ class Tweeter
   end
 
   def perform
-    
-    # config = ConfigStore.new("#{ENV['HOME']}/.twitter")
-    # oauth = Twitter::OAuth.new(config['token'], config['secret'])
-    # oauth.authorize_from_access(config['atoken'], config['asecret'])
-    # 
     @message += " " + (shorten_url(url)||url) unless url.blank?
     response = twitter_method ? self.send(twitter_method.to_sym, options) : client.update(message, options)
     RAILS_DEFAULT_LOGGER.info "Tweeted message: #{message}\n response: #{response.inspect}"
@@ -29,16 +24,18 @@ class Tweeter
     client.list_remove_member(client.client.username, options[:list], user["id"])
   end
   
+  def client(twitter_account="OpenlyLocal")
+    return @client if @client
+    auth_details = YAML.load_file(File.join(RAILS_ROOT, 'config', 'twitter.yml'))[RAILS_ENV][twitter_account]
+    oauth = Twitter::OAuth.new(auth_details['auth_token'], auth_details['auth_secret'])
+    oauth.authorize_from_access(TWITTER_OPENLYLOCAL_ACCESS_TOKEN,TWITTER_OPENLYLOCAL_ACCESS_SECRET)
+    @client = Twitter::Base.new(oauth)
+  end
+
   private
   def shorten_url(link)
     return "" if link.blank?
     UrlSquasher.new(link).result
   end
   
-  def client
-    return @client if @client
-    auth_details = YAML.load_file(File.join(RAILS_ROOT, 'config', 'twitter.yml'))[RAILS_ENV]
-    auth = Twitter::HTTPAuth.new(auth_details['login'], auth_details['password'])
-    @client = Twitter::Base.new(auth)
-  end
 end

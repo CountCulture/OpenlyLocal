@@ -3,6 +3,19 @@ require 'test_helper'
 class TweeterTest < Test::Unit::TestCase
   
   context "A Tweeter instance" do
+    setup do
+      @tweeter = Tweeter.new("some message")
+      @tweeter_with_options = Tweeter.new("some message", :foo => "bar")
+      @dummy_oauth_object = stub_everything
+      @dummy_client = stub_everything
+      @dummy_yaml_hash = {'test' => {'OpenlyLocal' => {'auth_token' => 'footoken', 'auth_secret' => 'foosecret'},
+                                     'BarUser'     => {'auth_token' => 'bartoken', 'auth_secret' => 'barsecret'}}}
+      Twitter::Base.stubs(:new).returns @dummy_client
+      Twitter::OAuth.stubs(:new).returns(@dummy_oauth_object)
+      YAML.stubs(:load_file).returns(@dummy_yaml_hash)
+      UrlSquasher.any_instance.stubs(:result) # => returns nil
+    end
+    
     should "store tweet as instance_variable" do
       assert_equal "foo tweet", Tweeter.new("foo tweet").message
     end
@@ -27,11 +40,54 @@ class TweeterTest < Test::Unit::TestCase
       assert_equal( {:foo => "bar"}, Tweeter.new("foo tweet", :url => "http://foo.com", :foo => "bar").options )
     end
     
+    context "when creating client" do
+      setup do
+        @tweeter = Tweeter.new("some message")
+        @dummy_oauth_object = stub_everything
+        @dummy_client = stub_everything
+        @dummy_yaml_hash = {'test' => {'OpenlyLocal' => {'auth_token' => 'footoken', 'auth_secret' => 'foosecret'},
+                                       'BarUser'     => {'auth_token' => 'bartoken', 'auth_secret' => 'barsecret'}}}
+        Twitter::Base.stubs(:new).returns @dummy_client
+        Twitter::OAuth.stubs(:new).returns(@dummy_oauth_object)
+        YAML.stubs(:load_file).returns(@dummy_yaml_hash)
+      end
+
+      should "get auth secret from YAML config file" do
+        YAML.expects(:load_file).returns(@dummy_yaml_hash)
+        @tweeter.client
+      end
+      
+      should "create oauth with OpenlyLocal token and secret by default" do
+        Twitter::OAuth.expects(:new).with('footoken', 'foosecret').returns(@dummy_client)
+        @tweeter.client
+      end
+      
+      should "create oauth with given user token and secret" do
+        Twitter::OAuth.expects(:new).with('bartoken', 'barsecret').returns(stub_everything)
+        @tweeter.client('BarUser')
+      end
+      
+      should "authorize oauth object using app access token and secret" do
+        @dummy_oauth_object.expects(:authorize_from_access).with(TWITTER_OPENLYLOCAL_ACCESS_TOKEN, TWITTER_OPENLYLOCAL_ACCESS_SECRET)
+        @tweeter.client('BarUser')
+      end
+      
+      should "create twitter client using oauth details" do
+        Twitter::Base.expects(:new).with(@dummy_oauth_object)
+        @tweeter.client
+      end
+      
+      should "not create new client if client already exists" do
+        @tweeter.client
+        Twitter::OAuth.expects(:new).never
+        @tweeter.client
+      end
+    end
+    
     context "when adding user to list" do
       setup do
-        @tweeter = Tweeter.new("foo tweet")
+        @dummy_client.stubs(:client).returns(stub_everything(:username => "mytwitterlogin"))
         Twitter.stubs(:user).returns("id" => "1234")
-        Twitter::Base.any_instance.stubs(:list_add_member)
       end
       
       should "get id of user" do
@@ -40,26 +96,25 @@ class TweeterTest < Test::Unit::TestCase
       end
       
       should "add to given list" do
-        Twitter::Base.any_instance.expects(:list_add_member).with(anything, "foolist", anything)
+        @dummy_client.expects(:list_add_member).with(anything, "foolist", anything)
         @tweeter.add_to_list(:user => "foo", :list => "foolist")
       end
       
       should "add user id" do
-        Twitter::Base.any_instance.expects(:list_add_member).with(anything, anything, "1234")
+        @dummy_client.expects(:list_add_member).with(anything, anything, "1234")
         @tweeter.add_to_list(:user => "foo", :list => "foolist")
       end
       
       should "pass login name" do
-        Twitter::Base.any_instance.expects(:list_add_member).with("mytwitterlogin", anything, anything)
+        @dummy_client.expects(:list_add_member).with("mytwitterlogin", anything, anything)
         @tweeter.add_to_list(:user => "foo", :list => "foolist")
       end
     end
     
     context "when removing user from list" do
       setup do
-        @tweeter = Tweeter.new("foo tweet")
+        @dummy_client.stubs(:client).returns(stub_everything(:username => "mytwitterlogin"))
         Twitter.stubs(:user).returns("id" => "1234")
-        Twitter::Base.any_instance.stubs(:list_remove_member)
       end
       
       should "get id of user" do
@@ -68,46 +123,24 @@ class TweeterTest < Test::Unit::TestCase
       end
       
       should "add to given list" do
-        Twitter::Base.any_instance.expects(:list_remove_member).with(anything, "foolist", anything)
+        @dummy_client.expects(:list_remove_member).with(anything, "foolist", anything)
         @tweeter.remove_from_list(:user => "foo", :list => "foolist")
       end
       
       should "add user id" do
-        Twitter::Base.any_instance.expects(:list_remove_member).with(anything, anything, "1234")
+        @dummy_client.expects(:list_remove_member).with(anything, anything, "1234")
         @tweeter.remove_from_list(:user => "foo", :list => "foolist")
       end
       
       should "pass login name" do
-        Twitter::Base.any_instance.expects(:list_remove_member).with("mytwitterlogin", anything, anything)
+        @dummy_client.expects(:list_remove_member).with("mytwitterlogin", anything, anything)
         @tweeter.remove_from_list(:user => "foo", :list => "foolist")
       end
     end
     
     context "on perform" do
-      setup do
-        @tweeter = Tweeter.new("some message")
-        @tweeter_with_options = Tweeter.new("some message", :foo => "bar")
-        @dummy_client = stub_everything
-        Twitter::Base.stubs(:new).returns @dummy_client
-        YAML.stubs(:load_file).returns('test' => {'login' => 'foouser', 'password' => 'foopass'})
-        UrlSquasher.any_instance.stubs(:result) # => returns nil
-      end
       
       context "and no twitter_method" do
-        should "fetch login credentials from YAML file" do
-          YAML.expects(:load_file).with(regexp_matches(/twitter\.yml/)).returns('test' => {'login' => 'foouser', 'password' => 'foopass'})
-          @tweeter.perform
-        end
-      
-        should "create new auth object" do
-          Twitter::HTTPAuth.expects(:new).with('foouser', 'foopass')
-          @tweeter.perform
-        end
-      
-        should "create a new twitter client" do
-          Twitter::Base.expects(:new).with(kind_of(Twitter::HTTPAuth)).returns(@dummy_client)
-          @tweeter.perform
-        end
 
         should "send given message to twitter" do
           @dummy_client.expects(:update).with("some message", anything)
