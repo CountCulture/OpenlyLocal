@@ -27,8 +27,8 @@ class Tweeter
   def client(twitter_account="OpenlyLocal")
     return @client if @client
     auth_details = YAML.load_file(File.join(RAILS_ROOT, 'config', 'twitter.yml'))[RAILS_ENV][twitter_account]
-    oauth = Twitter::OAuth.new(auth_details['auth_token'], auth_details['auth_secret'])
-    oauth.authorize_from_access(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET)
+    oauth = Twitter::OAuth.new(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET)
+    oauth.authorize_from_access(auth_details['auth_token'], auth_details['auth_secret'])
     @client = Twitter::Base.new(oauth)
   end
 

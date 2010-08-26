@@ -57,18 +57,18 @@ class TweeterTest < Test::Unit::TestCase
         @tweeter.client
       end
       
-      should "create oauth with OpenlyLocal token and secret by default" do
-        Twitter::OAuth.expects(:new).with('footoken', 'foosecret').returns(@dummy_client)
+      should "create oauth with app consumer token and secret" do
+        Twitter::OAuth.expects(:new).with(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET).returns(@dummy_client)
         @tweeter.client
       end
       
-      should "create oauth with given user token and secret" do
-        Twitter::OAuth.expects(:new).with('bartoken', 'barsecret').returns(stub_everything)
-        @tweeter.client('BarUser')
+      should "authorize oauth object using OpenlyLocal access token and secret  by default" do
+        @dummy_oauth_object.expects(:authorize_from_access).with('footoken', 'foosecret')
+        @tweeter.client
       end
       
-      should "authorize oauth object using app access token and secret" do
-        @dummy_oauth_object.expects(:authorize_from_access).with(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+      should "authorize oauth object with given user token and secret" do
+        @dummy_oauth_object.expects(:authorize_from_access).with('bartoken', 'barsecret')
         @tweeter.client('BarUser')
       end
       
