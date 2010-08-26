@@ -68,7 +68,7 @@ class TweeterTest < Test::Unit::TestCase
       end
       
       should "authorize oauth object using app access token and secret" do
-        @dummy_oauth_object.expects(:authorize_from_access).with(TWITTER_OPENLYLOCAL_ACCESS_TOKEN, TWITTER_OPENLYLOCAL_ACCESS_SECRET)
+        @dummy_oauth_object.expects(:authorize_from_access).with(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
         @tweeter.client('BarUser')
       end
       
