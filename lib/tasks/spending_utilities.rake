@@ -32,13 +32,13 @@ task :import_windsor_and_maidenhead_supplier_payments => :environment do
   end
 end
 
-desc "Import GLA Supplier Payments"
-task :import_gla_supplier_payments => :environment do
+desc "OLD Import GLA Supplier Payments"
+task :old_import_gla_supplier_payments => :environment do
   gla = Council.first(:conditions => {:name => 'Greater London Authority'})
   suppliers = gla.suppliers
   
   # periods = Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'gla'))[2..-1].collect{ |p| p.sub('.csv','') }
-  periods = %w(01_2009 05_2010)
+  periods = %w(06_2010)
   puts "About to add data for #{periods.size} periods"
   periods.each do |period|
     puts "=============\nAdding transactions for #{period}"
@@ -52,10 +52,10 @@ task :import_gla_supplier_payments => :environment do
         suppliers << supplier # add to list so we don't create again
         puts "Added new supplier: #{supplier.name}"
       end
-      date, date_fuzziness = row['Date'].blank? ? ["15-#{period.gsub('_','-')}".to_date, 15] : [row['Date'].gsub('/','-'), nil]# if no date give it date in the middle of the month and add appropriate date fuzziness
+      date, date_fuzziness = row['Date'].blank? ? ["14-#{period.gsub('_','-')}".to_date, 15] : [row['Date'].gsub('/','-'), nil]# if no date give it date in the middle of the month and add appropriate date fuzziness
       supplier.financial_transactions.create!(:uid => row['Doc No'],
                                               :date => date,
-                                              :date_fuzziness => date_fuzziness,
+                                              # :date_fuzziness => date_fuzziness,
                                               :value => row['Amount'],
                                               :transaction_type => row['Doc Type'],
                                               # :department_name => row['Directorate'],
@@ -279,7 +279,7 @@ task :import_islington_payments => :environment do
                                       :value => row['Gross Amount'],
                                       :supplier_name => row['Supplier Name'],
                                       :organisation => islington,
-                                      :service => row['Nominal description'],
+                                      :service => row['Description'],
                                       :source_url => "http://www.islington.gov.uk/DownloadableDocuments/CouncilandDemocracy/Pdf/#{Date::MONTHNAMES[date.month].downcase}_published_version.pdf"
                                       )
         ft.save!                                  
@@ -509,3 +509,64 @@ task :import_wandsworth_supplier_payments => :environment do
   end
   wandsworth.spending_stat.perform
 end
+
+desc "Import Corby Payments"
+task :import_corby_payments => :environment do
+  corby = Council.first(:conditions => "name LIKE '%Corby %'")
+  puts "Adding transactions for Corby Council"
+  periods = %w(June July)
+  periods.each do |period|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/corby/#{period} 2010 published spend.csv"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        next if row['Section Name'].blank? #dealing with total row
+        ft = FinancialTransaction.new(:date => ("13 #{period} 2010".to_date),
+                                      :value => row['Net Amount'],
+                                      :supplier_name => row['Creditor Name'],
+                                      :supplier_uid => row['Creditor_Account_No'],
+                                      :cost_centre => row['GL Code'],
+                                      :department_name => row['Section_Name'],
+                                      :organisation => corby,
+                                      :csv_line_number => csv_file.lineno+1, #deleted headings
+                                      :uid => row['Voucher No'],
+                                      :source_url => "http://www.corby.gov.uk/CouncilAndDemocracy/CouncilBudgetsAndSpending/Documents/#{period}%202010%20published%20spend.csv"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end
+  end
+  corby.spending_stat.perform
+end
+
+desc "Import GLA Payments"
+task :import_gla_payments => :environment do
+  gla = Council.first(:conditions => {:name => 'Greater London Authority'})
+  puts "Adding transactions for #{gla.title}"
+  i=0
+  files = [['http://static.london.gov.uk/gla/expenditure/docs/2010-11-P03.csv', 7], ['http://static.london.gov.uk/gla/expenditure/docs/2010-11-P04-500.csv', 12]]
+  files.each do |url, csv_offset|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/gla/0#{i+6}_2010.csv"), :headers => true) do |csv_file|
+      puts "Adding data from #{url}"
+      csv_file.each do |row|
+        p row
+        ft = FinancialTransaction.new(:date => row['Clearing Date'],
+                                      :value => row['Amount'],
+                                      :supplier_name => row['Vendor Name'],
+                                      :supplier_uid => row['Vendor ID'],
+                                      :cost_centre => row['Expenditure Account Code'],
+                                      :service => row['Expenditure Account Code Description'],
+                                      # :department_name => row['Section_Name'],
+                                      :organisation => gla,
+                                      :csv_line_number => csv_file.lineno+csv_offset, 
+                                      :uid => row['SAP Document No'],
+                                      :source_url => url
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end
+    i += 1
+  end
+  gla.spending_stat.perform
+end
+
