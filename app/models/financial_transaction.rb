@@ -68,12 +68,13 @@ class FinancialTransaction < ActiveRecord::Base
   end
   
   def department_name=(raw_name)
+    return if (name = NameParser.strip_all_spaces(raw_name)).blank?
     CommonMispellings.each do |mispellings,correct|
       mispellings.each do |m|
-        raw_name.sub!(Regexp.new(Regexp.escape("#{m}\s")),"#{correct} ")
+        name.sub!(Regexp.new(Regexp.escape("#{m}\s")),"#{correct} ")
       end
     end 
-    self[:department_name] = raw_name.squish
+    self[:department_name] = name.squish
   end
   
   def full_description

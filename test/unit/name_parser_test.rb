@@ -72,12 +72,13 @@ class NameParserTest < Test::Unit::TestCase
       end
       
       should "return nil if no name given" do
-          assert_nil NameParser.parse(nil)
+        assert_nil NameParser.parse(nil)
       end
     end
 
     should "strip all spaces from name" do
-        assert_equal 'Mr Fred Flintstone', NameParser.strip_all_spaces("   Mr#{160.chr}Fred Flintstone\n  ")
+      assert_equal 'Mr Fred Flintstone', NameParser.strip_all_spaces("   Mr#{160.chr}Fred Flintstone\n  ")
+      assert_nil NameParser.strip_all_spaces(nil)
     end
 
   end

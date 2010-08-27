@@ -188,7 +188,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
     end
 
-    context 'when setting department' do
+    context 'when setting department_name' do
       should 'squish spaces' do
         assert_equal 'Foo Department', Factory.build(:financial_transaction, :department_name => ' Foo   Department   ').department_name
       end
@@ -196,6 +196,14 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       should 'replace mispellings' do
         assert_equal 'Children\'s Department', Factory.build(:financial_transaction, :department_name => 'Childrens\' Department ').department_name
         assert_equal 'Children\'s Department', Factory.build(:financial_transaction, :department_name => 'Childrens Department ').department_name
+      end
+      
+      should 'remove multiple and utf8 spaces' do
+        assert_equal 'Housing and Other Stuff Department', Factory.build(:financial_transaction, :department_name => "    Housing#{160.chr}and Other    Stuff Department\n ").department_name
+      end
+      
+      should 'not have a problem if department_name is nil' do
+        assert_nil Factory.build(:financial_transaction, :department_name => nil).department_name
       end
     end
     
