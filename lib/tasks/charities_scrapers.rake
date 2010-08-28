@@ -35,27 +35,32 @@ task :get_charity_details => :environment do
   require 'nokogiri'
   base_url = "http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/"
   Charity.find_each(:conditions => {:date_registered => nil}) do |charity|
+    attribs = {}
     client = HTTPClient.new
     p "About to get info for #{charity.title} (#{charity.charity_number})"
     initial_url = base_url + "ContactAndTrustees.aspx?RegisteredCharityNumber=#{charity.charity_number}" + ENV['URL_SUFFIX'].to_s
-    # p "fetching info from #{initial_url}"
+    p "fetching info from #{initial_url}"
     # contact_page = Hpricot(open(initial_url))
     contact_page = Nokogiri.HTML(open(initial_url)) # use Nokogiri Hpricot has probs with this website
-    telephone = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_lblPhone').inner_text.scan(/[\d\s]+/).to_s.squish rescue nil
-    email = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlEmail').inner_text.squish rescue nil
-    website = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlWebsite')[:href] == 'http://' ? nil : contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlWebsite')[:href]
+    attribs[:telephone] = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_lblPhone').inner_text.scan(/[\d\s]+/).to_s.squish rescue nil
+    attribs[:email] = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlEmail').inner_text.squish rescue nil
+    attribs[:website] = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlWebsite')[:href] == 'http://' ? nil : contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_hlWebsite')[:href]
+    attribs[:contact_name] = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_lblContactName').try(:inner_text).try(:squish)
+    attribs[:address_in_full] = contact_page.search('.ContactAddress:not(#ctl00_MainContent_ucDisplay_ucContactDetails_lblContactName)').collect{|s|s.inner_text}.delete_if(&:blank?).join(', ') rescue nil
     begin
       overview_redirect_url = base_url + contact_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnCharityOverview')[:href]
       resp = client.get(overview_redirect_url)
       overview_url = "http://www.charitycommission.gov.uk" + resp.header["Location"].first
-      activities = Hpricot(open(overview_url)).at('#ctl00_MainContent_ucDisplay_ucActivities_ucTextAreaInput_txtTextEntry').inner_text.squish
+      overview_page = Hpricot(open(overview_url))
+      attribs[:activities] = overview_page.at('#ctl00_MainContent_ucDisplay_ucActivities_ucTextAreaInput_txtTextEntry').inner_text.squish
+      accounts_date,income,spending = overview_page.at('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr[td]').search('td').collect{|td| td.inner_text} rescue nil
     rescue Exception => e
       puts "Problem get overview for charity #{charity.title} (#{charity.charity_number}): #{e.inspect}\n#{e.backtrace}"
     end
-    date_registered = Hpricot(open(base_url + "CharityFramework.aspx?RegisteredCharityNumber=#{charity.charity_number}")).at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish rescue nil
-    attribs = {:activities => activities, :telephone => telephone, :email => email, :website => website, :date_registered => date_registered, :charity_commission_url => overview_url}.delete_if{ |k,v| v.blank?}
+    attribs[:date_registered ]= Hpricot(open(base_url + "CharityFramework.aspx?RegisteredCharityNumber=#{charity.charity_number}")).at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish rescue nil
+    attribs.merge!(:charity_commission_url => overview_url, :accounts_date => accounts_date, :income => income.to_s.gsub(/[^\d]/,''), :spending => spending.to_s.gsub(/[^\d]/,''))
     puts "Updating #{charity.title} with: #{attribs.inspect}"
-    charity.update_attributes(attribs)
+    charity.update_attributes(attribs.delete_if{ |k,v| v.blank?})
   end
 end
 
