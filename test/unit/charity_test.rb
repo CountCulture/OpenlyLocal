@@ -20,6 +20,10 @@ class CharityTest < ActiveSupport::TestCase
     should validate_presence_of :title
     should validate_uniqueness_of :charity_number
     should have_db_column :vat_number
+    should have_db_column :contact_name
+    should have_db_column :accounts_date
+    should have_db_column :spending
+    should have_db_column :income
     
     should "mixin SpendingStat::Base module" do
       assert Charity.new.respond_to?(:spending_stat)
