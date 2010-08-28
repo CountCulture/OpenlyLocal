@@ -24,6 +24,7 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :accounts_date
     should have_db_column :spending
     should have_db_column :income
+    should have_db_column :date_removed
     
     should "mixin SpendingStat::Base module" do
       assert Charity.new.respond_to?(:spending_stat)
