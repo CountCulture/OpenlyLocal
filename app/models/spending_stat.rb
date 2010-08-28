@@ -2,10 +2,17 @@ class SpendingStat < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
   validates_presence_of :organisation_type, :organisation_id
   serialize :spend_by_month
+  serialize :breakdown
   
   def calculated_average_monthly_spend
     return if organisation.financial_transactions.blank?
     organisation.financial_transactions.sum(:value)/months_covered
+  end
+  
+  def calculated_payee_breakdown
+    return if !organisation.respond_to?(:financial_transactions) || organisation.is_a?(Supplier)
+    res = organisation.financial_transactions.sum(:value, :group => "suppliers.payee_type").to_hash
+    res.blank? ? nil : res
   end
   
   # Returns array of arrays, corresponding to spend per month. The array is 
@@ -43,7 +50,8 @@ class SpendingStat < ActiveRecord::Base
   def perform
     update_attributes(:total_spend => calculated_total_spend, 
                       :average_monthly_spend => calculated_average_monthly_spend,
-                      :spend_by_month => calculated_spend_by_month)
+                      :spend_by_month => calculated_spend_by_month,
+                      :breakdown => calculated_payee_breakdown)
   end
   
   def earliest_transaction_date

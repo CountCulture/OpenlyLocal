@@ -3,6 +3,8 @@ class PoliceAuthority < ActiveRecord::Base
   belongs_to :police_force
   has_many :councils, :through => :police_force
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
+  include SpendingStatUtilities::Base
+  
   validates_presence_of :name, :police_force_id
   validates_uniqueness_of :name, :police_force_id
   default_scope :order => "name"

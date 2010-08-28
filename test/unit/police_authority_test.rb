@@ -23,6 +23,10 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
     should have_db_column :annual_audit_letter
     should have_db_column :vat_number
         
+    should "mixin SpendingStat::Base module" do
+      assert PoliceAuthority.new.respond_to?(:spending_stat)
+    end
+
   end
   
   context "A PoliceAuthority instance" do

@@ -7,6 +7,11 @@ class QuangoTest < ActiveSupport::TestCase
     end
     should have_many :supplying_relationships
     
+    should "mixin SpendingStat::Base module" do
+      assert Quango.new.respond_to?(:spending_stat)
+    end
+
+    
     should have_db_column :title
     should have_db_column :quango_type
     should have_db_column :quango_subtype

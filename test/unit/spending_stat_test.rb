@@ -21,9 +21,14 @@ class SpendingStatTest < ActiveSupport::TestCase
     should have_db_column :average_monthly_spend
     should have_db_column :average_transaction_value
     should have_db_column :spend_by_month
+    should have_db_column :breakdown
     
     should 'serialize spend_by_month' do
       assert_equal ['foo', 'bar'], Factory(:spending_stat, :spend_by_month => ['foo', 'bar']).reload.spend_by_month 
+    end
+    
+    should 'serialize breakdown' do
+      assert_equal ['foo', 'bar'], Factory(:spending_stat, :breakdown => ['foo', 'bar']).reload.breakdown 
     end
   end
   
@@ -63,6 +68,18 @@ class SpendingStatTest < ActiveSupport::TestCase
         @spending_stat.stubs(:calculated_spend_by_month).returns(dummy_spend_by_month)
         @spending_stat.perform
         assert_equal dummy_spend_by_month, @spending_stat.reload.spend_by_month
+      end
+
+      should "should calculate payee breakdown" do
+        @spending_stat.expects(:calculated_payee_breakdown)
+        @spending_stat.perform
+      end
+      
+      should "should update with payee_breakdown" do
+        dummy_payee_breakdown = {'Company' => 123}
+        @spending_stat.stubs(:calculated_payee_breakdown).returns(dummy_payee_breakdown)
+        @spending_stat.perform
+        assert_equal dummy_payee_breakdown, @spending_stat.reload.breakdown
       end
 
     end
@@ -204,7 +221,61 @@ class SpendingStatTest < ActiveSupport::TestCase
       
     end
     
-    
+    context "when calculating payee breakdown" do
+      setup do
+        @organisation = Factory(:council)
+        @council = Factory(:another_council)
+        @police_authority = Factory(:police_authority)
+        @company_1 = Factory(:company)
+        @company_2 = Factory(:company)
+        @supplier_council = Factory(:supplier, :organisation => @organisation, :payee => @council)
+        @supplier_police_authority = Factory(:supplier, :organisation => @organisation, :payee => @police_authority)
+        @supplier_company_1 = Factory(:supplier, :organisation => @organisation, :payee => @company_1)
+        @supplier_company_2 = Factory(:supplier, :organisation => @organisation, :payee => @company_2)
+        @unmatched_supplier = Factory(:supplier, :organisation => @organisation)
+        
+        @spending_stat_1 = Factory(:spending_stat, :organisation => @organisation)
+        
+        Factory(:financial_transaction, :supplier => @supplier_council, :value => 123.45)
+        Factory(:financial_transaction, :supplier => @supplier_council, :value => 20)
+        Factory(:financial_transaction, :supplier => @supplier_police_authority, :value => 40)
+        Factory(:financial_transaction, :supplier => @supplier_company_1, :value => 10.5)
+        Factory(:financial_transaction, :supplier => @supplier_company_1, :value => 32.1)
+        Factory(:financial_transaction, :supplier => @supplier_company_2, :value => 18.1)
+        Factory(:financial_transaction, :supplier => @unmatched_supplier, :value => 11.1)
+        Factory(:financial_transaction, :supplier => @unmatched_supplier, :value => 1001)
+        @unrelated_financial_transaction = Factory(:financial_transaction, :supplier => @another_supplier, :value => 24.5)
+      end
+
+      should "return nil if no transactions" do
+        assert_nil Factory(:council, :name => 'Foo Council').spending_stat.calculated_payee_breakdown
+      end
+      
+      should "return nil if organisation doesn't respond to financial_transactions" do
+        assert_nil Factory(:quango).spending_stat.calculated_payee_breakdown
+      end
+      
+      should "return nil if organisation is a supplier" do
+        assert_nil Factory(:supplier).spending_stat.calculated_payee_breakdown
+      end
+      
+      should "return hash of arrays" do
+        assert_kind_of Hash, breakdown = @organisation.spending_stat.calculated_payee_breakdown
+        assert_kind_of Array, breakdown.first
+      end
+      
+      should "aggregate spend by class" do
+        breakdown = @organisation.spending_stat.calculated_payee_breakdown
+        assert_in_delta 143.45, breakdown['Council'], 0.1
+        assert_in_delta (10.5 + 32.1 + 18.1), breakdown['Company'], 0.1
+      end
+      
+      should "associate unknown entries with nil" do
+        breakdown = @organisation.spending_stat.calculated_payee_breakdown
+        assert_in_delta 1012.1, breakdown[nil], 0.1
+      end
+      
+    end
   end
   
 end

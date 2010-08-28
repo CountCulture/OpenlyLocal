@@ -6,5 +6,6 @@ class Quango < ActiveRecord::Base
                     'RIEP' => ['Regional Improvement & Efficiency Partnership']}
   
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
+  include SpendingStatUtilities::Base
                
 end
