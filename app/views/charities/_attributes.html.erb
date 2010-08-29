@@ -1,4 +1,11 @@
 <%= attribute_tag :charity_number, (attributes.charity_commission_url? ? link_to(attributes.charity_number,attributes.charity_commission_url, :class => "external") : attributes.charity_number) %>
 <%= attribute_tag :date_registered, attributes.date_registered %>
+<%= attribute_tag :date_removed, attributes.date_removed %>
+<%= attribute_tag :contact, attributes.contact_name %>
 <%= attribute_tag :telephone, attributes.telephone %>
+<%= attribute_tag :address, attributes.address_in_full %>
 <%= attribute_tag :website, link_to(attributes.website, attributes.website, :class => "external") if attributes.website? %>
+<%= attribute_tag :email, mail_to(attributes.email, attributes.email, :encode => "javascript", :class => 'email') if attributes.email? %>
+<%= attribute_tag :latest_accounts, attributes.accounts_date.to_s(:event_date) if attributes.accounts_date? %>
+<%= attribute_tag :income, number_to_currency(attributes.income, :unit => "£", :precision => 0) if attributes.income? %>
+<%= attribute_tag :spending, number_to_currency(attributes.spending, :unit => "£", :precision => 0) if attributes.spending? %>

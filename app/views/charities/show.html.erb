@@ -1,6 +1,7 @@
 <h1><%= @charity.title %></h1>
+<p class=intro><%= @charity.activities %></p>
+
 <dl id="main_attributes" class="attributes">
 	<%= render :partial => "attributes", :object => @charity %>
 </dl>
 
-<p class=intro><%= @charity.activities %></p>
