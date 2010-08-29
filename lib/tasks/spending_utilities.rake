@@ -548,7 +548,6 @@ task :import_gla_payments => :environment do
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/gla/0#{i+6}_2010.csv"), :headers => true) do |csv_file|
       puts "Adding data from #{url}"
       csv_file.each do |row|
-        p row
         ft = FinancialTransaction.new(:date => row['Clearing Date'],
                                       :value => row['Amount'],
                                       :supplier_name => row['Vendor Name'],
@@ -568,5 +567,32 @@ task :import_gla_payments => :environment do
     i += 1
   end
   gla.spending_stat.perform
+end
+
+desc "Import South Glocs Payments"
+task :import_south_glocs_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%South Gloucester%'")
+  puts "Adding transactions for South Glocs "
+  date = "15-05-2010"
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/south_glos/apr_jun_2010.csv"), :headers => true) do |csv_file|
+    csv_file.each do |row|
+      next if row['Gross Amount'].blank?
+      ft = FinancialTransaction.new(:date => date,
+                                    :date_fuzziness => 40,
+                                    :value => row['Gross Amount'],
+                                    :supplier_name => row['Creditor Name'],
+                                    :transaction_type => row['Fund Type'],
+                                    :department_name => row['Dept'],
+                                    :service => row['Cost Centre Description'],
+                                    :description => row['Office Supplies & Equipment'],
+                                    :organisation => council,
+                                    :csv_line_number => csv_file.lineno,
+                                    :source_url => "http://hosted.southglos.gov.uk/councilpayments/apr_jun_2010.csv"
+                                    )
+      ft.save!                                  
+      puts "."
+    end
+  end
+  council.spending_stat.perform
 end
 
