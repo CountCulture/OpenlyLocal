@@ -130,13 +130,7 @@ class FinancialTransaction < ActiveRecord::Base
   
   # strips out commas and pound signs
   def value=(raw_value)
-    self[:value] =
-    if raw_value.is_a?(String)
-      cleaned_up_value = raw_value.gsub(/£|,|\s/,'')
-      cleaned_up_value.match(/^\(([\d\.]+)\)$/) ? "-#{$1}" : cleaned_up_value
-    else
-      raw_value
-    end
+    self[:value] = TitleNormaliser.normalise_financial_sum(raw_value)
   end
 
   def value_to_two_dec_places
