@@ -596,3 +596,22 @@ task :import_south_glocs_payments => :environment do
   council.spending_stat.perform
 end
 
+desc "Import Trafford Council Payments"
+task :import_trafford_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%Trafford%'")
+  puts "Adding transactions for #{council.title}"
+  date = "15-05-2010"
+  Nokogiri.XML(open('http://www.trafford.gov.uk/opendata/sets/supplierspend2010Q2.xml')).search('record').each do |record|
+    ft = FinancialTransaction.new(:date => date,
+                                  :date_fuzziness => 40,
+                                  :value => record.at('amount').inner_text,
+                                  :uid => record.at('ref').inner_text,
+                                  :supplier_name => record.at('supplier').inner_text,
+                                  :source_url => "http://www.trafford.gov.uk/opendata/sets/supplierspend2010Q2.xml"
+                                  )
+      ft.save!                                  
+      puts "."
+  end
+  council.spending_stat.perform
+end
+
