@@ -5,3 +5,13 @@
 	<%= render :partial => "attributes", :object => @charity %>
 </dl>
 
+<%- unless @charity.supplying_relationships.blank? -%>
+	<div id="relationships">
+	  <h3>Funding includes:</h3>
+	  <ul>
+	    <%- @charity.supplying_relationships.each do |supplier| -%>
+	      <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %>, Average monthly spend £<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %></span></li>
+	    <%- end -%>
+	  </ul>
+	</div>
+	<%- end -%>
