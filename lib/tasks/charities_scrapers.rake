@@ -1,5 +1,5 @@
-desc "Populate England & Wales Charities"
-task :populate_england_and_wales_charities => :environment do
+desc "Populate UK Charities"
+task :populate_charities => :environment do
   local_auth_list_page = Hpricot(open('http://www.charitycommission.gov.uk/ShowCharity/registerofcharities/mapping/Search.aspx'))
   local_auth_list = local_auth_list_page.search('#ctl00_MainContent_ddlLA option')[1..-1].collect{|la| [la.inner_text, la[:value]]}
   puts "Found #{local_auth_list.size} authorities"

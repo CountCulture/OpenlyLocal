@@ -3,6 +3,7 @@ module CompanyUtilities
   class Client
     
     def company_from_name(name)
+      # require 'companies_house'
       return unless poss_companies = (find_possible_companies_from_name(name) || (name.match(/&/) ? find_possible_companies_from_name(name.gsub(/\s?&\s?/, ' and ')) : nil))
       if poss_companies.size == 1
         poss_companies.first

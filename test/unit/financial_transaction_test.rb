@@ -268,6 +268,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       setup do
         @financial_transaction.description = "Some transaction"
       end
+      
       should "return array" do
         assert_kind_of Array, @financial_transaction.csv_data
       end
