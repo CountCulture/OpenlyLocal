@@ -615,3 +615,26 @@ task :import_trafford_payments => :environment do
   council.spending_stat.perform
 end
 
+desc "Import Hillingdon Payments"
+task :import_hillingdon_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%Hillingdon%'")
+  puts "Adding transactions for #{council.title}"
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_hillingdon/hillingdon_export_council_expenditure_2010_09_01.csv"), :headers => true) do |csv_file|
+    csv_file.each do |row|
+      ft = FinancialTransaction.new(:date => ("14-#{row['MONTH']}-#{row['YEAR']}"),
+                                    :date_fuzziness => 13,
+                                    :value => row['COST'],
+                                    :supplier_name => row['VENDOR'],
+                                    :organisation => council,
+                                    :csv_line_number => csv_file.lineno, #deleted headings
+                                    :service => row['DESCRIPTION'],
+                                    :source_url => "http://www.hillingdon.gov.uk/html/apps/opendata.php?data=Council+expenditure&rest=year,2010;month,4&type=csv"
+                                    )
+      ft.save!                                  
+      puts "."
+    end
+  end
+  council.spending_stat.perform
+end
+
+
