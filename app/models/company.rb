@@ -13,7 +13,7 @@ class Company < ActiveRecord::Base
     if existing_company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
       return existing_company 
     elsif company_info = CompanyUtilities::Client.new.company_from_name(raw_title)
-      Company.create!(company_info)
+      Company.find_or_create_by_company_number(company_info) #we may be returned company that has slightly diff name  but same company_number
     end
   end
   
@@ -57,7 +57,7 @@ class Company < ActiveRecord::Base
   end
   
   def title
-    self[:title] || "Company number #{company_number}"
+    self[:title] || (company_number? ? "Company number #{company_number}" : "Company with VAT number #{vat_number}")
   end
   
   private

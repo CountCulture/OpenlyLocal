@@ -69,6 +69,11 @@ class CompanyTest < ActiveSupport::TestCase
         TitleNormaliser.expects(:normalise_company_title).with('foo and bar')
         Company.normalise_title('foo&bar')
       end
+      
+      # should "remove Ltd or Limited or PLC etc" do
+      #   TitleNormaliser.expects(:normalise_company_title).with('foo and bar limited')
+      #   Company.normalise_title('foo&bar')
+      # end
     end
     
     context "when normalising company_number" do
@@ -120,6 +125,24 @@ class CompanyTest < ActiveSupport::TestCase
           assert_kind_of Company, company
           assert_equal "SPIKES CAVELL & COMPANY LIMITED", company.title
           assert_equal "06398324", company.company_number
+        end
+        
+        context "and company returned has same company_number as existing company" do
+          setup do
+            @exist_co = Factory(:company, :title => 'Foo and Bar', :company_number => '06398324') #no limited
+            exist_co_attribs = {:status=>"Active", :company_number=>"06398324", :title=>"Foo and Bar", :company_type=>"Private Limited Company", :incorporation_date=>"2007-10-15"}
+            CompanyUtilities::Client.stubs(:company_from_name).with('Foo and Bar Limited').returns(exist_co_attribs)
+          end
+
+          should "not create company" do
+            assert_no_difference "Company.count" do
+              Company.from_title('Foo and Bar Limited')
+            end
+          end
+          
+          should "return existing company" do
+            assert_equal @exist_co, Company.from_title('Foo and Bar Limited')
+          end
         end
 
         context "but no company is returned" do
