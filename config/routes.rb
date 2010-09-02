@@ -63,6 +63,8 @@ ActionController::Routing::Routes.draw do |map|
     restype.resources :meetings
     restype.resources :police_forces
     restype.resources :police_authorities
+    restype.resources :charities
+    restype.resources :quangos
   end
   
   map.connect 'areas/postcodes/:postcode', :controller => 'areas', :action => 'search'

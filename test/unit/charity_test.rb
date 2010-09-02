@@ -34,5 +34,16 @@ class CharityTest < ActiveSupport::TestCase
       assert @charity.respond_to?(:address_in_full)
     end
         
+    context "when returning foaf version of telephone number" do
+
+      should "return nil if telephone blank" do
+        assert_nil @charity.foaf_telephone
+      end
+
+      should "return formatted number" do
+        @charity.telephone = "0162 384 298"
+        assert_equal "tel:+44-162-384-298", @charity.foaf_telephone
+      end
+    end
   end
 end
