@@ -90,11 +90,16 @@ EOF
 EOF
         @client.stubs(:_http_get).returns(@dummy_json)
       end
-
-      should "fetch info from CompaniesOpenHouse" do
-        @client.expects(:_http_get).with('http://companiesopen.org/search?q=Foo+Bar&f=js')
-        @client.find_possible_companies_from_name('Foo Bar')
-      end
+      
+      # should "user CompaniesHouse library to find possible companies" do
+      #   CompaniesHouse.expects(:name_search).with('Foo Bar')
+      #   @client.find_possible_companies_from_name('Foo Bar')
+      # end
+      # 
+      # should "fetch info from CompaniesOpenHouse" do
+      #   @client.expects(:_http_get).with('http://companiesopen.org/search?q=Foo+Bar&f=js')
+      #   @client.find_possible_companies_from_name('Foo Bar')
+      # end
       
       should "return nil if problem parsing info" do
         @client.expects(:_http_get).with('http://companiesopen.org/search?q=Foo+Bar&f=js').returns('foo"')
@@ -182,5 +187,105 @@ EOF
       end
 
     end
+    
+    context "when finding company by name" do
+      setup do
+        @poss_match = stub_everything(:company_name => 'Foo and Bar', :data_set => "LIVE", :company_number => "12398397")
+        @exact_match = stub_everything(:company_name => 'Foo Bar', :data_set => "LIVE",:search_match => "EXACT", :company_number => "06398324")
+        @dissolved_co = stub_everything(:company_index_status => "DISSOLVED", :company_name => 'Old Foo Bar', :data_set => "LIVE", :company_number => "35398366")
+        @companies_house_resp = stub_everything(:co_search_items => [@poss_match, @exact_match, @dissolved_co])
+        @company_details_resp = stub_everything( :company_number=>"02481991", 
+                                                 :company_name => 'Foo PLC', 
+                                                 :company_status =>"Active", 
+                                                 :company_category => 'Public Limited Company',
+                                                 :previous_names => [stub(:con_date =>"2006-10-10", :company_name=>"VEOLIA ES ONYX LIMITED"),
+                                                                     stub(:con_date =>"2006-02-03", :company_name=>"ONYX U.K. LIMITED")],
+                                                 :reg_address  => stub(:address_lines => ["VEOLIA HOUSE", "154A PENTONVILLE ROAD", "LONDON", "N1 9PE"]),
+                                                 :incorporation_date => "1990-03-16",
+                                                 :sic_codes => stub(:sic_text=>"9305 - Other service activities"))
+        
+
+        CompaniesHouse.stubs(:name_search).returns(@companies_house_resp)
+        CompaniesHouse.stubs(:company_details).returns(@company_details_resp)
+      end
+
+      should "user CompaniesHouse library to find possible companies" do
+        CompaniesHouse.expects(:name_search).with('Foo Bar').returns(@companies_house_resp)
+        @client.find_company_by_name('Foo Bar')
+      end
+
+      should "return company that exactly matches" do
+        expects_to_match_company_with_number(@exact_match.company_number)
+        @client.find_company_by_name('Foo Bar')
+      end
+      
+      should "get company details for matched company" do
+        CompaniesHouse.expects(:company_details).with(@exact_match.company_number).returns(@company_details_resp)
+        @client.find_company_by_name('Foo Bar')
+      end
+      
+      context "and company_details" do
+        setup do
+          @company_details = @client.find_company_by_name('Foo Bar')
+        end
+
+        should "be a hash" do
+          assert_kind_of Hash, @company_details
+        end
+        
+        should "contain company details in form Company can accept" do
+          assert_equal '02481991', @company_details[:company_number]
+          assert_equal 'Foo PLC', @company_details[:title]
+          assert_equal 'Active', @company_details[:status]
+          assert_equal "9305 - Other service activities", @company_details[:sic_codes]
+          assert_equal ['VEOLIA ES ONYX LIMITED', 'ONYX U.K. LIMITED'], @company_details[:previous_names]
+          assert_equal "VEOLIA HOUSE, 154A PENTONVILLE ROAD, LONDON, N1 9PE", @company_details[:address_in_full]
+          assert_equal "1990-03-16", @company_details[:incorporation_date]
+          assert_equal "Public Limited Company", @company_details[:company_category]
+        end
+      end
+      
+      context "and no company exactly matches" do
+        setup do
+          @former_name_co = stub_everything(:company_index_status => "CNGOFNAME", :company_name => 'Foo Baz', :data_set => "FORMER", :company_number => "45398366", :search_match => 'EXACT')
+          @another_former_name_co = stub_everything(:company_index_status => "CNGOFNAME", :company_name => 'Foo and Baz', :data_set => "FORMER", :company_number => "45398368")
+          @former_resp = stub_everything(:co_search_items => [@former_name_co, @another_former_name_co])
+          CompaniesHouse.stubs(:name_search).returns(stub_everything(:co_search_items => [@poss_match, @dissolved_co]))
+        end
+
+        should "return company which when normalised matches normalised title" do
+          expects_to_match_company_with_number(@poss_match.company_number)
+          @client.find_company_by_name('Foo & Bar')
+        end
+
+        should "search previous company names" do
+          CompaniesHouse.expects(:name_search).with('Foo Baz', :data_set => 'FORMER').returns(@former_resp)
+          @client.find_company_by_name('Foo Baz')
+        end
+        
+        should "return company with formaer name that exactly matches" do
+          expects_to_match_company_with_number(@former_name_co.company_number)
+          CompaniesHouse.stubs(:name_search).with('Foo Baz', :data_set => 'FORMER').returns(@former_resp)
+          @client.find_company_by_name('Foo Baz')
+        end
+        
+        should "return company with former name that matches after normalising" do
+          expects_to_match_company_with_number(@another_former_name_co.company_number)
+          CompaniesHouse.stubs(:name_search).with('Foo & Baz', :data_set => 'FORMER').returns(stub_everything(:co_search_items => [@another_former_name_co, @dissolved_co]) )
+          @client.find_company_by_name('Foo & Baz')
+        end
+
+        should "return nil if no company with former name matches" do
+          CompaniesHouse.stubs(:name_search).with('Foo & Baz', :data_set => 'FORMER').returns(stub_everything(:co_search_items => [@another_former_name_co, @dissolved_co]) )
+          assert_nil @client.find_company_by_name('Foo Far')
+        end
+      end
+            
+    end
+  end
+  
+  private  
+  def expects_to_match_company_with_number(number)
+    CompaniesHouse.expects(:company_details).with(number).returns(@company_details_resp)
   end
 end
