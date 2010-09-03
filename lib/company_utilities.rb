@@ -57,13 +57,19 @@ module CompanyUtilities
     def find_company_by_name(name)
       CompaniesHouse.sender_id = COMPANIES_HOUSE_SENDER_ID
       CompaniesHouse.password = COMPANIES_HOUSE_PASSWORD
-      poss_companies = CompaniesHouse.name_search(name).co_search_items
+      return unless resp = CompaniesHouse.name_search(name.gsub('&', ' and ').squish)
+      poss_companies = resp.co_search_items
       unless match = matched_company(:poss_companies => poss_companies, :name => name)
         poss_companies = CompaniesHouse.name_search(name, :data_set => 'FORMER').co_search_items
         match = matched_company(:poss_companies => poss_companies, :name => name)
       end
       return nil unless match
-      company_details = CompaniesHouse.company_details(match.company_number)
+      company_details_for(match.company_number)
+    end
+    
+    def company_details_for(company_number)
+      return if company_number.blank?
+      company_details = CompaniesHouse.company_details(company_number)
       hash_from_company_details(company_details)
     end
 
@@ -78,17 +84,18 @@ module CompanyUtilities
       args[:poss_companies].detect{|c| c.search_match=='EXACT'} || args[:poss_companies].detect{ |c| Company.normalise_title(c.company_name) == Company.normalise_title(args[:name]) }
     end
     
-    def hash_from_company_details(company)
+    def hash_from_company_details(company_details)
       res_hsh = {}
-      res_hsh[:company_number] = company.company_number
-      res_hsh[:title] = company.company_name
-      res_hsh[:address_in_full] = company.reg_address && company.reg_address.address_lines.join(', ')
-      res_hsh[:previous_names] = company.previous_names.collect{|pn| pn.company_name}
-      res_hsh[:sic_codes] = company.sic_codes.try(:sic_text)
-      res_hsh[:status] = company.company_status
-      res_hsh[:company_category] = company.company_category
-      res_hsh[:incorporation_date] = company.incorporation_date
-      res_hsh
+      res_hsh[:company_number] = company_details.company_number
+      res_hsh[:title] = company_details.company_name
+      res_hsh[:address_in_full] = company_details.reg_address.address_lines.join(', ') rescue nil
+      res_hsh[:previous_names] = company_details.previous_names.collect{|pn| pn.company_name} rescue nil
+      res_hsh[:sic_codes] = [company_details.sic_codes.sic_text].flatten rescue nil
+      res_hsh[:status] = company_details.company_status
+      res_hsh[:company_category] = company_details.company_category rescue nil
+      res_hsh[:incorporation_date] = company_details.incorporation_date rescue nil
+      res_hsh[:country] = company_details.country_of_origin
+      res_hsh.delete_if{ |k,v| v.blank? }
     end
   end
 end
