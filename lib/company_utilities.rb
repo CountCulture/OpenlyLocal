@@ -2,6 +2,8 @@ module CompanyUtilities
   
   class Client
     require 'companies_house'
+    CompaniesHouse.sender_id = COMPANIES_HOUSE_SENDER_ID
+    CompaniesHouse.password = COMPANIES_HOUSE_PASSWORD
     
     def company_from_name(name)
       return unless poss_companies = (find_possible_companies_from_name(name) || (name.match(/&/) ? find_possible_companies_from_name(name.gsub(/\s?&\s?/, ' and ')) : nil))
@@ -39,7 +41,6 @@ module CompanyUtilities
     end
     
     def find_possible_companies_from_name(name)
-      require 'companies_house'
       resp_array = JSON.parse(_http_get("http://companiesopen.org/search?q=#{CGI.escape name}&f=js")) rescue nil
       return if resp_array.blank?
       resp_array.collect do |company_info|
@@ -57,19 +58,25 @@ module CompanyUtilities
     def find_company_by_name(name)
       CompaniesHouse.sender_id = COMPANIES_HOUSE_SENDER_ID
       CompaniesHouse.password = COMPANIES_HOUSE_PASSWORD
-      return unless resp = CompaniesHouse.name_search(name.gsub('&', ' and ').squish)
+      n_name = name.gsub('&', ' and ').squish
+      return unless resp = CompaniesHouse.name_search(n_name)
+      RAILS_DEFAULT_LOGGER.debug "Response from Companies House API for name_search for #{n_name}:\n#{resp.inspect}"
       poss_companies = resp.co_search_items
       unless match = matched_company(:poss_companies => poss_companies, :name => name)
         poss_companies = CompaniesHouse.name_search(name, :data_set => 'FORMER').co_search_items
         match = matched_company(:poss_companies => poss_companies, :name => name)
       end
       return nil unless match
+      sleep 1
       company_details_for(match.company_number)
     end
     
     def company_details_for(company_number)
+      CompaniesHouse.sender_id = COMPANIES_HOUSE_SENDER_ID
+      CompaniesHouse.password = COMPANIES_HOUSE_PASSWORD
       return if company_number.blank?
       company_details = CompaniesHouse.company_details(company_number)
+      RAILS_DEFAULT_LOGGER.debug "Response from Companies House API for details for company with company number #{company_number}:\n#{company_details.inspect}"
       hash_from_company_details(company_details)
     end
 
@@ -85,12 +92,13 @@ module CompanyUtilities
     end
     
     def hash_from_company_details(company_details)
+      return unless company_details
       res_hsh = {}
       res_hsh[:company_number] = company_details.company_number
       res_hsh[:title] = company_details.company_name
       res_hsh[:address_in_full] = company_details.reg_address.address_lines.join(', ') rescue nil
       res_hsh[:previous_names] = company_details.previous_names.collect{|pn| pn.company_name} rescue nil
-      res_hsh[:sic_codes] = [company_details.sic_codes.sic_text].flatten rescue nil
+      res_hsh[:sic_codes] = (company_details.sic_codes.respond_to?(:sic_texts) ? company_details.sic_codes.sic_texts : [company_details.sic_codes.sic_text]) rescue nil
       res_hsh[:status] = company_details.company_status
       res_hsh[:company_category] = company_details.company_category rescue nil
       res_hsh[:incorporation_date] = company_details.incorporation_date rescue nil

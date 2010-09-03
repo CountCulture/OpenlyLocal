@@ -319,7 +319,7 @@ EOF
       end
       
       should 'return array of sic_codes if multiple sic_codes returned' do
-        resp = stub_everything( :company_number=>"02481991", :company_name => 'Foo PLC', :company_status =>"Active", :sic_codes => stub(:sic_text => ["7031 - Real estate agencies","7032 - Manage real estate, fee or contract"]))
+        resp = stub_everything( :company_number=>"02481991", :company_name => 'Foo PLC', :company_status =>"Active", :sic_codes => stub(:sic_texts => ["7031 - Real estate agencies","7032 - Manage real estate, fee or contract"]))
         CompaniesHouse.stubs(:company_details).returns(resp)
         assert_equal ["7031 - Real estate agencies","7032 - Manage real estate, fee or contract"], @client.company_details_for('12345')[:sic_codes]
       end
