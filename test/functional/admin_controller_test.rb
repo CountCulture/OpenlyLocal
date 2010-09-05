@@ -10,6 +10,7 @@ class AdminControllerTest < ActionController::TestCase
         @another_council = Factory(:another_council)
         @user_submission = Factory(:user_submission)
         @council_contact = Factory(:council_contact, :council => @another_council)
+        Delayed::Job.enqueue(Tweeter.new('foo message'))
         stub_authentication
         get :index
       end
@@ -40,6 +41,13 @@ class AdminControllerTest < ActionController::TestCase
         assert_select "#council_contacts", /#{@council_contact.name}/
       end
       
+      should "show number of delayed_jobs to be processed" do
+        assert_select "#delayed_jobs", /3 delayed jobs/
+      end
+      
+      should "show details of next delayed_job to be processed" do
+        assert_select "#delayed_jobs", /Tweeter/
+      end
     end 
     
     context "without authentication" do

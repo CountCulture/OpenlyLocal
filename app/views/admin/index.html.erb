@@ -5,6 +5,15 @@
   <li><%= link_to "All councils (including unparsed)", councils_path(:include_unparsed => true) %></li>
 </ul>
 
+<div id="delayed_jobs">
+  <h3><%= Delayed::Job.count %> Delayed Jobs still to be processed</h3>
+	<ul>
+		<%- Delayed::Job.all(:limit => 5).each do |job| -%>
+			<li><%= debug(job.payload_object) %></li>
+		<%- end -%>
+	</ul>
+</div>
+
 <div id="user_submissions" class='item_grouping'>
   <h3>User Submissions</h3>
   <%= render :partial => 'user_submission', :collection => @user_submissions %>
