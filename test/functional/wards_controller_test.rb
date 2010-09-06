@@ -407,6 +407,13 @@ class WardsControllerTest < ActionController::TestCase
       assert_routing "wards/os_id/10023.rdf", {:controller => "wards", :action => "show", :os_id => "10023", :format => "rdf"}
     end
 
+    should "route resource identified by snac_id to show action" do
+      assert_routing "id/wards/snac_id/23", {:controller => "wards", :action => "show", :snac_id => "23", :redirect_from_resource => true}
+      assert_routing "id/wards/snac_id/23.xml", {:controller => "wards", :action => "show", :snac_id => "23", :redirect_from_resource => true, :format => "xml"  }
+      assert_routing "id/wards/snac_id/23.json", {:controller => "wards", :action => "show", :snac_id => "23", :redirect_from_resource => true, :format => "json" }
+      assert_routing "id/wards/snac_id/23.rdf", {:controller => "wards", :action => "show", :snac_id => "23", :redirect_from_resource => true, :format => "rdf"  }
+    end
+
     context "with basic request" do
       setup do
         get :show, :id => @ward.id

@@ -79,6 +79,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'wards/os_id/:os_id', :controller => "wards", :action => "show", :requirements => { :os_id => /\d+/ }
   map.connect 'councils/os_id/:os_id.:format', :controller => "councils", :action => "show", :requirements => { :os_id => /\d+/ }
   map.connect 'councils/os_id/:os_id', :controller => "councils", :action => "show", :requirements => { :os_id => /\d+/ }
+  map.connect 'councils/id/snac_id/:snac_id.:format', :controller => "councils", :action => "show", :requirements => { :snac_id => /\w+/, :redirect_from_resource => true }
+  map.connect 'councils/id/snac_id/:snac_id', :controller => "councils", :action => "show", :requirements => { :snac_id => /\w+/, :redirect_from_resource => true }
+  map.connect 'wards/id/snac_id/:snac_id.:format', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/, :redirect_from_resource => true }
+  map.connect 'wards/id/snac_id/:snac_id', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/, :redirect_from_resource => true }
 
   # The priority is based upon order of creation: first created -> highest priority.
 
