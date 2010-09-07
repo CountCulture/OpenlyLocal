@@ -52,12 +52,18 @@ class CompanyTest < ActiveSupport::TestCase
         assert another_dup_company.valid?
       end
       
-      should "validate uniqueness of non-blank vat_number" do
-        dup_company = Factory.build(:company, :company_number => '4567') # vat number is nil
+      should "validate uniqueness of non-blank vat_number scoped to company_number" do
+        dup_company = Factory.build(:company, :company_number => '4567') # vat number is nil, so is @company
         another_dup_company = Factory.build(:company, :company_number => nil, :vat_number => 'ab123')
+        
         assert dup_company.valid? # don't check if nil
-        @company.update_attributes(:company_number => nil, :vat_number => 'ab123' )
+        
+        @company.update_attribute(:vat_number, 'ab123' )
+        assert another_dup_company.valid? # vat number is smae, company number is different
+        
+        @company.update_attribute(:company_number, nil ) # vat number is smae, company number is no longer unique (another one with nil)
         assert !another_dup_company.valid?
+        
         assert_equal 'has already been taken', another_dup_company.errors[:vat_number]
       end
       

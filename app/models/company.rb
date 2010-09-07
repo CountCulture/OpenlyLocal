@@ -1,7 +1,8 @@
 class Company < ActiveRecord::Base
   include AddressMethods
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
-  validates_uniqueness_of :company_number, :vat_number, :allow_blank => true
+  validates_uniqueness_of :company_number, :allow_blank => true
+  validates_uniqueness_of :vat_number, :scope => :company_number, :allow_blank => true
   before_save :normalise_title
   serialize :sic_codes
   serialize :previous_names
