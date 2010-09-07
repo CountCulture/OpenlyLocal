@@ -39,7 +39,8 @@ class Company < ActiveRecord::Base
   end
   
   def self.normalise_company_number(raw_number)
-    raw_number.blank? ? nil : sprintf("%08d", raw_number.to_i)
+    return nil if raw_number.blank?
+    raw_number.to_s.match(/[A-Z]/) ? raw_number : sprintf("%08d", raw_number.to_i)
   end
   
   # returns companies_house url via companies open house redirect
@@ -88,6 +89,7 @@ class Company < ActiveRecord::Base
   private
   def normalise_title
     self.normalised_title = self.class.normalise_title(title) unless self[:title].blank?
+    self.company_number = self.class.normalise_company_number(company_number) unless self[:company_number].blank?
     true # always save
   end
   

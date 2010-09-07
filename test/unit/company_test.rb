@@ -104,6 +104,10 @@ class CompanyTest < ActiveSupport::TestCase
         assert_nil Company.normalise_company_number('')
       end
       
+      should "not change company numbers with letters in them" do
+        assert_equal 'FO12345', Company.normalise_company_number('FO12345')
+      end
+      
     end
     
     context "when returning whether probable company" do
