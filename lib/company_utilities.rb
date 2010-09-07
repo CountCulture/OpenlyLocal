@@ -5,27 +5,27 @@ module CompanyUtilities
     CompaniesHouse.sender_id = COMPANIES_HOUSE_SENDER_ID
     CompaniesHouse.password = COMPANIES_HOUSE_PASSWORD
     
-    def company_from_name(name)
-      return unless poss_companies = (find_possible_companies_from_name(name) || (name.match(/&/) ? find_possible_companies_from_name(name.gsub(/\s?&\s?/, ' and ')) : nil))
-      if poss_companies.size == 1
-        poss_companies.first
-      else
-        poss_companies.detect{ |pc| Company.normalise_title(pc[:title]) == Company.normalise_title(name) }
-      end
-    end
-
-    def get_basic_info(company_number)
-      return if company_number.blank?
-      resp_hash = JSON.parse(_http_get("http://companiesopen.org/uk/#{company_number}.js"))['company'] rescue nil
-      return unless resp_hash
-      { :title => resp_hash['name'],
-        :wikipedia_url => resp_hash['wikipedia_url'],
-        :company_type => resp_hash['company_category'],
-        :incorporation_date => resp_hash['incorporation_date'],
-        :address_in_full => resp_hash['address'],
-        :status => resp_hash['company_status']
-      }.delete_if{|k,v| v.blank?}
-    end
+    # def company_from_name(name)
+    #   return unless poss_companies = (find_possible_companies_from_name(name) || (name.match(/&/) ? find_possible_companies_from_name(name.gsub(/\s?&\s?/, ' and ')) : nil))
+    #   if poss_companies.size == 1
+    #     poss_companies.first
+    #   else
+    #     poss_companies.detect{ |pc| Company.normalise_title(pc[:title]) == Company.normalise_title(name) }
+    #   end
+    # end
+    # 
+    # def get_basic_info(company_number)
+    #   return if company_number.blank?
+    #   resp_hash = JSON.parse(_http_get("http://companiesopen.org/uk/#{company_number}.js"))['company'] rescue nil
+    #   return unless resp_hash
+    #   { :title => resp_hash['name'],
+    #     :wikipedia_url => resp_hash['wikipedia_url'],
+    #     :company_type => resp_hash['company_category'],
+    #     :incorporation_date => resp_hash['incorporation_date'],
+    #     :address_in_full => resp_hash['address'],
+    #     :status => resp_hash['company_status']
+    #   }.delete_if{|k,v| v.blank?}
+    # end
     
     def get_vat_info(vat_number)
       return if vat_number.blank?
@@ -33,31 +33,32 @@ module CompanyUtilities
       info = doc.at('table.vat.answer ~ table')
       title = info.at('td[text()*=Name]').next_sibling.inner_text.squish
       address = info.at('td[text()*=Address]').next_sibling.at('font').inner_html.gsub(/(<br \/>)+/, ', ').squish
-      { :title => title,
-        :address_in_full => address }
+      res = { :title => title, :address_in_full => address }
+      if title 
+        res = find_company_by_name(title)||res
+      end
+      res
     rescue Exception => e
       RAILS_DEFAULT_LOGGER.debug "Problem getting info for VAT number #{vat_number}: #{e.inspect}"
       return nil
     end
     
-    def find_possible_companies_from_name(name)
-      resp_array = JSON.parse(_http_get("http://companiesopen.org/search?q=#{CGI.escape name}&f=js")) rescue nil
-      return if resp_array.blank?
-      resp_array.collect do |company_info|
-        { :title => company_info['company']['name'],
-          :company_number => company_info['company']['company_number'],
-          :wikipedia_url => company_info['company']['wikipedia_url'],
-          :company_type => company_info['company']['company_category'],
-          :incorporation_date => company_info['company']['incorporation_date'],
-          :address_in_full => company_info['company']['address'],
-          :status => company_info['company']['company_status']
-        }.delete_if{|k,v| v.blank?}
-      end
-    end
+    # def find_possible_companies_from_name(name)
+    #   resp_array = JSON.parse(_http_get("http://companiesopen.org/search?q=#{CGI.escape name}&f=js")) rescue nil
+    #   return if resp_array.blank?
+    #   resp_array.collect do |company_info|
+    #     { :title => company_info['company']['name'],
+    #       :company_number => company_info['company']['company_number'],
+    #       :wikipedia_url => company_info['company']['wikipedia_url'],
+    #       :company_type => company_info['company']['company_category'],
+    #       :incorporation_date => company_info['company']['incorporation_date'],
+    #       :address_in_full => company_info['company']['address'],
+    #       :status => company_info['company']['company_status']
+    #     }.delete_if{|k,v| v.blank?}
+    #   end
+    # end
     
     def find_company_by_name(name)
-      CompaniesHouse.sender_id = COMPANIES_HOUSE_SENDER_ID
-      CompaniesHouse.password = COMPANIES_HOUSE_PASSWORD
       n_name = name.gsub('&', ' and ').squish
       return unless resp = CompaniesHouse.name_search(n_name)
       RAILS_DEFAULT_LOGGER.debug "Response from Companies House API for name_search for #{n_name}:\n#{resp.inspect}"
@@ -72,8 +73,6 @@ module CompanyUtilities
     end
     
     def company_details_for(company_number)
-      CompaniesHouse.sender_id = COMPANIES_HOUSE_SENDER_ID
-      CompaniesHouse.password = COMPANIES_HOUSE_PASSWORD
       return if company_number.blank?
       company_details = CompaniesHouse.company_details(company_number)
       RAILS_DEFAULT_LOGGER.debug "Response from Companies House API for details for company with company number #{company_number}:\n#{company_details.inspect}"
@@ -100,7 +99,7 @@ module CompanyUtilities
       res_hsh[:previous_names] = company_details.previous_names.collect{|pn| pn.company_name} rescue nil
       res_hsh[:sic_codes] = (company_details.sic_codes.respond_to?(:sic_texts) ? company_details.sic_codes.sic_texts : [company_details.sic_codes.sic_text]) rescue nil
       res_hsh[:status] = company_details.company_status
-      res_hsh[:company_category] = company_details.company_category rescue nil
+      res_hsh[:company_type] = company_details.company_category rescue nil
       res_hsh[:incorporation_date] = company_details.incorporation_date rescue nil
       res_hsh[:country] = company_details.country_of_origin
       res_hsh.delete_if{ |k,v| v.blank? }

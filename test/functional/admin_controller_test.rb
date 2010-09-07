@@ -42,7 +42,7 @@ class AdminControllerTest < ActionController::TestCase
       end
       
       should "show number of delayed_jobs to be processed" do
-        assert_select "#delayed_jobs", /3 delayed jobs/
+        assert_select "#delayed_jobs", /3 delayed jobs/i
       end
       
       should "show details of next delayed_job to be processed" do

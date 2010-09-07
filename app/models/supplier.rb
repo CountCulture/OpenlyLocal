@@ -68,9 +68,8 @@ class Supplier < ActiveRecord::Base
   end
 
   def possible_payee
+    return Company.from_title(name) if Company.probable_company?(name)
     case name
-    when /Ltd|Limited|PLC/i
-      Company.from_title(name)
     when /Police Authority/i
       PoliceAuthority.find_by_name(name)
     when /Council|(London Borough)|(City of)|(London Authority)/i

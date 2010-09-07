@@ -239,6 +239,7 @@ class SupplierTest < ActiveSupport::TestCase
       context "and name is company-like" do
         setup do
           @supplier.name = 'Foo Ltd'
+          # Company.stubs(:probable_company?).returns(true)
         end
 
         should "try to match against company" do

@@ -15,7 +15,7 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :email
     should have_db_column :telephone
     should have_db_column :date_registered
-    should have_db_column :charity_commission_url
+    # should have_db_column :charity_commission_url
     should validate_presence_of :charity_number
     should validate_presence_of :title
     should validate_uniqueness_of :charity_number
@@ -45,5 +45,18 @@ class CharityTest < ActiveSupport::TestCase
         assert_equal "tel:+44-162-384-298", @charity.foaf_telephone
       end
     end
+    
+    context "when returning charity commission url" do
+      should "build url using charity number" do
+        assert_equal "http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/SearchResultHandler.aspx?RegisteredCharityNumber=#{@charity.charity_number}&SubsidiaryNumber=0", @charity.charity_commission_url
+      end
+
+    end
+    
+    should "use title in to_param method" do
+      @charity.title = "some title-with/stuff"
+      assert_equal "#{@charity.id}-some-title-with-stuff", @charity.to_param
+    end
+    
   end
 end

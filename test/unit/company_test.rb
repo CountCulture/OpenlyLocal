@@ -17,7 +17,18 @@ class CompanyTest < ActiveSupport::TestCase
     should have_db_column :company_type
     should have_db_column :incorporation_date
     should have_db_column :vat_number
+    should have_db_column :previous_names
+    should have_db_column :sic_codes
+    should have_db_column :country
     
+    should 'serialize previous_names' do
+      assert_equal ['foo', 'bar'], Factory(:company, :previous_names => ['foo', 'bar']).reload.previous_names 
+    end
+
+    should 'serialize sic_codes' do
+      assert_equal ['foo', 'bar'], Factory(:company, :sic_codes => ['foo', 'bar']).reload.sic_codes 
+    end
+
     should 'mixin AddressMethods module' do
       assert @company.respond_to?(:address_in_full)
     end
@@ -55,6 +66,12 @@ class CompanyTest < ActiveSupport::TestCase
     end
     
     context "when normalising title" do
+      
+      should "return nil if blank" do
+        assert_nil Company.normalise_title(nil)
+        assert_nil Company.normalise_title('')
+      end
+      
       should "normalise title" do
         TitleNormaliser.expects(:normalise_company_title).with('foo bar')
         Company.normalise_title('foo bar')
@@ -89,6 +106,22 @@ class CompanyTest < ActiveSupport::TestCase
       
     end
     
+    context "when returning whether probable company" do
+
+      should "description" do
+        probable_companies = ['Foo Ltd', 'Foo Limited', 'Foo PLC', 'Foo Ltd.', 'Foo PLC', 'Foo P.L.C', 'Foo plc', 'Foo Private Limited Company', 'Foo Public Limited Company',
+          'Foo Private Unlimited Company', 'Foo Limited Partnership', 'Foo Community Interest Company', 'Foo LLP', 'Foo Limited Liability Partnership']
+        unlikely_companies = ['Unlimited Foo', 'Foo']
+        probable_companies.each do |co_name|
+          assert Company.probable_company?(co_name), "Failed to identify #{co_name} as probable_company"
+        end
+        
+        unlikely_companies.each do |co_name|
+          assert !Company.probable_company?(co_name), "Wrongly identified #{co_name} as probable_company"
+        end
+      end
+    end
+    
     context "when getting from title" do
       should "find company that matches normalised title" do
         raw_title = ' Foo &  Bar Ltd.'
@@ -105,11 +138,11 @@ class CompanyTest < ActiveSupport::TestCase
       context "and no company matches normalised title" do
         setup do
           @company_attribs = {:status=>"Active", :company_number=>"06398324", :title=>"SPIKES CAVELL & COMPANY LIMITED", :company_type=>"Private Limited Company", :address_in_full=>"1 NORTHBROOK PLACE\nNEWBURY\nBERKSHIRE\nRG14 1DQ", :incorporation_date=>"2007-10-15"}
-          CompanyUtilities::Client.any_instance.stubs(:company_from_name).returns(@company_attribs)
+          CompanyUtilities::Client.any_instance.stubs(:find_company_by_name).returns(@company_attribs)
         end
 
-        should "get companies matching name" do
-          CompanyUtilities::Client.any_instance.expects(:company_from_name).with('Foo')
+        should "get company matching name" do
+          CompanyUtilities::Client.any_instance.expects(:find_company_by_name).with('Foo')
           Company.from_title('Foo')
         end
         
@@ -127,11 +160,24 @@ class CompanyTest < ActiveSupport::TestCase
           assert_equal "06398324", company.company_number
         end
         
+        context "and no_create param passed" do
+
+          should "not create company if no_create param passed" do
+            assert_no_difference "Company.count" do
+              Company.from_title('Foo', :no_create => true)
+            end
+          end
+          
+          should "return company_info" do
+            assert_equal @company_attribs, Company.from_title('Foo', :no_create => true)
+          end
+        end
+        
         context "and company returned has same company_number as existing company" do
           setup do
             @exist_co = Factory(:company, :title => 'Foo and Bar', :company_number => '06398324') #no limited
             exist_co_attribs = {:status=>"Active", :company_number=>"06398324", :title=>"Foo and Bar", :company_type=>"Private Limited Company", :incorporation_date=>"2007-10-15"}
-            CompanyUtilities::Client.stubs(:company_from_name).with('Foo and Bar Limited').returns(exist_co_attribs)
+            CompanyUtilities::Client.stubs(:find_company_by_name).with('Foo and Bar Limited').returns(exist_co_attribs)
           end
 
           should "not create company" do
@@ -143,11 +189,15 @@ class CompanyTest < ActiveSupport::TestCase
           should "return existing company" do
             assert_equal @exist_co, Company.from_title('Foo and Bar Limited')
           end
+          
+          should "return existing company even if no_create is true" do
+            assert_equal @exist_co, Company.from_title('Foo and Bar Limited', :no_create => true)
+          end
         end
 
         context "but no company is returned" do
           setup do
-            CompanyUtilities::Client.any_instance.stubs(:company_from_name) # => returns nil still
+            CompanyUtilities::Client.any_instance.stubs(:find_company_by_name) # => returns nil still
           end
         
           should "not create company" do
@@ -180,7 +230,7 @@ class CompanyTest < ActiveSupport::TestCase
       
       should "not add company to delayed_job queue for fetching more details" do
         Delayed::Job.expects(:enqueue).never
-        Company.match_or_create(:company_number => "0123456")
+        Company.match_or_create(:company_number => "012345")
       end
       
       context "and company doesn't exist" do
@@ -272,6 +322,25 @@ class CompanyTest < ActiveSupport::TestCase
         @company.save!
         assert_nil @company.reload.normalised_title
       end
+      
+      should "normalise company_number" do
+        Company.expects(:normalise_company_number)
+        @company.save!
+      end
+  
+      should "save normalised company_number" do
+        @company.company_number = "1234"
+        @company.save!
+        assert_equal "00001234", @company.reload.company_number
+      end
+      
+      should "not save normalised company_number if nil" do
+        @company.attributes = {:company_number => nil, :vat_number => '42'}
+        @company.save!
+        assert_nil @company.reload.company_number
+      end
+      
+      
     end
     
     context "when populating basic info" do
@@ -279,11 +348,11 @@ class CompanyTest < ActiveSupport::TestCase
       context "and company has company_number" do
         setup do
           resp_hash = {:title => 'FOOCORP', :status => 'active', :status => 'Active', :incorporation_date => '1990-02-21', :company_type => 'Private Limited Company', :address_in_full => "501 BEAUMONT LEYS LANE\nLEICESTER\nLEICESTERSHIRE\nLE4 2BN" }
-          CompanyUtilities::Client.any_instance.stubs(:get_basic_info).returns(resp_hash)
+          CompanyUtilities::Client.any_instance.stubs(:company_details_for).returns(resp_hash)
         end
 
         should "fetch info using CompanyUtilities" do
-          CompanyUtilities::Client.any_instance.expects(:get_basic_info).with(@company.company_number)
+          CompanyUtilities::Client.any_instance.expects(:company_details_for).with(@company.company_number)
           @company.populate_basic_info
         end
 
@@ -305,25 +374,76 @@ class CompanyTest < ActiveSupport::TestCase
       context "and company has vat_number" do
         setup do
           @vat_company = Company.create!(:vat_number => '12345')
-          resp_hash = {:title => 'FOOCORP LTD', :address_in_full => "501 BEAUMONT LEYS LANE, LEICESTER, LEICESTERSHIRE, LE4 2BN" }
-          CompanyUtilities::Client.any_instance.stubs(:get_vat_info).returns(resp_hash)
+          @resp_hash = {:title => 'FOOCORP LTD', :address_in_full => "501 BEAUMONT LEYS LANE, LEICESTER, LEICESTERSHIRE, LE4 2BN" }
+          CompanyUtilities::Client.any_instance.stubs(:get_vat_info).returns(@resp_hash)
         end
 
-        should "fetch info using CompanyUtilities" do
+        should "fetch info from VAT Service using CompanyUtilities" do
           CompanyUtilities::Client.any_instance.expects(:get_vat_info).with(@vat_company.vat_number)
           @vat_company.populate_basic_info
         end
-
-        should "update company with info from CompanyUtilities" do
+        
+        should 'not raise exception if no info from VAT Service' do
+          CompanyUtilities::Client.any_instance.expects(:get_vat_info).with(@vat_company.vat_number)
+          assert_nothing_raised(Exception) { @vat_company.populate_basic_info }
+        end
+        
+        should 'try to match using name returned by VAT service' do
+          Company.expects(:from_title).with('FOOCORP LTD', :no_create => true)
           @vat_company.populate_basic_info
-          assert_equal 'FOOCORP LTD', @vat_company.title
+        end
+        
+        context "and if existing company returned after matching name" do
+          setup do
+            Factory(:supplier, :payee => @vat_company)
+            @supplying_relationships = @vat_company.supplying_relationships
+            @existing_company = Factory(:company, :company_number => "EC12345")
+            Company.expects(:from_title).with('FOOCORP LTD', :no_create => true).returns(@existing_company)
+          end
+
+          should "delete VAT company" do
+            assert_difference "Company.count", -1 do
+              @vat_company.populate_basic_info
+            end
+            assert_nil Company.find_by_id(@vat_company.id)
+          end
+          
+          should 'associate VAT company supplying relationships with existing company' do
+            @vat_company.populate_basic_info
+            assert @supplying_relationships.all?{ |s| s.payee == @existing_company }
+          end
+          
+          should 'add VAT company vat_number to existing company' do
+            @vat_company.populate_basic_info
+            assert_equal @vat_company.vat_number, @existing_company.reload.vat_number
+          end
         end
 
-        should 'add address for company' do
-          @vat_company.populate_basic_info
-          assert_kind_of Address, address = @vat_company.address
-          assert_equal "501 BEAUMONT LEYS LANE, LEICESTER, LEICESTERSHIRE, LE4 2BN", address.in_full
+        context "and if company info returned after matching name" do
+          setup do
+            @company_attribs = {:status=>"Active", :company_number=>"06398324", :title=>"SPIKES CAVELL & COMPANY LIMITED", :company_type=>"Private Limited Company", :address_in_full=>"1 NORTHBROOK PLACE\nNEWBURY\nBERKSHIRE\nRG14 1DQ", :incorporation_date=>"2007-10-15"}
+            Company.stubs(:from_title).returns(@company_attribs)
+          end
+
+          should "update vat company with company_info" do
+            @vat_company.populate_basic_info
+            assert_equal "06398324", @vat_company.company_number
+            assert_equal "SPIKES CAVELL & COMPANY LIMITED", @vat_company.title
+          end
         end
+        
+        context "and if no company info returned after matching name" do
+          setup do
+            Company.stubs(:from_title) # => returns nil
+          end
+
+          should "update vat company with vat info" do
+            @vat_company.populate_basic_info
+            assert_equal 'FOOCORP LTD', @vat_company.title
+            assert_equal @resp_hash[:address_in_full], @vat_company.address_in_full
+          end
+        end
+        
       end
   
     end

@@ -3,17 +3,21 @@ class Company < ActiveRecord::Base
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
   validates_uniqueness_of :company_number, :vat_number, :allow_blank => true
   before_save :normalise_title
+  serialize :sic_codes
+  serialize :previous_names
   
   def validate
     errors.add_to_base('Either the company number or vat number must be present') unless (company_number? || vat_number?)
   end
   
   # matches normalised version of given title with
-  def self.from_title(raw_title)
+  def self.from_title(raw_title, options={})
     if existing_company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
       return existing_company 
-    elsif company_info = CompanyUtilities::Client.new.company_from_name(raw_title)
-      Company.find_or_create_by_company_number(company_info) #we may be returned company that has slightly diff name  but same company_number
+    elsif company_info = CompanyUtilities::Client.new.find_company_by_name(raw_title)
+      existing_company = Company.find_by_company_number(company_info[:company_number])
+      return existing_company if existing_company
+      options[:no_create] ? company_info : Company.create(company_info) #we may be returned company that has slightly diff name  but same company_number
     end
   end
   
@@ -24,8 +28,13 @@ class Company < ActiveRecord::Base
     company
   end
   
+  def self.probable_company?(name)
+    name.gsub('.', '').match(/\bLtd|\bLimited|\bplc|\bllp|\bcompany/i)
+  end
+  
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising company titles
   def self.normalise_title(raw_title)
+    return if raw_title.blank?
     TitleNormaliser.normalise_company_title(raw_title.gsub(/\s?&\s?/, ' and '))
   end
   
@@ -45,11 +54,27 @@ class Company < ActiveRecord::Base
   
   def populate_basic_info
     if company_number
-      basic_info = CompanyUtilities::Client.new.get_basic_info(company_number)
+      basic_info = CompanyUtilities::Client.new.company_details_for(company_number)
+      update_attributes(basic_info)
     else
-      basic_info = CompanyUtilities::Client.new.get_vat_info(vat_number)
+      return unless basic_info = CompanyUtilities::Client.new.get_vat_info(vat_number)
+      basic_info_or_payee = self.class.from_title(basic_info[:title], :no_create => true) || basic_info
+      if basic_info_or_payee.is_a?(Hash) 
+        update_attributes(basic_info_or_payee)
+      else #it's an existing company, charity, quango etc
+        basic_info_or_payee.update_attribute(:vat_number, vat_number)
+        supplying_relationships.each{ |s| s.update_attribute(:payee, basic_info_or_payee) }
+        self.destroy
+      end 
     end
-    update_attributes(basic_info)
+  end
+  
+  def method_name
+    if existing_company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
+      return existing_company 
+    elsif company_info = CompanyUtilities::Client.new.find_company_by_name(raw_title)
+      Company.find_or_create_by_company_number(company_info) #we may be returned company that has slightly diff name  but same company_number
+    end
   end
   
   def to_param
