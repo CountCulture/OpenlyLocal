@@ -289,7 +289,8 @@ class CouncilsControllerTest < ActionController::TestCase
       assert_routing "councils/snac_id/23.xml", {:controller => "councils", :action => "show", :snac_id => "23", :format => "xml"}
       assert_routing "councils/snac_id/23.json", {:controller => "councils", :action => "show", :snac_id => "23", :format => "json"}
       assert_routing "councils/snac_id/23.rdf", {:controller => "councils", :action => "show", :snac_id => "23", :format => "rdf"}
-      assert_routing "councils/id/snac_id/23", {:controller => "councils", :action => "show", :snac_id => "23", :redirect_from_resource => true}
+      assert_routing "id/councils/snac_id/23", {:controller => "councils", :action => "show", :snac_id => "23", :redirect_from_resource => true}
+      assert_routing "id/councils/snac_id/23.rdf", {:controller => "councils", :action => "show", :snac_id => "23", :redirect_from_resource => true, :format => "rdf"}
     end
 
     should "route council identified by os_id to show action" do

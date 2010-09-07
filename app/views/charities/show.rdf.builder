@@ -13,7 +13,7 @@ xml.tag! "rdf:RDF",
   # basic info about this resource         
   xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@charity) do
     xml.tag! "rdfs:label", @charity.title
-    xml.tag! "owl:sameAs", "rdf:resource" => "http://opencharities/id/#{@charity.charity_number}"
+    xml.tag! "owl:sameAs", "rdf:resource" => "http://opencharities.org/id/charities/#{@charity.charity_number}"
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:Charity"
     xml.tag! "foaf:homepage", @charity.website if @charity.website?
     xml.tag! "foaf:phone", @charity.foaf_telephone unless @charity.foaf_telephone.blank?
