@@ -43,11 +43,11 @@ class SupplierUtilitiesTest < ActiveSupport::TestCase
         assert_equal @company, SupplierUtilities::VatMatcher.new(:vat_number => "CO1", :title => "Foo and Bar Limited", :supplier => @supplier).find_entity
       end
       
-     should "return nil if no entity matching Vat Number and title" do
+      should "return nil if no entity matching Vat Number and title" do
         assert_nil SupplierUtilities::VatMatcher.new(:vat_number => "CH1", :title => "Bar Concern", :supplier => @supplier).find_entity
         assert_nil SupplierUtilities::VatMatcher.new(:vat_number => "CH123", :title => "Foo Concern", :supplier => @supplier).find_entity
       end
-      
+            
     end
 
     context "when matching using external data" do
@@ -150,6 +150,7 @@ class SupplierUtilitiesTest < ActiveSupport::TestCase
         
         
       end 
+
     end
 
     context "when performing" do
@@ -180,6 +181,44 @@ class SupplierUtilitiesTest < ActiveSupport::TestCase
         @matcher.perform
       end
 
+      context "and supplier already has payee" do
+        setup do
+          @company = Factory(:company, :vat_number => "CO1", :title => "FOO & BAR LTD")
+          @company_without_vat_number = Factory(:company)
+        end
+
+        should "set payee vat_number if not set" do
+          @supplier.update_attribute(:payee, @company_without_vat_number)
+          @matcher.perform
+          assert_equal @matcher.vat_number, @company_without_vat_number.reload.vat_number
+        end
+        
+        should "update payee vat_number if set" do
+          @supplier.update_attribute(:payee, @company)
+          @matcher.perform
+          assert_equal @matcher.vat_number, @company.reload.vat_number
+        end
+        
+        should "send alert if updating payee vat_number and vat_number different" do
+          AdminMailer.expects(:deliver_admin_alert!)
+          @supplier.update_attribute(:payee, @company)
+          @matcher.perform
+        end
+        
+        should "not send alert if updating payee vat_number and vat_number same" do
+          @company.update_attribute(:vat_number, @matcher.vat_number)
+          AdminMailer.expects(:deliver_admin_alert!).never
+          @supplier.update_attribute(:payee, @company)
+          @matcher.perform
+        end
+        
+        should "not update payee title" do
+          old_title = @company_without_vat_number.title
+          @matcher.perform
+          assert_equal old_title, @company_without_vat_number.reload.title
+        end
+        
+      end
     end
   end
 end

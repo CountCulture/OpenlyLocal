@@ -367,39 +367,44 @@ class SupplierTest < ActiveSupport::TestCase
         @company = Factory(:company, :vat_number => '123456', :company_number => nil)
       end
       
-      should 'try to match entity with vat_number and title' do
-        matcher = stub
-        SupplierUtilities::VatMatcher.expects(:new).with(:vat_number => 'AB123456', :title => @supplier.title, :supplier => @supplier).returns(matcher)
-        matcher.expects(:find_entity).returns(@company)
+      should 'assign to vat_number instance_variable' do
         @supplier.vat_number = 'AB123456'
+        assert_equal 'AB123456', @supplier.instance_variable_get(:@vat_number)
       end
       
-      should 'assign entity matching vat_number and title to payee' do
-        SupplierUtilities::VatMatcher.any_instance.expects(:find_entity).returns(@company)
-        @supplier.vat_number = 'AB123456'
-        assert_equal @company, @supplier.reload.payee
-      end
-      
-      should 'add VatMatcher to queue for later processing if no entity matching vat_number and title to payee' do
-        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
-        @supplier.vat_number = 'AB123456'
-      end
-            
-      context "and supplier already has associated company" do
-        setup do
-          @supplier.update_attribute(:payee, @company)
-        end
-
-        should 'not match or create company from company number' do
-          Company.expects(:match_or_create).never
-          @supplier.vat_number = '123456'
-        end
-        
-        should "update company with company number" do
-          @supplier.vat_number = '123456'
-          assert_equal '123456', @company.reload.vat_number 
-        end
-      end
+      # should 'try to match entity with vat_number and title' do
+      #   matcher = stub
+      #   SupplierUtilities::VatMatcher.expects(:new).with(:vat_number => 'AB123456', :title => @supplier.title, :supplier => @supplier).returns(matcher)
+      #   matcher.expects(:find_entity).returns(@company)
+      #   @supplier.vat_number = 'AB123456'
+      # end
+      # 
+      # should 'assign entity matching vat_number and title to payee' do
+      #   SupplierUtilities::VatMatcher.any_instance.expects(:find_entity).returns(@company)
+      #   @supplier.vat_number = 'AB123456'
+      #   assert_equal @company, @supplier.reload.payee
+      # end
+      # 
+      # should 'add VatMatcher to queue for later processing if no entity matching vat_number and title to payee' do
+      #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+      #   @supplier.vat_number = 'AB123456'
+      # end
+      #       
+      # context "and supplier already has associated company" do
+      #   setup do
+      #     @supplier.update_attribute(:payee, @company)
+      #   end
+      # 
+      #   should 'not match or create company from company number' do
+      #     Company.expects(:match_or_create).never
+      #     @supplier.vat_number = '123456'
+      #   end
+      #   
+      #   should "update company with company number" do
+      #     @supplier.vat_number = '123456'
+      #     assert_equal '123456', @company.reload.vat_number 
+      #   end
+      # end
     end
         
     context "when returning associateds" do

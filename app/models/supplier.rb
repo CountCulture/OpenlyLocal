@@ -12,6 +12,7 @@ class Supplier < ActiveRecord::Base
                                   {} }
 
   alias_attribute :title, :name
+  attr_writer :vat_number
   
   def validate
     errors.add_to_base('Either a name or uid is required') if name.blank? && uid.blank?
@@ -94,19 +95,19 @@ class Supplier < ActiveRecord::Base
   end
   
   # convenience method for assigning entite given vat number and title
-  def vat_number=(vat_number)
-    matcher = SupplierUtilities::VatMatcher.new(:vat_number => vat_number, :title => title, :supplier => self)
-    if match = matcher.find_entity
-      update_attribute(:payee, match)
-    else
-      @vat_number = vat_number
-      Delayed::Job.enqueue(matcher)
-    end
-  end
+  # def vat_number=(vat_number)
+  #   matcher = SupplierUtilities::VatMatcher.new(:vat_number => vat_number, :title => title, :supplier => self)
+  #   if match = matcher.find_entity
+  #     update_attribute(:payee, match)
+  #   else
+  #     @vat_number = vat_number
+  #     Delayed::Job.enqueue(matcher)
+  #   end
+  # end
   
   private
   def queue_for_matching_with_payee
-    Delayed::Job.enqueue(self) unless @vat_number
+    @vat_number ? Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => @vat_number, :supplier => self, :title => title)) : Delayed::Job.enqueue(self) 
     true
   end
 end

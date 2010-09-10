@@ -46,7 +46,13 @@ module SupplierUtilities
     end
     
     def perform
-      if entity = find_entity
+      if payee = supplier.payee
+        old_vat_number = payee.vat_number
+        payee.update_attribute(:vat_number, vat_number)
+        AdminMailer.deliver_admin_alert!( :title => "Changed vat number for supplying entity from #{vat_number}", 
+                                          :details => "Vat Matcher for #{title} failed to match an entity. Supplier details\n#{supplier.inspect}"
+                                          ) if !old_vat_number.blank? && old_vat_number != vat_number
+      elsif entity = find_entity
         supplier.update_attribute(:payee, entity)
       else
         match_using_external_data
