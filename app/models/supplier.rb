@@ -93,18 +93,7 @@ class Supplier < ActiveRecord::Base
       self.save
     end
   end
-  
-  # convenience method for assigning entite given vat number and title
-  # def vat_number=(vat_number)
-  #   matcher = SupplierUtilities::VatMatcher.new(:vat_number => vat_number, :title => title, :supplier => self)
-  #   if match = matcher.find_entity
-  #     update_attribute(:payee, match)
-  #   else
-  #     @vat_number = vat_number
-  #     Delayed::Job.enqueue(matcher)
-  #   end
-  # end
-  
+    
   private
   def queue_for_matching_with_payee
     @vat_number ? Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => @vat_number, :supplier => self, :title => title)) : Delayed::Job.enqueue(self) 

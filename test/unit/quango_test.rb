@@ -10,6 +10,11 @@ class QuangoTest < ActiveSupport::TestCase
     should "mixin SpendingStat::Base module" do
       assert Quango.new.respond_to?(:spending_stat)
     end
+    
+    should 'mixin AddressMethods module' do
+      assert @quango.respond_to?(:address_in_full)
+    end
+        
 
     
     should have_db_column :title
