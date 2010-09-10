@@ -34,10 +34,6 @@ module CompanyUtilities
       title = info.at('td[text()*=Name]').next_sibling.inner_text.squish
       address = info.at('td[text()*=Address]').next_sibling.at('font').inner_html.gsub(/(<br \/>)+/, ', ').squish
       res = { :title => title, :address_in_full => address }
-      if title 
-        res = find_company_by_name(title)||res
-      end
-      res
     rescue Exception => e
       RAILS_DEFAULT_LOGGER.debug "Problem getting info for VAT number #{vat_number}: #{e.inspect}"
       return nil
@@ -60,11 +56,11 @@ module CompanyUtilities
     
     def find_company_by_name(name)
       n_name = name.gsub('&', ' and ').squish
-      return unless resp = CompaniesHouse.name_search(n_name)
+      return unless resp = search_companies_house_for(n_name)
       RAILS_DEFAULT_LOGGER.debug "Response from Companies House API for name_search for #{n_name}:\n#{resp.inspect}"
       poss_companies = resp.co_search_items
       unless match = matched_company(:poss_companies => poss_companies, :name => name)
-        poss_companies = CompaniesHouse.name_search(name, :data_set => 'FORMER').co_search_items
+        poss_companies = search_companies_house_for(name, :data_set => 'FORMER').co_search_items
         match = matched_company(:poss_companies => poss_companies, :name => name)
       end
       return nil unless match
@@ -74,7 +70,7 @@ module CompanyUtilities
     
     def company_details_for(company_number)
       return if company_number.blank?
-      company_details = CompaniesHouse.company_details(company_number)
+      company_details = CompaniesHouse.company_details(company_number) 
       RAILS_DEFAULT_LOGGER.debug "Response from Companies House API for details for company with company number #{company_number}:\n#{company_details.inspect}"
       hash_from_company_details(company_details)
     end
@@ -103,6 +99,11 @@ module CompanyUtilities
       res_hsh[:incorporation_date] = company_details.incorporation_date rescue nil
       res_hsh[:country] = company_details.country_of_origin
       res_hsh.delete_if{ |k,v| v.blank? }
+    end
+    
+    def search_companies_house_for(name)
+      return if RAILS_ENV=='test'
+      CompaniesHouse.name_search(name)
     end
   end
 end

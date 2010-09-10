@@ -290,52 +290,108 @@ class SupplierTest < ActiveSupport::TestCase
         
     context 'when assigning company_number' do
       setup do
-        @company = Factory(:company)
+        @company = Factory(:company, :company_number => 'AB123456')
+        @another_company = Factory(:company, :company_number => 'CD456')
       end
       
-      should 'match or create company from company number' do
-        Company.expects(:match_or_create).with(:company_number => '123456')
-        @supplier.company_number = '123456'
+      should 'associate company matching company number as payee' do
+        @supplier.company_number = 'AB123456'
+        assert_equal @company, @supplier.payee
       end
       
-      should 'associate returned company with given company number' do
-        Company.stubs(:match_or_create).returns(@company)
-        @supplier.company_number = '123456'
-        assert_equal @company, @supplier.reload.payee
+      should 'not change title of company matching company number' do
+        title = @company.title
+        @supplier.company_number = 'AB123456'
+        assert_equal title, @supplier.payee.reload.title
       end
+      
+      # should 'match or create company from company number and title' do
+      #   Company.expects(:match_or_create).with(:company_number => 'AB123456', :title => @supplier.title)
+      #   @supplier.company_number = 'AB123456'
+      # end
+      # 
+      # should 'associate returned company with given company number' do
+      #   Company.stubs(:match_or_create).returns(@company)
+      #   @supplier.company_number = 'AB123456'
+      #   assert_equal @company, @supplier.reload.payee
+      # end
       
       context "and supplier already has associated company" do
         setup do
           @supplier.update_attribute(:payee, @company)
         end
 
-        should 'not match or create company from company number' do
-          Company.expects(:match_or_create).never
-          @supplier.company_number = '123456'
+        # should 'not match or create company from company number' do
+        #   Company.expects(:match_or_create).never
+        #   @supplier.company_number = 'AB123456'
+        # end
+        
+        should "not update company with new company number" do
+          company_number = @company.company_number
+          @supplier.company_number = 'DE987'
+          assert_equal company_number, @company.reload.company_number 
         end
         
-        should "update company with company number" do
-          @supplier.company_number = '123456'
-          assert_equal '123456', @company.reload.company_number 
+        should "match existing company and associate as payeee" do
+          @supplier.company_number = 'CD456'
+          assert_equal @another_company, @supplier.payee
+        end
+      end
+      
+      context "and no company with company number exists" do
+
+        should "associate with new company with company_number as payee" do
+          @supplier.company_number = 'EF987'
+          assert_kind_of Company, @supplier.payee
+          assert_equal 'EF987', @supplier.payee.company_number
+        end
+        
+        should "not save new company" do
+          @supplier.company_number = 'EF987'
+          assert @supplier.payee.new_record?
         end
       end
     end
         
     context 'when assigning vat_number' do
       setup do
-        @company = Factory(:company, :vat_number => '123456')
+        @company = Factory(:company, :vat_number => '123456', :company_number => nil)
       end
       
-      should 'match or create company from company number' do
-        Company.expects(:match_or_create).with(:vat_number => '123456')
-        @supplier.vat_number = '123456'
+      should 'try to match entity with vat_number and title' do
+        matcher = stub
+        SupplierUtilities::VatMatcher.expects(:new).with(:vat_number => 'AB123456', :title => @supplier.title, :supplier => @supplier).returns(matcher)
+        matcher.expects(:find_entity).returns(@company)
+        @supplier.vat_number = 'AB123456'
       end
       
-      should 'associate returned company with given company number' do
-        Company.stubs(:match_or_create).returns(@company)
-        @supplier.vat_number = '123456'
+      should 'assign entity matching vat_number and title to payee' do
+        SupplierUtilities::VatMatcher.any_instance.expects(:find_entity).returns(@company)
+        @supplier.vat_number = 'AB123456'
         assert_equal @company, @supplier.reload.payee
       end
+      
+      should 'add VatMatcher to queue for later processing if no entity matching vat_number and title to payee' do
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+        @supplier.vat_number = 'AB123456'
+      end
+      
+      # should 'not change title of company matching company number' do
+      #   title = @company.title
+      #   @supplier.company_number = 'AB123456'
+      #   assert_equal title, @supplier.payee.reload.title
+      # end
+      # 
+      # should 'match or create company from vat number' do
+      #   Company.expects(:match_or_create).with(:vat_number => '123456')
+      #   @supplier.vat_number = '123456'
+      # end
+      # 
+      # should 'associate returned company with given company number' do
+      #   Company.stubs(:match_or_create).returns(@company)
+      #   @supplier.vat_number = '123456'
+      #   assert_equal @company, @supplier.reload.payee
+      # end
       
       context "and supplier already has associated company" do
         setup do
@@ -403,6 +459,11 @@ class SupplierTest < ActiveSupport::TestCase
           @supplier.update_supplier_details(@new_details)
           assert_equal 'http://foo.com', @supplier.payee.url
           assert_equal 'http://en.wikipedia.org/wiki/foo', @supplier.payee.wikipedia_url
+        end
+        
+        should "assign supplier title to new company" do
+          @supplier.update_supplier_details(@new_details)
+          assert_equal @supplier.title, @supplier.payee.title
         end
         
         should "return true" do

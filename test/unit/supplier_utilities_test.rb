@@ -1,0 +1,185 @@
+require 'test_helper'
+
+class SupplierUtilitiesTest < ActiveSupport::TestCase
+
+  context "A VatMatcher instance" do
+    setup do
+      @supplier = Factory(:supplier)
+      @matcher = SupplierUtilities::VatMatcher.new(:vat_number => "FOO1234", :title => "Foo Org", :supplier => @supplier)
+    end
+
+    should "store vat_number as accessor" do
+      assert_equal "FOO1234", @matcher.vat_number
+    end
+    
+    should "store title as accessor" do
+      assert_equal "Foo Org", @matcher.title
+    end
+    
+    should "store submitted supplier_id as instance_variable" do
+      assert_equal @supplier.id, @matcher.instance_variable_get(:@supplier_id)
+    end
+    
+    should "get return supplier indentified with supplier id as supplier" do
+      assert_equal @supplier, @matcher.supplier
+    end
+        
+    context "when finding entity for matcher" do
+      setup do
+        @company = Factory(:company, :vat_number => "CO1", :title => "FOO & BAR LTD")
+        @another_company = Factory(:company, :vat_number => "CO2", :title => "FOOBAR PLC")
+        @company_owned_by_charity = Factory(:company, :vat_number => "CH1", :title => "Foo Concern Ltd")
+        @charity = Factory(:charity, :vat_number => "CH1", :title => "Foo Concern")
+        @council = Factory(:council, :vat_number => "CL1", :title => "London Borough of Foo")
+        @quango = Factory(:quango, :vat_number => "QA1", :title => "Foo Body")
+      end
+
+      should "return entity matching Vat Number and title" do
+        assert_equal @charity, SupplierUtilities::VatMatcher.new(:vat_number => "CH1", :title => "Foo Concern", :supplier => @supplier).find_entity
+        assert_equal @quango, SupplierUtilities::VatMatcher.new(:vat_number => "QA1", :title => "Foo Body", :supplier => @supplier).find_entity
+      end
+      
+      should "return entity matching Vat Number and normalised title if model supports it" do
+        assert_equal @company, SupplierUtilities::VatMatcher.new(:vat_number => "CO1", :title => "Foo and Bar Limited", :supplier => @supplier).find_entity
+      end
+      
+     should "return nil if no entity matching Vat Number and title" do
+        assert_nil SupplierUtilities::VatMatcher.new(:vat_number => "CH1", :title => "Bar Concern", :supplier => @supplier).find_entity
+        assert_nil SupplierUtilities::VatMatcher.new(:vat_number => "CH123", :title => "Foo Concern", :supplier => @supplier).find_entity
+      end
+      
+    end
+
+    context "when matching using external data" do
+
+      context "and title is probable company" do
+        setup do
+          CompanyUtilities::Client.any_instance.stubs(:find_company_by_name).returns(:company_number => 'AB1234', :title => 'FOO LIMITED')
+          @co_matcher = SupplierUtilities::VatMatcher.new(:vat_number => "FOO1234", :title => "Foo Ltd", :supplier => @supplier)
+        end
+
+        should "search companies house for company matching title" do
+          CompanyUtilities::Client.any_instance.expects(:find_company_by_name).with("Foo Ltd")
+          @co_matcher.match_using_external_data
+        end
+        
+        should "create or match company using info returned from Companies House and VAT number" do
+          Company.expects(:match_or_create).with(:company_number => 'AB1234', :title => 'FOO LIMITED', :vat_number => "FOO1234")
+          @co_matcher.match_using_external_data
+        end
+        
+        should "associate returned company with supplier" do
+          company = Factory(:company)
+          Company.stubs(:match_or_create).returns(company)
+          @co_matcher.match_using_external_data
+          assert_equal company, @supplier.reload.payee
+        end
+        
+        should "send admin message if no company info returned from Companies House" do
+          CompanyUtilities::Client.any_instance.expects(:find_company_by_name)
+          AdminMailer.expects(:deliver_admin_alert!)
+          @co_matcher.match_using_external_data
+        end
+        
+      end 
+      
+      context "and title is not probable company" do
+        setup do
+          CompanyUtilities::Client.new.stubs(:find_company_by_name)
+        end
+
+        should "not search companies house for company matching title" do
+          CompanyUtilities::Client.any_instance.expects(:find_company_by_name).never
+          @matcher.match_using_external_data
+        end
+        
+        should "get info re VAT number from EU VAT service" do
+          CompanyUtilities::Client.any_instance.expects(:get_vat_info).with("FOO1234")
+          @matcher.match_using_external_data
+        end
+        
+        context "and if title returned by EU VAT service is probable company" do
+          setup do
+            CompanyUtilities::Client.any_instance.stubs(:get_vat_info).returns({:title => 'Foo Company Ltd', :address => '1 Foo St, London, SW1W 1AB'})
+          end
+
+          should "search companies house for company matching title returned by EU VAT service" do
+            CompanyUtilities::Client.any_instance.expects(:find_company_by_name).with('Foo Company Ltd')
+            @matcher.match_using_external_data
+          end
+
+          should "create or match company using info returned from Companies House and VAT number" do
+            CompanyUtilities::Client.any_instance.stubs(:find_company_by_name).returns(:company_number => 'AB1234', :title => 'FOO LIMITED')
+            Company.expects(:match_or_create).with(:company_number => 'AB1234', :title => 'FOO LIMITED', :vat_number => "FOO1234")
+            @matcher.match_using_external_data
+          end
+          
+          should "associate returned company with supplier" do
+            company = Factory(:company)
+            CompanyUtilities::Client.any_instance.stubs(:find_company_by_name).returns(:company_number => 'AB1234', :title => 'FOO LIMITED')
+            Company.stubs(:match_or_create).returns(company)
+            @matcher.match_using_external_data
+            assert_equal company, @supplier.reload.payee
+          end
+          
+          should "send admin message if no company info returned from Companies House" do
+            CompanyUtilities::Client.any_instance.expects(:find_company_by_name)
+            AdminMailer.expects(:deliver_admin_alert!)
+            @matcher.match_using_external_data
+          end
+
+        end
+        
+        context "and if title returned by EU VAT service is not probable company" do
+          setup do
+            CompanyUtilities::Client.any_instance.stubs(:get_vat_info).returns({:title => 'Foo Society', :address => '1 Foo St, London, SW1W 1AB'})
+          end
+
+          should "not search companies house for company matching title returned by EU VAT service" do
+            CompanyUtilities::Client.any_instance.expects(:find_company_by_name).never
+            @matcher.match_using_external_data
+          end
+
+          should "find_entity for title and vat_number" do
+            CompanyUtilities::Client.any_instance.expects(:find_company_by_name).never
+            @matcher.expects(:find_entity)
+            @matcher.match_using_external_data
+          end
+
+        end
+        
+        
+      end 
+    end
+
+    context "when performing" do
+      setup do
+        @entity = Factory(:company)
+      end
+
+      should "find entity" do
+        @matcher.expects(:find_entity).returns(@entity)
+        @matcher.perform
+      end
+      
+      should "associate found entity with supplier" do
+        @matcher.stubs(:find_entity).returns(@entity)
+        @matcher.perform
+        assert_equal @entity, @supplier.reload.payee
+      end
+      
+      should "not match using external data if entity found" do
+        @matcher.stubs(:find_entity).returns(@entity)
+        @matcher.expects(:match_using_external_data).never
+        @matcher.perform
+      end
+      
+      should "match using external data if no entity found" do
+        @matcher.stubs(:find_entity)
+        @matcher.expects(:match_using_external_data)
+        @matcher.perform
+      end
+
+    end
+  end
+end

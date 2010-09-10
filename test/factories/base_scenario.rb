@@ -334,8 +334,13 @@ Factory.define :financial_transaction do |f|
 end
 
 Factory.define :company do |f|
-# f.sequence(:title) { |n| "Company #{n}" }
+  f.sequence(:title) { |n| "Company #{n}" }
   f.sequence(:company_number) {|n| 100+n }
+end
+
+Factory.define :vat_no_company, :class => :company do |f|
+  f.sequence(:title) { |n| "Vat Company #{n}" }
+  f.sequence(:vat_number) {|n| "GB#{10000+n}" }
 end
 
 Factory.define :quango do |f|

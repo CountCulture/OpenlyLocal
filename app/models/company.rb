@@ -1,9 +1,11 @@
 class Company < ActiveRecord::Base
   include AddressMethods
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
+  validates_presence_of :title, :on => :create # note initially we have some companies with company number but no title
   validates_uniqueness_of :company_number, :allow_blank => true
   validates_uniqueness_of :vat_number, :scope => :company_number, :allow_blank => true
   before_save :normalise_title
+  after_create :add_to_queue_for_getting_more_info
   serialize :sic_codes
   serialize :previous_names
   
@@ -25,11 +27,12 @@ class Company < ActiveRecord::Base
   def self.match_or_create(params={})
     params[:company_number] = normalise_company_number(params[:company_number]) if params[:company_number] # use normalised version of company number
     company = params[:company_number].blank? ? (params[:vat_number].blank? ? Company.new(params) : find_or_create_by_vat_number(params)) : find_or_create_by_company_number(params) 
-    Delayed::Job.enqueue(company) if company.instance_variable_get(:@new_record_before_save)
+    # company = params[:company_number].blank? ? Company.new(params) : find_or_create_by_company_number(params) 
     company
   end
   
   def self.probable_company?(name)
+    return if name.blank?
     name.gsub('.', '').match(/\bLtd|\bLimited|\bplc|\bllp|\bcompany/i)
   end
   
@@ -83,15 +86,19 @@ class Company < ActiveRecord::Base
     self[:title] ? "#{id}-#{title.parameterize}" : id.to_s
   end
   
-  def title
-    self[:title] || (company_number? ? "Company number #{company_number}" : "Company with VAT number #{vat_number}")
-  end
+  # def title
+  #   self[:title] || (company_number? ? "Company number #{company_number}" : "Company with VAT number #{vat_number}")
+  # end
   
   private
   def normalise_title
-    self.normalised_title = self.class.normalise_title(title) unless self[:title].blank?
+    self.normalised_title = self.class.normalise_title(title)
     self.company_number = self.class.normalise_company_number(company_number) unless self[:company_number].blank?
     true # always save
+  end
+  
+  def add_to_queue_for_getting_more_info
+    Delayed::Job.enqueue(self)
   end
   
 end

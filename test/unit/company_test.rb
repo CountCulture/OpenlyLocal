@@ -34,8 +34,17 @@ class CompanyTest < ActiveSupport::TestCase
     end
     
     context "when validating" do
+      should "require presence of title on create" do
+        co = Factory.build(:company, :title => nil)
+        assert !co.valid?
+        assert co.errors[:title]
+        # This bit can be deleted when we no longer have companies without titles
+        @company.update_attribute(:title, nil)
+        assert @company.valid?
+      end
+      
       should "require presence of company_number or vat_number" do
-        company = Company.new(:company_number => '1234')
+        company = Factory.build(:company, :company_number => '1234')
         assert company.valid?
         company.attributes = {:company_number => nil, :vat_number => 'ab123'}
         assert company.valid?
@@ -69,6 +78,22 @@ class CompanyTest < ActiveSupport::TestCase
       
       # should_validate_uniqueness_of :company_number
       # should_validate_uniqueness_of(:vat_number).case_insensitive
+    end
+    
+    context "after creation" do
+
+      should "add company to Delayed::Job queue for processing" do
+        Delayed::Job.expects(:enqueue).with(kind_of(Company))
+        Factory(:company)
+      end
+    end
+    
+    context "after saving" do
+
+      should "not add company to Delayed::Job queue for processing" do
+        Delayed::Job.expects(:enqueue).never
+        @company.save!
+      end
     end
     
     context "when normalising title" do
@@ -117,8 +142,13 @@ class CompanyTest < ActiveSupport::TestCase
     end
     
     context "when returning whether probable company" do
-
-      should "description" do
+      
+      should "return false if blank" do
+        assert !Company.probable_company?(nil)
+        assert !Company.probable_company?('')
+      end
+      
+      should "match based on company-likelness of name" do
         probable_companies = ['Foo Ltd', 'Foo Limited', 'Foo PLC', 'Foo Ltd.', 'Foo PLC', 'Foo P.L.C', 'Foo plc', 'Foo Private Limited Company', 'Foo Public Limited Company',
           'Foo Private Unlimited Company', 'Foo Limited Partnership', 'Foo Community Interest Company', 'Foo LLP', 'Foo Limited Liability Partnership']
         unlikely_companies = ['Unlimited Foo', 'Foo']
@@ -229,6 +259,26 @@ class CompanyTest < ActiveSupport::TestCase
         assert_equal @existing_company, Company.match_or_create(:company_number => "00012345")
       end
       
+      should "not change title of existing company with given company number" do
+        exist_title = @existing_company.title
+        Company.match_or_create(:company_number => "00012345", :title => 'New Title')
+        assert_equal exist_title, @existing_company.reload.title
+      end
+      
+      context "and title is nil" do
+        setup do
+          
+        end
+
+        should "description" do
+          
+        end
+      end
+      
+      should "return company with given vat number and normalised title" do
+        assert_equal @existing_co_with_vat_no, Company.match_or_create(:vat_number => "1234", :title => 'Foo & Bar')
+      end
+
       should "return company with given vat number" do
         assert_equal @existing_co_with_vat_no, Company.match_or_create(:vat_number => "1234")
       end
@@ -245,39 +295,41 @@ class CompanyTest < ActiveSupport::TestCase
       
       context "and company doesn't exist" do
         
-        should "create company with given company number" do
+        should "create company with given company number and title" do
           assert_difference "Company.count", 1 do
-            Company.match_or_create(:company_number => "07654321")
+            Company.match_or_create(:company_number => "07654321", :title => 'Foo Ltd')
           end
-          assert Company.find_by_company_number("07654321")
+          assert c=Company.find_by_company_number("07654321")
+          assert_equal 'Foo Ltd', c.title
         end
         
         should 'normalize company_number when creating company' do
-          c = Company.match_or_create(:company_number => "7654321")
+          c = Company.match_or_create(:company_number => "7654321", :title => 'Foo Ltd')
           assert_equal "07654321", c.reload.company_number
         end
         
-        should "create company with given vat_number" do
+        should "create company with given vat_number and title" do
           assert_difference "Company.count", 1 do
-            Company.match_or_create(:vat_number => "7654321")
+            Company.match_or_create(:vat_number => "7654321", :title => 'Foo Ltd')
           end
-          assert Company.find_by_vat_number("7654321")
+          assert c=Company.find_by_vat_number("7654321")
+          assert_equal 'Foo Ltd', c.title
         end
         
         should 'assign other attributes' do
-          c = Company.match_or_create(:company_number => "7654321", :url => 'http://foo.com', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo')
+          c = Company.match_or_create(:company_number => "7654321", :url => 'http://foo.com', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo', :title => 'Foo Ltd')
           assert_equal 'http://foo.com', c.url
           assert_equal 'http://en.wikipedia.org/wiki/foo', c.wikipedia_url
         end
         
         should 'not create company number if no company number and no vat number' do
-          c = Company.match_or_create(:url => 'http://foo.com', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo')
+          c = Company.match_or_create(:url => 'http://foo.com', :wikipedia_url => 'http://en.wikipedia.org/wiki/foo', :title => 'Foo Ltd')
           assert_nil c.company_number
         end
         
         should 'add company to delayed_job queue for fetching more details' do
           Delayed::Job.expects(:enqueue).with(kind_of(Company))
-          Company.match_or_create(:company_number => "07654321")
+          Company.match_or_create(:company_number => "07654321", :title => 'Foo Ltd')
         end
 
       end
@@ -288,24 +340,27 @@ class CompanyTest < ActiveSupport::TestCase
   context "An instance of the Company class" do
     setup do
       @company = Factory(:company)
+      @company_with_no_title = Factory(:company)
+      @company_with_no_title.title=nil
     end
     
-    context "when returning title" do
-  
-      should "use title attribute by default" do
-        @company.update_attribute(:title, 'Foo Incorp')
-        assert_equal 'Foo Incorp', @company.title
-      end
-      
-      should "use company number if title is nil" do
-        assert_equal "Company number #{@company.company_number}", @company.title
-      end
-      
-      should "use vat number if title and company_number is nil" do
-        @company.update_attributes(:company_number => nil, :vat_number => 'GB1234')
-        assert_equal "Company with VAT number GB1234", @company.title
-      end
-    end
+    # context "when returning title" do
+    #   
+    #   should "use title attribute by default" do
+    #     @company.update_attribute(:title, 'Foo Incorp')
+    #     assert_equal 'Foo Incorp', @company.title
+    #   end
+    #   
+    #   should "use company number if title is nil" do
+    #     @company.title = nil
+    #     assert_equal "Company number #{@company_with_no_title.company_number}", @company_with_no_title.title
+    #   end
+    #   
+    #   should "use vat number if title and company_number is nil" do
+    #     @company_with_no_title.attributes = {:company_number => nil, :vat_number => 'GB1234'}
+    #     assert_equal "Company with VAT number GB1234", @company_with_no_title.title
+    #   end
+    # end
     
     should "use title when converting to_param" do
       @company.title = "some title-with/stuff"
@@ -313,7 +368,7 @@ class CompanyTest < ActiveSupport::TestCase
     end
   
     should "skip title when converting to_param if title doesn't exist" do
-      assert_equal @company.id.to_s, @company.to_param
+      assert_equal @company_with_no_title.id.to_s, @company_with_no_title.to_param
     end
   
     context "when saving" do
@@ -328,11 +383,11 @@ class CompanyTest < ActiveSupport::TestCase
         assert_equal "foo and baz limited", @company.reload.normalised_title
       end
       
-      should "not save normalised title if title is nil" do
-        @company.save!
-        assert_nil @company.reload.normalised_title
-      end
-      
+      # should "not save normalised title if title is nil" do
+      #   @company.update(:title, nil)
+      #   assert_nil @company.reload.normalised_title
+      # end
+      # 
       should "normalise company_number" do
         Company.expects(:normalise_company_number)
         @company.save!
@@ -383,7 +438,7 @@ class CompanyTest < ActiveSupport::TestCase
   
       context "and company has vat_number" do
         setup do
-          @vat_company = Company.create!(:vat_number => '12345')
+          @vat_company = Factory(:vat_no_company)
           @resp_hash = {:title => 'FOOCORP LTD', :address_in_full => "501 BEAUMONT LEYS LANE, LEICESTER, LEICESTERSHIRE, LE4 2BN" }
           CompanyUtilities::Client.any_instance.stubs(:get_vat_info).returns(@resp_hash)
         end

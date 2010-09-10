@@ -41,11 +41,12 @@ class Supplier < ActiveRecord::Base
   
   # convenience method for assigning company given company number. Creates company if no company with given company_number exists
   def company_number=(comp_no)
-    if payee
-      payee.update_attribute(:company_number, comp_no)
-    else
-      company = Company.match_or_create(:company_number => comp_no)
-      update_attribute(:payee, company)
+    unless payee && (payee.company_number == comp_no)
+      # payee.update_attribute(:company_number, comp_no)
+    # else
+      company = Company.find_or_initialize_by_company_number(:company_number => comp_no)
+      self.payee = company
+      # update_attribute(:payee, company)
     end
   end
   
@@ -85,21 +86,27 @@ class Supplier < ActiveRecord::Base
   
   def update_supplier_details(details)
     non_nil_attribs = details.attributes.delete_if { |k,v| v.blank? }
-    company = Company.match_or_create(non_nil_attribs.except(:source_for_info))
+    company = Company.match_or_create(non_nil_attribs.except(:source_for_info).merge(:title => title))
     unless company.new_record? # it hasn't successfully saved
       self.payee = company
       self.save
     end
   end
   
-  # convenience method for assigning company given vat number. Creates company if no company with given vat_number exists
+  # convenience method for assigning entite given vat number and title
   def vat_number=(vat_number)
-    if payee
-      payee.update_attribute(:vat_number, vat_number)
+    matcher = SupplierUtilities::VatMatcher.new(:vat_number => vat_number, :title => title, :supplier => self)
+    if match = matcher.find_entity
+      update_attribute(:payee, match)
     else
-      company = Company.match_or_create(:vat_number => vat_number)
-      update_attribute(:payee, company)
+      Delayed::Job.enqueue(matcher)
     end
+    # if payee
+    #   payee.update_attribute(:vat_number, vat_number)
+    # else
+    #   company = Company.match_or_create(:vat_number => vat_number)
+    #   update_attribute(:payee, company)
+    # end
   end
   
   private
