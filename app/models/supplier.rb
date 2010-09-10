@@ -99,18 +99,14 @@ class Supplier < ActiveRecord::Base
     if match = matcher.find_entity
       update_attribute(:payee, match)
     else
+      @vat_number = vat_number
       Delayed::Job.enqueue(matcher)
     end
-    # if payee
-    #   payee.update_attribute(:vat_number, vat_number)
-    # else
-    #   company = Company.match_or_create(:vat_number => vat_number)
-    #   update_attribute(:payee, company)
-    # end
   end
   
   private
   def queue_for_matching_with_payee
-    Delayed::Job.enqueue(self)
+    Delayed::Job.enqueue(self) unless @vat_number
+    true
   end
 end

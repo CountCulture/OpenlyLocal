@@ -33,6 +33,7 @@ module CompanyUtilities
       info = doc.at('table.vat.answer ~ table')
       title = info.at('td[text()*=Name]').next_sibling.inner_text.squish
       address = info.at('td[text()*=Address]').next_sibling.at('font').inner_html.gsub(/(<br \/>)+/, ', ').squish
+      RAILS_DEFAULT_LOGGER.debug "Found info for VAT number #{vat_number}: title = #{title}, address = #{address}"
       res = { :title => title, :address_in_full => address }
     rescue Exception => e
       RAILS_DEFAULT_LOGGER.debug "Problem getting info for VAT number #{vat_number}: #{e.inspect}"

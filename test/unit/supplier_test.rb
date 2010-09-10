@@ -195,14 +195,34 @@ class SupplierTest < ActiveSupport::TestCase
 
     context 'after creating' do
       setup do
-        @company = Factory(:company)
+        Delayed::Job.stubs(:enqueue).with(kind_of(SpendingStat))
       end
       
       should 'queue for matching with payee' do
-        Delayed::Job.stubs(:enqueue) # stub out otherdelayed jobs
+        Delayed::Job.stubs(:enqueue).with(kind_of(SpendingStat))
         Delayed::Job.expects(:enqueue).with(kind_of(Supplier))
         Factory(:supplier, :name => 'Foo company')
       end
+            
+      
+      should 'not queue for matching with vat_number if no vat_number' do
+        Delayed::Job.expects(:enqueue).with(kind_of(Supplier))
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+        Factory(:supplier, :name => 'Foo company')
+      end
+      
+      should 'not queue for matching with payee if vat_number' do
+        Delayed::Job.expects(:enqueue).with(kind_of(Supplier)).never
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+        Factory(:supplier, :name => 'Foo company', :vat_number => 'AB123')
+      end
+      
+      should 'queue for matching vat_number if vat_number' do
+        Delayed::Job.expects(:enqueue).with(kind_of(Supplier)).never
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+        Factory(:supplier, :name => 'Foo company', :vat_number => 'AB123')
+      end
+      
             
     end
     
@@ -304,18 +324,7 @@ class SupplierTest < ActiveSupport::TestCase
         @supplier.company_number = 'AB123456'
         assert_equal title, @supplier.payee.reload.title
       end
-      
-      # should 'match or create company from company number and title' do
-      #   Company.expects(:match_or_create).with(:company_number => 'AB123456', :title => @supplier.title)
-      #   @supplier.company_number = 'AB123456'
-      # end
-      # 
-      # should 'associate returned company with given company number' do
-      #   Company.stubs(:match_or_create).returns(@company)
-      #   @supplier.company_number = 'AB123456'
-      #   assert_equal @company, @supplier.reload.payee
-      # end
-      
+            
       context "and supplier already has associated company" do
         setup do
           @supplier.update_attribute(:payee, @company)
@@ -375,24 +384,7 @@ class SupplierTest < ActiveSupport::TestCase
         Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
         @supplier.vat_number = 'AB123456'
       end
-      
-      # should 'not change title of company matching company number' do
-      #   title = @company.title
-      #   @supplier.company_number = 'AB123456'
-      #   assert_equal title, @supplier.payee.reload.title
-      # end
-      # 
-      # should 'match or create company from vat number' do
-      #   Company.expects(:match_or_create).with(:vat_number => '123456')
-      #   @supplier.vat_number = '123456'
-      # end
-      # 
-      # should 'associate returned company with given company number' do
-      #   Company.stubs(:match_or_create).returns(@company)
-      #   @supplier.vat_number = '123456'
-      #   assert_equal @company, @supplier.reload.payee
-      # end
-      
+            
       context "and supplier already has associated company" do
         setup do
           @supplier.update_attribute(:payee, @company)
