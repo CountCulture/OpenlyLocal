@@ -4,28 +4,8 @@ module CompanyUtilities
     require 'companies_house'
     CompaniesHouse.sender_id = COMPANIES_HOUSE_SENDER_ID
     CompaniesHouse.password = COMPANIES_HOUSE_PASSWORD
+    NO_COMPANY_DETAIL_TYPES =  %w(GN IC NA NO RC SI NI IP NF NP NR SP NL NZ SR)
     
-    # def company_from_name(name)
-    #   return unless poss_companies = (find_possible_companies_from_name(name) || (name.match(/&/) ? find_possible_companies_from_name(name.gsub(/\s?&\s?/, ' and ')) : nil))
-    #   if poss_companies.size == 1
-    #     poss_companies.first
-    #   else
-    #     poss_companies.detect{ |pc| Company.normalise_title(pc[:title]) == Company.normalise_title(name) }
-    #   end
-    # end
-    # 
-    # def get_basic_info(company_number)
-    #   return if company_number.blank?
-    #   resp_hash = JSON.parse(_http_get("http://companiesopen.org/uk/#{company_number}.js"))['company'] rescue nil
-    #   return unless resp_hash
-    #   { :title => resp_hash['name'],
-    #     :wikipedia_url => resp_hash['wikipedia_url'],
-    #     :company_type => resp_hash['company_category'],
-    #     :incorporation_date => resp_hash['incorporation_date'],
-    #     :address_in_full => resp_hash['address'],
-    #     :status => resp_hash['company_status']
-    #   }.delete_if{|k,v| v.blank?}
-    # end
     
     def get_vat_info(vat_number)
       return if vat_number.blank?
@@ -39,30 +19,16 @@ module CompanyUtilities
       RAILS_DEFAULT_LOGGER.debug "Problem getting info for VAT number #{vat_number}: #{e.inspect}"
       return nil
     end
-    
-    # def find_possible_companies_from_name(name)
-    #   resp_array = JSON.parse(_http_get("http://companiesopen.org/search?q=#{CGI.escape name}&f=js")) rescue nil
-    #   return if resp_array.blank?
-    #   resp_array.collect do |company_info|
-    #     { :title => company_info['company']['name'],
-    #       :company_number => company_info['company']['company_number'],
-    #       :wikipedia_url => company_info['company']['wikipedia_url'],
-    #       :company_type => company_info['company']['company_category'],
-    #       :incorporation_date => company_info['company']['incorporation_date'],
-    #       :address_in_full => company_info['company']['address'],
-    #       :status => company_info['company']['company_status']
-    #     }.delete_if{|k,v| v.blank?}
-    #   end
-    # end
-    
+        
     def find_company_by_name(name)
       n_name = name.gsub('&', ' and ').squish
       return unless resp = search_companies_house_for(n_name)
       RAILS_DEFAULT_LOGGER.debug "Response from Companies House API for name_search for #{n_name}:\n#{resp.inspect}"
       poss_companies = resp.co_search_items
-      unless match = matched_company(:poss_companies => poss_companies, :name => name)
+      unless match = Matcher.match_company(:poss_companies => poss_companies, :name => name)
+        sleep 1
         poss_companies = search_companies_house_for(name, :data_set => 'FORMER').co_search_items
-        match = matched_company(:poss_companies => poss_companies, :name => name)
+        match = Matcher.match_company(:poss_companies => poss_companies, :name => name)
       end
       return nil unless match
       sleep 1
@@ -83,10 +49,6 @@ module CompanyUtilities
       open(url).read
     end
     
-    def matched_company(args)
-      args[:poss_companies].detect{|c| c.search_match=='EXACT'} || args[:poss_companies].detect{ |c| Company.normalise_title(c.company_name) == Company.normalise_title(args[:name]) }
-    end
-    
     def hash_from_company_details(company_details)
       return unless company_details
       res_hsh = {}
@@ -102,9 +64,39 @@ module CompanyUtilities
       res_hsh.delete_if{ |k,v| v.blank? }
     end
     
-    def search_companies_house_for(name)
+    def search_companies_house_for(name, options={})
       return if RAILS_ENV=='test'
-      CompaniesHouse.name_search(name)
+      CompaniesHouse.name_search(name, options)
     end
   end
+  
+  module Matcher
+    extend self
+    
+    def match_company(args)
+      return unless args[:poss_companies]
+      poss_companies = args[:poss_companies].group_by(&:company_name)
+      # poss_companies.detect{|c| c.search_match=='EXACT'} || args[:poss_companies].detect{ |c| Company.normalise_title(c.company_name) == Company.normalise_title(args[:name]) }
+      return if poss_companies.blank?
+      companies = poss_companies.detect do |c_name, comps|
+          Company.normalise_title(c_name) == Company.normalise_title(args[:name]) || comps.any?{ |c| c.search_match == "EXACT" }
+      end.try(:last)
+      return if companies.blank?
+
+      # companies.sort_by{ |c| [c.company_index_status] }
+      companies = companies.sort_by do |c|
+        priority = 0
+        priority -= 2 if c.company_index_status.nil?
+        priority -= 1 unless c.company_number.match(/[A-Z]/)
+        priority
+      end
+      companies.first
+      
+      # if companies&&companies[1].size < 2
+      #   return companies[1].first 
+      # end
+       # || args[:poss_companies].detect{ |c| Company.normalise_title(c.company_name) == Company.normalise_title(args[:name]) }
+    end
+  end
+  
 end
