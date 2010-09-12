@@ -1,0 +1,514 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<!-- META DATA SECTION : Title, keywords and description in the document language -->
+<meta name="Version" content="3.00">
+<meta name="LastUpdate" content="13-July-04">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="Reference" content="Validation">
+<meta name="Title" content="Validation">
+<meta name="Creator" content="Taxation and Customs Union">
+<meta name="Language" content="en">
+<meta name="publisher" content="Taxation and Customs Union">
+<meta name="Type" content="63">
+<meta name="Classification" content="19">
+<meta name="Keywords" content="customs,taxation,VIES, european union, eu">
+<meta name="Description" content="Vies/Web Validation">
+<!-- END OF META DATA SECTION -->
+
+<!-- INSERT PAGE TITLE -->
+<title>EUROPA site - Validation</title>
+<!-- END OF PAGE TITLE -->
+
+<!-- STYLESHEET SECTION -->
+<LINK rel="stylesheet" type="text/css" href="stylesheets/commission.css">
+<LINK rel="stylesheet" type="text/css" href="stylesheets/TAXUD.generic.css">
+<LINK rel="stylesheet" type="text/css" href="stylesheets/TAXUD.menu.css">
+
+<LINK rel="stylesheet" type="text/css" href="stylesheets/TAXUD.articles.css">
+<LINK rel="stylesheet" type="text/css" href="stylesheets/TAXUD.sitemap.css">
+<LINK rel="stylesheet" type="text/css" href="stylesheets/TAXUD.remrec.css">
+<LINK rel="stylesheet" type="text/css" href="stylesheets/TAXUD.print.css" media="print">
+<LINK rel="stylesheet" type="text/css" href="stylesheets/vies.css">
+
+<!-- END OF STYLESHEET SECTION -->
+
+<!-- JAVASCRIPT SECTION -->
+<script language="javascript" src="scripts/commission.js" type="text/javascript"></script>
+<!-- END OF JAVASCRIPT SECTION -->
+
+<script language="javascript">
+<!--
+function checkWindowSize() {
+	winW = 0;
+	winH = 0;
+	if (parseInt(navigator.appVersion)>3) {
+		if (navigator.appName=="Netscape") {
+			winW = window.innerWidth;
+			winH = window.innerHeight;
+		}
+		if (navigator.appName.indexOf("Microsoft")!=-1) {
+			winW = document.body.offsetWidth;
+			winH = document.body.offsetHeight;
+		}
+	}
+	if (winW < 600 && winH < 400) {
+		document.getElementById("idBanner").style.display = "none";
+		document.getElementById("idClearPixel").style.display = "none";
+		
+		if (document.getElementById("idMainTable") != null)	{
+			document.getElementById("idMainTable").cellPadding = 1;
+			document.getElementById("idParagraph").width = "100%";
+			document.getElementById("idMainContent").width = "100%";
+		}
+	} else {
+		document.getElementById("idBanner").style.display = "";
+		document.getElementById("idClearPixel").style.display = "";
+		
+		if (document.getElementById("idMainTable") != null)	{
+			document.getElementById("idMainTable").cellPadding = 13;
+			document.getElementById("idParagraph").width = "70%";
+			document.getElementById("idMainContent").width = "70%";
+		}
+	}
+}
+window.onresize = function() {
+	checkWindowSize();
+}
+window.onload = function() {
+	checkWindowSize();
+}
+-->
+</script>
+</head>
+
+<body>
+
+<table cellspacing="0" cellpadding="0" width="100%" border="0">
+	<tr>
+		<td valign="top" height="92">
+			<!-- Banner table -->	
+			<div id="idBanner">
+			<table cellspacing="0" cellpadding="0" width="100%" border="0" id="header">
+				<tr class="backgroundbanner">
+					<td id="banner" class="backgroundbanner" title="Banner" rowspan="2"><!-- BANNER SECTION --><img src="images/banners/sitename_en.gif" width="500" height="52" border="0" id="bannerImg"><!-- END BANNER SECTION --></td>
+					<td align="right" class="backgroundnotice" valign="top" id="legalnotice" title="Important legal notice"><a href="/geninfo/legal_notices_en.htm" title="Important legal notice"><img src="images/notice_en.gif" border="0" class="resize" width="189" height="14"></a></td>
+				</tr>
+				<tr class="backgroundbanner">
+					<td align="right" valign="top" title="Language selector" id="langsel" class="backgroundbanner" width="15%">
+						<form method="post" action="lang.do">
+						<input type="hidden" name="fromWhichPage" value="viesquer" />
+						<select name="selectedLanguage" onchange="this.form.submit();">
+					
+							<option value="BG" >Bulgarian</option>
+					
+							<option value="CS" >Czech</option>
+					
+							<option value="DA" >dansk</option>
+					
+							<option value="DE" >Deutsch</option>
+					
+							<option value="EL" >Greek</option>
+					
+							<option value="EN" selected>English</option>
+					
+							<option value="ES" >español</option>
+					
+							<option value="ET" >Estonian</option>
+					
+							<option value="FI" >suomea</option>
+					
+							<option value="FR" >français</option>
+					
+							<option value="HU" >Hungarian</option>
+					
+							<option value="IT" >italiano</option>
+					
+							<option value="LT" >Lithuanian</option>
+					
+							<option value="LV" >Latvian</option>
+					
+							<option value="MT" >Maltese</option>
+					
+							<option value="NL" >nederlands</option>
+					
+							<option value="PL" >Polish</option>
+					
+							<option value="PT" >português</option>
+					
+							<option value="RO" >Romanian</option>
+					
+							<option value="SK" >Slovak</option>
+					
+							<option value="SL" >Slovenian</option>
+					
+							<option value="SV" >svenska</option>
+					
+						</select>
+						</form>
+					</td>
+				</tr>
+			</table>
+			<!-- Yellow line table -->
+			<table border="0" width="100%" cellspacing="0" cellpadding="0" summary="Yellow line" id="yellowline">
+				<tr align="right">
+					<td height="4" valign="bottom" class="yellowline"></td>
+				</tr>
+			</table>
+
+			<!-- Navigation / Breadcrumbs & Horizontal menu table -->	
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="Path and tools" id="navigation">
+				<tr class="navigation">
+					<td  width="90%" height="18" align="left" valign="middle" class="navigation" title="Path" id="path">
+						&nbsp;&nbsp;&nbsp;
+						<a href="/index_en.htm">European Commission</a>
+						&gt; 
+						<a href="/taxation_customs/index_en.htm">Taxation and Customs Union</a>
+						&gt; 
+						VIES
+					</td>
+					<td class="compulsorytools" nowrap>
+						
+						<a href="mailto:Taxud-D4@ec.europa.eu" id="link382">Contact</a>
+					</td>
+					<td class="pipe">|</td>
+					<td class="compulsorytools" nowrap>
+						<a href="/geninfo/query_en.htm" id="link384">Search on EUROPA</a>
+					</td>
+					<td class="pipe"></td>
+				</tr>
+				<tr>
+					<td colspan="5" align="left" valign="middle">
+						<table cellpadding="0" cellspacing="0" border="0" width="100%" class="hrzntlMenu">
+							<tbody>
+							<tr>
+								<td align="right">
+									<table cellpadding="0" cellspacing="0" border="0">
+										<tr>
+											<td nowrap><a href="/taxation_customs/common/about/index_en.htm" id="link376" onMouseOver="taxudMenu.over('root', 24)" onMouseOut="taxudMenu.out('root', 24)">About us</a></td>
+											<td class="pipe">|</td>
+											<td nowrap><a href="/taxation_customs/common/databases/index_en.htm" id="link377" onMouseOver="taxudMenu.over('root', 25)" onMouseOut="taxudMenu.out('root', 25)">Online Databases</a></td>
+											<td class="pipe">|</td>
+											<td nowrap><a href="/taxation_customs/common/tenders_grants/index_en.htm" id="link379" onMouseOver="taxudMenu.over('root', 26)" onMouseOut="taxudMenu.out('root', 26)">Tenders &amp; Grants</a></td>
+											<td class="pipe">|</td>
+
+											<td nowrap><a href="/taxation_customs/common/faq/index_en.htm" id="link381" onMouseOver="taxudMenu.over('root', 27)" onMouseOut="taxudMenu.out('root', 27)">FAQ</a></td>
+											<td class="pipe">|</td>
+											<td nowrap><a href="/taxation_customs/common/newsflash/index_en.htm" id="link378">Subscribe to newsflash</a></td>
+											<td class="pipe">|</td>
+											<td nowrap><a href="/taxation_customs/index_en.htm" id="link460">What's New ?</a></td>
+											<td class="pipe">|</td>
+											<td nowrap><a href="/taxation_customs/common/sitemap/index_en.htm" id="link383">Sitemap</a></td>
+											<td class="pipe"></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</table>
+			</div>
+
+			<table cellspacing="0" cellpadding="0" width="100%" height="90%" border="0" bgcolor="#D9EEDF">
+				<tbody>
+				<tr>
+					<td colspan="7" height="24"></td>
+				</tr>
+				<tr>
+					<td width="10"></td>
+					<!-- MENU LEFT  -->
+					<td valign="top">
+						<table cellpadding="1" cellspacing="0" id="mainMenu">
+							<tr>
+								<td>
+									<table cellpadding="3" cellspacing="0" border="0" width="100%" class="mainMenu">
+										<tbody>
+										<tr>
+											<td colspan="3">
+												<table cellpadding="4" cellspacing="0" width="100%" border="0">
+													<tbody>
+													<tr>
+														<td class="stlMenuTDLevel2">
+															<a href="vieshome.do" class="stlMenuLevel2" style="cursor: pointer">Home</a>
+														</td>
+													</tr>
+													<tr>
+														<td class="stlMenuTDLevel2">
+															<a href="viesspec.do" class="stlMenuLevel2" style="cursor: pointer">Help</a>
+														</td>
+													</tr>
+													<tr>
+														<td class="stlMenuTDLevel2">
+															<a href="viesdisc.do" class="stlMenuLevel2" style="cursor: pointer">Specific disclaimer for this service</a>
+														</td>
+													</tr>
+													<tr>
+														<td class="stlMenuTDLevel2">
+															<a href="faqvies.do" class="stlMenuLevel2" style="cursor: pointer">FAQ</a>
+														</td>
+													</tr>
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td height="12"></td>
+										</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+						</table>
+						</div>
+					</td>
+					<td width="10"></td>
+					<!-- CONTENT  -->
+					<td class="textPrt" valign="top" id="content">
+						<table align="center" border="0" cellspacing="10" cellpadding="0" width="100%">
+							<tr>
+								<td>
+									<table align="center" border="0" cellspacing="0" cellpadding="0" width="100%">
+										<tr>
+											<td>
+												<table width="100%" border="0" cellpadding="0" cellspacing="0">
+													<tr>
+														<td>
+															<table cellpadding="0" cellspacing="0" border="0">
+																<tbody>
+																<tr>
+																	<td class="menuPnt" nowrap>
+																		&nbsp;
+																	</td>
+																	<td width="100%" align="right">
+																		<a href="Print" onclick="window.print(); return false;">
+																		<img src="images/icons/print.gif" alt="print icon" align="absmiddle" hspace="3" border="0" onmousedown="this.src ='images/icons/print_hilite.gif'" onmouseup="this.src ='images/icons/print.gif'" class="noprint">
+																		</a>																		
+																	</td>
+																</tr>
+																</tbody>
+															</table>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<table width="100%" border="0" cellspacing="0" cellpadding="2">
+																<tr>
+																	<td colspan="5">
+																		<!-- <table class="smmry" width="25%" border="0" cellspacing="0" cellpadding="3" align="right">
+
+																		</table> -->
+ 
+
+
+<h1>VAT Validation Response</h1>
+
+
+<table align="center" width="85%" class="vat answer">
+	<tr>
+		<td>
+			Yes, valid VAT number
+		</td>
+	</tr>
+</table>
+
+
+<br>
+
+<table align="center" bgcolor="#FFFF00" border="0" width="85%" style="padding-left: 5px">
+	<tr>
+		<td width="30%">
+			<font face="Verdana" size="2">
+			VAT number 
+			</font>
+		</td>
+		<td width="50%">
+			<font face="Verdana" size="2">
+			GB 677974165
+			</font>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>
+			<font face="Verdana" size="2">
+			Member State
+			</font>
+		</td>
+		<td>
+			<font face="Verdana" size="2">
+			GB
+			</font>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	<!-- NAME -->
+	<tr>
+		<td colspan="3"><hr width="100%"></td>
+	</tr>
+	
+	<tr>
+		<td valign="top">
+			<font face="Verdana" size="2">
+			Name
+			</font>
+		</td>
+		<td>
+			<font face="Verdana" size="2">
+			MASTERCRATE LTD
+			!! FOO BAR ENTERPRISES
+			</font>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	
+	<!-- ADDRESS -->
+	<tr>
+		<td colspan="3"><hr width="100%"></td>
+	</tr>
+	
+	<tr>
+		<td valign="top">
+			<font face="Verdana" size="2">
+			Address
+			</font>
+		</td>
+		<td>
+			<font face="Verdana" size="2">
+			CANNON WHARFE<br>35 EVELYN STREET<br>SURREY QUAYS<br>LONDON<br><br>SE8 5RT
+			</font>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	
+	<!-- REQUESTER ID AND RECEIVED DATE -->
+	<tr>
+		<td colspan="3"><hr width="100%"></td>
+	</tr>
+	<tr>
+		<td>
+			<font face="Verdana" size="2">
+			Consultation Number
+			</font>
+		</td>
+		<td>
+			<font face="Verdana" size="2">
+			
+			</font>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>
+			<font face="Verdana" size="2">
+			Date when request received
+			</font>
+		</td>
+		<td>
+			<font face="Verdana" size="2">
+			20/08/2010 (dd/mm/yyyy)
+			</font>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+</table>
+
+
+
+																	</td>
+
+																</tr>
+																<tr>
+																	<td height="20"></td>
+																</tr>
+																<tr>
+																	<td colspan="5">
+																	</td>
+																</tr>
+															</table>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td width="10">
+					</td>
+					<!-- MENU RIGHT -->
+					<td valign="top" class="noprint">
+						&nbsp;
+					</td>
+					<td width="10">
+					</td>
+				</tr>
+				<tr id="idClearPixel">
+					<td height="1" width="10" class="noprint"><img src="images/icons/clearpixel.gif" height="1" width="10" class="noprint" /></td>
+					<td height="1" width="190" valign="top" class="noprint"><img src="images/icons/clearpixel.gif" height="1" width="190" class="noprint" /></td>
+					<td height="1" width="10" class="noprint"><img src="images/icons/clearpixel.gif" height="1" width="10" class="noprint" /></td>
+					<td height="1" valign="top"></td>
+					<td height="1" width="10" class="noprint"><img src="images/icons/clearpixel.gif" height="1" width="10" class="noprint" /></td>
+					<td height="1" width="170" valign="top" class="noprint"><img src="images/icons/clearpixel.gif" height="10" width="170" class="noprint" /></td>
+					<td height="1" width="10" class="noprint"><img src="images/icons/clearpixel.gif" height="1" width="10" class="noprint" /></td>
+				</tr>
+				</tbody>
+			</table>
+
+		</td>
+	</tr>
+	<tr>
+		<td height="25">
+			<!-- Footer table -->	
+			<table cellpadding="0" cellspacing="0" border="0" width="100%" id="footer">
+				<tr class="ftr">
+					<td class="ftr" height="24" width="10"><img src="images/icons/clearpixel.gif" height="24" width="10"></td>
+					<td class="ftr" width="190" align="center"> </td>
+					<td class="ftr" height="24" width="10"><img src="images/icons/clearpixel.gif" height="24" width="10"></td>
+					<td class="ftr" height="24" align="center"><font class="laResistance">385</font></td>
+					<td class="ftr" height="24" width="10"><img src="images/icons/clearpixel.gif" height="24" width="10"></td>
+
+					<td class="ftr" width="170" align="center"><a href="#top">top</a></td>
+					<td class="ftr" height="24" width="10"><img src="images/icons/clearpixel.gif" height="24" width="10"></td>
+				</tr>	
+				<tr class="ftr">
+					<td height="1" width="10"><img src="images/icons/clearpixel.gif" height="1" width="10"></td>
+					<td height="1" width="190" valign="top"><img src="images/icons/clearpixel.gif" height="1" width="190"></td>
+					<td height="1" width="10"><img src="images/icons/clearpixel.gif" height="1" width="10"></td>
+					<td height="1" valign="top" width="100%"></td>
+
+					<td height="1" width="10"><img src="images/icons/clearpixel.gif" height="1" width="10"></td>
+					<td height="1" width="170"><img src="images/icons/clearpixel.gif" height="1" width="170"></td>
+					<td height="1" width="10"><img src="images/icons/clearpixel.gif" height="1" width="10"></td>
+				</tr>  
+			</table>
+		</td>
+	</tr>
+</table>
+<!--
+<script type="text/javascript" language="JavaScript1.2" src="/taxation_customs/js/TAXUD.menu.events.js"></script><TABLE cellpadding=4 width=100% cellspacing=0><TR><TD></TD><TD></TD><TD></TD></TR></TABLE>
+-->
+</body>
+</html>
+
+

@@ -37,11 +37,18 @@ class CompanyUtilitiesTest < ActiveSupport::TestCase
         assert_nil @client.get_vat_info('02472621')
       end
 
-      should "return company info returned from Eu VAT Service if no company found from comanies house]" do
+      should "return company info returned from Eu VAT Service if no company found from companies house" do
         @client.stubs(:find_company_by_name)
         assert_kind_of Hash, resp = @client.get_vat_info('02472621')
         assert_equal "MASTERCRATE LTD", resp[:title]
         assert_equal "CANNON WHARFE, 35 EVELYN STREET, SURREY QUAYS, LONDON, SE8 5RT", resp[:address_in_full]
+      end
+
+      should "remove trading as info from title returned from Eu VAT Service" do
+        @client.expects(:_http_get).returns(dummy_html_response(:eu_vat_number_success_with_ta))
+        @client.stubs(:find_company_by_name)
+        assert_kind_of Hash, resp = @client.get_vat_info('02472621')
+        assert_equal "MASTERCRATE LTD", resp[:title]
       end
 
     end

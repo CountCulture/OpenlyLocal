@@ -11,7 +11,7 @@ module CompanyUtilities
       return if vat_number.blank?
       doc = Hpricot(_http_get("http://ec.europa.eu/taxation_customs/vies/viesquer.do?ms=GB&iso=GB&vat=#{vat_number}"))
       info = doc.at('table.vat.answer ~ table')
-      title = info.at('td[text()*=Name]').next_sibling.inner_text.squish
+      title = info.at('td[text()*=Name]').next_sibling.inner_text.squish.sub(/\s!!.+/,'') #remove trading as info
       address = info.at('td[text()*=Address]').next_sibling.at('font').inner_html.gsub(/(<br \/>)+/, ', ').squish
       RAILS_DEFAULT_LOGGER.debug "Found info for VAT number #{vat_number}: title = #{title}, address = #{address}"
       res = { :title => title, :address_in_full => address }
@@ -92,10 +92,6 @@ module CompanyUtilities
       end
       companies.first
       
-      # if companies&&companies[1].size < 2
-      #   return companies[1].first 
-      # end
-       # || args[:poss_companies].detect{ |c| Company.normalise_title(c.company_name) == Company.normalise_title(args[:name]) }
     end
   end
   
