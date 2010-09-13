@@ -619,20 +619,49 @@ desc "Import Hillingdon Payments"
 task :import_hillingdon_payments => :environment do
   council = Council.first(:conditions => "name LIKE '%Hillingdon%'")
   puts "Adding transactions for #{council.title}"
-  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_hillingdon/hillingdon_export_council_expenditure_2010_09_01.csv"), :headers => true) do |csv_file|
-    csv_file.each do |row|
-      ft = FinancialTransaction.new(:date => ("14-#{row['MONTH']}-#{row['YEAR']}"),
-                                    :date_fuzziness => 13,
-                                    :value => row['COST'],
-                                    :supplier_name => row['VENDOR'],
-                                    :organisation => council,
-                                    :csv_line_number => csv_file.lineno, #deleted headings
-                                    :service => row['DESCRIPTION'],
-                                    :source_url => "http://www.hillingdon.gov.uk/html/apps/opendata.php?data=Council+expenditure&rest=year,2010;month,4&type=csv"
-                                    )
-      ft.save!                                  
-      puts "."
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'lb_hillingdon')).select{ |f| f.scan(/(\d+)\.csv/).to_s.to_i > 6 }.each do |file_name|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_hillingdon/#{file_name}"), :headers => true) do |csv_file|
+      puts "Importing data from #{file_name}"
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => ("14-#{row['MONTH']}-#{row['YEAR']}"),
+                                      :date_fuzziness => 13,
+                                      :value => row['COST'],
+                                      :supplier_name => row['VENDOR'],
+                                      :organisation => council,
+                                      :csv_line_number => csv_file.lineno, 
+                                      :service => row['DESCRIPTION'],
+                                      :source_url => "http://www.hillingdon.gov.uk/html/apps/opendata.php?data=Council+expenditure&rest=year.#{row['YEAR']}/month.#{row['MONTH']}&type=csv"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
     end
+  end
+  council.spending_stat.perform
+end
+
+desc "Import Broxbourne Payments"
+task :import_broxbourne_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%Broxbourne%'")
+  puts "Adding transactions for #{council.title}"
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'broxbourne')).select{ |f| f.match('csv') }.each do |file_name|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/broxbourne/#{file_name}"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => row["Transaction Date"].gsub('/', '-'),
+                                      :value => row['Amount'],
+                                      :supplier_name => row["Supplier Name"],
+                                      :uid => row["Transaction Number"],
+                                      :department_name => row['Committee'],
+                                      :cost_centre => row["Cost Centre"],
+                                      :organisation => council,
+                                      :csv_line_number => csv_file.lineno+1, #deleted title
+                                      :service => row["Service Area"],
+                                      :source_url => "http://www.broxbourne.gov.uk/docs/#{file_name.gsub(/csv$/,'xls')}"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end    
   end
   council.spending_stat.perform
 end
