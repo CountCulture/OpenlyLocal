@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100913070105) do
+ActiveRecord::Schema.define(:version => 20100913110352) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -74,6 +74,8 @@ ActiveRecord::Schema.define(:version => 20100913070105) do
     t.column "date_removed", :date
     t.column "normalised_title", :string
   end
+
+  add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number"
 
   create_table "committees", :force => true do |t|
     t.column "title", :string
