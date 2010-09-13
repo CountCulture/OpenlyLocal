@@ -36,10 +36,10 @@ class Company < ActiveRecord::Base
     name.gsub('.', '').match(/\bLtd|\bLimited|\bplc|\bllp|\bcompany/i)
   end
   
-  # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising company titles
+  # ScrapedModel module isn't mixed in
   def self.normalise_title(raw_title)
     return if raw_title.blank?
-    TitleNormaliser.normalise_company_title(raw_title.gsub(/\s?&\s?/, ' and '))
+    TitleNormaliser.normalise_company_title(raw_title)
   end
   
   def self.normalise_company_number(raw_number)

@@ -109,13 +109,14 @@ class CompanyTest < ActiveSupport::TestCase
       end
       
       should "replace '&' with 'and'" do
-        TitleNormaliser.expects(:normalise_company_title).with('foo and bar')
-        Company.normalise_title('foo & bar')
+        # this is regression test as this is now in TitleNormaliser
+        assert_equal 'foo and bar', Company.normalise_title('foo & bar')
       end
       
       should "replace '&' with no space with space-separated 'and'" do
-        TitleNormaliser.expects(:normalise_company_title).with('foo and bar')
-        Company.normalise_title('foo&bar')
+        # this is regression test as this is now in TitleNormaliser
+        # TitleNormaliser.expects(:normalise_company_title).with('foo and bar')
+        assert_equal 'foo and bar', Company.normalise_title('foo&bar')
       end
       
       # should "remove Ltd or Limited or PLC etc" do
@@ -263,16 +264,6 @@ class CompanyTest < ActiveSupport::TestCase
         exist_title = @existing_company.title
         Company.match_or_create(:company_number => "00012345", :title => 'New Title')
         assert_equal exist_title, @existing_company.reload.title
-      end
-      
-      context "and title is nil" do
-        setup do
-          
-        end
-
-        should "description" do
-          
-        end
       end
       
       should "return company with given vat number and normalised title" do
