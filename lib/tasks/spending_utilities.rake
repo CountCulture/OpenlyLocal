@@ -666,4 +666,28 @@ task :import_broxbourne_payments => :environment do
   council.spending_stat.perform
 end
 
+desc "Import West Dorset Payments"
+task :import_west_dorset_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%West Dorset%'")
+  puts "Adding transactions for #{council.title}"
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'west_dorset')).select{ |f| f.match('csv') }.each do |file_name|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/west_dorset/#{file_name}"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => row["Payment Date"].gsub('/', '-'),
+                                      :value => row['Amount'],
+                                      :supplier_name => row["Supplier Name"],
+                                      :uid => row["Voucher Number"],
+                                      :organisation => council,
+                                      :csv_line_number => csv_file.lineno,
+                                      :service => row["Account Name"],
+                                      :source_url => "http://www.dorsetforyou.com/media.jsp?mediaid=153859&filetype=doc"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end    
+  end
+  council.spending_stat.perform
+end
+
 
