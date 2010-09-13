@@ -298,7 +298,7 @@ class SupplierTest < ActiveSupport::TestCase
       end
       
       should "try to match against charities" do
-        Charity.expects(:find_by_title).with(@supplier.name)
+        Charity.expects(:find_by_normalised_title).with(@supplier.name)
         @supplier.possible_payee
       end
       
