@@ -257,11 +257,13 @@ task :export_csv_spending_data  => :environment do
     end
   end
 
-  Zip::ZipFile.open("#{csv_file}.zip", Zip::ZipFile::CREATE) {
+  Zip::ZipFile.open("#{csv_file}.new.zip", Zip::ZipFile::CREATE) {
     |zipfile|
     zipfile.add('spending.csv', csv_file)
   }
   File.delete(csv_file)
+  FileUtils.mv "#{csv_file}.new.zip", "#{csv_file}.zip", :force => true
+  # FileUtils.chmod_R 0644, "#{csv_file}.zip"
 end  
 
 desc "Import Islington Payments"
