@@ -690,4 +690,28 @@ task :import_west_dorset_payments => :environment do
   council.spending_stat.perform
 end
 
+desc "Import Waltham Forest Payments"
+task :import_waltham_forest_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%Waltham Forest%'")
+  puts "Adding transactions for #{council.title}"
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'lb_waltham_forest')).select{ |f| f.match('csv') }.each do |file_name|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_waltham_forest/#{file_name}"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        next if row["Total"].blank?
+        ft = FinancialTransaction.new(:date => row["Payment Date"].gsub('/', '-'),
+                                      :value => row['Total'],
+                                      :supplier_name => row["Vendor Name"].strip,
+                                      :uid => row["Doc No"],
+                                      :organisation => council,
+                                      :csv_line_number => csv_file.lineno+1, #deleted heading
+                                      :service => row["GL Description"],
+                                      :source_url => "http://www.walthamforest.gov.uk/#{file_name}"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end    
+  end
+  council.spending_stat.perform
+end
 
