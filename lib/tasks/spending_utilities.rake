@@ -717,3 +717,57 @@ task :import_waltham_forest_payments => :environment do
   council.spending_stat.perform
 end
 
+desc "Import North Somerset Payments"
+task :import_north_somerset_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%North Somerset%'")
+  puts "Adding transactions for #{council.title}"
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'north_somerset')).select{ |f| f.match('csv') }.each do |file_name|
+    puts "Importing data from #{file_name}"
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/north_somerset/#{file_name}"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => "14-#{row['Period'].to_i+3}-20#{row['Year']}".gsub('/', '-'), # period is period in financial year, so April is 1
+                                      :date_fuzziness => 13,
+                                      :value => row['Amount'],
+                                      :department_name => row['Directorate'],
+                                      :supplier_name => row["Name"].strip,
+                                      :organisation => council,
+                                      :csv_line_number => csv_file.lineno+1, #deleted heading
+                                      :invoice_number => row["Doc Ref"],
+                                      :service => row["Service Area"],
+                                      :transaction_type => row["Spend Type"],
+                                      :description => row["Spend Description"],
+                                      :source_url => "http://www.n-somerset.gov.uk/NR/rdonlyres/4B0BCBA4-A26A-479A-97B0-9ED0E1AE9AFF/0/#{file_name}"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end    
+  end
+  council.spending_stat.perform
+end
+
+desc "Import Harlow Payments"
+task :import_harlow_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%Harlow%'")
+  puts "Adding transactions for #{council.title}"
+  date = '14-05-2010'.to_date
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'lb_harlow')).select{ |f| f.match('csv') }.each do |file_name|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_harlow/#{file_name}"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:date => date,
+                                      :value => row['Amount'],
+                                      :date_fuzziness => 40,
+                                      :supplier_name => row["Supplier Name"],
+                                      :organisation => council,
+                                      :csv_line_number => csv_file.lineno+3, #deleted heading + blank lines
+                                      :service => row["Description"],
+                                      :source_url => "http://www.harlow.gov.uk/files/{file_name}"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end    
+  end
+  council.spending_stat.perform
+end
+
