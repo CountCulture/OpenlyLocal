@@ -18,6 +18,11 @@ class Charity < ActiveRecord::Base
     "http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"
   end
   
+  def update_from_charity_register
+    attribs = CharityUtilities::Client.new(charity_number).get_details
+    update_attributes(attribs.delete_if{ |k,v| !self.respond_to?(k) }) #delete unknown attribs which may be scraped but not yet added to charity
+  end
+  
   private
   def normalise_title
     self.normalised_title = self.class.normalise_title(title)

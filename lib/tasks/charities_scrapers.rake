@@ -68,6 +68,22 @@ task :get_charity_details => :environment do
   end
 end
 
+desc "Get Missing Charities"
+task :get_missing_charities => :environment do
+  %w(reg_now rem91).each do |file_name|
+    File.open(File.join(RAILS_ROOT, "db/data/charities/#{file_name}.txt")).each do |file|
+      file.each_line do |line|
+        unless Charity.find_by_charity_number(charity_no = line.squish)
+          puts "Found missing charity (#{charity_no})"
+
+        end
+      end
+    end
+    
+  end
+  base_url = "http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/"
+end
+
 def create_charity(c)
   unless Charity.find_by_charity_number(c.first)
     c = Charity.create!(:charity_number => c.first, :title => c.last)

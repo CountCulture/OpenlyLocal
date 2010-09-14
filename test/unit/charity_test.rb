@@ -103,6 +103,27 @@ class CharityTest < ActiveSupport::TestCase
       assert_equal "#{@charity.id}-some-title-with-stuff", @charity.to_param
     end
 
+    context "when updating from register" do
+      should "get info using charity utilities" do
+        dummy_client = stub
+        CharityUtilities::Client.expects(:new).with(@charity.charity_number).returns(dummy_client)
+        dummy_client.expects(:get_details).returns({})
+        @charity.update_from_charity_register
+      end
+      
+      should "update using info returned from charity utilities" do
+        CharityUtilities::Client.any_instance.stubs(:get_details).returns(:activities => 'foo stuff')
+        @charity.update_from_charity_register
+        assert_equal 'foo stuff', @charity.reload.activities
+      end
+      
+      should "not fail if there are unknown attributes" do
+        CharityUtilities::Client.any_instance.stubs(:get_details).returns(:activities => 'foo stuff', :foo => 'bar')
+        assert_nothing_raised(Exception) { @charity.update_from_charity_register }
+        assert_equal 'foo stuff', @charity.reload.activities
+      end
+      
+    end
   end
 
 end
