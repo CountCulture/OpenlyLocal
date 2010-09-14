@@ -751,8 +751,8 @@ task :import_harlow_payments => :environment do
   council = Council.first(:conditions => "name LIKE '%Harlow%'")
   puts "Adding transactions for #{council.title}"
   date = '14-05-2010'.to_date
-  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'lb_harlow')).select{ |f| f.match('csv') }.each do |file_name|
-    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_harlow/#{file_name}"), :headers => true) do |csv_file|
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'harlow')).select{ |f| f.match('csv') }.each do |file_name|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/harlow/#{file_name}"), :headers => true) do |csv_file|
       csv_file.each do |row|
         ft = FinancialTransaction.new(:date => date,
                                       :value => row['Amount'],
