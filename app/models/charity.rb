@@ -24,6 +24,7 @@ class Charity < ActiveRecord::Base
   
   def update_from_charity_register
     attribs = CharityUtilities::Client.new(:charity_number => charity_number).get_details
+    self.last_checked = Time.now
     update_attributes(attribs.delete_if{ |k,v| v.blank?||!self.respond_to?(k) }) #delete unknown attribs which may be scraped but not yet added to charity
   end
   

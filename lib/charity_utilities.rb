@@ -13,12 +13,11 @@ module CharityUtilities
     
     def get_details
       main_page = Nokogiri.HTML(_http_get(BaseUrl + "SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"))
-      # main_page = Hpricot(_http_get(BaseUrl + "SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"), :fixup_tags => true)
 
       financials_link = main_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnFinancialHistory')
       financials_data = financials_link ? finance_data_from(BaseUrl+financials_link[:href]) : extract_finance_data(main_page)
       contacts_link = main_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnContactTruestees')
-      # p contacts_link
+
       contacts_data = contact_data_from(BaseUrl+contacts_link[:href])
       framework_link = main_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnGovernance')
       framework_data = frameworks_data_from(BaseUrl+framework_link[:href])

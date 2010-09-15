@@ -32,8 +32,9 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :financial_breakdown
     should have_db_column :trustees
     should have_db_column :other_names
+    should have_db_column :last_checked
     
-    should "serialize mmixed data columns" do
+    should "serialize mixed data columns" do
       %w(financial_breakdown other_names trustees accounts).each do |attrib|
         @charity.update_attribute(attrib, [{:foo => 'bar'}])
         assert_equal [{:foo => 'bar'}], @charity.reload.send(attrib), "#{attrib} attribute is not serialized"
@@ -141,6 +142,19 @@ class CharityTest < ActiveSupport::TestCase
         CharityUtilities::Client.any_instance.stubs(:get_details).returns(:activities => 'foo stuff', :website => '')
         @charity.update_from_charity_register
         assert_equal 'http://foo.com', @charity.reload.website
+      end
+      
+      should "update last_checked time" do
+        CharityUtilities::Client.any_instance.stubs(:get_details).returns(:activities => 'foo stuff', :website => '')
+        @charity.update_from_charity_register
+        assert_in_delta Time.now, @charity.reload.last_checked, 2
+      end
+      
+      should "not update last_checked time if problem saving @charity" do
+        @charity.title = nil
+        CharityUtilities::Client.any_instance.stubs(:get_details).returns(:activities => 'foo stuff')
+        assert !@charity.update_from_charity_register
+        assert_nil @charity.reload.last_checked
       end
       
     end
