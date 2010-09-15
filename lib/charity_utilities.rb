@@ -91,7 +91,8 @@ module CharityUtilities
       res[:date_registered] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish rescue nil
       res[:date_removed] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucDateRemoved_ucTextInput_txtData').inner_text.squish rescue nil
       res[:governing_document] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucGovDocDisplay_lblDisplayLabel').inner_text.squish rescue nil
-      res[:other_names] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucOtherNames_lblDisplayLabel').inner_text.squish rescue nil
+      other_names = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucOtherNames_lblDisplayLabel').inner_text.squish rescue nil
+      res[:other_names] = other_names == 'None' ? nil : other_names
       res
     end
 
@@ -105,20 +106,20 @@ module CharityUtilities
     def detailed_info_from_front_page(page)
       res = {}
       res[:title] = page.at("#ctl00_charityStatus_spnCharityName").inner_text.squish
-      res[:employees] = page.at('#TablesAssetsLiabilitiesAndPeople td[text()=Employees]~td').try(:inner_text)
-      res[:volunteers] = page.at('#TablesAssetsLiabilitiesAndPeople td[text()=Volunteers]~td').try(:inner_text)
+      res[:employees] = clean_number(page.at('#TablesAssetsLiabilitiesAndPeople td[text()=Employees]~td').try(:inner_text))
+      res[:volunteers] = clean_number(page.at('#TablesAssetsLiabilitiesAndPeople td[text()=Volunteers]~td').try(:inner_text))
       res[:activities] = page.at('#ctl00_MainContent_ucDisplay_ucActivities_ucTextAreaInput_txtTextEntry').inner_text.squish rescue nil
       asset_res = {}
       if asset_info = page.at('#TablesAssetsLiabilitiesAndPeople')
-        [:own_use_assets, :long_term_investments, :other_assets, :total_liabilities].each { |attrib| asset_res[attrib] = asset_info.at("td[text()*='#{attrib.to_s.humanize}']~td").inner_text rescue nil }
+        [:own_use_assets, :long_term_investments, :other_assets, :total_liabilities].each { |attrib| asset_res[attrib] = clean_number(asset_info.at("td[text()*='#{attrib.to_s.humanize}']~td").inner_text) rescue nil }
       end
       income_res = {}
       if income_info = page.at('#TablesIncome')
-        [:voluntary, :trading, :investment, :charitable, :other, :investment_gains].each { |attrib| income_res[attrib] = income_info.at("td[text()*='#{attrib.to_s.humanize}']~td").inner_text rescue nil }
+        [:voluntary, :trading, :investment, :charitable, :other, :investment_gains].each { |attrib| income_res[attrib] = clean_number(income_info.at("td[text()*='#{attrib.to_s.humanize}']~td").inner_text) rescue nil }
       end
       spending_res = {}
       if spending_info = page.at('#TablesSpending')
-        [:generating_voluntary_income, :governance, :trading, :investment_management, :charitable_activities, :other].each { |attrib| spending_res[attrib] = spending_info.at("td[text()*='#{attrib.to_s.humanize}']~td").inner_text rescue nil }
+        [:generating_voluntary_income, :governance, :trading, :investment_management, :charitable_activities, :other].each { |attrib| spending_res[attrib] = clean_number(spending_info.at("td[text()*='#{attrib.to_s.humanize}']~td").inner_text) rescue nil }
       end
       res[:financial_breakdown] = { :income => income_res, :spending => spending_res, :assets => asset_res }.delete_if{ |k,v| v.blank? }
       res
@@ -130,8 +131,8 @@ module CharityUtilities
         res={}
         cols = row.search('td')
         res[:accounts_date] = cols[0].inner_text
-        res[:income] = cols[1].inner_text.sub('*','')
-        res[:spending] = cols[2].inner_text.sub('*','')
+        res[:income] = clean_number(cols[1].inner_text.sub('*',''))
+        res[:spending] = clean_number(cols[2].inner_text.sub('*',''))
         res[:accounts_url] = CharityCommissionUrl + cols[5].at('a[@href*=ScannedAccounts]')[:href] rescue nil
         res[:sir_url] = CharityCommissionUrl + cols[5].at('a[@href*=SIR]')[:href] rescue nil
         res[:consolidated] = cols[1].inner_text =~ /\*/
@@ -139,12 +140,10 @@ module CharityUtilities
       end
     end
 
-    
-    # def create_charity(c)
-    #   unless Charity.find_by_charity_number(c.first)
-    #     c = Charity.create!(:charity_number => c.first, :title => c.last)
-    #     puts "Added new charity: #{c.title} (#{c.charity_number})"
-    #   end
-    # end
+    def clean_number(raw_number)
+      return if raw_number.blank?
+      raw_number.gsub(/[^\d\.\-]/,'')
+    end
+
   end
 end

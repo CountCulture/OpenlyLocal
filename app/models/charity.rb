@@ -18,6 +18,15 @@ class Charity < ActiveRecord::Base
     TitleNormaliser.normalise_title(raw_title.gsub(/\A\s*the\s/i, ''))
   end
   
+  def accounts=(accounts_data)
+    self[:accounts] = accounts_data
+    return accounts_data if accounts_data.blank?
+    [:accounts_date, :income, :spending].each do |a|
+      self[a] = accounts.first[a]
+    end
+    accounts_data
+  end
+  
   def charity_commission_url
     "http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"
   end

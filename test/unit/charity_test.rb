@@ -116,7 +116,30 @@ class CharityTest < ActiveSupport::TestCase
       @charity.title = "some title-with/stuff"
       assert_equal "#{@charity.id}-some-title-with-stuff", @charity.to_param
     end
+    
+    context "when assigning info to accounts" do
+      setup do
+        @accounts_info = [ { :accounts_date => '31 Mar 2009', :income => '1234', :spending => '2345', :accounts_url => 'http://charitycommission.gov.uk/accounts2.pdf'},
+                           { :accounts_date => '31 Mar 2008', :income => '123', :spending => '234', :accounts_url => 'http://charitycommission.gov.uk/accounts1.pdf'}]
+      end
 
+      should "used given info to set accounts attribute" do
+        @charity.accounts = @accounts_info
+        assert_equal @accounts_info, @charity.accounts
+      end
+      
+      should "used first year to set current accounts attributes" do
+        @charity.accounts = @accounts_info
+        assert_equal '31 Mar 2009'.to_date, @charity.accounts_date
+        assert_equal 1234, @charity.income
+        assert_equal 2345, @charity.spending
+      end
+      
+      should "not raise excption if no accounts" do
+        assert_nothing_raised(Exception) { @charity.accounts = [] }
+      end
+      
+    end
     context "when updating from register" do
       should "get info using charity utilities" do
         dummy_client = stub

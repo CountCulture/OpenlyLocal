@@ -36,35 +36,35 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
       context "and when charity is big one" do
         should 'extract assets and people info from front page' do
           info = @client.get_details
-          assert_equal '2,089', info[:employees]
-          assert_equal '', info[:volunteers]
+          assert_equal '2089', info[:employees]
+          assert_nil info[:volunteers]
           asset_info = info[:financial_breakdown][:assets]
-          assert_equal '41,098,000', asset_info[:own_use_assets]
-          assert_equal '48,964,000', asset_info[:long_term_investments]
-          assert_equal '15,970,000', asset_info[:other_assets]
-          assert_equal '-42,265,000', asset_info[:total_liabilities]
+          assert_equal '41098000', asset_info[:own_use_assets]
+          assert_equal '48964000', asset_info[:long_term_investments]
+          assert_equal '15970000', asset_info[:other_assets]
+          assert_equal '-42265000', asset_info[:total_liabilities]
         end
                 
         should 'extract income info from front page as part of financial_breakdown' do
           breakdown = @client.get_details[:financial_breakdown]
           assert income = breakdown[:income]
-          assert_equal "119,122,000", income[:voluntary]
-          assert_equal "9,929,000", income[:trading]
-          assert_equal "3,066,000", income[:investment]
-          assert_equal "24,103,000", income[:charitable]
-          assert_equal "1,298,000", income[:other]
+          assert_equal "119122000", income[:voluntary]
+          assert_equal "9929000", income[:trading]
+          assert_equal "3066000", income[:investment]
+          assert_equal "24103000", income[:charitable]
+          assert_equal "1298000", income[:other]
           assert_equal "0", income[:investment_gains]
         end
         
         should 'extract spending info from front page as part of financial_breakdown' do
           breakdown = @client.get_details[:financial_breakdown]
           assert income = breakdown[:spending]
-          assert_equal "27,760,000", income[:generating_voluntary_income]
-          assert_equal "778,000", income[:governance]
-          assert_equal "3,557,000", income[:trading]
-          assert_equal "121,000", income[:investment_management]
-          assert_equal "121,864,000", income[:charitable_activities]
-          assert_equal "7,720,000", income[:other]
+          assert_equal "27760000", income[:generating_voluntary_income]
+          assert_equal "778000", income[:governance]
+          assert_equal "3557000", income[:trading]
+          assert_equal "121000", income[:investment_management]
+          assert_equal "121864000", income[:charitable_activities]
+          assert_equal "7720000", income[:other]
         end
         
         should "get data from financial page listed on main page" do
@@ -114,8 +114,8 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
           assert_equal 5, accounts.size
           first_year = accounts.first
           assert_equal "31 Dec 2008", accounts.first[:accounts_date]
-          assert_equal "£53,871", first_year[:income]
-          assert_equal "£42,183", first_year[:spending]
+          assert_equal "53871", first_year[:income]
+          assert_equal "42183", first_year[:spending]
           assert_equal "http://www.charitycommission.gov.uk/ScannedAccounts/Ends11\\0000213311_ac_20081231_e_c.pdf", first_year[:accounts_url]
           assert_nil first_year[:sir_url]
         end
@@ -155,8 +155,8 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
       
       should "assign financial info for each year to appropriate_keys" do
         first_year = @client.finance_data_from('foo.com').first
-        assert_equal "£154,670,457", first_year[:income]
-        assert_equal "£158,953,404", first_year[:spending]
+        assert_equal "154670457", first_year[:income]
+        assert_equal "158953404", first_year[:spending]
         assert_equal "http://www.charitycommission.gov.uk/ScannedAccounts/Ends01\\0000216401_ac_20090331_e_c.pdf", first_year[:accounts_url]
         assert_equal "http://www.charitycommission.gov.uk/SIR/ENDS01\\0000216401_SIR_09_E.PDF", first_year[:sir_url]
       end
@@ -193,19 +193,7 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
         assert_equal( {:full_name => 'DAME DENISE PLATT', :uid => '793946'}, trustees.first)
         assert_equal( {:full_name => 'MR MARK WOOD', :uid => '3625072'}, trustees.last)
       end
-      # should "assign financial info for each year to appropriate_keys" do
-      #   first_year = @client.finance_data_from('foo.com').first
-      #   assert_equal "£154,670,457", first_year[:income]
-      #   assert_equal "£158,953,404", first_year[:spending]
-      #   assert_equal "http://www.charitycommission.gov.uk/ScannedAccounts/Ends01\\0000216401_ac_20090331_e_c.pdf", first_year[:accounts_url]
-      #   assert_equal "http://www.charitycommission.gov.uk/SIR/ENDS01\\0000216401_SIR_09_E.PDF", first_year[:sir_url]
-      # end
-      # 
-      # should "flag whether year's accounts are consolidated" do
-      #   financial_info = @client.finance_data_from('foo.com')
-      #   assert financial_info.first[:consolidated]
-      #   assert !financial_info.last[:consolidated]
-      # end
+
     end
     
     context "when extracting info from framework page" do
@@ -223,6 +211,13 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
         assert_equal '01 April 1963', framework_info[:date_registered]
         assert_match /ROYAL CHARTER DATED 28 MAY 1895/, framework_info[:governing_document]
         assert_match /NSPCC/, framework_info[:other_names]
+      end
+      
+      should "return nil for other names if no other names" do
+        @client.expects(:_http_get).with('foo.com').returns(dummy_html_response(:medium_charity_frameworks_page))
+        
+        framework_info = @client.frameworks_data_from('foo.com')
+        assert_nil framework_info[:other_names]
       end
     end
   end
