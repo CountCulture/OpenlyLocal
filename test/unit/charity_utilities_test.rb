@@ -29,6 +29,7 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
       
       should "return basic info" do
         basic_info = @client.get_details
+        assert_equal 'THE NATIONAL SOCIETY FOR THE PREVENTION OF CRUELTY TO CHILDREN', basic_info[:title]
         assert_match /TO PREVENT THE PUBLIC/, basic_info[:activities]
       end
       
@@ -83,10 +84,51 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
           @client.get_details
         end
         
+        should "return data from contacts page listed on main page" do
+          @client.stubs(:contact_data_from).returns(:email => 'foo@bar.com')
+          info = @client.get_details
+          assert_equal 'foo@bar.com', info[:email]
+        end
+        
         should "get framework page listed on main page" do
           @client.expects(:_http_get).with(@base_url + 'CharityFramework.aspx?RegisteredCharityNumber=216401&SubsidiaryNumber=0')
           @client.get_details
         end
+        
+        should "return data from framework page listed on main page" do
+          @client.stubs(:frameworks_data_from).returns(:date_registered => '31 Mar 1999')
+          info = @client.get_details
+          assert_equal '31 Mar 1999', info[:date_registered]
+        end
+        
+      end
+      
+      context "and when charity is medium one" do
+        setup do
+          @dummy_response = dummy_html_response(:medium_charity_main_page)
+          @client.stubs(:_http_get).returns(@dummy_response)
+        end
+
+        should 'extract accounts info from front page as accounts' do
+          assert_kind_of Array, accounts = @client.get_details[:accounts]
+          assert_equal 5, accounts.size
+          first_year = accounts.first
+          assert_equal "31 Dec 2008", accounts.first[:accounts_date]
+          assert_equal "£53,871", first_year[:income]
+          assert_equal "£42,183", first_year[:spending]
+          assert_equal "http://www.charitycommission.gov.uk/ScannedAccounts/Ends11\\0000213311_ac_20081231_e_c.pdf", first_year[:accounts_url]
+          assert_nil first_year[:sir_url]
+        end
+                        
+        should "not get data from financial page if none linked to on main page" do
+          @client.expects(:finance_data_from).never
+          @client.get_details
+        end
+        
+        should "not return anything for financial page if none linked to on main page" do
+          assert_equal ({}), @client.get_details[:financial_breakdown]
+        end
+        
       end
     end
     
@@ -95,9 +137,10 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
         @client.stubs(:_http_get).returns(dummy_html_response(:large_charity_financials_page))
       end
 
-      # should "return nil if url blank" do
-      #   assert_nil @client.finance_data_from(nil)
-      # end
+      should "return nil if problem getting data" do
+        @client.expects(:_http_get).raises
+        assert_nil @client.finance_data_from('foo.com')
+      end
       
       should "get financials page" do
         @client.expects(:_http_get).with('foo.com').returns(dummy_html_response(:large_charity_financials_page))

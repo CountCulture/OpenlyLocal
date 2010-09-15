@@ -26,6 +26,19 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :income
     should have_db_column :date_removed
     should have_db_column :normalised_title
+    should have_db_column :accounts
+    should have_db_column :employees
+    should have_db_column :volunteers
+    should have_db_column :financial_breakdown
+    should have_db_column :trustees
+    should have_db_column :other_names
+    
+    should "serialize mmixed data columns" do
+      %w(financial_breakdown other_names trustees accounts).each do |attrib|
+        @charity.update_attribute(attrib, [{:foo => 'bar'}])
+        assert_equal [{:foo => 'bar'}], @charity.reload.send(attrib), "#{attrib} attribute is not serialized"
+      end
+    end
     
     should "mixin SpendingStat::Base module" do
       assert Charity.new.respond_to?(:spending_stat)
@@ -106,7 +119,7 @@ class CharityTest < ActiveSupport::TestCase
     context "when updating from register" do
       should "get info using charity utilities" do
         dummy_client = stub
-        CharityUtilities::Client.expects(:new).with(@charity.charity_number).returns(dummy_client)
+        CharityUtilities::Client.expects(:new).with(:charity_number => @charity.charity_number).returns(dummy_client)
         dummy_client.expects(:get_details).returns({})
         @charity.update_from_charity_register
       end
@@ -121,6 +134,13 @@ class CharityTest < ActiveSupport::TestCase
         CharityUtilities::Client.any_instance.stubs(:get_details).returns(:activities => 'foo stuff', :foo => 'bar')
         assert_nothing_raised(Exception) { @charity.update_from_charity_register }
         assert_equal 'foo stuff', @charity.reload.activities
+      end
+      
+      should "not overwrite existing entries with blank ones" do
+        @charity.update_attribute(:website, 'http://foo.com')
+        CharityUtilities::Client.any_instance.stubs(:get_details).returns(:activities => 'foo stuff', :website => '')
+        @charity.update_from_charity_register
+        assert_equal 'http://foo.com', @charity.reload.website
       end
       
     end

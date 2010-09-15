@@ -12,15 +12,17 @@ module CharityUtilities
     end
     
     def get_details
-      main_page = Hpricot(_http_get(BaseUrl + "SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"))
+      main_page = Nokogiri.HTML(_http_get(BaseUrl + "SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"))
+      # main_page = Hpricot(_http_get(BaseUrl + "SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"), :fixup_tags => true)
 
       financials_link = main_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnFinancialHistory')
-      financials_data = finance_data_from(BaseUrl+financials_link[:href])
+      financials_data = financials_link ? finance_data_from(BaseUrl+financials_link[:href]) : extract_finance_data(main_page)
       contacts_link = main_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnContactTruestees')
-      contacts_page = _http_get(BaseUrl+contacts_link[:href])
+      # p contacts_link
+      contacts_data = contact_data_from(BaseUrl+contacts_link[:href])
       framework_link = main_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnGovernance')
-      framework_page = _http_get(BaseUrl+framework_link[:href])
-      detailed_info_from_front_page(main_page).merge(:accounts => financials_data)
+      framework_data = frameworks_data_from(BaseUrl+framework_link[:href])
+      detailed_info_from_front_page(main_page).merge(:accounts => financials_data).merge(framework_data).merge(contacts_data)
     end
     
         
@@ -39,14 +41,14 @@ module CharityUtilities
       # attribs[:contact_name] = contact_page.at('#ctl00_MainContent_ucDisplay_ucContactDetails_lblContactName').try(:inner_text).try(:squish)
       # attribs[:address_in_full] = contact_page.search('.ContactAddress:not(#ctl00_MainContent_ucDisplay_ucContactDetails_lblContactName)').collect{|s|s.inner_text}.delete_if(&:blank?).join(', ') rescue nil
       begin
-        overview_redirect_url = ("http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/SearchResultHandler.aspx?SearchKeywords=#{charity_number}")
-        resp = client.get(overview_redirect_url)
-        overview_url = "http://www.charitycommission.gov.uk" + resp.header["Location"].first
-        overview_page = Hpricot(open(overview_url))
-        attribs[:activities] = overview_page.at('#ctl00_MainContent_ucDisplay_ucActivities_ucTextAreaInput_txtTextEntry').inner_text.squish rescue nil
-        attribs[:date_registered ] = overview_page.at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish rescue nil
-        attribs[:date_removed ] = overview_page.at('#ctl00_MainContent_ucDisplay_ucDateRemoved_ucTextInput_txtHolder').inner_text.squish rescue nil
-        accounts_date,income,spending = overview_page.at('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr[td]').search('td').collect{|td| td.inner_text} rescue nil
+        # overview_redirect_url = ("http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/SearchResultHandler.aspx?SearchKeywords=#{charity_number}")
+        # resp = client.get(overview_redirect_url)
+        # overview_url = "http://www.charitycommission.gov.uk" + resp.header["Location"].first
+        # overview_page = Hpricot(open(overview_url))
+        # attribs[:activities] = overview_page.at('#ctl00_MainContent_ucDisplay_ucActivities_ucTextAreaInput_txtTextEntry').inner_text.squish rescue nil
+        # attribs[:date_registered ] = overview_page.at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish rescue nil
+        # attribs[:date_removed ] = overview_page.at('#ctl00_MainContent_ucDisplay_ucDateRemoved_ucTextInput_txtHolder').inner_text.squish rescue nil
+        # accounts_date,income,spending = overview_page.at('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr[td]').search('td').collect{|td| td.inner_text} rescue nil
       rescue Exception => e
         puts "Problem get overview for charity #{charity.title} (#{charity_number}): #{e.inspect}\n#{e.backtrace}"
       end
@@ -66,17 +68,10 @@ module CharityUtilities
     
     def finance_data_from(url)
       doc = Hpricot(_http_get(url))
-      doc.search('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr[td]').collect do |row|
-        res={}
-        cols = row.search('td')
-        res[:accounts_date] = cols[0].inner_text
-        res[:income] = cols[1].inner_text.sub('*','')
-        res[:spending] = cols[2].inner_text.sub('*','')
-        res[:accounts_url] = CharityCommissionUrl + cols[5].at('a[@href*=ScannedAccounts]')[:href] rescue nil
-        res[:sir_url] = CharityCommissionUrl + cols[5].at('a[@href*=SIR]')[:href] rescue nil
-        res[:consolidated] = cols[1].inner_text =~ /\*/
-        res
-      end
+      extract_finance_data(doc)
+    rescue Exception => e
+      RAILS_DEFAULT_LOGGER.debug "Problem getting finance data from #{url}:\n#{e.inspect}"
+      nil
     end
     
     def contact_data_from(url)
@@ -96,8 +91,8 @@ module CharityUtilities
       res = {}
       res[:date_registered] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish rescue nil
       res[:date_removed] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucDateRemoved_ucTextInput_txtData').inner_text.squish rescue nil
-      res[:governing_document] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucGovDocDisplay_lblDisplayLabel').inner_text.squish# rescue nil
-      res[:other_names] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucOtherNames_lblDisplayLabel').inner_text.squish# rescue nil
+      res[:governing_document] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucGovDocDisplay_lblDisplayLabel').inner_text.squish rescue nil
+      res[:other_names] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucOtherNames_lblDisplayLabel').inner_text.squish rescue nil
       res
     end
 
@@ -110,40 +105,41 @@ module CharityUtilities
     
     def detailed_info_from_front_page(page)
       res = {}
-      res[:employees] = page.at('#TablesAssetsLiabilitiesAndPeople td[text()=Employees]~td').inner_text
-      res[:volunteers] = page.at('#TablesAssetsLiabilitiesAndPeople td[text()=Volunteers]~td').inner_text
+      res[:title] = page.at("#ctl00_charityStatus_spnCharityName").inner_text.squish
+      res[:employees] = page.at('#TablesAssetsLiabilitiesAndPeople td[text()=Employees]~td').try(:inner_text)
+      res[:volunteers] = page.at('#TablesAssetsLiabilitiesAndPeople td[text()=Volunteers]~td').try(:inner_text)
       res[:activities] = page.at('#ctl00_MainContent_ucDisplay_ucActivities_ucTextAreaInput_txtTextEntry').inner_text.squish rescue nil
-      asset_info = page.at('#TablesAssetsLiabilitiesAndPeople')
       asset_res = {}
-      [:own_use_assets, :long_term_investments, :other_assets, :total_liabilities].each { |attrib| asset_res[attrib] = asset_info.at("td[text()*=#{attrib.to_s.humanize}]~td").inner_text rescue nil }
-      income_info = page.at('#TablesIncome')
+      if asset_info = page.at('#TablesAssetsLiabilitiesAndPeople')
+        [:own_use_assets, :long_term_investments, :other_assets, :total_liabilities].each { |attrib| asset_res[attrib] = asset_info.at("td[text()*='#{attrib.to_s.humanize}']~td").inner_text rescue nil }
+      end
       income_res = {}
-      [:voluntary, :trading, :investment, :charitable, :other, :investment_gains].each { |attrib| income_res[attrib] = income_info.at("td[text()*=#{attrib.to_s.humanize}]~td").inner_text rescue nil }
-      spending_info = page.at('#TablesSpending')
+      if income_info = page.at('#TablesIncome')
+        [:voluntary, :trading, :investment, :charitable, :other, :investment_gains].each { |attrib| income_res[attrib] = income_info.at("td[text()*='#{attrib.to_s.humanize}']~td").inner_text rescue nil }
+      end
       spending_res = {}
-      [:generating_voluntary_income, :governance, :trading, :investment_management, :charitable_activities, :other].each { |attrib| spending_res[attrib] = spending_info.at("td[text()*=#{attrib.to_s.humanize}]~td").inner_text rescue nil }
-      res[:financial_breakdown] = { :income => income_res, :spending => spending_res, :assets => asset_res }
+      if spending_info = page.at('#TablesSpending')
+        [:generating_voluntary_income, :governance, :trading, :investment_management, :charitable_activities, :other].each { |attrib| spending_res[attrib] = spending_info.at("td[text()*='#{attrib.to_s.humanize}']~td").inner_text rescue nil }
+      end
+      res[:financial_breakdown] = { :income => income_res, :spending => spending_res, :assets => asset_res }.delete_if{ |k,v| v.blank? }
       res
     end
+    
+    def extract_finance_data(page)
+      # p page unless page.search('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr')[1..-1]
+      page.search('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr')[1..-1].collect do |row|
+        res={}
+        cols = row.search('td')
+        res[:accounts_date] = cols[0].inner_text
+        res[:income] = cols[1].inner_text.sub('*','')
+        res[:spending] = cols[2].inner_text.sub('*','')
+        res[:accounts_url] = CharityCommissionUrl + cols[5].at('a[@href*=ScannedAccounts]')[:href] rescue nil
+        res[:sir_url] = CharityCommissionUrl + cols[5].at('a[@href*=SIR]')[:href] rescue nil
+        res[:consolidated] = cols[1].inner_text =~ /\*/
+        res
+      end
+    end
 
-    # def matched_charity(args)
-    #   args[:poss_companies].detect{|c| c.search_match=='EXACT'} || args[:poss_companies].detect{ |c| charity.normalise_title(c.charity_name) == charity.normalise_title(args[:name]) }
-    # end
-    # 
-    # def hash_from_charity_details(charity_details)
-    #   return unless charity_details
-    #   res_hsh = {}
-    #   res_hsh[:charity_number] = charity_details.charity_number
-    #   res_hsh[:title] = charity_details.charity_name
-    #   res_hsh[:address_in_full] = charity_details.reg_address.address_lines.join(', ') rescue nil
-    #   res_hsh[:previous_names] = charity_details.previous_names.collect{|pn| pn.charity_name} rescue nil
-    #   res_hsh[:sic_codes] = (charity_details.sic_codes.respond_to?(:sic_texts) ? charity_details.sic_codes.sic_texts : [charity_details.sic_codes.sic_text]) rescue nil
-    #   res_hsh[:status] = charity_details.charity_status
-    #   res_hsh[:charity_type] = charity_details.charity_category rescue nil
-    #   res_hsh[:incorporation_date] = charity_details.incorporation_date rescue nil
-    #   res_hsh[:country] = charity_details.country_of_origin
-    #   res_hsh.delete_if{ |k,v| v.blank? }
-    # end
     
     # def create_charity(c)
     #   unless Charity.find_by_charity_number(c.first)

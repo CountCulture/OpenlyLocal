@@ -3,6 +3,10 @@ class Charity < ActiveRecord::Base
   include SpendingStatUtilities::Base
   include AddressMethods
   include ResourceMethods
+  serialize :financial_breakdown
+  serialize :accounts
+  serialize :trustees
+  serialize :other_names
   
   validates_presence_of :title, :charity_number
   validates_uniqueness_of :charity_number
@@ -19,8 +23,8 @@ class Charity < ActiveRecord::Base
   end
   
   def update_from_charity_register
-    attribs = CharityUtilities::Client.new(charity_number).get_details
-    update_attributes(attribs.delete_if{ |k,v| !self.respond_to?(k) }) #delete unknown attribs which may be scraped but not yet added to charity
+    attribs = CharityUtilities::Client.new(:charity_number => charity_number).get_details
+    update_attributes(attribs.delete_if{ |k,v| v.blank?||!self.respond_to?(k) }) #delete unknown attribs which may be scraped but not yet added to charity
   end
   
   private
