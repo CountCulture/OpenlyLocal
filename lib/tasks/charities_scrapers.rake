@@ -73,9 +73,18 @@ task :get_missing_charities => :environment do
   %w(reg_now rem91).each do |file_name|
     File.open(File.join(RAILS_ROOT, "db/data/charities/#{file_name}.txt")).each do |file|
       file.each_line do |line|
-        unless Charity.find_by_charity_number(charity_no = line.squish)
-          puts "Found missing charity (#{charity_no})"
-
+        unless Charity.find_by_charity_number(charity_number = line.squish)
+          puts "Getting details for missing charity (#{charity_number})"
+          begin
+            c = Charity.new(:charity_number => charity_number)
+            if c.update_from_charity_register
+              puts "Added details for #{c.title}"
+            else
+              puts "Problem adding details for charity: #{c.errors.to_json}"
+            end
+          rescue Exception => e
+            puts "**** Problem getting info for charity: #{e.inspect}"
+          end
         end
       end
     end
