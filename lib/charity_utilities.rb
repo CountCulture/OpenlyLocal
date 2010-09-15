@@ -126,8 +126,8 @@ module CharityUtilities
     end
     
     def extract_finance_data(page)
-      # p page unless page.search('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr')[1..-1]
-      page.search('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr')[1..-1].collect do |row|
+      return if (rows = page.search('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr')).blank?
+      rows[1..-1].collect do |row|
         res={}
         cols = row.search('td')
         res[:accounts_date] = cols[0].inner_text

@@ -130,6 +130,19 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
         end
         
       end
+
+      context "and when charity is small one" do
+        setup do
+          @dummy_response = dummy_html_response(:small_charity_main_page)
+          @client.stubs(:_http_get).returns(@dummy_response)
+        end
+
+        should 'get basic info from front page' do
+          info = @client.get_details
+          assert_equal "YOUTH ARTS FESTIVAL", info[:title]
+        end
+                        
+      end
     end
     
     context "when extracting financial data from big charity financials page" do
