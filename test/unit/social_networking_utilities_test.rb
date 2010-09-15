@@ -72,6 +72,48 @@ class SocialNetworkingUtilitiesTest < ActiveSupport::TestCase
         @test_model.stubs(:update_attributes).returns(false)
         assert_equal false, @test_model.update_social_networking_details(@new_details)
       end
+      
+      context "when hash is submitted" do
+        setup do
+          @new_details_hash = { :twitter_account_name => 'bar', :blog_url => 'http://bar.com/blog', :facebook_account_name => 'baz456' }
+        end
+
+        should "update from hash" do
+          @test_model.update_social_networking_details(@new_details_hash)
+          assert_equal 'http://bar.com/blog', @test_model.reload.blog_url
+          assert_equal 'baz456', @test_model.facebook_account_name
+          assert_equal 'bar', @test_model.twitter_account_name
+        end
+        
+        should "not raise error when social networking type returned that isn't attribute of model" do
+          assert_nothing_raised(Exception) { @test_model.update_social_networking_details(@new_details_hash.merge(:youtube_account_name => 'fred45')) }
+          assert_equal 'http://bar.com/blog', @test_model.reload.blog_url
+        end
+      end
+    end
+    
+    context "when updating social networking details from website" do
+      setup do
+        @test_model = TestModelWithSocialNetworking.create!(:url => 'http://foo.com')
+      end
+
+      should "find social networking details on url" do
+        SocialNetworkingUtilities::Finder.expects(:new).with('http://foo.com').returns(stub(:process => {}))
+        @test_model.update_social_networking_details_from_website
+      end
+      
+      should "update social networking details from info found on website" do
+        SocialNetworkingUtilities::Finder.any_instance.expects(:process).returns(:facebook_account_name => 'foobar')
+        @test_model.expects(:update_social_networking_details).with(:facebook_account_name => 'foobar')
+        @test_model.update_social_networking_details_from_website
+      end
+      
+      should "not find social networking details if no url" do
+        @test_model.url = nil
+        SocialNetworkingUtilities::Finder.any_instance.expects(:process).never
+        @test_model.update_social_networking_details_from_website
+      end
+            
     end
   end
 
@@ -113,6 +155,10 @@ class SocialNetworkingUtilitiesTest < ActiveSupport::TestCase
         assert_equal "StratfordDC", @finder.process[:facebook_account_name]
       end
       
+      should "return youtube account name" do
+        assert_equal "StratfordDC", @finder.process[:youtube_account_name]
+      end
+            
       should "return news_feed url" do
         assert_equal "http://www.stratford.gov.uk/files/news/news.xml", SocialNetworkingUtilities::Finder.new("http://www.stratford.gov.uk").process[:feed_url]
       end
@@ -140,6 +186,25 @@ class SocialNetworkingUtilitiesTest < ActiveSupport::TestCase
         expect_result = {:twitter_account_name => "foo123"}
         assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("http://twitter.com/foo123")
         assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("twitter.com/foo123")
+      end
+      
+      should "return twitter name from twitter URLs" do
+        expect_result = {:twitter_account_name => "foo123"}
+        assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("http://twitter.com/foo123")
+        assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("twitter.com/foo123")
+      end
+      
+      should "extract facebook name from Facebook URL" do
+        expect_result = {:facebook_account_name => "foo123"}
+        assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("http://www.facebook.com/foo123")
+        assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("http://facebook.com/foo123")
+      end
+      
+      should "extract youtube name from Facebook URL" do
+        expect_result = {:youtube_account_name => "foo123"}
+        assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("http://www.youtube.com/foo123")
+        assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("http://www.youtube.com/user/foo123")
+        assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("http://youtube.com/foo123")
       end
       
       should "return hash of multiple ids from multiple urls" do

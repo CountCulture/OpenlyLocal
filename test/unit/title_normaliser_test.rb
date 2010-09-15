@@ -25,6 +25,8 @@ class TitleNormaliserTest < Test::Unit::TestCase
           "Important: another thing" => "important another thing",
           "Children's thing" => "childrens thing",
           "St. something" => "st something",
+          "The 'Theatre' thing" => "theatre thing",
+          'The "Theatre" thing' => "theatre thing",
           "The Theatre thing" => "theatre thing"
         }
 

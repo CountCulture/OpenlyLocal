@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100915130902) do
+ActiveRecord::Schema.define(:version => 20100915153435) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -79,6 +79,10 @@ ActiveRecord::Schema.define(:version => 20100915130902) do
     t.column "other_names", :string
     t.column "volunteers", :integer
     t.column "last_checked", :datetime
+    t.column "facebook_account_name", :string
+    t.column "youtube_account_name", :string
+    t.column "feed_url", :string
+    t.column "governing_document", :text
   end
 
   add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number"

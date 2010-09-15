@@ -3,6 +3,7 @@ class Charity < ActiveRecord::Base
   include SpendingStatUtilities::Base
   include AddressMethods
   include ResourceMethods
+  include SocialNetworkingUtilities::Base
   serialize :financial_breakdown
   serialize :accounts
   serialize :trustees
@@ -11,6 +12,8 @@ class Charity < ActiveRecord::Base
   validates_presence_of :title, :charity_number
   validates_uniqueness_of :charity_number
   before_save :normalise_title
+  alias_attribute :url, :website
+  
   
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising charity titles
   def self.normalise_title(raw_title)
@@ -35,6 +38,11 @@ class Charity < ActiveRecord::Base
     attribs = CharityUtilities::Client.new(:charity_number => charity_number).get_details
     self.last_checked = Time.now
     update_attributes(attribs.delete_if{ |k,v| v.blank?||!self.respond_to?(k) }) #delete unknown attribs which may be scraped but not yet added to charity
+  end
+  
+  def update_info
+    update_from_charity_register
+    update_social_networking_details_from_website unless new_record?
   end
   
   private

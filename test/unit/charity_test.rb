@@ -33,6 +33,10 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :trustees
     should have_db_column :other_names
     should have_db_column :last_checked
+    should have_db_column :facebook_account_name
+    should have_db_column :youtube_account_name
+    should have_db_column :feed_url
+    should have_db_column :governing_document
     
     should "serialize mixed data columns" do
       %w(financial_breakdown other_names trustees accounts).each do |attrib|
@@ -49,6 +53,10 @@ class CharityTest < ActiveSupport::TestCase
       assert @charity.respond_to?(:address_in_full)
     end
         
+    should "include SocialNetworkingUtilities::Base mixin" do
+      assert Charity.new.respond_to?(:update_social_networking_details)
+    end
+    
     context "when normalising title" do
       
       should "return nil if blank" do
@@ -91,6 +99,10 @@ class CharityTest < ActiveSupport::TestCase
         @charity.save!
         assert_equal "foo and baz trust", @charity.reload.normalised_title
       end
+    end
+    
+    should "alias website as url" do
+      assert_equal 'http://foo.com', Charity.new(:website => 'http://foo.com').url
     end
 
     context "when returning foaf version of telephone number" do
@@ -140,6 +152,33 @@ class CharityTest < ActiveSupport::TestCase
       end
       
     end
+    context "when updating info" do
+      setup do
+        @charity.stubs(:update_from_charity_register)
+      end
+
+      should "update from charity register" do
+        @charity.expects(:update_from_charity_register)
+        @charity.update_info
+      end
+      
+      should "update social networking info from website" do
+        @charity.expects(:update_social_networking_details_from_website)
+        @charity.update_info
+      end
+      
+      context "and new record after updating from register" do
+        should "not update social networking info" do
+          new_charity = Charity.new
+          new_charity.stubs(:update_from_charity_register)
+          new_charity.expects(:update_social_networking_details_from_website).never
+          
+          new_charity.update_info
+        end
+      end
+      
+    end
+    
     context "when updating from register" do
       should "get info using charity utilities" do
         dummy_client = stub
