@@ -18,9 +18,9 @@ module CharityUtilities
       financials_data = financials_link ? finance_data_from(BaseUrl+financials_link[:href]) : extract_finance_data(main_page)
       contacts_link = main_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnContactTruestees')
 
-      contacts_data = contact_data_from(BaseUrl+contacts_link[:href])
+      contacts_data = contacts_link ? contact_data_from(BaseUrl+contacts_link[:href]) : {}
       framework_link = main_page.at('a#ctl00_ctl00_CharityDetailsLinks_lbtnGovernance')
-      framework_data = frameworks_data_from(BaseUrl+framework_link[:href])
+      framework_data = framework_link ? frameworks_data_from(BaseUrl+framework_link[:href]) : frameworks_data_from(main_page)
       detailed_info_from_front_page(main_page).merge(:accounts => financials_data).merge(framework_data).merge(contacts_data)
     end
         
@@ -44,8 +44,8 @@ module CharityUtilities
       res.merge(:trustees => trustees)
     end
     
-    def frameworks_data_from(url)
-      frameworks_page = Nokogiri.HTML(_http_get(url)) # use Nokogiri as Hpricot has probs with this website
+    def frameworks_data_from(url_or_doc)
+      frameworks_page = url_or_doc.is_a?(String) ? Nokogiri.HTML(_http_get(url_or_doc)) : url_or_doc # use Nokogiri as Hpricot has probs with this website
       res = {}
       res[:date_registered] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish rescue nil
       res[:date_removed] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucDateRemoved_ucTextInput_txtData').inner_text.squish rescue nil

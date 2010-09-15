@@ -41,8 +41,9 @@ class Charity < ActiveRecord::Base
   end
   
   def update_info
-    update_from_charity_register
-    update_social_networking_details_from_website unless new_record?
+    return unless update_from_charity_register
+    update_social_networking_details_from_website
+    true
   end
   
   private

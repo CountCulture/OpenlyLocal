@@ -141,7 +141,23 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
           info = @client.get_details
           assert_equal "YOUTH ARTS FESTIVAL", info[:title]
         end
-                        
+      end
+      
+      context "and when charity is removed one" do
+        setup do
+          @dummy_response = dummy_html_response(:removed_charity_main_page)
+          @client.stubs(:_http_get).returns(@dummy_response)
+        end
+
+        should 'get basic info from front page' do
+          info = @client.get_details
+          assert_equal "THE CHICHESTER FESTIVAL THEATRE TRUST LTD", info[:title]
+        end
+
+        should 'get date_registered from front page' do
+          info = @client.get_details
+          assert_equal "29 May 1961", info[:date_registered]
+        end
       end
     end
     

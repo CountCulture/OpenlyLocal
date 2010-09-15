@@ -154,7 +154,7 @@ class CharityTest < ActiveSupport::TestCase
     end
     context "when updating info" do
       setup do
-        @charity.stubs(:update_from_charity_register)
+        @charity.stubs(:update_from_charity_register).returns(true)
       end
 
       should "update from charity register" do

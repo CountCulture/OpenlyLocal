@@ -77,7 +77,7 @@ task :get_missing_charities => :environment do
           puts "Getting details for missing charity (#{charity_number})"
           begin
             c = Charity.new(:charity_number => charity_number)
-            if c.update_from_charity_register
+            if c.update_info
               puts "Added details for #{c.title}"
             else
               puts "Problem adding details for charity: #{c.errors.to_json}"
