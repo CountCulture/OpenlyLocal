@@ -17,6 +17,7 @@ class TitleNormaliserTest < Test::Unit::TestCase
       should "normalise title" do
         OriginalTitleAndNormalisedTitle = {
           "The Super  Important Thing" => "super important thing",
+          "The Super (Important) Thing" => "super important thing",
           " Less-Important thing" => "less important thing",
           "multi\nline \t thing" => "multi line thing",
           "Ways and Means" => "ways and means",
@@ -53,8 +54,8 @@ class TitleNormaliserTest < Test::Unit::TestCase
           "Foo Bar & Baz Ltd." => "foo bar and baz limited",
           "Foo Bar & Baz PLC" => "foo bar and baz plc",
           "Foo Bar & Baz Public Limited Company" => "foo bar and baz plc",
-          "Foo Bar & Baz (South) Limited" => "foo bar and baz (south) limited",
-          "Foo Bar & Baz (South & NORTH) Limited" => "foo bar and baz (south and north) limited",
+          "Foo Bar & Baz (South) Limited" => "foo bar and baz south limited",
+          "Foo Bar & Baz (South & NORTH) Limited" => "foo bar and baz south and north limited",
           "Foo Bar & Baz Ltd t/a bar foo" => "foo bar and baz limited",
           "Foo Bar & Baz Ltd T/A bar foo" => "foo bar and baz limited"
         }
