@@ -34,6 +34,10 @@ class HyperlocalSite < ActiveRecord::Base
     url =~ /\/$/ ? "#{url}*" : "#{url}/*"
   end
   
+  def url=(raw_url)
+    self[:url] = TitleNormaliser.normalise_url(raw_url)
+  end
+  
   private
   def tweet_about_it
     if approved && !approved_was

@@ -7,7 +7,7 @@ class SupplierDetailsTest < ActiveSupport::TestCase
       @supplier_details = SupplierDetails.new
     end
     
-    should 'have website accessor' do
+    should 'have url accessor' do
       assert @supplier_details.respond_to?(:url)
       assert @supplier_details.respond_to?(:url=)
     end
@@ -25,6 +25,13 @@ class SupplierDetailsTest < ActiveSupport::TestCase
     should 'have wikipedia_url accessor' do
       assert @supplier_details.respond_to?(:wikipedia_url)
       assert @supplier_details.respond_to?(:wikipedia_url=)
+    end
+    
+    context "when assigning url" do
+
+      should "clean up using url_normaliser" do
+        assert_equal 'http://foo.com', SupplierDetails.new(:url => 'foo.com').url
+      end
     end
     
     context 'when approving' do

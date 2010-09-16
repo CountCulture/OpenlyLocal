@@ -99,7 +99,28 @@ class TitleNormaliserTest < Test::Unit::TestCase
       end
     end
 
+    context "when normalising url" do
+      should "return nil if nil given" do
+        assert_nil TitleNormaliser.normalise_url(nil)
+      end
 
+      should "return nil if empty string given" do
+        assert_nil TitleNormaliser.normalise_url("")
+      end
+
+      should "normalise financial_sum" do
+        OriginalTitleAndNormalisedUrl = {
+          "http://www.foo.com" => "http://www.foo.com",
+          "www.foo.com" => "http://www.foo.com",
+          "https://www.foo.com" => "https://www.foo.com",
+          "http://http://www.foo.com" => "http://www.foo.com"
+        }
+
+        OriginalTitleAndNormalisedUrl.each do |orig_url, normalised_url|
+          assert_equal( normalised_url, TitleNormaliser.normalise_url(orig_url), "failed for #{orig_url}")
+        end
+      end
+    end
   end
   
 end

@@ -104,6 +104,13 @@ class CharityTest < ActiveSupport::TestCase
     should "alias website as url" do
       assert_equal 'http://foo.com', Charity.new(:website => 'http://foo.com').url
     end
+    
+    context "when setting website" do
+
+      should "clean up using url_normaliser" do
+        assert_equal 'http://foo.com', Charity.new(:website => 'foo.com').website
+      end
+    end
 
     context "when returning foaf version of telephone number" do
 

@@ -18,17 +18,17 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_not_allow_values_for :platform, "foo"
     should_not_allow_mass_assignment_of :approved
     
-    should_have_db_column :email
-    should_have_db_column :description
-    should_have_db_column :lat
-    should_have_db_column :lng
-    should_have_db_column :distance_covered
-    should_have_db_column :feed_url
-    should_have_db_column :platform
-    should_have_db_column :area_covered
-    should_have_db_column :country
-    should_have_db_column :approved
-    should_have_db_column :party_affiliation
+    should have_db_column :email
+    should have_db_column :description
+    should have_db_column :lat
+    should have_db_column :lng
+    should have_db_column :distance_covered
+    should have_db_column :feed_url
+    should have_db_column :platform
+    should have_db_column :area_covered
+    should have_db_column :country
+    should have_db_column :approved
+    should have_db_column :party_affiliation
     
     should "act as mappable" do
       assert HyperlocalSite.respond_to?(:find_closest)
@@ -170,6 +170,13 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       assert_equal "#{@hyperlocal_site.id}-some-title-with-stuff", @hyperlocal_site.to_param
     end
     
+    context "when setting url" do
+
+      should "clean up using url_normaliser" do
+        assert_equal 'http://foo.com', HyperlocalSite.new(:url => 'foo.com').url
+      end
+    end
+
     context "when returning google_cse_url" do
       should "return url with slash and asterix added if no slash on the end" do
         assert_equal "http://foo.com/*", HyperlocalSite.new(:url => "http://foo.com").google_cse_url

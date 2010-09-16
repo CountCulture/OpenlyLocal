@@ -46,6 +46,10 @@ class Charity < ActiveRecord::Base
     true
   end
   
+  def website=(raw_url)
+    self[:website] = TitleNormaliser.normalise_url(raw_url)
+  end
+  
   private
   def normalise_title
     self.normalised_title = self.class.normalise_title(title)
