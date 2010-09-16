@@ -3,7 +3,7 @@ class FinancialTransaction < ActiveRecord::Base
   before_validation :save_associated_supplier
   validates_presence_of :value, :date, :supplier_id
   attr_reader :organisation
-  delegate :name, :openlylocal_url, :to => :supplier, :prefix => true
+  delegate :name, :openlylocal_url, :uid, :to => :supplier, :prefix => true
   delegate :name, :id, :openlylocal_url, :to => :organisation, :prefix => :organisation
   delegate :organisation_type, :to => :supplier
     
@@ -23,6 +23,7 @@ class FinancialTransaction < ActiveRecord::Base
                  [:organisation_type],
                  [:organisation_openlylocal_url],
                  [:supplier_name],
+                 [:supplier_id, :supplier_uid],
                  [:supplier_openlylocal_id, :supplier_id],
                  [:supplier_openlylocal_url],
                  [:cost_centre],

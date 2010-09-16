@@ -75,6 +75,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       assert_equal @financial_transaction.supplier.name, @financial_transaction.supplier_name
     end
     
+    should "delegate supplier_uid to supplier" do
+      @financial_transaction.supplier.update_attribute(:uid, '6429')
+      assert_equal @financial_transaction.supplier.uid, @financial_transaction.supplier_uid
+    end
+    
     should "delegate supplier_openlylocal_url to supplier" do
       assert_equal @financial_transaction.supplier.openlylocal_url, @financial_transaction.supplier_openlylocal_url
     end
@@ -450,24 +455,15 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       setup do
         @fin_trans = FinancialTransaction.new
       end
-
-      should "create company with given VAT number" do
-        assert_difference "Company.count", 1 do
-          @fin_trans.supplier_vat_number = 'GB12345'
-        end
-        assert Company.find_by_vat_number('GB12345')
-      end
-      
-      should "not create company if one exists with given VAT number" do
-        Factory(:company, :vat_number => 'GB12345')
-        assert_no_difference "Company.count" do
-          @fin_trans.supplier_vat_number = 'GB12345'
-        end
-      end
       
       should "instantiate supplier if not set yet" do
         @fin_trans.supplier_vat_number = 'GB12345'
         assert_kind_of Supplier, @fin_trans.supplier
+      end
+      
+      should 'assign to vat_number instance_variable' do
+        @fin_trans.supplier_vat_number = 'GB12345'
+        assert_equal 'GB12345', @fin_trans.supplier.instance_variable_get(:@vat_number)
       end
       
       should "not instantiate new supplier if set" do
@@ -476,12 +472,18 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_equal 'Bar Supplier', @fin_trans.supplier.name
       end
       
-      should "associate company with supplier" do
-        @fin_trans.supplier_vat_number = 'GB12345'
-        assert_kind_of Company, @fin_trans.supplier.payee
-        assert_equal 'GB12345', @fin_trans.supplier.payee.vat_number
+    end
+    
+    # This is sort of integration test to see that all is well
+    should "create supplier when financial transaction saved" do
+      ft = Factory.build(:financial_transaction, :supplier => nil)
+      ft.supplier_vat_number = 'GB12345'
+      ft.organisation = Factory(:council)
+      ft.supplier_name = 'Foo Supplier'
+      assert_difference "Supplier.count", 1 do
+        ft.save!
       end
-      
+      assert_equal 'Foo Supplier', ft.reload.supplier.name
     end
     
     should 'be able to be created when supplied with necessary supplier params' do
