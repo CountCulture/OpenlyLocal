@@ -771,3 +771,29 @@ task :import_harlow_payments => :environment do
   council.spending_stat.perform
 end
 
+desc "Import Cambridgeshire County Council Payments"
+task :import_cambridgeshire_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%Cambridgeshire%'")
+  puts "Adding transactions for #{council.title}"
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'cambridgeshire_cc')).select{ |f| f.match('csv') }.each do |file_name|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/cambridgeshire_cc/#{file_name}"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:organisation => council,
+                                      :date => row['Date Paid'].gsub('/', '-'),
+                                      :value => row['Amount Paid'],
+                                      :supplier_name => row["Supplier Name"],
+                                      :department_name => row['Division'],
+                                      :invoice_number => row['Invoice ID'],
+                                      :service => row["Cost Centre Description"],
+                                      :description => row['Subjective Description'],
+                                      :csv_line_number => csv_file.lineno, #deleted heading + blank lines
+                                      :source_url => "http://www.cambridgeshire.gov.uk/NR/rdonlyres/B4A29EF2-303A-45A5-B6D7-B55525B899BC/0/#{file_name}"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end    
+  end
+  council.spending_stat.perform
+end
+
