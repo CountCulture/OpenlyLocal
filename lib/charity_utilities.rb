@@ -33,8 +33,8 @@ module CharityUtilities
     end
     
     def get_recent_charities(start_date=nil, end_date=nil)
-      start_date ||= 3.days.ago
-      end_date ||= start_date + 3.days
+      start_date ||= 4.days.ago
+      end_date ||= start_date + 4.days
       # new_charities = []
       url = CharityCommissionUrl + "/SHOWCHARITY/RegisterOfCharities/AdvancedSearch.aspx"
 

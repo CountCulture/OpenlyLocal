@@ -30,7 +30,7 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
       end
       
       should "by default get charities that registered in past 3 days" do
-        HTTPClient.any_instance.expects(:post).with(anything, has_entry("ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateFrom$DropDownListDay" => 3.days.ago.day.to_s))
+        HTTPClient.any_instance.expects(:post).with(anything, has_entry("ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateFrom$DropDownListDay" => 4.days.ago.day.to_s))
         CharityUtilities::Client.new.get_recent_charities
       end
 
