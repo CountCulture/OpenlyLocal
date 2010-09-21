@@ -41,6 +41,10 @@ every :monday, :at => '4am' do
   command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'PoliceTeam.all.each { |team| team.update_officers }' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
 end
 
+every 1.day, :at => '5am' do
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Charity.add_new_charities' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+end
+
 # every :sunday, :at => '1am' do
 #   command "RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/rake import_council_officers"
 # end
