@@ -20,7 +20,7 @@ module SocialNetworkingUtilities
       
       def update_social_networking_details_from_website
         return unless url = self.url
-        details = Finder.new(url).process
+        details = SocialNetworkingUtilities::Finder.new(url).process
         update_social_networking_details(details)
       end
       

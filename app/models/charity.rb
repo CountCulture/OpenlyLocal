@@ -21,6 +21,18 @@ class Charity < ActiveRecord::Base
     TitleNormaliser.normalise_title(raw_title.gsub(/\A\s*the\s/i, ''))
   end
   
+  def self.add_new_charities(options={})
+    new_charities = CharityUtilities::Client.new.get_recent_charities(options[:start_date], options[:end_date]).collect do |charity_info|
+      charity = Charity.create(charity_info)
+      begin
+        charity.update_info unless charity.new_record? # update info only if it's saved
+      rescue Exception, Timeout::Error => e
+        logger.error { "Exception updating charity #{charity.title} (#{charity.charity_number})" }
+      end
+      charity
+    end
+  end
+  
   def accounts=(accounts_data)
     self[:accounts] = accounts_data
     return accounts_data if accounts_data.blank?

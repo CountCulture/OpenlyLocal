@@ -109,6 +109,11 @@ class TwitterAccountMethodsTest < ActiveSupport::TestCase
         assert_nil @test_model.twitter_list_name
       end
       
+      should "not rasie exception when saving instance with no twitter_list_name" do
+        @test_model.twitter_account_name = "foo"
+        @test_model.save!
+      end
+      
     end
     
   end

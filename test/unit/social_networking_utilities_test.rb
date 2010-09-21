@@ -114,6 +114,11 @@ class SocialNetworkingUtilitiesTest < ActiveSupport::TestCase
         @test_model.update_social_networking_details_from_website
       end
             
+      should "not raise exception when setting twitter_account" do
+        SocialNetworkingUtilities::Finder.any_instance.expects(:process).returns(:twitter_account_name => 'foobar')
+        @test_model.update_social_networking_details_from_website
+      end
+            
     end
   end
 

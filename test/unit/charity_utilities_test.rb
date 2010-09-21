@@ -12,6 +12,70 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
       assert_equal '123456', @client.charity_number
     end
     
+    context "when finding new charities" do
+      setup do
+        dummy_search_results = dummy_html_response(:charities_search_results_page_1)
+        dummy_search_page = dummy_html_response(:charities_advanced_search_page)
+        HTTPClient.any_instance.stubs(:get_content).returns(dummy_search_page).then.returns(dummy_search_results)
+        HTTPClient.any_instance.stubs(:post_content)#.returns(dummy_search_results)
+      end
+      
+      # should ""
+
+      should "post details to charities commission website" do
+        post_url = CharityUtilities::Client::CharityCommissionUrl + '/ShowCharity/RegisterOfCharities/AdvancedSearch.aspx'
+        
+        HTTPClient.any_instance.expects(:post).with(post_url, anything)
+        CharityUtilities::Client.new.get_recent_charities
+      end
+      
+      should "by default get charities that registered in past 3 days" do
+        HTTPClient.any_instance.expects(:post).with(anything, has_entry("ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateFrom$DropDownListDay" => 3.days.ago.day.to_s))
+        CharityUtilities::Client.new.get_recent_charities
+      end
+
+      should "by default get charities that registered up to today" do
+        HTTPClient.any_instance.expects(:post).with(anything, has_entry("ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateTo$DropDownListDay" => Date.today.day.to_s))
+        CharityUtilities::Client.new.get_recent_charities
+      end
+
+      should "get charities registered between given dates" do
+        HTTPClient.any_instance.expects(:post).with(anything, has_entries( "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateFrom$DropDownListDay" => '20',
+                                                                                   "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateFrom$DropDownListMonth" => "May", 
+                                                                                   "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateTo$DropDownListDay" => "14",
+                                                                                   "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateTo$DropDownListMonth" => "September"))
+        CharityUtilities::Client.new.get_recent_charities('20-05-2010'.to_date, '14-09-2010'.to_date)
+      end
+
+      should "extract charities from result" do
+        res = CharityUtilities::Client.new.get_recent_charities
+        assert_kind_of Array, res
+        assert_equal 25, res.size
+        assert_equal '"WE THE CHANGE" FOUNDATION', res.first[:title]
+        assert_equal '1137870', res.first[:charity_number]
+      end
+      
+      should "get next page if next page link" do
+        # "http://www.charitycommission.gov.uk/Showcharity/RegisterOfCharities/SearchMatchList.aspx?RegisteredCharityNumber=0&SubsidiaryNumber=0"
+      end
+      
+      should "not get next page if no next page link" do
+        "http://www.charitycommission.gov.uk/Showcharity/RegisterOfCharities/SearchMatchList.aspx?RegisteredCharityNumber=0&SubsidiaryNumber=0"
+      end
+      
+      # should "create charities for those not already in  database" do
+      #   
+      # end
+      # 
+      # should "not create charities for those already in database" do
+      #   flunk
+      # end
+      # 
+      # should "queue charities up for updating" do
+      #   
+      # end
+    end
+        
     context "when getting charity details" do
       setup do
         @dummy_response = dummy_html_response(:large_charity_main_page)

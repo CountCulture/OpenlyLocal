@@ -78,6 +78,103 @@ class CharityTest < ActiveSupport::TestCase
         TitleNormaliser.expects(:normalise_title).with('theatre trust')
         Charity.normalise_title('theatre trust')
       end
+    end
+    
+    context "when adding new charities" do
+      setup do
+        @new_charity_info = [{:charity_number => '98765', :title => "NEW CHARITY"},
+                            {:charity_number => '8765', :title => "ANOTHER NEW CHARITY"}]
+        CharityUtilities::Client.any_instance.stubs(:get_recent_charities).returns(@new_charity_info)
+      end
+
+      should "get new charities using CharityUtilities" do
+        Charity.any_instance.stubs(:update_info)
+        CharityUtilities::Client.any_instance.expects(:get_recent_charities).returns(@new_charity_info)
+        Charity.add_new_charities
+      end
+      
+      should "create new charities from information returned from CharityUtilities" do
+        Charity.any_instance.stubs(:update_info)
+        assert_difference "Charity.count", 2 do
+          Charity.add_new_charities
+        end
+      end
+      
+      should "update info for newly-created charities" do
+        Charity.any_instance.expects(:update_info).twice
+        Charity.add_new_charities
+      end
+      
+      should "return charities" do
+        Charity.any_instance.stubs(:update_info)
+        charities = Charity.add_new_charities
+        assert_equal 2, charities.size
+        assert_kind_of Charity, charities.first
+      end
+      
+      context "and problem updating info on charities" do
+        setup do
+          Charity.any_instance.stubs(:update_from_charity_register).returns(true)
+        end
+
+        should "still save basic charity details" do
+          Charity.any_instance.expects(:update_social_networking_details_from_website).raises
+          assert_difference "Charity.count", 2 do
+            charities = Charity.add_new_charities
+          end
+        end
+        
+        should "not raise exception if Timeout:Error" do
+          Charity.any_instance.expects(:update_social_networking_details_from_website).raises(Timeout::Error)
+          
+          assert_nothing_raised() { Charity.add_new_charities }
+        end
+      end
+      
+      context "and specific dates given" do
+        setup do
+          Charity.any_instance.stubs(:update_info)
+        end
+
+        should "get new charities between given dates" do
+          Charity.any_instance.stubs(:update_info)
+          start_date, end_date = 1.month.ago, 2.weeks.ago
+          CharityUtilities::Client.any_instance.expects(:get_recent_charities).with(start_date, end_date).returns(@new_charity_info)
+          Charity.add_new_charities(:start_date => start_date, :end_date => end_date)
+        end
+      end
+      
+      context "and charity with charity number already exists" do
+        setup do
+          Factory(:charity, :charity_number => '8765')
+        end
+
+        should "not create another charity with charity number" do
+          Charity.any_instance.stubs(:update_info)
+          assert_difference "Charity.count", 1 do
+            Charity.add_new_charities
+          end
+        end
+        
+        should "update info only for new charity" do
+          Charity.any_instance.expects(:update_info) #once
+          Charity.add_new_charities
+        end
+        
+        should "not raise exception" do
+          Charity.any_instance.stubs(:update_info)
+          assert_nothing_raised(Exception) { Charity.add_new_charities }
+        end
+        
+        should "return all charities, even ones not saved" do
+          Charity.any_instance.stubs(:update_info)
+          charities = Charity.add_new_charities
+          assert_equal 2, charities.size
+          assert_kind_of Charity, charities.first
+          unsaved_charity = charities.detect{ |c| c.new_record? }
+          assert_equal '8765', unsaved_charity.charity_number
+        end
+      end
       
     end
     
@@ -134,6 +231,10 @@ class CharityTest < ActiveSupport::TestCase
     should "use title in to_param method" do
       @charity.title = "some title-with/stuff"
       assert_equal "#{@charity.id}-some-title-with-stuff", @charity.to_param
+    end
+    
+    should "return nil for twitter_list_name" do
+      assert_nil @charity.twitter_list_name
     end
     
     context "when assigning info to accounts" do

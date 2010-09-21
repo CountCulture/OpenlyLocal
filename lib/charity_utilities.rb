@@ -32,6 +32,83 @@ module CharityUtilities
       nil
     end
     
+    def get_recent_charities(start_date=nil, end_date=nil)
+      start_date ||= 3.days.ago
+      end_date ||= start_date + 3.days
+      # new_charities = []
+      url = CharityCommissionUrl + "/SHOWCHARITY/RegisterOfCharities/AdvancedSearch.aspx"
+
+      client = HTTPClient.new
+      search_page =  Nokogiri.HTML(client.get_content(url)) #pick up cookie, viewstates etc
+      viewstate = search_page.at('#__VIEWSTATE')[:value]
+      eventvalidation = search_page.at('#__EVENTVALIDATION')[:value]
+      
+      post_url = CharityCommissionUrl + '/ShowCharity/RegisterOfCharities/AdvancedSearch.aspx'
+      
+      post_params = {
+        "ctl00$CorporateHeader1$Header$Text2" => "",
+        "ctl00$CorporateHeader1$Header$BasicSearch$radio" => "rdName",
+        "ctl00$CorporateHeader1$Header$BasicSearch$textBoxSearch" => "",
+        "ctl00$MainContent$searchforControl$SearchForRadioButtons" => "radioButtonOnlyRegistered",
+        "ctl00$MainContent$keywordSearchControlInstance$keywordsSubControl$textBoxKeywords" => "",
+        "ctl00$MainContent$keywordSearchControlInstance$keywordsSubControl$keywordControl" => "radioButtonAll",
+        "ctl00$MainContent$keywordSearchControlInstance$searchinSubControl$checkBoxCharityName" => "on",
+        "ctl00$MainContent$picklistControl$areaDropDownControl$dropDownListArea" => "In any area",
+        "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateFrom$DropDownListDay" => start_date.day.to_s,
+        "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateFrom$DropDownListMonth" => Date::MONTHNAMES[start_date.month],
+        "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateFrom$DropDownListYear" => "1",
+        "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateTo$DropDownListDay" => end_date.day.to_s,
+        "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateTo$DropDownListMonth" => Date::MONTHNAMES[end_date.month],
+        "ctl00$MainContent$searchdatesRegistration$searchdatesSearchdateTo$DropDownListYear" => "1",
+        "ctl00$MainContent$searchdatesRemoved$searchdatesSearchdateFrom$DropDownListDay" => "",
+        "ctl00$MainContent$searchdatesRemoved$searchdatesSearchdateFrom$DropDownListMonth" => "",
+        "ctl00$MainContent$searchdatesRemoved$searchdatesSearchdateFrom$DropDownListYear" => "0",
+        "ctl00$MainContent$searchdatesRemoved$searchdatesSearchdateTo$DropDownListDay" => "",
+        "ctl00$MainContent$searchdatesRemoved$searchdatesSearchdateTo$DropDownListMonth" => "",
+        "ctl00$MainContent$searchdatesRemoved$searchdatesSearchdateTo$DropDownListYear" => "0",
+        "ctl00$MainContent$incomeRangeControl$dropDownListIncomeRange" => "0",
+        "ctl00$MainContent$buttonSearch" => "Search",
+        "client" => "my_frontend",
+        "output" => "xml_no_dtd",
+        "proxystylesheet" => "my_frontend",
+        "site" => "default_collection",
+        "__EVENTTARGET" => "",
+        "__EVENTARGUMENT" => "",
+        "__EVENTVALIDATION" => eventvalidation, 
+        "__VIEWSTATE" => viewstate
+      }
+      
+      # Get first page
+      RAILS_DEFAULT_LOGGER.debug("About to get info from #{post_url} with params:\n#{post_params.inspect}")
+      if resp = client.post(post_url, post_params)
+        resp = client.get_content(CharityCommissionUrl+resp.header['Location'].first)
+        results_page = Nokogiri.HTML(resp)
+        new_charities = extract_charities_from_search_page(results_page)
+        additional_pages = (results_page.search('input.PageNumbers')[-2][:value].to_i - 1) rescue nil
+        return new_charities unless additional_pages
+        post_url = CharityCommissionUrl + "/SHOWCHARITY/RegisterOfCharities/SearchMatchList.aspx?RegisteredCharityNumber=0&SubsidiaryNumber=0"
+        additional_pages.times do |i|
+          viewstate = results_page.at('input#__VIEWSTATE')[:value]
+          eventvalidation = results_page.at('input#__EVENTVALIDATION')[:value]
+          results_page = Nokogiri.HTML(client.post_content(post_url, 
+                                                                      "__EVENTVALIDATION" => eventvalidation, 
+                                                                      "__VIEWSTATE" => viewstate,
+                                                                      "ctl00$CorporateHeader1$Header$BasicSearch$radio" => "rdName",
+                                                                      "ctl00$CorporateHeader1$Header$BasicSearch$textBoxSearch" => "Enter name or number",
+                                                                      "ctl00$CorporateHeader1$Header$Text2" => "",
+                                                                      "ctl00$MainContent$gridView$ctl28$ctl#{'%02d' % (i>0 ? i+2 : i+1)}" => i+2,
+                                                                      "client" => "my_frontend",
+                                                                      "output" => "xml_no_dtd",
+                                                                      "proxystylesheet" => "my_frontend",
+                                                                      "site" => "default_collection"
+                                                                      ))
+          additional_charities = extract_charities_from_search_page(results_page)
+          new_charities += additional_charities
+        end
+      end
+      new_charities
+    end
+    
     def contact_data_from(url)
       contact_page = Nokogiri.HTML(_http_get(url)) # use Nokogiri as Hpricot has probs with this website
       res = {}
@@ -54,7 +131,7 @@ module CharityUtilities
       res[:other_names] = other_names == 'None' ? nil : other_names
       res
     end
-
+    
     protected
     def _http_get(url)
       return if RAILS_ENV=='test'
@@ -102,6 +179,13 @@ module CharityUtilities
     def clean_number(raw_number)
       return if raw_number.blank?
       raw_number.gsub(/[^\d\.\-]/,'')
+    end
+
+    def extract_charities_from_search_page(page)
+      # page.search('#ctl00_MainContent_gridView tr').collect{ |row| {:charity_number => row.at('a').inner_text, :title => row.search('a')[1].inner_text.squish } }
+      # page.search('#ctl00_MainContent_gridView tr[td[@valign="top"]]').collect{ |row| {:charity_number => row.at('a').inner_text, :title => row.search('a')[1].inner_text.squish } }
+      page.search('//table/tr[count(td)>2]').collect{ |row| {:charity_number => row.at('a').inner_text, :title => row.search('a')[1].inner_text.squish } }
+
     end
 
   end
