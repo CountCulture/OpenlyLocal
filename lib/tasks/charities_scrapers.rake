@@ -59,14 +59,14 @@ end
 desc "Catch up newly created charities"
 task :catch_up_with_new_charities => :environment do
   days_ago = 2
-  charities, new_charity_count = [],1 # give new_charity_count non-zero value so loop runs at least once
-  while charities.size != new_charity_count 
+  charities, unsaved_charity_count = [],1 # give new_charity_count non-zero value so loop runs at least once
+  while charities.size != unsaved_charity_count # keep going unless all the charities returned are already in db 
     start_date = (days_ago+4).days.ago.to_date
     end_date = days_ago.days.ago.to_date
     puts "About to get charities from #{start_date} to #{end_date}"
     charities = Charity.add_new_charities(:start_date => start_date, :end_date => end_date)
-    new_charity_count = charities.select{|c| !c.new_record?}.size
-    puts "Found #{charities.size} charities, #{charities.select{|c| !c.new_record?}.size} of them new"
+    unsaved_charity_count = charities.select{|c| c.new_record?}.size
+    puts "Found #{charities.size} charities, #{charities.size - unsaved_charity_count} of them new"
     days_ago += 3
   end 
   
