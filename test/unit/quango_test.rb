@@ -15,7 +15,7 @@ class QuangoTest < ActiveSupport::TestCase
       assert @quango.respond_to?(:address_in_full)
     end
         
-
+    should validate_presence_of :title
     
     should have_db_column :title
     should have_db_column :quango_type

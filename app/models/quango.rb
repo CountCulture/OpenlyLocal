@@ -8,5 +8,6 @@ class Quango < ActiveRecord::Base
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
   include SpendingStatUtilities::Base
   include AddressMethods
+  validates_presence_of :title
                
 end

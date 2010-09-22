@@ -71,6 +71,70 @@ class QuangosControllerTest < ActionController::TestCase
       end
 
     end
-    
   end
+  
+   # edit test
+   context "on GET to :edit without auth" do
+     setup do
+       get :edit, :id => @quango
+     end
+
+     should respond_with 401
+   end
+
+   context "on GET to :edit with existing record" do
+     setup do
+       stub_authentication
+       get :edit, :id => @quango
+     end
+  
+     should_assign_to(:quango)
+     should respond_with :success
+     should render_template :edit
+  
+     should "show form" do
+       assert_select "form#edit_quango_#{@quango.id}"
+     end
+   end  
+  
+  # update test
+  context "on PUT to :update" do
+    context "without auth" do
+      setup do
+        put :update, :id => @quango.id, :quango => { :title => "New Name", :website => "http://new.name.com"}
+      end
+
+      should respond_with 401
+    end
+    
+    context "with valid params" do
+      setup do
+        stub_authentication
+        put :update, :id => @quango.id, :quango => { :title => "New Name", :website => "http://new.name.com"}
+      end
+    
+      should_not_change("The number of quangos") { Quango.count }
+      should_change("The quango name", :to => "New Name") { @quango.reload.title }
+      should_change("The quango website", :to => "http://new.name.com") { @quango.reload.website }
+      should_assign_to :quango
+      should_redirect_to( "the show page for quango") { quango_path(assigns(:quango)) }
+      should_set_the_flash_to "Successfully updated quango"
+    
+    end
+    
+    context "with invalid params" do
+      setup do
+        stub_authentication
+        put :update, :id => @quango.id, :quango => {:title => ""}
+      end
+    
+      should_not_change("The number of quangos") { Quango.count }
+      should_not_change("The quango name") { @quango.reload.title }
+      should_assign_to :quango
+      should render_template :edit
+      should_not set_the_flash
+    end
+  
+  end  
+  
 end

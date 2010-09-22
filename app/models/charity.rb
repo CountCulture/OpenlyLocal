@@ -22,6 +22,7 @@ class Charity < ActiveRecord::Base
   end
   
   def self.add_new_charities(options={})
+    puts"***About to get new charities from Charity Register" # usually run from cron job, so this will get added to cron log
     new_charities = CharityUtilities::Client.new.get_recent_charities(options[:start_date], options[:end_date]).collect do |charity_info|
       charity = Charity.create(charity_info)
       begin
