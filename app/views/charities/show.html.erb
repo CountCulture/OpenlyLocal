@@ -3,7 +3,6 @@
 
 <dl id="main_attributes" class="attributes">
 	<%= render :partial => "attributes", :object => @charity %>
-	<%= attribute_tag :OpenCharities_page, link_to("http://OpenCharities.org/charities/#{@charity.charity_number}", "http://OpenCharities.org/charities/#{@charity.charity_number}", :class => 'external') %>
 </dl>
 
 <%- unless @charity.supplying_relationships.blank? -%>

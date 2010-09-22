@@ -9,3 +9,4 @@
 <%= attribute_tag :latest_accounts, attributes.accounts_date.to_s(:event_date) if attributes.accounts_date? %>
 <%= attribute_tag :income, number_to_currency(attributes.income, :unit => "£", :precision => 0) if attributes.income? %>
 <%= attribute_tag :spending, number_to_currency(attributes.spending, :unit => "£", :precision => 0) if attributes.spending? %>
+<%= attribute_tag :OpenCharities_page, link_to("http://OpenCharities.org/charities/#{@charity.charity_number}", "http://OpenCharities.org/charities/#{@charity.charity_number}", :class => 'external', :title => "More info on #{@charity.title}") %>
