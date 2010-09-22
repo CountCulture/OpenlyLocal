@@ -43,7 +43,7 @@ class QuangosController < ApplicationController
   
   def destroy
     @quango.destroy
-    flash[:notice] = "Successfully destroyed Quango"
+    flash[:notice] = "Successfully destroyed quango"
     redirect_to quangos_url
   end
   

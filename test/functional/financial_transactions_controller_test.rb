@@ -4,6 +4,7 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
   def setup
     @financial_transaction = Factory(:financial_transaction, :value => 32.1)
     @supplier = @financial_transaction.supplier
+    @organisation = @supplier.organisation
     @big_financial_transaction = Factory(:financial_transaction, :value => 123456.1)
   end
   
@@ -51,6 +52,20 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
         
         should 'show page number in title' do
           assert_select "title", /page 1/i
+        end
+      end
+      
+      context "when restriction to organisation" do
+        setup do
+          get :index, :organisation_type => @organisation.class.to_s, :organisation_id => @organisation.id
+        end
+        
+        should 'restrict to financial transactions for organisation' do
+          assert assigns(:financial_transactions).all?{ |ft| ft.supplier.organisation == @organisation  }
+        end
+        
+        should 'show organisation in title' do
+          assert_select "title", /#{@organisation.title}/i
         end
       end
       
