@@ -8,8 +8,7 @@ class CharityTest < ActiveSupport::TestCase
     end
     
     should have_many :supplying_relationships
-    should have_many :suppliers
-    should_have_many :financial_transactions, :through => :suppliers
+    should_have_many :financial_transactions, :through => :supplying_relationships
 
     should have_db_column :title
     should have_db_column :activities

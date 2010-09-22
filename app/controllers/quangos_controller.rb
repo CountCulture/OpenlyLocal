@@ -1,5 +1,5 @@
 class QuangosController < ApplicationController
-  before_filter :authenticate, :except => [:index, :show]
+  before_filter :authenticate, :except => [:index, :show, :show_spending]
   before_filter :find_quango, :except => [:index, :new, :create]
 
   def index
@@ -45,6 +45,12 @@ class QuangosController < ApplicationController
     @quango.destroy
     flash[:notice] = "Successfully destroyed Quango"
     redirect_to quangos_url
+  end
+  
+  def show_spending
+    @suppliers = @quango.suppliers.all(:joins => :spending_stat, :order => 'spending_stats.total_spend DESC', :limit => 10)
+    @financial_transactions = @quango.financial_transactions.all(:order => 'value DESC', :limit => 10)
+    @title = "Spending Dashboard :: #{@quango.title}"
   end
   
   private

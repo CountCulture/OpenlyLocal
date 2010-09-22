@@ -801,30 +801,39 @@ desc "Import Lottery Grants"
 task :import_lottery_grants => :environment do
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/csv_data/uk-lottery-grants-21-09-2010.csv"), :headers => true) do |csv_file|
     poss_payer_orgs = Quango.all
-    i=0
+    big_lottery_fund = poss_payer_orgs.detect{ |q| q.title == 'Big Lottery Fund' }
+    community_fund = poss_payer_orgs.detect{ |q| q.title == 'National Lottery Charities Board' }
     # puts "Adding transactions for #{council.title}"
     csv_file.each do |row|
-      if payer = poss_payer_orgs.detect{|p| TitleNormaliser.normalise_title(p.title) == TitleNormaliser.normalise_title(row['DISTRIBUTING_BODY'])}
-        puts "Matched payer (#{row['Distributing_Body']}) to quango (#{payer.title})"
+      department_name = nil
+      if row['Distributing_Body'].match(/Awards For All/) 
+        payer = big_lottery_fund
+        department_name = row['Distributing_Body']
+      elsif row['Distributing_Body'].match(/Community Fund/)
+        payer = community_fund
+        print '+'
+      elsif payer = poss_payer_orgs.detect{|p| TitleNormaliser.normalise_title(p.title) == TitleNormaliser.normalise_title(row['Distributing_Body'])}
+        print "-"
       else
         puts "**** Couldn't match payer (#{row['Distributing_Body']}) to quango"
+        break
       end
-      break if i>100
-      i+=1
-      # ft = FinancialTransaction.new(:organisation => council,
-      #                               :date => row['Date Paid'].gsub('/', '-'),
-      #                               :value => row['Amount Paid'],
-      #                               :supplier_name => row["Supplier Name"],
-      #                               :department_name => row['Division'],
-      #                               :invoice_number => row['Invoice ID'],
-      #                               :service => row["Cost Centre Description"],
-      #                               :description => row['Subjective Description'],
-      #                               :csv_line_number => csv_file.lineno, #deleted heading + blank lines
-      #                               :source_url => "http://www.cambridgeshire.gov.uk/NR/rdonlyres/B4A29EF2-303A-45A5-B6D7-B55525B899BC/0/#{file_name}"
-      #                               )
-      # ft.save!                                  
-      # puts "."
+      ft = FinancialTransaction.new(:organisation => payer,
+                                    :date => row['Award_Date'],
+                                    :value => row['Award_Amount'],
+                                    :supplier_name => row["Recipient_Name"],
+                                    :department_name => department_name,
+                                    :transaction_type => 'LotteryGrant',
+                                    # :invoice_number => row['Invoice ID'],
+                                    :service => row["Good_Cause"],
+                                    :description => row['Project_Name'],
+                                    # :csv_line_number => csv_file.lineno, #deleted heading + blank lines
+                                    :source_url => row["url"]
+                                    )
+      ft.save!                                  
+      puts "."
     end
-  end    
+  end
+  poss_payer_orgs.each{|p| p.spending_stat.perform}    
 end
 

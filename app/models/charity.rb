@@ -1,7 +1,6 @@
 class Charity < ActiveRecord::Base
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
-  has_many :suppliers, :as => :organisation
-  has_many :financial_transactions, :through => :suppliers
+  has_many :financial_transactions, :through => :supplying_relationships
   include SpendingStatUtilities::Base
   include AddressMethods
   include ResourceMethods
