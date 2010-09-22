@@ -10,6 +10,14 @@
     <%= f.text_field :website %>
   </p>
   <p>
+    <%= f.label :quango_type %>
+    <%= f.select :quango_type, Quango::PossibleTypes.to_a, { :include_blank => true } %>
+  </p>
+  <p>
+    <%= f.label :quango_subtype %>
+    <%= f.text_field :quango_subtype %>
+  </p>
+  <p>
     <%= f.label :sponsoring_organisation %>
     <%= f.text_field :sponsoring_organisation %>
   </p>
