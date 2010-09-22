@@ -60,9 +60,11 @@ class CouncilsController < ApplicationController
   end
   
   def spending
-    @councils = Council.all(:joins => :suppliers, :group => "councils.id")
-    @suppliers = Supplier.all(:joins => :spending_stat, :order => 'spending_stats.total_spend DESC', :limit => 10)
-    @financial_transactions = FinancialTransaction.all(:order => 'value DESC', :limit => 10)
+    @councils = Council.all(:joins => :suppliers, :group => "councils.id", :include => :spending_stat)
+    @suppliers = Supplier.all(:joins => :spending_stat, :include => :spending_stat, :order => 'spending_stats.total_spend DESC', :limit => 10)
+    @supplier_count = Supplier.count(:conditions => {:organisation_type => 'Council'})
+    @financial_transactions = FinancialTransaction.all(:order => 'value DESC', :limit => 10, :include => :supplier)
+    @financial_transaction_count = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
     @title = "Council Spending Dashboard"
   end
   

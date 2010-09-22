@@ -7,8 +7,7 @@
 	<%= basic_table :caption => 'Biggest transactions', 
 									:headings => ['Supplier', 'Organisation', 'Value'], 
 									:classes => ['name', nil, 'value'],
-									:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), basic_link_for(t.organisation), link_to("£#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
-									:more_info_url => financial_transactions_path %>
+									:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), basic_link_for(t.organisation), link_to("£#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] } %>
 </div>
 
 <%= will_paginate @financial_transactions %>

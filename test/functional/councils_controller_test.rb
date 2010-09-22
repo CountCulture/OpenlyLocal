@@ -770,7 +770,7 @@ class CouncilsControllerTest < ActionController::TestCase
        end
      
        should_not_change( "Number of councils" ){"Council.count"}
-       should assign_to :council
+       should assign_to(:council)
        should render_template :new
        should_not set_the_flash
      end
@@ -857,6 +857,8 @@ class CouncilsControllerTest < ActionController::TestCase
         @high_spending_supplier = Factory(:supplier, :organisation => @high_spending_council)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
+        @non_council_supplier = Factory(:supplier)
+        @non_council_transaction = Factory(:financial_transaction, :supplier => @non_council_supplier)
         SpendingStat.all.each(&:perform) # update all spending stats
         get :spending
       end
@@ -881,6 +883,15 @@ class CouncilsControllerTest < ActionController::TestCase
         assert assigns(:financial_transactions).include?(@financial_transaction_1)
         assert assigns(:financial_transactions).include?(@financial_transaction_2)
         assert_equal @financial_transaction_2, assigns(:financial_transactions).first
+      end
+
+      should 'show number of council transactions' do
+        puts css_select('#transaction_count .value')
+        assert_match /2/, css_select('#transaction_count .value').to_s # shouldn't include non-council transactions
+      end
+
+      should 'show number of council suppliers' do
+        assert_match /2/, css_select('#supplier_count .value').to_s # shouldn't include non-council transactions
       end
 
       # should 'order councils by spend' do

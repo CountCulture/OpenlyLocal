@@ -7,8 +7,8 @@
 	  <div id="statistics">
 	    <div class='in_words'>
 			  <div id='council_count' class='spending_count'><span class='value'><%= @councils.size %></span> <strong class=description>Councils</strong></div>
-			  <div id='supplier_count' class='spending_count'><span class='value'><%= number_with_delimiter(Supplier.count) %></span> <strong class=description>Suppliers</strong></div>
-			  <div id='transaction_count' class='spending_count'><span class='value'><%= number_with_delimiter(FinancialTransaction.count) %></span> <strong class=description>Financial Transactions</strong></div>
+			  <div id='supplier_count' class='spending_count'><span class='value'><%= number_with_delimiter(@supplier_count) %></span> <strong class=description>Suppliers</strong></div>
+			  <div id='transaction_count' class='spending_count'><span class='value'><%= number_with_delimiter(@financial_transaction_count) %></span> <strong class=description>Financial Transactions</strong></div>
 	    </div>
 	  </div>
 	</div>
