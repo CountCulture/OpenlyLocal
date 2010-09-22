@@ -28,3 +28,5 @@
     <%= f.submit "Submit" %>
   </p>
 <% end -%>
+
+<%= button_to "Delete Quango", quango_path(@quango), :confirm => "Are you sure?", :method => :delete %>

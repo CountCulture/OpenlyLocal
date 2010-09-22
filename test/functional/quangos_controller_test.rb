@@ -137,4 +137,27 @@ class QuangosControllerTest < ActionController::TestCase
   
   end  
   
+  # delete tests
+  context "on delete to :destroy a quango without auth" do
+    setup do
+      delete :destroy, :id => @quango.id
+    end
+
+    should respond_with 401
+  end
+
+  context "on delete to :destroy a quango" do
+
+    setup do
+      stub_authentication
+      delete :destroy, :id => @quango.id
+    end
+
+    should "destroy hyperlocal_site" do
+      assert_nil Quango.find_by_id(@quango.id)
+    end
+    should_redirect_to ( "the quangos page") { quangos_url }
+    should set_the_flash.to( /Successfully destroyed/)
+  end
+  
 end

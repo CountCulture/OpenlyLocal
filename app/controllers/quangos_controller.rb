@@ -29,6 +29,12 @@ class QuangosController < ApplicationController
     render :action => "edit"
   end
   
+  def destroy
+    @quango.destroy
+    flash[:notice] = "Successfully destroyed Quango"
+    redirect_to quangos_url
+  end
+  
   private
   def find_quango
     @quango = Quango.find(params[:id])
