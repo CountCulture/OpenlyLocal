@@ -1,0 +1,28 @@
+<%= error_messages_for :quango %>
+
+<% form_for @quango do |f| -%>
+  <p>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :website %>
+    <%= f.text_field :website %>
+  </p>
+  <p>
+    <%= f.label :sponsoring_organisation %>
+    <%= f.text_field :sponsoring_organisation %>
+  </p>
+  <p>
+    <%= f.label :wdtk_name, "WhatDoTheyKnow name" %>
+    <%= f.text_field :wdtk_name %>
+  </p>
+  <p>
+    <%= f.label :wikipedia_url %>
+    <%= f.text_field :wikipedia_url %>
+  </p>
+
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end -%>

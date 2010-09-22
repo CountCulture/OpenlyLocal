@@ -797,3 +797,34 @@ task :import_cambridgeshire_payments => :environment do
   council.spending_stat.perform
 end
 
+desc "Import Lottery Grants"
+task :import_lottery_grants => :environment do
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/csv_data/uk-lottery-grants-21-09-2010.csv"), :headers => true) do |csv_file|
+    poss_payer_orgs = Quango.all
+    i=0
+    # puts "Adding transactions for #{council.title}"
+    csv_file.each do |row|
+      if payer = poss_payer_orgs.detect{|p| TitleNormaliser.normalise_title(p.title) == TitleNormaliser.normalise_title(row['DISTRIBUTING_BODY'])}
+        puts "Matched payer (#{row['Distributing_Body']}) to quango (#{payer.title})"
+      else
+        puts "**** Couldn't match payer (#{row['Distributing_Body']}) to quango"
+      end
+      break if i>100
+      i+=1
+      # ft = FinancialTransaction.new(:organisation => council,
+      #                               :date => row['Date Paid'].gsub('/', '-'),
+      #                               :value => row['Amount Paid'],
+      #                               :supplier_name => row["Supplier Name"],
+      #                               :department_name => row['Division'],
+      #                               :invoice_number => row['Invoice ID'],
+      #                               :service => row["Cost Centre Description"],
+      #                               :description => row['Subjective Description'],
+      #                               :csv_line_number => csv_file.lineno, #deleted heading + blank lines
+      #                               :source_url => "http://www.cambridgeshire.gov.uk/NR/rdonlyres/B4A29EF2-303A-45A5-B6D7-B55525B899BC/0/#{file_name}"
+      #                               )
+      # ft.save!                                  
+      # puts "."
+    end
+  end    
+end
+

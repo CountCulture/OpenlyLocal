@@ -73,6 +73,68 @@ class QuangosControllerTest < ActionController::TestCase
     end
   end
   
+  # new test
+  context "on GET to :new without auth" do
+    setup do
+      get :new
+    end
+  
+    should respond_with 401
+  end
+
+  context "on GET to :new" do
+    setup do
+      stub_authentication
+      get :new
+    end
+  
+    should_assign_to(:quango)
+    should respond_with :success
+    should render_template :new
+  
+    should "show form" do
+      assert_select "form#new_quango"
+    end
+  end  
+  
+  # create test
+   context "on POST to :create" do
+    
+     context "without auth" do
+       setup do
+         post :create, :quango => {:title => "New Quango", :website => "http:://new_quango.com"}
+       end
+
+       should respond_with 401
+     end
+
+     context "with valid params" do
+       setup do
+         stub_authentication
+         post :create, :quango => {:title => "New Quango", :website => "http:://new_quango.com"}
+       end
+     
+       should_change("The number of quangos", :by => 1) { Quango.count }
+       should_assign_to :quango
+       should_redirect_to( "the show page for quango") { quango_path(assigns(:quango)) }
+       should_set_the_flash_to "Successfully created quango"
+     
+     end
+     
+     context "with invalid params" do
+       setup do
+         stub_authentication
+         post :create, :quango => {:website => "http:://new_force.com"}
+       end
+     
+       should_not_change("The number of quangos") { Quango.count }
+       should_assign_to :quango
+       should render_template :new
+       should_not set_the_flash
+     end
+  
+   end  
+  
    # edit test
    context "on GET to :edit without auth" do
      setup do

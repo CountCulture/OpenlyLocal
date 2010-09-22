@@ -1,6 +1,6 @@
 class QuangosController < ApplicationController
   before_filter :authenticate, :except => [:index, :show]
-  before_filter :find_quango, :except => [:index]
+  before_filter :find_quango, :except => [:index, :new, :create]
 
   def index
     @quangos = Quango.all(:order => 'title')
@@ -17,6 +17,18 @@ class QuangosController < ApplicationController
     @title = "#{@quango.title} :: Quangos"
   end
   
+  def new
+    @quango = Quango.new    
+  end
+  
+  def create
+    @quango = Quango.new(params[:quango])
+    @quango.save!
+    flash[:notice] = "Successfully created quango"
+    redirect_to quango_url(@quango)
+  rescue
+    render :action => "new"
+  end
   
   def edit
   end
