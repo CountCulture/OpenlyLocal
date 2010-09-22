@@ -6,6 +6,8 @@ class QuangoTest < ActiveSupport::TestCase
       @quango = Factory(:quango)
     end
     should have_many :supplying_relationships
+    should have_many :suppliers
+    should_have_many :financial_transactions, :through => :suppliers
     
     should "mixin SpendingStat::Base module" do
       assert Quango.new.respond_to?(:spending_stat)

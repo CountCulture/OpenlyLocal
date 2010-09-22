@@ -8,6 +8,9 @@ class CharityTest < ActiveSupport::TestCase
     end
     
     should have_many :supplying_relationships
+    should have_many :suppliers
+    should_have_many :financial_transactions, :through => :suppliers
+
     should have_db_column :title
     should have_db_column :activities
     should have_db_column :charity_number
@@ -15,7 +18,6 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :email
     should have_db_column :telephone
     should have_db_column :date_registered
-    # should have_db_column :charity_commission_url
     should validate_presence_of :charity_number
     should validate_presence_of :title
     should validate_uniqueness_of :charity_number
