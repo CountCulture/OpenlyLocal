@@ -438,7 +438,7 @@ body.councils .area, .feed_entry .dateline {
 }
 #council_spending_dashboard .in_words .explanation .value, #quango_spending_dashboard .in_words .explanation .value {
 	font-size: 1.4em;}
-#council_spending_dashboard .spending_count {
+#council_spending_dashboard .spending_count, #quango_spending_dashboard .spending_count {
 	float:none;
 	margin-right:0;
 	font-size:0.9em;}

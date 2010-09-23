@@ -48,8 +48,14 @@ class QuangosController < ApplicationController
   end
   
   def show_spending
-    @suppliers = @quango.suppliers.all(:joins => :spending_stat, :order => 'spending_stats.total_spend DESC', :limit => 10)
-    @financial_transactions = @quango.financial_transactions.all(:order => 'value DESC', :limit => 10)
+    @suppliers = @quango.suppliers.all( :joins => :spending_stat, 
+                                        :order => 'spending_stats.total_spend DESC', 
+                                        :include => :spending_stat, 
+                                        :limit => 10)
+    @financial_transactions = @quango.financial_transactions.all( :from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_value)',
+                                                                  :include => :supplier, 
+                                                                  :order => 'value DESC', 
+                                                                  :limit => 10)
     @title = "Spending Dashboard :: #{@quango.title}"
   end
   

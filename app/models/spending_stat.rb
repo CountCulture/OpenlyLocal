@@ -55,12 +55,12 @@ class SpendingStat < ActiveRecord::Base
   end
   
   def earliest_transaction_date
-    first_transaction = organisation.financial_transactions.first(:order => 'date')
+    first_transaction = organisation.financial_transactions.first(:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)', :order => 'date')
     first_transaction.date - first_transaction.date_fuzziness.to_i.days
   end
   
   def latest_transaction_date
-    last_transaction = organisation.financial_transactions.first(:order => 'date DESC')
+    last_transaction = organisation.financial_transactions.first(:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)', :order => 'date DESC')
     last_transaction.date + last_transaction.date_fuzziness.to_i.days
   end
   

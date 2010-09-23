@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100915153435) do
+ActiveRecord::Schema.define(:version => 20100923164320) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(:version => 20100915153435) do
   end
 
   add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number"
+  add_index "charities", ["date_registered"], :name => "index_charities_on_date_registered"
 
   create_table "committees", :force => true do |t|
     t.column "title", :string
@@ -382,6 +383,8 @@ ActiveRecord::Schema.define(:version => 20100915153435) do
   end
 
   add_index "financial_transactions", ["supplier_id"], :name => "index_financial_transactions_on_supplier_id"
+  add_index "financial_transactions", ["value"], :name => "index_financial_transactions_on_value"
+  add_index "financial_transactions", ["date"], :name => "index_financial_transactions_on_date"
 
   create_table "hyperlocal_groups", :force => true do |t|
     t.column "title", :string

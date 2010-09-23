@@ -50,71 +50,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       end
     end
     
-    # context "with council_id given" do
-    #   
-    #   setup do
-    #     @member = Factory(:member)
-    #     get :new, :council_id => @member.council.id
-    #   end
-    #   
-    #   should assign_to(:user_submission) { @user_submission }
-    #   should respond_with :success
-    # 
-    #   should "associate council with user submission" do
-    #     assert_equal @member.council, assigns(:user_submission).council
-    #   end
-    # 
-    #   should "select council in select box" do
-    #     assert_select "select#user_submission_council_id" do
-    #       assert_select "option", 2 do #1 for council, 1 for blank
-    #         assert_select "option[value=#{@member.council.id}]"
-    #       end
-    #     end
-    #   end
-    #   
-    #   should "show list of possible members in select box" do
-    #     assert_select "select#user_submission_member_id" do
-    #       assert_select "option", 2 do #1 for member, 1 for blank
-    #         assert_select "option[value=#{@member.id}]"
-    #       end
-    #     end
-    #   end
-    #   
-    #   should "not show text_field for member name" do
-    #     assert_select "input#user_submission_member_name", false
-    #   end
-    # end
-    # 
-    # context "with council_id given but no members for council" do
-    #   
-    #   setup do
-    #     @council = Factory(:council)
-    #     get :new, :council_id => @council.id
-    #   end
-    #   
-    #   should assign_to(:user_submission) { @user_submission}
-    #   should respond_with :success
-    # 
-    #   should "associate council with user submission" do
-    #     assert_equal @council, assigns(:user_submission).council
-    #   end
-    # 
-    #   should "select council in select box" do
-    #     assert_select "select#user_submission_council_id" do
-    #       assert_select "option[value=#{@council.id}]"
-    #     end
-    #   end
-    #   
-    #   should "not_show list of possible members in select box" do
-    #     assert_select "select#user_submission_member_id", false
-    #   end
-    #   
-    #   should "show text_field for member name" do
-    #     assert_select "input#user_submission_member_name"
-    #   end
-    # end
-    # 
-  end
+ end
   
   # create test
    context "on POST to :create" do
@@ -136,24 +72,6 @@ class UserSubmissionsControllerTest < ActionController::TestCase
        should set_the_flash.to /Successfully submitted/i
         
      end
-  #    
-  #    context "with member_id but no council" do
-  #       setup do
-  #         @member = Factory(:member, :council => @council)
-  #         post :create, :user_submission => { :twitter_account_name => "foobar", :member_id => @member.id }
-  #       end
-  # 
-  #       should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
-  #       should assign_to :user_submission
-  #       should_redirect_to( "the page for the member's council") { council_url(@council) }
-  #       should set_the_flash.to /Successfully submitted/i
-  #       
-  #       should "set the council and member for the user_submission" do
-  #         user_submission = UserSubmission.find_by_twitter_account_name("foobar")
-  #         assert_equal @member, user_submission.member
-  #         assert_equal @council, user_submission.council
-  #       end
-  #     end
   
      context "with invalid params" do
        setup do
