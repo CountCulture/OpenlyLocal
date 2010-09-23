@@ -20,7 +20,7 @@
 					</div>
 					<div class="explanation">
 					  <div id='average_monthly_spend' class='spending_count'><span class='value'>&pound;<%= number_with_delimiter(@quango.average_monthly_spend.to_i) %></span> <strong class=description>Spent per month</strong></div>
-					  <div id='supplier_count' class='spending_count'><span class='value'><%= number_with_delimiter(@quango.suppliers.count) %></span> <strong class=description>Suppliers</strong></div>
+					  <div id='supplier_count' class='spending_count'><span class='value'><%= number_with_delimiter(@quango.suppliers.count) %></span> <strong class=description>Recipients</strong></div>
 					  <div id='transaction_count' class='spending_count'><span class='value'><%= number_with_delimiter(@quango.financial_transactions.count) %></span> <strong class=description>Financial Transactions</strong></div>
 					</div>
 		    </div>

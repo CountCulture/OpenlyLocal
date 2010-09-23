@@ -815,8 +815,8 @@ task :import_lottery_grants => :environment do
       elsif payer = poss_payer_orgs.detect{|p| TitleNormaliser.normalise_title(p.title) == TitleNormaliser.normalise_title(row['Distributing_Body'])}
         print "-"
       else
-        puts "**** Couldn't match payer (#{row['Distributing_Body']}) to quango"
-        break
+        puts "*******************\n**** Couldn't match payer (#{row['Distributing_Body']}) to quango"
+        next
       end
       ft = FinancialTransaction.new(:organisation => payer,
                                     :date => row['Award_Date'],
@@ -833,7 +833,7 @@ task :import_lottery_grants => :environment do
       ft.save!                                  
       puts "."
     end
+    poss_payer_orgs.each{|p| p.spending_stat.perform}    
   end
-  poss_payer_orgs.each{|p| p.spending_stat.perform}    
 end
 
