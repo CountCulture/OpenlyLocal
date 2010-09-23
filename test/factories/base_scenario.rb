@@ -77,7 +77,7 @@ end
 Factory.define :meeting do |f|
   f.association :council
   f.association :committee
-  f.sequence(:date_held){ |n| "20 September 2009".to_datetime - n.minutes }
+  f.sequence(:date_held){ |n| "20 September 2010".to_datetime - n.minutes }
 end
 
 Factory.define :portal_system do |f|

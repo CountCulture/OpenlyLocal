@@ -550,6 +550,7 @@ class CouncilTest < ActiveSupport::TestCase
         Factory(:meeting, :council => @council, :committee => @committee)
         assert @council.active_committees?
       end
+      
       should "return false if council has no meetings" do
         assert !@council.active_committees?
       end
@@ -943,6 +944,37 @@ class CouncilTest < ActiveSupport::TestCase
       end
     end
 
+    context "when notifying local hyperlocal sites" do
+      setup do
+        @dummy_tweeter = Tweeter.new('foo')
+        @another_council = Factory(:another_council)
+        @hyperlocal_site = Factory(:approved_hyperlocal_site, :twitter_account_name=>'foolocal', :council => @council)
+        @another_hyperlocal_site = Factory(:approved_hyperlocal_site, :twitter_account_name=>'barlocal', :council => @council)
+      end
+      
+      should "create tweet to each hyperlocal site with given message and hyperlocal twitter ids" do
+        Tweeter.expects(:new).with('@foolocal Hello World', anything).returns(@dummy_tweeter)
+        Tweeter.expects(:new).with('@barlocal Hello World', anything).returns(@dummy_tweeter)
+        @council.notify_local_hyperlocal_sites('Hello World')
+      end
+      
+      should "queue up tweets for delivery later" do
+        Delayed::Job.expects(:enqueue).with(kind_of(Tweeter)).twice
+        @council.notify_local_hyperlocal_sites('Hello World')
+      end
+      
+      should "not send any tweets if no hyperlocal sites" do
+        Tweeter.expects(:new).never
+        Delayed::Job.expects(:enqueue).never
+        @another_council.notify_local_hyperlocal_sites('Hello World')
+      end
+      
+      should "not send tweets for hyperlocal sites without twitter account" do
+        @no_twitter_hyperlocal_site = Factory(:approved_hyperlocal_site, :council => @council)
+        Tweeter.expects(:new).twice.returns(@dummy_tweeter) # only twice
+        @council.notify_local_hyperlocal_sites('Hello World')
+      end
+    end
   end
 
 
