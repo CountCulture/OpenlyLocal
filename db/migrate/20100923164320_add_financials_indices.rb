@@ -6,7 +6,7 @@ class AddFinancialsIndices < ActiveRecord::Migration
   end
 
   def self.down
-    # remove_index :charities, :date_registered
+    remove_index :charities, :date_registered
     remove_index :financial_transactions, :date
     remove_index :financial_transactions, :value
   end
