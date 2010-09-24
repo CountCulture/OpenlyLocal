@@ -974,6 +974,12 @@ class CouncilTest < ActiveSupport::TestCase
         Tweeter.expects(:new).twice.returns(@dummy_tweeter) # only twice
         @council.notify_local_hyperlocal_sites('Hello World')
       end
+      
+      should "pass options to Tweeter" do
+        Tweeter.expects(:new).with(anything, :foo => 'bar').twice.returns(@dummy_tweeter)
+        @council.notify_local_hyperlocal_sites('Hello World', :foo => 'bar')
+      end
+      
     end
   end
 
