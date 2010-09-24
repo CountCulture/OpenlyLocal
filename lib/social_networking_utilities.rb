@@ -20,7 +20,12 @@ module SocialNetworkingUtilities
       
       def update_social_networking_details_from_website
         return unless url = self.url
-        details = SocialNetworkingUtilities::Finder.new(url).process
+        begin
+          details = SocialNetworkingUtilities::Finder.new(url).process
+        rescue Exception, Timeout::Error => e
+          logger.error { "Error getting social networking details from #{url}" }
+          return nil
+        end
         update_social_networking_details(details)
       end
       

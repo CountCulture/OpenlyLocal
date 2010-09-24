@@ -119,6 +119,16 @@ class SocialNetworkingUtilitiesTest < ActiveSupport::TestCase
         @test_model.update_social_networking_details_from_website
       end
             
+      should "not raise exception when problem getting info from website" do
+        SocialNetworkingUtilities::Finder.any_instance.expects(:_http_get).raises
+        assert_nothing_raised(Exception) { @test_model.update_social_networking_details_from_website }
+      end
+            
+      should "not raise exception when timeout getting info from website" do
+        SocialNetworkingUtilities::Finder.any_instance.expects(:_http_get).raises(Timeout::Error)
+        assert_nothing_raised(Timeout::Error) { @test_model.update_social_networking_details_from_website }
+      end
+            
     end
   end
 
