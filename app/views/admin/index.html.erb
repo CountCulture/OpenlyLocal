@@ -6,7 +6,7 @@
 </ul>
 
 <div id="delayed_jobs">
-  <h3><%= Delayed::Job.count %> Delayed Jobs still to be processed</h3>
+  <h3>Approx <%= @delayed_job_count %> Delayed Jobs still to be processed</h3>
 	<ul>
 		<%- Delayed::Job.all(:limit => 5).each do |job| -%>
 			<li><%= debug(job.payload_object) %></li>
