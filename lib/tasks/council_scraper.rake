@@ -228,20 +228,15 @@ end
 
 desc "add council twitter ids"
 task :add_council_twitter_ids => :environment do
-  auth_data = YAML.load_file("#{RAILS_ROOT}/config/twitter.yml")["production"]
-  base_url = "http://api.twitter.com/1/Directgov/ukcouncils/members.xml?cursor="
   cursor = "-1"
-  require 'hpricot'
-  require 'httpclient'
-  client = HTTPClient.new
-  client.set_auth(nil, auth_data["login"], auth_data["password"])
+  client = Tweeter.client
   while cursor != '0' do
-    doc = Hpricot.XML(client.get_content(base_url+cursor))
-    cursor = doc.at('next_cursor').inner_text
-    doc.search('users>user').each do |member|
-      m_url = URI.parse(member.at('url').inner_text.strip).host
+    resp = client.list_members('Directgov', 'ukcouncils', :cursor => cursor)
+    cursor = resp.next_cursor
+    resp.users.each do |member|
+      m_url = URI.parse(member.url.strip).host
 
-      m_id = member.at('screen_name').inner_text
+      m_id = member.screen_name
       if council = Council.find(:first, :conditions => ["url LIKE ?", "%#{m_url}%"])
         puts "Found twitter url for #{council.name}: #{m_id}"
         council.update_attribute(:twitter_account, m_id)
