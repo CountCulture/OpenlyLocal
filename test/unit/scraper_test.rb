@@ -35,7 +35,7 @@ class ScraperTest < ActiveSupport::TestCase
     end
     
     should "have stale named_scope" do
-      expected_options = { :conditions => ["(last_scraped IS NULL) OR (last_scraped < ?)", 7.days.ago], :order => "last_scraped" }
+      expected_options = { :conditions => ["(type != 'CsvScraper') AND ((last_scraped IS NULL) OR (last_scraped < ?))", 7.days.ago], :order => "last_scraped" }
       actual_options = Scraper.stale.proxy_options
       assert_equal expected_options[:conditions].first, actual_options[:conditions].first
       assert_in_delta expected_options[:conditions].last, actual_options[:conditions].last, 2
@@ -48,6 +48,11 @@ class ScraperTest < ActiveSupport::TestCase
       stale_scraper = Factory(:item_scraper, :last_scraped => 8.days.ago)
       never_used_scraper = Factory(:info_scraper)
       assert_equal [never_used_scraper, stale_scraper], Scraper.stale
+    end
+    
+    should "not include CsvScrapers in stale scrapers" do
+      csv_scraper = Factory(:csv_scraper, :last_scraped => 8.days.ago)
+      assert !Scraper.stale.include?(csv_scraper)
     end
     
     should "have problematic named_scope" do

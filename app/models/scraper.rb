@@ -7,7 +7,7 @@ class Scraper < ActiveRecord::Base
   belongs_to :parser
   belongs_to :council
   validates_presence_of :council_id
-  named_scope :stale, lambda { { :conditions => ["(last_scraped IS NULL) OR (last_scraped < ?)", 7.days.ago], :order => "last_scraped" } }
+  named_scope :stale, lambda { { :conditions => ["(type != 'CsvScraper') AND ((last_scraped IS NULL) OR (last_scraped < ?))", 7.days.ago], :order => "last_scraped" } }
   named_scope :problematic, { :conditions => { :problematic => true } }
   named_scope :unproblematic, { :conditions => { :problematic => false } }
   # accepts_nested_attributes_for :parser

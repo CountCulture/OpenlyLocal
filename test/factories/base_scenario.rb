@@ -14,6 +14,11 @@ Factory.define :info_scraper, :class => :info_scraper do |s|
   s.association :council, :factory => :another_council
 end
 
+Factory.define :csv_scraper, :class => :csv_scraper do |s|
+  s.association :parser, :factory => :csv_parser
+  s.association :council, :factory => :generic_council
+end
+
 Factory.define :parser do |f|
   f.description 'description of dummy parser'
   f.item_parser  'foo="bar"'
@@ -44,6 +49,10 @@ end
 Factory.define :tricky_council, :class => :council do |f|
   f.name 'Tricky Town'
   f.url 'http://www.trickytown.gov.uk'
+end
+
+Factory.define :generic_council, :class => :council do |f|
+  f.sequence(:name) {|i| "Council Number #{i}"}
 end
 
 Factory.define :defunkt_council do |f|
