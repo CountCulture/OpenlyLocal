@@ -37,9 +37,6 @@ class ScrapersController < ApplicationController
   
   def create
     raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type])
-    # parser_type = params[:scraper].delete(:parser_type) || 'Parser'
-    # parser = parser_type.constantize.new(params.delete(:parser_attributes))
-    # @scraper = params[:type].constantize.new(params[:scraper].merge( :parser => parser))
     @scraper = params[:type].constantize.new(params[:scraper])
     @scraper.save!
     flash[:notice] = "Successfully created scraper"

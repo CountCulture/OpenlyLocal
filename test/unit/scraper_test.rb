@@ -150,12 +150,13 @@ class ScraperTest < ActiveSupport::TestCase
 
         should 'update existing parser with given attributes' do
           assert_equal @parser, @scraper.parser
-          assert_equal "new code", @scraper.parser.item_parser
+          assert_equal "new code", @scraper.parser.reload.item_parser
         end
       end
       
     end
     
+
     context "when returning status" do
 
       should "return 'stale' if stale" do

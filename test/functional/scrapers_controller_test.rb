@@ -157,8 +157,8 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id, :dry_run => true
     end
   
-    should assign_to :scraper
-    should assign_to :results
+    should assign_to(:scraper)
+    should assign_to(:results)
     should respond_with :success
     
     should "show summary of successful results" do
@@ -293,9 +293,9 @@ class ScrapersControllerTest < ActionController::TestCase
       get :show, :id => @scraper.id, :process => "immediately"
     end
     
-    should assign_to :scraper
-    should assign_to :results
-    should_change("The number of members", :by => 1) { Member.count }# => Not two
+    should assign_to(:scraper)
+    should assign_to(:results)
+    # should_change("The number of members", :by => 1) { Member.count }# => Not two
     should respond_with :success
     should "show summary of problems" do
       assert_select "div.member div.errorExplanation" do
@@ -813,7 +813,17 @@ class ScrapersControllerTest < ActionController::TestCase
       put :update, { :id => @scraper.id, 
                      :scraper => { :council_id => @scraper.council_id, 
                                    :url => "http://anytown.com/new_committees", 
-                                   :parser_attributes => { :id => @scraper.parser.id, :description => "new parsing description", :item_parser => "some code" }}}
+                                   :parser_attributes => { :id => @scraper.parser.id, :description => "new parsing description", :item_parser => "new code" }}}
+
+      
+      # @scraper_params = { :council_id => @council.id, 
+      #                     :url => "http://anytown.com/committees", 
+      #                     :parser_attributes => { :description => "new parser", 
+      #                                             :result_model => "Committee", 
+      #                                             :scraper_type => "InfoScraper", 
+      #                                             :item_parser => "some code",
+      #                                             :attribute_parser_object => [{:attrib_name => "foo", :parsing_code => "bar"}] }}
+      #                              
     end
   
     should assign_to :scraper
@@ -825,6 +835,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
     
     should "update scraper parser" do
+      assert_equal "new code", @scraper.parser.reload.item_parser
       assert_equal "new parsing description", @scraper.parser.reload.description
     end
   end
@@ -851,7 +862,7 @@ class ScrapersControllerTest < ActionController::TestCase
       assert_nil Scraper.find_by_id(@scraper.id)
     end
     should redirect_to( "the scrapers page") { scrapers_url(:anchor => "council_#{@scraper.council_id}") }
-    should set_the_flash.to "Successfully destroyed scraper"
+    should set_the_flash.to( "Successfully destroyed scraper")
   end
   
 end

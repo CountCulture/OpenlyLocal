@@ -36,9 +36,9 @@ class Scraper < ActiveRecord::Base
   end
   
   def parser_attributes=(attribs={})
-    parser_type = attribs[:type] || 'Parser'
+    parser_type = attribs[:type].blank? ? 'Parser' : attribs[:type]
     if parser
-      self.parser.attributes = attribs
+      self.parser.update_attributes(attribs)
     else
       self.parser = parser_type.constantize.new(attribs)
     end
