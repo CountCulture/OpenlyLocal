@@ -598,25 +598,6 @@ task :import_south_glocs_payments => :environment do
   council.spending_stat.perform
 end
 
-desc "Import Trafford Council Payments"
-task :import_trafford_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%Trafford%'")
-  puts "Adding transactions for #{council.title}"
-  date = "15-05-2010"
-  Nokogiri.XML(open('http://www.trafford.gov.uk/opendata/sets/supplierspend2010Q2.xml')).search('record').each do |record|
-    ft = FinancialTransaction.new(:date => date,
-                                  :date_fuzziness => 40,
-                                  :value => record.at('amount').inner_text,
-                                  :uid => record.at('ref').inner_text,
-                                  :supplier_name => record.at('supplier').inner_text,
-                                  :source_url => "http://www.trafford.gov.uk/opendata/sets/supplierspend2010Q2.xml"
-                                  )
-      ft.save!                                  
-      puts "."
-  end
-  council.spending_stat.perform
-end
-
 desc "Import Hillingdon Payments"
 task :import_hillingdon_payments => :environment do
   council = Council.first(:conditions => "name LIKE '%Hillingdon%'")
@@ -835,5 +816,33 @@ task :import_lottery_grants => :environment do
     end
     poss_payer_orgs.each{|p| p.spending_stat.perform}    
   end
+end
+
+desc "Import Trafford Council Payments"
+task :import_trafford_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%Trafford%'")
+  puts "Adding transactions for #{council.title}"
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'trafford')).select{ |f| f.match('csv') }.each do |file_name|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/trafford/#{file_name}"), :headers => true) do |csv_file|
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:organisation => council,
+                                      :date => row['Date'].gsub('/', '-'),
+                                      :uid => row['Transaction number'],
+                                      :invoice_number => row['Invoice Number'],
+                                      :value => row['Amount'],
+                                      :supplier_name => row["Supplier Name"],
+                                      :supplier_uid => row["SupplierID"],
+                                      :supplier_vat_number => row['VAT Registration Number'],
+                                      :department_name => row['Expense Area'],
+                                      :service => row["Expense Type"],
+                                      :description => row['Extended Description'],
+                                      :source_url => "http://www.trafford.gov.uk/opendata/sets/supplierspend/#{file_name}"
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+    end   
+  end
+  council.spending_stat.perform
 end
 
