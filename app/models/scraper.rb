@@ -15,8 +15,8 @@ class Scraper < ActiveRecord::Base
   attr_protected :results
   delegate :result_model, :to => :parser
   delegate :related_model, :to => :parser
-  delegate :portal_system, :to => :council
-  delegate :base_url, :to => :council
+  delegate :portal_system, :to => :council, :allow_nil => true
+  delegate :base_url, :to => :council, :allow_nil => true
   
   def validate
     errors.add(:parser, "can't be blank") unless parser
@@ -31,8 +31,7 @@ class Scraper < ActiveRecord::Base
   end
   
   def title
-    getting = self.is_a?(InfoScraper) ? 'Info' : 'Items'
-    "#{result_model} #{getting} scraper for #{council.short_name}"
+    "#{result_model} #{self.class.to_s.underscore.humanize}" + (council ? " for #{council.short_name}" : '')
   end
   
   def parser_attributes=(attribs={})

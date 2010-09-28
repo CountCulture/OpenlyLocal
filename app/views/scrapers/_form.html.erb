@@ -1,6 +1,14 @@
 <% form_for :scraper, @scraper, :url => (@scraper.new_record? ? scrapers_path : scraper_path(@scraper)), :html => { :method => (@scraper.new_record? ? :post : :put)} do |f| -%>
   <%= hidden_field_tag :type, @scraper.class.to_s %>
-  <%= f.hidden_field :council_id %>
+
+	<%- if @scraper.council -%>
+		<%= f.hidden_field :council_id %>
+	<%- else -%>
+		<p>
+			<%= f.label :council_id %>
+	    <%= f.select("council_id", Council.all.collect{ |c| [c.title,c.id] }, { :include_blank => true }) %>
+		</p>
+	<%- end -%>
   <p>
     <%= f.label :problematic, "Problematic <em>(this is set when there have been problems running this scraper)</em>" %>
     <%= f.check_box :problematic %>
@@ -24,7 +32,7 @@
   </p>
   <%- if @scraper.portal_parser? && !params[:dedicated_parser] -%>
     <%= f.hidden_field :parser_id %>
-    <%= render :partial => '/parsers/parser', :object => @scraper.parser %>
+    <%= render :partial => (@scraper.is_a?(CsvScraper) ? '/parsers/csv_parser' : '/parsers/parser'), :object => @scraper.parser %>
     <p><%= link_to "Use dedicated parser instead", params.merge(:dedicated_parser => true), {:class => "alert"} %></p>
   <%- elsif @scraper.portal_parser? && params[:dedicated_parser] -%>
     <p class="alert">
@@ -61,7 +69,9 @@
         </p>
         <div id="parser_attribute_parser">
           <h3>Attribute parser</h3>
-					<%- partial_attribs = @scraper.parser.kind_of?(CsvParser) ? { :partial => 'csv_parser_attrib', :collection => @scraper.parser.attribute_mapping_object } : { :partial => 'attrib', :collection => @scraper.parser.attribute_parser_object } -%>
+					<%- partial_attribs = @scraper.parser.kind_of?(CsvParser) ? 
+											{ :partial => 'csv_parser_attrib_fields', :collection => @scraper.parser.attribute_mapping_object } : 
+											{ :partial => 'parser_attrib_fields', :collection => @scraper.parser.attribute_parser_object } -%>
 			    <%= render partial_attribs %>
         </div>
         <br class="clear-left">
@@ -78,6 +88,6 @@
   <%= f.submit "Submit" %>
 <% end -%>
 <div style="display:none">
-  <%= render :partial => 'attrib', :object => Parser::AttribObject.new unless @scraper.parser.kind_of?(CsvParser) %>
-  <%= render :partial => 'csv_parser_attrib', :object => CsvParser::MappingObject.new if @scraper.parser.kind_of?(CsvParser)%>
+  <%= render :partial => 'parser_attrib_fields', :object => Parser::AttribObject.new unless @scraper.parser.kind_of?(CsvParser) %>
+  <%= render :partial => 'csv_parser_attrib_fields', :object => CsvParser::MappingObject.new if @scraper.parser.kind_of?(CsvParser)%>
 </div>

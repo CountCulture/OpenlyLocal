@@ -194,11 +194,15 @@ class ScraperTest < ActiveSupport::TestCase
     should "delegate portal_system to council" do
       @council.expects(:portal_system).returns("portal_system")
       assert_equal "portal_system", @scraper.portal_system
+      @scraper.council = nil
+      assert_nil @scraper.portal_system
     end
     
     should "delegate base_url to council" do
       @council.expects(:base_url).returns("http://some.council.com/democracy")
       assert_equal "http://some.council.com/democracy", @scraper.base_url
+      @scraper.council = nil
+      assert_nil @scraper.base_url
     end
     
     should "have results accessor" do
@@ -227,14 +231,14 @@ class ScraperTest < ActiveSupport::TestCase
       assert_equal "foo", @scraper.related_objects
     end
     
-    should "build title from council short_name result class and scraper type when ItemScraper" do
+    should "build title from council short_name result class and scraper type" do
       @scraper.council.name = "Anytown Council"
-      assert_equal "TestScrapedModel Items scraper for Anytown", @scraper.title
+      assert_equal "TestScrapedModel Item scraper for Anytown", @scraper.title
     end
     
-    should "build title from council name result class and scraper type when InfoScraper" do
-      @scraper.council.name = "Anothertown Council"
-      assert_equal "TestScrapedModel Info scraper for Anothertown", Factory.build(:info_scraper).title
+    should "build title from result class and scraper type when no council" do
+      @scraper.council = nil
+      assert_equal "TestScrapedModel Item scraper", @scraper.title
     end
     
     should "return errors in parser as parsing errors" do

@@ -25,14 +25,20 @@ class ScrapersController < ApplicationController
   end
   
   def new
-    raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type]) && params[:council_id]
-    @council = Council.find(params[:council_id])
-    @scraper = params[:type].constantize.new(:council_id => @council.id)
-    parser_type = params.delete(:parser_type) || 'Parser'
-    parser = @council.portal_system_id ? Parser.find_by_portal_system_id_and_result_model_and_scraper_type(@council.portal_system_id, params[:result_model], params[:type]) : nil
-    @scraper.parser = parser ? parser : 
-                               parser_type.constantize.new( :result_model => params[:result_model], 
-                                                            :scraper_type => params[:type])
+    raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type])
+    @council = Council.find(params[:council_id]) if params[:council_id]
+    @scraper = params[:type].constantize.new(:council_id => params[:council_id])
+    parser_type = @scraper.is_a?(CsvScraper) ? 'CsvParser' : 'Parser'
+    parser = 
+      case 
+      when params[:parser_id]
+        Parser.find(params[:parser_id])
+      when @council&&@council.portal_system_id
+        Parser.find_by_portal_system_id_and_result_model_and_scraper_type(@council.portal_system_id, params[:result_model], params[:type])
+      else
+        nil
+      end
+    @scraper.parser = parser || parser_type.constantize.new( :result_model => params[:result_model], :scraper_type => params[:type])
   end
   
   def create

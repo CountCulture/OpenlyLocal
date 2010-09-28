@@ -1,8 +1,8 @@
-<% fields_for "scraper[parser_attributes][attribute_mapping_object][]", csv_parser_attrib do |h_form| %>
+<% fields_for "scraper[parser_attributes][attribute_mapping_object][]", csv_parser_attrib_fields do |h_form| %>
   <div class="item_attribute">
     <p><label for="scraper_parser_attributes_attributes_mapping_object__attrib_name">attribute name</label><br />
     <%= h_form.text_field "attrib_name", :size => 20 %></p>
-    <p><label for="scraper_parser_attributes_attributes_mapping_object__column_name">column name</label><br />
+    <p><label for="scraper_parser_attributes_attributes_mapping_object__column_name">csv column name</label><br />
     <%= h_form.text_field "column_name", :size => 40 %></p>
     <p><%= link_to "Delete attribute", "#", :class => "delete_parent_div" %></p>
   </div>      

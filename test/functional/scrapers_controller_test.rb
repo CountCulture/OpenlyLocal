@@ -68,7 +68,7 @@ class ScrapersControllerTest < ActionController::TestCase
   end
   
   # show test
-  context "on GET to :show for first record without auth" do
+  context "on GET to :show for scraper without auth" do
     setup do
       @scraper = Factory(:scraper)
       get :show, :id => @scraper.id
@@ -77,7 +77,7 @@ class ScrapersControllerTest < ActionController::TestCase
     should respond_with 401
   end
 
-  context "on GET to :show for first record" do
+  context "on GET to :show for scraper" do
     setup do
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.expects(:process).never
@@ -335,13 +335,6 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   end
   
-  context "on GET to :new with no given council" do
-    should "raise exception" do
-      stub_authentication
-      assert_raise(ArgumentError) { get :new, :type  => "InfoScraper" }
-    end
-  end
-  
   context "on GET to :new" do
     setup do
       @council = Factory(:council)
@@ -403,6 +396,20 @@ class ScrapersControllerTest < ActionController::TestCase
       
     end
     
+    context "on GET to :new with no given council" do
+      setup do
+        stub_authentication
+        get :new, :type  => "InfoScraper"
+      end
+  
+      should assign_to :scraper 
+      should respond_with :success
+      
+      should 'show select box for council' do
+        assert_select "select#scraper_council_id"
+      end
+    end
+
     context "for basic scraper with given result model" do
       setup do
         Factory(:parser, :result_model => "Committee", :scraper_type => "InfoScraper") # make sure there's at least one parser already in db with this result model
@@ -421,33 +428,6 @@ class ScrapersControllerTest < ActionController::TestCase
           assert_select "option[value='Committee'][selected='selected']"
         end
       end
-    end
-    
-    context "for basic scraper with given result model and parser_type" do
-      setup do
-        stub_authentication
-        get :new, :type  => "InfoScraper", :council_id => @council.id, :result_model => "Committee", :parser_type => 'CsvParser'
-      end
-  
-      should "build csv_parser from params" do
-        assert assigns(:scraper).parser.new_record?
-        assert_kind_of CsvParser, assigns(:scraper).parser
-        assert_equal "Committee", assigns(:scraper).result_model
-        assert_equal "InfoScraper", assigns(:scraper).parser.scraper_type
-      end
-  
-      should "show result_model select box in form" do
-        assert_select "select#scraper_parser_attributes_result_model" do
-          assert_select "option[value='Committee'][selected='selected']"
-        end
-      end
-      
-      should "show nested form for csv_parser" do
-        assert_select "textarea#scraper_parser_attributes_item_parser"
-        assert_select "input#scraper_parser_attributes_attribute_mapping_object__attrib_name"
-        assert_select "input#scraper_parser_attributes_attribute_mapping_object__column_name"
-      end
-  
     end
     
     context "for basic item_scraper" do
@@ -580,6 +560,82 @@ class ScrapersControllerTest < ActionController::TestCase
         end
       end
     end
+    
+    context "for CsvScraper" do
+      setup do
+        stub_authentication
+        get :new, :type  => "CsvScraper", :council_id => @council.id
+      end
+  
+      should assign_to :scraper
+      should respond_with :success
+      should render_template :new
+      should_not set_the_flash
+  
+      should "assign given type of scraper" do
+        assert_kind_of CsvScraper, assigns(:scraper)
+      end
+    
+      should "build parser from params" do
+        assert assigns(:scraper).parser.new_record?
+        assert_equal "CsvScraper", assigns(:scraper).parser.scraper_type
+      end
+      
+      should "show nested form for csv_parser" do
+        assert_select "input#scraper_parser_attributes_attribute_mapping_object__attrib_name"
+        assert_select "input#scraper_parser_attributes_attribute_mapping_object__column_name"
+      end
+  
+      should "include scraper type in hidden field" do
+        assert_select "input#type[type=hidden][value=CsvScraper]"
+      end
+      
+    end
+
+    context "for CsvScraper with existing parser id" do
+      setup do
+        @portal_system = Factory(:portal_system)
+        @csv_parser = Factory(:csv_parser, :portal_system => @portal_system)
+        stub_authentication
+        get :new, :type  => "CsvScraper", :parser_id  => @csv_parser.id, :council_id => @council.id
+      end
+  
+      should assign_to :scraper
+      should respond_with :success
+      should render_template :new
+      should_not set_the_flash
+  
+      should "assign given type of scraper" do
+        assert_kind_of CsvScraper, assigns(:scraper)
+      end
+    
+      should "assign parser" do
+        assert_equal @csv_parser, assigns(:scraper).parser
+      end
+      
+      should "show hidden field with parser details" do
+        assert_select "input#scraper_parser_id[type=hidden][value=#{@csv_parser.id}]"
+      end
+      
+      should "not show parser_details form" do
+        assert_select "fieldset#parser_details", false
+      end
+      
+      should "show parser details" do
+        assert_select "div#csv_parser_#{@csv_parser.id}"
+      end
+      
+      should "have link to show parser form" do
+        assert_select "form a", /use dedicated parser/i
+      end
+
+      should "show nested form for csv_parser" do
+        assert_select "input#scraper_parser_attributes_attribute_mapping_object__attrib_name"
+        assert_select "input#scraper_parser_attributes_attribute_mapping_object__column_name"
+      end
+  
+    end
+
   end
   
   # create tests

@@ -8,4 +8,5 @@
   <h4>Item attribute mapper <em>maps CSV column headings</em></h4>
 	<%= render :partial => 'parsers/attributes', :object => csv_parser.attribute_mapping %>
   <br class="clear-left" />
+	<p><%= link_to 'Create new scraper for this parser', new_scraper_path(:parser_id => csv_parser.id, :result_model => csv_parser.result_model, :type => 'CsvScraper') %></p>
 <%- end -%>
