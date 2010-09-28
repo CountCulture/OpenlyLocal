@@ -62,13 +62,11 @@ class CsvParserTest < ActiveSupport::TestCase
         should "be an Array" do
           assert_kind_of Array, @empty_attribute_mapping_object
         end
-
-        should "with one element" do
-          assert_equal 1, @empty_attribute_mapping_object.size
-        end
         
-        should "is an empty Struct" do
-          assert_equal CsvParser::MappingObject.new, @empty_attribute_mapping_object.first
+        context "and which" do
+          should "should have an empty Struct as only element" do
+            assert_equal [CsvParser::MappingObject.new], @empty_attribute_mapping_object
+          end
         end
       end
       
@@ -102,8 +100,9 @@ class CsvParserTest < ActiveSupport::TestCase
         assert_equal @parser, @parser.process(@csv_rawdata,@dummy_scraper)
       end
     
-      should "have scraper accessor" do
-        flunk      
+      should "save given scraper in instance variable" do
+        scraper = stub
+        assert_equal scraper, @parser.process(@csv_rawdata, scraper).instance_variable_get(:@current_scraper)
       end
       
       should "return self" do
@@ -126,6 +125,10 @@ class CsvParserTest < ActiveSupport::TestCase
           assert_kind_of Hash, @processed_data.first
         end
 
+        should 'return results for every possible line' do
+          assert_equal 19, @processed_data.size
+        end
+
         should "map row headings to attributes" do
           assert_equal 'Resources', @processed_data.first[:directorate]
           assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
@@ -139,8 +142,12 @@ class CsvParserTest < ActiveSupport::TestCase
           assert !@processed_data.any?{ |r| r.all?{ |k,v| v.blank?  }  }
           assert_equal 'Zychem Ltd', @processed_data.last[:supplier_name]
         end
+        
+        should 'return csv line number as csv_line_no' do
+          assert_equal 21, @processed_data.last[:csv_line_number]
+        end
 
-	      should 'assign scraper council to attributes as organisation' do
+	      should_eventually 'assign scraper council to attributes as organisation' do
 	        # *************
 	        # NB Ultimately this will not be necessary as it should be set in scraper
 	        # *************
@@ -180,9 +187,19 @@ class CsvParserTest < ActiveSupport::TestCase
     
     context "when processing with dry run" do
 
-      should "map row headings to attributes" do
-        
+      setup do
+        @processed_data = @parser.process(@csv_rawdata, @dummy_scraper, :dry_run => true).results
       end
+      
+      should 'return only first ten results' do
+        assert_equal 10, @processed_data.size
+      end
+
+      should "map row headings to attributes" do
+        assert_equal 'Resources', @processed_data.first[:directorate]
+        assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
+      end
+      
     end
   end
 end

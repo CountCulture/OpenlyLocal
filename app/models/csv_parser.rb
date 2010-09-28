@@ -16,10 +16,14 @@ class CsvParser < Parser
     self.attribute_mapping = result_hash
   end
   
-  def process(raw_data, scraper=nil)
+  def process(raw_data, scraper=nil, options={})
+    @current_scraper = scraper
     result_array = []
-    rows = FasterCSV.new(raw_data, :headers => true)
-    rows.each do |row|
+    csv_file = FasterCSV.new(raw_data, :headers => true)
+    data_row_number = 0
+    csv_file.each do |row|
+    # rows.each do |row|
+      break if options[:dry_run] && data_row_number == 10
       next if row.all?{ |k,v| v.blank? } # skip blank rows
       res_hash = {}
       attribute_mapping.each do |k,v|
@@ -29,14 +33,13 @@ class CsvParser < Parser
           res_hash[k] =  row[v]
         end
       end
-      result_array << res_hash
+      data_row_number +=1
+      result_array << res_hash.merge(:csv_line_number => csv_file.lineno)
     end
     @results = result_array
     self
   rescue Exception => e
     message = "Exception raised parsing CSV: #{e.message}\n\n" #+
-    #             "Problem occurred using parsing code:\n#{parsing_code}\n\n on following Hpricot object:\n#{object_to_be_parsed.inspect}"
-    # logger.debug { message }
     logger.debug { "Backtrace:\n#{e.backtrace}" }
     errors.add_to_base(message.gsub(/(\.)(?=\.)/, '. ')) # NB split consecutive points because of error in Rails
     self
