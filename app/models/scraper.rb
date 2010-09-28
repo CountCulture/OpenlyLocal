@@ -2,7 +2,7 @@ class Scraper < ActiveRecord::Base
   class ScraperError < StandardError; end
   class RequestError < ScraperError; end
   class ParsingError < ScraperError; end
-  SCRAPER_TYPES = %w(InfoScraper ItemScraper)
+  SCRAPER_TYPES = %w(InfoScraper ItemScraper CsvScraper)
   USER_AGENT = "Mozilla/4.0 (OpenlyLocal.com)"
   belongs_to :parser
   belongs_to :council

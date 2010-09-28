@@ -2,17 +2,10 @@
   <h3><%= link_to "Parser details", parser_path(csv_parser) %></h3>
   <p><%= link_to "edit", edit_parser_path(csv_parser) %></p>
   <p>
-    <strong>Portal system</strong> <%= csv_parser.portal_system ? link_for(csv_parser.portal_system) : 'None' %><br />
+    <strong>Mapping system</strong> <%= csv_parser.portal_system ? link_for(csv_parser.portal_system) : 'None' %><br />
     <strong>Result model</strong> <%= csv_parser.result_model %><br />
-    <strong>Path</strong> <%= csv_parser.path %>
   </p>
-  <h4>Item parser <em>finds items from scraped page</em></h4>
   <h4>Item attribute mapper <em>maps CSV column headings</em></h4>
-  <%- csv_parser.attribute_mapping.each do |attrib_name,heading| -%>
-    <div class="parser_attribute">
-      <div class="title"><%= attrib_name %></div>
-      <div class="info"><code><%= h heading %></code></div>
-    </div>
-  <%- end -%>
+	<%= render :partial => 'parsers/attributes', :object => csv_parser.attribute_mapping %>
   <br class="clear-left" />
 <%- end -%>

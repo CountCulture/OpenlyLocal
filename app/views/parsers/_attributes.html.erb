@@ -1,0 +1,6 @@
+<%- attributes.each do |attrib_name,code| -%>
+   <div class="parser_attribute">
+     <div class="title"><%= attrib_name %></div>
+     <div class="info"><code><%= h code %></code></div>
+   </div>
+<%- end -%>

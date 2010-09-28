@@ -14,32 +14,60 @@ class ParsersControllerTest < ActionController::TestCase
   end
 
   context "on GET to :show" do
-    setup do
-      @parser = Factory(:parser)
-      @scraper = Factory(:scraper, :parser => @parser)
-      stub_authentication
-      get :show, :id => @parser.id
-    end
-  
-    should assign_to :parser
-    should assign_to :scrapers
-    should respond_with :success
-    should render_template :show
-      
-    should "show link to perform edit" do
-      assert_select ".parser a", /edit/
+    context "in general" do
+      setup do
+        @parser = Factory(:parser)
+        @scraper = Factory(:scraper, :parser => @parser)
+        stub_authentication
+        get :show, :id => @parser.id
+      end
+
+      should assign_to :parser
+      should assign_to :scrapers
+      should respond_with :success
+      should render_template :show
+
+      should "show link to perform edit" do
+        assert_select ".parser a", /edit/
+      end
+
+      should "list associated scrapers" do
+        assert_select "#scrapers a", @scraper.title
+      end
+
+      should "show related model field" do
+        assert_select ".parser strong", /related/i
+      end
+
+      should "not show share block" do
+        assert_select "#share_block", false
+      end
     end
     
-    should "list associated scrapers" do
-      assert_select "#scrapers a", @scraper.title
-    end
-    
-    should "show related model field" do
-      assert_select ".parser strong", /related/i
-    end
-    
-    should "not show share block" do
-      assert_select "#share_block", false
+    context "a csv_parser" do
+      setup do
+        @csv_parser = Factory(:csv_parser)
+        # @scraper = Factory(:scraper, :parser => @parser)
+        stub_authentication
+        get :show, :id => @csv_parser.id
+      end
+
+      should assign_to :parser
+      should assign_to :scrapers
+      should respond_with :success
+      should render_template :show
+
+      should "show link to perform edit" do
+        assert_select ".csv_parser a", /edit/
+      end
+
+      should_eventually "list associated scrapers" do
+        assert_select "#scrapers a", @scraper.title
+      end
+
+      should "show attribute mapping" do
+        assert_select ".parser_attribute .title", /directorate/
+      end
     end
   end
   
@@ -74,7 +102,7 @@ class ParsersControllerTest < ActionController::TestCase
     context "with no portal_system given" do
       should "raise exception" do
         stub_authentication
-        assert_raise(ArgumentError) { get :new, :result_model => "Member", :scraper_type => "ItemParser" }
+        assert_raise(ArgumentError) { get :new, :result_model => "Member", :scraper_type => "ItemScraper" }
       end
     end
     
@@ -87,7 +115,7 @@ class ParsersControllerTest < ActionController::TestCase
     
     context "without auth" do
       setup do
-        get :new, :portal_system_id  => @portal_system.id, :result_model => "Member", :scraper_type => "ItemParser"
+        get :new, :portal_system_id  => @portal_system.id, :result_model => "Member", :scraper_type => "ItemScraper"
       end
       should respond_with 401
     end
@@ -95,7 +123,7 @@ class ParsersControllerTest < ActionController::TestCase
     context "for basic parser" do
       setup do
         stub_authentication
-        get :new, :portal_system_id  => @portal_system.id, :result_model => "Member", :scraper_type => "ItemParser"
+        get :new, :portal_system_id  => @portal_system.id, :result_model => "Member", :scraper_type => "ItemScraper"
       end
       
       should assign_to(:parser)
@@ -111,8 +139,44 @@ class ParsersControllerTest < ActionController::TestCase
       end
       
       should "include scraper_type in hidden field" do
-        assert_select "input#parser_scraper_type[type=hidden][value='ItemParser']"
+        assert_select "input#parser_scraper_type[type=hidden][value='ItemScraper']"
       end
+    end
+    
+    context "for csv parser" do
+      setup do
+        stub_authentication
+        get :new, :portal_system_id  => @portal_system.id, :result_model => "Member", :scraper_type => "CsvScraper"
+      end
+      
+      should respond_with :success
+      should render_template :new
+      
+      should "assign to parser a CsvParser instance" do
+        assert assigns(:parser).kind_of?(CsvParser)
+      end
+
+      should "show form" do
+        assert_select "form#new_csv_parser"
+      end
+
+      should "include portal_system in hidden field" do
+        assert_select "input#csv_parser_portal_system_id[type=hidden][value=#{@portal_system.id}]"
+      end
+      
+      should "include scraper_type in hidden field" do
+        assert_select "input#csv_parser_scraper_type[type=hidden][value='CsvScraper']"
+      end
+      
+      should "not show item parser field" do
+        assert_select "textarea#parser_item_parser", false
+        assert_select "textarea#csv_parser_item_parser", false
+      end
+      
+      should "show item mapping fields" do
+        assert_select "#parser_attribute_parser"
+      end
+
     end
     
   end
@@ -151,7 +215,7 @@ class ParsersControllerTest < ActionController::TestCase
            post :create, :parser => @parser_params.except(:result_model)
          end
 
-         should_not_change ('The number of parsers') { Parser.count }
+         should_not_change('The number of parsers') { Parser.count }
          should assign_to :parser
          should render_template :new
          should_not set_the_flash
@@ -163,12 +227,33 @@ class ParsersControllerTest < ActionController::TestCase
            post :create, :parser => @parser_params.except(:scraper_type)
          end
 
-         should_not_change ('The number of parsers') { Parser.count }
+         should_not_change('The number of parsers') { Parser.count }
          should assign_to :parser
          should render_template :new
          should_not set_the_flash
        end
 
+       context "for csv_parser" do
+         setup do
+           @csv_parser_params = { :result_model => "Committee",
+                                  :scraper_type => 'CsvScraper',
+                                  :attribute_mapping_object => [{:attrib_name => "transaction_id", :column_name => "TransactionID"},
+                                                                {:attrib_name => "directorate", :column_name => "Directorate"}]}
+           stub_authentication
+           post :create, :csv_parser => @csv_parser_params
+         end
+
+         should_change("Parser count", :by => 1) {Parser.count}
+         should assign_to :parser
+         should redirect_to( "the show page for parser") { parser_path(assigns(:parser)) }
+         should set_the_flash.to "Successfully created parser"
+         
+         should 'create new parser with given attributes' do
+           assert_equal( {:transaction_id =>"TransactionID", :directorate => "Directorate"}, assigns(:parser).attribute_mapping)
+         end
+
+       end
+       
    end  
 
   # edit tests
@@ -183,19 +268,41 @@ class ParsersControllerTest < ActionController::TestCase
   end
 
   context "on GET to :edit" do
-    setup do
-      @portal_system = Factory(:portal_system)
-      @parser = Factory(:parser, :portal_system => @portal_system)
-      stub_authentication
-      get :edit, :id  => @parser.id
-    end
+    context "in general" do
+      setup do
+        @portal_system = Factory(:portal_system)
+        @parser = Factory(:parser, :portal_system => @portal_system)
+        stub_authentication
+        get :edit, :id  => @parser.id
+      end
 
-    should assign_to(:parser)
-    should respond_with :success
-    should render_template :edit
+      should assign_to(:parser)
+      should respond_with :success
+      should render_template :edit
+
+      should "show form" do
+        assert_select "form#edit_parser_#{@parser.id}" do
+          assert_select "form[action='/parsers/#{@parser.id}']"
+        end
+      end
+    end
     
-    should "show form" do
-      assert_select "form#edit_parser_#{@parser.id}"
+    context "for csv_parser" do
+      setup do
+        @csv_parser = Factory(:csv_parser)
+        stub_authentication
+        get :edit, :id  => @csv_parser.id
+      end
+
+      should assign_to(:parser)
+      should respond_with :success
+      should render_template :edit
+
+      should "show form" do
+        assert_select "form#edit_csv_parser_#{@csv_parser.id}" do
+          assert_select "form[action='/parsers/#{@csv_parser.id}']"
+        end
+      end
     end
     
   end
@@ -205,13 +312,14 @@ class ParsersControllerTest < ActionController::TestCase
     setup do
       @portal_system = Factory(:portal_system)
       @parser = Factory(:parser, :portal_system => @portal_system)
+      @csv_parser = Factory(:csv_parser)
       @parser_params = { :description => "New Description", 
                          :result_model => "Committee",
                          :item_parser => "foo=\"new_bar\"",
                          :attribute_parser_object => [{:attrib_name => "newfoo", :parsing_code => "barbar"}]}
      end
 
-     context "wihtout auth" do
+     context "without auth" do
        setup do
          put :update, :id => @parser.id, :parser => @parser_params
        end
@@ -247,6 +355,26 @@ class ParsersControllerTest < ActionController::TestCase
         should assign_to :parser
         should render_template :edit
         should set_the_flash.to /Problem/
+      end
+
+      context "for CsvParser" do
+        setup do
+          stub_authentication
+          @new_csv_parser_params = {:result_model => "Committee",
+                                    :attribute_mapping_object => [{:attrib_name => "new_foo", :column_name => "new bar"}]}
+          put :update, :id => @csv_parser.id, :csv_parser => @new_csv_parser_params
+        end
+
+        should_not_change ('The number of parsers') { Parser.count }
+        
+        should 'update parser' do
+          assert_equal "new bar", @csv_parser.reload.attribute_mapping[:new_foo]
+        end
+
+        should assign_to :parser
+        should redirect_to( "the show page for parser") { parser_path(assigns(:parser)) }
+        should set_the_flash.to "Successfully updated parser"
+
       end
 
   end  

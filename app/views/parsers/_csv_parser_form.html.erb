@@ -1,0 +1,26 @@
+<% form_for @parser, :url => @parser.new_record? ? parsers_path : parser_path(@parser) do |pf| %>
+  <p>
+    <%= pf.label :result_model, "Result Model" %>
+    <%= pf.select("result_model", Parser::ALLOWED_RESULT_CLASSES.collect{ |c| [c,c] }, { :include_blank => true }) %>
+  </p>
+  <%= pf.hidden_field :portal_system_id %>
+  <%= pf.hidden_field :scraper_type %>
+
+  <p>
+    <%= pf.label :description, "Parser Description" %>
+    <%= pf.text_field :description %>
+  </p>
+
+  <div id="parser_attribute_parser">
+    <h3>Attribute mapper <em>(base item is 'item')</em></h3>
+    <%= render :partial => 'csv_attrib_fields', :collection => @parser.attribute_mapping_object  %>
+  </div>
+  <br class="clear-left">
+  <p>
+    <%= link_to "add more attributes", '#', :class => "add_more_attributes" %>
+  </p>
+  <%= pf.submit "Submit" %>
+<% end %>
+<div style="display:none">
+  <%= render :partial => 'csv_attrib_fields', :object => CsvParser::MappingObject.new %>
+</div>

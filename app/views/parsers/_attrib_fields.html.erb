@@ -1,4 +1,4 @@
-<% fields_for "parser[attribute_parser_object][]", attrib do |h_form| %>
+<% fields_for "parser[attribute_parser_object][]", attrib_fields do |h_form| %>
   <div class="item_attribute">
     <p><label for="parser_attributes_parser_object__attrib_name">attribute name</label><br />
     <%= h_form.text_field "attrib_name", :size => 20 %></p>

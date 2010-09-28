@@ -1,0 +1,9 @@
+<% fields_for "csv_parser[attribute_mapping_object][]", csv_attrib_fields do |h_form| %>
+  <div class="item_attribute">
+    <p><label for="parser_attributes_mapping_object__attrib_name">attribute name</label><br />
+    <%= h_form.text_field "attrib_name", :size => 20 %></p>
+    <p><label for="parser_attributes_mapping_object__column_name">Csv Column Heading</label><br />
+    <%= h_form.text_field "column_name", :size => 40 %></p>
+    <p><%= link_to "Delete attribute", "#", :class => "delete_parent_div" %></p>
+  </div>
+<% end %>

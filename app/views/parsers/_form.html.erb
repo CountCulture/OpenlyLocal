@@ -1,7 +1,5 @@
 <% form_for @parser do |pf| %>
-  <p>
-    <%#= pf.select :scraper_type, %w(InfoScraper ItemScraper).collect{ |s| [s,s] }, { :include_blank => true } %>
-  </p>
+
   <p>
     <%= pf.label :result_model, "Result Model" %>
     <%= pf.select("result_model", Parser::ALLOWED_RESULT_CLASSES.collect{ |c| [c,c] }, { :include_blank => true }) %>
@@ -27,8 +25,7 @@
   </p>
   <div id="parser_attribute_parser">
     <h3>Attribute parser <em>(base item is 'item')</em></h3>
-		<%- partial_attribs = @parser.kind_of?(CsvParser) ? { :partial => 'csv_parser_attrib', :collection => @parser.attribute_mapping_object } : { :partial => 'attrib', :collection => @parser.attribute_parser_object } -%>
-    <%= render partial_attribs %>
+    <%= render :partial => 'attrib_fields', :collection => @parser.attribute_parser_object %>
   </div>
   <br class="clear-left">
   <p>
@@ -37,5 +34,5 @@
   <%= pf.submit "Submit" %>
 <% end %>
 <div style="display:none">
-  <%= render :partial => 'attrib', :object => Parser::AttribObject.new %>
+  <%= render :partial => 'attrib_fields', :object => Parser::AttribObject.new %>
 </div>

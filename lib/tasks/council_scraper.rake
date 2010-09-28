@@ -229,19 +229,27 @@ end
 desc "add council twitter ids"
 task :add_council_twitter_ids => :environment do
   cursor = "-1"
-  client = Tweeter.client
+  client = Tweeter.new('foo').client # get client the easy way
   while cursor != '0' do
     resp = client.list_members('Directgov', 'ukcouncils', :cursor => cursor)
     cursor = resp.next_cursor
     resp.users.each do |member|
-      m_url = URI.parse(member.url.strip).host
+      begin
+        m_url = URI.parse(member.url.strip).host
 
-      m_id = member.screen_name
-      if council = Council.find(:first, :conditions => ["url LIKE ?", "%#{m_url}%"])
-        puts "Found twitter url for #{council.name}: #{m_id}"
-        council.update_attribute(:twitter_account, m_id)
-      else
-        puts "Failed to find council with url: #{m_url}"
+        m_id = member.screen_name
+        if council = Council.find(:first, :conditions => ["url LIKE ?", "%#{m_url}%"])
+          if m_id == council.twitter_account_name
+            puts "Twitter account for #{council.name} unchanged"
+          else
+            puts "Found new/updated twitter account for #{council.name}: #{m_id}"
+            council.update_attribute(:twitter_account_name, m_id)
+          end
+        else
+          puts "Failed to find council with url: #{m_url}"
+        end
+      rescue Exception => e
+        puts "*** Problem updating twitter account for #{member.inspect}"
       end
     end
   end

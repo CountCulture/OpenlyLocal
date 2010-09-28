@@ -2,4 +2,4 @@
 
 <%= error_messages_for :parser %>
 
-<%= render :partial => 'form' %>
+<%= render :partial => (@parser.kind_of?(CsvParser) ? 'csv_parser_form' : 'form') %>

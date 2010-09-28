@@ -1,0 +1,4 @@
+class CsvScraper < Scraper
+  
+  
+end
