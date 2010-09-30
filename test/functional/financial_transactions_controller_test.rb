@@ -173,7 +173,7 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :show
 
-      should "show FoI request button" do
+      should_eventually "show FoI request button" do
         assert_select "form#foi_request"
       end
       
