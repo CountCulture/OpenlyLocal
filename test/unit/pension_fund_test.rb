@@ -17,6 +17,7 @@ class PensionFundTest < ActiveSupport::TestCase
     should_have_db_column :email
     should_have_db_column :address
     should_have_db_column :wdtk_name
+    should have_db_column :wdtk_id
   end
   
   context "A PensionFund instance" do

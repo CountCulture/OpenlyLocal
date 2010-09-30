@@ -517,3 +517,15 @@ task :import_missing_os_ids => :environment do
     end
   end
 end
+
+desc "Import WDTK ids"
+task :import_wdtk_ids => :environment do
+  require 'hpricot'
+  require 'open-uri'
+  bodies = %w(PoliceForce Council PoliceAuthority PensionFund).collect{|body_klass| body_klass.constantize.all(:conditions => 'wdtk_name IS NOT NULL AND wdtk_name !="" AND wdtk_id IS NULL')}.flatten.each do |body|
+    wdtk_id = Hpricot(open("http://www.whatdotheyknow.com/body/#{body.wdtk_name}")).at('#stepwise_make_request a')[:href].scan(/\d+$/).to_s
+    body.update_attribute(:wdtk_id, wdtk_id)
+    puts "Updated #{body.title} with What Do They Know id: #{wdtk_id}"
+  end
+end
+

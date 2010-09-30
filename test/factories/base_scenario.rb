@@ -327,6 +327,11 @@ Factory.define :supplier do |f|
   f.association :organisation, :factory => :police_force 
 end
 
+Factory.define :council_supplier, :class => :supplier do |f|
+  f.sequence(:name) { |n| "Supplier #{n}" }
+  f.association :organisation, :factory => :another_council 
+end
+
 Factory.define :financial_transaction do |f|
   f.sequence(:date) {|n| n.days.ago}
   f.association :supplier

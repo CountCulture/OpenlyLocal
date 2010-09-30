@@ -28,6 +28,7 @@ class PoliceForceTest < ActiveSupport::TestCase
     should have_db_column :youtube_account_name
     should have_db_column :feed_url
     should have_db_column :crime_map
+    should have_db_column :wdtk_id
     
     should "include TwitterAccountMethods mixin" do
       assert @police_force.respond_to?(:twitter_account_name)

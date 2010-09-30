@@ -494,5 +494,23 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       assert ft.errors.empty?
       assert !ft.supplier.new_record?
     end
+
+    context "when returning foi_message_body" do
+      setup do
+        
+      end
+
+      should "return boilerplate" do
+        assert_match /Freedom of Information Act 2000/, @financial_transaction.foi_message_body
+      end
+      
+      should "include information about transaction" do
+        assert_match /#{@financial_transaction.organisation.title}/, @financial_transaction.foi_message_body
+        assert_match /payment/, @financial_transaction.foi_message_body
+        assert_match /#{@financial_transaction.supplier_name}/, @financial_transaction.foi_message_body
+        assert_match /£#{@financial_transaction.value}/, @financial_transaction.foi_message_body
+        assert_match /#{@financial_transaction.date.to_date}/, @financial_transaction.foi_message_body
+      end
+    end
   end                      
 end

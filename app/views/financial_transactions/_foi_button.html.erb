@@ -1,0 +1,16 @@
+<%# form_tag "http://whatdotheyknow.com/new/#{organisation.wdtk_id}", :id => 'foi_request', :target => '_blank' do  %>
+<%# form_tag "http://whatdotheyknow.com/new", :id => 'foi_request' do  %>
+<!-- <form action='http://www.whatdotheyknow.com/new' id='foi_request' method='post'> -->
+<form action='http://www.whatdotheyknow.com/new' id='foi_request' metho='post'>
+	<div>
+		<input type="hidden" value="openlylocal" name="tags">
+		<%= hidden_field_tag "outgoing_message[body]", item.foi_message_body %>
+		<input type="hidden" value='Information on <%= item.title %>' name="info_request[title]">
+		<input type="hidden" value="1" name="submitted_new_request">
+		<!-- <input type="hidden" value="Preview your public request" name="commit"> -->
+		<input type="hidden" value="1" name="preview">
+		<input type="hidden" value="1" name="info_request[public_body_id]">
+		<input type="submit" value="Submit Freedom of Information request">
+	</div>
+<%# end %>
+</form>
