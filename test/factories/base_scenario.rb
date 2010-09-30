@@ -371,3 +371,8 @@ end
 Factory.define :spending_stat do |f|
   f.association :organisation, :factory => :supplier
 end
+
+Factory.define :classification do |f|
+  f.sequence( :title) {|n| "Foo #{n}"}
+  f.grouping 'Proclass'
+end
