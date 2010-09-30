@@ -1,5 +1,6 @@
 class FinancialTransaction < ActiveRecord::Base
   belongs_to :supplier
+  belongs_to :classification
   before_validation :save_associated_supplier
   validates_presence_of :value, :date, :supplier_id
   attr_reader :organisation
@@ -114,12 +115,27 @@ class FinancialTransaction < ActiveRecord::Base
 	end
 	
 	def organisation
-	 supplier&&supplier.organisation||@organisation
+	  supplier&&supplier.organisation||@organisation
+	end
+	
+  # convenience method for assigning Proclass classification
+	def proclass10_1=(raw_class)
+ 	  self.proclass = raw_class, 'Proclass10.1'
+	end
+	
+	def proclass8_3=(raw_class)
+	  self.proclass = raw_class, 'Proclass8.3'
+	end
+	
+	def proclass=(args)
+	  raw_class, grouping = args
+ 	  pc = Classification.first(:conditions => {:title => raw_class, :grouping => grouping})
+ 	  self.classification = pc
 	end
 	
   # returns related transactions, i.e. same supplying relationship (default ten)
 	def related(options={})
-	 supplier.financial_transactions.all(:order => 'date DESC', :limit => 11) - [self]
+	  supplier.financial_transactions.all(:order => 'date DESC', :limit => 11) - [self]
 	end
 	
 	# As financial transactions are often create from CSV files, we need to set supplier 

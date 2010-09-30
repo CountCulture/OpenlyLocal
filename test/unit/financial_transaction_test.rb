@@ -12,6 +12,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should validate_presence_of :value
     should validate_presence_of :date
     should belong_to :supplier
+    should belong_to :classification
     
     should have_db_column :value 
     should have_db_column :uid 
@@ -25,6 +26,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should have_db_column :invoice_number
     should have_db_column :csv_line_number
     should have_db_column :date_fuzziness
+    should have_db_column :classification_id
     
     should 'validate presence of supplier_id' do
       # NB Shoulda macro not working for some reason
@@ -474,6 +476,34 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       
     end
     
+    context 'when setting proclass_classification' do
+      setup do
+        @proclass_class_1 = Factory(:classification, :grouping => 'Proclass10.1', :uid => '10010')
+        @proclass_class_2 = Factory(:classification, :grouping => 'Proclass10.1', :uid => '10020', :title => 'Foo Bar')
+        @fin_trans = FinancialTransaction.new
+      end
+
+      should 'match with classification appropriate to version' do
+        Classification.expects(:first).with(:conditions => {:grouping => 'Proclass10.1', :title => 'Foo Bar'})
+        @fin_trans.proclass10_1 = 'Foo Bar'
+        Classification.expects(:first).with(:conditions => {:grouping => 'Proclass8.3', :title => 'Foo Baz'})
+        @fin_trans.proclass8_3 = 'Foo Baz'
+      end
+            
+      should 'assign returned classification' do
+        @fin_trans.proclass10_1 = 'Foo Bar'
+        assert_equal @proclass_class_2, @fin_trans.classification
+      end
+
+      should 'deassign existing classification if already set and no such classification' do
+        @fin_trans.classification = @proclass_class_1
+        @fin_trans.proclass10_1 = 'Foo Baz'
+        assert_nil @fin_trans.classification
+      end
+
+ 	  end
+
+
     # This is sort of integration test to see that all is well
     should "create supplier when financial transaction saved" do
       ft = Factory.build(:financial_transaction, :supplier => nil)

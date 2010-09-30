@@ -12,15 +12,17 @@ end
 
 desc "Import Proclass classification"
 task :import_proclass => :environment do
-  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/ProClass_vC10.1.csv"), :headers => true) do |row|
-    next if row['C10.1N'].blank?
-    levels = [row["Top Level"],row["Level 2"],row["Level 3"]].compact
-    Classification.create!(
-    :grouping => 'Proclass10.1',
-    :uid => row['C10.1N'],
-    :title => levels.last,
-    :extended_title => levels.join(' > '))
-    print '.'
+  %w(10.1 8.3).each do |version|
+    FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/ProClass_vC#{version}.csv"), :headers => true) do |row|
+      next if row["C#{version}N"].blank?
+      levels = [row["Top Level"],row["Level 2"],row["Level 3"]].compact
+      Classification.create!(
+      :grouping => "Proclass#{version}",
+      :uid => row["C#{version}N"],
+      :title => levels.last,
+      :extended_title => levels.join(' > '))
+      print '.'
+    end
   end
 end
 
