@@ -154,7 +154,52 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
       should "show related financial transactions" do
         assert_select '#related_transactions'
       end
+      
+      should "not show FoI request button" do
+        assert_select "form#foi_request", false
+      end
     end  
+    
+    context "when transaction value over 10000" do
+
+      setup do
+        supplier = Factory(:council_supplier)
+        @financial_transaction.update_attributes(:value => 20000, :supplier => supplier)
+        
+        get :show, :id => @financial_transaction.id
+      end
+
+      should_assign_to(:financial_transaction) { @financial_transaction }
+      should respond_with :success
+      should render_template :show
+
+      should_eventually "show FoI request button" do
+        assert_select "form#foi_request"
+      end
+      
+      context "and foi button" do
+
+        should "post to what do they know" do
+          
+        end
+
+        should "use council whatdotheyknow id" do
+          
+        end
+
+        should "submit boilerplate" do
+          
+        end
+
+        should "include transaction details in request details" do
+          
+        end
+
+        should "submit machine tag" do
+          
+        end
+      end
+    end
     
     context "with xml requested" do
       setup do

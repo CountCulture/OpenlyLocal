@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100923231515) do
+ActiveRecord::Schema.define(:version => 20100930144717) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -90,6 +90,16 @@ ActiveRecord::Schema.define(:version => 20100923231515) do
   add_index "charities", ["income"], :name => "index_charities_on_income"
   add_index "charities", ["spending"], :name => "index_charities_on_spending"
   add_index "charities", ["title"], :name => "index_charities_on_title"
+
+  create_table "classifications", :force => true do |t|
+    t.column "grouping", :string
+    t.column "title", :string
+    t.column "extended_title", :text
+    t.column "uid", :string
+    t.column "parent_id", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "committees", :force => true do |t|
     t.column "title", :string
@@ -383,6 +393,7 @@ ActiveRecord::Schema.define(:version => 20100923231515) do
     t.column "updated_at", :datetime
     t.column "invoice_number", :string
     t.column "csv_line_number", :integer
+    t.column "classification_id", :integer
   end
 
   add_index "financial_transactions", ["supplier_id"], :name => "index_financial_transactions_on_supplier_id"
@@ -622,6 +633,7 @@ ActiveRecord::Schema.define(:version => 20100923231515) do
     t.column "wdtk_name", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "wdtk_id", :integer
   end
 
   create_table "police_authorities", :force => true do |t|
@@ -636,6 +648,7 @@ ActiveRecord::Schema.define(:version => 20100923231515) do
     t.column "updated_at", :datetime
     t.column "annual_audit_letter", :string
     t.column "vat_number", :string
+    t.column "wdtk_id", :integer
   end
 
   add_index "police_authorities", ["police_force_id"], :name => "index_police_authorities_on_police_force_id"
@@ -654,6 +667,7 @@ ActiveRecord::Schema.define(:version => 20100923231515) do
     t.column "facebook_account_name", :string
     t.column "feed_url", :string
     t.column "crime_map", :string
+    t.column "wdtk_id", :integer
   end
 
   create_table "police_officers", :force => true do |t|

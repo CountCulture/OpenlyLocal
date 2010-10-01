@@ -9,3 +9,20 @@ task :create_document_precis => :environment do
     end
   end
 end
+
+desc "Import Proclass classification"
+task :import_proclass => :environment do
+  %w(10.1 8.3).each do |version|
+    FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/ProClass_vC#{version}.csv"), :headers => true) do |row|
+      next if row["C#{version}N"].blank?
+      levels = [row["Top Level"],row["Level 2"],row["Level 3"]].compact
+      Classification.create!(
+      :grouping => "Proclass#{version}",
+      :uid => row["C#{version}N"],
+      :title => levels.last,
+      :extended_title => levels.join(' > '))
+      print '.'
+    end
+  end
+end
+

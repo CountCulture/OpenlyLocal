@@ -19,6 +19,10 @@
 										link_to(@financial_transaction.source_url, @financial_transaction.source_url) if @financial_transaction.source_url? %>
 </dl>
 
+<%#= render :partial => 'foi_button', 
+					 :locals => { :organisation => @financial_transaction.organisation, 
+												:item => @financial_transaction} if @financial_transaction.value > 10000 %>
+
 <%- unless @related_transactions.blank? -%>
 	<div id="related_transactions">
 		<%= basic_table :caption => 'Related transactions', 

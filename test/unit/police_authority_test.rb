@@ -22,6 +22,7 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
     should have_db_column :wdtk_name
     should have_db_column :annual_audit_letter
     should have_db_column :vat_number
+    should have_db_column :wdtk_id
         
     should "mixin SpendingStat::Base module" do
       assert PoliceAuthority.new.respond_to?(:spending_stat)

@@ -846,3 +846,22 @@ task :import_trafford_payments => :environment do
   council.spending_stat.perform
 end
 
+desc "Import Birmingham Payments"
+task :import_birmingham_payments => :environment do
+  council = Council.first(:conditions => "name LIKE '%Birmingham%'")
+  puts "Adding transactions for #{council.title}"
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/birmingham/2010-08.csv"), :headers => true) do |csv_file|
+    csv_file.each do |row|
+      ft = FinancialTransaction.new(:date => row['Pay Due Date'].gsub('/', '-'),
+                                    :value => row['Invoice Amount'],
+                                    :supplier_name => row['Vendor Name'],
+                                    :uid => row['Doc Number'],
+                                    :organisation => council,
+                                    :source_url => "http://www.birmingham.gov.uk/cs/Satellite?c=Page&childpagename=SystemAdmin%2FCFPageLayout&cid=1223335821227&packedargs=website%3D4&pagename=BCC%2FCommon%2FWrapper%2FCFWrapper&rendermode=live"
+                                    )
+      ft.save!                                  
+      puts "."
+    end
+  end
+  council.spending_stat.perform
+end
