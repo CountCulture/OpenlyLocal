@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class ScrapersControllerTest < ActionController::TestCase
-
+  
   # index test
   context "on GET to :index without auth" do
     setup do
@@ -137,7 +137,19 @@ class ScrapersControllerTest < ActionController::TestCase
       @scraper = Factory(:scraper)
     end
       
-    should "run process scraper" do
+    should "process scraper" do
+      @scraper.class.any_instance.expects(:process).returns(stub_everything)
+      stub_authentication
+      get :show, :id => @scraper.id, :dry_run => true
+    end
+  end
+  
+  context "on GET to :show with :dry_run of CsvScraper" do
+    setup do
+      @scraper = Factory(:csv_scraper)
+    end
+      
+    should "process scraper" do
       @scraper.class.any_instance.expects(:process).returns(stub_everything)
       stub_authentication
       get :show, :id => @scraper.id, :dry_run => true
@@ -169,6 +181,43 @@ class ScrapersControllerTest < ActionController::TestCase
             assert_select "h4", /Fred Flintstone/
           end
         end
+      end
+    end
+  
+    should "not show summary of problems" do
+      assert_select "div.errorExplanation", false
+    end
+  end
+  
+  context "on GET to :show with successful :dry_run of csv_scraper" do
+    setup do
+      @scraper = Factory(:csv_scraper)
+
+      @scraper.parser.update_attribute(:result_model, 'FinancialTransaction')
+
+      @csv_rawdata = dummy_csv_data('supplier_payments')
+      CsvScraper.any_instance.expects(:_data).returns(@csv_rawdata)
+      # @member = Factory(:member, :council => @scraper.council)
+      # @member.save # otherwise looks like new_before_save
+      # @new_member = Member.new(:full_name => "Fred Flintstone", :uid => 55)
+      # @scraper.class.any_instance.stubs(:process).returns(@scraper)
+      # @scraper.stubs(:results).returns([ScrapedObjectResult.new(@member), ScrapedObjectResult.new(@new_member)])
+      stub_authentication
+      get :show, :id => @scraper.id, :dry_run => true
+    end
+  
+    should assign_to(:scraper)
+    should assign_to(:results)
+    should respond_with :success
+    
+    should "show summary of successful results" do
+      assert_select "#results" do
+        # assert_select "div.member", 2 do
+          # assert_select "h4", /#{@member.full_name}/
+          # assert_select "div.new", 1 do
+            # assert_select "h4", /Fred Flintstone/
+          # end
+        # end
       end
     end
   
@@ -278,6 +327,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   
     should "not show summary of problems" do
+      puts css_select("div.errorExplanation")
       assert_select "div.errorExplanation", false
     end
   end

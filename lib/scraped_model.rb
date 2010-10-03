@@ -49,19 +49,20 @@ module ScrapedModel
       # more specific behaviour, e.g. Meeting model should return only meetings 
       # associated with given council and committe
       def find_all_existing(params)
-        raise ArgumentError, ":council_id is missing from submitted params" if params[:council_id].blank? 
-        find_all_by_council_id(params[:council_id])
+        raise ArgumentError, "organisation is missing from submitted params" unless params[:organisation]
+        find_all_by_council_id(params[:organisation].id)
       end
 
       def build_or_update(params_array, options={})
         return if params_array.blank?
-        exist_records = find_all_existing(params_array.first.merge(:council_id => options[:council_id])) # want council_id and other params (e.g. committee_id) that *might* be necessary to find all existing records
+        organisation = options.delete(:organisation)
+        exist_records = find_all_existing(params_array.first.merge(:organisation => organisation)) # want council_id and other params (e.g. committee_id) that *might* be necessary to find all existing records
         results = [params_array].flatten.collect do |params| #make into array if it isn't one
           if result = exist_records.detect{ |r| r.matches_params(params) }
             result.attributes = params
             exist_records.delete(result)
           end
-          result ||= record_not_found_behaviour(params.merge(:council_id => options[:council_id]))
+          result ||= record_not_found_behaviour(params.merge(:council => organisation))
           options[:save_results] ? result.save_without_losing_dirty : result.valid? # we want to know what's changed and keep any errors, so run save_without_losing_dirty if we're saving, run validation to add errors to item otherwise
           logger.debug { "**********result = #{result.inspect}" }
           ScrapedObjectResult.new(result)

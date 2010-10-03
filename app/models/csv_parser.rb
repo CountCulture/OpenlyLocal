@@ -18,12 +18,13 @@ class CsvParser < Parser
   
   def process(raw_data, scraper=nil, options={})
     @current_scraper = scraper
-    result_array = []
+    result_array,dry_run = [], !options[:save_results]
     csv_file = FasterCSV.new(raw_data, :headers => true)
     data_row_number = 0
+    # p scraper.parser.attribute_mapping
     csv_file.each do |row|
     # rows.each do |row|
-      break if options[:dry_run] && data_row_number == 10
+      break if dry_run && data_row_number == 10
       next if row.all?{ |k,v| v.blank? } # skip blank rows
       res_hash = {}
       attribute_mapping.each do |k,v|
@@ -34,8 +35,9 @@ class CsvParser < Parser
         end
       end
       data_row_number +=1
-      result_array << res_hash.merge(:csv_line_number => csv_file.lineno)
+      result_array << res_hash.merge(:csv_line_number => csv_file.lineno, :source_url => scraper&&scraper.url)
     end
+    # p result_array
     @results = result_array
     self
   rescue Exception => e

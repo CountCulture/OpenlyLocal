@@ -19,7 +19,7 @@ class CommitteeTest < ActiveSupport::TestCase
     should belong_to :council
     should belong_to :ward
     
-    should "include ScraperModel mixin" do
+    should "include ScrapedModel mixin" do
       assert Committee.respond_to?(:find_all_existing)
     end
     

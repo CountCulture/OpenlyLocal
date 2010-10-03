@@ -13,8 +13,13 @@ class CsvParserTest < ActiveSupport::TestCase
     should have_db_column :attribute_mapping
     
     should "serialize attribute_mapping" do
-      assert_equal({ :directorate => 'Directorate', :supplier_name => 'Supplier Name', :transaction_id => 'TransactionID', :value_for_foo => 'bar' }, @parser.reload.attribute_mapping)
+      assert_equal({ :department_name => 'Directorate', :supplier_name => 'Supplier Name', :uid => 'TransactionID' }, Parser.find(@parser.id).attribute_mapping)
     end
+    
+    # should "serialize OK with assoc scraper" do
+    #   scraper = Factory(:csv_scraper)
+    #   # p scraper.parser.attribute_mapping, Parser.find(scraper.parser_id).attribute_mapping, CsvParser.find(scraper.parser_id).attribute_mapping
+    # end
 
   end
 
@@ -46,7 +51,7 @@ class CsvParserTest < ActiveSupport::TestCase
         end
         
         should "make attribute_mapping_key accessible as attrib_name" do
-          assert_equal "directorate", @first_attrib.attrib_name
+          assert_equal "department_name", @first_attrib.attrib_name
         end
 
         should "make attribute_mapping_value accessible as column_name" do
@@ -93,7 +98,7 @@ class CsvParserTest < ActiveSupport::TestCase
       
       setup do
         @dummy_org = stub()
-        @dummy_scraper = stub_everything(:council => @dummy_org)
+        @dummy_scraper = stub_everything(:council => @dummy_org, :url => "http://foo.gov.uk/bar.csv")
       end
 	        
 	    should "return self" do
@@ -115,9 +120,26 @@ class CsvParserTest < ActiveSupport::TestCase
         assert_not_nil @parser.results
       end
       
-      context 'and results' do
+      context "when processing with dry run" do
+
         setup do
           @processed_data = @parser.process(@csv_rawdata, @dummy_scraper).results
+        end
+
+        should 'return only first ten results' do
+          assert_equal 10, @processed_data.size
+        end
+
+        should "map row headings to attributes" do
+          assert_equal 'Resources', @processed_data.first[:department_name]
+          assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
+        end
+
+      end
+      
+      context 'and results' do
+        setup do
+          @processed_data = @parser.process(@csv_rawdata, @dummy_scraper, :save_results => true).results
         end
         
         should 'be an array of hashes' do
@@ -130,12 +152,14 @@ class CsvParserTest < ActiveSupport::TestCase
         end
 
         should "map row headings to attributes" do
-          assert_equal 'Resources', @processed_data.first[:directorate]
+          assert_equal 'Resources', @processed_data.first[:department_name]
           assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
         end
         
         should "map given values for attributes when attribute has is value_for name" do
-          assert_equal 'bar', @processed_data.first[:foo]
+          @parser.attribute_mapping = { :department_name => 'Directorate', :supplier_name => 'Supplier Name', :uid => 'TransactionID', :value_for_foo => 'bar' }
+          
+          assert_equal 'bar', @parser.process(@csv_rawdata, @dummy_scraper).results.first[:foo]
         end
 
         should "ignore blank rows" do
@@ -147,12 +171,10 @@ class CsvParserTest < ActiveSupport::TestCase
           assert_equal 21, @processed_data.last[:csv_line_number]
         end
 
-	      should_eventually 'assign scraper council to attributes as organisation' do
-	        # *************
-	        # NB Ultimately this will not be necessary as it should be set in scraper
-	        # *************
-	        assert_equal @dummy_org, @processed_data.first[:organisation]
-	      end
+        should 'return scraper url as source_url' do
+          assert_equal "http://foo.gov.uk/bar.csv", @processed_data.last[:source_url]
+        end
+
       end
       
       context "and problems occur when parsing" do
@@ -170,36 +192,8 @@ class CsvParserTest < ActiveSupport::TestCase
           assert errors = @parser.process(nil).errors[:base]
           assert_match /Exception raised parsing csv/i, errors
         end
-        
-        # should "separate consecutive points in parsing code when storing errors in parser" do
-        #   # This is because of bug in Rails when displaying errors with consecutive points
-        #   errors = @problem_parser.process('foo').errors[:base]
-        #   assert_match /Problem .+parsing code.+foobar \+ \(1\. \.2\)/m, errors
-        # end
-        # 
-        # should "separate consecutive points in item to be parsed when storing errors in parser" do
-        #   # This is because of bug in Rails when displaying errors with consecutive points
-        #   errors = @problem_parser.process(@dummy_hpricot_for_attrib_prob).errors[:base]
-        #   assert_match /Problem .+parsing.+on following.+some string\. \. \. here/m, errors
-        # end
       end
     end
     
-    context "when processing with dry run" do
-
-      setup do
-        @processed_data = @parser.process(@csv_rawdata, @dummy_scraper, :dry_run => true).results
-      end
-      
-      should 'return only first ten results' do
-        assert_equal 10, @processed_data.size
-      end
-
-      should "map row headings to attributes" do
-        assert_equal 'Resources', @processed_data.first[:directorate]
-        assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
-      end
-      
-    end
   end
 end

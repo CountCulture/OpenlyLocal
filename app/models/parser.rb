@@ -26,7 +26,7 @@ class Parser < ActiveRecord::Base
     self.attribute_parser = result_hash
   end
   
-  def process(doc, scraper=nil)
+  def process(doc, scraper=nil, options={})
     @raw_response = doc
     @current_scraper = scraper
     @results = nil # wipe previous results if they exist (same parser instance may be called more than once by scraper)

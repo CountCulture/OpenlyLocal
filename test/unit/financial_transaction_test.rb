@@ -35,6 +35,52 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       assert f.errors[:supplier_id]
     end                        
     
+    context "when building or updating from params" do
+      setup do
+        @council = Factory(:generic_council)
+        @params = [{:value => 1234, :supplier_name => "Foo Ltd", :date =>'2009-04-26'}, {:value => 456, :supplier_name => 'Bar Inc', :date =>'2009-03-19'}]
+      end
+      
+      context "in general" do
+
+        should "build instances of ScrapedObjectResult" do
+          transactions = FinancialTransaction.build_or_update(@params, :organisation => @council)
+          assert_equal 2, transactions.size
+          assert_kind_of ScrapedObjectResult, transactions.first
+        end
+
+
+        should "use params and organisation to create new record" do
+          transactions = FinancialTransaction.build_or_update(@params, :organisation => @council)
+          assert_equal 1234.0, transactions.first.changes["value"].last
+          assert_equal '2009-04-26'.to_date, transactions.first.changes["date"].last
+        end
+
+        should "validate new records by default" do
+          assert_equal "can't be blank", FinancialTransaction.build_or_update([{:value => ""}], :organisation => @council).first.errors[:value]
+        end
+      end
+
+      
+      context "and save_results is true" do
+
+        should "save financial transactions" do
+          assert_difference "FinancialTransaction.count", 2 do
+            FinancialTransaction.build_or_update(@params, :organisation => @council, :save_results => true)
+          end
+        end
+        
+        should "return instances of ScrapedObjectResult" do
+          transactions = FinancialTransaction.build_or_update(@params, :organisation => @council, :save_results => true)
+          assert_equal 2, transactions.size
+          assert_kind_of ScrapedObjectResult, transactions.first
+          assert_equal 'FinancialTransaction', transactions.first.base_object_klass
+        end
+      end
+      
+    end
+    
+
     context "when saving" do
       setup do
         supplier = Factory.build(:supplier)
@@ -66,6 +112,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
       
     end
+
   end
   
   context 'an instance of the FinancialTransaction class' do
@@ -106,6 +153,16 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       should 'use date and uid when uid is set' do
         @financial_transaction.uid = '1234A'
         assert_equal "Transaction 1234A with #{@financial_transaction.supplier.title} on #{@financial_transaction.date.to_s(:event_date)}", @financial_transaction.title
+      end
+      
+      should 'not fail if no date' do
+        @financial_transaction.date = nil
+        assert_nothing_raised(Exception) { @financial_transaction.title }
+      end
+
+      should 'not fail if no supplier' do
+        @financial_transaction.supplier = nil
+        assert_nothing_raised(Exception) { @financial_transaction.title }
       end
     end
     
@@ -193,6 +250,23 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       should "strip out pound signs" do
         assert_equal 3467.23, Factory(:financial_transaction, :value => '£3467.23').value
       end
+    end
+
+    context "when setting date" do
+
+      should "set date as expected" do
+        date = 30.days.ago.to_date
+        assert_equal date, Factory(:financial_transaction, :date => date).date
+      end
+
+      should "convert UK date if in slash format" do
+        assert_equal '2006-04-01', Factory(:financial_transaction, :date => '01/04/2006').date.to_s
+      end
+
+      should "not convert date if not in slash format" do
+        assert_equal '2006-01-04', Factory(:financial_transaction, :date => '2006-01-04').date.to_s
+      end
+
     end
 
     context 'when setting department_name' do
@@ -488,6 +562,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         @fin_trans.proclass10_1 = 'Foo Bar'
         Classification.expects(:first).with(:conditions => {:grouping => 'Proclass8.3', :title => 'Foo Baz'})
         @fin_trans.proclass8_3 = 'Foo Baz'
+      end
+            
+      should 'match with classification uid if number given' do
+        Classification.expects(:first).with(:conditions => {:grouping => 'Proclass10.1', :uid => '10020'})
+        @fin_trans.proclass10_1 = '10020'
       end
             
       should 'assign returned classification' do

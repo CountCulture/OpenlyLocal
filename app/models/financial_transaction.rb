@@ -43,6 +43,16 @@ class FinancialTransaction < ActiveRecord::Base
     CsvMappings.map(&:first)
   end
   
+  def self.build_or_update(params_array, options={})
+    organisation = options[:organisation]||options[:council] 
+    params_array.collect do |params|
+      # p params#, organisation
+      ft = FinancialTransaction.new(params.merge(:organisation => organisation))
+      options[:save_results] ? ft.save_without_losing_dirty : ft.valid?
+      ScrapedObjectResult.new(ft)
+    end
+  end
+  
   def averaged_date_and_value
     return [[date, value]] unless date_fuzziness?
     first_date, last_date = (date - date_fuzziness), (date + date_fuzziness)
@@ -67,6 +77,11 @@ class FinancialTransaction < ActiveRecord::Base
         val
       end
     end
+  end
+  
+  # Convert UK dates using slashes (e.g. 26/03/2010) to dates that will be converted correctly (e.g. 26-03-2010)
+  def date=(raw_date)
+    self[:date] = raw_date.to_s.squish.match(/^\d+\/\d+\/\d+$/) ? raw_date.gsub('/','-') : raw_date
   end
   
   def department_name=(raw_name)
@@ -98,6 +113,10 @@ class FinancialTransaction < ActiveRecord::Base
     description? ? (service? ? "#{description} (#{service})": description ) : service 
   end
   
+  def new_record_before_save?
+    instance_variable_get(:@new_record_before_save)
+  end
+  
   def openlylocal_url
     "http://#{DefaultDomain}/financial_transactions/#{to_param}"
   end
@@ -114,6 +133,7 @@ class FinancialTransaction < ActiveRecord::Base
     end
 	end
 	
+  # taken from ScrapedModel mixin
 	def organisation
 	  supplier&&supplier.organisation||@organisation
 	end
@@ -128,8 +148,9 @@ class FinancialTransaction < ActiveRecord::Base
 	end
 	
 	def proclass=(args)
-	  raw_class, grouping = args
- 	  pc = Classification.first(:conditions => {:title => raw_class, :grouping => grouping})
+	  grouping = args[1]
+	  conditions = args.first.match(/^\d+$/) ? {:uid  => args.first} : {:title => args.first}
+ 	  pc = Classification.first(:conditions => conditions.merge(:grouping => grouping))
  	  self.classification = pc
 	end
 	
@@ -138,6 +159,14 @@ class FinancialTransaction < ActiveRecord::Base
 	  supplier.financial_transactions.all(:order => 'date DESC', :limit => 11) - [self]
 	end
 	
+  # taken from ScrapedModel mixin
+  def save_without_losing_dirty
+    ch_attributes = changed_attributes.clone
+    success = save 
+    changed_attributes.update(ch_attributes) # so merge them back in
+    success # return result of saving
+  end
+
 	# As financial transactions are often create from CSV files, we need to set supplier 
 	# from supplied params, and when doing so may not not associated organisation
 	def supplier_name=(name)
@@ -156,7 +185,7 @@ class FinancialTransaction < ActiveRecord::Base
 	end
 
   def title
-    (uid? ? "Transaction #{uid}" : "Transaction") + " with #{supplier.title} on #{date.to_s(:event_date)}"
+    (uid? ? "Transaction #{uid}" : "Transaction") + " with #{supplier&&supplier.title} on #{date&&date.to_s(:event_date)}"
   end
   
   # strips out commas and pound signs

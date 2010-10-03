@@ -16,6 +16,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :scrapers
   map.resources :item_scrapers, :controller => "scrapers"
   map.resources :info_scrapers, :controller => "scrapers"
+  map.resources :csv_scrapers, :controller => "scrapers"
 
   map.connect 'councils/all', :controller => "councils", :action => "index", :include_unparsed => true
   map.connect 'councils/all.xml', :controller => "councils", :action => "index", :include_unparsed => true, :format => "xml"

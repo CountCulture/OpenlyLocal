@@ -33,7 +33,7 @@ Factory.define :another_parser, :parent => :parser do |f|
 end
 
 Factory.define :csv_parser do |f|
-  f.attribute_mapping( { :directorate => 'Directorate', :supplier_name => 'Supplier Name', :transaction_id => 'TransactionID', :value_for_foo => 'bar' })
+  f.attribute_mapping( { :department_name => 'Directorate', :supplier_name => 'Supplier Name', :uid => 'TransactionID' })
   f.result_model 'TestScrapedModel'
   f.scraper_type 'CsvScraper'
 end

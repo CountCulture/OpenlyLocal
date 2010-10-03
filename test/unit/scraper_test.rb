@@ -463,12 +463,12 @@ class ScraperTest < ActiveSupport::TestCase
         end
 
         should "pass data to associated parser" do
-          @parser.expects(:process).with("something", anything).returns(stub_everything)
+          @parser.expects(:process).with("something", anything, anything).returns(stub_everything)
           @scraper.process
         end
 
         should "pass self to associated parser" do
-          @parser.expects(:process).with(anything, @scraper).returns(stub_everything)
+          @parser.expects(:process).with(anything, @scraper, anything).returns(stub_everything)
           @scraper.process
         end
 
@@ -479,7 +479,7 @@ class ScraperTest < ActiveSupport::TestCase
         should "build new or update existing instance of result_class with parser results and scraper council" do
           dummy_scraped_obj = TestScrapedModel.new
 
-          TestScrapedModel.expects(:build_or_update).with([{:title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id }).returns([dummy_scraped_obj])
+          TestScrapedModel.expects(:build_or_update).with([{:title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:organisation => @council }).returns([dummy_scraped_obj])
           dummy_scraped_obj.expects(:save).never
           @scraper.process
         end
@@ -575,7 +575,7 @@ class ScraperTest < ActiveSupport::TestCase
 
         should "create new or update and save existing instance of result_class with parser results and scraper council" do
           dummy_scraped_obj = TestScrapedModel.new
-          TestScrapedModel.expects(:build_or_update).with([{:title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:council_id => @council.id, :save_results => true}).returns([ScrapedObjectResult.new(dummy_scraped_obj)])
+          TestScrapedModel.expects(:build_or_update).with([{:title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred"}], {:organisation => @council, :save_results => true}).returns([ScrapedObjectResult.new(dummy_scraped_obj)])
           @scraper.process(:save_results => true)
         end
 
@@ -633,13 +633,18 @@ class ScraperTest < ActiveSupport::TestCase
       end
       
       should "pass data to associated parser" do
-        @csv_parser.expects(:process).with("something", anything).returns(stub_everything)
+        @csv_parser.expects(:process).with("something", anything, anything).returns(stub_everything)
         @scraper.process
       end
 
       should "pass self to associated parser" do
-        @csv_parser.expects(:process).with(anything, @scraper).returns(stub_everything)
+        @csv_parser.expects(:process).with(anything, @scraper, anything).returns(stub_everything)
         @scraper.process
+      end
+
+      should "pass self to associated parser with save_results flag if true" do
+        @csv_parser.expects(:process).with(anything, @scraper, :save_results => true).returns(stub_everything)
+        @scraper.process(:save_results => true)
       end
 
       should "return self" do

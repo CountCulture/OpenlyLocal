@@ -47,7 +47,7 @@ class ParsersControllerTest < ActionController::TestCase
     context "a csv_parser" do
       setup do
         @csv_parser = Factory(:csv_parser)
-        # @scraper = Factory(:scraper, :parser => @parser)
+        @scraper = Factory(:csv_scraper, :parser => @csv_parser)
         stub_authentication
         get :show, :id => @csv_parser.id
       end
@@ -66,7 +66,7 @@ class ParsersControllerTest < ActionController::TestCase
       end
 
       should "show attribute mapping" do
-        assert_select ".parser_attribute .title", /directorate/
+        assert_select ".parser_attribute .title", /department_name/
       end
     end
   end
