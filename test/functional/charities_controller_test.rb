@@ -38,6 +38,8 @@ class CharitiesControllerTest < ActionController::TestCase
     
     context "with xml request" do
       setup do
+        @accounts_info = [{ :accounts_date => '31 Mar 2009', :income => '1234', :spending => '2345', :accounts_url => 'http://charitycommission.gov.uk/accounts2.pdf'}]
+        @charity.update_attribute(:accounts, @accounts_info)
         get :show, :id => @charity.id, :format => "xml"
       end
 
@@ -54,17 +56,9 @@ class CharitiesControllerTest < ActionController::TestCase
         assert_select "charity>email", false
       end
 
-      # should "include councils and basic council data in response" do
-      #   assert_select "police-authority council name", @council.name
-      #   assert_select "police-authority council id", @council.id.to_s
-      #   assert_select "police-authority council url", @council.url
-      #   assert_select "police-authority council openlylocal-url", @council.openlylocal_url
-      # end
-      # 
-      # should "not include non-essential council data in response" do
-      #   assert_select "police-authority council police-authority-id", false
-      #   assert_select "police-authority council wdtk-name", false
-      # end
+      should_eventually "include accounts in response" do
+        assert_select "charity>accounts>account>spending"
+      end
 
     end
 
