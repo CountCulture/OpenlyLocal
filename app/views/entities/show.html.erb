@@ -1,0 +1,7 @@
+<div class="breadcrumbs"><%= link_to "All Entities & other bodies", entities_path %></div>
+<h1><%= @entity.title %></h1>
+<dl id="main_attributes" class="attributes">
+<%= render :partial => 'attributes', :object => @entity %>
+</dl>
+
+<%= timestamp_data_for @entity %>

@@ -1,9 +1,9 @@
 require 'test_helper'
 
-class QuangosControllerTest < ActionController::TestCase
+class EntitiesControllerTest < ActionController::TestCase
   def setup
-    @quango = Factory(:quango)
-    @another_quango = Factory(:quango)
+    @entity = Factory(:entity)
+    @another_entity = Factory(:entity)
   end
   
   context "on GET to :index" do
@@ -13,11 +13,11 @@ class QuangosControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:quangos) { Quango.find(:all)}
+      should_assign_to(:entities) { Entity.find(:all)}
       should respond_with :success
       should render_template :index
-      should "list quangos" do
-        assert_select "li a", @quango.title
+      should "list entities" do
+        assert_select "li a", @entity.title
       end
       
       should "show share block" do
@@ -38,7 +38,7 @@ class QuangosControllerTest < ActionController::TestCase
         get :index, :format => "xml"
       end
 
-      should_assign_to(:quangos) { Quango.find(:all) }
+      should_assign_to(:entities) { Entity.find(:all) }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
@@ -49,7 +49,7 @@ class QuangosControllerTest < ActionController::TestCase
         get :index, :format => "json"
       end
 
-      should_assign_to(:quangos) { Quango.find(:all) }
+      should_assign_to(:entities) { Entity.find(:all) }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -59,16 +59,16 @@ class QuangosControllerTest < ActionController::TestCase
   context "on GET to :show" do
     context "in general" do
       setup do
-        get :show, :id => @quango.id
+        get :show, :id => @entity.id
       end
 
-      should assign_to(:quango) { @quango}
+      should assign_to(:entity) { @entity}
       should respond_with :success
       should render_template :show
       # should assign_to(:organisation) { @organisation }
 
-      should "show quango name in title" do
-        assert_select "title", /#{@quango.title}/
+      should "show entity name in title" do
+        assert_select "title", /#{@entity.title}/
       end
 
     end
@@ -89,12 +89,12 @@ class QuangosControllerTest < ActionController::TestCase
       get :new
     end
   
-    should_assign_to(:quango)
+    should_assign_to(:entity)
     should respond_with :success
     should render_template :new
   
     should "show form" do
-      assert_select "form#new_quango"
+      assert_select "form#new_entity"
     end
   end  
   
@@ -103,7 +103,7 @@ class QuangosControllerTest < ActionController::TestCase
     
      context "without auth" do
        setup do
-         post :create, :quango => {:title => "New Quango", :website => "http:://new_quango.com"}
+         post :create, :entity => {:title => "New Entity", :website => "http:://new_entity.com"}
        end
 
        should respond_with 401
@@ -112,24 +112,24 @@ class QuangosControllerTest < ActionController::TestCase
      context "with valid params" do
        setup do
          stub_authentication
-         post :create, :quango => {:title => "New Quango", :website => "http:://new_quango.com"}
+         post :create, :entity => {:title => "New Entity", :website => "http:://new_entity.com"}
        end
      
-       should_change("The number of quangos", :by => 1) { Quango.count }
-       should_assign_to :quango
-       should_redirect_to( "the show page for quango") { quango_path(assigns(:quango)) }
-       should_set_the_flash_to "Successfully created quango"
+       should_change("The number of entities", :by => 1) { Entity.count }
+       should_assign_to :entity
+       should_redirect_to( "the show page for entity") { entity_path(assigns(:entity)) }
+       should set_the_flash.to "Successfully created entity"
      
      end
      
      context "with invalid params" do
        setup do
          stub_authentication
-         post :create, :quango => {:website => "http:://new_force.com"}
+         post :create, :entity => {:website => "http:://new_force.com"}
        end
      
-       should_not_change("The number of quangos") { Quango.count }
-       should_assign_to :quango
+       should_not_change("The number of entities") { Entity.count }
+       should_assign_to :entity
        should render_template :new
        should_not set_the_flash
      end
@@ -139,7 +139,7 @@ class QuangosControllerTest < ActionController::TestCase
    # edit test
    context "on GET to :edit without auth" do
      setup do
-       get :edit, :id => @quango
+       get :edit, :id => @entity
      end
 
      should respond_with 401
@@ -148,15 +148,15 @@ class QuangosControllerTest < ActionController::TestCase
    context "on GET to :edit with existing record" do
      setup do
        stub_authentication
-       get :edit, :id => @quango
+       get :edit, :id => @entity
      end
   
-     should_assign_to(:quango)
+     should_assign_to(:entity)
      should respond_with :success
      should render_template :edit
   
      should "show form" do
-       assert_select "form#edit_quango_#{@quango.id}"
+       assert_select "form#edit_entity_#{@entity.id}"
      end
    end  
   
@@ -164,7 +164,7 @@ class QuangosControllerTest < ActionController::TestCase
   context "on PUT to :update" do
     context "without auth" do
       setup do
-        put :update, :id => @quango.id, :quango => { :title => "New Name", :website => "http://new.name.com"}
+        put :update, :id => @entity.id, :entity => { :title => "New Name", :website => "http://new.name.com"}
       end
 
       should respond_with 401
@@ -173,27 +173,27 @@ class QuangosControllerTest < ActionController::TestCase
     context "with valid params" do
       setup do
         stub_authentication
-        put :update, :id => @quango.id, :quango => { :title => "New Name", :website => "http://new.name.com"}
+        put :update, :id => @entity.id, :entity => { :title => "New Name", :website => "http://new.name.com"}
       end
     
-      should_not_change("The number of quangos") { Quango.count }
-      should_change("The quango name", :to => "New Name") { @quango.reload.title }
-      should_change("The quango website", :to => "http://new.name.com") { @quango.reload.website }
-      should_assign_to :quango
-      should_redirect_to( "the show page for quango") { quango_path(assigns(:quango)) }
-      should_set_the_flash_to "Successfully updated quango"
+      should_not_change("The number of entities") { Entity.count }
+      should_change("The entity name", :to => "New Name") { @entity.reload.title }
+      should_change("The entity website", :to => "http://new.name.com") { @entity.reload.website }
+      should_assign_to :entity
+      should_redirect_to( "the show page for entity") { entity_path(assigns(:entity)) }
+      should_set_the_flash_to "Successfully updated entity"
     
     end
     
     context "with invalid params" do
       setup do
         stub_authentication
-        put :update, :id => @quango.id, :quango => {:title => ""}
+        put :update, :id => @entity.id, :entity => {:title => ""}
       end
     
-      should_not_change("The number of quangos") { Quango.count }
-      should_not_change("The quango name") { @quango.reload.title }
-      should_assign_to :quango
+      should_not_change("The number of entities") { Entity.count }
+      should_not_change("The entity name") { @entity.reload.title }
+      should_assign_to :entity
       should render_template :edit
       should_not set_the_flash
     end
@@ -201,46 +201,46 @@ class QuangosControllerTest < ActionController::TestCase
   end  
   
   # delete tests
-  context "on delete to :destroy a quango without auth" do
+  context "on delete to :destroy a entity without auth" do
     setup do
-      delete :destroy, :id => @quango.id
+      delete :destroy, :id => @entity.id
     end
 
     should respond_with 401
   end
 
-  context "on delete to :destroy a quango" do
+  context "on delete to :destroy a entity" do
 
     setup do
       stub_authentication
-      delete :destroy, :id => @quango.id
+      delete :destroy, :id => @entity.id
     end
 
     should "destroy hyperlocal_site" do
-      assert_nil Quango.find_by_id(@quango.id)
+      assert_nil Entity.find_by_id(@entity.id)
     end
-    should_redirect_to ( "the quangos page") { quangos_url }
+    should_redirect_to ( "the entities page") { entities_url }
     should set_the_flash.to( /Successfully destroyed/)
   end
   
   context "on GET to :show_spending" do
     should "route open councils to index with show_open_status true" do
-      assert_routing("quangos/1/spending", {:controller => "quangos", :action => "show_spending", :id => "1"})
+      assert_routing("entities/1/spending", {:controller => "entities", :action => "show_spending", :id => "1"})
     end
     
     context "in general" do
       setup do
-        @supplier_1 = Factory(:supplier, :organisation => @quango)
-        @high_spending_supplier = Factory(:supplier, :organisation => @quango)
+        @supplier_1 = Factory(:supplier, :organisation => @entity)
+        @high_spending_supplier = Factory(:supplier, :organisation => @entity)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
-        get :show_spending, :id => @quango.id
+        get :show_spending, :id => @entity.id
       end
 
       should respond_with :success
       should render_template :show_spending
       should_not set_the_flash
-      should assign_to :quango
+      should assign_to :entity
 
       # should 'assign to suppliers ordered by total spend' do
       #   assert assigns(:suppliers).include?(@supplier_1)
@@ -258,8 +258,8 @@ class QuangosControllerTest < ActionController::TestCase
         assert_select "title", /spending dashboard/i
       end
       
-      should "include quango in basic title" do
-        assert_select "title", /#{@quango.title}/i
+      should "include entity in basic title" do
+        assert_select "title", /#{@entity.title}/i
       end
       
       should 'list suppliers' do
@@ -273,13 +273,13 @@ class QuangosControllerTest < ActionController::TestCase
     
     context "and no spending data" do
       setup do
-        get :show_spending, :id => @another_quango.id
+        get :show_spending, :id => @another_entity.id
       end
 
       should respond_with :success
       should render_template :show_spending
       should_not set_the_flash
-      should assign_to :quango
+      should assign_to :entity
 
       should "show message" do
         assert_select "p.alert", /spending data/i

@@ -141,7 +141,7 @@ end
 desc "Import NDPBs"
 task :import_ndpbs => :environment do
   FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/ndpbs.csv"), :headers => true) do |row|
-    Quango.find_or_create_by_title(:title => row['Name'], :quango_type => 'NDPB', :quango_subtype => row['QuangoSubType'], :sponsoring_organisation => row['SponsoringBody'])
+    Entity.find_or_create_by_title(:title => row['Name'], :entity_type => 'NDPB', :entity_subtype => row['EntitySubType'], :sponsoring_organisation => row['SponsoringBody'])
   end
 end
 
@@ -781,7 +781,7 @@ end
 desc "Import Lottery Grants"
 task :import_lottery_grants => :environment do
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/csv_data/uk-lottery-grants-21-09-2010.csv"), :headers => true) do |csv_file|
-    poss_payer_orgs = Quango.all
+    poss_payer_orgs = Entity.all
     big_lottery_fund = poss_payer_orgs.detect{ |q| q.title == 'Big Lottery Fund' }
     community_fund = poss_payer_orgs.detect{ |q| q.title == 'National Lottery Charities Board' }
     # puts "Adding transactions for #{council.title}"
@@ -796,7 +796,7 @@ task :import_lottery_grants => :environment do
       elsif payer = poss_payer_orgs.detect{|p| TitleNormaliser.normalise_title(p.title) == TitleNormaliser.normalise_title(row['Distributing_Body'])}
         print "-"
       else
-        puts "*******************\n**** Couldn't match payer (#{row['Distributing_Body']}) to quango"
+        puts "*******************\n**** Couldn't match payer (#{row['Distributing_Body']}) to entity"
         next
       end
       ft = FinancialTransaction.new(:organisation => payer,

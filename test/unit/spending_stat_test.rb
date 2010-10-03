@@ -252,7 +252,7 @@ class SpendingStatTest < ActiveSupport::TestCase
       end
       
       should "return nil if organisation doesn't respond to financial_transactions" do
-        assert_nil Factory(:quango).spending_stat.calculated_payee_breakdown
+        assert_nil Factory(:entity).spending_stat.calculated_payee_breakdown
       end
       
       should "return nil if organisation is a supplier" do

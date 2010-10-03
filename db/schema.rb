@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100930144717) do
+ActiveRecord::Schema.define(:version => 20101003154720) do
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -359,6 +359,22 @@ ActiveRecord::Schema.define(:version => 20100930144717) do
   end
 
   add_index "documents", ["document_owner_type", "document_owner_id"], :name => "index_documents_on_document_owner_type_and_document_owner_id"
+
+  create_table "entities", :force => true do |t|
+    t.column "title", :string
+    t.column "entity_type", :string
+    t.column "entity_subtype", :string
+    t.column "website", :string
+    t.column "wikipedia_url", :string
+    t.column "sponsoring_organisation", :string
+    t.column "wdtk_name", :string
+    t.column "previous_names", :text
+    t.column "setup_on", :date
+    t.column "disbanded_on", :date
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+    t.column "vat_number", :string
+  end
 
   create_table "feed_entries", :force => true do |t|
     t.column "title", :string
@@ -755,22 +771,6 @@ ActiveRecord::Schema.define(:version => 20100930144717) do
   add_index "postcodes", ["ward_id"], :name => "index_postcodes_on_ward_id"
   add_index "postcodes", ["council_id"], :name => "index_postcodes_on_council_id"
   add_index "postcodes", ["county_id"], :name => "index_postcodes_on_county_id"
-
-  create_table "quangos", :force => true do |t|
-    t.column "title", :string
-    t.column "quango_type", :string
-    t.column "quango_subtype", :string
-    t.column "website", :string
-    t.column "wikipedia_url", :string
-    t.column "sponsoring_organisation", :string
-    t.column "wdtk_name", :string
-    t.column "previous_names", :text
-    t.column "setup_on", :date
-    t.column "disbanded_on", :date
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "vat_number", :string
-  end
 
   create_table "related_articles", :force => true do |t|
     t.column "title", :string

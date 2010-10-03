@@ -4,7 +4,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :investigations
 
-  map.resources :quangos
+  map.resources :entities
 
   map.resources :financial_transactions
 
@@ -26,7 +26,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/open.json', :controller => "councils", :action => "index", :show_open_status => true, :format => "json"
   map.connect 'councils/:id/spending', :controller => "councils", :action => "show_spending"
   
-  map.connect 'quangos/:id/spending', :controller => "quangos", :action => "show_spending"
+  map.connect 'entities/:id/spending', :controller => "entities", :action => "show_spending"
   # map.connect 'meetings.:format', :controller => "meetings", :action => "index"
   # map.connect 'meetings', :controller => "meetings", :action => "index"
   
@@ -66,7 +66,7 @@ ActionController::Routing::Routes.draw do |map|
     restype.resources :police_forces
     restype.resources :police_authorities
     restype.resources :charities
-    restype.resources :quangos
+    restype.resources :entities
   end
   
   map.connect 'areas/postcodes/:postcode', :controller => 'areas', :action => 'search'

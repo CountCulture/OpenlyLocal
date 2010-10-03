@@ -430,21 +430,21 @@ body.councils .area, .feed_entry .dateline {
 #council_spending_dashboard .in_words .value {
 	font-size: 3.3em;
 	line-height: 1em;}
-#quango_spending_dashboard .in_words .value {
+#entity_spending_dashboard .in_words .value {
 	font-size: 2.6em;
 	line-height: 1em;}
 .dashboard .in_words .explanation {
 	float:left;
 }
-#council_spending_dashboard .in_words .explanation .value, #quango_spending_dashboard .in_words .explanation .value {
+#council_spending_dashboard .in_words .explanation .value, #entity_spending_dashboard .in_words .explanation .value {
 	font-size: 1.4em;}
-#council_spending_dashboard .spending_count, #quango_spending_dashboard .spending_count {
+#council_spending_dashboard .spending_count, #entity_spending_dashboard .spending_count {
 	float:none;
 	margin-right:0;
 	font-size:0.9em;}
-#council_spending_dashboard .explanation .description, #quango_spending_dashboard .explanation .description {
+#council_spending_dashboard .explanation .description, #entity_spending_dashboard .explanation .description {
 	display:inline;}
-#council_spending_dashboard #total_spend, #quango_spending_dashboard #total_spend {
+#council_spending_dashboard #total_spend, #entity_spending_dashboard #total_spend {
 	margin-right:1em;
 	float:left;
 }		

@@ -355,8 +355,8 @@ Factory.define :vat_no_company, :class => :company do |f|
   f.sequence(:vat_number) {|n| "GB#{10000+n}" }
 end
 
-Factory.define :quango do |f|
-  f.sequence(:title) { |n| "Quango #{n}" }
+Factory.define :entity do |f|
+  f.sequence(:title) { |n| "Entity #{n}" }
 end
 
 Factory.define :charity do |f|

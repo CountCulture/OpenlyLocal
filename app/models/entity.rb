@@ -1,4 +1,4 @@
-class Quango < ActiveRecord::Base
+class Entity < ActiveRecord::Base
   PossibleTypes = { 'NDPB' => ['Non-Departmental Body'],
                     'ALB' => ['Arms Length Body'],
                     'Public Corporation' => ['Public Corporation'],

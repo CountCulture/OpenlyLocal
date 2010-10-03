@@ -319,11 +319,11 @@ class SuppliersControllerTest < ActionController::TestCase
       end
     end
 
-    context "when supplier is quango" do
+    context "when supplier is entity" do
       setup do
-        @quango = Factory(:quango, :sponsoring_organisation => 'Dept Foo')
-        @another_supplying_relationship = Factory(:supplier, :payee => @quango)
-        @supplier.update_attribute(:payee, @quango)
+        @entity = Factory(:entity, :sponsoring_organisation => 'Dept Foo')
+        @another_supplying_relationship = Factory(:supplier, :payee => @entity)
+        @supplier.update_attribute(:payee, @entity)
         get :show, :id => @supplier.id
       end
 
@@ -332,7 +332,7 @@ class SuppliersControllerTest < ActionController::TestCase
       should render_template :show
       should assign_to(:organisation) { @organisation }
 
-      should "show quango details" do
+      should "show entity details" do
         assert_select ".sponsoring_organisation"
       end
     end

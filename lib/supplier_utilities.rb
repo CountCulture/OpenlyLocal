@@ -1,7 +1,7 @@
 module SupplierUtilities
   class VatMatcher
     
-    EntityTypesToBeMatched = %w(Charity Quango Company)
+    EntityTypesToBeMatched = %w(Charity Entity Company)
     
     attr_reader :vat_number, :title, :supplier
     def initialize(args)

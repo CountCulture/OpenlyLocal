@@ -66,7 +66,7 @@ class Company < ActiveRecord::Base
       basic_info_or_payee = self.class.from_title(basic_info[:title], :no_create => true) || basic_info
       if basic_info_or_payee.is_a?(Hash) 
         update_attributes(basic_info_or_payee)
-      else #it's an existing company, charity, quango etc
+      else #it's an existing company, charity, entity etc
         basic_info_or_payee.update_attribute(:vat_number, vat_number)
         supplying_relationships.each{ |s| s.update_attribute(:payee, basic_info_or_payee) }
         self.destroy

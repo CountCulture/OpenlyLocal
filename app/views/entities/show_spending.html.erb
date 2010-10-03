@@ -1,0 +1,53 @@
+<%= render :partial => 'shared/experimental_flash' %>
+
+<div id='spending_data_dashboard'>
+
+	<div class='breadcrumbs'>
+	  <%#= link_to 'Spending data for all entities', spending_entities_path %> 
+	</div>
+	<h1><%= basic_link_for @entity %> :: Spending Dashboard</h1>
+	
+	<%- if @suppliers.blank? -%>
+		<p class='alert'>We don&#x27;t have spending data for this entity.</p>
+	<%- else -%>
+		<div id="entity_spending_dashboard" class="dashboard">
+		  <div id="statistics">
+		    <div class='in_words'>
+			
+				  <div id='total_spend' class='spending_count'>
+						<span class='value'>&pound;<%= number_with_delimiter(@entity.total_spend.to_i) %></span> 
+						<strong class=description>Spent in <%= @entity.spending_stat.months_covered %> months since <%= @entity.spending_stat.earliest_transaction_date.strftime("%b %Y") %></strong>
+					</div>
+					<div class="explanation">
+					  <div id='average_monthly_spend' class='spending_count'><span class='value'>&pound;<%= number_with_delimiter(@entity.average_monthly_spend.to_i) %></span> <strong class=description>Spent per month</strong></div>
+					  <div id='supplier_count' class='spending_count'><span class='value'><%= number_with_delimiter(@entity.suppliers.count) %></span> <strong class=description>Recipients</strong></div>
+					  <div id='transaction_count' class='spending_count'><span class='value'><%= number_with_delimiter(@entity.financial_transactions.count) %></span> <strong class=description>Financial Transactions</strong></div>
+					</div>
+		    </div>
+		  </div>
+		</div>
+		<div id="relationships">
+	
+			<div id="spend_by_month" class="graphed_datapoints">
+				<h3>Spend by month</h3>
+				<%= spend_by_month_graph(@entity.spending_stat.spend_by_month) %>
+			</div>
+			<div id="suppliers" class="item_grouping">
+				<%= basic_table :caption => 'Biggest suppliers', 
+												:headings => ['Name', 'Total spend', 'Per month'], 
+												:classes => ['name', 'value', 'value'],
+												:data => @suppliers.collect{ |s| [basic_link_for(s), "&pound;#{number_with_delimiter(s.total_spend.to_i)}", "&pound;#{number_with_delimiter(s.average_monthly_spend.to_i)}"] },
+												:more_info_url => suppliers_path(:organisation_id => @entity.id, :organisation_type => 'Entity', :order => 'total_spend') %>
+			</div>
+
+			<div id="financial_transactions" class="item_grouping">
+				<%= basic_table :caption => 'Biggest transactions', 
+												:headings => ['Supplier', 'Description', 'Value'], 
+												:classes => ['name', 'description', 'value'],
+												:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), truncate(t.full_description||'Not known'), link_to("&pound;#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] },
+												:more_info_url => financial_transactions_path(:organisation_id => @entity.id, :organisation_type => 'Entity') %>
+			</div>
+		</div>
+	<%- end -%>
+	
+</div>

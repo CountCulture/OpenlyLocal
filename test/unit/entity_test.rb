@@ -1,27 +1,27 @@
 require 'test_helper'
 
-class QuangoTest < ActiveSupport::TestCase
-  context "The Quango class" do
+class EntityTest < ActiveSupport::TestCase
+  context "The Entity class" do
     setup do
-      @quango = Factory(:quango)
+      @entity = Factory(:entity)
     end
     should have_many :supplying_relationships
     should have_many :suppliers
     should_have_many :financial_transactions, :through => :suppliers
     
     should "mixin SpendingStat::Base module" do
-      assert Quango.new.respond_to?(:spending_stat)
+      assert Entity.new.respond_to?(:spending_stat)
     end
     
     should 'mixin AddressMethods module' do
-      assert @quango.respond_to?(:address_in_full)
+      assert @entity.respond_to?(:address_in_full)
     end
         
     should validate_presence_of :title
     
     should have_db_column :title
-    should have_db_column :quango_type
-    should have_db_column :quango_subtype
+    should have_db_column :entity_type
+    should have_db_column :entity_subtype
     should have_db_column :website
     should have_db_column :wikipedia_url
     should have_db_column :previous_names

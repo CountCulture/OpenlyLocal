@@ -31,12 +31,12 @@ class SupplierUtilitiesTest < ActiveSupport::TestCase
         @company_owned_by_charity = Factory(:company, :vat_number => "CH1", :title => "Foo Concern Ltd")
         @charity = Factory(:charity, :vat_number => "CH1", :title => "Foo Concern")
         @council = Factory(:council, :vat_number => "CL1", :title => "London Borough of Foo")
-        @quango = Factory(:quango, :vat_number => "QA1", :title => "Foo Body")
+        @entity = Factory(:entity, :vat_number => "QA1", :title => "Foo Body")
       end
 
       should "return entity matching Vat Number and title" do
         assert_equal @charity, SupplierUtilities::VatMatcher.new(:vat_number => "CH1", :title => "Foo Concern", :supplier => @supplier).find_entity
-        assert_equal @quango, SupplierUtilities::VatMatcher.new(:vat_number => "QA1", :title => "Foo Body", :supplier => @supplier).find_entity
+        assert_equal @entity, SupplierUtilities::VatMatcher.new(:vat_number => "QA1", :title => "Foo Body", :supplier => @supplier).find_entity
       end
       
       should "return entity matching Vat Number and normalised title if model supports it" do

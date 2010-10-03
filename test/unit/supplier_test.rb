@@ -302,8 +302,8 @@ class SupplierTest < ActiveSupport::TestCase
         @supplier.possible_payee
       end
       
-      should "try to match against quangos" do
-        Quango.expects(:find_by_title).with(@supplier.name)
+      should "try to match against entities" do
+        Entity.expects(:find_by_title).with(@supplier.name)
         @supplier.possible_payee
       end
     end
