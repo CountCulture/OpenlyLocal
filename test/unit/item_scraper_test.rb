@@ -58,7 +58,7 @@ class ItemScraperTest < ActiveSupport::TestCase
         end
       
         should "pass self to associated parser" do
-          @parser.expects(:process).with(anything, @scraper).returns(stub_everything(:results => []))
+          @parser.expects(:process).with(anything, @scraper, anything).returns(stub_everything(:results => []))
           @scraper.process
         end
         

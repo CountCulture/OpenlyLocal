@@ -6,7 +6,7 @@ class TwitterAccount < ActiveRecord::Base
   after_destroy :remove_from_twitter_list
   
   def list_name
-    self.reload.user.twitter_list_name
+    self.user.twitter_list_name
   end
   
   def url
