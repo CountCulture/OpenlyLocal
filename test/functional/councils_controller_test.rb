@@ -886,7 +886,6 @@ class CouncilsControllerTest < ActionController::TestCase
       end
 
       should 'show number of council transactions' do
-        puts css_select('#transaction_count .value')
         assert_match /2/, css_select('#transaction_count .value').to_s # shouldn't include non-council transactions
       end
 

@@ -95,6 +95,11 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
     sitemap.add poll_path(poll), :lastmod => poll.updated_at
   end
 
+  # add charities
+  Charity.find_each do |charity|
+    sitemap.add charity_path(charity), :lastmod => charity.updated_at
+  end
+
   sitemap.add '/info/about_us', :priority => 0.7
   sitemap.add '/info/api', :priority => 0.7
   sitemap.add '/info/licence_info', :priority => 0.7
