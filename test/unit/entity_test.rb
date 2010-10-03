@@ -30,6 +30,34 @@ class EntityTest < ActiveSupport::TestCase
     should have_db_column :disbanded_on
     should have_db_column :wdtk_name
     should have_db_column :vat_number
+    should have_db_column :cpid_code
+    should have_db_column :normalised_title
     
+    context "when normalising title" do
+      should "normalise title" do
+        TitleNormaliser.expects(:normalise_title).with('foo bar')
+        Entity.normalise_title('foo bar')
+      end
+    end
+    
+  end
+  
+  context "an instance of the Entity class" do
+    setup do
+      @entity = Factory(:entity)
+    end
+
+    context "when saving" do
+      should "normalise title" do
+        @entity.expects(:normalise_title)
+        @entity.save!
+      end
+  
+      should "save normalised title" do
+        @entity.title = "Foo & Baz Dept"
+        @entity.save!
+        assert_equal "foo and baz dept", @entity.reload.normalised_title
+      end
+    end
   end
 end

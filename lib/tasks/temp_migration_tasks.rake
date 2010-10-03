@@ -26,3 +26,18 @@ task :import_proclass => :environment do
   end
 end
 
+desc "Import CPID entities"
+task :import_cpid_entities => :environment do
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/cpid_codes.csv"), :headers => true) do |row|
+    name = row['Name']
+    next if row["C#{version}N"].blank?
+    levels = [row["Top Level"],row["Level 2"],row["Level 3"]].compact
+    Classification.create!(
+    :grouping => "Proclass#{version}",
+    :uid => row["C#{version}N"],
+    :title => levels.last,
+    :extended_title => levels.join(' > '))
+    print '.'
+  end
+end
+

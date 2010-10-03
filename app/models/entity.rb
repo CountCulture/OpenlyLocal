@@ -11,5 +11,15 @@ class Entity < ActiveRecord::Base
   include SpendingStatUtilities::Base
   include AddressMethods
   validates_presence_of :title
+  before_save :normalise_title
+  
+  def self.normalise_title(raw_title)
+    TitleNormaliser.normalise_title(raw_title)
+  end
+  
+  private
+  def normalise_title
+    self.normalised_title = self.class.normalise_title(title)
+  end
                
 end
