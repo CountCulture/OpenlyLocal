@@ -4,5 +4,18 @@ class Classification < ActiveRecord::Base
     
     
   }
-  validates_presence_of :title,:grouping
+  validates_presence_of :title, :grouping
+  
+  # overwrite attribute reader to add grouping
+  def extended_title
+    (self[:extended_title].blank? ? self[:title] : self[:extended_title]) + " (#{grouping_title})"
+  end
+  
+  def grouping_url
+    GROUPINGS[grouping]&&GROUPINGS[grouping][1]
+  end
+  
+  def grouping_title
+    GROUPINGS[grouping]&&GROUPINGS[grouping][0]
+  end
 end

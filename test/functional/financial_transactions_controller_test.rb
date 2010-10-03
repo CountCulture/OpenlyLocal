@@ -133,6 +133,10 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
       should "not show related financial transactions if none" do
         assert_select '#related_transactions', false
       end
+      
+      should "not show FoI request button" do
+        assert_select "form#foi_request", false
+      end
     end  
 
     context "when related transactions" do
@@ -154,9 +158,20 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
       should "show related financial transactions" do
         assert_select '#related_transactions'
       end
+    end  
+    
+    context "when classification" do
+
+      setup do
+        @classification = Factory(:classification)
+        @financial_transaction.update_attribute(:classification, @classification)
+        get :show, :id => @financial_transaction.id
+      end
+
+      should respond_with :success
       
       should "not show FoI request button" do
-        assert_select "form#foi_request", false
+        assert_select "#main_attributes .classification", /#{@classification.title}/
       end
     end  
     

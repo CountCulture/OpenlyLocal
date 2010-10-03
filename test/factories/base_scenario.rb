@@ -381,5 +381,5 @@ end
 
 Factory.define :classification do |f|
   f.sequence( :title) {|n| "Foo #{n}"}
-  f.grouping 'Proclass'
+  f.grouping 'Proclass10.1'
 end
