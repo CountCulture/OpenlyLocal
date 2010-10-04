@@ -150,6 +150,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_equal "Transaction with #{@financial_transaction.supplier.title} on #{@financial_transaction.date.to_s(:event_date)}", @financial_transaction.title
       end
       
+      should 'use date with fuzziness' do
+        @financial_transaction.update_attributes(:date => '2010-04-14', :date_fuzziness => 13)
+        assert_equal "Transaction with #{@financial_transaction.supplier.title} in Apr 2010", @financial_transaction.title
+      end
+      
       should 'use date and uid when uid is set' do
         @financial_transaction.uid = '1234A'
         assert_equal "Transaction 1234A with #{@financial_transaction.supplier.title} on #{@financial_transaction.date.to_s(:event_date)}", @financial_transaction.title

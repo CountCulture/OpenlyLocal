@@ -186,7 +186,7 @@ class FinancialTransaction < ActiveRecord::Base
 	end
 
   def title
-    (uid? ? "Transaction #{uid}" : "Transaction") + " with #{supplier&&supplier.title} on #{date&&date.to_s(:event_date)}"
+    (uid? ? "Transaction #{uid}" : "Transaction") + " with #{supplier&&supplier.title} " + (date_fuzziness? ? "in #{DateFuzzifier.date_with_fuzziness(date, date_fuzziness)}" : "on #{date&&date.to_s(:event_date)}")
   end
   
   # strips out commas and pound signs
