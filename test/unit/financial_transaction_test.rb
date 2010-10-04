@@ -618,8 +618,13 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_match /payment/, @financial_transaction.foi_message_body
         assert_match /#{@financial_transaction.supplier_name}/, @financial_transaction.foi_message_body
         assert_match /£#{@financial_transaction.value}/, @financial_transaction.foi_message_body
-        assert_match /#{@financial_transaction.date.to_date}/, @financial_transaction.foi_message_body
+        assert_match /#{@financial_transaction.date.to_s(:custom_short)}/, @financial_transaction.foi_message_body
         assert_match /transaction id: #{@financial_transaction.uid}/i, @financial_transaction.foi_message_body
+      end
+      
+      should 'use date_with_fuzziness for date' do
+        @financial_transaction.update_attributes(:date => '2010-04-15', :date_fuzziness => 14)
+        assert_match /date.+: apr 2010/i, @financial_transaction.foi_message_body
       end
     end
   end                      

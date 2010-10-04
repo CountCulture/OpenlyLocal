@@ -98,7 +98,7 @@ class FinancialTransaction < ActiveRecord::Base
     m_body = "Dear #{organisation.title},\n\nUnder the Freedom of Information Act 2000 I would like to request the following information:\n\n"
     m_body += "All documents relating to the following payment, including (but not limited to) purchase orders, invoices, contracts, and tender document\n\n"
     m_body += "Supplier: #{supplier_name}\n"
-    m_body += "Date/period: #{date.to_date}\n"  if date?
+    m_body += "Date/period: #{DateFuzzifier.date_with_fuzziness(date, date_fuzziness)}\n"  if date?
     m_body += "Transaction id: #{uid}\n" if uid?
     m_body += "Amount: £#{value}\n"
     m_body += "Data from: #{source_url}\n" if source_url
