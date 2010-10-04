@@ -1,16 +1,17 @@
-<%# form_tag "http://whatdotheyknow.com/new/#{organisation.wdtk_id}", :id => 'foi_request', :target => '_blank' do  %>
-<%# form_tag "http://whatdotheyknow.com/new", :id => 'foi_request' do  %>
-<!-- <form action='http://www.whatdotheyknow.com/new' id='foi_request' method='post'> -->
-<form action='http://www.whatdotheyknow.com/new' id='foi_request' metho='post'>
-	<div>
-		<input type="hidden" value="openlylocal" name="tags">
-		<%= hidden_field_tag "outgoing_message[body]", item.foi_message_body %>
-		<input type="hidden" value='Information on <%= item.title %>' name="info_request[title]">
-		<input type="hidden" value="1" name="submitted_new_request">
-		<!-- <input type="hidden" value="Preview your public request" name="commit"> -->
-		<input type="hidden" value="1" name="preview">
-		<input type="hidden" value="1" name="info_request[public_body_id]">
-		<input type="submit" value="Submit Freedom of Information request">
+<div id="foi_requests" class='item_grouping'>
+	<h3>Freedom of Information requests</h3>
+	<form action='http://www.whatdotheyknow.com/new/<%= organisation.wdtk_name %>' id='foi_request' method='post' target='_blank'>
+		<div>
+			<input type="hidden" value="openlylocal" name="tags">
+			<%= hidden_field_tag "tags", "openlylocal #{item.class.to_s.underscore}:#{item.id} url:#{item.openlylocal_url}" %>
+			<%= hidden_field_tag "body", item.foi_message_body %>
+			<%= hidden_field_tag "title", "Information on #{item.title}" %>
+			<input type="submit" value="New Request" class='submit'>
+		</div>
+	</form>
+	<div class='note'>
+		<p>Note: This will generate a new request on <a href="http://www.whatdotheyknow.com" class='external'>WhatDoTheyKnow.com</a>, with all the information about this transaction pre-populated.</p>
+		<p>All you need to do is add your name at the bottom and submit it (if you're not already registered you will need to register at this point too, but your request details will be remembered while you are doing this)</p>
+		<p>Remember, FoI requests often require resources to respond to. Please act responsibly</p>
 	</div>
-<%# end %>
-</form>
+</div>

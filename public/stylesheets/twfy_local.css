@@ -823,6 +823,16 @@ ul#hyperlocal_sites li li{
 	background: url(/images/new_flash_red.gif) no-repeat;
 	padding-left: 36px;
 }
+#foi_requests  {
+	width: 450px;
+}
+#foi_request input.submit {
+	font-size: 1.4em;
+}
+form#foi_request {
+	float: left;
+}
+
 /*admin page*/
 .admin #user_submissions {
 	background: #eee;

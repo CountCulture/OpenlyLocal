@@ -179,6 +179,7 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
 
       setup do
         supplier = Factory(:council_supplier)
+        supplier.organisation.update_attribute(:wdtk_name, 'foo_council')
         @financial_transaction.update_attributes(:value => 20000, :supplier => supplier)
         
         get :show, :id => @financial_transaction.id
@@ -194,24 +195,17 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
       
       context "and foi button" do
 
-        should "post to what do they know" do
-          
-        end
-
-        should "use council whatdotheyknow id" do
-          
+        should "post to what do they know using wdtk_name" do
+          assert_select 'form[action*=whatdotheyknow.com/new/foo_council]'
         end
 
         should "submit boilerplate" do
-          
-        end
-
-        should "include transaction details in request details" do
-          
+          assert_match /Freedom of Information Act 2000/m, css_select('input[name=body]').to_s
         end
 
         should "submit machine tag" do
-          
+          assert_match /openlylocal/m, css_select('input[name=tags]').to_s
+          assert_match /financial_transaction:#{@financial_transaction.id}/m, css_select('input[name=tags]').to_s
         end
       end
     end

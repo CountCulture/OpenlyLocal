@@ -606,7 +606,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 
     context "when returning foi_message_body" do
       setup do
-        
+        @financial_transaction.update_attributes( :uid => '1234')
       end
 
       should "return boilerplate" do
@@ -619,6 +619,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_match /#{@financial_transaction.supplier_name}/, @financial_transaction.foi_message_body
         assert_match /£#{@financial_transaction.value}/, @financial_transaction.foi_message_body
         assert_match /#{@financial_transaction.date.to_date}/, @financial_transaction.foi_message_body
+        assert_match /transaction id: #{@financial_transaction.uid}/i, @financial_transaction.foi_message_body
       end
     end
   end                      
