@@ -37,7 +37,7 @@
   </div>
 <%- else -%>
 <p class='alert'>No information known about this supplier. Help us identify this company/supplier</p>
-<p class="request_for_help"><%= link_to "Add info now", new_user_submission_path(:item_id => @supplier.id, :item_type => 'Supplier', :submission_type => 'supplier_details'), :class => 'button' %></p>
+<p class="request_for_help"><%= link_to "Add info now", new_user_submission_path(:user_submission => {:item_id => @supplier.id, :item_type => 'Supplier', :submission_type => 'supplier_details'}), :class => 'button' %></p>
 <%- end -%>
 
 <table class='statistics' id='financial_transactions'>

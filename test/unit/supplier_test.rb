@@ -434,8 +434,32 @@ class SupplierTest < ActiveSupport::TestCase
         end
         
       end
-      
-      
+     
+      context "when supplier details includes info about entity" do
+        setup do
+          @entity = Factory(:entity)
+          @entity_details = SupplierDetails.new( :entity_type => 'Entity', 
+                                                 :entity_id => @entity.id)
+        end
+
+        should "associated entity with supplier as payee" do
+          @supplier.update_supplier_details(@entity_details)
+          assert_equal @entity, @supplier.reload.payee
+        end
+        
+        should "associated entity with supplier as payee when entity type can't be a payee" do
+          non_entity = Factory(:financial_transaction)
+          non_entity_details = SupplierDetails.new( :entity_type => 'FinancialTransaction', 
+                                                    :entity_id => non_entity.id)
+          @supplier.update_supplier_details(non_entity_details)
+          assert_nil @supplier.reload.payee
+        end
+        
+        should "return true" do
+          assert @supplier.update_supplier_details(@entity_details)
+        end
+      end
+
       context "when company with given company number already exists" do
         setup do
           @existing_company = Factory(:company, :company_number => '00001234')

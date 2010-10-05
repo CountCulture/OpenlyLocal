@@ -1,15 +1,38 @@
-<p>
-  <%= link_to "Search Google for #{@user_submission.item.title}", "http://www.google.co.uk/search?q=#{CGI.escape @user_submission.item.title}", :class => 'external' %>
-</p>
-<p>
-  <%= detail_form.label :company_number %>
-  <%= detail_form.text_field :company_number %>
-</p>
-<p>
-  <%= detail_form.label :source_for_info, 'Source for info <em>(maybe URL containing company number)</em>' %>
-  <%= detail_form.text_field :source_for_info %>
-</p>
-<p>
-  <%= detail_form.label :url, "Website" %>
-  <%= detail_form.text_field :url %>
-</p>
+<%- if @possible_entities -%>
+	<%= detail_form.label :entity_id, "Choose #{@user_submission.submission_details.entity_type}" %>
+	<%= detail_form.select :entity_id, @possible_entities.collect {|e| [ e.title, e.id ] }, { :include_blank => true } %>
+<%- elsif params[:entity_type] == 'Company' -%>
+	<p>
+	  <%= link_to "Search Google for #{@user_submission.item.title}", "http://www.google.co.uk/search?q=#{CGI.escape @user_submission.item.title}", :class => 'external' %>
+	</p>
+	<p>
+	  <%= detail_form.label :company_number %>
+	  <%= detail_form.text_field :company_number %>
+	</p>
+	<p>
+	  <%= detail_form.label :source_for_info, 'Source for info <em>(maybe URL containing company number)</em>' %>
+	  <%= detail_form.text_field :source_for_info %>
+	</p>
+	<p>
+	  <%= detail_form.label :url, "Website" %>
+	  <%= detail_form.text_field :url %>
+	</p>
+
+  <p>
+    <%= f.label :notes %>
+    <%= f.text_area :notes %>
+  </p>
+	
+<%- else -%>
+	<strong>What type of organisation do you think this supplier is?</strong>
+	<% Supplier::AllowedPayeeModels.each do |e_type| %>
+    <br>
+			<%= detail_form.radio_button 'entity_type', e_type %>
+    <%= detail_form.label "entity_type_#{e_type.underscore}", e_type.underscore.humanize %>
+  <% end %>
+	<!-- <%= detail_form.label :entity_type, '' %>
+	<%= detail_form.radio_button :entity_type, 'Company' %>
+	<%= detail_form.radio_button :entity_type, 'Charity' %>
+	<%= detail_form.radio_button :entity_type, 'Council' %>
+	<%= detail_form.radio_button :entity_type, 'Government body or quango' %> -->
+<%- end -%>

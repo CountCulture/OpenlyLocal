@@ -28,7 +28,7 @@
     </tr>
     <%- @suppliers.each do |supplier| -%>
       <tr>
-        <td class='name'><strong><%= basic_link_for supplier %></strong> (<%= supplier.payee ? link_to( "details", supplier.payee) : link_to('add info', new_user_submission_path(:item_id => supplier.id, :item_type => 'Supplier', :submission_type => 'supplier_details'), :class => 'add_info') %>)</td>
+        <td class='name'><strong><%= basic_link_for supplier %></strong> (<%= supplier.payee ? link_to( "details", supplier.payee) : link_to('add info', new_user_submission_path(:user_submission => {:item_id => supplier.id, :item_type => 'Supplier', :submission_type => 'supplier_details'}), :class => 'add_info') %>)</td>
         <td class='payer name'><%= basic_link_for supplier.organisation %></td>
         <td class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %></td>
         <td class='average value'>£<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %></td>

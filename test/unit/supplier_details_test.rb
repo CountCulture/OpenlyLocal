@@ -12,9 +12,14 @@ class SupplierDetailsTest < ActiveSupport::TestCase
       assert @supplier_details.respond_to?(:url=)
     end
     
-    should 'have company_number accessor' do
-      assert @supplier_details.respond_to?(:company_number)
-      assert @supplier_details.respond_to?(:company_number=)
+    should 'have entity_type accessor' do
+      assert @supplier_details.respond_to?(:entity_type)
+      assert @supplier_details.respond_to?(:entity_type=)
+    end
+    
+    should 'have entity_id accessor' do
+      assert @supplier_details.respond_to?(:entity_id)
+      assert @supplier_details.respond_to?(:entity_id=)
     end
     
     should 'have source_url accessor' do

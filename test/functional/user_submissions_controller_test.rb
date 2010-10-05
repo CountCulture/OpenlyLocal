@@ -8,7 +8,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
     context "in general" do
       setup do
         @item = Factory(:council)
-        get :new, :submission_type => 'social_networking_details', :item_type => 'Council', :item_id => @item.id
+        get :new, :user_submission => {:submission_type => 'social_networking_details', :item_type => 'Council', :item_id => @item.id}
       end
       
       should assign_to(:user_submission)
@@ -32,6 +32,11 @@ class UserSubmissionsControllerTest < ActionController::TestCase
         assert_select "form#new_user_submission"
       end
 
+      should 'form should use post method to create' do
+        assert_select 'form#new_user_submission[method=post]'
+        assert_select "form#new_user_submission[action*='user_submissions']"
+      end
+      
       should "show fieldset" do
         assert_select "fieldset#submission_details"
       end
@@ -50,13 +55,63 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       end
     end
     
- end
+    context "when submission_type is supplier details" do
+      setup do
+        @supplier = Factory(:supplier)
+        @basic_params = {:user_submission => {:submission_type => 'supplier_details', 
+                                              :item_type => 'Supplier', 
+                                              :item_id => @supplier.id}}
+      end
+      
+      context "in general" do
+        setup do
+          get :new, @basic_params
+        end
+
+        should assign_to(:user_submission)
+        should respond_with :success
+        should render_template :new
+        should render_with_layout
+
+        should "show possible entity types in radio buttons" do
+          assert_select "fieldset#submission_details" do
+            puts css_select('fieldset')
+            assert_select 'input#user_submission_submission_details_entity_type_charity'
+          end
+        end
+        
+        should 'form should use get method to new' do
+          assert_select 'form#new_user_submission[method=get]'
+        end
+        
+      end
+      
+      context "when entity_type is given" do
+        setup do
+          @basic_params = {:user_submission => {:submission_type => 'supplier_details', 
+                                                :item_type => 'Supplier', 
+                                                :item_id => @supplier.id, 
+                                                :submission_details => {:entity_type => 'PoliceAuthority'}}}
+          @police_authority = Factory(:police_authority)
+          get :new, @basic_params
+        end
+
+        should respond_with :success
+        should assign_to(:possible_entities)
+        should render_template :new
+        
+        should "list possible entities" do
+          assert_select 'select#user_submission_submission_details_entity_id option', /#{@police_authority.title}/
+        end
+      end
+    end
+  end
   
-  # create test
-   context "on POST to :create" do
-     setup do
-       @item = Factory(:council)
-     end
+# create test
+  context "on POST to :create" do
+    setup do
+      @item = Factory(:council)
+    end
     
     context "with valid params" do
        setup do
@@ -73,6 +128,22 @@ class UserSubmissionsControllerTest < ActionController::TestCase
         
      end
   
+     context "with entity_type" do
+        setup do
+          @entity = Factory(:police_authority)
+          post :create, :user_submission => { :item_id => @item.id, 
+                                              :item_type => 'Council', 
+                                              :submission_type => 'supplier_details', 
+                                              :submission_details => {:entity_type => 'PoliceAuthority', :entity_id => @entity.id}}
+        end
+
+        should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
+        should assign_to :user_submission
+        should_redirect_to( "the page for the council") { council_url(@item) }
+        should set_the_flash.to /Successfully submitted/i
+
+      end
+
      context "with invalid params" do
        setup do
          stub_authentication

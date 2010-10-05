@@ -1,38 +1,18 @@
 <%= error_messages_for :user_submission %>
 
-<% form_for @user_submission do |f| -%>
-  <%#= f.hidden_field :member_id %>
-  
-  <%#- if @user_submission.member -%>
+<% form_for @user_submission, @form_params do |f| -%>
+
     <h3><%= @user_submission.item_type %>: <%= basic_link_for @user_submission.item %><%#= basic_link_for @user_submission.member.council %></h3>
-  <%#- else -%>
     <%= f.hidden_field :item_id %>
     <%= f.hidden_field :item_type %>
     <%= f.hidden_field :submission_type %>
-    <!-- <p class='required'>
-      <%#= f.label :council_id %>
-      <%#= f.select :council_id, Council.all.collect{ |c| [c.title, c.id] }, { :include_blank => true } %>
-    </p> -->
-    
-    <%#- if @user_submission.council && @user_submission.council.members.size > 0 -%>
-      <%#= f.label :member_id %>
-      <%#= f.select :member_id, @user_submission.council.members.all.collect{ |m| [m.title, m.id] }, { :include_blank => true } %>
-    <%#- else -%>
-        <%#= f.label :member_name %>
-        <%#= f.text_field :member_name %>
-    <%#- end -%>
-  <%#- end -%>
   
   <% field_set_tag 'Details', :id => 'submission_details' do %>
     <%- f.fields_for :submission_details, @user_submission.submission_details do |detail_form| -%>
-      <%= render :partial => "#{@user_submission.submission_type}_form", :locals => {:detail_form => detail_form} %>
+      <%= render :partial => "#{@user_submission.submission_type}_form", :locals => {:detail_form => detail_form, :f => f} %>
     <%- end -%>
   <% end -%>
     
-  <p>
-    <%= f.label :notes %>
-    <%= f.text_area :notes %>
-  </p>
   <p>
     <%= f.submit "Submit" %>
   </p>

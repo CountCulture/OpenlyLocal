@@ -1,4 +1,5 @@
 class Supplier < ActiveRecord::Base
+  AllowedPayeeModels = %w(Council Entity Charity PoliceAuthority)
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
   has_many :financial_transactions, :order => 'date', :dependent => :destroy
@@ -87,9 +88,13 @@ class Supplier < ActiveRecord::Base
   
   def update_supplier_details(details)
     non_nil_attribs = details.attributes.delete_if { |k,v| v.blank? }
-    company = Company.match_or_create(non_nil_attribs.except(:source_for_info).merge(:title => title))
-    unless company.new_record? # it hasn't successfully saved
-      self.payee = company
+    if details.entity_type.blank? || details.entity_id.blank?
+      entity = Company.match_or_create(non_nil_attribs.except(:source_for_info, :entity_type, :entity_id).merge(:title => title))
+    else
+      entity = AllowedPayeeModels.include?(details.entity_type)&&details.entity_type.constantize.find(details.entity_id)
+    end
+    if entity&&!entity.new_record? # it hasn't successfully saved
+      self.payee = entity
       self.save
     end
   end
