@@ -195,13 +195,19 @@ class SupplierTest < ActiveSupport::TestCase
 
     context 'after creating' do
       setup do
-        Delayed::Job.stubs(:enqueue).with(kind_of(SpendingStat))
+        Delayed::Job.stubs(:enqueue)#.with(kind_of(SpendingStat))
       end
       
       should 'queue for matching with payee' do
         Delayed::Job.stubs(:enqueue).with(kind_of(SpendingStat))
         Delayed::Job.expects(:enqueue).with(kind_of(Supplier))
         Factory(:supplier, :name => 'Foo company')
+      end
+            
+      should 'queue bare supplier without organisation association' do
+        supplier = Factory(:supplier, :name => 'Foo company')
+        delayed_job = Delayed::Job.last(:order => 'id DESC')
+        assert_no_match /ruby\/object:#{supplier.organisation_type}/, delayed_job.read_attribute(:handler)
       end
             
       
