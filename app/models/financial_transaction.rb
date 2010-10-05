@@ -95,7 +95,7 @@ class FinancialTransaction < ActiveRecord::Base
   end
   
   def foi_message_body
-    m_body = "Dear #{organisation.title},\n\nUnder the Freedom of Information Act 2000 I would like to request the following information:\n\n"
+    m_body = "Under the Freedom of Information Act 2000 I would like to request the following information:\n\n"
     m_body += "All documents relating to the following payment, including (but not limited to) purchase orders, invoices, contracts, and tender document\n\n"
     m_body += "Supplier: #{supplier_name}\n"
     m_body += "Date/period: #{DateFuzzifier.date_with_fuzziness(date, date_fuzziness)}\n"  if date?
@@ -104,8 +104,7 @@ class FinancialTransaction < ActiveRecord::Base
     m_body += "Data from: #{source_url}\n" if source_url
     m_body += "\nIf this information is held by an outside contractor then it is your responsibility under the FOIA to obtain that information.\n\n" + 
                 "If the arrangements for any of the agreements with the Publisher have been delegated or passed onto another public body, please can you inform me of this and if possible transfer the request to that public body. My preferred format to receive this information is by electronic means, specifically in a machine-readable form (e.g. CSV, Word or Excel Documents rather than scans of printouts)." + 
-                "\n\nIf you need any clarification of this request or if it is too broad in any way please feel free to email me. If some parts of this request are more difficult to answer than others please release the answerable material as it is available rather than hold up the entire request for the contested data.\n\nIf FOI requests of a similar nature have already been asked could you please include your responses to those requests. I would be grateful if you could confirm in writing that you have received this request, and I look forward to hearing from you within the 20-working day statutory time period." +
-                "\n\nYours faithfully,\n"
+                "\n\nIf you need any clarification of this request or if it is too broad in any way please feel free to email me. If some parts of this request are more difficult to answer than others please release the answerable material as it is available rather than hold up the entire request for the contested data.\n\nIf FOI requests of a similar nature have already been asked could you please include your responses to those requests. I would be grateful if you could confirm in writing that you have received this request, and I look forward to hearing from you within the 20-working day statutory time period.\n"
   	
   end
   

@@ -619,7 +619,6 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
       
       should "include information about transaction" do
-        assert_match /#{@financial_transaction.organisation.title}/, @financial_transaction.foi_message_body
         assert_match /payment/, @financial_transaction.foi_message_body
         assert_match /#{@financial_transaction.supplier_name}/, @financial_transaction.foi_message_body
         assert_match /£#{@financial_transaction.value}/, @financial_transaction.foi_message_body
