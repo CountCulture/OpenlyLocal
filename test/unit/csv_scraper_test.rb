@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ItemScraperTest < ActiveSupport::TestCase
+class CsvScraperTest < ActiveSupport::TestCase
   
   context "The CsvScraper class" do
     
@@ -54,12 +54,12 @@ class ItemScraperTest < ActiveSupport::TestCase
         end
 
         should "pass data to associated parser" do
-          @csv_parser.expects(:process).with("something", anything).returns(stub_everything)
+          @csv_parser.expects(:process).with("something", anything, anything).returns(stub_everything)
           @scraper.process
         end
 
         should "pass self to associated parser" do
-          @csv_parser.expects(:process).with(anything, @scraper).returns(stub_everything)
+          @csv_parser.expects(:process).with(anything, @scraper, anything).returns(stub_everything)
           @scraper.process
         end
 
@@ -74,8 +74,9 @@ class ItemScraperTest < ActiveSupport::TestCase
         @csv_rawdata = dummy_csv_data('supplier_payments')
         CsvScraper.any_instance.stubs(:_data).returns(@csv_rawdata)
         results = @scraper.process.results
-        assert_equal 19, results.size
-        assert_kind_of FinancialTransaction, results.first
+        assert_equal 10, results.size # only 10 results returned unless we're saving results
+        assert_kind_of ScrapedObjectResult, results.first
+        assert_equal 'FinancialTransaction', results.first.base_object_klass
       end
       
       context "and save_results requested" do
@@ -99,14 +100,14 @@ class ItemScraperTest < ActiveSupport::TestCase
         
         should "return saved instances of result model" do
           results = @scraper.process(:save_results => true).results
-          assert_kind_of FinancialTransaction, results.first
+          assert_kind_of ScrapedObjectResult, results.first
+          assert_equal 'FinancialTransaction', results.first.base_object_klass
         end
         
         should "use parsed information when creating instances of result model" do
           ft = @scraper.process(:save_results => true).results.first
-          assert_equal "Idox Software Limited", ft.supplier_name
-          assert_equal "2010-03-17",ft.date.to_s
-          assert_equal 1000.0, ft.value
+          assert_equal 'Resources', ft.changes["department_name"].last
+          assert_equal 1000.0, ft.changes["value"].last
         end
       end
 
@@ -114,7 +115,6 @@ class ItemScraperTest < ActiveSupport::TestCase
       context "and problem parsing" do
         setup do
           FasterCSV.stubs(:new).raises
-          # @csv_parser.update_attribute(:attribute_mapping, {:fo})
         end
 
         should "not build or update instance of result_class if no results" do

@@ -13,7 +13,12 @@ class CsvParserTest < ActiveSupport::TestCase
     should have_db_column :attribute_mapping
     
     should "serialize attribute_mapping" do
-      assert_equal({ :department_name => 'Directorate', :supplier_name => 'Supplier Name', :uid => 'TransactionID' }, Parser.find(@parser.id).attribute_mapping)
+      expected_attribs = {:value=>"Amount", 
+                          :department_name => 'Directorate', 
+                          :supplier_name => 'Supplier Name', 
+                          :uid => 'TransactionID',
+                          :date=>"Updated" }
+      assert_equal(expected_attribs, Parser.find(@parser.id).attribute_mapping)
     end
     
     # should "serialize OK with assoc scraper" do
@@ -51,11 +56,11 @@ class CsvParserTest < ActiveSupport::TestCase
         end
         
         should "make attribute_mapping_key accessible as attrib_name" do
-          assert_equal "department_name", @first_attrib.attrib_name
+          assert_equal "date", @first_attrib.attrib_name
         end
 
         should "make attribute_mapping_value accessible as column_name" do
-          assert_equal "Directorate", @first_attrib.column_name
+          assert_equal "Updated", @first_attrib.column_name
         end
       end
       

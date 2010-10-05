@@ -76,6 +76,12 @@ class ScraperTest < ActiveSupport::TestCase
       @parser = @scraper.parser
     end
     
+    should "return what it is scraping for" do
+      parser = Factory(:parser, :result_model => 'TestScrapedModel')
+      scraper = Scraper.new(:parser => parser, :url => 'http://www.anytown.gov.uk/members')
+      assert_equal "TestScrapedModels from <a href='http://www.anytown.gov.uk/members'>http://www.anytown.gov.uk/members</a>", scraper.scraping_for
+    end
+    
     should "not save unless there is an associated parser" do
       s = Scraper.new(:council => @council)
       assert !s.save

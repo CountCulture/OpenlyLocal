@@ -100,6 +100,10 @@ class Scraper < ActiveRecord::Base
     res.join(", ")
   end
   
+  def scraping_for
+    "#{result_model}s from <a href='#{url}'>#{url}</a>"
+  end
+    
   def sibling_scrapers
     council.scrapers - [self]
   end
