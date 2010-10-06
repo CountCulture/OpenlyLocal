@@ -8,11 +8,20 @@ class ClassificationTest < ActiveSupport::TestCase
 
     should validate_presence_of :title
     should validate_presence_of :grouping
+    # should_validate_uniqueness_of :uid, :scoped_to => :area_type
     should have_db_column :grouping
     should have_db_column :extended_title
     should have_db_column :parent_id
     
-    # should_validate_uniqueness_of :uid, :scoped_to => :area_type
+    should "have many child classifications" do
+      child = Factory(:classification, :parent_id => @classification.id)
+      assert_equal [child], @classification.children
+    end
+
+    should "belong to parent classification" do
+      child = Factory(:classification, :parent_id => @classification.id)
+      assert_equal @classification, child.parent
+    end
   end
 
   context "A OutputAreaClassification instance" do
