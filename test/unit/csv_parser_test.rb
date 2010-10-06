@@ -180,6 +180,11 @@ class CsvParserTest < ActiveSupport::TestCase
           assert_equal "http://foo.gov.uk/bar.csv", @processed_data.last[:source_url]
         end
 
+        should 'override scraper url if value provided for source_url' do
+          @parser.attribute_mapping = { :department_name => 'Directorate', :supplier_name => 'Supplier Name', :uid => 'TransactionID', :value_for_source_url => 'http://bar.gov.uk/baz.csv' }
+          assert_equal 'http://bar.gov.uk/baz.csv', @parser.process(@csv_rawdata, @dummy_scraper).results.first[:source_url]
+        end
+
       end
       
       context "and problems occur when parsing" do
