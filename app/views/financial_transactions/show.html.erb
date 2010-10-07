@@ -17,7 +17,7 @@
   <%= attribute_tag :classification, @financial_transaction.classification.try(:extended_title) %>
   <%= attribute_tag :source, 
 										(@financial_transaction.csv_line_number ? "Line #{@financial_transaction.csv_line_number} of ": '') + 
-										link_to(@financial_transaction.source_url, @financial_transaction.source_url) if @financial_transaction.source_url? %>
+										link_to( h(truncate(@financial_transaction.source_url)), @financial_transaction.source_url) if @financial_transaction.source_url? %>
 </dl>
 
 <%= render :partial => 'foi_button', 

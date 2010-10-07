@@ -14,6 +14,7 @@ class AccountLineTest < ActiveSupport::TestCase
     should validate_presence_of :classification_id
     should validate_presence_of :organisation_type
     should validate_presence_of :organisation_id
+    should validate_presence_of :period
     
     should 'belong to organisation polymorphically' do
       organisation = Factory(:council)
@@ -24,7 +25,7 @@ class AccountLineTest < ActiveSupport::TestCase
 
   context "An AccountLine instance" do
     setup do
-      @classification = Factory(:classification)
+      @account_line = Factory(:account_line)
     end
   end
 end

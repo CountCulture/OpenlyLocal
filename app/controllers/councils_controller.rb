@@ -1,5 +1,5 @@
 class CouncilsController < ApplicationController
-  before_filter :authenticate, :except => [:index, :show, :spending, :show_spending]
+  before_filter :authenticate, :except => [:index, :show, :spending, :show_spending, :accounts]
   before_filter :linked_data_available, :only => :show
   before_filter :find_council, :except => [:index, :new, :create, :spending]
   caches_action :index, :show, :cache_path => Proc.new { |controller| controller.params }
@@ -57,6 +57,11 @@ class CouncilsController < ApplicationController
     redirect_to council_path(@council)
   rescue
     render :action => "edit"
+  end
+  
+  def accounts
+    @accounts = @council.account_lines.group_by(&:classification)
+    @title = "Most Recent Budget"
   end
   
   def spending

@@ -983,4 +983,72 @@ class CouncilsControllerTest < ActionController::TestCase
     end
   end
   
+  context "on GET to :accounts" do
+    should "route open councils to index with show_open_status true" do
+      assert_routing("councils/1/accounts", {:controller => "councils", :action => "accounts", :id => "1"})
+    end
+    
+    context "in general" do
+      setup do
+        @classification_1 = Factory(:classification, :grouping => 'RORA_200910')
+        @classification_2 = Factory(:classification, :grouping => 'RORA_200910')
+        @account_line_11 = Factory(:account_line, :organisation => @council, :classification => @classification_1, :sub_heading => 'Current')
+        @account_line_12 = Factory(:account_line, :organisation => @council, :classification => @classification_1, :sub_heading => 'Capital')
+        @account_line_21 = Factory(:account_line, :organisation => @council, :classification => @classification_2, :sub_heading => 'Current')
+        get :accounts, :id => @council.id
+      end
+
+      should respond_with :success
+      should render_template :accounts
+      should_not set_the_flash
+      should assign_to :council
+
+      # should 'assign to suppliers ordered by total spend' do
+      #   assert assigns(:suppliers).include?(@supplier_1)
+      #   assert assigns(:suppliers).include?(@high_spending_supplier)
+      #   assert_equal @high_spending_supplier, assigns(:suppliers).first
+      # end
+      # 
+      # should 'assign to financial_transactions ordered by size' do
+      #   assert assigns(:financial_transactions).include?(@financial_transaction_1)
+      #   assert assigns(:financial_transactions).include?(@financial_transaction_2)
+      #   assert_equal @financial_transaction_2, assigns(:financial_transactions).first
+      # end
+
+      should "have basic title" do
+        assert_select "title", /budget/i
+      end
+      
+      should "include council in basic title" do
+        assert_select "title", /#{@council.title}/i
+      end
+      
+      should 'show accounts table' do
+        assert_select '#accounts table'
+      end
+      
+      # should 'list transactions' do
+      #   assert_select '#financial_transactions a', /#{@supplier_1.title}/
+      # end
+    end
+    
+    # context "and no spending data" do
+    #   setup do
+    #     get :show_spending, :id => @another_council.id
+    #   end
+    # 
+    #   should respond_with :success
+    #   should render_template :show_spending
+    #   should_not set_the_flash
+    #   should assign_to :council
+    # 
+    #   should "show message" do
+    #     assert_select "p.alert", /spending data/i
+    #   end
+    #   should "not show dashboard" do
+    #     assert_select "div.dashboard", false
+    #   end
+    # end
+  end
+  
 end

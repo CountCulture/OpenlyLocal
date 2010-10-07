@@ -385,7 +385,8 @@ Factory.define :classification do |f|
 end
 
 Factory.define :account_line do |f|
-  # f.sequence( :title) {|n| "Foo #{n}"}
-  # f.association :classification
-  # f.grouping 'Proclass10.1'
+  f.sequence( :value) {|n| n*10 }
+  f.association :classification
+  f.association :organisation, :factory => :generic_council
+  f.period '2009_2010'
 end

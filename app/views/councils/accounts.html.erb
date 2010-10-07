@@ -1,0 +1,18 @@
+<%= render :partial => 'shared/experimental_flash' %>
+
+<div id='accounts_dashboard'>
+
+	<h1><%= basic_link_for @council %> :: <%= @title %></h1>
+	
+		<div id="relationships">
+	
+			<div id="accounts" class="item_grouping">
+				<%= basic_table :caption => 'Budget', 
+												:headings => ['Category', 'Current', 'Capital'], 
+												:classes => ['name', 'value', 'value'],
+												:data => @accounts.collect{ |category| [category.first.title, category.last[0].try(:value), category.last[1].try(:value)] } %>
+			</div>
+
+		</div>
+	
+</div>
