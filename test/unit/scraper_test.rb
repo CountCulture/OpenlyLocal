@@ -195,11 +195,15 @@ class ScraperTest < ActiveSupport::TestCase
     should "delegate result_model to parser" do
       @parser.expects(:result_model).returns("result_model")
       assert_equal "result_model", @scraper.result_model
+      @scraper.parser = nil
+      assert_nil @scraper.result_model
     end
     
     should "delegate related_model to parser" do
       @parser.expects(:related_model).returns("related_model")
       assert_equal "related_model", @scraper.related_model
+      @scraper.parser = nil
+      assert_nil @scraper.result_model
     end
     
     should "delegate portal_system to council" do
