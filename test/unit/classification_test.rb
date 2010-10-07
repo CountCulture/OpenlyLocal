@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class ClassificationTest < ActiveSupport::TestCase
-  context "The OutputAreaClassification class" do
+  context "The Classification class" do
     setup do
       @classification = Factory(:classification)
     end
@@ -24,7 +24,7 @@ class ClassificationTest < ActiveSupport::TestCase
     end
   end
 
-  context "A OutputAreaClassification instance" do
+  context "A Classification instance" do
     setup do
       @classification = Factory(:classification)
     end

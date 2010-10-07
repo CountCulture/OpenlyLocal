@@ -383,3 +383,9 @@ Factory.define :classification do |f|
   f.sequence( :title) {|n| "Foo #{n}"}
   f.grouping 'Proclass10.1'
 end
+
+Factory.define :account_line do |f|
+  # f.sequence( :title) {|n| "Foo #{n}"}
+  # f.association :classification
+  # f.grouping 'Proclass10.1'
+end
