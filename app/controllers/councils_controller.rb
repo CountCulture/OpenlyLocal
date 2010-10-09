@@ -65,7 +65,7 @@ class CouncilsController < ApplicationController
   end
   
   def spending
-    @councils = Council.all(:joins => :suppliers, :group => "councils.id", :include => :spending_stat)
+    @councils = Council.all(:joins => :suppliers, :group => "councils.id", :include => :spending_stat).select{ |c| !c.spending_stat.blank? }
     @suppliers = Supplier.all(:joins => :spending_stat, :include => :spending_stat, :order => 'spending_stats.total_spend DESC', :limit => 10)
     @supplier_count = Supplier.count(:conditions => {:organisation_type => 'Council'})
     @financial_transactions = FinancialTransaction.all(:order => 'value DESC', :limit => 10, :include => :supplier)

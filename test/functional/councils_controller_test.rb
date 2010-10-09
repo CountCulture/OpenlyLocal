@@ -244,7 +244,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should respond_with_content_type 'application/json'
       
       should 'wrap json with callback' do
-        assert_match /foo\({\"councils/, @response.body
+        assert_match /foo\(\{\"councils/, @response.body
       end
     end
     
@@ -853,13 +853,14 @@ class CouncilsControllerTest < ActionController::TestCase
     context "in general" do
       setup do
         @high_spending_council = Factory(:council, :name => "High Spender")
+        @high_spending_council.spending_stat.perform
         @supplier_1 = Factory(:supplier, :organisation => @another_council)
         @high_spending_supplier = Factory(:supplier, :organisation => @high_spending_council)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
         @non_council_supplier = Factory(:supplier)
         @non_council_transaction = Factory(:financial_transaction, :supplier => @non_council_supplier)
-        SpendingStat.all.each(&:perform) # update all spending stats
+        SpendingStat.all(:conditions => {:organisation_type => 'Supplier'}).each(&:perform) # update all supplier spending stats
         get :spending
       end
 
@@ -868,9 +869,10 @@ class CouncilsControllerTest < ActionController::TestCase
       should_not set_the_flash
       
       should 'assign to councils those councils with spending data' do
-        assert_equal 2, assigns(:councils).size
-        assert assigns(:councils).include?(@another_council)
+        assert_equal 1, assigns(:councils).size
+        assert assigns(:councils).include?(@high_spending_council)
         assert !assigns(:councils).include?(@council)
+        assert !assigns(:councils).include?(@another_council)
       end
 
       should 'assign to suppliers ordered by total spend' do
@@ -879,9 +881,10 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_equal @high_spending_supplier, assigns(:suppliers).first
       end
 
-      should 'assign to financial_transactions ordered by size' do
+      should 'assign to council financial_transactions ordered by size' do
         assert assigns(:financial_transactions).include?(@financial_transaction_1)
         assert assigns(:financial_transactions).include?(@financial_transaction_2)
+        assert !assigns(:financial_transactions).include?(@non_council_transactions)
         assert_equal @financial_transaction_2, assigns(:financial_transactions).first
       end
 
@@ -903,7 +906,11 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should 'list councils' do
-        assert_select '#councils tr a', /#{@another_council.title}/
+        assert_select '#councils tr a', /#{@high_spending_council.title}/
+      end
+      
+      should 'not list councils with blank spending stats' do
+        assert_select '#councils tr a', :text => /#{@another_council.title}/, :count => 0
       end
       
       should 'list suppliers' do

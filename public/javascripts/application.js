@@ -42,7 +42,7 @@ $(document).ready( function() {
 				scraperList += '<li><a href="/scrapers/new?type=ItemScraper&result_model=' + resultModels[i]+ '&council_id='+ cId + '">Add ' + resultModels[i] + ' ItemScraper for this council</a></li>';
 				scraperList += '<li><a href="/scrapers/new?type=InfoScraper&result_model=' + resultModels[i]+ '&council_id='+ cId + '">Add ' + resultModels[i] + ' InfoScraper for this council</a></li>';
 			};
-			scraperList += '<li><a href="/scrapers/new?type=CsvScraper&council_id='+ cId + '">Add CsvParser for this council</a></li>';
+			scraperList += '<li><a href="/scrapers/new?type=CsvScraper&council_id='+ cId + '">Add CsvScraper for this council</a></li>';
 			$(cDiv).find('ul').append(scraperList);
 		  event.preventDefault();					
 		});

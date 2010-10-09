@@ -16,7 +16,7 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
       assert_equal @spending_stat.total_spend, @test_model_with_spending_stat.total_spend
     end
     
-    should "return for total_spend if no spending_stat" do
+    should "return nil for total_spend if no spending_stat" do
       assert_nil TestModelWithSpendingStat.new.total_spend
     end
     
