@@ -34,8 +34,15 @@ class SpendingStatTest < ActiveSupport::TestCase
   
   context "An instance of the SpendingStat class" do
     
-    should "be considered blank when all stat values are blank" do
+    should "be considered blank when main stat values are blank" do
       new_spending_stat = Factory(:spending_stat)
+      assert new_spending_stat.blank?
+      new_spending_stat.total_spend = 23
+      assert !new_spending_stat.blank?
+    end
+    
+    should "be considered blank when main stat values are all zero" do
+      new_spending_stat = Factory(:spending_stat, :total_spend => 0, :average_monthly_spend => 0, :average_transaction_value => 0)
       assert new_spending_stat.blank?
       new_spending_stat.total_spend = 23
       assert !new_spending_stat.blank?
