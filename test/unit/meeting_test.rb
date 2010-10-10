@@ -86,11 +86,11 @@ class MeetingTest < ActiveSupport::TestCase
       end
       
       should "find only those meetings that are for the same committee and council" do
-        assert_equal [@meeting], Meeting.find_all_existing(:council_id => @council.id, :committee_id => @committee.id)
+        assert_equal [@meeting], Meeting.find_all_existing(:organisation => @council, :committee_id => @committee.id)
       end
       
       should "raise exception if no council_id in params" do
-        assert_raise(ArgumentError) { Meeting.find_all_existing({:council_id => @council.id}) }
+        assert_raise(ArgumentError) { Meeting.find_all_existing({:organisation => @council}) }
       end
       
       should "raise exception if no committee_id in params" do
