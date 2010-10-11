@@ -22,7 +22,8 @@ class WdtkRequest < ActiveRecord::Base
       latest_reponse = request_detail_items.sort{ |a,b| a['created_at'] <=> b['created_at'] }.detect{|r| r['calculated_state']}
       org = Council.find_by_wdtk_name(request_detail_items.first['public_body'])||Entity.find_by_wdtk_name(request_detail_items.first['public_body'])
       req = find_or_initialize_by_request_name(:request_name => request_name)
-      req.update_attributes(:organisation => org, :title => request_detail_items.first['title'], :status => latest_reponse['calculated_state'] )
+      req.update_attributes(:organisation => org, :status => latest_reponse['calculated_state'] )
+      req.update_from_website
     end
   end
   
@@ -34,7 +35,6 @@ class WdtkRequest < ActiveRecord::Base
     details = JSON.parse(_http_get("#{url}.json")) rescue nil
     return unless details
     tags = details['tags']
-    # if tags.assoc.i
     if tags.transpose.first.include?('openlylocal') && obj_tag = tags.detect{|tag_pair| !tag_pair.first.match(/openlylocal|url/) }
       related_object = obj_tag.first.classify.constantize.find_by_id(obj_tag.last)
     end

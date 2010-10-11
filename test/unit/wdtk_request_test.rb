@@ -43,6 +43,7 @@ class WdtkRequestTest < ActiveSupport::TestCase
         @another_council = Factory(:generic_council, :wdtk_name => 'birmingham_city_council')
         @another_org = Factory(:entity, :wdtk_name => 'wandsworth_borough_council')
         WdtkRequest.stubs(:_http_get).returns(dummy_json_response(:wdtk_search)) 
+        WdtkRequest.any_instance.stubs(:update_from_website)
       end
 
       should "fetch all requests with given tag" do
@@ -64,6 +65,11 @@ class WdtkRequestTest < ActiveSupport::TestCase
       should "associate requests with organisations" do
         WdtkRequest.fetch_all_with_tags('foo')
         assert_equal @council, WdtkRequest.find_by_request_name('information_on_transaction_10125').organisation
+      end
+      
+      should "update requests from website" do 
+        WdtkRequest.any_instance.expects(:update_from_website).times(3)
+        WdtkRequest.fetch_all_with_tags('foo')
       end
       
       context "and request already exists" do
