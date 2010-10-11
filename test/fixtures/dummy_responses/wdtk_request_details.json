@@ -1,0 +1,69 @@
+
+{
+    "described_state": "waiting_response",
+     "url_title": "information_on_transaction_with",
+     "prominence": "normal",
+     "law_used": "foi",
+     "info_request_events": 
+    [
+        {
+            "described_state": "waiting_response",
+             "incoming_message_id": null,
+             "comment_id": null,
+             "event_type": "sent",
+             "calculated_state": "waiting_response",
+             "created_at": "2010/10/04 11:11:57 +0000",
+             "last_described_at": "2010/10/04 11:11:57 +0000",
+             "id": 235056,
+             "outgoing_message_id": 87476
+        },
+         
+        {
+            "described_state": "waiting_response",
+             "incoming_message_id": 118370,
+             "comment_id": null,
+             "event_type": "response",
+             "calculated_state": "waiting_response",
+             "created_at": "2010/10/04 11:58:23 +0000",
+             "last_described_at": "2010/10/04 13:46:03 +0000",
+             "id": 235096,
+             "outgoing_message_id": null
+        },
+         
+        {
+            "described_state": null,
+             "incoming_message_id": null,
+             "comment_id": null,
+             "event_type": "edit",
+             "calculated_state": null,
+             "created_at": "2010/10/09 13:35:41 +0000",
+             "last_described_at": null,
+             "id": 237312,
+             "outgoing_message_id": null
+        }
+    ],
+     "updated_at": "2010/10/04 13:46:03 +0000",
+     "tags": 
+    [
+        [
+            "openlylocal",
+             null
+        ],
+         
+        [
+            "financial_transaction",
+             "163876"
+        ],
+         
+        [
+            "url",
+             "http://openlylocal.com/financial_transactions/163876"
+        ]
+    ],
+     "awaiting_description": false,
+     "created_at": "2010/10/04 11:11:56 +0000",
+     "public_body": "wandsworth_borough_council",
+     "user": "chris_taggart",
+     "title": "Information on Transaction with CATCH 22 in Jul 2010",
+     "id": 48721
+}

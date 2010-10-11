@@ -129,8 +129,9 @@ end
 
 Factory.define :wdtk_request do |f|
   f.sequence(:title) { |n|  "FoI request Number #{n}" }
-  f.sequence(:url) { |n|  "wdtk_url/#{n}" }
-  f.association :council
+  f.sequence(:uid) { |n|  100+n }
+  f.sequence(:request_name) { |n|  "some_wdtk_request_#{n}" }
+  f.association :organisation, :factory => :generic_council
 end
 
 Factory.define :officer do |f|

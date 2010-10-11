@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101006154105) do
+ActiveRecord::Schema.define(:version => 20101011074335) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -944,14 +944,18 @@ ActiveRecord::Schema.define(:version => 20101006154105) do
 
   create_table "wdtk_requests", :force => true do |t|
     t.column "title", :string
-    t.column "url", :string
     t.column "status", :string
     t.column "description", :text
-    t.column "council_id", :integer
+    t.column "organisation_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "organisation_type", :string
+    t.column "uid", :integer
+    t.column "related_object_type", :string
+    t.column "related_object_id", :integer
+    t.column "request_name", :string
   end
 
-  add_index "wdtk_requests", ["council_id"], :name => "index_wdtk_requests_on_council_id"
+  add_index "wdtk_requests", ["organisation_id"], :name => "index_wdtk_requests_on_council_id"
 
 end
