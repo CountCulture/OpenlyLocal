@@ -1,5 +1,5 @@
 <%- div_for wdtk_request do -%>
-	<span class="status"><%= wdtk_request.status.humanize %></span>
+	<span class="status"><%= wdtk_request.status.try(:humanize) %></span>
   <h4><%= link_to wdtk_request.title, wdtk_request.url, :class => "external" %></h4>
   <div class="info">
     <%= wdtk_request.description %>
