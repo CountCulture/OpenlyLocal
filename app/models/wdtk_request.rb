@@ -21,12 +21,13 @@ class WdtkRequest < ActiveRecord::Base
     requests.collect do |request_name, request_detail_items|
       latest_reponse = request_detail_items.sort{ |a,b| a['created_at'] <=> b['created_at'] }.detect{|r| r['calculated_state']}
       org = Council.find_by_wdtk_name(request_detail_items.first['public_body'])||Entity.find_by_wdtk_name(request_detail_items.first['public_body'])
-      # p latest_reponse
-      # p request_detail_items.first['public_body'],org
       req = find_or_initialize_by_request_name(:request_name => request_name)
       req.update_attributes(:organisation => org, :title => request_detail_items.first['title'], :status => latest_reponse['calculated_state'] )
     end
-    # p requests
+  end
+  
+  def title
+    self[:title] || "Freedom of Information request to #{organisation.title}"
   end
   
   def update_from_website

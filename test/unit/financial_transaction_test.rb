@@ -13,6 +13,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should validate_presence_of :date
     should belong_to :supplier
     should belong_to :classification
+    should have_many :wdtk_requests
     
     should have_db_column :value 
     should have_db_column :uid 

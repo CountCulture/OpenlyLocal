@@ -210,6 +210,21 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
       end
     end
     
+    context "when wdtk_requests" do
+      setup do
+        @wdtk_request = Factory(:wdtk_request, :organisation => @financial_transaction.organisation, :related_object => @financial_transaction)
+        get :show, :id => @financial_transaction.id
+      end
+
+      should "show wdtk_requests" do
+        assert_select '#foi_requests a'
+      end
+      
+      should "not show FoI request button" do
+        assert_select "form#foi_request", false
+      end
+    end
+    
     context "with xml requested" do
       setup do
         get :show, :id => @financial_transaction.id, :format => "xml"

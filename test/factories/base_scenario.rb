@@ -128,7 +128,7 @@ Factory.define :output_area do |f|
 end
 
 Factory.define :wdtk_request do |f|
-  f.sequence(:title) { |n|  "FoI request Number #{n}" }
+  # f.sequence(:title) { |n|  "FoI request Number #{n}" }
   f.sequence(:uid) { |n|  100+n }
   f.sequence(:request_name) { |n|  "some_wdtk_request_#{n}" }
   f.association :organisation, :factory => :generic_council
