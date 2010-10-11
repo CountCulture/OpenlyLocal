@@ -1,7 +1,7 @@
 class FinancialTransaction < ActiveRecord::Base
   belongs_to :supplier
   belongs_to :classification
-  has_many :wdtk_requests, :as => :organisation
+  has_many :wdtk_requests, :as => :related_object
   before_validation :save_associated_supplier
   validates_presence_of :value, :date, :supplier_id
   attr_reader :organisation

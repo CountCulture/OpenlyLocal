@@ -189,7 +189,7 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :show
 
-      should_eventually "show FoI request button" do
+      should "show FoI request button" do
         assert_select "form#foi_request"
       end
       
@@ -213,11 +213,12 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
     context "when wdtk_requests" do
       setup do
         @wdtk_request = Factory(:wdtk_request, :organisation => @financial_transaction.organisation, :related_object => @financial_transaction)
+        @financial_transaction.update_attribute(:value, 20000)
         get :show, :id => @financial_transaction.id
       end
 
       should "show wdtk_requests" do
-        assert_select '#foi_requests a'
+        assert_select '#foi_requests .wdtk_request a'
       end
       
       should "not show FoI request button" do

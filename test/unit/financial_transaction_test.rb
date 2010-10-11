@@ -36,6 +36,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       assert f.errors[:supplier_id]
     end                        
     
+    should 'have many wdtk_requests as related_object' do
+      wdtk_request = Factory(:wdtk_request, :related_object => @financial_transaction)
+      assert_equal [wdtk_request], @financial_transaction.wdtk_requests
+    end                        
+    
     context "when building or updating from params" do
       setup do
         @council = Factory(:generic_council)
