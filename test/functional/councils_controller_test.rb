@@ -853,13 +853,13 @@ class CouncilsControllerTest < ActionController::TestCase
     context "in general" do
       setup do
         @high_spending_council = Factory(:council, :name => "High Spender")
-        @high_spending_council.spending_stat.perform
         @supplier_1 = Factory(:supplier, :organisation => @another_council)
         @high_spending_supplier = Factory(:supplier, :organisation => @high_spending_council)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
         @non_council_supplier = Factory(:supplier)
         @non_council_transaction = Factory(:financial_transaction, :supplier => @non_council_supplier)
+        @high_spending_council.spending_stat.perform
         SpendingStat.all(:conditions => {:organisation_type => 'Supplier'}).each(&:perform) # update all supplier spending stats
         get :spending
       end
@@ -875,9 +875,10 @@ class CouncilsControllerTest < ActionController::TestCase
         assert !assigns(:councils).include?(@another_council)
       end
 
-      should 'assign to suppliers ordered by total spend' do
+      should 'assign to council suppliers ordered by total spend' do
         assert assigns(:suppliers).include?(@supplier_1)
         assert assigns(:suppliers).include?(@high_spending_supplier)
+        assert !assigns(:suppliers).include?(@non_council_supplier)
         assert_equal @high_spending_supplier, assigns(:suppliers).first
       end
 
@@ -893,7 +894,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
 
       should 'show number of council suppliers' do
-        assert_match /2/, css_select('#supplier_count .value').to_s # shouldn't include non-council transactions
+        assert_match /2/, css_select('#supplier_count .value').to_s # shouldn't include non-council suppliers
       end
 
       # should 'order councils by spend' do
