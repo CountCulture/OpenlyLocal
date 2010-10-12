@@ -27,7 +27,7 @@ EOF
         assert_nil DocumentUtilities.sanitize(nil)
         assert_nil DocumentUtilities.sanitize('')
       end
-
+      
       should "not convert relative urls to absolute ones" do
         assert_match /with <a href=\"councillor22/, @sanitized_document
       end
