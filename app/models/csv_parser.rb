@@ -19,9 +19,9 @@ class CsvParser < Parser
   def process(raw_data, scraper=nil, options={})
     @current_scraper = scraper
     result_array,dry_run = [], !options[:save_results]
-    if options[:skip_rows]
+    if skip_rows
       raw_data = StringIO.new(raw_data)
-      options[:skip_rows].to_i.times {raw_data.gets}
+      skip_rows.times {raw_data.gets}
     end
     csv_file = FasterCSV.new(raw_data, :headers => true)
     data_row_number = 0

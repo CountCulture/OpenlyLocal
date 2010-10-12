@@ -4,6 +4,7 @@
   <p>
     <strong>Mapping system</strong> <%= csv_parser.portal_system ? link_for(csv_parser.portal_system) : 'None' %><br />
     <strong>Result model</strong> <%= csv_parser.result_model %><br />
+    <strong>Rows to skip</strong> <%= csv_parser.skip_rows %><br />
   </p>
   <h4>Item attribute mapper <em>maps CSV column headings</em></h4>
 	<%= render :partial => 'parsers/attributes', :object => csv_parser.attribute_mapping %>

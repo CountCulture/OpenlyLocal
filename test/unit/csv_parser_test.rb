@@ -11,6 +11,7 @@ class CsvParserTest < ActiveSupport::TestCase
     end
     
     should have_db_column :attribute_mapping
+    should have_db_column :skip_rows
     
     should "serialize attribute_mapping" do
       expected_attribs = {:value=>"Amount", 
@@ -140,7 +141,8 @@ class CsvParserTest < ActiveSupport::TestCase
       context "when processing with dry run and skip_rows" do
         setup do
           dummy_data = dummy_csv_data(:file_with_extra_lines_at_top)
-          @processed_data = @parser.process(dummy_data, @dummy_scraper, :skip_rows => 2).results
+          @parser.skip_rows = 2
+          @processed_data = @parser.process(dummy_data, @dummy_scraper).results
         end
 
         should "skip given rows" do
