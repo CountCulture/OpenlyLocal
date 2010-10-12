@@ -138,7 +138,7 @@ class CsvParserTest < ActiveSupport::TestCase
 
       end
       
-      context "when processing with dry run and skip_rows" do
+      context "when processing with parser with skip_rows set" do
         setup do
           dummy_data = dummy_csv_data(:file_with_extra_lines_at_top)
           @parser.skip_rows = 2
@@ -149,6 +149,11 @@ class CsvParserTest < ActiveSupport::TestCase
           assert_equal 'Resources', @processed_data.first[:department_name]
           assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
         end
+        
+        should 'return csv line number of file as csv_line_no' do
+          assert_equal 4, @processed_data.first[:csv_line_number]
+        end
+
       end
       
       context 'and results' do

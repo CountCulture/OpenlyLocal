@@ -39,7 +39,7 @@ class CsvParser < Parser
         end
       end
       data_row_number +=1
-      result_array << {:csv_line_number => csv_file.lineno, :source_url => scraper&&scraper.url}.merge(res_hash) # allow results to override source_url
+      result_array << {:csv_line_number => skip_rows.to_i + csv_file.lineno, :source_url => scraper&&scraper.url}.merge(res_hash) # allow results to override source_url
     end
     # p result_array
     @results = result_array
