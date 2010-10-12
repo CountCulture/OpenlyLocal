@@ -20,11 +20,6 @@ class CsvParserTest < ActiveSupport::TestCase
                           :date=>"Updated" }
       assert_equal(expected_attribs, Parser.find(@parser.id).attribute_mapping)
     end
-    
-    # should "serialize OK with assoc scraper" do
-    #   scraper = Factory(:csv_scraper)
-    #   # p scraper.parser.attribute_mapping, Parser.find(scraper.parser_id).attribute_mapping, CsvParser.find(scraper.parser_id).attribute_mapping
-    # end
 
   end
 
@@ -140,6 +135,18 @@ class CsvParserTest < ActiveSupport::TestCase
           assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
         end
 
+      end
+      
+      context "when processing with dry run and skip_rows" do
+        setup do
+          dummy_data = dummy_csv_data(:file_with_extra_lines_at_top)
+          @processed_data = @parser.process(dummy_data, @dummy_scraper, :skip_rows => 2).results
+        end
+
+        should "skip given rows" do
+          assert_equal 'Resources', @processed_data.first[:department_name]
+          assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
+        end
       end
       
       context 'and results' do
