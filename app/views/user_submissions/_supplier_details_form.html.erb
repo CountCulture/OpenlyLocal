@@ -1,7 +1,4 @@
-<%- if @possible_entities -%>
-	<%= detail_form.label :entity_id, "Choose #{@user_submission.submission_details.entity_type}" %>
-	<%= detail_form.select :entity_id, @possible_entities.collect {|e| [ e.title, e.id ] }, { :include_blank => true } %>
-<%- elsif params[:entity_type] == 'Company' -%>
+<%- if params[:entity_type] == 'Company' -%>
 	<p>
 	  <%= link_to "Search Google for #{@user_submission.item.title}", "http://www.google.co.uk/search?q=#{CGI.escape @user_submission.item.title}", :class => 'external' %>
 	</p>
@@ -23,16 +20,14 @@
     <%= f.text_area :notes %>
   </p>
 	
+<%- elsif @user_submission.submission_details.entity_type -%>
+	<%= detail_form.label :entity_id, "Choose #{@user_submission.submission_details.entity_type}" %>
+	<%= detail_form.select :entity_id, @possible_entities.collect {|e| [ e.title, e.id ] }, { :include_blank => true } %>
 <%- else -%>
 	<strong>What type of organisation do you think this supplier is?</strong>
-	<% Supplier::AllowedPayeeModels.each do |e_type| %>
+	<% Supplier::AllowedPayeeModels.each do |e_type,e_type_name| %>
     <br>
 			<%= detail_form.radio_button 'entity_type', e_type %>
-    <%= detail_form.label "entity_type_#{e_type.underscore}", e_type.underscore.humanize %>
+    <%= detail_form.label "entity_type_#{e_type.underscore}", e_type_name||e_type.underscore.humanize, :class => 'radio'%>
   <% end %>
-	<!-- <%= detail_form.label :entity_type, '' %>
-	<%= detail_form.radio_button :entity_type, 'Company' %>
-	<%= detail_form.radio_button :entity_type, 'Charity' %>
-	<%= detail_form.radio_button :entity_type, 'Council' %>
-	<%= detail_form.radio_button :entity_type, 'Government body or quango' %> -->
 <%- end -%>

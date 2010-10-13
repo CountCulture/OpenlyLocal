@@ -1,5 +1,5 @@
 class Supplier < ActiveRecord::Base
-  AllowedPayeeModels = %w(Council Entity Charity PoliceAuthority)
+  AllowedPayeeModels = [['Council'], ['Entity', 'Government body/quango/etc'], ['Charity'], ['PoliceAuthority'], ['PoliceForce'], ['Company']]
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
   has_many :financial_transactions, :order => 'date', :dependent => :destroy

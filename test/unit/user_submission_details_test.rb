@@ -22,10 +22,24 @@ class UserSubmissionDetailsTest < ActiveSupport::TestCase
       assert @user_submission_details.respond_to?(:attributes)
     end
     
+    should 'have attributes method' do
+      assert @user_submission_details.respond_to?(:attributes)
+    end
+    
     should 'have valid? method' do
       assert @user_submission_details.respond_to?(:valid?)
     end
 
+    should 'have entity_type accessor' do
+      assert @user_submission_details.respond_to?(:entity_type)
+      assert @user_submission_details.respond_to?(:entity_type=)
+    end
+    
+    should 'have entity_id accessor' do
+      assert @user_submission_details.respond_to?(:entity_id)
+      assert @user_submission_details.respond_to?(:entity_id=)
+    end
+    
   end
   
   context "An instance of a class that inherits from UserSubmissionDetail" do
@@ -39,7 +53,7 @@ class UserSubmissionDetailsTest < ActiveSupport::TestCase
     end
     
     should 'return accessors as attribute_names' do
-      assert_equal ['another_dummy', 'dummy'], @child_submission_details.attribute_names.sort
+      assert_equal ['another_dummy', 'dummy', 'entity_id', 'entity_type'], @child_submission_details.attribute_names.sort
     end
     
     should 'not include other methods as attribute_names' do
@@ -47,7 +61,7 @@ class UserSubmissionDetailsTest < ActiveSupport::TestCase
     end
     
     should 'returns attribute values keyed to symbolized version of attribute names as attributes' do
-      assert_equal( {:dummy => 'bar', :another_dummy => 'baz'}, @child_submission_details.attributes)
+      assert_equal( {:dummy => 'bar', :another_dummy => 'baz', :entity_type=>nil, :entity_id=>nil}, @child_submission_details.attributes)
     end
         
     should 'have stub approve method' do

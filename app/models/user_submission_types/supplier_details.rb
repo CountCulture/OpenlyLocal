@@ -1,5 +1,5 @@
 class SupplierDetails < UserSubmissionDetails
-  attr_accessor :url, :source_for_info, :company_number, :wikipedia_url, :entity_type, :entity_id
+  attr_accessor :url, :source_for_info, :company_number, :wikipedia_url
 
   def initialize(params={})
     super

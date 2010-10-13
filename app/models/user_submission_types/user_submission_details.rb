@@ -1,4 +1,5 @@
 class UserSubmissionDetails
+  attr_accessor :entity_type, :entity_id
   
   def initialize(params={})
     params.each do |k,v|

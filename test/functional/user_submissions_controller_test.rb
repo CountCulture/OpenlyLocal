@@ -75,7 +75,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
 
         should "show possible entity types in radio buttons" do
           assert_select "fieldset#submission_details" do
-            puts css_select('fieldset')
+            # puts css_select('fieldset')
             assert_select 'input#user_submission_submission_details_entity_type_charity'
           end
         end
@@ -129,21 +129,21 @@ class UserSubmissionsControllerTest < ActionController::TestCase
      end
   
      context "with entity_type" do
-        setup do
-          @entity = Factory(:police_authority)
-          post :create, :user_submission => { :item_id => @item.id, 
-                                              :item_type => 'Council', 
-                                              :submission_type => 'supplier_details', 
-                                              :submission_details => {:entity_type => 'PoliceAuthority', :entity_id => @entity.id}}
-        end
-
-        should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
-        should assign_to :user_submission
-        should_redirect_to( "the page for the council") { council_url(@item) }
-        should set_the_flash.to /Successfully submitted/i
-
-      end
-
+       setup do
+         @entity = Factory(:police_authority)
+         post :create, :user_submission => { :item_id => @item.id, 
+                                             :item_type => 'Council', 
+                                             :submission_type => 'supplier_details', 
+                                             :submission_details => {:entity_type => 'PoliceAuthority', :entity_id => @entity.id}}
+       end
+   
+       should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
+       should assign_to :user_submission
+       should_redirect_to( "the page for the council") { council_url(@item) }
+       should set_the_flash.to /Successfully submitted/i
+   
+     end
+   
      context "with invalid params" do
        setup do
          stub_authentication
