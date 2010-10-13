@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101012160827) do
+ActiveRecord::Schema.define(:version => 20101013124814) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -387,6 +387,7 @@ ActiveRecord::Schema.define(:version => 20101012160827) do
     t.column "vat_number", :string
     t.column "cpid_code", :string
     t.column "normalised_title", :string
+    t.column "resource_uri", :string
   end
 
   create_table "feed_entries", :force => true do |t|

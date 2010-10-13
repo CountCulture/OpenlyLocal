@@ -32,6 +32,7 @@ class EntityTest < ActiveSupport::TestCase
     should have_db_column :vat_number
     should have_db_column :cpid_code
     should have_db_column :normalised_title
+    should have_db_column :resource_uri
     
     context "when normalising title" do
       should "normalise title" do
