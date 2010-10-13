@@ -23,6 +23,7 @@
 <%- elsif @user_submission.submission_details.entity_type -%>
 	<%= detail_form.label :entity_id, "Choose #{@user_submission.submission_details.entity_type}" %>
 	<%= detail_form.select :entity_id, @possible_entities.collect {|e| [ e.title, e.id ] }, { :include_blank => true } %>
+  <%= detail_form.hidden_field :entity_type %>
 <%- else -%>
 	<strong>What type of organisation do you think this supplier is?</strong>
 	<% Supplier::AllowedPayeeModels.each do |e_type,e_type_name| %>
