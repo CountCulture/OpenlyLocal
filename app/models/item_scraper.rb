@@ -31,8 +31,4 @@ class ItemScraper < Scraper
     @related_objects ||= related_model.constantize.find(:all, :conditions => { :council_id => council_id })
   end
   
-  def scraping_for
-    "#{result_model}s from <a href='#{url}'>#{url}</a>"
-  end
-    
 end

@@ -4,6 +4,11 @@ class SpendingStat < ActiveRecord::Base
   serialize :spend_by_month
   serialize :breakdown
   
+  # Overrides ActiveRecord method to return true if main stat values are blank
+  def blank?
+    %w(total_spend average_monthly_spend average_transaction_value).all?{ |a| self.send(a).blank? || (self.send(a) == 0) }
+  end
+  
   def calculated_average_monthly_spend
     return if organisation.financial_transactions.blank?
     organisation.financial_transactions.sum(:value)/months_covered

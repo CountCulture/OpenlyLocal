@@ -19,6 +19,10 @@ class CsvParser < Parser
   def process(raw_data, scraper=nil, options={})
     @current_scraper = scraper
     result_array,dry_run = [], !options[:save_results]
+    if skip_rows
+      raw_data = StringIO.new(raw_data)
+      skip_rows.times {raw_data.gets}
+    end
     csv_file = FasterCSV.new(raw_data, :headers => true)
     data_row_number = 0
     # p scraper.parser.attribute_mapping
@@ -35,7 +39,7 @@ class CsvParser < Parser
         end
       end
       data_row_number +=1
-      result_array << res_hash.merge(:csv_line_number => csv_file.lineno, :source_url => scraper&&scraper.url)
+      result_array << {:csv_line_number => skip_rows.to_i + csv_file.lineno, :source_url => scraper&&scraper.url}.merge(res_hash) # allow results to override source_url
     end
     # p result_array
     @results = result_array

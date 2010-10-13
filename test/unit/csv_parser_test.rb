@@ -11,15 +11,16 @@ class CsvParserTest < ActiveSupport::TestCase
     end
     
     should have_db_column :attribute_mapping
+    should have_db_column :skip_rows
     
     should "serialize attribute_mapping" do
-      assert_equal({ :department_name => 'Directorate', :supplier_name => 'Supplier Name', :uid => 'TransactionID' }, Parser.find(@parser.id).attribute_mapping)
+      expected_attribs = {:value=>"Amount", 
+                          :department_name => 'Directorate', 
+                          :supplier_name => 'Supplier Name', 
+                          :uid => 'TransactionID',
+                          :date=>"Updated" }
+      assert_equal(expected_attribs, Parser.find(@parser.id).attribute_mapping)
     end
-    
-    # should "serialize OK with assoc scraper" do
-    #   scraper = Factory(:csv_scraper)
-    #   # p scraper.parser.attribute_mapping, Parser.find(scraper.parser_id).attribute_mapping, CsvParser.find(scraper.parser_id).attribute_mapping
-    # end
 
   end
 
@@ -51,11 +52,11 @@ class CsvParserTest < ActiveSupport::TestCase
         end
         
         should "make attribute_mapping_key accessible as attrib_name" do
-          assert_equal "department_name", @first_attrib.attrib_name
+          assert_equal "date", @first_attrib.attrib_name
         end
 
         should "make attribute_mapping_value accessible as column_name" do
-          assert_equal "Directorate", @first_attrib.column_name
+          assert_equal "Updated", @first_attrib.column_name
         end
       end
       
@@ -137,6 +138,24 @@ class CsvParserTest < ActiveSupport::TestCase
 
       end
       
+      context "when processing with parser with skip_rows set" do
+        setup do
+          dummy_data = dummy_csv_data(:file_with_extra_lines_at_top)
+          @parser.skip_rows = 2
+          @processed_data = @parser.process(dummy_data, @dummy_scraper).results
+        end
+
+        should "skip given rows" do
+          assert_equal 'Resources', @processed_data.first[:department_name]
+          assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
+        end
+        
+        should 'return csv line number of file as csv_line_no' do
+          assert_equal 4, @processed_data.first[:csv_line_number]
+        end
+
+      end
+      
       context 'and results' do
         setup do
           @processed_data = @parser.process(@csv_rawdata, @dummy_scraper, :save_results => true).results
@@ -173,6 +192,11 @@ class CsvParserTest < ActiveSupport::TestCase
 
         should 'return scraper url as source_url' do
           assert_equal "http://foo.gov.uk/bar.csv", @processed_data.last[:source_url]
+        end
+
+        should 'override scraper url if value provided for source_url' do
+          @parser.attribute_mapping = { :department_name => 'Directorate', :supplier_name => 'Supplier Name', :uid => 'TransactionID', :value_for_source_url => 'http://bar.gov.uk/baz.csv' }
+          assert_equal 'http://bar.gov.uk/baz.csv', @parser.process(@csv_rawdata, @dummy_scraper).results.first[:source_url]
         end
 
       end

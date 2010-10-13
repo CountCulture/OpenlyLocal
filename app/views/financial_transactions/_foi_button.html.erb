@@ -4,14 +4,14 @@
 		<div>
 			<input type="hidden" value="openlylocal" name="tags">
 			<%= hidden_field_tag "tags", "openlylocal #{item.class.to_s.underscore}:#{item.id} url:#{item.openlylocal_url}" %>
-			<%= hidden_field_tag "body", item.foi_message_body %>
+			<%= hidden_field_tag "default_letter", item.foi_message_body %>
 			<%= hidden_field_tag "title", "Information on #{item.title}" %>
 			<input type="submit" value="New Request" class='submit'>
 		</div>
 	</form>
 	<div class='note'>
 		<p>Note: This will generate a new request on <a href="http://www.whatdotheyknow.com" class='external'>WhatDoTheyKnow.com</a>, with all the information about this transaction pre-populated.</p>
-		<p>All you need to do is add your name at the bottom and submit it (if you're not already registered you will need to register at this point too, but your request details will be remembered while you are doing this)</p>
+		<p>All you need to do is submit it (if you're not already registered you will need to register at this point too, but your request details will be remembered while you are doing this)</p>
 		<p>Remember, FoI requests often require resources to respond to. Please act responsibly</p>
 	</div>
 </div>

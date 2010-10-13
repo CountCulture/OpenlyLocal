@@ -23,8 +23,8 @@ class Meeting < ActiveRecord::Base
 
   # Overwrite existing find_all_existing from scraped_model so only return meetings with council_id and same committee_id from params
   def self.find_all_existing(params)
-    raise ArgumentError, ":committee_id or :council_id is missing from submitted params" if params[:council_id].blank? || params[:committee_id].blank? 
-    find_all_by_council_id_and_committee_id(params[:council_id], params[:committee_id])
+    raise ArgumentError, ":committee_id or :organisation is missing from submitted params" if params[:organisation].blank? || params[:committee_id].blank? 
+    find_all_by_council_id_and_committee_id(params[:organisation].id, params[:committee_id])
   end
   
   def title

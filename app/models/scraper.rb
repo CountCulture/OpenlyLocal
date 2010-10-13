@@ -13,8 +13,8 @@ class Scraper < ActiveRecord::Base
   # accepts_nested_attributes_for :parser
   attr_accessor :related_objects, :parsing_results
   attr_protected :results
-  delegate :result_model, :to => :parser
-  delegate :related_model, :to => :parser
+  delegate :result_model, :to => :parser, :allow_nil => true
+  delegate :related_model, :to => :parser, :allow_nil => true
   delegate :portal_system, :to => :council, :allow_nil => true
   delegate :base_url, :to => :council, :allow_nil => true
   
@@ -100,6 +100,10 @@ class Scraper < ActiveRecord::Base
     res.join(", ")
   end
   
+  def scraping_for
+    "#{result_model}s from <a href='#{url}'>#{url}</a>"
+  end
+    
   def sibling_scrapers
     council.scrapers - [self]
   end

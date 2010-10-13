@@ -832,6 +832,12 @@ ul#hyperlocal_sites li li{
 form#foi_request {
 	float: left;
 }
+.wdtk_request .status {
+	color:#fff;
+	background:#369;
+	text-transform:uppercase;
+	padding:1px 6px;
+}
 
 /*admin page*/
 .admin #user_submissions {

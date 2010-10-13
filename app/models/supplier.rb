@@ -101,7 +101,7 @@ class Supplier < ActiveRecord::Base
     
   private
   def queue_for_matching_with_payee
-    @vat_number ? Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => @vat_number, :supplier => self, :title => title)) : Delayed::Job.enqueue(self) 
+    @vat_number ? Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => @vat_number, :supplier => self, :title => title)) : Delayed::Job.enqueue(self.reload) #NB reload supplier so only bare supplier is serialized, not assoc org with all associated objects, which is often longer than field allows, and thus breaks 
     true
   end
 end

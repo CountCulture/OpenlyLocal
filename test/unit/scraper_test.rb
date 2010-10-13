@@ -76,6 +76,12 @@ class ScraperTest < ActiveSupport::TestCase
       @parser = @scraper.parser
     end
     
+    should "return what it is scraping for" do
+      parser = Factory(:parser, :result_model => 'TestScrapedModel')
+      scraper = Scraper.new(:parser => parser, :url => 'http://www.anytown.gov.uk/members')
+      assert_equal "TestScrapedModels from <a href='http://www.anytown.gov.uk/members'>http://www.anytown.gov.uk/members</a>", scraper.scraping_for
+    end
+    
     should "not save unless there is an associated parser" do
       s = Scraper.new(:council => @council)
       assert !s.save
@@ -189,11 +195,15 @@ class ScraperTest < ActiveSupport::TestCase
     should "delegate result_model to parser" do
       @parser.expects(:result_model).returns("result_model")
       assert_equal "result_model", @scraper.result_model
+      @scraper.parser = nil
+      assert_nil @scraper.result_model
     end
     
     should "delegate related_model to parser" do
       @parser.expects(:related_model).returns("related_model")
       assert_equal "related_model", @scraper.related_model
+      @scraper.parser = nil
+      assert_nil @scraper.result_model
     end
     
     should "delegate portal_system to council" do

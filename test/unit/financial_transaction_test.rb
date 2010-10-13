@@ -13,6 +13,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should validate_presence_of :date
     should belong_to :supplier
     should belong_to :classification
+    should have_many :wdtk_requests
     
     should have_db_column :value 
     should have_db_column :uid 
@@ -33,6 +34,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       f=Factory.build(:financial_transaction, :supplier_id => nil)
       assert !f.valid?
       assert f.errors[:supplier_id]
+    end                        
+    
+    should 'have many wdtk_requests as related_object' do
+      wdtk_request = Factory(:wdtk_request, :related_object => @financial_transaction)
+      assert_equal [wdtk_request], @financial_transaction.wdtk_requests
     end                        
     
     context "when building or updating from params" do
@@ -619,7 +625,6 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
       
       should "include information about transaction" do
-        assert_match /#{@financial_transaction.organisation.title}/, @financial_transaction.foi_message_body
         assert_match /payment/, @financial_transaction.foi_message_body
         assert_match /#{@financial_transaction.supplier_name}/, @financial_transaction.foi_message_body
         assert_match /£#{@financial_transaction.value}/, @financial_transaction.foi_message_body

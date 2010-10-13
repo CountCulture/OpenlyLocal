@@ -63,10 +63,17 @@
           <%= pf.label :description, "Parser Description" %>
           <%= pf.text_field :description %>
         </p>
-        <p>
-          <%= pf.label :item_parser %>
-          <%= pf.text_area :item_parser, :rows => 3 %>
-        </p>
+				<%- if @scraper.parser.is_a?(CsvParser) -%>
+					<p>
+				    <%= pf.label :skip_rows, "Number of rows to skip (leave blank for none) " %>
+				    <%= pf.text_field :skip_rows %>
+				  </p>
+			  <%- else -%>
+	        <p>
+	          <%= pf.label :item_parser %>
+	          <%= pf.text_area :item_parser, :rows => 3 %>
+	        </p>
+				<%- end -%>
         <div id="parser_attribute_parser">
           <h3>Attribute parser</h3>
 					<%- partial_attribs = @scraper.parser.kind_of?(CsvParser) ? 

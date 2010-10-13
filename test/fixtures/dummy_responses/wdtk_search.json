@@ -1,0 +1,92 @@
+
+[
+    {
+        "described_state": null,
+         "incoming_message_id": 118884,
+         "info_request": "information_on_transaction_10125",
+         "comment_id": null,
+         "event_type": "response",
+         "calculated_state": "waiting_response",
+         "created_at": "2010/10/06 10:33:51 +0000",
+         "public_body": "bedford_borough_council",
+         "last_described_at": "2010/10/10 07:04:45 +0000",
+         "user": "m_smallwood",
+         "id": 236018,
+         "outgoing_message_id": null
+    },
+     
+    {
+        "described_state": "waiting_response",
+         "incoming_message_id": null,
+         "info_request": "information_on_transaction_10125",
+         "comment_id": null,
+         "event_type": "sent",
+         "calculated_state": "waiting_response",
+         "created_at": "2010/10/06 06:33:25 +0000",
+         "public_body": "bedford_borough_council",
+         "last_described_at": "2010/10/06 06:33:25 +0000",
+         "user": "m_smallwood",
+         "id": 235898,
+         "outgoing_message_id": 87699
+    },
+     
+    {
+        "described_state": "waiting_response",
+         "incoming_message_id": 118370,
+         "info_request": "information_on_transaction_with",
+         "comment_id": null,
+         "event_type": "response",
+         "calculated_state": "waiting_response",
+         "created_at": "2010/10/04 11:58:23 +0000",
+         "public_body": "wandsworth_borough_council",
+         "last_described_at": "2010/10/04 13:46:03 +0000",
+         "user": "chris_taggart",
+         "id": 235096,
+         "outgoing_message_id": null
+    },
+     
+    {
+        "described_state": null,
+         "incoming_message_id": null,
+         "info_request": "information_on_transaction_31442",
+         "comment_id": 13744,
+         "event_type": "comment",
+         "calculated_state": null,
+         "created_at": "2010/10/04 11:51:09 +0000",
+         "public_body": "birmingham_city_council",
+         "last_described_at": null,
+         "user": "david_pidsley",
+         "id": 235092,
+         "outgoing_message_id": null
+    },
+     
+    {
+        "described_state": "waiting_response",
+         "incoming_message_id": null,
+         "info_request": "information_on_transaction_31442",
+         "comment_id": null,
+         "event_type": "sent",
+         "calculated_state": "waiting_response",
+         "created_at": "2010/10/04 11:49:49 +0000",
+         "public_body": "birmingham_city_council",
+         "last_described_at": "2010/10/04 11:49:50 +0000",
+         "user": "david_pidsley",
+         "id": 235089,
+         "outgoing_message_id": 87486
+    },
+     
+    {
+        "described_state": "waiting_response",
+         "incoming_message_id": null,
+         "info_request": "information_on_transaction_with",
+         "comment_id": null,
+         "event_type": "sent",
+         "calculated_state": "waiting_response",
+         "created_at": "2010/10/04 11:11:57 +0000",
+         "public_body": "wandsworth_borough_council",
+         "last_described_at": "2010/10/04 11:11:57 +0000",
+         "user": "chris_taggart",
+         "id": 235056,
+         "outgoing_message_id": 87476
+    }
+]

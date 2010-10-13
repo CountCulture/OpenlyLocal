@@ -9,7 +9,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101003220508) do
+ActiveRecord::Schema.define(:version => 20101012160827) do
+
+  create_table "account_lines", :force => true do |t|
+    t.column "value", :integer
+    t.column "period", :string
+    t.column "sub_heading", :string
+    t.column "classification_id", :integer
+    t.column "organisation_type", :string
+    t.column "organisation_id", :integer
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "addresses", :force => true do |t|
     t.column "street_address", :text
@@ -636,6 +647,7 @@ ActiveRecord::Schema.define(:version => 20101003220508) do
     t.column "path", :string
     t.column "type", :string
     t.column "attribute_mapping", :text
+    t.column "skip_rows", :integer
   end
 
   add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"
@@ -933,14 +945,18 @@ ActiveRecord::Schema.define(:version => 20101003220508) do
 
   create_table "wdtk_requests", :force => true do |t|
     t.column "title", :string
-    t.column "url", :string
     t.column "status", :string
     t.column "description", :text
-    t.column "council_id", :integer
+    t.column "organisation_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "organisation_type", :string
+    t.column "uid", :integer
+    t.column "related_object_type", :string
+    t.column "related_object_id", :integer
+    t.column "request_name", :string
   end
 
-  add_index "wdtk_requests", ["council_id"], :name => "index_wdtk_requests_on_council_id"
+  add_index "wdtk_requests", ["organisation_id"], :name => "index_wdtk_requests_on_council_id"
 
 end

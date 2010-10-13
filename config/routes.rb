@@ -37,7 +37,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :related_articles, :only => [:new, :create, :index]
 
-  map.resources :councils, :collection => { :spending => :get } do |councils|
+  map.resources :councils, :collection => { :spending => :get }, :member => { :accounts => :get} do |councils|
     councils.resources :datasets, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
     councils.resources :dataset_families, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
     councils.resources :dataset_topics, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]

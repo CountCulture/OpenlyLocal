@@ -1,5 +1,5 @@
 class CouncilsController < ApplicationController
-  before_filter :authenticate, :except => [:index, :show, :spending, :show_spending]
+  before_filter :authenticate, :except => [:index, :show, :spending, :show_spending, :accounts]
   before_filter :linked_data_available, :only => :show
   before_filter :find_council, :except => [:index, :new, :create, :spending]
   caches_action :index, :show, :cache_path => Proc.new { |controller| controller.params }
@@ -59,9 +59,14 @@ class CouncilsController < ApplicationController
     render :action => "edit"
   end
   
+  def accounts
+    @accounts = @council.account_lines.group_by(&:classification)
+    @title = "Most Recent Budget"
+  end
+  
   def spending
-    @councils = Council.all(:joins => :suppliers, :group => "councils.id", :include => :spending_stat)
-    @suppliers = Supplier.all(:joins => :spending_stat, :include => :spending_stat, :order => 'spending_stats.total_spend DESC', :limit => 10)
+    @councils = Council.all(:joins => :suppliers, :group => "councils.id", :include => :spending_stat).select{ |c| !c.spending_stat.blank? }
+    @suppliers = Supplier.all(:joins => :spending_stat, :include => :spending_stat, :conditions => {:organisation_type => 'Council'}, :order => 'spending_stats.total_spend DESC', :limit => 10)
     @supplier_count = Supplier.count(:conditions => {:organisation_type => 'Council'})
     @financial_transactions = FinancialTransaction.all(:order => 'value DESC', :limit => 10, :include => :supplier)
     @financial_transaction_count = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")

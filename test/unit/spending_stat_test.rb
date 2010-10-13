@@ -33,7 +33,21 @@ class SpendingStatTest < ActiveSupport::TestCase
   end
   
   context "An instance of the SpendingStat class" do
-
+    
+    should "be considered blank when main stat values are blank" do
+      new_spending_stat = Factory(:spending_stat)
+      assert new_spending_stat.blank?
+      new_spending_stat.total_spend = 23
+      assert !new_spending_stat.blank?
+    end
+    
+    should "be considered blank when main stat values are all zero" do
+      new_spending_stat = Factory(:spending_stat, :total_spend => 0, :average_monthly_spend => 0, :average_transaction_value => 0)
+      assert new_spending_stat.blank?
+      new_spending_stat.total_spend = 23
+      assert !new_spending_stat.blank?
+    end
+    
     context "when performing" do
 
       should "should calculate total_spend" do
@@ -118,8 +132,8 @@ class SpendingStatTest < ActiveSupport::TestCase
     
     context "when returning months_covered" do
       should "return number of months between earliest_transaction_date and latest_transaction_date" do
-        @spending_stat.expects(:earliest_transaction_date).at_least_once.returns(5.months.ago)
-        @spending_stat.expects(:latest_transaction_date).at_least_once.returns(45.days.ago)
+        @spending_stat.expects(:earliest_transaction_date).at_least_once.returns('2010-03-4'.to_date)
+        @spending_stat.expects(:latest_transaction_date).at_least_once.returns('2010-07-26'.to_date)
         assert_equal 5, @spending_stat.months_covered
       end
     end

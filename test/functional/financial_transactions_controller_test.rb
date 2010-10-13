@@ -189,7 +189,7 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :show
 
-      should_eventually "show FoI request button" do
+      should "show FoI request button" do
         assert_select "form#foi_request"
       end
       
@@ -200,13 +200,29 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
         end
 
         should "submit boilerplate" do
-          assert_match /Freedom of Information Act 2000/m, css_select('input[name=body]').to_s
+          assert_match /Freedom of Information Act 2000/m, css_select('input[name=default_letter]').to_s
         end
 
         should "submit machine tag" do
           assert_match /openlylocal/m, css_select('input[name=tags]').to_s
           assert_match /financial_transaction:#{@financial_transaction.id}/m, css_select('input[name=tags]').to_s
         end
+      end
+    end
+    
+    context "when wdtk_requests" do
+      setup do
+        @wdtk_request = Factory(:wdtk_request, :organisation => @financial_transaction.organisation, :related_object => @financial_transaction)
+        @financial_transaction.update_attribute(:value, 20000)
+        get :show, :id => @financial_transaction.id
+      end
+
+      should "show wdtk_requests" do
+        assert_select '#foi_requests .wdtk_request a'
+      end
+      
+      should "not show FoI request button" do
+        assert_select "form#foi_request", false
       end
     end
     

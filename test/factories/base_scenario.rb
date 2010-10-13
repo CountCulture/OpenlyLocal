@@ -33,7 +33,7 @@ Factory.define :another_parser, :parent => :parser do |f|
 end
 
 Factory.define :csv_parser do |f|
-  f.attribute_mapping( { :department_name => 'Directorate', :supplier_name => 'Supplier Name', :uid => 'TransactionID' })
+  f.attribute_mapping( { :department_name => 'Directorate', :supplier_name => 'Supplier Name', :uid => 'TransactionID', :value => 'Amount', :date => 'Updated' })
   f.result_model 'TestScrapedModel'
   f.scraper_type 'CsvScraper'
 end
@@ -128,9 +128,10 @@ Factory.define :output_area do |f|
 end
 
 Factory.define :wdtk_request do |f|
-  f.sequence(:title) { |n|  "FoI request Number #{n}" }
-  f.sequence(:url) { |n|  "wdtk_url/#{n}" }
-  f.association :council
+  # f.sequence(:title) { |n|  "FoI request Number #{n}" }
+  f.sequence(:uid) { |n|  100+n }
+  f.sequence(:request_name) { |n|  "some_wdtk_request_#{n}" }
+  f.association :organisation, :factory => :generic_council
 end
 
 Factory.define :officer do |f|
@@ -382,4 +383,11 @@ end
 Factory.define :classification do |f|
   f.sequence( :title) {|n| "Foo #{n}"}
   f.grouping 'Proclass10.1'
+end
+
+Factory.define :account_line do |f|
+  f.sequence( :value) {|n| n*10 }
+  f.association :classification
+  f.association :organisation, :factory => :generic_council
+  f.period '2009_2010'
 end

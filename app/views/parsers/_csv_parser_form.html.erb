@@ -11,6 +11,11 @@
     <%= pf.text_field :description %>
   </p>
 
+  <p>
+    <%= pf.label :skip_rows, "Number of rows to skip (leave blank for none) " %>
+    <%= pf.text_field :skip_rows %>
+  </p>
+
   <div id="parser_attribute_parser">
     <h3>Attribute mapper <em>(base item is 'item')</em></h3>
     <%= render :partial => 'csv_attrib_fields', :collection => @parser.attribute_mapping_object  %>

@@ -13,7 +13,7 @@
       <strong>for</strong> <%= link_to "#{@scraper.council.name}", council_path(@scraper.council) %><br />
       <strong>scraping for</strong> <%= @scraper.scraping_for %>
     </p>
-    <%= render :partial => "/parsers/#{@scraper.parser.class.to_s.underscore}", :object => @scraper.parser %>
+    <%= render :partial => "/parsers/#{@scraper.parser.class.to_s.underscore}", :object => @scraper.parser if @scraper.parser %>
     
   </div>
   <div class="notes">
