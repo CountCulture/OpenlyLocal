@@ -149,6 +149,7 @@ class FinancialTransaction < ActiveRecord::Base
 	end
 	
 	def proclass=(args)
+	  return if args.first.blank?
 	  grouping = args[1]
 	  conditions = args.first.match(/^\d+$/) ? {:uid  => args.first} : {:title => args.first}
  	  pc = Classification.first(:conditions => conditions.merge(:grouping => grouping))

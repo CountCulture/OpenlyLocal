@@ -585,6 +585,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_equal @proclass_class_2, @fin_trans.classification
       end
 
+      should 'not fail if proclass is being assigned blank' do
+        assert_nothing_raised(Exception) { @fin_trans.proclass10_1 = '' }
+        assert_nothing_raised(Exception) { @fin_trans.proclass10_1 = nil }
+      end
+
       should 'deassign existing classification if already set and no such classification' do
         @fin_trans.classification = @proclass_class_1
         @fin_trans.proclass10_1 = 'Foo Baz'
