@@ -172,12 +172,15 @@ class FinancialTransaction < ActiveRecord::Base
 	# As financial transactions are often create from CSV files, we need to set supplier 
 	# from supplied params, and when doing so may not not associated organisation
 	def supplier_name=(name)
+    # self.supplier = supplier ? (supplier.name = name; supplier) : Supplier.new(:name => name)
     self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_name(name) || Supplier.new) unless self.supplier
-	  self.supplier.name = name
+    self.supplier.name = name
 	end
 	
 	def supplier_uid=(uid)
-	  self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
+    self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_uid(uid) || Supplier.new) unless self.supplier
+    self.supplier.uid = uid
+    # self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
 	end
 
 	def supplier_vat_number=(vat_number)
