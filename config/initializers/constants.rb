@@ -57,7 +57,7 @@ Licences = {'CC0' => ['Creative Commons CC0 Universal', 'http://creativecommons.
             'CCBYSA30' => ['Creative Commons Attribution-Share Alike 3.0 Unported', 'http://creativecommons.org/licenses/by-sa/3.0/', 'open'],
             'CCBYNC30' => ['Creative Commons Attribution-Noncommercial 3.0', 'http://creativecommons.org/licenses/by-nc/3.0/', 'semi_open'],
             'CCBYNCSA30' => ['Creative Commons Attribution-Noncommercial-Share Alike 3.0', 'http://creativecommons.org/licenses/by-nc-sa/3.0/', 'semi_open'],
-            'DATAGOVUK' => ['Data.gov.uk open licence', 'http://data.gov.uk/terms-and-conditions', 'open'],
+            'DATAGOVUK' => ['Open Government Licence', 'http://www.nationalarchives.gov.uk/doc/open-government-licence/', 'open'],
             'ADHOCNC' => ['Ad Hoc Attribution-Noncommercial', nil, 'semi_open'],
             'ADHOCBY' => ['Ad Hoc Attribution only', nil, 'open']
             }
