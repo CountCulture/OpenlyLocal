@@ -496,6 +496,14 @@ class FinancialTransactionTest < ActiveSupport::TestCase
  	        assert_equal @organisation, supplier.organisation
  	      end
  	      
+ 	      should 'not find supplier for organisation if uid is blank' do
+ 	        @nil_uid_supplier = Factory(:supplier, :organisation => @organisation)
+ 	        @fin_trans.supplier_uid = nil
+ 	        assert_not_equal @nil_uid_supplier, @fin_trans.supplier
+ 	        @fin_trans.supplier_uid = ''
+ 	        assert_not_equal @nil_uid_supplier, @fin_trans.supplier
+ 	      end
+
  	    end
  	  end
 
