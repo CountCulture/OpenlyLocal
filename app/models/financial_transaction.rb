@@ -32,6 +32,7 @@ class FinancialTransaction < ActiveRecord::Base
                  [:service],
                  [:transaction_type],
                  [:invoice_number],
+                 [:invoice_date],
                  [:department_name],
                  [:description],
                  # [:openlylocal_company_id],
