@@ -19,15 +19,14 @@ class CsvParser < Parser
   def process(raw_data, scraper=nil, options={})
     @current_scraper = scraper
     result_array,dry_run = [], !options[:save_results]
+    raw_data = Iconv.iconv('utf-8', 'ISO_8859-1', raw_data).to_s if raw_data.grep(/\xC2\xA3|\xA3/)
     if skip_rows
       raw_data = StringIO.new(raw_data)
       skip_rows.times {raw_data.gets}
     end
     csv_file = FasterCSV.new(raw_data, :headers => true)
     data_row_number = 0
-    # p scraper.parser.attribute_mapping
     csv_file.each do |row|
-    # rows.each do |row|
       break if dry_run && data_row_number == 10
       next if row.all?{ |k,v| v.blank? } # skip blank rows
       res_hash = {}

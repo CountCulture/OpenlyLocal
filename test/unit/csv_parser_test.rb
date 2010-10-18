@@ -156,6 +156,19 @@ class CsvParserTest < ActiveSupport::TestCase
 
       end
       
+      context "when processing with parser rows that includes Windows pound sign" do
+        setup do
+          dummy_data = dummy_csv_data(:windows_file_with_pound_signs_in_heading)
+          @parser.attribute_mapping = {:supplier_name => 'Supplier Name', :value => 'Amount £ (Excl VAT)'}
+          @processed_data = @parser.process(dummy_data, @dummy_scraper).results
+        end
+
+        should "convert to UTF-8 to allow extraction of value" do
+          assert_equal "11889.82", @processed_data.first[:value]
+        end
+        
+      end
+      
       context 'and results' do
         setup do
           @processed_data = @parser.process(@csv_rawdata, @dummy_scraper, :save_results => true).results
