@@ -28,6 +28,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should have_db_column :csv_line_number
     should have_db_column :date_fuzziness
     should have_db_column :classification_id
+    should have_db_column :invoice_date
     
     should 'validate presence of supplier_id' do
       # NB Shoulda macro not working for some reason
