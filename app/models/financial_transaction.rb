@@ -32,6 +32,7 @@ class FinancialTransaction < ActiveRecord::Base
                  [:service],
                  [:transaction_type],
                  [:invoice_number],
+                 [:invoice_date],
                  [:department_name],
                  [:description],
                  # [:openlylocal_company_id],
@@ -47,7 +48,7 @@ class FinancialTransaction < ActiveRecord::Base
   def self.build_or_update(params_array, options={})
     organisation = options[:organisation]||options[:council] 
     params_array.collect do |params|
-      # p params#, organisation
+      logger.debug { "About to build or update FinancialTransaction with #{params.inspect}" }#, organisation
       ft = FinancialTransaction.new(params.merge(:organisation => organisation))
       options[:save_results] ? ft.save_without_losing_dirty : ft.valid?
       ScrapedObjectResult.new(ft)
@@ -149,6 +150,7 @@ class FinancialTransaction < ActiveRecord::Base
 	end
 	
 	def proclass=(args)
+	  return if args.first.blank?
 	  grouping = args[1]
 	  conditions = args.first.match(/^\d+$/) ? {:uid  => args.first} : {:title => args.first}
  	  pc = Classification.first(:conditions => conditions.merge(:grouping => grouping))
@@ -172,11 +174,14 @@ class FinancialTransaction < ActiveRecord::Base
 	# from supplied params, and when doing so may not not associated organisation
 	def supplier_name=(name)
     self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_name(name) || Supplier.new) unless self.supplier
-	  self.supplier.name = name
+    self.supplier.name = name
 	end
 	
 	def supplier_uid=(uid)
-	  self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
+	  return if uid.blank?
+    self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_uid(uid) || Supplier.new) unless self.supplier
+    self.supplier.uid = uid
+    # self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
 	end
 
 	def supplier_vat_number=(vat_number)

@@ -14,6 +14,7 @@
   <%= attribute_tag :description, @financial_transaction.description %>
   <%= attribute_tag :transaction_id, @financial_transaction.uid %>
   <%= attribute_tag :invoice_number, @financial_transaction.invoice_number %>
+  <%= attribute_tag :invoice_date, @financial_transaction.invoice_date %>
   <%= attribute_tag :classification, @financial_transaction.classification.try(:extended_title) %>
   <%= attribute_tag :source, 
 										(@financial_transaction.csv_line_number ? "Line #{@financial_transaction.csv_line_number} of ": '') + 

@@ -19,28 +19,33 @@ class CsvParser < Parser
   def process(raw_data, scraper=nil, options={})
     @current_scraper = scraper
     result_array,dry_run = [], !options[:save_results]
+    raw_data = Iconv.iconv('utf-8', 'ISO_8859-1', raw_data).to_s if raw_data.grep(/\xC2\xA3|\xA3/)
     if skip_rows
       raw_data = StringIO.new(raw_data)
       skip_rows.times {raw_data.gets}
     end
     csv_file = FasterCSV.new(raw_data, :headers => true)
     data_row_number = 0
-    # p scraper.parser.attribute_mapping
-    csv_file.each do |row|
-    # rows.each do |row|
-      break if dry_run && data_row_number == 10
-      next if row.all?{ |k,v| v.blank? } # skip blank rows
-      res_hash = {}
-      attribute_mapping.each do |k,v|
-        if k.to_s.match(/^value_for_(.+)/) 
-          res_hash[$1.to_sym] =  v
-        else
-          res_hash[k] =  row[v]
+    begin
+      csv_file.each do |row|
+        logger.debug { "**Doing line #{csv_file.lineno}" }
+        break if dry_run && data_row_number == 10
+        next if row.all?{ |k,v| v.blank? } # skip blank rows
+        res_hash = {}
+        attribute_mapping.each do |k,v|
+          if k.to_s.match(/^value_for_(.+)/) 
+            res_hash[$1.to_sym] =  v
+          else
+            res_hash[k] =  row[v]
+          end
         end
+        data_row_number +=1
+        result_array << {:csv_line_number => skip_rows.to_i + csv_file.lineno, :source_url => scraper&&scraper.url}.merge(res_hash) # allow results to override source_url
       end
-      data_row_number +=1
-      result_array << {:csv_line_number => skip_rows.to_i + csv_file.lineno, :source_url => scraper&&scraper.url}.merge(res_hash) # allow results to override source_url
+    rescue Exception => e
+      logger.debug { "Exception raised iterating through CSV rows: #{e.inspect}\n#{e.backtrace}" }
     end
+    
     # p result_array
     @results = result_array
     self

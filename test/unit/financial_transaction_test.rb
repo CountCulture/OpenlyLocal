@@ -28,6 +28,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should have_db_column :csv_line_number
     should have_db_column :date_fuzziness
     should have_db_column :classification_id
+    should have_db_column :invoice_date
     
     should 'validate presence of supplier_id' do
       # NB Shoulda macro not working for some reason
@@ -401,18 +402,18 @@ class FinancialTransactionTest < ActiveSupport::TestCase
           @fin_trans = FinancialTransaction.new
         end
         
-        should 'should not try to find supplier' do
+        should 'not try to find supplier' do
           Supplier.expects(:find).never
           @fin_trans.supplier_name = 'Foo Supplier'
         end
         
-        should "should instantiate new supplier if it doesn't exist" do
+        should "instantiate new supplier if it doesn't exist" do
           @fin_trans.supplier_name = 'Bar Supplier'
 	        assert_kind_of Supplier, supplier = @fin_trans.supplier
 	        assert_equal 'Bar Supplier', supplier.name
 	      end
 	      
-        should "should update existing supplier instance if already set" do
+        should "update existing supplier instance if already set" do
           @fin_trans.supplier_uid = 'ab123'
           @fin_trans.supplier_name = 'Bar Supplier'
  	        assert_kind_of Supplier, supplier = @fin_trans.supplier
@@ -426,12 +427,12 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 	        @fin_trans = FinancialTransaction.new(:organisation => @organisation)
 	      end
 	      
-	      should 'should find supplier for organisation if it exists' do
+	      should 'find supplier for organisation if it exists' do
 	        @fin_trans.supplier_name = 'Foo Supplier'
 	        assert_equal @existing_supplier, @fin_trans.supplier
 	      end
 	      
-	      should "should instantiate new supplier for organisation if it doesn't exist" do
+	      should "instantiate new supplier for organisation if it doesn't exist" do
 	        @fin_trans.supplier_name = 'Bar Supplier'
 	        assert_kind_of Supplier, supplier = @fin_trans.supplier
 	        assert_equal 'Bar Supplier', supplier.name
@@ -461,7 +462,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 
         should 'should not try to find supplier' do
           Supplier.expects(:find).never
-          @fin_trans.supplier_name = 'Foo Supplier'
+          @fin_trans.supplier_uid = 'ab123'
         end
 
         should "should instantiate new supplier with given if it doesn't exist" do
@@ -485,17 +486,25 @@ class FinancialTransactionTest < ActiveSupport::TestCase
  	      end
 
  	      should 'find supplier for organisation if it exists' do
- 	        @fin_trans.supplier_name = 'Foo Supplier'
+ 	        @fin_trans.supplier_uid = 'ab123'
  	        assert_equal @existing_supplier, @fin_trans.supplier
  	      end
 
  	      should "instantiate new supplier for organisation if it doesn't exist" do
- 	        @fin_trans.supplier_name = 'Bar Supplier'
+ 	        @fin_trans.supplier_uid = 'cd123'
  	        assert_kind_of Supplier, supplier = @fin_trans.supplier
- 	        assert_equal 'Bar Supplier', supplier.name
+ 	        assert_equal 'cd123', supplier.uid
  	        assert_equal @organisation, supplier.organisation
  	      end
  	      
+ 	      should 'not find supplier for organisation if uid is blank' do
+ 	        @nil_uid_supplier = Factory(:supplier, :organisation => @organisation)
+ 	        @fin_trans.supplier_uid = nil
+ 	        assert_not_equal @nil_uid_supplier, @fin_trans.supplier
+ 	        @fin_trans.supplier_uid = ''
+ 	        assert_not_equal @nil_uid_supplier, @fin_trans.supplier
+ 	      end
+
  	    end
  	  end
 
@@ -583,6 +592,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       should 'assign returned classification' do
         @fin_trans.proclass10_1 = 'Foo Bar'
         assert_equal @proclass_class_2, @fin_trans.classification
+      end
+
+      should 'not fail if proclass is being assigned blank' do
+        assert_nothing_raised(Exception) { @fin_trans.proclass10_1 = '' }
+        assert_nothing_raised(Exception) { @fin_trans.proclass10_1 = nil }
       end
 
       should 'deassign existing classification if already set and no such classification' do
