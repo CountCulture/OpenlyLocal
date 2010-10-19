@@ -57,6 +57,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
     
     context "when submission_type is supplier details" do
       setup do
+        @base_object = Factory(:police_authority)
         @supplier = Factory(:supplier)
         @basic_params = {:user_submission => {:submission_type => 'supplier_details', 
                                               :item_type => 'Supplier', 
@@ -92,16 +93,27 @@ class UserSubmissionsControllerTest < ActionController::TestCase
                                                 :item_type => 'Supplier', 
                                                 :item_id => @supplier.id, 
                                                 :submission_details => {:entity_type => 'PoliceAuthority'}}}
-          @police_authority = Factory(:police_authority)
+          @result_1 = GenericEntityMatcher::MatchResult.new(:base_object => @base_object)
+        end
+        
+        should "get matching records" do
+          GenericEntityMatcher.expects(:possible_matches).with(:title => @supplier.title, :type => 'PoliceAuthority').returns(:result => [@result_1])
           get :new, @basic_params
         end
 
-        should respond_with :success
-        should assign_to(:possible_entities)
-        should render_template :new
-        
-        should "list possible entities" do
-          assert_select 'select#user_submission_submission_details_entity_id option', /#{@police_authority.title}/
+        context "in general" do
+          setup do
+            GenericEntityMatcher.stubs(:possible_matches).returns(:result => [@result_1])
+            get :new, @basic_params
+          end
+
+          should respond_with :success
+          should assign_to(:possible_entities)
+          should render_template :new
+
+          should "list possible entities" do
+            assert_select 'select#user_submission_submission_details_entity_id option', /#{@base_object.title}/
+          end
         end
       end
     end
