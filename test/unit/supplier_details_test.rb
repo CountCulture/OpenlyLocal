@@ -22,6 +22,11 @@ class SupplierDetailsTest < ActiveSupport::TestCase
       assert @supplier_details.respond_to?(:wikipedia_url=)
     end
     
+    should 'have resource_uri accessor' do
+      assert @supplier_details.respond_to?(:resource_uri)
+      assert @supplier_details.respond_to?(:resource_uri=)
+    end
+    
     context "when assigning url" do
 
       should "clean up using url_normaliser" do

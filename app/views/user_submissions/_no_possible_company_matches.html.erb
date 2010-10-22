@@ -1,0 +1,21 @@
+			<p>
+			  <%= link_to "Search Google for #{@user_submission.item.title}", "http://www.google.co.uk/search?q=#{CGI.escape @user_submission.item.title}", :class => 'external' %>
+			  <%= link_to "Search CompaniesOpen for #{@user_submission.item.title}", "http://companiesopen.org/search?q=#{CGI.escape @user_submission.item.title}", :class => 'external' %>
+			</p>
+			<p>
+			  <%= detail_form.label :company_number %>
+			  <%= detail_form.text_field :company_number %>
+			</p>
+			<p>
+			  <%= detail_form.label :source_for_info, 'Source for info <em>(maybe URL containing company number)</em>' %>
+			  <%= detail_form.text_field :source_for_info %>
+			</p>
+			<p>
+			  <%= detail_form.label :url, "Website" %>
+			  <%= detail_form.text_field :url %>
+			</p>
+
+		  <p>
+		    <%= f.label :notes %>
+		    <%= f.text_area :notes %>
+		  </p>
