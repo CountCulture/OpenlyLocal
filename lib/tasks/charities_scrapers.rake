@@ -140,9 +140,10 @@ task :import_charity_classifications=> :environment do
   classification_types = Classification.find_all_by_grouping('CharityClassification')
   file = clean_data_file(File.join(RAILS_ROOT, "db/data/charities/extract_class.bcp"))
   file.open
+  previous_charity = Charity.first
   FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
     attribs = {}
-    charity = Charity.find_by_charity_number(row[0])
+    charity = (previous_charity.charity_number == row[0]) ? previous_charity : Charity.find_by_charity_number(row[0])
     classification = classification_types.detect{|t| t.uid == row[1]}
     charity.classifications << classification
     print '.'
