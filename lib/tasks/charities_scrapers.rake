@@ -72,6 +72,14 @@ task :catch_up_with_new_charities => :environment do
   
 end
 
+desc "Import Charity Classifications"
+task :import_charity_class => :environment do
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/charities/extract_class_ref.bcp"), :headers => false, :col_sep => "@**@") do |row|
+    c=Classification.find_or_initialize_by_grouping_and_uid('CharityClassification', row[0])
+    c.update_attribute(:title, row[1])
+  end
+  
+end
 
 
 def create_charity(c)
