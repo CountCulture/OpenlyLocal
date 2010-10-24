@@ -33,6 +33,11 @@ class EntityTest < ActiveSupport::TestCase
     should have_db_column :cpid_code
     should have_db_column :normalised_title
     should have_db_column :resource_uri
+    should have_db_column :other_attributes
+    
+    should 'serialize other entities' do
+      assert_equal %w(foo bar), Factory(:entity, :other_attributes => %w(foo bar)).reload.other_attributes
+    end
     
     context "when normalising title" do
       should "normalise title" do

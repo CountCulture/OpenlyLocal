@@ -13,6 +13,7 @@ class Entity < ActiveRecord::Base
   include AddressMethods
   validates_presence_of :title
   before_save :normalise_title
+  serialize :other_attributes
   
   def self.normalise_title(raw_title)
     TitleNormaliser.normalise_title(raw_title)
