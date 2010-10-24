@@ -1,3 +1,4 @@
+require 'tempfile'
 desc "Populate UK Charities"
 task :populate_charities => :environment do
   local_auth_list_page = Hpricot(open('http://www.charitycommission.gov.uk/ShowCharity/registerofcharities/mapping/Search.aspx'))
@@ -81,10 +82,58 @@ task :import_charity_class => :environment do
   
 end
 
+desc "Import Data from Charity Register table"
+task :import_charity_table => :environment do
+  file = clean_data_file(File.join(RAILS_ROOT, "db/data/charities/extract_charity.bcp"))
+  file.open
+  prob_row = nil
+  FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
+    attribs = {}
+    charity_number = (row[1] != '0') ? "#{row[0]}-#{row[1]}" : row[0]
+
+    attribs[:subsidiary_number] = (row[1] != '0' ? row[1] : nil )
+    attribs[:title] = replace_dummy_linebreaks_and_quotes(row[2])
+    attribs[:governing_document] = replace_dummy_linebreaks_and_quotes(row[4])
+    attribs[:area_of_benefit] = replace_dummy_linebreaks_and_quotes(row[5])
+    attribs[:housing_association_number] = replace_dummy_linebreaks_and_quotes(row[8])
+    attribs[:contact_name] = replace_dummy_linebreaks_and_quotes(row[9])
+    attribs[:address_in_full] = (10..15).collect{ |i| replace_dummy_linebreaks_and_quotes(row[i])}.join(', ')
+    attribs[:telephone] = replace_dummy_linebreaks_and_quotes(row[16])
+    attribs[:fax] = replace_dummy_linebreaks_and_quotes(row[17])
+    if charity = Charity.find_by_charity_number(charity_number)
+      charity.update_attributes(attribs)
+      puts "***Udated existing charity: #{charity.title} (#{charity.charity_number})"
+    else
+      Charity.create!(attribs.merge(:charity_number => charity_number))
+      puts "Added new charity: #{attribs[:title]} (#{charity_number})"
+    end
+  end
+  
+  file.close
+end
+
 
 def create_charity(c)
   unless Charity.find_by_charity_number(c.first)
     c = Charity.create!(:charity_number => c.first, :title => c.last)
     puts "Added new charity: #{c.title} (#{c.charity_number})"
   end
+end
+
+def clean_data_file(file)
+  file_name = file.scan(/extract_([\w_]+)\.bcp/).to_s
+  tf=Tempfile.new("#{file_name}_fixed")
+  File.open(file) do |file|
+    while (line = file.gets) do
+      fixed_line = line.gsub(/@\*\*@/,'@@@@').gsub(/[\r\n]+/,'**linebreak**').gsub(/"/,'**aquote**')
+      tf.print(fixed_line) # don't want line breaks so print rather than puts
+    end
+  end
+  tf.close
+  tf
+end
+
+def replace_dummy_linebreaks_and_quotes(text)
+  return unless text
+  text.gsub('**linebreak**', "\n").gsub('**aquote**', '"')
 end
