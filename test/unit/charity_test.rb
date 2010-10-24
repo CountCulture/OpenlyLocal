@@ -10,6 +10,9 @@ class CharityTest < ActiveSupport::TestCase
     should have_many :supplying_relationships
     should_have_many :financial_transactions, :through => :supplying_relationships
 
+    should have_many :classification_links
+    should_have_many :classifications, :through => :classification_links
+
     should have_db_column :title
     should have_db_column :activities
     should have_db_column :charity_number

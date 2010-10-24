@@ -73,8 +73,8 @@ task :catch_up_with_new_charities => :environment do
   
 end
 
-desc "Import Charity Classifications"
-task :import_charity_class => :environment do
+desc "Import Charity Classification Types"
+task :import_charity_class_types => :environment do
   FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/charities/extract_class_ref.bcp"), :headers => false, :col_sep => "@**@") do |row|
     c=Classification.find_or_initialize_by_grouping_and_uid('CharityClassification', row[0])
     c.update_attribute(:title, row[1])
@@ -131,9 +131,27 @@ task :import_charity_details=> :environment do
       break
     end
   end
+  file.close
+end
+
+desc "Import Charity classification associations"
+task :import_charity_classifications=> :environment do
+  ClassificationLink.destroy_all(:classified_type => 'Charity') # flush existing ones
+  classification_types = Classification.find_all_by_grouping('CharityClassification')
+  file = clean_data_file(File.join(RAILS_ROOT, "db/data/charities/extract_class.bcp"))
+  file.open
+  FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
+    attribs = {}
+    charity = Charity.find_by_charity_number(row[0])
+    classification = classification_types.detect{|t| t.uid == row[1]}
+    charity.classifications << classification
+    print '.'
+  end
   
   file.close
 end
+
+
 
 def create_charity(c)
   unless Charity.find_by_charity_number(c.first)
