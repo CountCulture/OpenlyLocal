@@ -86,7 +86,6 @@ desc "Import Data from Charity Register table"
 task :import_charity_table => :environment do
   file = clean_data_file(File.join(RAILS_ROOT, "db/data/charities/extract_charity.bcp"))
   file.open
-  prob_row = nil
   FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
     attribs = {}
     charity_number = (row[1] != '0') ? "#{row[0]}-#{row[1]}" : row[0]
@@ -112,6 +111,29 @@ task :import_charity_table => :environment do
   file.close
 end
 
+desc "Import Data from Charity details table"
+task :import_charity_details=> :environment do
+  file = clean_data_file(File.join(RAILS_ROOT, "db/data/charities/extract_main_charity.bcp"))
+  file.open
+  FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
+    attribs = {}
+    charity_number = row[0]
+
+    attribs[:company_number] = replace_dummy_linebreaks_and_quotes(row[1])
+    # attribs[:income] = replace_dummy_linebreaks_and_quotes(row[2])
+    attribs[:email] = replace_dummy_linebreaks_and_quotes(row[8])
+    attribs[:website] = replace_dummy_linebreaks_and_quotes(row[9])
+    if charity = Charity.find_by_charity_number(charity_number)
+      charity.update_attributes(attribs)
+      puts "***Udated existing charity: #{charity.title} (#{charity.charity_number})"
+    else
+      puts "****Alert can't find charity with number: #{charity_number}"
+      break
+    end
+  end
+  
+  file.close
+end
 
 def create_charity(c)
   unless Charity.find_by_charity_number(c.first)
