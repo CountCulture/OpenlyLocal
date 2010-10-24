@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101024103512) do
+ActiveRecord::Schema.define(:version => 20101024162327) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -106,6 +106,12 @@ ActiveRecord::Schema.define(:version => 20101024103512) do
   add_index "charities", ["income"], :name => "index_charities_on_income"
   add_index "charities", ["spending"], :name => "index_charities_on_spending"
   add_index "charities", ["title"], :name => "index_charities_on_title"
+
+  create_table "classification_links", :force => true do |t|
+    t.column "classification_id", :integer
+    t.column "classified_type", :string
+    t.column "classified_id", :integer
+  end
 
   create_table "classifications", :force => true do |t|
     t.column "grouping", :string
