@@ -396,3 +396,7 @@ Factory.define :classification_link do |f|
   f.association :classification
   f.association :classified, :factory => :charity
 end
+
+Factory.define :charity_annual_report do |f|
+  # f.association :charity
+end

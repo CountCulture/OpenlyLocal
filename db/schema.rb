@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101024162327) do
+ActiveRecord::Schema.define(:version => 20101024175827) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -106,6 +106,56 @@ ActiveRecord::Schema.define(:version => 20101024162327) do
   add_index "charities", ["income"], :name => "index_charities_on_income"
   add_index "charities", ["spending"], :name => "index_charities_on_spending"
   add_index "charities", ["title"], :name => "index_charities_on_title"
+
+  create_table "charity_annual_reports", :force => true do |t|
+    t.column "charity_id", :integer
+    t.column "annual_return_code", :string
+    t.column "financial_year_start", :date
+    t.column "financial_year_end", :date
+    t.column "income_from_legacies", :integer
+    t.column "income_from_endowments", :integer
+    t.column "voluntary_income", :integer
+    t.column "activities_generating_funds", :integer
+    t.column "income_from_charitable_activities", :integer
+    t.column "investment_income", :integer
+    t.column "other_income", :integer
+    t.column "total_income", :integer
+    t.column "investment_gains", :integer
+    t.column "gains_from_asset_revaluations", :integer
+    t.column "gains_on_pension_fund", :integer
+    t.column "voluntary_income_costs", :integer
+    t.column "fundraising_trading_costs", :integer
+    t.column "investment_management_costs", :integer
+    t.column "grants_to_institutions", :integer
+    t.column "charitable_activities_costs", :integer
+    t.column "governance_costs", :integer
+    t.column "other_expenses", :integer
+    t.column "total_expenses", :integer
+    t.column "support_costs", :integer
+    t.column "depreciation", :integer
+    t.column "reserves", :integer
+    t.column "fixed_assets_at_start_of_year", :integer
+    t.column "fixed_assets_at_end_of_year", :integer
+    t.column "fixed_investment_assets_at_end_of_year", :integer
+    t.column "fixed_investment_assets_at_start_of_year", :integer
+    t.column "current_investment_assets", :integer
+    t.column "cash", :integer
+    t.column "total_current_assets", :integer
+    t.column "creditors_within_1_year", :integer
+    t.column "long_term_creditors_or_provisions", :integer
+    t.column "pension_assets", :integer
+    t.column "total_assets", :integer
+    t.column "endowment_funds", :integer
+    t.column "restricted_funds", :integer
+    t.column "unrestricted_funds", :integer
+    t.column "total_funds", :integer
+    t.column "employees", :integer
+    t.column "volunteers", :integer
+    t.column "consolidated_accounts", :boolean
+    t.column "charity_only_accounts", :boolean
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "classification_links", :force => true do |t|
     t.column "classification_id", :integer

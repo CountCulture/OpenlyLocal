@@ -12,6 +12,7 @@ class CharityTest < ActiveSupport::TestCase
 
     should have_many :classification_links
     should_have_many :classifications, :through => :classification_links
+    should have_many :charity_annual_reports
 
     should have_db_column :title
     should have_db_column :activities
