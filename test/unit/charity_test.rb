@@ -38,6 +38,11 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :youtube_account_name
     should have_db_column :feed_url
     should have_db_column :governing_document
+    should have_db_column :company_number
+    should have_db_column :housing_association_number
+    should have_db_column :subsidiary_number
+    should have_db_column :fax
+    should have_db_column :area_of_benefit
     
     should "serialize mixed data columns" do
       %w(financial_breakdown other_names trustees accounts).each do |attrib|

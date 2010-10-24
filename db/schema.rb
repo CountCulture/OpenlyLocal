@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101018095624) do
+ActiveRecord::Schema.define(:version => 20101024103512) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -94,6 +94,11 @@ ActiveRecord::Schema.define(:version => 20101018095624) do
     t.column "youtube_account_name", :string
     t.column "feed_url", :string
     t.column "governing_document", :text
+    t.column "company_number", :string
+    t.column "housing_association_number", :string
+    t.column "fax", :string
+    t.column "subsidiary_number", :integer
+    t.column "area_of_benefit", :string
   end
 
   add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number"
@@ -388,6 +393,7 @@ ActiveRecord::Schema.define(:version => 20101018095624) do
     t.column "cpid_code", :string
     t.column "normalised_title", :string
     t.column "resource_uri", :string
+    t.column "other_attributes", :text
   end
 
   create_table "feed_entries", :force => true do |t|
