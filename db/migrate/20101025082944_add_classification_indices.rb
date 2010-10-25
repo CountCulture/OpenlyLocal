@@ -1,4 +1,4 @@
-class AddMissingIndices < ActiveRecord::Migration
+class AddClassificationIndices < ActiveRecord::Migration
   def self.up
     add_index :classification_links, [:classified_id, :classified_type]
     add_index :classification_links, :classification_id
