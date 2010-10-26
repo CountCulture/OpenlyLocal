@@ -9,8 +9,8 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101025082944) do
-xss
+ActiveRecord::Schema.define(:version => 20101025124814) do
+
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
     t.column "period", :string
