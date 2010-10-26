@@ -87,7 +87,7 @@ class Supplier < ActiveRecord::Base
   end
   
   def to_param
-    "#{id}-#{title.parameterize}"
+    "#{id}-#{title&&title.parameterize}"
   end
   
   def update_supplier_details(details)

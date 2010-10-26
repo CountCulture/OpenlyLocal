@@ -1,11 +1,30 @@
 <%- if !@possible_entities.blank? -%>
+	<h4>Possible matches</h4>
 	<%= detail_form.label :entity_id, "Choose #{@user_submission.submission_details.entity_type}" %>
 	<%= detail_form.select :entity_id, @possible_entities.collect {|e| [ e.name, e.id ] }, { :include_blank => true } %>
   <%= detail_form.hidden_field :entity_type %>
-<%- elsif @user_submission.submission_details.entity_type  -%>
+	<p>
+	  <%= f.submit "Submit" %>
+	</p>
+
+<%- else -%>
+	<strong>What type of organisation do you think this supplier is?</strong>
+	<% Supplier::AllowedPayeeModels.each do |e_type,e_type_name| %>
+    <br>
+			<%= detail_form.radio_button 'entity_type', e_type %>
+    <%= detail_form.label "entity_type_#{e_type.underscore}", e_type_name||e_type.underscore.humanize, :class => 'radio'%>
+  <% end %>
+<%- end -%>
+<%- if @user_submission.submission_details.entity_type  -%>
 	<%- partial_name = "no_possible_#{@user_submission.submission_details.entity_type.underscore}_matches" -%>
 	<div id="<%= partial_name %>">
-		<h4>Couldn't find any <%= @user_submission.submission_details.entity_type.pluralize %> with name similar to that. Please help us indentify it with details below</h4>
+		<h4>
+			<%- if @possible_entities.blank? -%>
+				<%= "Couldn't find any #{@user_submission.submission_details.entity_type.pluralize} with similar name similar. Please help us identify it with details below" %>
+			<%- else -%>
+				<%= "None of these? Please help us identify it with details below" %>
+			<%- end -%>
+		</h4>
 		<%- if partial_exists?("user_submissions/#{partial_name}") -%>
 			<%= render :partial => "user_submissions/#{partial_name}", :locals => {:detail_form => detail_form, :f => f} %>
 		<%- else -%>
@@ -20,11 +39,9 @@
 	  </p>
 		<%- end -%>
 	</div>
-<%- else -%>
-	<strong>What type of organisation do you think this supplier is?</strong>
-	<% Supplier::AllowedPayeeModels.each do |e_type,e_type_name| %>
-    <br>
-			<%= detail_form.radio_button 'entity_type', e_type %>
-    <%= detail_form.label "entity_type_#{e_type.underscore}", e_type_name||e_type.underscore.humanize, :class => 'radio'%>
-  <% end %>
 <%- end -%>
+
+<p>
+  <%= f.submit "Submit" %>
+</p>
+

@@ -2,18 +2,15 @@
 
 <% form_for @user_submission, @form_params do |f| -%>
 
-    <h3><%= @user_submission.item_type %>: <%= basic_link_for @user_submission.item %><%#= basic_link_for @user_submission.member.council %></h3>
-    <%= f.hidden_field :item_id %>
-    <%= f.hidden_field :item_type %>
-    <%= f.hidden_field :submission_type %>
-  
-  <% field_set_tag 'Details', :id => 'submission_details' do %>
-    <%- f.fields_for :submission_details, @user_submission.submission_details do |detail_form| -%>
+   <h3><%= @user_submission.item_type %>: <%= basic_link_for @user_submission.item %><%#= basic_link_for @user_submission.member.council %></h3>
+   <%= f.hidden_field :item_id %>
+   <%= f.hidden_field :item_type %>
+   <%= f.hidden_field :submission_type %>
+ 
+   <%- f.fields_for :submission_details, @user_submission.submission_details do |detail_form| -%>
+	  <% field_set_tag 'Details', :id => 'submission_details' do %>
       <%= render :partial => "#{@user_submission.submission_type}_form", :locals => {:detail_form => detail_form, :f => f} %>
     <%- end -%>
   <% end -%>
     
-  <p>
-    <%= f.submit "Submit" %>
-  </p>
 <%- end -%>

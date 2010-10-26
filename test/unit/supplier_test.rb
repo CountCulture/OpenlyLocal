@@ -186,6 +186,11 @@ class SupplierTest < ActiveSupport::TestCase
       assert_equal "#{@supplier.id}-some-title-with-stuff", @supplier.to_param
     end
     
+    should "use id when converting to_param and no title" do
+      @supplier[:name] = nil
+      assert_equal "#{@supplier.id}-", @supplier.to_param
+    end
+    
     context "when assigning name" do
 
       should "remove excess spaces" do
