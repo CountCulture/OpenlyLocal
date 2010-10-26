@@ -162,6 +162,10 @@ class SupplierTest < ActiveSupport::TestCase
         assert_equal @another_org_supplier_with_uid_and_no_name, Supplier.find_from_params(:organisation => @another_org, :name => nil, :uid => 'bc456')
       end
     end
+    
+    should "show extract class names from AllowedPayeeModels as allowed_payee_classes method" do
+      assert_equal Supplier::AllowedPayeeModels.collect(&:first), Supplier.allowed_payee_classes
+    end
   end
   
   context "An instance of the Supplier class" do
@@ -448,12 +452,12 @@ class SupplierTest < ActiveSupport::TestCase
                                                  :entity_id => @entity.id)
         end
 
-        should "associated entity with supplier as payee" do
+        should "associate entity with supplier as payee" do
           @supplier.update_supplier_details(@entity_details)
           assert_equal @entity, @supplier.reload.payee
         end
         
-        should "associated entity with supplier as payee when entity type can't be a payee" do
+        should "not associate entity with supplier as payee when entity type can't be a payee" do
           non_entity = Factory(:financial_transaction)
           non_entity_details = SupplierDetails.new( :entity_type => 'FinancialTransaction', 
                                                     :entity_id => non_entity.id)

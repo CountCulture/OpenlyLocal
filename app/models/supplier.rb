@@ -19,6 +19,10 @@ class Supplier < ActiveRecord::Base
     errors.add_to_base('Either a name or uid is required') if name.blank? && uid.blank?
   end
   
+  def self.allowed_payee_classes
+    AllowedPayeeModels.collect(&:first)
+  end
+  
   # Finds supplier given params, one of which must be :organisation (and that organisation 
   # should have_many suppliers). If a :uid is supplied, checks 
   # suppliers belonging to organisation with uid and if not for suppliers with matching name
@@ -91,7 +95,7 @@ class Supplier < ActiveRecord::Base
     if details.entity_type.blank? || details.entity_id.blank?
       entity = Company.match_or_create(non_nil_attribs.except(:source_for_info, :entity_type, :entity_id).merge(:title => title))
     else
-      entity = AllowedPayeeModels.include?(details.entity_type)&&details.entity_type.constantize.find(details.entity_id)
+      entity = self.class.allowed_payee_classes.include?(details.entity_type)&&details.entity_type.constantize.find(details.entity_id)
     end
     if entity&&!entity.new_record? # it hasn't successfully saved
       self.payee = entity
