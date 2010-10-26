@@ -3,7 +3,8 @@ class Entity < ActiveRecord::Base
                     'ALB' => ['Arms Length Body'],
                     'Public Corporation' => ['Public Corporation'],
                     'Association' => ['Association'],
-                    'RIEP' => ['Regional Improvement & Efficiency Partnership']}
+                    'RIEP' => ['Regional Improvement & Efficiency Partnership'],
+                    'Dept' => ['Government Department or Ministry']}
   
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
   has_many :suppliers, :as => :organisation

@@ -11,7 +11,7 @@
   </p>
   <p>
     <%= f.label :entity_type %>
-    <%= f.select :entity_type, Entity::PossibleTypes.to_a, { :include_blank => true } %>
+    <%= f.select :entity_type, Entity::PossibleTypes.to_a.collect(&:reverse), { :include_blank => true } %>
   </p>
   <p>
     <%= f.label :entity_subtype %>
