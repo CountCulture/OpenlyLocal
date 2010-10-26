@@ -103,8 +103,11 @@ task :import_charity_table => :environment do
       charity.update_attributes(attribs)
       puts "***Udated existing charity: #{charity.title} (#{charity.charity_number})"
     else
-      Charity.create!(attribs.merge(:charity_number => charity_number))
-      puts "Added new charity: #{attribs[:title]} (#{charity_number})"
+      if Charity.create(attribs.merge(:charity_number => charity_number))
+        puts "Added new charity: #{attribs[:title]} (#{charity_number})"
+      else
+        p "====================\nFailed to create charity from following data:\n", row
+      end
     end
   end
   
@@ -117,7 +120,7 @@ task :import_charity_details=> :environment do
   file.open
   FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
     attribs = {}
-    charity_number = row[0]
+    charity_number = (row[1] != '0') ? "#{row[0]}-#{row[1]}" : row[0]
 
     attribs[:company_number] = replace_dummy_linebreaks_and_quotes(row[1])
     # attribs[:income] = replace_dummy_linebreaks_and_quotes(row[2])
@@ -127,7 +130,7 @@ task :import_charity_details=> :environment do
       charity.update_attributes(attribs)
       puts "***Udated existing charity: #{charity.title} (#{charity.charity_number})"
     else
-      puts "****Alert can't find charity with number: #{charity_number}"
+      puts "***************\nAlert can't find charity with number: #{charity_number}\n***************"
       break
     end
   end
