@@ -391,3 +391,12 @@ Factory.define :account_line do |f|
   f.association :organisation, :factory => :generic_council
   f.period '2009_2010'
 end
+
+Factory.define :classification_link do |f|
+  f.association :classification
+  f.association :classified, :factory => :charity
+end
+
+Factory.define :charity_annual_report do |f|
+  # f.association :charity
+end

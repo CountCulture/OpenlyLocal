@@ -1,3 +1,4 @@
+require 'tempfile'
 desc "Populate UK Charities"
 task :populate_charities => :environment do
   local_auth_list_page = Hpricot(open('http://www.charitycommission.gov.uk/ShowCharity/registerofcharities/mapping/Search.aspx'))
@@ -72,6 +73,106 @@ task :catch_up_with_new_charities => :environment do
   
 end
 
+desc "Import Charity Classification Types"
+task :import_charity_class_types => :environment do
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/charities/extract_class_ref.bcp"), :headers => false, :col_sep => "@**@") do |row|
+    c=Classification.find_or_initialize_by_grouping_and_uid('CharityClassification', row[0])
+    c.update_attribute(:title, row[1])
+  end
+  
+end
+
+desc "Import Data from Charity Register table"
+task :import_charity_table => :environment do
+  file = clean_data_file(File.join(RAILS_ROOT, "db/data/charities/extract_charity.bcp"))
+  file.open
+  FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
+    attribs = {}
+    charity_number = (row[1] != '0') ? "#{row[0]}-#{row[1]}" : row[0]
+
+    attribs[:subsidiary_number] = (row[1] != '0' ? row[1] : nil )
+    attribs[:title] = replace_dummy_linebreaks_and_quotes(row[2])
+    attribs[:governing_document] = replace_dummy_linebreaks_and_quotes(row[4])
+    attribs[:area_of_benefit] = replace_dummy_linebreaks_and_quotes(row[5])
+    attribs[:housing_association_number] = replace_dummy_linebreaks_and_quotes(row[8])
+    attribs[:contact_name] = replace_dummy_linebreaks_and_quotes(row[9])
+    attribs[:address_in_full] = (10..15).collect{ |i| replace_dummy_linebreaks_and_quotes(row[i])}.join(', ')
+    attribs[:telephone] = replace_dummy_linebreaks_and_quotes(row[16])
+    attribs[:fax] = replace_dummy_linebreaks_and_quotes(row[17])
+    if charity = Charity.find_by_charity_number(charity_number)
+      charity.update_attributes(attribs)
+      puts "***Udated existing charity: #{charity.title} (#{charity.charity_number})"
+    else
+      if Charity.create(attribs.merge(:charity_number => charity_number))
+        puts "Added new charity: #{attribs[:title]} (#{charity_number})"
+      else
+        p "====================\nFailed to create charity from following data:\n", row
+      end
+    end
+  end
+  
+  file.close
+end
+
+desc "Import Data from Charity details table"
+task :import_charity_details=> :environment do
+  file = clean_data_file(File.join(RAILS_ROOT, "db/data/charities/extract_main_charity.bcp"))
+  file.open
+  FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
+    attribs = {}
+    charity_number = (row[1] != '0') ? "#{row[0]}-#{row[1]}" : row[0]
+
+    attribs[:company_number] = replace_dummy_linebreaks_and_quotes(row[1])
+    # attribs[:income] = replace_dummy_linebreaks_and_quotes(row[2])
+    attribs[:email] = replace_dummy_linebreaks_and_quotes(row[8])
+    attribs[:website] = replace_dummy_linebreaks_and_quotes(row[9])
+    if charity = Charity.find_by_charity_number(charity_number)
+      charity.update_attributes(attribs)
+      puts "***Udated existing charity: #{charity.title} (#{charity.charity_number})"
+    else
+      puts "***************\nAlert can't find charity with number: #{charity_number}\n***************"
+      break
+    end
+  end
+  file.close
+end
+
+desc "Import Charity classification associations"
+task :import_charity_classifications=> :environment do
+  ClassificationLink.destroy_all(:classified_type => 'Charity') # flush existing ones
+  classification_types = Classification.find_all_by_grouping('CharityClassification')
+  file = clean_data_file(File.join(RAILS_ROOT, "db/data/charities/extract_class.bcp"))
+  file.open
+  previous_charity = Charity.first
+  FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
+    attribs = {}
+    charity = (previous_charity.charity_number == row[0]) ? previous_charity : Charity.find_by_charity_number(row[0])
+    classification = classification_types.detect{|t| t.uid == row[1]}
+    charity.classifications << classification
+    print '.'
+  end
+  
+  file.close
+end
+
+desc "Import Charity annual_reports"
+task :import_charity_annual_reports=> :environment do
+  CharityAnnualReport.destroy_all
+  field_names = %w(annual_return_code financial_year_start financial_year_end income_from_legacies income_from_endowments voluntary_income activities_generating_funds income_from_charitable_activities investment_income other_income total_income investment_gains gains_from_asset_revaluations gains_on_pension_fund voluntary_income_costs fundraising_trading_costs investment_management_costs grants_to_institutions charitable_activities_costs governance_costs other_expenses total_expenses support_costs depreciation reserves fixed_assets_at_start_of_year fixed_assets_at_end_of_year fixed_investment_assets_at_end_of_year fixed_investment_assets_at_start_of_year current_investment_assets cash total_current_assets creditors_within_1_year long_term_creditors_or_provisions pension_assets total_assets endowment_funds restricted_funds unrestricted_funds total_funds employees volunteers consolidated_accounts charity_only_accounts)
+  file = clean_data_file(File.join(RAILS_ROOT, "db/data/charities/extract_partb.bcp"))
+  file.open
+  previous_charity = Charity.first
+  FasterCSV.new(file, :col_sep => "@@@@", :row_sep=>"*@@*").each do |row|
+    charity = (previous_charity.charity_number == row[0]) ? previous_charity : Charity.find_by_charity_number(row[0])
+    attribs = {}
+    field_names.each_with_index{ |fn, i| attribs[fn.to_sym] = row[i+1] }
+    ar = charity.charity_annual_reports.create(attribs)
+    print '.'
+  end
+  
+  file.close
+end
+
 
 
 def create_charity(c)
@@ -79,4 +180,22 @@ def create_charity(c)
     c = Charity.create!(:charity_number => c.first, :title => c.last)
     puts "Added new charity: #{c.title} (#{c.charity_number})"
   end
+end
+
+def clean_data_file(file)
+  file_name = file.scan(/extract_([\w_]+)\.bcp/).to_s
+  tf=Tempfile.new("#{file_name}_fixed")
+  File.open(file) do |file|
+    while (line = file.gets) do
+      fixed_line = line.gsub(/@\*\*@/,'@@@@').gsub(/[\r\n]+/,'**linebreak**').gsub(/"/,'**aquote**')
+      tf.print(fixed_line) # don't want line breaks so print rather than puts
+    end
+  end
+  tf.close
+  tf
+end
+
+def replace_dummy_linebreaks_and_quotes(text)
+  return unless text
+  text.gsub('**linebreak**', "\n").gsub('**aquote**', '"')
 end
