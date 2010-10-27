@@ -42,8 +42,8 @@
 
 <table class='statistics' id='financial_transactions'>
   <%= content_tag :caption, "Money paid to this supplier by #{link_for @organisation }" %>
-  <tr><th>Date</th><th>Department</th><th>Category</th><th class='value'>Value</th></tr>
-  <%- @supplier.financial_transactions.each do |transaction| -%>
+  <tr><th>Date</th><th>Department</th><th>Category</th><th class='value'><%= link_to 'Value', supplier_path(:id => @supplier, :order => 'value') %></th></tr>
+  <%- @financial_transactions.each do |transaction| -%>
     <tr class="transaction">
       <td><%= date_with_fuzziness_for(transaction) %></td>
       <td><%= transaction.department_name||'not provided' %></td>

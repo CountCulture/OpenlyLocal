@@ -7,6 +7,7 @@ class SuppliersControllerTest < ActionController::TestCase
     @another_supplier = Factory(:supplier, :name => 'another supplier')
     @another_supplier_same_org = Factory(:supplier, :name => 'Another supplier', :organisation => @organisation)
     @financial_transaction = Factory(:financial_transaction, :supplier => @supplier, :value => 42)
+    @big_financial_transaction = Factory(:financial_transaction, :supplier => @supplier, :value => 10000, :date => 2.days.ago)
   end
   
   # index test
@@ -216,6 +217,20 @@ class SuppliersControllerTest < ActionController::TestCase
       
       should "show link to add company details" do
         assert_select 'a[href*=user_submissions/new]', /add/i
+      end
+      
+      should "sort in date order, oldest first" do
+        assert_equal @financial_transaction, assigns(:financial_transactions).first
+      end
+    end
+    
+    context "when value order given" do
+      setup do
+        get :show, :id => @supplier.id, :order => 'value'
+      end
+
+      should "sort with highest value first" do
+        assert_equal @big_financial_transaction, assigns(:financial_transactions).first
       end
     end
     

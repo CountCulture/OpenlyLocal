@@ -30,6 +30,8 @@ class SuppliersController < ApplicationController
   def show
     @supplier = Supplier.find(params[:id])
     @organisation = @supplier.organisation
+    order = params[:order] == 'value' ? 'value DESC' : nil
+    @financial_transactions = @supplier.financial_transactions.all(:order => order)
     @title = "#{@supplier.title} :: Supplier to #{@organisation.title}"
     respond_to do |format|
       format.html
