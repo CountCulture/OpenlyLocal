@@ -10,6 +10,10 @@
     <%= f.text_field :website %>
   </p>
   <p>
+    <%= f.label :telephone %>
+    <%= f.text_field :telephone %>
+  </p>
+  <p>
     <%= f.label :entity_type %>
     <%= f.select :entity_type, Entity::PossibleTypes.to_a.collect(&:reverse), { :include_blank => true } %>
   </p>

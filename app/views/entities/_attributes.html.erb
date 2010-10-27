@@ -3,7 +3,7 @@
   <%= attribute_tag :sponsoring_organisation, attributes.sponsoring_organisation %>
   <%= attribute_tag :setup_on, attributes.setup_on %>
   <%= attribute_tag :disbanded_on, attributes.disbanded_on %>
-  <%#= attribute_tag :telephone, attributes.telephone %>
-  <%#= attribute_tag :address,attributes.address %>
+  <%= attribute_tag :telephone, attributes.telephone %>
+  <%= attribute_tag :address, attributes.address_in_full %>
   <%= attribute_tag :website, link_to(attributes.website, attributes.website, :class => "external") if attributes.website? %>
   <%= attribute_tag :wikipedia_url, link_to(URI.unescape(attributes.wikipedia_url), attributes.wikipedia_url, :class => 'external') if attributes.wikipedia_url? %>
