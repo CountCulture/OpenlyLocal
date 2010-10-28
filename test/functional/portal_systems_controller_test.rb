@@ -72,6 +72,26 @@ class PortalSystemsControllerTest < ActionController::TestCase
     end
   end  
   
+  context "on GET to :show for when assoc parsers are csv_parsers" do
+    setup do
+      @council = Factory(:council, :portal_system_id => @portal.id)
+      @parser = Factory(:csv_parser, :portal_system => @portal)
+      stub_authentication
+      get :show, :id => @portal.id
+    end
+  
+    should_assign_to(:portal_system) { @portal}
+    should respond_with :success
+    should render_template :show
+    should_assign_to(:councils) { @portal.councils }
+      
+    should "list all parsers" do
+      assert_select "#parsers li" do
+        assert_select "a", @parser.title
+      end
+    end
+  end  
+  
   # new test
   context "on GET to :new without auth" do
     setup do
