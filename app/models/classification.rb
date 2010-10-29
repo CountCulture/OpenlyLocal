@@ -1,11 +1,11 @@
 class Classification < ActiveRecord::Base
   GROUPINGS = { 'Proclass10.1' => ['Proclass Procurement Classification version 10.1', 'http://websites.uk-plc.net/ProClass/ProClass-Classification-33860.htm'],
                 'Proclass8.3' =>  ['Proclass Procurement Classification version 8.3', 'http://websites.uk-plc.net/ProClass/ProClass-Classification-33860.htm'],
-                'CharityClassification' => ["Charity Commission Classification", 'http://www.charitycommission.gov.uk/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_Classification&SelectedLanguage=English'],
-                'RORA_200910' => ['CLG RO/RA Local Authority Accounts Return Classification']
-    
-    
+                'CharityClassification' => ["UK Charity Commission Classification", 'http://www.charitycommission.gov.uk/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_Classification&SelectedLanguage=English'],
+                'RORA_200910' => ['CLG RO/RA Local Authority Accounts Return Classification'],
+                'ICNPO' => ['The International Classification of Nonprofit Organizations']  
   }
+  
   has_many :children, :class_name => "Classification", :foreign_key => "parent_id"
   belongs_to :parent, :class_name => "Classification", :foreign_key => "parent_id"
   validates_presence_of :title, :grouping

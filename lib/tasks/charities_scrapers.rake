@@ -173,6 +173,30 @@ task :import_charity_annual_reports=> :environment do
   file.close
 end
 
+desc "Import ICNPO classification types"
+task :import_icnpo_class_types => :environment do
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/charities/icnpo_classifications.csv"), :headers => true) do |row|
+    group = Classification.find_or_create_by_grouping_and_uid_and_title('ICNPO', row['GroupCode'], row['Group'])
+    c = group.children.find_or_create_by_grouping_and_uid_and_title('ICNPO', row['Code'], row['Subgroup'])
+    p c
+  end
+  
+end
+
+desc "Import ICNPO classifications for UK charities"
+task :import_icnpo_classifications => :environment do
+  icnpo_classifications = Classification.all(:conditions => {:grouping => 'ICNPO'})
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/charities/ncvo_classifications.csv"), :headers => true) do |row|
+    print '.'
+    next unless row["ICNPO"]
+    print '-'
+    next unless (charity = Charity.find_by_charity_number(row["regno"]))
+    charity.classifications = [icnpo_classifications.detect{ |c| c.uid == row["ICNPO"].to_i.to_s }]
+    print '='
+  end
+end
+
+
 
 
 def create_charity(c)
