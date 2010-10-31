@@ -68,7 +68,8 @@ class Council < ActiveRecord::Base
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising council titles
   def self.normalise_title(raw_title)
     return TitleNormaliser.normalise_title(raw_title.gsub(/corporation/i,'')) if raw_title =~ /City of London\b|Greater London Authority/
-    semi_normed_title = raw_title.gsub(/Metropolitan|Borough of|Borough|District|City of|City &|City and|City|County of|County|Royal|Council of the|London|Council|Corporation|\([\w\s]+\)/i, '')
+    raw_title = raw_title.sub(/kingston[\s-]upon[\s-]hull/i, 'Hull')
+    semi_normed_title = raw_title.gsub(/Metropolitan|Borough of|Borough|District|City of|City &|City and|City|County of|County|Royal|Council of the|London|Council|Corporation|MBC|LB\b|\([\w\s]+\)/i, '')
     TitleNormaliser.normalise_title(semi_normed_title)
   end
   

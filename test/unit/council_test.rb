@@ -294,10 +294,15 @@ class CouncilTest < ActiveSupport::TestCase
           "Comhairle nan Eilean Siar (Western Isles Council)" => "comhairle nan eilean siar",
           "City & County of Swansea" => "swansea",
           "St. Albans" => "st albans",
+          "Kingston upon Hull City Council" => "hull",
+          "Kingston-upon-Hull City Council" => "hull",
+          "Rotherham MBC" => "rotherham",
           "St Albans City and District Council" => "st albans",
           "Royal Borough of Kensington & Chelsea" => "kensington and chelsea",
           "Tonbridge and Malling Borough Council" => "tonbridge and malling",
           "Fenland District Council" => "fenland",
+          "LB Brent" => "brent",
+          "Selby Council" => "selby", #checking removing LB doesn't affect this
           "Council of the Isles of Scilly" => "isles of scilly"
         }
       end
