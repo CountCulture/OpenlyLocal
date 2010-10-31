@@ -34,6 +34,12 @@ class CouncilsControllerTest < ActionController::TestCase
       assert_routing("councils/open.json", {:controller => "councils", :action => "index", :show_open_status => true , :format => "json" })
     end
     
+    should "route open councils to index with show_1010_status true" do
+      assert_routing("councils/1010", {:controller => "councils", :action => "index", :show_1010_status => true})
+      assert_routing("councils/1010.xml", {:controller => "councils", :action => "index", :show_1010_status => true , :format => "xml" })
+      assert_routing("councils/1010.json", {:controller => "councils", :action => "index", :show_1010_status => true , :format => "json" })
+    end
+    
     should "route regular resource routes for index action" do
       assert_routing("councils", {:controller => "councils", :action => "index"})
       assert_routing("councils.xml", {:controller => "councils", :action => "index", :format => "xml" })
@@ -143,6 +149,33 @@ class CouncilsControllerTest < ActionController::TestCase
         
       should "show say so" do
         assert_select '#open_data_dashboard', /only 0 are.+truly open/i
+      end
+    end
+    
+    context "when showing 1010 status" do
+      setup do
+        @another_council.update_attributes(:signed_up_for_1010 => true)
+        get :index, :show_1010_status => true
+      end
+  
+      should assign_to(:councils) { Council.find(:all, :order => "name")} # all councils
+      should respond_with :success
+      should render_template '1010'
+      
+      should 'summarize number of councils signed up to 1010' do
+        assert_select '#1010_dashboard', /1.+out of.+2.+local authorities.+10:10/m
+      end
+      
+      should "identify those signed up" do
+        assert_select ".council .signed_up"
+      end
+      
+      should "identify those not signed up" do
+        assert_select ".council .not_signed_up"
+      end
+      
+      should "have appropriate title" do
+        assert_select "title", /10:10 scoreboard/i
       end
     end
     

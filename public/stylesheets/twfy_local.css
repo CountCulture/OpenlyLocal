@@ -383,14 +383,14 @@ body.councils .area, .feed_entry .dateline {
 #members li a {
 	font-weight: bold;
 }
-.open_data_council_grouping .council div.open_data_status {
+.open_data_council_grouping .council div.open_data_status, .open_data_council_grouping .council div.tenten_status {
 	background: url(/images/tick.gif) no-repeat;
 	text-indent: -9000px;
 	width: 48px;
 	height: 48px;
 	float:left;
 }
-#no_open_data_councils .council div.no_open_data {
+#no_open_data_councils .council div.no_open_data, #not_signed_up .council div.not_signed_up {
 	background-position:0 -48px;
 }
 #semi_open_data_councils .council div.semi_open_data {

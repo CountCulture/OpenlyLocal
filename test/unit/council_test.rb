@@ -157,6 +157,10 @@ class CouncilTest < ActiveSupport::TestCase
         assert_equal [@another_council, @council, @tricky_council], Council.find_by_params(:show_open_status => true)
       end
 
+      should "find unparsed councils by if requested to show_open_status" do
+        assert_equal [@another_council, @council, @tricky_council], Council.find_by_params(:show_1010_status => true)
+      end
+
       should "find parsed councils whose name matches term" do
         assert_equal [@another_council], Council.find_by_params(:term => "not") # @another_council name is 'Another council'
         assert_equal [@another_council, @council], Council.find_by_params(:term => "An")

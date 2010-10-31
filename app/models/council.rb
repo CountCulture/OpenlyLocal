@@ -55,10 +55,10 @@ class Council < ActiveRecord::Base
   alias_method :old_to_xml, :to_xml
   
   def self.find_by_params(params={})
-    country, region, term, show_open_status = params.delete(:country), params.delete(:region), params.delete(:term), params.delete(:show_open_status)
+    country, region, term, show_open_status, show_1010_status = params.delete(:country), params.delete(:region), params.delete(:term), params.delete(:show_open_status), params.delete(:show_1010_status)
     conditions = term ? ["councils.name LIKE ?", "%#{term}%"] : nil
     conditions ||= {:country => country, :region => region}.delete_if{ |k,v| v.blank?  }
-    parsed(:include_unparsed => params.delete(:include_unparsed)||show_open_status).all({:conditions => conditions, :include => [:twitter_account]}.merge(params))
+    parsed(:include_unparsed => params.delete(:include_unparsed)||show_open_status||show_1010_status).all({:conditions => conditions, :include => [:twitter_account]}.merge(params))
   end
   
   def self.with_stale_services

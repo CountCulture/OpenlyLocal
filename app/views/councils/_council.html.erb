@@ -1,5 +1,6 @@
 <%- div_for council do -%>
 	<%= content_tag( :div, council.open_data_status.titleize, :class => "#{council.open_data_status} open_data_status") if params[:show_open_status] %>
+	<%= content_tag( :div, (council.signed_up_for_1010 ? 'Signed Up' : 'Not Signed Up'), :class => "#{council.signed_up_for_1010 ? 'signed_up' : 'not_signed_up'} tenten_status") if params[:show_1010_status] %>
   <div class='area'>
     <%= council.region? ? "#{link_to council.region, params.merge(:region => council.region) }, " : '' %><%= link_to council.country, params.merge(:country => council.country) %>
   </div>

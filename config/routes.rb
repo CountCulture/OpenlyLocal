@@ -25,6 +25,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/open', :controller => "councils", :action => "index", :show_open_status => true
   map.connect 'councils/open.xml', :controller => "councils", :action => "index", :show_open_status => true, :format => "xml"
   map.connect 'councils/open.json', :controller => "councils", :action => "index", :show_open_status => true, :format => "json"
+  map.connect 'councils/1010', :controller => "councils", :action => "index", :show_1010_status => true
+  map.connect 'councils/1010.xml', :controller => "councils", :action => "index", :show_1010_status => true, :format => "xml"
+  map.connect 'councils/1010.json', :controller => "councils", :action => "index", :show_1010_status => true, :format => "json"
   map.connect 'councils/:id/spending', :controller => "councils", :action => "show_spending"
   
   map.connect 'entities/:id/spending', :controller => "entities", :action => "show_spending"
