@@ -47,6 +47,7 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :subsidiary_number
     should have_db_column :fax
     should have_db_column :area_of_benefit
+    should have_db_column :signed_up_for_1010
     
     should "serialize mixed data columns" do
       %w(financial_breakdown other_names trustees accounts).each do |attrib|

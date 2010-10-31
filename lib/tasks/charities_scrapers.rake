@@ -196,7 +196,25 @@ task :import_icnpo_classifications => :environment do
   end
 end
 
-
+desc "Import 1010 charities"
+task :import_1010_charities => :environment do
+  base_url = 'http://data.1010global.org'
+  url = base_url + '/ajax/signups/charity'
+  while url
+    puts "Getting data from #{url}"
+    data = JSON.parse(open(url).read)
+    data['results'].each do |result|
+      next if result["country"] != 'GB'
+      if charity = Charity.find_by_normalised_title(Charity.normalise_title(result["name"]))
+        charity.update_attribute(:signed_up_for_1010, true)
+        puts "Matched 1010 charity #{result['name']} with #{charity.title}"
+      else
+        puts "*** Failed to matched 1010 charity #{result['name']}"
+      end
+    end
+    url = data['next'] ? base_url + data['next'] : nil
+  end 
+end
 
 
 def create_charity(c)
