@@ -537,3 +537,24 @@ task :import_wdtk_ids => :environment do
   end
 end
 
+desc "Update 1010 councils"
+task :update_1010_councils => :environment do
+  base_url = 'http://data.1010global.org'
+  url = base_url + '/ajax/signups/local_government'
+  while url
+    puts "Getting data from #{url}"
+    data = JSON.parse(open(url).read)
+    data['results'].each do |result|
+      next if result["country"] != 'GB'
+      if council = Council.find_by_normalised_title(Council.normalise_title(result["name"]))
+        council.update_attribute(:signed_up_for_1010, true)
+        puts "Matched 1010 council #{result['name']} with #{council.title}"
+      else
+        puts "*** Failed to matched 1010 council #{result['name']}"
+      end
+    end
+    url = data['next'] ? base_url + data['next'] : nil
+  end 
+end
+
+
