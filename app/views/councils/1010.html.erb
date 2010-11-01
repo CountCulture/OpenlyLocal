@@ -1,4 +1,4 @@
-<p class= 'breadcrumbs'>See <%= link_to 'Open Data Scoreboard', :controller => 'councils', :show_open_status => true %></p>
+<p class= 'breadcrumbs'>See also <%= link_to 'Open Data Scoreboard', {:controller => 'councils', :show_open_status => true}, {:title => 'Open Data Scoreboard'} %></p>
 <div id="1010_dashboard">
   <%- councils_with_status = @councils.group_by(&:signed_up_for_1010) -%>
   <h1><%= @title %></h1>

@@ -1,4 +1,4 @@
-<p class= 'breadcrumbs'>See <%= link_to '10:10 Scoreboard', :controller => 'councils', :show_1010_status => true %></p>
+<p class= 'breadcrumbs'>See also <%= link_to '10:10 Scoreboard', {:controller => 'councils', :show_1010_status => true}, {:title => 'UK councils 10:10 scoreboard'} %></p>
 <div id="open_data_dashboard">
   <%- councils_with_status = @councils.group_by(&:open_data_status) -%>
   <h1><%= @title %></h1>
