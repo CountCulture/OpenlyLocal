@@ -268,15 +268,20 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 
       should "set date as expected" do
         date = 30.days.ago.to_date
-        assert_equal date, Factory(:financial_transaction, :date => date).date
+        assert_equal date, Factory.build(:financial_transaction, :date => date).date
       end
 
       should "convert UK date if in slash format" do
-        assert_equal '2006-04-01', Factory(:financial_transaction, :date => '01/04/2006').date.to_s
+        assert_equal '2006-04-01', Factory.build(:financial_transaction, :date => '01/04/2006').date.to_s
+      end
+
+      should "convert two digit year " do
+        assert_equal '2010-08-23', Factory.build(:financial_transaction, :date => '23-Aug-10').date.to_s
+        assert_equal '1998-08-23', Factory.build(:financial_transaction, :date => '23-Aug-98').date.to_s
       end
 
       should "not convert date if not in slash format" do
-        assert_equal '2006-01-04', Factory(:financial_transaction, :date => '2006-01-04').date.to_s
+        assert_equal '2006-01-04', Factory.build(:financial_transaction, :date => '2006-01-04').date.to_s
       end
 
     end
