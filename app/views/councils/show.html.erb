@@ -23,7 +23,7 @@
   <%= attribute_tag :finance, link_to('Annual audit letter (PDF)', @council.annual_audit_letter, :class => 'external pdf') if @council.annual_audit_letter? %>
   <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@council.wikipedia_url), @council.wikipedia_url, :class => 'external') if @council.wikipedia_url? %>
   <%= attribute_tag :open_data, link_to(@council.open_data_url, @council.open_data_url, :class => 'external'), :text => link_to("Open Data", :controller => 'councils', :show_open_status => true) if @council.open_data_url? %>
-  <%= attribute_tag :signed_up_for_1010, (@council.signed_up_for_1010 ? 'Yes' : 'No'), :text => link_to("1010 signatory", "http://www.1010uk.org", :class => 'external') %>
+  <%= attribute_tag :signed_up_for_1010, link_to((@council.signed_up_for_1010 ? 'Yes' : 'No'), :controller => 'councils',:show_1010_status => true), :text => link_to("1010 signatory", "http://www.1010uk.org", :class => 'external') %>
 </dl>
 
 <%= render :partial => 'shared/grouped_datapoints', :locals => { :area => @council } %>
