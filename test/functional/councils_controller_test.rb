@@ -179,6 +179,17 @@ class CouncilsControllerTest < ActionController::TestCase
       end
     end
     
+    context "when showing open_status and no open data councils" do
+      setup do
+        @another_council.update_attributes(:signed_up_for_1010 => true)
+        get :index, :region => "North-West", :show_1010_status => true
+      end
+        
+      should "show say so" do
+        assert_select '#1010_dashboard', /0.+out of.+10:10/im
+      end
+    end
+    
     context "with search term" do
       setup do
         @member = Factory(:member, :council => @another_council) # make another_council parsed
