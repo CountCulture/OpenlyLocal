@@ -181,12 +181,18 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "when showing open_status and no open data councils" do
       setup do
+        @council.update_attributes(:region => "North-West")
+        
         @another_council.update_attributes(:signed_up_for_1010 => true)
         get :index, :region => "North-West", :show_1010_status => true
       end
         
       should "show say so" do
         assert_select '#1010_dashboard', /0.+out of.+10:10/im
+      end
+
+      should "show zero for count in google chart" do
+        assert css_select("#1010_dashboard img.chart").to_s.match /chd=t:0,1/
       end
     end
     

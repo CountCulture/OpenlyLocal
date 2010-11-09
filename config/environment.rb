@@ -27,7 +27,7 @@ Rails::Initializer.run do |config|
   config.gem "hpricot"
   config.gem 'whenever', :lib => false#, :source => 'http://gemcutter.org'
   config.gem 'fastercsv'
-  config.gem 'mattetti-googlecharts', :lib => "gchart", :source => 'http://gems.github.com'
+  config.gem 'googlecharts', :lib => "gchart"
   config.gem "newrelic_rpm"
   config.gem "twitter"
   config.gem "httpclient"

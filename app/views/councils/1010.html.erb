@@ -4,17 +4,17 @@
   <h1><%= @title %></h1>
 	<div class="dashboard">
 	  <div id="statistics">
-	    <%= image_tag(Gchart.pie(:data => [[councils_with_status[true]].flatten.size, [councils_with_status[false]].flatten.size], :legend => %w(signed_up not_signed_up).collect(&:titleize), :bar_colors => ['003366', 'a9c0db'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "1010 signed_up dashboard graph") %>
+	    <%= image_tag(Gchart.pie(:data => [[councils_with_status[true]].flatten.compact.size, [councils_with_status[false]].flatten.compact.size], :encoding => 'text', :legend => %w(signed_up not_signed_up).collect(&:titleize), :bar_colors => ['003366', 'a9c0db'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "1010 signed_up dashboard graph: #{[[councils_with_status[true]].flatten.compact.size, [councils_with_status[false]].flatten.compact.size].inspect}") %>
 	    <div class='in_words'>
 	      <span class='value open'><%= [councils_with_status[true]].flatten.nitems.to_i %></span> out of 
-				<span class='value not_open'><%= @councils.size %></span> <span class='description'>local authorities have signed up for <a href="http://www.1010global.org/" title="Welcome! | 10:10">10:10</a>
+				<span class='value not_open'><%= @councils.size %></span> <span class='description'>local authorities have signed up for <a href="http://www.1010global.org/" title="10:10">10:10</a>
 				</span>
 	    </div>
 	  </div>
 	</div>
 	
   <div id='signed_up' class='open_data_council_grouping'>
-    <h2>Councils committed to reducing carbon emissions by 10% by 2010</h2>
+    <h2>Councils committed to reducing carbon emissions by 10% starting in 2010</h2>
     <%- if councils_with_status[true].blank? -%>
       <p class="alert">No councils found</p>
     <%- else -%>
@@ -23,7 +23,7 @@
   </div>
 
   <div id='not_signed_up' class='open_data_council_grouping'>
-    <h2>Councils NOT committed to reducing carbon emissions by 10% by 201</h2>
+    <h2>Councils NOT committed to reducing carbon emissions by 10% starting in 2010</h2>
     <%- if councils_with_status[false].blank? -%>
       <p class="alert">No councils found</p>
     <%- else -%>
