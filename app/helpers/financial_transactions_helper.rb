@@ -29,7 +29,7 @@ module FinancialTransactionsHelper
   end
   
   def currency_for_graph(number)
-    number < 1000000 ? number_to_currency(number, :precision => 0, :unit => "&pound;") : 
-                        "#{number_to_currency(number/1000000.0, :precision => 1, :unit => "&pound;")}m"
+    number < 1000000 ? number_to_currency(number, :precision => 0, :unit => "£") : 
+                        "#{number_to_currency(number/1000000.0, :precision => 1, :unit => "£")}m"
   end
 end
