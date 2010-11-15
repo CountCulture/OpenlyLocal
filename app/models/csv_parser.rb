@@ -20,11 +20,12 @@ class CsvParser < Parser
     @current_scraper = scraper
     result_array,dry_run = [], !options[:save_results]
     raw_data = Iconv.iconv('utf-8', 'ISO_8859-1', raw_data).to_s if raw_data.grep(/\xC2\xA3|\xA3/)
+    header_converters = proc{ |h| h.downcase.squish }
     if skip_rows
       raw_data = StringIO.new(raw_data)
       skip_rows.times {raw_data.gets}
     end
-    csv_file = FasterCSV.new(raw_data, :headers => true)
+    csv_file = FasterCSV.new(raw_data, :headers => true, :header_converters => header_converters)
     data_row_number = 0
     begin
       csv_file.each do |row|

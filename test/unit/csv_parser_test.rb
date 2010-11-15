@@ -14,11 +14,11 @@ class CsvParserTest < ActiveSupport::TestCase
     should have_db_column :skip_rows
     
     should "serialize attribute_mapping" do
-      expected_attribs = {:value=>"Amount", 
-                          :department_name => 'Directorate', 
-                          :supplier_name => 'Supplier Name', 
-                          :uid => 'TransactionID',
-                          :date=>"Updated" }
+      expected_attribs = {:value => "amount", 
+                          :department_name => 'directorate', 
+                          :supplier_name => 'supplier name', 
+                          :uid => 'transactionid',
+                          :date => 'updated' }
       assert_equal(expected_attribs, Parser.find(@parser.id).attribute_mapping)
     end
 
@@ -56,7 +56,7 @@ class CsvParserTest < ActiveSupport::TestCase
         end
 
         should "make attribute_mapping_value accessible as column_name" do
-          assert_equal "Updated", @first_attrib.column_name
+          assert_equal "updated", @first_attrib.column_name
         end
       end
       
@@ -133,6 +133,10 @@ class CsvParserTest < ActiveSupport::TestCase
 
         should "map row headings to attributes" do
           assert_equal 'Resources', @processed_data.first[:department_name]
+          assert_equal '1,000.00', @processed_data.first[:value]
+        end
+
+        should "normalise row headings to attributes by downcasing and removing extra spaces" do
           assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
         end
 
@@ -159,7 +163,7 @@ class CsvParserTest < ActiveSupport::TestCase
       context "when processing with parser rows that includes Windows pound sign" do
         setup do
           dummy_data = dummy_csv_data(:windows_file_with_pound_signs_in_heading)
-          @parser.attribute_mapping = {:supplier_name => 'Supplier Name', :value => 'Amount £ (Excl VAT)'}
+          @parser.attribute_mapping = {:supplier_name => 'supplier name', :value => 'amount £ (excl vat)'}
           @processed_data = @parser.process(dummy_data, @dummy_scraper).results
         end
 

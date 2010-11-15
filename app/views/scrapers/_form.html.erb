@@ -75,7 +75,7 @@
 	        </p>
 				<%- end -%>
         <div id="parser_attribute_parser">
-          <h3>Attribute parser</h3>
+          <h3>Attribute parser (NB headings will have extra spaces removed and converted to lower-case)</h3>
 					<%- partial_attribs = @scraper.parser.kind_of?(CsvParser) ? 
 											{ :partial => 'csv_parser_attrib_fields', :collection => @scraper.parser.attribute_mapping_object } : 
 											{ :partial => 'parser_attrib_fields', :collection => @scraper.parser.attribute_parser_object } -%>
