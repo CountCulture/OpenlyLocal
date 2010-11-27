@@ -278,6 +278,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       should "convert two digit year " do
         assert_equal '2010-08-23', Factory.build(:financial_transaction, :date => '23-Aug-10').date.to_s
         assert_equal '1998-08-23', Factory.build(:financial_transaction, :date => '23-Aug-98').date.to_s
+        assert_equal '2010-10-05', Factory.build(:financial_transaction, :date => '05/Oct/10').date.to_s
       end
 
       should "not convert date if not in slash format" do
