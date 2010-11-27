@@ -722,7 +722,7 @@ p.crime_level {
 	content:"*";
 	color:#8a1f11;
 }
-}
+
 #hyperlocal_list_map, #hyperlocal_list_map #map_canvas {
 	height:650px;
 	width:500px;
