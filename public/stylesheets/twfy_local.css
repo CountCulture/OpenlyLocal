@@ -710,6 +710,7 @@ p.crime_level {
 #map_canvas {
 	height:500px;
 	width:450px;
+}
 
 /*Hyperlocal formatting*/
 #new_hyperlocal_site label {
@@ -732,7 +733,7 @@ ul#hyperlocal_sites>li.country {
 	list-style:none;
 	font-weight: bold;
 	font-size: 1.2em;
-	text-transform: upper;
+	text-transform: uppercase;
 } 
 ul#hyperlocal_sites li li{
 	font-weight: normal;
