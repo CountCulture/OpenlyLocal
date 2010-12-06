@@ -71,8 +71,8 @@ class ParserTest < Test::Unit::TestCase
           @first_attrib = @attribute_parser_object.first
         end
 
-        should "are Structs" do
-          assert_kind_of Struct, @first_attrib
+        should "are AttribObjects" do
+          assert_kind_of AttribObject, @first_attrib
         end
         
         should "make attribute_parser_key accessible as attrib_name" do
@@ -98,7 +98,7 @@ class ParserTest < Test::Unit::TestCase
         end
         
         should "is an empty Struct" do
-          assert_equal Parser::AttribObject.new, @empty_attribute_parser_object.first
+          assert_kind_of AttribObject, @empty_attribute_parser_object.first
         end
       end
       

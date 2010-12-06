@@ -27,20 +27,20 @@
   <p>
     <strong>Last scraped</strong> <%= @scraper.last_scraped %><br />
     <strong>Last updated</strong> <%= @scraper.updated_at %></p>
-  <p>
+  <div>
     <%= link_to "edit", edit_scraper_path(@scraper), :class => "button" %> 
-    <%= link_to "destroy", scraper_path(@scraper), :method => :delete, :class => "button" %> 
-    <%= link_to "perform test scrape", scraper_path(:id => @scraper, :dry_run => true), :class => "button" %>
-    <%= link_to "process IMMEDIATELY", scraper_path(:id => @scraper, :process => "immediately"), :class => "button" %>
-    <%= link_to "process", scraper_path(:id => @scraper, :process => "queue"), :class => "button" %>
-  </p>
+    <%= button_to "destroy", :action => :destroy, :id => @scraper, :confirm => 'Are you sure?' %> 
+    <%= button_to "perform test scrape", :action => :scrape, :id => @scraper, :dry_run => true %>
+    <%= button_to "process IMMEDIATELY", :action => :scrape, :id => @scraper, :process => "immediately" %>
+    <%= button_to "process", :action => :scrape, :id => @scraper, :process => "queue" %>
+  </div>
 </div>
 <%- if @results -%>
   <%= error_messages_for :scraper, :header_message => "Problems processing this scraper" %>
   <%= error_messages_for :parser, :header_message => "Problem parsing scraped page", :message => "The following problems occurred:" %>
   
   <div id="results">
-    <h3>Completed <%= params[:process] ? "Processing" : "Test Scrape" %>: <%= @results.size %> records found</h3>
+    <h3>Completed <%= params[:dry_run] ? "Test Scrape" : "Processing" %>: <%= @results.size %> records found</h3>
     <%- unless @scraper.results_summary.blank? -%>
       <p id="results_summary" class="alert">
         <%= @scraper.results_summary %>

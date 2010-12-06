@@ -1,5 +1,6 @@
 class ScrapersController < ApplicationController
   before_filter :authenticate
+  before_filter :find_scraper, :except => [:index, :new, :create]
   skip_before_filter :share_this
   newrelic_ignore
   
@@ -9,18 +10,7 @@ class ScrapersController < ApplicationController
   end
   
   def show
-    @scraper = Scraper.find(params[:id])
     @title = @scraper.title
-    if params[:dry_run]
-      @results = @scraper.process.results
-      @results_summary = @scraper.results_summary
-    elsif params[:process] == "immediately"
-      @results = @scraper.process(:save_results => true).results
-      @results_summary = @scraper.results_summary
-    elsif params[:process]
-      Delayed::Job.enqueue @scraper
-      flash.now[:notice] = "Scraper is being processed and you will be emailed with the results"
-    end
     @parser = @scraper.parser
   end
   
@@ -50,21 +40,37 @@ class ScrapersController < ApplicationController
   end
   
   def edit
-    @scraper = Scraper.find(params[:id])
   end
   
   def update
-    @scraper = Scraper.find(params[:id])
     @scraper.update_attributes(params[:scraper])
     flash[:notice] = "Successfully updated scraper"
     redirect_to scraper_url(@scraper)
   end
   
   def destroy
-    @scraper = Scraper.find(params[:id])
     @scraper.destroy
     flash[:notice] = "Successfully destroyed scraper"
     redirect_to scrapers_url(:anchor => "council_#{@scraper.council_id}")
+  end
+  
+  def scrape
+    if params[:dry_run]
+      @results = @scraper.process.results
+      @results_summary = @scraper.results_summary
+    elsif params[:process] == "immediately"
+      @results = @scraper.process(:save_results => true).results
+      @results_summary = @scraper.results_summary
+    else
+      Delayed::Job.enqueue @scraper
+      flash.now[:notice] = "Scraper is being processed and you will be emailed with the results"
+    end
+    render :action => :show
+  end
+  
+  private
+  def find_scraper
+    @scraper = Scraper.find(params[:id])
   end
   
 end

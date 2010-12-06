@@ -46,6 +46,7 @@ class FinancialTransaction < ActiveRecord::Base
   end
   
   def self.build_or_update(params_array, options={})
+    # p params_array
     organisation = options[:organisation]||options[:council] 
     params_array.collect do |params|
       logger.debug { "About to build or update FinancialTransaction with #{params.inspect}" }#, organisation

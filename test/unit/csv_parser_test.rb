@@ -48,7 +48,7 @@ class CsvParserTest < ActiveSupport::TestCase
         end
 
         should "are Structs" do
-          assert_kind_of Struct, @first_attrib
+          assert_kind_of MappingObject, @first_attrib
         end
         
         should "make attribute_mapping_key accessible as attrib_name" do
@@ -70,8 +70,8 @@ class CsvParserTest < ActiveSupport::TestCase
         end
         
         context "and which" do
-          should "should have an empty Struct as only element" do
-            assert_equal [CsvParser::MappingObject.new], @empty_attribute_mapping_object
+          should "should have an empty MappingObject as only element" do
+            assert_kind_of MappingObject, @empty_attribute_mapping_object.first
           end
         end
       end

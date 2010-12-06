@@ -13,10 +13,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :suppliers
 
 
-  map.resources :scrapers
-  map.resources :item_scrapers, :controller => "scrapers"
-  map.resources :info_scrapers, :controller => "scrapers"
-  map.resources :csv_scrapers, :controller => "scrapers"
+  map.resources :scrapers, :member => { :scrape => :post }
+  map.resources :item_scrapers, :controller => "scrapers", :member => { :scrape => :post }
+  map.resources :info_scrapers, :controller => "scrapers", :member => { :scrape => :post }
+  map.resources :csv_scrapers, :controller => "scrapers", :member => { :scrape => :post }
   map.resources :csv_parsers, :controller => "parsers"
 
   map.connect 'councils/all', :controller => "councils", :action => "index", :include_unparsed => true

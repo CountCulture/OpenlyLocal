@@ -95,6 +95,6 @@
   <%= f.submit "Submit" %>
 <% end -%>
 <div style="display:none">
-  <%= render :partial => 'parser_attrib_fields', :object => Parser::AttribObject.new unless @scraper.parser.kind_of?(CsvParser) %>
-  <%= render :partial => 'csv_parser_attrib_fields', :object => CsvParser::MappingObject.new if @scraper.parser.kind_of?(CsvParser)%>
+  <%= render :partial => 'parser_attrib_fields', :object => AttribObject.new unless @scraper.parser.kind_of?(CsvParser) %>
+  <%= render :partial => 'csv_parser_attrib_fields', :object => MappingObject.new if @scraper.parser.kind_of?(CsvParser)%>
 </div>

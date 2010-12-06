@@ -1,6 +1,5 @@
 class CsvParser < Parser
   attr_reader :results
-  MappingObject = Struct.new(:attrib_name, :column_name, :to_param)
   serialize :attribute_mapping
   
   def attribute_mapping_object

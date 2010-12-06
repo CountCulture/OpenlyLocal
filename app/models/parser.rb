@@ -2,7 +2,7 @@
 
 class Parser < ActiveRecord::Base
   ALLOWED_RESULT_CLASSES = %w(Member Committee Meeting Ward FinancialTransaction Supplier Officer TestScrapedModel)
-  AttribObject = Struct.new(:attrib_name, :parsing_code, :to_param)
+  # AttribObject = Struct.new(:attrib_name, :parsing_code, :to_param)
   validates_presence_of :result_model
   validates_presence_of :scraper_type
   validates_inclusion_of :result_model, :in => ALLOWED_RESULT_CLASSES, :message => "is invalid"

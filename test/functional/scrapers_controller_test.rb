@@ -76,7 +76,7 @@ class ScrapersControllerTest < ActionController::TestCase
   
     should respond_with 401
   end
-
+  
   context "on GET to :show for scraper" do
     setup do
       @scraper = Factory(:scraper)
@@ -95,7 +95,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
     
     should "show link to perform dry run" do
-      assert_select "#scraper a", /perform test scrape/
+      assert_select "#scraper .button-to input[value*=?]", /test scrape/
     end
   
     should "show link to perform edit" do
@@ -132,7 +132,7 @@ class ScrapersControllerTest < ActionController::TestCase
     
   end
   
-  context "on GET to :show with :dry_run" do
+  context "on POST to :scrape with :dry_run" do
     setup do
       @scraper = Factory(:scraper)
     end
@@ -140,7 +140,7 @@ class ScrapersControllerTest < ActionController::TestCase
     should "process scraper" do
       @scraper.class.any_instance.expects(:process).returns(stub_everything)
       stub_authentication
-      get :show, :id => @scraper.id, :dry_run => true
+      post :scrape, :id => @scraper.id, :dry_run => true
     end
   end
   
@@ -152,11 +152,11 @@ class ScrapersControllerTest < ActionController::TestCase
     should "process scraper" do
       @scraper.class.any_instance.expects(:process).returns(stub_everything)
       stub_authentication
-      get :show, :id => @scraper.id, :dry_run => true
+      post :scrape, :id => @scraper.id, :dry_run => true
     end
   end
   
-  context "on GET to :show with successful :dry_run" do
+  context "on POST to :scrape with successful :dry_run" do
     setup do
       @scraper = Factory(:scraper)
       @scraper.parser.update_attribute(:result_model, 'Member') # update to use members, as TestScrapedModel cause probs with link_for
@@ -166,7 +166,7 @@ class ScrapersControllerTest < ActionController::TestCase
       @scraper.class.any_instance.stubs(:process).returns(@scraper)
       @scraper.stubs(:results).returns([ScrapedObjectResult.new(@member), ScrapedObjectResult.new(@new_member)])
       stub_authentication
-      get :show, :id => @scraper.id, :dry_run => true
+      post :scrape, :id => @scraper.id, :dry_run => true
     end
   
     should assign_to(:scraper)
@@ -185,25 +185,27 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   
     should "not show summary of problems" do
+      puts css_select "div.errorExplanation"
       assert_select "div.errorExplanation", false
     end
   end
   
-  context "on GET to :show with successful :dry_run of csv_scraper" do
+  context "on POST to :scrape with successful :dry_run of csv_scraper" do
     setup do
       @scraper = Factory(:csv_scraper)
-
+  
       @scraper.parser.update_attribute(:result_model, 'FinancialTransaction')
-
+  
       @csv_rawdata = dummy_csv_data('supplier_payments')
       CsvScraper.any_instance.expects(:_data).returns(@csv_rawdata)
       # @member = Factory(:member, :council => @scraper.council)
       # @member.save # otherwise looks like new_before_save
       # @new_member = Member.new(:full_name => "Fred Flintstone", :uid => 55)
-      # @scraper.class.any_instance.stubs(:process).returns(@scraper)
+      # @scraper.class.any_instance.stubs(:scrape).returns(@scraper)
       # @scraper.stubs(:results).returns([ScrapedObjectResult.new(@member), ScrapedObjectResult.new(@new_member)])
       stub_authentication
-      get :show, :id => @scraper.id, :dry_run => true
+      # pp @scraper.parser
+      post :scrape, :id => @scraper.id, :dry_run => true
     end
   
     should assign_to(:scraper)
@@ -226,13 +228,13 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   end
   
-  context "on GET to :show with :dry_run with request error" do
+  context "on POST to :scrape with :dry_run with request error" do
     setup do
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.stubs(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
       parser = @scraper.parser
       stub_authentication
-      get :show, :id => @scraper.id, :dry_run => true
+      post :scrape, :id => @scraper.id, :dry_run => true
     end
     
     should assign_to :scraper
@@ -252,7 +254,7 @@ class ScrapersControllerTest < ActionController::TestCase
       @scraper.parser.update_attribute(:item_parser, "foo")
       Parser.any_instance.stubs(:results) # pretend there are no results
       stub_authentication
-      get :show, :id => @scraper.id, :dry_run => true
+      post :scrape, :id => @scraper.id, :dry_run => true
     end
     
     should assign_to :scraper
@@ -266,7 +268,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   end
   
-  context "on GET to :show when processing" do
+  context "POST to :scrape" do
     setup do
       @scraper = Factory(:scraper)
       stub_authentication
@@ -274,17 +276,17 @@ class ScrapersControllerTest < ActionController::TestCase
       
     should "add to delayed job queue" do
       Delayed::Job.expects(:enqueue).with(instance_of(ItemScraper))
-      get :show, :id => @scraper.id, :process => true
+      post :scrape, :id => @scraper.id
     end
     
     should "set the flash to show success" do
-      get :show, :id => @scraper.id, :process => true
+      post :scrape, :id => @scraper.id
       assert_match /being processed/, flash[:notice]
     end
      
   end
   
-  context "on GET to :show when processing immediately" do
+  context "POST to :scrape when processing immediately" do
     setup do
       @scraper = Factory(:scraper)
     end
@@ -292,18 +294,18 @@ class ScrapersControllerTest < ActionController::TestCase
     should "process scraper" do
       @scraper.class.any_instance.expects(:process).with(:save_results => true).returns(stub_everything)
       stub_authentication
-      get :show, :id => @scraper.id, :process => "immediately"
+      post :scrape, :id => @scraper.id, :process => "immediately"
     end
   end
   
-  context "on GET to :show with successful process immediately" do
+  context "on POST to :scraper with successful process immediately" do
     setup do
       @scraper = Factory(:scraper)
       @scraper.parser.update_attribute(:result_model, 'Member') # update to use members, as TestScrapedModel cause probs with link_for
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
       @scraper.class.any_instance.stubs(:parsing_results).returns([{ :full_name => "Fred Flintstone", :uid => 1, :url => "http://www.anytown.gov.uk/members/fred" }] )
       stub_authentication
-      get :show, :id => @scraper.id, :process => "immediately"
+      post :scrape, :id => @scraper.id, :process => "immediately"
     end
   
     should assign_to :scraper
@@ -332,7 +334,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   end
   
-  context "on GET to :show with unsuccesful :process immediately due to failed validation" do
+  context "on GET to :show with unsuccesful :scrape immediately due to failed validation" do
     setup do
       @scraper = Factory(:scraper)
       @scraper.parser.update_attribute(:result_model, 'Member') # update to use members, as TestScrapedModel cause probs with link_for
@@ -340,7 +342,7 @@ class ScrapersControllerTest < ActionController::TestCase
       @scraper.class.any_instance.stubs(:parsing_results).returns([{ :full_name => "Fred Flintstone", :uid => 1, :url => "http://www.anytown.gov.uk/members/fred" },
                                                             { :full_name => "Bob Nourl"}] )
       stub_authentication
-      get :show, :id => @scraper.id, :process => "immediately"
+      post :scrape, :id => @scraper.id, :process => "immediately"
     end
     
     should assign_to(:scraper)
@@ -370,7 +372,7 @@ class ScrapersControllerTest < ActionController::TestCase
   
     should respond_with 401
   end
-
+  
   context "on GET to :new with no scraper type given" do
     should "raise exception" do
       stub_authentication
@@ -439,7 +441,7 @@ class ScrapersControllerTest < ActionController::TestCase
       should "not have link to show parser form" do
         assert_select "form a", :text => /use dedicated parser/i, :count => 0
       end
-
+  
       should "show hidden field with parser scraper_type" do
         assert_select "input#scraper_parser_attributes_scraper_type[type=hidden][value=InfoScraper]"
       end
@@ -459,7 +461,7 @@ class ScrapersControllerTest < ActionController::TestCase
         assert_select "select#scraper_council_id"
       end
     end
-
+  
     context "for basic scraper with given result model" do
       setup do
         Factory(:parser, :result_model => "Committee", :scraper_type => "InfoScraper") # make sure there's at least one parser already in db with this result model
@@ -641,7 +643,7 @@ class ScrapersControllerTest < ActionController::TestCase
       end
       
     end
-
+  
     context "for CsvScraper with existing parser id" do
       setup do
         @portal_system = Factory(:portal_system)
@@ -678,18 +680,18 @@ class ScrapersControllerTest < ActionController::TestCase
       should "have link to show parser form" do
         assert_select "form a", /use dedicated parser/i
       end
-
+  
       should "show nested form for csv_parser" do
         assert_select "input#scraper_parser_attributes_attribute_mapping_object__attrib_name"
         assert_select "input#scraper_parser_attributes_attribute_mapping_object__column_name"
       end
   
     end
-
+  
   end
   
   # create tests
-
+  
   context "on POST to :create" do
     setup do
       @council = Factory(:council)
@@ -712,7 +714,7 @@ class ScrapersControllerTest < ActionController::TestCase
       setup do
         post :create, { :type => "InfoScraper", :scraper => @scraper_params }
       end
-
+  
       should respond_with 401
     end
     
@@ -857,7 +859,7 @@ class ScrapersControllerTest < ActionController::TestCase
   
     should respond_with 401
   end
-
+  
   context "on get to :edit a scraper" do
     setup do
       @scraper = Factory(:scraper)
@@ -920,7 +922,7 @@ class ScrapersControllerTest < ActionController::TestCase
                      :scraper => { :council_id => @scraper.council_id, 
                                    :url => "http://anytown.com/new_committees", 
                                    :parser_attributes => { :id => @scraper.parser.id, :description => "new parsing description", :item_parser => "new code" }}}
-
+  
       
       # @scraper_params = { :council_id => @council.id, 
       #                     :url => "http://anytown.com/committees", 
