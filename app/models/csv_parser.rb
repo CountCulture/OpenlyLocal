@@ -17,6 +17,7 @@ class CsvParser < Parser
   
   def process(raw_data, scraper=nil, options={})
     @current_scraper = scraper
+    self.inspect #NB This seems to stop deserialization errors, in tests, and poss in production
     result_array,dry_run = [], !options[:save_results]
     raw_data = Iconv.iconv('utf-8', 'ISO_8859-1', raw_data).to_s if raw_data.grep(/\xC2\xA3|\xA3/)
     header_converters = proc{ |h| h.downcase.squish }
