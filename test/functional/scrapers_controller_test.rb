@@ -247,7 +247,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
   end
   
-  context "on GET to :show with :dry_run with parsing problems" do
+  context "on POST to :scrape with :dry_run with parsing problems" do
     setup do
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
