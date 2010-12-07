@@ -35,7 +35,7 @@ ActionController::Routing::Routes.draw do |map|
   # map.connect 'meetings', :controller => "meetings", :action => "index"
   
   map.connect 'hyperlocal_sites/custom_search.xml', :controller => "hyperlocal_sites", :action => "index", :custom_search => true, :format => "xml"
-  map.resources :hyperlocal_sites, :collection => { :custom_search_results => :get }
+  map.resources :hyperlocal_sites, :collection => { :custom_search_results => :get, :destroy_multiple => :delete }
   
   map.resources :committees, :documents, :hyperlocal_groups, :hyperlocal_sites, :members, :datapoints, :dataset_topic_groupings, :parsers, :pension_funds, :portal_systems, :police_forces, :police_authorities, :police_teams, :political_parties, :polls, :services, :twitter_accounts, :user_submissions, :wards, :feed_entries
   

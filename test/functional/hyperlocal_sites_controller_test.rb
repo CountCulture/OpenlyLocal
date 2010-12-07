@@ -6,6 +6,17 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     @another_hyperlocal_site = Factory(:approved_hyperlocal_site, :country => 'Scotland', :title => "Second Hyperlocal Site", :hyperlocal_group => Factory(:hyperlocal_group))
     @unapproved_hyperlocal_site = Factory(:hyperlocal_site)
   end
+  
+  context "when routing to hyperlocal_sites" do
+    should "have routing for custom search" do
+      assert_routing("hyperlocal_sites/custom_search.xml", {:controller => "hyperlocal_sites", :action => "index", :custom_search => true, :format => "xml"})
+    end
+    
+    should "have routing for destroying_multiple sites" do
+      assert_routing({ :method => 'delete', :path => '/hyperlocal_sites/destroy_multiple' }, {:controller => "hyperlocal_sites", :action => "destroy_multiple"})
+    end
+    
+  end
 
   # index test
   context "on GET to :index" do
@@ -223,9 +234,6 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     
   # custom_search tests for index action
   context "on GET to :custom search" do
-    should "generate routing for custom search" do
-      assert_routing("hyperlocal_sites/custom_search.xml", {:controller => "hyperlocal_sites", :action => "index", :custom_search => true, :format => "xml"})
-    end
     
     context "in general should" do
       setup do
@@ -601,6 +609,22 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     end
     should_redirect_to ( "the admin page") { admin_url }
     should set_the_flash.to( /Successfully destroyed/)
+  end
+    
+  context "on delete to :destroy multiple hyperlocal_sites" do
+
+    setup do
+      stub_authentication
+      delete :destroy_multiple, :ids => [@hyperlocal_site.id, @another_hyperlocal_site.id]
+    end
+
+    should "destroy given hyperlocal_sites" do
+      assert_nil HyperlocalSite.find_by_id(@hyperlocal_site.id)
+      assert_nil HyperlocalSite.find_by_id(@another_hyperlocal_site.id)
+    end
+    
+    should_redirect_to ( "the admin page") { admin_url }
+    should set_the_flash.to( /successfully destroyed 2 hyperlocal sites/i)
   end
     
 end

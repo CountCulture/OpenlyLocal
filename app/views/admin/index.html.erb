@@ -36,17 +36,20 @@
 <br class='clear' />
 <div id="hyperlocal_sites">
   <h3>Unapproved <%= link_to "Hyperlocal Sites", hyperlocal_sites_path %></h3>
-
-  <ul id="hyperlocal_sites">
-    <%- @hyperlocal_sites.each do |site| -%>
-      <li>
-        <strong><%= link_for site %></strong>
-        <%= link_to site.url, site.url, :class => "external", :rel => 'nofollow' %>
-        <%= link_to "edit", edit_hyperlocal_site_path(site), :class => "edit button" %>
-        <%= button_to "Delete", hyperlocal_site_path(site), :confirm => "Are you sure?", :method => :delete %>
-      </li>
-    <%- end -%>
-  </ul>
+  <% form_tag '/hyperlocal_sites/destroy_multiple', :method => :delete do %>
+    <ul id="hyperlocal_sites">
+      <%- @hyperlocal_sites.each do |site| -%>
+        <li>
+          <%= check_box_tag "ids[]", site.id, false, :id => site.id %>
+          <strong><%= link_for site %></strong>
+          <%= link_to site.url, site.url, :class => "external", :rel => 'nofollow' %>
+          <%= link_to "edit", edit_hyperlocal_site_path(site), :class => "edit button" %>
+          <%= link_to "Delete", hyperlocal_site_path(site), :confirm => "Are you sure?", :method => :delete, :class => "delete button" %>
+        </li>
+      <%- end -%>
+    </ul>
+    <%= submit_tag 'delete checked sites' %>
+  <% end %>
 </div>
 <div id="councils_without_wards">
   <h3>Councils Without Wards</h3>

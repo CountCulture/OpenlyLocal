@@ -1,6 +1,6 @@
 class HyperlocalSitesController < ApplicationController
   before_filter :authenticate, :except => [:index, :show, :new, :create, :custom_search_results]
-  before_filter :find_hyperlocal_site, :except => [:index, :new, :create, :custom_search_results]
+  before_filter :find_hyperlocal_site, :except => [:index, :new, :create, :custom_search_results, :destroy_multiple]
   before_filter :enable_google_maps, :except => [:update, :create, :destroy]
   before_filter :show_rss_link, :only => :index
   
@@ -66,6 +66,12 @@ class HyperlocalSitesController < ApplicationController
   def destroy
     @hyperlocal_site.destroy
     flash[:notice] = "Successfully destroyed HyperLocal site"
+    redirect_to admin_url
+  end
+  
+  def destroy_multiple
+    @hyperlocal_sites = HyperlocalSite.destroy_all(:id => params[:ids])
+    flash[:notice] = "Successfully destroyed #{@hyperlocal_sites.size} HyperLocal sites"
     redirect_to admin_url
   end
   
