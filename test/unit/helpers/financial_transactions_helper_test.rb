@@ -26,12 +26,12 @@ class FinancialTransactionsHelperTest < ActionView::TestCase
       @spend_by_month_data = [['01-02-2009'.to_date, 123.4],['01-03-2009'.to_date, nil],['01-04-2009'.to_date, 42.3]]
     end
 
-    should "should get bar chart for party breakdown array" do
+    should "should get bar chart for spend data" do
       Gchart.expects(:bar).returns("http://foo.com//graph")
       spend_by_month_graph(@spend_by_month_data)
     end
     
-    should "should use integer numbers from party breakdown" do
+    should "should use integer numbers from spend data" do
       Gchart.expects(:bar).with(has_entry( :data => [123, 0, 42])).returns("http://foo.com//graph")
       spend_by_month_graph(@spend_by_month_data)
     end
@@ -49,6 +49,11 @@ class FinancialTransactionsHelperTest < ActionView::TestCase
     should "return image tag using graph url as as src" do
       Gchart.stubs(:bar).returns("http://foo.com//graph")
       assert_dom_equal image_tag("http://foo.com//graph", :class => "chart", :alt => "Spend By Month Chart"), spend_by_month_graph(@spend_by_month_data)
+    end
+    
+    should "should use values to create y-axis-range, nil for x-axis range" do
+      Gchart.expects(:bar).with(has_entry( :axis_range => [nil, [0, 130]])).returns("http://foo.com//graph")
+      spend_by_month_graph(@spend_by_month_data)
     end
     
     should "return nil if no data" do

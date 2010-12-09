@@ -13,15 +13,15 @@ module FinancialTransactionsHelper
     max_value = data.max
     rounded_no_above_max = ("%10.1e" % max_value).strip.sub(/(\d\.\d)/){|m|(m.to_f+0.1).to_s}.to_f.to_i
     
-    x_axis_labels = [0, currency_for_graph(rounded_no_above_max/2), currency_for_graph(rounded_no_above_max)]
-    y_axis_labels = []
-    gaps_between_y_labels = 50/column_width + 1
-    months.each_with_index{ |d,i| y_axis_labels << (i%gaps_between_y_labels == 0 ? d.to_s(:month_and_year) : nil)}
+    x_axis_labels = []
+    y_axis_labels = [0, currency_for_graph(rounded_no_above_max/2), currency_for_graph(rounded_no_above_max)]
+    gaps_between_x_labels = 50/column_width + 1
+    months.each_with_index{ |d,i| x_axis_labels << (i%gaps_between_x_labels == 0 ? d.to_s(:month_and_year) : nil)}
     image_tag(Gchart.bar( :data => data, 
                           :axis_with_labels => 'x,y',
-                          :axis_labels => [ y_axis_labels, x_axis_labels], 
+                          :axis_labels => [ x_axis_labels, y_axis_labels ], 
                           :size => "320x200",
-                          :max_value => rounded_no_above_max,
+                          :axis_range => [nil, [0, rounded_no_above_max]], # nb we can't use max_value param as googlecharts has bug which means it calculates range wrongly
                           # :bar_colors => 'BBCCDD',
                           :bar_width_and_spacing => { :spacing => 1, :width =>column_width }
                           ), 
