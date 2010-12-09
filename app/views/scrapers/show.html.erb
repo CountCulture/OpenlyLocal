@@ -29,7 +29,7 @@
     <strong>Last updated</strong> <%= @scraper.updated_at %></p>
   <div>
     <%= link_to "edit", edit_scraper_path(@scraper), :class => "button" %> 
-    <%= button_to "destroy", :action => :destroy, :id => @scraper, :confirm => 'Are you sure?' %> 
+    <%= button_to "destroy", {:action => :destroy, :id => @scraper}, :method => :delete, :confirm => 'Are you sure?' %> 
     <%= button_to "perform test scrape", :action => :scrape, :id => @scraper, :dry_run => true %>
     <%= button_to "process IMMEDIATELY", :action => :scrape, :id => @scraper, :process => "immediately" %>
     <%= button_to "process", :action => :scrape, :id => @scraper, :process => "queue" %>
