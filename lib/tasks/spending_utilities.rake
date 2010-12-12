@@ -869,3 +869,34 @@ task :import_birmingham_payments => :environment do
   end
   council.spending_stat.perform
 end
+
+desc "Import Arts Council Grants"
+task :import_arts_council_grants => :environment do
+  arts_council = Entity.find_by_title('Arts Council England')
+  Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'arts_council')).select{ |f| f.match('csv') }.each do |file_name|
+    FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/arts_council/#{file_name}"), :headers => true) do |csv_file|
+      # puts "Adding transactions for #{council.title}"
+      # "Ref No","Recipient","Project name","Award amount","Award date","Region","Consitituency","Local authority","Main artform","Applicant type"
+
+      csv_file.each do |row|
+        ft = FinancialTransaction.new(:organisation => arts_council,
+                                      :date => row['Award date'],
+                                      :value => row['Award amount'],
+                                      :supplier_name => row["Recipient"],
+                                      :transaction_type => 'Grant',
+                                      :uid => row['Ref No'],
+                                      :service => row["Main artform"],
+                                      :description => row['Project name'],
+                                      # :csv_line_number => csv_file.lineno,
+                                      :source_url => 'http://data.gov.uk/dataset/grants-for-the-arts-awards-arts-council-england'
+                                      )
+        ft.save!                                  
+        puts "."
+      end
+      arts_council.spending_stat.perform    
+    end
+
+  end
+
+end
+
