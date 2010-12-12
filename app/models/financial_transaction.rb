@@ -56,6 +56,31 @@ class FinancialTransaction < ActiveRecord::Base
     end
   end
   
+  def self.export_spending_data
+    require 'zip/zipfilesystem'
+    dir = File.join(RAILS_ROOT, "db/data/downloads/")
+    logger.info {"*** About to start exporting spending data to CSV file"}
+    csv_file = File.join(dir, "spending.csv")
+    Dir.mkdir(dir) unless File.directory?(dir)
+    FasterCSV.open(csv_file, "w") do |csv|
+      csv << (headings = FinancialTransaction::CsvMappings.collect{ |m| m.first })
+      FinancialTransaction.find_each do |financial_transaction|
+        csv << financial_transaction.csv_data
+      end
+    end
+    logger.info {"*** Finished exporting spending data to CSV file"}
+
+    Zip::ZipFile.open("#{csv_file}.new.zip", Zip::ZipFile::CREATE) {
+      |zipfile|
+      zipfile.add('spending.csv', csv_file)
+    }
+    logger.info {"*** Finished zipping spending CSV file: #{csv_file}.new.zip"}
+    File.delete(csv_file)
+    FileUtils.mv "#{csv_file}.new.zip", "#{csv_file}.zip", :force => true
+    logger.info {"*** Finished process. New spending data file is at: #{csv_file}.zip"}
+    # FileUtils.chmod_R 0644, "#{csv_file}.zip"
+  end
+  
   def averaged_date_and_value
     return [[date, value]] unless date_fuzziness?
     first_date, last_date = (date - date_fuzziness), (date + date_fuzziness)
