@@ -283,6 +283,7 @@ class CouncilTest < ActiveSupport::TestCase
         @original_title_and_normalised_title = {
           "Edinburgh Council" => "edinburgh",
           "EDINBURGH COUNCIL" => "edinburgh",
+          " EDINBURGH   COUNCIL    " => "edinburgh",
           "London Borough of Brent" => "brent",
           "City of Westminster" => "westminster",
           "Westminster City Council" => "westminster",
@@ -301,6 +302,7 @@ class CouncilTest < ActiveSupport::TestCase
           "Kingston upon Hull City Council" => "hull",
           "Kingston-upon-Hull City Council" => "hull",
           "Rotherham MBC" => "rotherham",
+          "Lichfield City Council" => "lichfield city",
           "St Albans City and District Council" => "st albans",
           "Royal Borough of Kensington & Chelsea" => "kensington and chelsea",
           "Tonbridge and Malling Borough Council" => "tonbridge and malling",

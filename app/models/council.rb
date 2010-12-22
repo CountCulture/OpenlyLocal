@@ -54,6 +54,11 @@ class Council < ActiveRecord::Base
   alias_attribute :title, :name
   alias_method :old_to_xml, :to_xml
   
+  NomaliserExceptions = {'lichfield city council' => 'lichfield city',
+                         'greater london authority' => 'greater london authority',
+                         'kingston[\s-]upon[\s-]hull' => 'hull',
+                         'city of london\b' => 'city of london'}
+  
   def self.find_by_params(params={})
     country, region, term, show_open_status, show_1010_status = params.delete(:country), params.delete(:region), params.delete(:term), params.delete(:show_open_status), params.delete(:show_1010_status)
     conditions = term ? ["councils.name LIKE ?", "%#{term}%"] : nil
@@ -67,9 +72,9 @@ class Council < ActiveRecord::Base
   
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising council titles
   def self.normalise_title(raw_title)
-    return TitleNormaliser.normalise_title(raw_title.gsub(/corporation/i,'')) if raw_title =~ /City of London\b|Greater London Authority/
-    raw_title = raw_title.sub(/kingston[\s-]upon[\s-]hull/i, 'Hull')
-    semi_normed_title = raw_title.gsub(/Metropolitan|Borough of|Borough|District|City of|City &|City and|City|County of|County|Royal|Council of the|London|Council|Corporation|MBC|LB\b|\([\w\s]+\)/i, '')
+    unless semi_normed_title = [NomaliserExceptions.detect{|k,v| raw_title =~ Regexp.new(k, true)}].flatten.last
+      semi_normed_title = TitleNormaliser.normalise_title(raw_title.gsub(/Metropolitan|Borough of|Borough|District|City of|City &|City and|City|County of|County|Royal|Council of the|London|Council|Corporation|MBC|LB\b|\([\w\s]+\)/i, ''))
+    end
     TitleNormaliser.normalise_title(semi_normed_title)
   end
   

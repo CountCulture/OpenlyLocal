@@ -21,6 +21,7 @@ class TitleNormaliserTest < Test::Unit::TestCase
           " Less-Important thing" => "less important thing",
           "multi\nline \t thing" => "multi line thing",
           "Ways and Means" => "ways and means",
+          " Ways and Means   " => "ways and means",
           "Ways & Means" => "ways and means",
           "Ways&Means" => "ways and means",
           "Important: another thing" => "important another thing",
