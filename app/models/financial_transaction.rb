@@ -243,4 +243,8 @@ class FinancialTransaction < ActiveRecord::Base
   def difference_in_months_between_dates(early_date,later_date)
     (later_date.year - early_date.year) * 12 + (later_date.month - early_date.month)
   end
+  
+  def average_over_months(aggregate)
+    
+  end
 end

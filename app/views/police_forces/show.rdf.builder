@@ -52,8 +52,8 @@ xml.tag! "rdf:RDF",
   
   # show info for alt representations
   ResourceRepresentations.each do |format, mime_type|
-    xml.tag! "rdf:Description", "rdf:about" => council_url(:id => @police_force.id, :format => format) do
-      xml.tag! "dct:isFormatOf", "rdf:resource" => council_url(:id => @police_force.id)
+    xml.tag! "rdf:Description", "rdf:about" => police_force_url(:id => @police_force.id, :format => format) do
+      xml.tag! "dct:isFormatOf", "rdf:resource" => police_force_url(:id => @police_force.id)
       xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@police_force)
       xml.tag! "rdf:type", "rdf:resource" => "http://purl.org/dc/dcmitype/Text"
       xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"

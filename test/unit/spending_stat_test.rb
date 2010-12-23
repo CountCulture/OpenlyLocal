@@ -30,6 +30,7 @@ class SpendingStatTest < ActiveSupport::TestCase
     should 'serialize breakdown' do
       assert_equal ['foo', 'bar'], Factory(:spending_stat, :breakdown => ['foo', 'bar']).reload.breakdown 
     end
+    
   end
   
   context "An instance of the SpendingStat class" do
@@ -124,7 +125,7 @@ class SpendingStatTest < ActiveSupport::TestCase
           @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 23.45, :date => 2.months.ago, :date_fuzziness => 45)
         end
 
-        should "should return date less fuziness" do
+        should "should return date less fuzziness" do
           assert_equal (2.months.ago.to_date + 45.days), @spending_stat.latest_transaction_date
         end
       end
@@ -205,7 +206,7 @@ class SpendingStatTest < ActiveSupport::TestCase
       
       context "when there are dates with fuzziness" do
         setup do
-          @fuzzy_ft_1 = Factory(:financial_transaction, :date => (@financial_transaction_1.date.beginning_of_month + 14.days), :date_fuzziness => 43, :supplier => @supplier, :value => 99)
+          @fuzzy_ft_1 = Factory(:financial_transaction, :date => (@financial_transaction_1.date.beginning_of_month + 14.days), :date_fuzziness => 40, :supplier => @supplier, :value => 99)
           @calc_sp = @spending_stat.calculated_spend_by_month
         end
 
@@ -217,6 +218,7 @@ class SpendingStatTest < ActiveSupport::TestCase
         should "split average across months concerned" do
           assert_in_delta 33.0, @calc_sp.first.last, 2 ** -10
         end
+        
         should "add average to any non-fuzzy transactions" do
           assert_in_delta 33.0+123.45, @calc_sp[1].last, 2 ** -10
         end
@@ -224,7 +226,6 @@ class SpendingStatTest < ActiveSupport::TestCase
         context "but still only single month" do
           setup do
             @fuzzy_ft_2 = Factory(:financial_transaction, :date => (@financial_transaction_1.date.beginning_of_month + 14.days), :date_fuzziness => 3, :supplier => @supplier, :value => 66)
-            # @calc_sp = 
           end
 
           should "not raise expection" do
