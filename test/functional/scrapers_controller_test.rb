@@ -251,8 +251,8 @@ class ScrapersControllerTest < ActionController::TestCase
     setup do
       @scraper = Factory(:scraper)
       @scraper.class.any_instance.stubs(:_data).returns(stub_everything)
-      @scraper.parser.update_attribute(:item_parser, "foo")
-      Parser.any_instance.stubs(:results) # pretend there are no results
+      @scraper.parser.update_attribute(:item_parser, "foo + bar")
+      # Parser.any_instance.stubs(:results) # pretend there are no results
       stub_authentication
       post :scrape, :id => @scraper.id, :dry_run => true
     end

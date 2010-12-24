@@ -65,6 +65,7 @@ class ScrapersController < ApplicationController
       Delayed::Job.enqueue @scraper
       flash.now[:notice] = "Scraper is being processed and you will be emailed with the results"
     end
+    @parser = @scraper.parser
     render :action => :show
   end
   

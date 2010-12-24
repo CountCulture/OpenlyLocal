@@ -6,14 +6,15 @@ module DocumentUtilities
     uncommented_body = raw_text.gsub(/<\!--.*?-->/mi, '').gsub(/<\!\[.*?\]>/mi, '') # remove comments otherwise they are escape by sanitizer and show in browser
     # sanitized_body = ActionController::Base.helpers.sanitize(uncommented_body)
     # doc = Hpricot(sanitized_body)
-    doc = Nokogiri.HTML(uncommented_body)
+    doc = Nokogiri::HTML::DocumentFragment.parse(uncommented_body)
     base_url = options[:base_url]&&options[:base_url].sub(/\/[^\/]+$/,'/')
-    doc.search("a[@href]").each do |link|
+    doc.css("a[@href]").each do |link|
       (link['href'] = "#{base_url}#{link[:href]}") if base_url && !link[:href].match(/^http:|^mailto:/)
       link['class'] ='external'
     end
     doc.search('img').remove
     doc.search('script').remove # sanitizer would just remove tags, not contents
+    # p doc.to_html
     ActionController::Base.helpers.sanitize(doc.to_html)
   end
   

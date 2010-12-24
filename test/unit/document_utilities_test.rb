@@ -28,6 +28,11 @@ EOF
         assert_nil DocumentUtilities.sanitize('')
       end
       
+      should "return safe text unchanged" do
+        assert_equal 'This is safe text', DocumentUtilities.sanitize('This is safe text')
+        
+      end
+      
       should "not convert relative urls to absolute ones" do
         assert_match /with <a href=\"councillor22/, @sanitized_document
       end
