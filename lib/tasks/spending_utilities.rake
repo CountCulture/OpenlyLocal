@@ -900,3 +900,19 @@ task :import_arts_council_grants => :environment do
 
 end
 
+desc "Import GLA Supppliers"
+task :import_gla_suppliers => :environment do
+  gla = Council.first(:conditions => "name = 'Greater London Authority'")
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/gla/gla-suppliers-list-2010.csv"), :headers => true) do |row|
+    if s = gla.suppliers.find_by_uid(row['Vendor Number'])
+      puts "Matched GLA supplier #{s.title} with #{row['Vendor Name']}"
+      next if row['VAT Registration No.'].blank? || s.payee
+      puts "Adding VatMatcher to queue"
+      Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => row['VAT Registration No.'], :supplier => s, :title => s.title))
+      # s.attributes = {:vat_number => row['VAT Registration No.']} unless row['VAT Registration No.'].blank? || s.vat_number
+    else
+      puts "Couldn't find GLA supplier: #{row['Vendor Name']} with supplier id #{row['Vendor Number']}"
+    end
+  end
+end
+
