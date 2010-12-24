@@ -22,7 +22,7 @@
       <%= render :partial => "#{@supplier.payee.class.to_s.underscore.pluralize}/attributes", :object => @supplier.payee %>
     </dl>
     <div id="other_supplying_relationships" class='clear-left'>
-      <h4>Other councils supplied by <%= basic_link_for(@supplier.payee) %></h4>
+      <h4>Other organisations making payments to <%= basic_link_for(@supplier.payee) %></h4>
       <%- if @supplier.associateds.blank? -%>
         <p>None known</p>
       <%- else -%>

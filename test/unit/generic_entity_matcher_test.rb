@@ -24,18 +24,28 @@ class GenericEntityMatcherTest < ActiveSupport::TestCase
         end
         
         should "find all starting with first word of title if class doesn't implement possible matches" do
-          HyperlocalSite.expects(:all).with(:conditions => ['title LIKE ?',"foo%"])
+          HyperlocalSite.expects(:all).with(has_entry(:conditions => ['title LIKE ?',"foo%"]))
           GenericEntityMatcher.possible_matches(:title => 'foo thing', :type => 'HyperlocalSite')
         end
 
         should "find all starting with first word of name if class doesn't implement possible matches and has name rather than title attribute" do
-          TestModelWithSpendingStat.expects(:all).with(:conditions => ['name LIKE ?',"foo%"])
+          TestModelWithSpendingStat.expects(:all).with(has_entry(:conditions => ['name LIKE ?',"foo%"]))
           GenericEntityMatcher.possible_matches(:title => 'foo thing', :type => 'TestModelWithSpendingStat')
         end
         
         should "find all starting with first word of title if class doesn't implement possible matches and implements normalised_title" do
-          TestScrapedModel.expects(:all).with(:conditions => ['normalised_title LIKE ?',"foo%"])
+          TestScrapedModel.expects(:all).with(has_entry(:conditions => ['normalised_title LIKE ?',"foo%"]))
           GenericEntityMatcher.possible_matches(:title => 'The FOO Thing', :type => 'TestScrapedModel')
+        end
+        
+        should "find all in alphabetical order of title if model has title attribute" do
+          TestScrapedModel.expects(:all).with(has_entry(:order => 'title'))
+          GenericEntityMatcher.possible_matches(:title => 'The FOO Thing', :type => 'TestScrapedModel')
+        end
+        
+        should "find all in alphabetical order of name if model has name attribute" do
+          TestModelWithSpendingStat.expects(:all).with(has_entry(:order => 'name'))
+          GenericEntityMatcher.possible_matches(:title => 'The FOO Thing', :type => 'TestModelWithSpendingStat')
         end
         
         context "return result which" do
