@@ -16,8 +16,7 @@ class Charity < ActiveRecord::Base
   validates_presence_of :title, :charity_number
   validates_uniqueness_of :charity_number
   before_save :normalise_title
-  alias_attribute :url, :website
-  
+  alias_attribute :url, :website  
   
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising charity titles
   def self.normalise_title(raw_title)

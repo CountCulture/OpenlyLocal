@@ -16,6 +16,11 @@ class Document < ActiveRecord::Base
     self[:document_type] || "Document"
   end
   
+  # uses index and so is much quicker than basic count
+  def self.quick_count
+    count_by_sql('SELECT COUNT(*) AS count_id FROM `documents` USE INDEX (index_documents_on_document_owner_id_and_document_owner_type)')
+  end
+  
   # def calculated_precis
   #   stripped_text = ActionController::Base.helpers.strip_tags(body).gsub(/[\t\r\n]+ *[\t\r\n]+/,"\n")
   #   ActionController::Base.helpers.truncate(stripped_text, :length => 500)
