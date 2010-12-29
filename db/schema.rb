@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101031095103) do
+ActiveRecord::Schema.define(:version => 20101229172845) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -437,7 +437,7 @@ ActiveRecord::Schema.define(:version => 20101031095103) do
     t.column "original_updated_at", :datetime
   end
 
-  add_index "documents", ["document_owner_type", "document_owner_id"], :name => "index_documents_on_document_owner_type_and_document_owner_id"
+  add_index "documents", ["document_owner_id", "document_owner_type"], :name => "index_documents_on_document_owner_id_and_document_owner_type"
 
   create_table "entities", :force => true do |t|
     t.column "title", :string
