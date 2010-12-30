@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101229224243) do
+ActiveRecord::Schema.define(:version => 20101230105543) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -476,6 +476,7 @@ ActiveRecord::Schema.define(:version => 20101229224243) do
 
   add_index "feed_entries", ["feed_owner_id", "feed_owner_type"], :name => "index_feed_entries_on_feed_owner_id_and_feed_owner_type"
   add_index "feed_entries", ["guid"], :name => "index_feed_entries_on_guid"
+  add_index "feed_entries", ["published_at"], :name => "index_feed_entries_on_published_at"
 
   create_table "financial_transactions", :force => true do |t|
     t.column "description", :text
