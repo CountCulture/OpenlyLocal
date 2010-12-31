@@ -98,18 +98,6 @@ Factory.define :document do |f|
   f.body "This is a document. It goes " + "on and on and on"*10
 end
 
-Factory.define :old_dataset do |f|
-  f.key "abc123"
-  f.title "Dummy dataset"
-  f.query "some query"
-end
-
-Factory.define :old_datapoint do |f|
-  f.association :council
-  f.association :old_dataset
-  f.data        "some data"
-end
-
 Factory.define :ward do |f|
   f.name "Foo South"
   f.association :council

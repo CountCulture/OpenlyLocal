@@ -15,7 +15,6 @@ class CouncilTest < ActiveSupport::TestCase
     should have_many :memberships
     should have_many :scrapers
     should have_many :meetings
-    should have_many :old_datapoints
     should have_many :wards
     should have_many :officers
     should have_many :services
@@ -97,11 +96,6 @@ class CouncilTest < ActiveSupport::TestCase
         unparsed_council = Council.parsed(:include_unparsed => true).last
         assert_equal "0", unparsed_council.member_count
       end
-    end
-
-    should "have many old_datasets through old_datapoints" do
-      @datapoint = Factory(:old_datapoint, :council => @council)
-      assert_equal [@datapoint.old_dataset], @council.old_datasets
     end
 
     should "not include defunkt wards in wards association" do
@@ -639,7 +633,6 @@ class CouncilTest < ActiveSupport::TestCase
     context "when converting council to_detailed_xml" do
       setup do
         @member = Factory(:member, :council => @council, :party => "foobar")
-        datapoint = Factory(:old_datapoint, :council => @council)
         @committee = Factory(:committee, :council => @council)
         mark_as_stale(@committee)
         @updated_committee = Factory(:committee, :council => @council)
