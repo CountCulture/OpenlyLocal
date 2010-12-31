@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101230105543) do
+ActiveRecord::Schema.define(:version => 20101231214918) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -647,31 +647,6 @@ ActiveRecord::Schema.define(:version => 20101230105543) do
   end
 
   add_index "officers", ["council_id"], :name => "index_officers_on_council_id"
-
-  create_table "old_datapoints", :force => true do |t|
-    t.column "data", :text
-    t.column "council_id", :integer
-    t.column "old_dataset_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-  end
-
-  add_index "old_datapoints", ["council_id"], :name => "index_datapoints_on_council_id"
-  add_index "old_datapoints", ["old_dataset_id"], :name => "index_datapoints_on_dataset_id"
-
-  create_table "old_datasets", :force => true do |t|
-    t.column "title", :string
-    t.column "key", :string
-    t.column "source", :string
-    t.column "query", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "description", :text
-    t.column "originator", :string
-    t.column "originator_url", :string
-    t.column "summary_column", :integer
-    t.column "last_checked", :datetime
-  end
 
   create_table "ons_datasets", :force => true do |t|
     t.column "start_date", :date
