@@ -557,4 +557,11 @@ task :update_1010_councils => :environment do
   end 
 end
 
-
+desc "Import latest Local Government Service List"
+task :import_lgsl_ids => :environment do
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/ldg_services/ldg_services.csv"), :headers => true) do |row|
+    ls = LdgService.find_or_initialize_by_lgsl_and_lgil(:lgsl => row[1], :lgil => row[2])
+    ls.update_attributes!( :category => row[0], :service_name => row[3], :authority_level => row[4], :url => row[5])
+  end
+  
+end
