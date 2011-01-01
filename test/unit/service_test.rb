@@ -213,6 +213,30 @@ class ServiceTest < ActiveSupport::TestCase
         assert_nil Service.find_by_id(stale_service.id)
       end
     end
+
+    context "when returning spending data services for councils publishing spending data" do
+      setup do
+        @council_1 = Factory(:generic_council)
+        @council_2 = Factory(:generic_council)
+        @spend_data_service = Factory(:ldg_service, :lgsl => LdgService::SPEND_OVER_500_LGSL)
+        @council_spending_service = Factory(:service, :ldg_service => @spend_data_service, :council => @council)
+        @council_2_spending_service = Factory(:service, :ldg_service => @spend_data_service, :council => @council_2)
+        @council_another_service = Factory(:service, :council => @council)
+      end
+
+      should "return list of service for those councils with service id" do
+        cpsd = Service.spending_data_services_for_councils
+        assert_equal 2, cpsd.size
+        assert cpsd.include?(@council_spending_service)
+        assert cpsd.include?(@council_2_spending_service)
+      end
+
+      should "not include councils already tracked for spending data" do
+        supplier = Factory(:supplier, :organisation => @council)
+        assert_equal [@council_2_spending_service], Service.spending_data_services_for_councils
+      end
+    end
+    
   end
   
   private

@@ -1,5 +1,7 @@
 class LdgService < ActiveRecord::Base
   BaseUrl = "http://local.direct.gov.uk/LDGRedirect/index.jsp?"
+  SPEND_OVER_500_LGSL = 1465
+  
   has_many :services, :include => :council, :order => 'councils.name'
   validates_presence_of :category, 
                         :lgsl,
@@ -16,8 +18,11 @@ class LdgService < ActiveRecord::Base
     ldg_url = url_for(council)
     response = follow_redirects_to(ldg_url)
     return nil unless response&&(dest_resp, poss_dest_url = response)
-    title = Hpricot(dest_resp.content).at("title").try(:inner_text)
+    title = Nokogiri::HTML.parse(dest_resp.content).at("title").try(:inner_text)
     { :url => poss_dest_url, :title => title}
+  rescue Exception => e
+    Rails.logger.debug { "Exception getting ldg url #{ldg_url} for council #{council.title}: #{e.inspect}" }
+    nil
   end
   
   def url_for(council)

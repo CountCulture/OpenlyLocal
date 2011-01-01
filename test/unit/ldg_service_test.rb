@@ -127,6 +127,13 @@ class LdgServiceTest < ActiveSupport::TestCase
         LdgService.any_instance.stubs(:_http_get).with("http://bar.com").raises(HTTPClient::ConnectTimeoutError)
         assert_nil @ldg_service.destination_url(@council)
       end
+        
+      should "return nil if prob parsing page for title" do
+        LdgService.any_instance.stubs(:_http_get).with("http://foo.com").returns(stub(:status => 302, :header => {'location' => ["http://bar.com"]}))
+        LdgService.any_instance.stubs(:_http_get).with("http://bar.com").returns(stub(:status => 200, :content => "<html><head><title>FooBar Page</title><head><body>Foo Baz</body></html>"))
+        Nokogiri::HTML.expects(:parse).raises
+        assert_nil @ldg_service.destination_url(@council)
+      end
     end
   end
 end

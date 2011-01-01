@@ -33,5 +33,11 @@ class Service < ActiveRecord::Base
     council.services.stale.each(&:destroy) # get rid of stale pages
   end
   
+  def self.spending_data_services_for_councils
+    sds = LdgService.find_by_lgsl(LdgService::SPEND_OVER_500_LGSL).services
+    councils_with_imported_spending_data = Council.all(:joins => :suppliers).collect(&:id)
+    sds.delete_if{ |service| councils_with_imported_spending_data.include?(service.council_id) }
+  end
+  
 end
                            

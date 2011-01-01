@@ -10,6 +10,7 @@ class AdminControllerTest < ActionController::TestCase
         @another_council = Factory(:another_council)
         @user_submission = Factory(:user_submission)
         @council_contact = Factory(:council_contact, :council => @another_council)
+        Factory(:ldg_service, :lgsl => LdgService::SPEND_OVER_500_LGSL)
         Delayed::Job.enqueue(Tweeter.new('foo message'))
         stub_authentication
         get :index

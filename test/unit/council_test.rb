@@ -987,8 +987,7 @@ class CouncilTest < ActiveSupport::TestCase
       
     end
   end
-
-
+  
   private
   def mark_as_stale(rec)
     rec.class.record_timestamps = false
