@@ -127,7 +127,13 @@ class CompanyUtilitiesTest < ActiveSupport::TestCase
         end
     
         should "return nil if no company with former name matches" do
-          @client.stubs(:search_companies_house_for).with('Foo & Baz', :data_set => 'FORMER').returns(stub_everything(:co_search_items => [@another_former_name_co, @dissolved_co]) )
+          @client.expects(:search_companies_house_for).with('Foo Far', :data_set => 'FORMER').returns(stub_everything(:co_search_items => [@another_former_name_co, @dissolved_co]) )
+          assert_nil @client.find_company_by_name('Foo Far')
+        end
+
+        should "return nil if no company returned for former name" do
+          @client.expects(:search_companies_house_for).with('Foo Far').returns(stub_everything(:co_search_items => []))
+          @client.expects(:search_companies_house_for).with('Foo Far', :data_set => 'FORMER')#.returns(stub_everything(:co_search_items => [@another_former_name_co, @dissolved_co]) )
           assert_nil @client.find_company_by_name('Foo Far')
         end
       end

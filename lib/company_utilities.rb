@@ -27,7 +27,7 @@ module CompanyUtilities
       poss_companies = resp.co_search_items
       unless match = Matcher.match_company(:poss_companies => poss_companies, :name => name)
         sleep 1
-        poss_companies = search_companies_house_for(name, :data_set => 'FORMER').co_search_items
+        poss_companies = search_companies_house_for(name, :data_set => 'FORMER').try(:co_search_items)
         match = Matcher.match_company(:poss_companies => poss_companies, :name => name)
       end
       return nil unless match
