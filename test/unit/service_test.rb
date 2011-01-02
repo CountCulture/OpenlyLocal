@@ -214,6 +214,32 @@ class ServiceTest < ActiveSupport::TestCase
       end
     end
 
+    context "when returning service for lgsl id" do
+      setup do
+        @some_service_type = Factory(:ldg_service, :lgsl => 42)
+        @another_service_type = Factory(:ldg_service, :lgsl => 44)
+        @service_for_some_service_type = Factory(:service, :ldg_service => @some_service_type)
+        @service_2_for_some_service_type = Factory(:service, :ldg_service => @some_service_type)
+        @service_for_another_service_type = Factory(:service, :ldg_service => @another_service_type)
+        @service_for_third_service_type = Factory(:service)
+      end
+
+      should "return all services belong to LdgService with given lgsl id" do
+        sfl = Service.for_lgsl_id(42)
+        assert_equal 2, sfl.size
+        assert sfl.include?(@service_for_some_service_type)
+        assert sfl.include?(@service_2_for_some_service_type)
+      end
+
+      should "return all services belong to LdgService with given lgsl ids" do
+        sfl = Service.for_lgsl_id([42, 44])
+        assert_equal 3, sfl.size
+        assert sfl.include?(@service_for_some_service_type)
+        assert sfl.include?(@service_2_for_some_service_type)
+        assert sfl.include?(@service_for_another_service_type)
+      end
+    end
+    
     context "when returning spending data services for councils publishing spending data" do
       setup do
         @council_1 = Factory(:generic_council)

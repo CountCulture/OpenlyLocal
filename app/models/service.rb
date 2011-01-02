@@ -7,6 +7,11 @@ class Service < ActiveRecord::Base
   validates_presence_of :council_id, :title, :url, :category, :ldg_service_id
   validates_uniqueness_of :ldg_service_id, :scope => :council_id
   
+  def self.for_lgsl_id(ids)
+    spending_ldg_service_ids = LdgService.find_all_by_lgsl(ids).collect(&:id)
+    sds = Service.all(:conditions => {:ldg_service_id => spending_ldg_service_ids}, :include => :council)
+  end
+  
   def self.refresh_all_urls
     Council.with_stale_services.each do |council|
       refresh_urls_for(council)
@@ -34,8 +39,7 @@ class Service < ActiveRecord::Base
   end
   
   def self.spending_data_services_for_councils
-    spending_ldg_service = LdgService.find_by_lgsl(LdgService::SPEND_OVER_500_LGSL)
-    sds = Service.all(:conditions => {:ldg_service_id => spending_ldg_service.id}, :include => :council)
+    sds = for_lgsl_id(LdgService::SPEND_OVER_500_LGSL)
     councils_with_imported_spending_data = Council.all(:joins => :suppliers, :select => 'councils.id', :group => 'councils.id').collect(&:id) #if don't group by returns a council for each service the council has, with huge memory issues, 
     sds.delete_if{ |service| councils_with_imported_spending_data.include?(service.council_id) }
     sds.sort_by{ |s| s.council.title }

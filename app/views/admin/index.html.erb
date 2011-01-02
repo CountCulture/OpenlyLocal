@@ -33,14 +33,39 @@
     <%- end -%>
   </ul>
 </div>
-<div id="councils_with_unimported_spending_data" class='item_grouping'>
-  <h3>Councils With Spending Data Not Yet Imported</h3>
+<div id="councils_with_data" class='item_grouping'>
+  <h3>Councils With Data</h3>
   <ul>
-    <%- @unimported_spending_data_councils.each do |service| -%>
+    <li>Unimported Spending Data</li>
     <li>
-      <%= link_to service.council.title, service.url, :class => "external" %>
+      <ul>
+        <%- @unimported_spending_data_councils.each do |service| -%>
+        <li>
+          <%= link_to service.council.title, service.url, :class => "external" %>
+        </li>
+        <%- end -%>
+      </ul>
     </li>
-    <%- end -%>
+    <li>Publishing Contract Data</li>
+    <li>
+      <ul>
+        <%- @contract_data_councils.each do |service| -%>
+        <li>
+          <%= link_to service.council.title, service.url, :class => "external" %>
+        </li>
+        <%- end -%>
+      </ul>
+    </li>
+    <li>Publishing Senior Staff Data</li>
+    <li>
+      <ul>
+        <%- @senior_staff_data_councils.each do |service| -%>
+        <li>
+          <%= link_to service.council.title, service.url, :class => "external" %>
+        </li>
+        <%- end -%>
+      </ul>
+    </li>
   </ul>
 </div>
 <br class='clear' />

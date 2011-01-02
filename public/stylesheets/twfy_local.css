@@ -867,7 +867,16 @@ form#foi_request {
 .admin .attributes dd {
 	width:auto;
 }
-
+.admin #councils_with_data li {
+  list-style-type: none;
+  font-weight: bold;
+  font-size: 1.25em;
+}
+.admin #councils_with_data li li {
+  list-style-type: disc;
+  font-weight: normal;
+  font-size: 0.8em;
+}
 /*Autocomplete styling*/
 .ac_results {
 	padding: 0px;

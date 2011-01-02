@@ -147,7 +147,7 @@ Factory.define :service do |f|
   f.sequence(:title) { |n| "Foo Service #{n}" }
   f.sequence(:category) { |n| "Foo Category #{n}" }
   f.sequence(:url) { |n| "http://council.gov.uk/foo/#{n}" }
-  f.association :council
+  f.association :council, :factory => :generic_council
   f.association :ldg_service
 end
 

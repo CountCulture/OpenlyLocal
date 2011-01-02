@@ -1,6 +1,8 @@
 class LdgService < ActiveRecord::Base
   BaseUrl = "http://local.direct.gov.uk/LDGRedirect/index.jsp?"
   SPEND_OVER_500_LGSL = 1465
+  SENIOR_STAFF_LGSL   = 1573
+  CONTRACT_DATA_LGSL  = 828
   
   has_many :services, :include => :council, :order => 'councils.name'
   validates_presence_of :category, 
