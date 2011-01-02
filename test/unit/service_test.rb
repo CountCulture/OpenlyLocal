@@ -217,7 +217,7 @@ class ServiceTest < ActiveSupport::TestCase
     context "when returning spending data services for councils publishing spending data" do
       setup do
         @council_1 = Factory(:generic_council)
-        @council_2 = Factory(:generic_council)
+        @council_2 = Factory(:generic_council, :name => "Aaa Council")
         @spend_data_service = Factory(:ldg_service, :lgsl => LdgService::SPEND_OVER_500_LGSL)
         @council_spending_service = Factory(:service, :ldg_service => @spend_data_service, :council => @council)
         @council_2_spending_service = Factory(:service, :ldg_service => @spend_data_service, :council => @council_2)
@@ -229,6 +229,10 @@ class ServiceTest < ActiveSupport::TestCase
         assert_equal 2, cpsd.size
         assert cpsd.include?(@council_spending_service)
         assert cpsd.include?(@council_2_spending_service)
+      end
+
+      should "return in alpha order of council name" do
+        assert_equal @council_2_spending_service, Service.spending_data_services_for_councils.first
       end
 
       should "not include councils already tracked for spending data" do

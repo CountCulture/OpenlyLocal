@@ -35,10 +35,10 @@ class Service < ActiveRecord::Base
   
   def self.spending_data_services_for_councils
     spending_ldg_service = LdgService.find_by_lgsl(LdgService::SPEND_OVER_500_LGSL)
-    sds = Service.all(:conditions => {:ldg_service_id => spending_ldg_service.id})
+    sds = Service.all(:conditions => {:ldg_service_id => spending_ldg_service.id}, :include => :council)
     councils_with_imported_spending_data = Council.all(:joins => :suppliers, :select => 'councils.id', :group => 'councils.id').collect(&:id) #if don't group by returns a council for each service the council has, with huge memory issues, 
     sds.delete_if{ |service| councils_with_imported_spending_data.include?(service.council_id) }
-    sds
+    sds.sort_by{ |s| s.council.title }
   end
   
 end
