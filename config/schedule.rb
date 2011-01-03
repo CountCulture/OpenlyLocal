@@ -7,11 +7,11 @@
 #
 # set :cron_log, "/path/to/my/cron_log.log"
 #
-# every 2.hours do
-#   command "/usr/bin/some_great_command"
-#   runner "MyModel.some_method"
-#   rake "some:great:rake:task"
-# end
+every 2.hours do
+  # command "/usr/bin/some_great_command"
+  # runner "MyModel.some_method"
+  rake "update_dummything"
+end
 every 2.hours, :at => 30 do
   command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'FeedEntry.perform' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
 end
