@@ -22,6 +22,8 @@ class SpendingStatTest < ActiveSupport::TestCase
     should have_db_column :average_transaction_value
     should have_db_column :spend_by_month
     should have_db_column :breakdown
+    should have_db_column :earliest_transaction
+    should have_db_column :latest_transaction
     
     should 'serialize spend_by_month' do
       assert_equal ['foo', 'bar'], Factory(:spending_stat, :spend_by_month => ['foo', 'bar']).reload.spend_by_month 
@@ -52,7 +54,7 @@ class SpendingStatTest < ActiveSupport::TestCase
     context "when performing" do
 
       should "should calculate total_spend" do
-        @spending_stat.expects(:calculated_total_spend)
+        @spending_stat.expects(:calculated_total_spend).at_least(1)
         @spending_stat.perform
       end
       
@@ -97,11 +99,31 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal dummy_payee_breakdown, @spending_stat.reload.breakdown
       end
 
+      should "should set earliest_transaction" do
+        earliest_date = 4.weeks.ago.to_date
+        @spending_stat.stubs(:earliest_transaction_date).returns(earliest_date)
+        @spending_stat.perform
+        assert_equal earliest_date, @spending_stat.reload.earliest_transaction
+      end
+
+
+      should "should set latest_transaction" do
+        latest_date = 3.weeks.ago.to_date
+        @spending_stat.stubs(:latest_transaction_date).returns(latest_date)
+        @spending_stat.perform
+        assert_equal latest_date, @spending_stat.reload.latest_transaction
+      end
     end
     
     context "when returning earliest_transaction_date" do
       should "return first date" do
         assert_equal 11.months.ago.to_date, @spending_stat.earliest_transaction_date
+      end
+      
+      should "cache result" do
+        FinancialTransaction.expects(:find).returns(@financial_transaction_1) #once
+        @spending_stat.earliest_transaction_date
+        @spending_stat.earliest_transaction_date
       end
       
       context "and date has fuzziness" do
@@ -118,6 +140,12 @@ class SpendingStatTest < ActiveSupport::TestCase
     context "when returning latest_transaction_date" do
       should "return first date" do
         assert_equal 3.months.ago.to_date, @spending_stat.latest_transaction_date
+      end
+      
+      should "cache result" do
+        FinancialTransaction.expects(:find).returns(@financial_transaction_1) #once
+        @spending_stat.latest_transaction_date
+        @spending_stat.latest_transaction_date
       end
       
       context "and date has fuzziness" do
@@ -142,6 +170,12 @@ class SpendingStatTest < ActiveSupport::TestCase
     context "when calculating total_spend" do
       should "sum all financial transactions for organisation" do
         assert_in_delta (123.45 - 32.1 + 22.1), @spending_stat.calculated_total_spend, 2 ** -10
+      end
+      
+      should "cache results" do
+        FinancialTransaction.expects(:calculate).returns(42) #once
+        @spending_stat.calculated_total_spend
+        @spending_stat.calculated_total_spend
       end
     end
     

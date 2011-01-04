@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110102100352) do
+ActiveRecord::Schema.define(:version => 20110103232230) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   end
 
   create_table "addresses", :force => true do |t|
-    t.column "street_address", :text
+    t.column "street_address", :text, :limit => 16777215
     t.column "locality", :string
     t.column "postal_code", :string
     t.column "country", :string
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "area_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
-    t.column "boundary_line", :polygon
+    t.column "boundary_line", :multi_polygon
     t.column "hectares", :float
   end
 
@@ -57,7 +57,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "votes", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
-    t.column "basic_address", :text
+    t.column "basic_address", :text, :limit => 16777215
     t.column "political_party_id", :integer
     t.column "member_id", :integer
   end
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
 
   create_table "charities", :force => true do |t|
     t.column "title", :string
-    t.column "activities", :text
+    t.column "activities", :text, :limit => 16777215
     t.column "charity_number", :string
     t.column "website", :string
     t.column "email", :string
@@ -84,16 +84,16 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "date_removed", :date
     t.column "normalised_title", :string
     t.column "employees", :integer
-    t.column "accounts", :text
-    t.column "financial_breakdown", :text
-    t.column "trustees", :text
-    t.column "other_names", :string
+    t.column "accounts", :text, :limit => 16777215
+    t.column "financial_breakdown", :text, :limit => 16777215
+    t.column "trustees", :text, :limit => 16777215
+    t.column "other_names", :text
     t.column "volunteers", :integer
     t.column "last_checked", :datetime
     t.column "facebook_account_name", :string
     t.column "youtube_account_name", :string
     t.column "feed_url", :string
-    t.column "governing_document", :text
+    t.column "governing_document", :text, :limit => 16777215
     t.column "company_number", :string
     t.column "housing_association_number", :string
     t.column "fax", :string
@@ -173,7 +173,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   create_table "classifications", :force => true do |t|
     t.column "grouping", :string
     t.column "title", :string
-    t.column "extended_title", :text
+    t.column "extended_title", :text, :limit => 16777215
     t.column "uid", :string
     t.column "parent_id", :integer
     t.column "created_at", :datetime
@@ -187,11 +187,9 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "url", :string
     t.column "council_id", :integer
     t.column "uid", :string
-    t.column "description", :text
+    t.column "description", :text, :limit => 16777215
     t.column "ward_id", :integer
     t.column "normalised_title", :string
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
   end
 
   add_index "committees", ["council_id"], :name => "index_committees_on_council_id"
@@ -210,14 +208,14 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "wikipedia_url", :string
     t.column "status", :string
     t.column "vat_number", :string
-    t.column "previous_names", :text
-    t.column "sic_codes", :text
+    t.column "previous_names", :text, :limit => 16777215
+    t.column "sic_codes", :text, :limit => 16777215
     t.column "country", :string
   end
 
   create_table "contracts", :force => true do |t|
     t.column "title", :string
-    t.column "description", :text
+    t.column "description", :text, :limit => 16777215
     t.column "uid", :string
     t.column "source_url", :string
     t.column "url", :string
@@ -229,7 +227,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "total_value", :integer
     t.column "annual_value", :integer
     t.column "supplier_name", :string
-    t.column "supplier_address", :text
+    t.column "supplier_address", :text, :limit => 16777215
     t.column "supplier_uid", :string
     t.column "department_responsible", :string
     t.column "person_responsible", :string
@@ -260,10 +258,10 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "updated_at", :datetime
     t.column "base_url", :string
     t.column "telephone", :string
-    t.column "address", :text
+    t.column "address", :text, :limit => 16777215
     t.column "authority_type", :string
     t.column "portal_system_id", :integer
-    t.column "notes", :text
+    t.column "notes", :text, :limit => 16777215
     t.column "wikipedia_url", :string
     t.column "ons_url", :string
     t.column "egr_id", :integer
@@ -314,8 +312,8 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "crime_mapper_url", :string
     t.column "feed_url", :string
     t.column "crime_level_cf_national", :string
-    t.column "crime_rates", :text
-    t.column "total_crimes", :text
+    t.column "crime_rates", :text, :limit => 16777215
+    t.column "total_crimes", :text, :limit => 16777215
   end
 
   add_index "crime_areas", ["police_force_id"], :name => "index_crime_areas_on_police_force_id"
@@ -328,11 +326,14 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "updated_at", :datetime
   end
 
-  create_table "csv_parsers", :force => true do |t|
-    t.column "result_model", :string
-    t.column "item_mapping", :text
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+  create_table "data_periods", :force => true do |t|
+    t.column "start_date", :date
+    t.column "end_date", :date
+  end
+
+  create_table "data_periods_dataset_families", :id => false, :force => true do |t|
+    t.column "data_period_id", :integer
+    t.column "dataset_family_id", :integer
   end
 
   create_table "datapoints", :force => true do |t|
@@ -342,6 +343,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "area_type", :string
+    t.column "data_period_id", :integer
   end
 
   add_index "datapoints", ["dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
@@ -382,7 +384,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "muid", :integer
-    t.column "description", :text
+    t.column "description", :text, :limit => 16777215
     t.column "data_date", :date
     t.column "short_title", :string
     t.column "dataset_topic_grouping_id", :integer
@@ -393,14 +395,14 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
 
   create_table "datasets", :force => true do |t|
     t.column "title", :string
-    t.column "description", :text
+    t.column "description", :text, :limit => 16777215
     t.column "url", :string
     t.column "originator", :string
     t.column "originator_url", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "dataset_topic_grouping_id", :integer
-    t.column "notes", :text
+    t.column "notes", :text, :limit => 16777215
     t.column "licence", :string
   end
 
@@ -409,8 +411,8 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   create_table "delayed_jobs", :force => true do |t|
     t.column "priority", :integer, :default => 0
     t.column "attempts", :integer, :default => 0
-    t.column "handler", :text
-    t.column "last_error", :text
+    t.column "handler", :text, :limit => 16777215
+    t.column "last_error", :text, :limit => 16777215
     t.column "run_at", :datetime
     t.column "locked_at", :datetime
     t.column "failed_at", :datetime
@@ -429,12 +431,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "updated_at", :datetime
     t.column "raw_body", :text, :limit => 16777215
     t.column "document_type", :string
-    t.column "precis", :text
-    t.column "filetype", :string
-    t.column "original_file_name", :string
-    t.column "original_content_type", :string
-    t.column "original_file_size", :integer
-    t.column "original_updated_at", :datetime
+    t.column "precis", :text, :limit => 16777215
   end
 
   add_index "documents", ["document_owner_id", "document_owner_type"], :name => "index_documents_on_document_owner_id_and_document_owner_type"
@@ -447,7 +444,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "wikipedia_url", :string
     t.column "sponsoring_organisation", :string
     t.column "wdtk_name", :string
-    t.column "previous_names", :text
+    t.column "previous_names", :text, :limit => 16777215
     t.column "setup_on", :date
     t.column "disbanded_on", :date
     t.column "created_at", :datetime
@@ -455,14 +452,14 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "vat_number", :string
     t.column "cpid_code", :string
     t.column "normalised_title", :string
+    t.column "other_attributes", :text, :limit => 16777215
     t.column "resource_uri", :string
-    t.column "other_attributes", :text
     t.column "telephone", :string
   end
 
   create_table "feed_entries", :force => true do |t|
     t.column "title", :string
-    t.column "summary", :text
+    t.column "summary", :text, :limit => 16777215
     t.column "url", :string
     t.column "published_at", :datetime
     t.column "guid", :string
@@ -479,14 +476,14 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   add_index "feed_entries", ["published_at"], :name => "index_feed_entries_on_published_at"
 
   create_table "financial_transactions", :force => true do |t|
-    t.column "description", :text
+    t.column "description", :text, :limit => 16777215
     t.column "uid", :string
     t.column "supplier_id", :integer
     t.column "date", :date
     t.column "department_name", :string
     t.column "service", :string
     t.column "cost_centre", :string
-    t.column "source_url", :text
+    t.column "source_url", :text, :limit => 16777215
     t.column "value", :float
     t.column "transaction_type", :string
     t.column "date_fuzziness", :integer
@@ -522,7 +519,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "updated_at", :datetime
     t.column "hyperlocal_group_id", :integer
     t.column "platform", :string
-    t.column "description", :text
+    t.column "description", :text, :limit => 16777215
     t.column "area_covered", :string
     t.column "council_id", :integer
     t.column "country", :string
@@ -546,15 +543,15 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "uid", :string
     t.column "url", :string
     t.column "related_organisation_name", :string
-    t.column "raw_html", :text
+    t.column "raw_html", :text, :limit => 16777215
     t.column "standards_body", :string
     t.column "title", :string
     t.column "subjects", :string
     t.column "date_received", :date
     t.column "date_completed", :date
-    t.column "description", :text
-    t.column "result", :text
-    t.column "case_details", :text
+    t.column "description", :text, :limit => 16777215
+    t.column "result", :text, :limit => 16777215
+    t.column "case_details", :text, :limit => 16777215
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "full_report_url", :string
@@ -583,10 +580,8 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "uid", :string
     t.column "council_id", :integer
     t.column "url", :string
-    t.column "venue", :text
+    t.column "venue", :text, :limit => 16777215
     t.column "status", :string
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
   end
 
   add_index "meetings", ["council_id"], :name => "index_meetings_on_council_id"
@@ -608,13 +603,11 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "name_title", :string
     t.column "qualifications", :string
     t.column "register_of_interests", :string
-    t.column "address", :text
+    t.column "address", :text, :limit => 16777215
     t.column "ward_id", :integer
     t.column "blog_url", :string
     t.column "facebook_account_name", :string
     t.column "linked_in_account_name", :string
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
   end
 
   add_index "members", ["council_id"], :name => "index_members_on_council_id"
@@ -642,8 +635,6 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "url", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
   end
 
   add_index "officers", ["council_id"], :name => "index_officers_on_council_id"
@@ -684,17 +675,17 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
 
   create_table "parsers", :force => true do |t|
     t.column "description", :string
-    t.column "item_parser", :text
+    t.column "item_parser", :text, :limit => 16777215
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
-    t.column "attribute_parser", :text
+    t.column "attribute_parser", :text, :limit => 16777215
     t.column "portal_system_id", :integer
     t.column "result_model", :string
     t.column "related_model", :string
     t.column "scraper_type", :string
     t.column "path", :string
     t.column "type", :string
-    t.column "attribute_mapping", :text
+    t.column "attribute_mapping", :text, :limit => 16777215
     t.column "skip_rows", :integer
   end
 
@@ -707,7 +698,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "telephone", :string
     t.column "email", :string
     t.column "fax", :string
-    t.column "address", :text
+    t.column "address", :text, :limit => 16777215
     t.column "wdtk_name", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
@@ -717,7 +708,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   create_table "police_authorities", :force => true do |t|
     t.column "name", :string
     t.column "url", :string
-    t.column "address", :text
+    t.column "address", :text, :limit => 16777215
     t.column "telephone", :string
     t.column "wdtk_name", :string
     t.column "wikipedia_url", :string
@@ -738,7 +729,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "updated_at", :datetime
     t.column "wikipedia_url", :string
     t.column "telephone", :string
-    t.column "address", :text
+    t.column "address", :text, :limit => 16777215
     t.column "wdtk_name", :string
     t.column "npia_id", :string
     t.column "youtube_account_name", :string
@@ -751,7 +742,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   create_table "police_officers", :force => true do |t|
     t.column "name", :string
     t.column "rank", :string
-    t.column "biography", :text
+    t.column "biography", :text, :limit => 16777215
     t.column "police_team_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
@@ -763,7 +754,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   create_table "police_teams", :force => true do |t|
     t.column "name", :string
     t.column "uid", :string
-    t.column "description", :text
+    t.column "description", :text, :limit => 16777215
     t.column "url", :string
     t.column "police_force_id", :integer
     t.column "created_at", :datetime
@@ -781,7 +772,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "url", :string
     t.column "wikipedia_name", :string
     t.column "colour", :string
-    t.column "alternative_names", :text
+    t.column "alternative_names", :text, :limit => 16777215
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
   end
@@ -810,7 +801,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   create_table "portal_systems", :force => true do |t|
     t.column "name", :string
     t.column "url", :string
-    t.column "notes", :text
+    t.column "notes", :text, :limit => 16777215
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
   end
@@ -834,12 +825,27 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   add_index "postcodes", ["council_id"], :name => "index_postcodes_on_council_id"
   add_index "postcodes", ["county_id"], :name => "index_postcodes_on_county_id"
 
+  create_table "quangos", :force => true do |t|
+    t.column "title", :string
+    t.column "quango_type", :string
+    t.column "quango_subtype", :string
+    t.column "website", :string
+    t.column "wikipedia_url", :string
+    t.column "sponsoring_organisation", :string
+    t.column "wdtk_name", :string
+    t.column "previous_names", :text
+    t.column "setup_on", :date
+    t.column "disbanded_on", :date
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
+
   create_table "related_articles", :force => true do |t|
     t.column "title", :string
     t.column "url", :string
     t.column "subject_type", :string
     t.column "subject_id", :integer
-    t.column "extract", :text
+    t.column "extract", :text, :limit => 16777215
     t.column "hyperlocal_site_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
@@ -856,16 +862,14 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "updated_at", :datetime
     t.column "expected_result_class", :string
     t.column "expected_result_size", :integer
-    t.column "expected_result_attributes", :text
+    t.column "expected_result_attributes", :text, :limit => 16777215
     t.column "type", :string
     t.column "related_model", :string
     t.column "last_scraped", :datetime
     t.column "problematic", :boolean, :default => false
-    t.column "notes", :text
+    t.column "notes", :text, :limit => 16777215
     t.column "referrer_url", :string
     t.column "cookie_url", :string
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
   end
 
   add_index "scrapers", ["id", "type"], :name => "index_scrapers_on_id_and_type"
@@ -874,7 +878,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
 
   create_table "services", :force => true do |t|
     t.column "title", :string
-    t.column "url", :text
+    t.column "url", :text, :limit => 16777215
     t.column "category", :string
     t.column "council_id", :integer
     t.column "ldg_service_id", :integer
@@ -893,8 +897,10 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "total_spend", :float
     t.column "average_monthly_spend", :float
     t.column "average_transaction_value", :float
-    t.column "spend_by_month", :text
-    t.column "breakdown", :text
+    t.column "spend_by_month", :text, :limit => 16777215
+    t.column "breakdown", :text, :limit => 16777215
+    t.column "earliest_transaction", :date
+    t.column "latest_transaction", :date
   end
 
   add_index "spending_stats", ["organisation_id", "organisation_type"], :name => "index_spending_stats_on_organisation"
@@ -940,7 +946,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "twitter_id", :integer
     t.column "follower_count", :integer
     t.column "following_count", :integer
-    t.column "last_tweet", :text
+    t.column "last_tweet", :text, :limit => 16777215
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
   end
@@ -958,10 +964,10 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "approved", :boolean, :default => false
-    t.column "submission_details", :text
+    t.column "submission_details", :text, :limit => 16777215
     t.column "item_type", :string
     t.column "ip_address", :string
-    t.column "notes", :text
+    t.column "notes", :text, :limit => 16777215
   end
 
   add_index "user_submissions", ["member_id"], :name => "index_user_submissions_on_member_id"
@@ -981,8 +987,6 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
     t.column "ness_id", :string
     t.column "gss_code", :string
     t.column "police_team_id", :integer
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
     t.column "output_area_classification_id", :integer
     t.column "defunkt", :boolean, :default => false
     t.column "crime_area_id", :integer
@@ -995,7 +999,7 @@ ActiveRecord::Schema.define(:version => 20110102100352) do
   create_table "wdtk_requests", :force => true do |t|
     t.column "title", :string
     t.column "status", :string
-    t.column "description", :text
+    t.column "description", :text, :limit => 16777215
     t.column "organisation_id", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
