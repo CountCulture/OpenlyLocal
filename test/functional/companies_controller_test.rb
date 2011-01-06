@@ -57,5 +57,49 @@ class CompaniesControllerTest < ActionController::TestCase
       assert_match /supplying_relationships\":.+id\":#{@supplier.id}/, @response.body
     end
   end
+  
+  context "with rdf requested" do
+    setup do
+      @company.update_attributes(:url => 'http://foocorp.com', :address_in_full => '3 Acacia Lane, Footown')
+      get :show, :id => @company.id, :format => "rdf"
+    end
+   
+    should_assign_to(:company) { @company }
+    should respond_with :success
+    should_render_without_layout
+    should respond_with_content_type 'application/rdf+xml'
+   
+    should "show rdf headers" do
+      assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+      assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+      assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+    end
+  
+    should "show alternative representations" do
+      assert_match /dct:hasFormat rdf:resource.+\/companies\/#{@company.id}.rdf/m, @response.body
+      assert_match /dct:hasFormat rdf:resource.+\/companies\/#{@company.id}\"/m, @response.body
+      assert_match /dct:hasFormat rdf:resource.+\/companies\/#{@company.id}.json/m, @response.body
+      assert_match /dct:hasFormat rdf:resource.+\/companies\/#{@company.id}.xml/m, @response.body
+    end
+    
+    should "show company as primary resource" do
+      assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/companies\/#{@company.id}/m, @response.body
+    end
+    
+    should "show rdf info for company" do
+      assert_match /rdf:type.+org\/FormalOrganization/m, @response.body
+      assert_match /rdf:Description.+rdf:about.+\/id\/companies\/#{@company.id}/, @response.body
+      assert_match /rdf:Description.+rdfs:label>#{@company.title}/m, @response.body
+      assert_match /foaf:homepage>#{Regexp.escape(@company.url)}/m, @response.body
+      assert_match /vCard:Extadd.+#{Regexp.escape(@company.address_in_full)}/, @response.body
+    end
+    
+    should "show company is same as opencorporates company" do
+      assert_match /owl:sameAs.+rdf:resource.+opencorporates.com\/id\/companies\/uk\/#{@company.company_number}/, @response.body
+    end
+
+    
+  end
+  
 
 end
