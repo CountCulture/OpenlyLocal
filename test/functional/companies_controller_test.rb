@@ -23,6 +23,9 @@ class CompaniesControllerTest < ActionController::TestCase
       assert_select 'li .supplier_link', /#{@supplier.organisation.title}/
     end
     
+    should "show api block" do
+      assert_select "#api_info"
+    end
 
   end  
 
@@ -33,7 +36,7 @@ class CompaniesControllerTest < ActionController::TestCase
 
     should_assign_to(:company) { @company }
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/xml'
     should "include suppliers" do
       assert_select "supplying-relationships>supplying-relationship>id", "#{@supplier.id}"
@@ -51,7 +54,7 @@ class CompaniesControllerTest < ActionController::TestCase
 
     should_assign_to(:company) { @company }
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/json'
     should "include supplying organisations" do
       assert_match /supplying_relationships\":.+id\":#{@supplier.id}/, @response.body
@@ -66,7 +69,7 @@ class CompaniesControllerTest < ActionController::TestCase
    
     should_assign_to(:company) { @company }
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/rdf+xml'
    
     should "show rdf headers" do
@@ -96,9 +99,7 @@ class CompaniesControllerTest < ActionController::TestCase
     
     should "show company is same as opencorporates company" do
       assert_match /owl:sameAs.+rdf:resource.+opencorporates.com\/id\/companies\/uk\/#{@company.company_number}/, @response.body
-    end
-
-    
+    end    
   end
   
 

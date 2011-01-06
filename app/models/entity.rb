@@ -12,12 +12,17 @@ class Entity < ActiveRecord::Base
   default_scope :order => 'title'
   include SpendingStatUtilities::Base
   include AddressMethods
+  include ResourceMethods
   validates_presence_of :title
   before_save :normalise_title
   serialize :other_attributes
   
   def self.normalise_title(raw_title)
     TitleNormaliser.normalise_title(raw_title)
+  end
+  
+  def resource_uri
+    "http://#{DefaultDomain}/id/entities/#{id}"
   end
   
   private

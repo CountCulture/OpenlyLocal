@@ -32,7 +32,7 @@ class EntityTest < ActiveSupport::TestCase
     should have_db_column :vat_number
     should have_db_column :cpid_code
     should have_db_column :normalised_title
-    should have_db_column :resource_uri
+    should have_db_column :external_resource_uri
     should have_db_column :other_attributes
     
     should 'serialize other entities' do
@@ -44,6 +44,10 @@ class EntityTest < ActiveSupport::TestCase
         TitleNormaliser.expects(:normalise_title).with('foo bar')
         Entity.normalise_title('foo bar')
       end
+    end
+    
+    should "include ResourceMethods" do
+      assert Entity.new.respond_to? :foaf_telephone
     end
     
   end
@@ -65,5 +69,12 @@ class EntityTest < ActiveSupport::TestCase
         assert_equal "foo and baz dept", @entity.reload.normalised_title
       end
     end
+
+    context "when returning resource_uri" do
+      should 'build resource uri using DefaultDomain and id' do
+        assert_equal "http://#{DefaultDomain}/id/entities/#{@entity.id}", @entity.resource_uri
+      end
+    end    
+    
   end
 end

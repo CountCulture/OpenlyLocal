@@ -1,6 +1,7 @@
 class EntitiesController < ApplicationController
   before_filter :authenticate, :except => [:index, :show, :show_spending]
   before_filter :find_entity, :except => [:index, :new, :create]
+  before_filter :linked_data_available, :only => :show
 
   def index
     @entities = Entity.all(:order => 'title')
@@ -13,8 +14,13 @@ class EntitiesController < ApplicationController
   end
   
   def show
-    @entity = Entity.find(params[:id])
     @title = "#{@entity.title} :: Entitys"
+    respond_to do |format|
+      format.html
+      format.xml { render :xml => @entity.to_xml}#(:include => { :supplying_relationships => { :include => :organisation }}) }
+      format.json { render :as_json => @entity.to_xml}#(:include => { :supplying_relationships => { :include => :organisation }}) }
+      format.rdf 
+    end
   end
   
   def new

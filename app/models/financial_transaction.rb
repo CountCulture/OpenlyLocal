@@ -8,6 +8,8 @@ class FinancialTransaction < ActiveRecord::Base
   delegate :name, :openlylocal_url, :uid, :to => :supplier, :prefix => true
   delegate :name, :id, :openlylocal_url, :to => :organisation, :prefix => :organisation
   delegate :organisation_type, :to => :supplier
+  delegate :payee, :to => :supplier
+  delegate :resource_uri, :to => :payee, :prefix => true, :allow_nil => true
     
   CommonMispellings = { %w(Childrens Childrens') => "Children's" }
   
@@ -35,6 +37,7 @@ class FinancialTransaction < ActiveRecord::Base
                  [:invoice_date],
                  [:department_name],
                  [:description],
+                 [:payee_resource_uri],
                  # [:openlylocal_company_id],
                  # [:openlylocal_company_url],
                  # [:company_number],

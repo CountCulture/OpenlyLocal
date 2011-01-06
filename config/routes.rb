@@ -72,6 +72,7 @@ ActionController::Routing::Routes.draw do |map|
     restype.resources :charities
     restype.resources :entities
     restype.resources :companies
+    restype.resources :entities
   end
   
   map.connect 'areas/postcodes/:postcode', :controller => 'areas', :action => 'search'

@@ -169,7 +169,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
   
   end
   
-   context "with json request" do
+   context "with json requested" do
 
      setup do
        @police_authority.update_attribute(:address, "35 Some St, Anytown AN1 2NT")

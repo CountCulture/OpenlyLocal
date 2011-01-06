@@ -57,7 +57,6 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
     end
 
     context "when returning foaf version of telephone number" do
-
       should "return nil if telephone blank" do
         assert_nil @police_authority.foaf_telephone
       end

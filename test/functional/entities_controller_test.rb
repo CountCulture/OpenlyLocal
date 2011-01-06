@@ -13,7 +13,7 @@ class EntitiesControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:entities) { Entity.find(:all)}
+      should assign_to(:entities) { Entity.find(:all)}
       should respond_with :success
       should render_template :index
       should "list entities" do
@@ -38,9 +38,9 @@ class EntitiesControllerTest < ActionController::TestCase
         get :index, :format => "xml"
       end
 
-      should_assign_to(:entities) { Entity.find(:all) }
+      should assign_to(:entities) { Entity.find(:all) }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
     end
 
@@ -49,14 +49,15 @@ class EntitiesControllerTest < ActionController::TestCase
         get :index, :format => "json"
       end
 
-      should_assign_to(:entities) { Entity.find(:all) }
+      should assign_to(:entities) { Entity.find(:all) }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
     end
   end
   
   context "on GET to :show" do
+    
     context "in general" do
       setup do
         get :show, :id => @entity.id
@@ -70,8 +71,100 @@ class EntitiesControllerTest < ActionController::TestCase
       should "show entity name in title" do
         assert_select "title", /#{@entity.title}/
       end
+    
+      should "show api block" do
+        assert_select "#api_info"
+      end
+    end
+    
+    context "with xml request" do
+      setup do
+        @entity.update_attribute(:address, "35 Some St, Anytown AN1 2NT")
+        get :show, :id => @entity.id, :format => "xml"
+      end
+
+      should assign_to(:entity) { @entity}
+      should respond_with :success
+      should_not render_with_layout
+      should respond_with_content_type 'application/xml'
+      # should "include suppliers" do
+      #   assert_select "supplying-relationships>supplying-relationship>id", "#{@supplier.id}"
+      # end
+      # 
+      # should "include supplying organisations" do
+      #   assert_select "supplying-relationships>supplying-relationship>organisation>id", "#{@supplier.organisation.id}"
+      # end
 
     end
+
+    context "with json requested" do
+
+      setup do
+        @entity.update_attribute(:address, "35 Some St, Anytown AN1 2NT")
+        get :show, :id => @entity.id, :format => "json"
+      end
+
+      should assign_to(:entity) { @entity }
+      should respond_with :success
+      should_not render_with_layout
+      should respond_with_content_type 'application/json'
+      should "include supplying organisations" do
+        # assert_match /supplying_relationships\":.+id\":#{@supplier.id}/, @response.body
+      end
+    end
+
+    context "with rdf request" do
+      setup do
+        @entity.update_attributes(:address_in_full => "35 Some St, Anytown AN1 2NT", 
+                                  :telephone => "0123 456 789", 
+                                  :wikipedia_url => "http://en.wikipedia.org/wiki/SomeEntity", 
+                                  :website => 'http://entity.gov.uk',
+                                  :external_resource_uri => 'http://statistics.gov.uk/id/SomeEntity')
+        get :show, :id => @entity.id, :format => "rdf"
+      end
+
+      should assign_to(:entity) { @entity}
+      should respond_with :success
+      should_not render_with_layout
+      should respond_with_content_type 'application/rdf+xml'
+
+      should "show rdf headers" do
+        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
+        assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+      end
+
+      should "show alternative representations" do
+        assert_match /dct:hasFormat rdf:resource.+\/entities\/#{@entity.id}.rdf/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/entities\/#{@entity.id}\"/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/entities\/#{@entity.id}.json/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/entities\/#{@entity.id}.xml/m, @response.body
+      end
+
+      should "show entity as primary resource" do
+        assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/entities\/#{@entity.id}/m, @response.body
+      end
+
+      should "show rdf info for entity" do
+        assert_match /rdf:Description.+rdf:about.+\/id\/entities\/#{@entity.id}/, @response.body
+        assert_match /rdf:Description.+rdfs:label>#{@entity.title}/m, @response.body
+        assert_match /rdf:type.+org\/FormalOrganization/m, @response.body
+        assert_match /foaf:phone.+#{Regexp.escape(@entity.foaf_telephone)}/, @response.body
+        assert_match /foaf:homepage>#{Regexp.escape(@entity.website)}/m, @response.body
+        assert_match /vCard:Extadd.+#{Regexp.escape(@entity.address_in_full)}/, @response.body
+      end
+      
+      should "show entity is same as external_resource_uri" do
+        assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@entity.external_resource_uri)}/, @response.body
+      end
+
+      should "show entity is same as dbpedia entry" do
+        assert_match /owl:sameAs.+rdf:resource.+dbpedia.+SomeEntity/, @response.body
+      end
+
+
+    end
+    
   end
   
   # new test
@@ -89,7 +182,7 @@ class EntitiesControllerTest < ActionController::TestCase
       get :new
     end
   
-    should_assign_to(:entity)
+    should assign_to(:entity)
     should respond_with :success
     should render_template :new
   
@@ -116,8 +209,8 @@ class EntitiesControllerTest < ActionController::TestCase
        end
      
        should_change("The number of entities", :by => 1) { Entity.count }
-       should_assign_to :entity
-       should_redirect_to( "the show page for entity") { entity_path(assigns(:entity)) }
+       should assign_to :entity
+       should redirect_to( "the show page for entity") { entity_path(assigns(:entity)) }
        should set_the_flash.to "Successfully created entity"
      
      end
@@ -129,7 +222,7 @@ class EntitiesControllerTest < ActionController::TestCase
        end
      
        should_not_change("The number of entities") { Entity.count }
-       should_assign_to :entity
+       should assign_to :entity
        should render_template :new
        should_not set_the_flash
      end
@@ -151,7 +244,7 @@ class EntitiesControllerTest < ActionController::TestCase
        get :edit, :id => @entity
      end
   
-     should_assign_to(:entity)
+     should assign_to(:entity)
      should respond_with :success
      should render_template :edit
   
@@ -179,8 +272,8 @@ class EntitiesControllerTest < ActionController::TestCase
       should_not_change("The number of entities") { Entity.count }
       should_change("The entity name", :to => "New Name") { @entity.reload.title }
       should_change("The entity website", :to => "http://new.name.com") { @entity.reload.website }
-      should_assign_to :entity
-      should_redirect_to( "the show page for entity") { entity_path(assigns(:entity)) }
+      should assign_to :entity
+      should redirect_to( "the show page for entity") { entity_path(assigns(:entity)) }
       should_set_the_flash_to "Successfully updated entity"
     
     end
@@ -193,7 +286,7 @@ class EntitiesControllerTest < ActionController::TestCase
     
       should_not_change("The number of entities") { Entity.count }
       should_not_change("The entity name") { @entity.reload.title }
-      should_assign_to :entity
+      should assign_to :entity
       should render_template :edit
       should_not set_the_flash
     end
@@ -219,7 +312,7 @@ class EntitiesControllerTest < ActionController::TestCase
     should "destroy hyperlocal_site" do
       assert_nil Entity.find_by_id(@entity.id)
     end
-    should_redirect_to ( "the entities page") { entities_url }
+    should redirect_to( "the entities page") { entities_url }
     should set_the_flash.to( /Successfully destroyed/)
   end
   

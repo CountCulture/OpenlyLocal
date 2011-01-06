@@ -151,7 +151,23 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should "delegate organisation_type to supplier organisation_type" do
       assert_equal @financial_transaction.supplier.organisation_type, @financial_transaction.organisation_type
     end
-    
+
+    should "delegate payee to supplier" do
+      payee = Factory(:company)
+      @financial_transaction.supplier.update_attribute(:payee, payee)
+      assert_equal payee, @financial_transaction.payee
+    end
+
+    should "delegate payee_resource_uri to payee" do
+      payee = Factory(:company)
+      @financial_transaction.supplier.update_attribute(:payee, payee)
+      assert_equal payee.resource_uri, @financial_transaction.payee_resource_uri
+    end
+
+    should "return nil for payee_resource_uri if not payee" do
+      assert_nil @financial_transaction.payee_resource_uri
+    end
+
     context 'when returning title' do
       should 'use date' do
         assert_equal "Transaction with #{@financial_transaction.supplier.title} on #{@financial_transaction.date.to_s(:event_date)}", @financial_transaction.title
