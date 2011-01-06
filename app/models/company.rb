@@ -47,9 +47,9 @@ class Company < ActiveRecord::Base
     raw_number.to_s.match(/[A-Z]/) ? raw_number : sprintf("%08d", raw_number.to_i)
   end
   
-  # returns companies_house url via companies open house redirect
-  def companies_house_url
-    "http://companiesopen.org/uk/#{company_number}/companies_house" if company_number?
+  # returns opencorporates url
+  def opencorporates_url
+    "http://opencorporates.com/uk/#{company_number}" if company_number?
   end
   
   # alias populate_basic_info as perform so that this gets run when doing delayed_job on a company
@@ -73,13 +73,9 @@ class Company < ActiveRecord::Base
       end 
     end
   end
-  
-  def method_name
-    if existing_company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
-      return existing_company 
-    elsif company_info = CompanyUtilities::Client.new.find_company_by_name(raw_title)
-      Company.find_or_create_by_company_number(company_info) #we may be returned company that has slightly diff name  but same company_number
-    end
+    
+  def resource_uri
+    "http://#{DefaultDomain}/id/companies/#{id}"
   end
   
   def to_param

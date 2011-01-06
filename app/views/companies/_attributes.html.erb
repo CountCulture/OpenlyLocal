@@ -1,4 +1,4 @@
-<%= attribute_tag :company_number, link_to(attributes.company_number, attributes.companies_house_url, :class => 'external') if attributes.company_number? %>
+<%= attribute_tag :company_number, link_to(attributes.company_number, attributes.opencorporates_url, :class => 'external', :title => "More info on #{attributes.title}") if attributes.company_number? %>
 <%= attribute_tag :company_type, attributes.company_type %>
 <%= attribute_tag :incorporation_date, attributes.incorporation_date %>
 <%= attribute_tag :status, attributes.status %>

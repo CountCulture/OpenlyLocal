@@ -399,6 +399,12 @@ class CompanyTest < ActiveSupport::TestCase
       
     end
     
+    context "when returning resource_uri" do
+      should 'build resource uri using DefaultDomain and id' do
+        assert_equal "http://#{DefaultDomain}/id/companies/#{@company.id}", @company.resource_uri
+      end
+    end
+    
     context "when populating basic info" do
       
       context "and company has company_number" do
@@ -509,10 +515,10 @@ class CompanyTest < ActiveSupport::TestCase
       @company.perform
     end
     
-    context 'when returning companies_house_url' do
-      should "return companies open house url" do
+    context 'when returning opencorporates_url' do
+      should "return url on opencorporates" do
         @company.company_number = '012345'
-        assert_equal 'http://companiesopen.org/uk/012345/companies_house', @company.companies_house_url
+        assert_equal 'http://opencorporates.com/uk/012345', @company.opencorporates_url
       end
     end
   
