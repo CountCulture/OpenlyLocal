@@ -1,6 +1,7 @@
 class CsvParser < Parser
   attr_reader :results
   serialize :attribute_mapping
+  HeaderNormaliser = proc{ |h| h&&h.downcase.squish }
   
   def attribute_mapping_object
     return [MappingObject.new] if attribute_mapping.blank?
@@ -10,7 +11,7 @@ class CsvParser < Parser
   def attribute_mapping_object=(params)
     result_hash = {}
     params.each do |a|
-      result_hash[a["attrib_name"].to_sym] = a["column_name"]
+      result_hash[a["attrib_name"].to_sym] = HeaderNormaliser.call(a["column_name"])
     end
     self.attribute_mapping = result_hash
   end
@@ -20,7 +21,7 @@ class CsvParser < Parser
     self.inspect #NB This seems to stop deserialization errors, in tests, and poss in production
     result_array,dry_run = [], !options[:save_results]
     raw_data = Iconv.iconv('utf-8', 'ISO_8859-1', raw_data).to_s if raw_data.grep(/\xC2\xA3|\xA3/)
-    header_converters = proc{ |h| h&&h.downcase.squish }
+    header_converters = HeaderNormaliser
     if skip_rows
       raw_data = StringIO.new(raw_data)
       skip_rows.times {raw_data.gets}

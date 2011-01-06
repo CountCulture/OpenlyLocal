@@ -80,10 +80,18 @@ class CsvParserTest < ActiveSupport::TestCase
 
         should "convert to attribute_mapping hash" do
           @parser.attribute_mapping_object = [{ "attrib_name" => "title",
-                                               "column_name" => "A title"},
+                                               "column_name" => "a title"},
                                              { "attrib_name" => "description",
-                                               "column_name" => "A longer description"}]
-          assert_equal({ :title => "A title", :description => "A longer description" }, @parser.attribute_mapping)
+                                               "column_name" => "a longer description"}]
+          assert_equal({ :title => "a title", :description => "a longer description" }, @parser.attribute_mapping)
+        end
+
+        should "normalise column names" do
+          @parser.attribute_mapping_object = [{ "attrib_name" => "title",
+                                               "column_name" => "A  Title "},
+                                             { "attrib_name" => "description",
+                                               "column_name" => "a LONGER description  "}]
+          assert_equal({ :title => "a title", :description => "a longer description" }, @parser.attribute_mapping)
         end
 
         should "set attribute_parser to empty hash if no form_params" do
