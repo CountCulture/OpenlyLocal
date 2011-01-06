@@ -21,7 +21,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:dataset_topic_groupings) { DatasetTopicGrouping.find(:all)}
+      should assign_to(:dataset_topic_groupings) { DatasetTopicGrouping.find(:all)}
       should respond_with :success
       should render_template :index
       should "list Topic Groupings" do
@@ -54,7 +54,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
         get :show, :id => @dataset_topic_grouping.id
       end
 
-      should_assign_to :dataset_topic_grouping
+      should assign_to :dataset_topic_grouping
       should respond_with :success
       should render_template :show
 
@@ -86,7 +86,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
       get :new
     end
 
-    should_assign_to(:dataset_topic_grouping)
+    should assign_to(:dataset_topic_grouping)
     should respond_with :success
     should render_template :new
 
@@ -117,7 +117,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
        end
 
        should_change("The number of DatasetTopicGroupings", :by => 1) { DatasetTopicGrouping.count }
-       should_assign_to :dataset_topic_grouping
+       should assign_to :dataset_topic_grouping
        should_redirect_to( "the show page for dataset_topic_grouping") { dataset_topic_grouping_url(assigns(:dataset_topic_grouping)) }
        should_set_the_flash_to /Successfully created/
 
@@ -130,7 +130,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
        end
 
        should_not_change("The number of DatasetTopicGroupings") { DatasetTopicGrouping.count }
-       should_assign_to :dataset_topic_grouping
+       should assign_to :dataset_topic_grouping
        should render_template :new
        should_not set_the_flash
      end
@@ -152,7 +152,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
       get :edit, :id => @dataset_topic_grouping.id
     end
 
-    should_assign_to :dataset_topic_grouping
+    should assign_to :dataset_topic_grouping
     should respond_with :success
     should render_template :edit
     should_not set_the_flash
@@ -179,7 +179,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
                      :dataset_topic_grouping => { :title => "New title"}}
     end
 
-    should_assign_to :dataset_topic_grouping
+    should assign_to :dataset_topic_grouping
     should_redirect_to( "the show page for dataset_topic_grouping") { dataset_topic_grouping_url(@dataset_topic_grouping.reload) }
     should_set_the_flash_to /Successfully updated/
 

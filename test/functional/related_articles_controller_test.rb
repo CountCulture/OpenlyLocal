@@ -11,7 +11,7 @@ class RelatedArticlesControllerTest < ActionController::TestCase
     should render_template :new
     should_render_with_layout
     
-    should_assign_to :related_article
+    should assign_to :related_article
     
     should "show title" do
       assert_select 'title', /submit related article/i

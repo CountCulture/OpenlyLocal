@@ -21,7 +21,7 @@ class CommitteesControllerTest < ActionController::TestCase
          get :show, :id => @committee.id
        end
 
-       should_assign_to :committee
+       should assign_to :committee
        should respond_with :success
        should render_template :show
       
@@ -61,7 +61,7 @@ class CommitteesControllerTest < ActionController::TestCase
          get :show, :id => @committee.id
        end
 
-       should_assign_to :committee
+       should assign_to :committee
        should respond_with :success
        should render_template :show
       
@@ -83,7 +83,7 @@ class CommitteesControllerTest < ActionController::TestCase
          get :show, :id => @committee.id, :format => "xml"
        end
 
-       should_assign_to :committee
+       should assign_to :committee
        should respond_with :success
        should_render_without_layout
        should respond_with_content_type 'application/xml'
@@ -106,7 +106,7 @@ class CommitteesControllerTest < ActionController::TestCase
          get :show, :id => @committee.id, :format => "json"
        end
 
-       should_assign_to :committee
+       should assign_to :committee
        should respond_with :success
        should_render_without_layout
        should respond_with_content_type 'application/json'
@@ -129,7 +129,7 @@ class CommitteesControllerTest < ActionController::TestCase
          get :show, :id => @committee.id, :format => "ics"
        end
 
-       should_assign_to(:committee) { @committee }
+       should assign_to(:committee) { @committee }
        should respond_with :success
        should_render_without_layout
        should respond_with_content_type 'text/calendar'
@@ -140,7 +140,7 @@ class CommitteesControllerTest < ActionController::TestCase
          get :show, :id => @committee.id, :format => "rdf"
        end
 
-       should_assign_to(:committee) { @committee }
+       should assign_to(:committee) { @committee }
        should respond_with :success
        should_render_without_layout
        should respond_with_content_type 'application/rdf+xml'
@@ -191,8 +191,8 @@ class CommitteesControllerTest < ActionController::TestCase
          get :index, :council_id => @council.id
        end
 
-       should_assign_to :committees
-       should_assign_to(:council) { @council }
+       should assign_to :committees
+       should assign_to(:council) { @council }
        should respond_with :success
        should render_template :index
 
@@ -230,8 +230,8 @@ class CommitteesControllerTest < ActionController::TestCase
          get :index, :council_id => @council.id, :include_inactive => true
        end
 
-       should_assign_to :committees
-       should_assign_to(:council) { @council }
+       should assign_to :committees
+       should assign_to(:council) { @council }
        should respond_with :success
        should render_template :index
 
@@ -253,8 +253,8 @@ class CommitteesControllerTest < ActionController::TestCase
          get :index, :council_id => @council.id, :format => "xml"
        end
 
-       should_assign_to :committees
-       should_assign_to(:council) { @council }
+       should assign_to :committees
+       should assign_to(:council) { @council }
        should respond_with :success
        should_render_without_layout
        should respond_with_content_type 'application/xml'
@@ -277,8 +277,8 @@ class CommitteesControllerTest < ActionController::TestCase
          get :index, :council_id => @council.id, :format => "json"
        end
 
-       should_assign_to :committees
-       should_assign_to(:council) { @council }
+       should assign_to :committees
+       should assign_to(:council) { @council }
        should respond_with :success
        should_render_without_layout
        should respond_with_content_type 'application/json'

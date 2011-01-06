@@ -14,7 +14,7 @@ class PoliceTeamsControllerTest < ActionController::TestCase
       get :show, :id => @police_team.id
     end
   
-    should_assign_to(:police_team) { @police_team}
+    should assign_to(:police_team) { @police_team}
     should respond_with :success
     should render_template :show
     should_render_with_layout

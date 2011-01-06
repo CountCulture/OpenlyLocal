@@ -13,7 +13,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:hyperlocal_groups) { HyperlocalGroup.find(:all)}
+      should assign_to(:hyperlocal_groups) { HyperlocalGroup.find(:all)}
       should respond_with :success
       should render_template :index
       should "list hyperlocal groups" do
@@ -43,7 +43,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
         get :show, :id => @hyperlocal_group.id
       end
 
-      should_assign_to :hyperlocal_group
+      should assign_to :hyperlocal_group
       should respond_with :success
       should render_template :show
 
@@ -76,7 +76,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
       get :new
     end
   
-    should_assign_to(:hyperlocal_group)
+    should assign_to(:hyperlocal_group)
     should respond_with :success
     should render_template :new
   
@@ -103,7 +103,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
        end
      
        should_change( "The number of Hyperlocal groups", :by => 1) { HyperlocalGroup.count }
-       should_assign_to :hyperlocal_group
+       should assign_to :hyperlocal_group
        should_redirect_to( "the show page for hyperlocal_group") { hyperlocal_group_url(assigns(:hyperlocal_group)) }
        should_set_the_flash_to /Successfully created/
      
@@ -116,7 +116,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
        end
      
        should_not_change( "The number of Hyperlocal groups") { HyperlocalGroup.count }
-       should_assign_to :hyperlocal_group
+       should assign_to :hyperlocal_group
        should render_template :new
        should_not set_the_flash
      end
@@ -138,7 +138,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
       get :edit, :id => @hyperlocal_group.id
     end
 
-    should_assign_to :hyperlocal_group
+    should assign_to :hyperlocal_group
     should respond_with :success
     should render_template :edit
     should_not set_the_flash
@@ -165,7 +165,7 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
                      :hyperlocal_group => { :title => "New title"}}
     end
 
-    should_assign_to :hyperlocal_group
+    should assign_to :hyperlocal_group
     should_redirect_to( "the show page for hyperlocal_group") { hyperlocal_group_url(@hyperlocal_group.reload) }
     should_set_the_flash_to /Successfully updated/
 

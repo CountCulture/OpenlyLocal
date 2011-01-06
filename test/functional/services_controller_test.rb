@@ -16,8 +16,8 @@ class ServicesControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id
       end
       
-      should_assign_to :services
-      should_assign_to :council
+      should assign_to :services
+      should assign_to :council
       should respond_with :success
       should render_template :index
      
@@ -64,8 +64,8 @@ class ServicesControllerTest < ActionController::TestCase
         get :index, :ldg_service_id => @service.ldg_service_id
       end
       
-      should_assign_to :ldg_service
-      should_assign_to :services
+      should assign_to :ldg_service
+      should assign_to :services
       should respond_with :success
       should render_template :index
       
@@ -94,8 +94,8 @@ class ServicesControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :format => "xml"
       end
       
-      should_assign_to :services
-      should_assign_to :council
+      should assign_to :services
+      should assign_to :council
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
@@ -112,8 +112,8 @@ class ServicesControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :format => "json"
       end
       
-      should_assign_to :services
-      should_assign_to :council
+      should assign_to :services
+      should assign_to :council
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -129,8 +129,8 @@ class ServicesControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :term => "foo"
       end
       
-      should_assign_to(:services)
-      should_assign_to :council
+      should assign_to(:services)
+      should assign_to :council
       should respond_with :success
       should render_template :index
      
@@ -156,7 +156,7 @@ class ServicesControllerTest < ActionController::TestCase
         Service.delete_all
         get :index, :council_id => @council.id
       end
-      should_assign_to :council
+      should assign_to :council
       should respond_with :success
       should "show message" do
         assert_select "p", /no services found/i

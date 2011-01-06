@@ -16,7 +16,7 @@ class TwitterAccountsControllerTest < ActionController::TestCase
         get :index, :user_type => "hyperlocal_sites"
       end
 
-      should_assign_to(:twitter_accounts) { [@twitter_account] }
+      should assign_to(:twitter_accounts) { [@twitter_account] }
       should respond_with :success
       should render_template :index
       should "list twitter accounts" do
@@ -49,7 +49,7 @@ class TwitterAccountsControllerTest < ActionController::TestCase
       get :show, :id => @twitter_account.id
     end
   
-    should_assign_to(:twitter_account) { @twitter_account}
+    should assign_to(:twitter_account) { @twitter_account}
     should respond_with :success
     should render_template :show
     should_render_with_layout

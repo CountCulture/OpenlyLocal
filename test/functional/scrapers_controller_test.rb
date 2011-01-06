@@ -802,7 +802,7 @@ class ScrapersControllerTest < ActionController::TestCase
         end
       
         should "save parser attribute_parser" do
-          assert_equal({:foo => "FooName"}, assigns(:scraper).parser.attribute_mapping)
+          assert_equal({:foo => "fooname"}, assigns(:scraper).parser.attribute_mapping)
         end
       end
       

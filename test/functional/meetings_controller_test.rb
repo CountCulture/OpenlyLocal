@@ -34,8 +34,8 @@ class MeetingsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id
       end
   
-      should_assign_to(:council) { @council } 
-      should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting] }
+      should assign_to(:council) { @council } 
+      should assign_to(:meetings) { [@future_meeting, @other_committee_meeting] }
       should respond_with :success
       should render_template :index
       should respond_with_content_type 'text/html'
@@ -55,7 +55,7 @@ class MeetingsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :include_past => true
       end
   
-      should_assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting, @cancelled_committee_meeting] }
+      should assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting, @cancelled_committee_meeting] }
       should respond_with :success
       
       should "list all meetings" do
@@ -73,7 +73,7 @@ class MeetingsControllerTest < ActionController::TestCase
     #     get :index, :council_id => @council.id, :committee_id => @other_committee.id
     #   end
     #   
-    #   should_assign_to(:meetings) { [@other_committee_meeting] }
+    #   should assign_to(:meetings) { [@other_committee_meeting] }
     #   should respond_with :success
     #   
     #   should "have title" do
@@ -86,8 +86,8 @@ class MeetingsControllerTest < ActionController::TestCase
         setup do
           get :index, :council_id => @council.id, :format => "xml"
         end
-        should_assign_to(:council) { @council } 
-        should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
+        should assign_to(:council) { @council } 
+        should assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
         should respond_with :success
         should_render_without_layout
         should respond_with_content_type 'application/xml'
@@ -102,8 +102,8 @@ class MeetingsControllerTest < ActionController::TestCase
         setup do
           get :index, :council_id => @council.id, :include_past => true, :format => "xml"
         end
-        should_assign_to(:council) { @council } 
-        should_assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting, @cancelled_committee_meeting]}
+        should assign_to(:council) { @council } 
+        should assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting, @cancelled_committee_meeting]}
         should respond_with :success
         should_render_without_layout
         should respond_with_content_type 'application/xml'
@@ -121,8 +121,8 @@ class MeetingsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :format => "json"
       end
   
-      should_assign_to(:council) { @council } 
-      should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
+      should assign_to(:council) { @council } 
+      should assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -133,8 +133,8 @@ class MeetingsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :format => "ics"
       end
   
-      should_assign_to(:council) { @council } 
-      should_assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
+      should assign_to(:council) { @council } 
+      should assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'text/calendar'
@@ -150,8 +150,8 @@ class MeetingsControllerTest < ActionController::TestCase
         get :show, :id => @meeting.id
       end
 
-      should_assign_to :meeting, :committee
-      should_assign_to(:other_meetings) { [@future_meeting] }
+      should assign_to :meeting, :committee
+      should assign_to(:other_meetings) { [@future_meeting] }
       should respond_with :success
       should render_template :show
      
@@ -218,7 +218,7 @@ class MeetingsControllerTest < ActionController::TestCase
           get :show, :id => @meeting.id, :format => "xml"
         end
 
-        should_assign_to :meeting
+        should assign_to :meeting
         should respond_with :success
         should_render_without_layout
         should respond_with_content_type 'application/xml'
@@ -237,7 +237,7 @@ class MeetingsControllerTest < ActionController::TestCase
         get :show, :id => @meeting.id, :format => "json"
       end
     
-      should_assign_to :meeting
+      should assign_to :meeting
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -248,7 +248,7 @@ class MeetingsControllerTest < ActionController::TestCase
         get :show, :id => @meeting.id, :format => "rdf"
       end
 
-      should_assign_to(:meeting) { @meeting }
+      should assign_to(:meeting) { @meeting }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/rdf+xml'

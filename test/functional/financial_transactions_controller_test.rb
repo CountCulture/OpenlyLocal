@@ -121,10 +121,10 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
         get :show, :id => @financial_transaction.id
       end
 
-      should_assign_to(:financial_transaction) { @financial_transaction }
+      should assign_to(:financial_transaction) { @financial_transaction }
       should respond_with :success
       should render_template :show
-      should_assign_to(:supplier) { @supplier }
+      should assign_to(:supplier) { @supplier }
 
       should "show financial_transaction title" do
         assert_select "title", /#{@financial_transaction.reload.title}/ # for some reason reading title as ActiveSupport with Timzeon and so putting time in there. reloading seems to fix it.
@@ -146,10 +146,10 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
         get :show, :id => @financial_transaction.id
       end
 
-      should_assign_to(:financial_transaction) { @financial_transaction }
+      should assign_to(:financial_transaction) { @financial_transaction }
       should respond_with :success
       should render_template :show
-      should_assign_to(:supplier) { @supplier }
+      should assign_to(:supplier) { @supplier }
 
       should "show financial_transaction title" do
         assert_select "title", /#{@financial_transaction.reload.title}/ # for some reason reading title as ActiveSupport with Timzeon and so putting time in there. reloading seems to fix it.
@@ -185,7 +185,7 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
         get :show, :id => @financial_transaction.id
       end
 
-      should_assign_to(:financial_transaction) { @financial_transaction }
+      should assign_to(:financial_transaction) { @financial_transaction }
       should respond_with :success
       should render_template :show
 
@@ -231,7 +231,7 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
         get :show, :id => @financial_transaction.id, :format => "xml"
       end
 
-      should_assign_to(:financial_transaction) { @financial_transaction }
+      should assign_to(:financial_transaction) { @financial_transaction }
       should respond_with :success
       should_not render_with_layout
       should respond_with_content_type 'application/xml'
@@ -246,7 +246,7 @@ class FinancialTransactionsControllerTest < ActionController::TestCase
         get :show, :id => @financial_transaction.id, :format => "json"
       end
 
-      should_assign_to(:financial_transaction) { @financial_transaction }
+      should assign_to(:financial_transaction) { @financial_transaction }
       should respond_with :success
       should_not render_with_layout
       should respond_with_content_type 'application/json'

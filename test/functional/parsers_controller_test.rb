@@ -249,7 +249,7 @@ class ParsersControllerTest < ActionController::TestCase
          should set_the_flash.to "Successfully created parser"
          
          should 'create new parser with given attributes' do
-           assert_equal( {:transaction_id =>"TransactionID", :directorate => "Directorate"}, assigns(:parser).attribute_mapping)
+           assert_equal( {:transaction_id =>"transactionid", :directorate => "directorate"}, assigns(:parser).attribute_mapping)
          end
 
        end

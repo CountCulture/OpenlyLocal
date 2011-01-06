@@ -43,7 +43,7 @@ class CharitiesControllerTest < ActionController::TestCase
         get :show, :id => @charity.id, :format => "xml"
       end
 
-      should_assign_to(:charity) { @charity}
+      should assign_to(:charity) { @charity}
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
@@ -68,7 +68,7 @@ class CharitiesControllerTest < ActionController::TestCase
         get :show, :id => @charity.id, :format => "rdf"
       end
 
-      should_assign_to(:charity) { @charity}
+      should assign_to(:charity) { @charity}
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/rdf+xml'

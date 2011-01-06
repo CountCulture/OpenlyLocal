@@ -16,7 +16,7 @@ class MainControllerTest < ActionController::TestCase
       get :index
     end
   
-    should_assign_to :councils
+    should assign_to :councils
     should respond_with :success
     should render_template :index
     should_not set_the_flash

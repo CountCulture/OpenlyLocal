@@ -52,7 +52,7 @@ class InfoControllerTest < ActionController::TestCase
     should respond_with :success
     should render_template :api
     should_render_with_layout
-    should_assign_to :sample_council
+    should assign_to :sample_council
     
     should "show pretty version of action name in title" do
       assert_select "title", /Api :: Info/

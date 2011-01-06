@@ -54,7 +54,7 @@ class FeedEntriesControllerTest < ActionController::TestCase
         get :index, :format => "xml", :restrict_to => 'hyperlocal_sites'
       end
 
-      should_assign_to(:feed_entries)
+      should assign_to(:feed_entries)
       should respond_with :success
       should_not render_with_layout
       should respond_with_content_type 'application/xml'
@@ -70,7 +70,7 @@ class FeedEntriesControllerTest < ActionController::TestCase
         get :index, :format => "json", :restrict_to => 'hyperlocal_sites'
       end
   
-      should_assign_to(:feed_entries)
+      should assign_to(:feed_entries)
       should respond_with :success
       should_not render_with_layout
       should respond_with_content_type 'application/json'

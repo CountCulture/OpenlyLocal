@@ -19,8 +19,8 @@ class AdminControllerTest < ActionController::TestCase
       should respond_with :success
       should render_template :index
       should_not set_the_flash
-      should_assign_to(:hyperlocal_sites) {[@unapproved_site]}
-      should_assign_to(:user_submissions) {[@user_submission]}
+      should assign_to(:hyperlocal_sites) {[@unapproved_site]}
+      should assign_to(:user_submissions) {[@user_submission]}
 
       should "show admin in title" do
         assert_select "title", /admin/i

@@ -16,7 +16,7 @@ class PollsControllerTest < ActionController::TestCase
       setup do
         get :index
       end
-      should_assign_to(:polls)
+      should assign_to(:polls)
       should respond_with :success
       should_render_with_layout
       
@@ -38,7 +38,7 @@ class PollsControllerTest < ActionController::TestCase
         get :index, :format => 'xml'
       end
       
-      should_assign_to(:polls)
+      should assign_to(:polls)
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
@@ -62,7 +62,7 @@ class PollsControllerTest < ActionController::TestCase
         get :index, :format => 'json'
       end
       
-      should_assign_to(:polls)
+      should assign_to(:polls)
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -117,8 +117,8 @@ class PollsControllerTest < ActionController::TestCase
           get :index, :council_id => @council.id
         end
 
-        should_assign_to(:polls)
-        should_assign_to(:council) { @council }
+        should assign_to(:polls)
+        should assign_to(:council) { @council }
         should respond_with :success
         should_render_with_layout
 
@@ -142,7 +142,7 @@ class PollsControllerTest < ActionController::TestCase
           get :index, :council_id => @council.id, :format => 'xml'
         end
 
-        should_assign_to(:polls)
+        should assign_to(:polls)
         should respond_with :success
         should_render_without_layout
         should respond_with_content_type 'application/xml'
@@ -166,7 +166,7 @@ class PollsControllerTest < ActionController::TestCase
           get :index, :council_id => @council.id, :format => 'json'
         end
 
-        should_assign_to(:polls)
+        should assign_to(:polls)
         should respond_with :success
         should_render_without_layout
         should respond_with_content_type 'application/json'
@@ -202,9 +202,9 @@ class PollsControllerTest < ActionController::TestCase
         get :show, :id => @poll.id
       end
 
-      should_assign_to(:poll) { @poll}
-      should_assign_to(:council) { @area.council}
-      should_assign_to(:total_votes) { 537 + 210 }
+      should assign_to(:poll) { @poll}
+      should assign_to(:council) { @area.council}
+      should assign_to(:total_votes) { 537 + 210 }
       should respond_with :success
       should render_template :show
       should_render_with_layout
@@ -244,7 +244,7 @@ class PollsControllerTest < ActionController::TestCase
         get :show, :id => @poll.id, :format => 'xml'
       end
       
-      should_assign_to(:poll) { @poll}
+      should assign_to(:poll) { @poll}
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
@@ -269,7 +269,7 @@ class PollsControllerTest < ActionController::TestCase
         get :show, :id => @poll.id, :format => 'json'
       end
       
-      should_assign_to(:poll)
+      should assign_to(:poll)
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -295,7 +295,7 @@ class PollsControllerTest < ActionController::TestCase
         get :show, :id => @poll.id, :format => 'rdf'
       end
       
-      should_assign_to(:poll) { @poll}
+      should assign_to(:poll) { @poll}
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/rdf+xml'
@@ -350,7 +350,7 @@ class PollsControllerTest < ActionController::TestCase
         get :show, :id => @poll.id, :format => 'rdf'
       end
       
-      should_assign_to(:poll) { @poll}
+      should assign_to(:poll) { @poll}
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/rdf+xml'

@@ -13,7 +13,7 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:political_parties) { PoliticalParty.all}
+      should assign_to(:political_parties) { PoliticalParty.all}
       should respond_with :success
       should render_template :index
       should "list political parties" do
@@ -41,7 +41,7 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
       get :edit, :id => @political_party
     end
   
-    should_assign_to(:political_party)
+    should assign_to(:political_party)
     should respond_with :success
     should render_template :edit
   
@@ -69,7 +69,7 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
       should_not_change("The number of political parties") { PoliticalParty.count }
       should_change( "The name of the political party", :to => "New Name") { @political_party.reload.name }
       should_change( "The url of the political party", :to => "http://new.name.com") { @political_party.reload.url }
-      should_assign_to :political_party
+      should assign_to :political_party
       should_redirect_to( "the index page for political parties") { political_parties_path }
       should_set_the_flash_to "Successfully updated political party"
     
@@ -83,7 +83,7 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
     
       should_not_change("The number of political parties") { PoliticalParty.count }
       should_not_change("The name of the political party") { @political_party.reload.name }
-      should_assign_to :political_party
+      should assign_to :political_party
       should render_template :edit
       should_not set_the_flash
     end

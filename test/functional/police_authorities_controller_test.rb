@@ -14,7 +14,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:police_authorities) { PoliceAuthority.find(:all)}
+      should assign_to(:police_authorities) { PoliceAuthority.find(:all)}
       should respond_with :success
       should render_template :index
       should "list police authorities" do
@@ -40,7 +40,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
         get :index, :format => "xml"
       end
 
-      should_assign_to(:police_authorities) { PoliceAuthority.find(:all) }
+      should assign_to(:police_authorities) { PoliceAuthority.find(:all) }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
@@ -51,7 +51,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
         get :index, :format => "json"
       end
   
-      should_assign_to(:police_authorities) { PoliceAuthority.find(:all) }
+      should assign_to(:police_authorities) { PoliceAuthority.find(:all) }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -65,7 +65,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
       get :show, :id => @police_authority.id
     end
   
-    should_assign_to(:police_authority) { @police_authority}
+    should assign_to(:police_authority) { @police_authority}
     should respond_with :success
     should render_template :show
     should_render_with_layout
@@ -99,7 +99,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
       get :show, :id => @police_authority.id, :format => "xml"
     end
   
-    should_assign_to(:police_authority) { @police_authority}
+    should assign_to(:police_authority) { @police_authority}
     should respond_with :success
     should_render_without_layout
     should respond_with_content_type 'application/xml'
@@ -128,7 +128,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
       get :show, :id => @police_authority.id, :format => "rdf"
     end
    
-    should_assign_to(:police_authority) { @police_authority}
+    should assign_to(:police_authority) { @police_authority}
     should respond_with :success
     should_render_without_layout
     should respond_with_content_type 'application/rdf+xml'
@@ -211,7 +211,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
        get :edit, :id => @police_authority.id
      end
 
-     should_assign_to :police_authority
+     should assign_to :police_authority
      should respond_with :success
      should render_template :edit
      should_not set_the_flash
@@ -238,7 +238,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
                       :police_authority => { :name => "New name"}}
      end
 
-     should_assign_to :police_authority
+     should assign_to :police_authority
      should_redirect_to( "the show page for police_authority") { police_authority_path(@police_authority.reload) }
      should_set_the_flash_to "Successfully updated police authority"
 

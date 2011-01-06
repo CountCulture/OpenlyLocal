@@ -21,8 +21,8 @@ class DocumentsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id
       end
   
-      should_assign_to(:council) { @council } 
-      should_assign_to(:documents) { [@document, @another_document] }
+      should assign_to(:council) { @council } 
+      should assign_to(:documents) { [@document, @another_document] }
       should respond_with :success
       should render_template :index
       should respond_with_content_type 'text/html'
@@ -52,7 +52,7 @@ class DocumentsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :term => "foobar"
       end
       
-      should_assign_to(:documents) { [@another_document] }
+      should assign_to(:documents) { [@another_document] }
       should respond_with :success
       
       should "have title" do
@@ -66,8 +66,8 @@ class DocumentsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :format => "xml"
       end
       
-      should_assign_to(:council) { @council } 
-      should_assign_to(:documents) { [@document, @another_document] }
+      should assign_to(:council) { @council } 
+      should assign_to(:documents) { [@document, @another_document] }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
@@ -84,8 +84,8 @@ class DocumentsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :format => "json"
       end
       
-      should_assign_to(:council) { @council } 
-      should_assign_to(:documents) { [@document, @another_document] }
+      should assign_to(:council) { @council } 
+      should assign_to(:documents) { [@document, @another_document] }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -96,8 +96,8 @@ class DocumentsControllerTest < ActionController::TestCase
         get :index, :council_id => @council.id, :format => "rss"
       end
       
-      should_assign_to(:council) { @council } 
-      should_assign_to(:documents) { [@document, @another_document] }
+      should assign_to(:council) { @council } 
+      should assign_to(:documents) { [@document, @another_document] }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/rss+xml'
@@ -119,10 +119,10 @@ class DocumentsControllerTest < ActionController::TestCase
       get :show, :id => @document.id
     end
   
-    should_assign_to(:document) { @document}
+    should assign_to(:document) { @document}
     should respond_with :success
     should render_template :show
-    should_assign_to(:council) { @council }
+    should assign_to(:council) { @council }
   
     should "show document title in title" do
       assert_select "title", /#{@document.title}/
@@ -142,7 +142,7 @@ class DocumentsControllerTest < ActionController::TestCase
       get :show, :id => @document.id, :format => "xml"
     end
     
-    should_assign_to(:document) { @document}
+    should assign_to(:document) { @document}
     should respond_with :success
     should_render_without_layout
     should respond_with_content_type 'application/xml'
@@ -159,7 +159,7 @@ class DocumentsControllerTest < ActionController::TestCase
       get :show, :id => @document.id, :format => "json"
     end
     
-    should_assign_to(:document) { @document}
+    should assign_to(:document) { @document}
     should respond_with :success
     should_render_without_layout
     should respond_with_content_type 'application/json'

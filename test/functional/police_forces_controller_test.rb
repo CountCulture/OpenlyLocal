@@ -14,7 +14,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:police_forces) { PoliceForce.find(:all)}
+      should assign_to(:police_forces) { PoliceForce.find(:all)}
       should respond_with :success
       should render_template :index
       
@@ -42,7 +42,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
         get :index, :format => "xml"
       end
 
-      should_assign_to(:police_forces) { PoliceForce.find(:all) }
+      should assign_to(:police_forces) { PoliceForce.find(:all) }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
@@ -56,7 +56,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
         get :index, :format => "json"
       end
   
-      should_assign_to(:police_forces) { PoliceForce.find(:all) }
+      should assign_to(:police_forces) { PoliceForce.find(:all) }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -72,7 +72,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
       get :show, :id => @police_force.id
     end
   
-    should_assign_to(:police_force) { @police_force}
+    should assign_to(:police_force) { @police_force}
     should respond_with :success
     should render_template :show
     should_render_with_layout
@@ -116,7 +116,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
       get :show, :id => @police_force.id, :format => "xml"
     end
   
-    should_assign_to(:police_force) { @police_force}
+    should assign_to(:police_force) { @police_force}
     should respond_with :success
     should_render_without_layout
     should respond_with_content_type 'application/xml'
@@ -149,7 +149,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
       get :show, :id => @police_force.id, :format => "rdf"
     end
    
-    should_assign_to(:police_force) { @police_force}
+    should assign_to(:police_force) { @police_force}
     should respond_with :success
     should_render_without_layout
     should respond_with_content_type 'application/rdf+xml'
@@ -233,7 +233,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
       get :new
     end
   
-    should_assign_to(:police_force)
+    should assign_to(:police_force)
     should respond_with :success
     should render_template :new
   
@@ -260,7 +260,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
        end
      
        should_change("The number of police_forces", :by => 1) { PoliceForce.count }
-       should_assign_to :police_force
+       should assign_to :police_force
        should_redirect_to( "the show page for police_force") { police_force_path(assigns(:police_force)) }
        should_set_the_flash_to "Successfully created police force"
      
@@ -273,7 +273,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
        end
      
        should_not_change("The number of police_forces") { PoliceForce.count }
-       should_assign_to :police_force
+       should assign_to :police_force
        should render_template :new
        should_not set_the_flash
      end
@@ -295,7 +295,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
        get :edit, :id => @police_force
      end
   
-     should_assign_to(:police_force)
+     should assign_to(:police_force)
      should respond_with :success
      should render_template :edit
   
@@ -323,7 +323,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
       should_not_change("The number of police_forces") { PoliceForce.count }
       should_change("The police_force name", :to => "New Name") { @police_force.reload.name }
       should_change("The police_force url", :to => "http://new.name.com") { @police_force.reload.url }
-      should_assign_to :police_force
+      should assign_to :police_force
       should_redirect_to( "the show page for police force") { police_force_path(assigns(:police_force)) }
       should_set_the_flash_to "Successfully updated police force"
     
@@ -337,7 +337,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
     
       should_not_change("The number of police_forces") { PoliceForce.count }
       should_not_change("The police_force name") { @police_force.reload.name }
-      should_assign_to :police_force
+      should assign_to :police_force
       should render_template :edit
       should_not set_the_flash
     end

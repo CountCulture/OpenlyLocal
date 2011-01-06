@@ -13,7 +13,7 @@ class PensionFundsControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:pension_funds) { PensionFund.find(:all)}
+      should assign_to(:pension_funds) { PensionFund.find(:all)}
       should respond_with :success
       should render_template :index
       should "list pension funds" do
@@ -38,7 +38,7 @@ class PensionFundsControllerTest < ActionController::TestCase
         get :index, :format => "xml"
       end
 
-      should_assign_to(:pension_funds) { PensionFund.find(:all) }
+      should assign_to(:pension_funds) { PensionFund.find(:all) }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/xml'
@@ -49,7 +49,7 @@ class PensionFundsControllerTest < ActionController::TestCase
         get :index, :format => "json"
       end
 
-      should_assign_to(:pension_funds) { PensionFund.find(:all) }
+      should assign_to(:pension_funds) { PensionFund.find(:all) }
       should respond_with :success
       should_render_without_layout
       should respond_with_content_type 'application/json'
@@ -63,7 +63,7 @@ class PensionFundsControllerTest < ActionController::TestCase
       get :show, :id => @pension_fund.id
     end
   
-    should_assign_to(:pension_fund) { @pension_fund}
+    should assign_to(:pension_fund) { @pension_fund}
     should respond_with :success
     should render_template :show
     should_render_with_layout
@@ -94,7 +94,7 @@ class PensionFundsControllerTest < ActionController::TestCase
       get :edit, :id => @pension_fund.id
     end
 
-    should_assign_to :pension_fund
+    should assign_to :pension_fund
     should respond_with :success
     should render_template :edit
     should_not set_the_flash
@@ -121,7 +121,7 @@ class PensionFundsControllerTest < ActionController::TestCase
                      :pension_fund => { :name => "New name"}}
     end
 
-    should_assign_to :pension_fund
+    should assign_to :pension_fund
     should_redirect_to( "the show page for pension_fund") { pension_fund_path(@pension_fund.reload) }
     should_set_the_flash_to "Successfully updated pension fund"
 

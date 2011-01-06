@@ -21,7 +21,7 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to :datasets
+      should assign_to :datasets
       should respond_with :success
       should render_template :index
 
@@ -41,7 +41,7 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
         get :show, :id => @dataset_family.id
       end
 
-      should_assign_to :dataset_family
+      should assign_to :dataset_family
       should respond_with :success
       should render_template :show
 
@@ -76,8 +76,8 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
         get :show, :id => @dataset_family.id
       end
 
-      should_assign_to :dataset_family
-      should_assign_to :datapoints
+      should assign_to :dataset_family
+      should assign_to :datapoints
       should respond_with :success
       should render_template :show
       
@@ -112,9 +112,9 @@ class DatasetFamiliesControllerTest < ActionController::TestCase
         get :show, :id => @dataset_family.id, :area_type => "Council", :area_id => @council.id
       end
 
-      should_assign_to :dataset_family
-      should_assign_to(:area) { @council }
-      should_assign_to(:datapoints) { [@datapoint, @datapoint_for_another_topic] }
+      should assign_to :dataset_family
+      should assign_to(:area) { @council }
+      should assign_to(:datapoints) { [@datapoint, @datapoint_for_another_topic] }
       should respond_with :success
       should render_template :show
 

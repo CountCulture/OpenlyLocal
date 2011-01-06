@@ -24,7 +24,7 @@ class DatasetsControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_assign_to(:datasets) { Dataset.all}
+      should assign_to(:datasets) { Dataset.all}
       should respond_with :success
       should render_template :index
       should "list datasets" do
@@ -46,7 +46,7 @@ class DatasetsControllerTest < ActionController::TestCase
         get :show, :id => @dataset.id
       end
 
-      should_assign_to :dataset
+      should assign_to :dataset
       should respond_with :success
       should render_template :show
 
@@ -75,8 +75,8 @@ class DatasetsControllerTest < ActionController::TestCase
         get :show, :id => @dataset.id
       end
 
-      should_assign_to :dataset
-      should_assign_to :datapoints
+      should assign_to :dataset
+      should assign_to :datapoints
       should respond_with :success
       should render_template :show
       
@@ -109,8 +109,8 @@ class DatasetsControllerTest < ActionController::TestCase
           get :show, :id => @dataset.id, :area_type => "Council", :area_id => @council.id
         end
 
-        should_assign_to :dataset
-        should_assign_to(:area) { @council }
+        should assign_to :dataset
+        should assign_to(:area) { @council }
         should respond_with :success
         should render_template :show
         
@@ -164,7 +164,7 @@ class DatasetsControllerTest < ActionController::TestCase
       get :edit, :id => @dataset.id
     end
 
-    should_assign_to :dataset
+    should assign_to :dataset
     should respond_with :success
     should render_template :edit
     should_not set_the_flash
@@ -191,7 +191,7 @@ class DatasetsControllerTest < ActionController::TestCase
                      :dataset => { :title => "New title"}}
     end
 
-    should_assign_to :dataset
+    should assign_to :dataset
     should_redirect_to( "the show page for dataset") { dataset_url(@dataset.reload) }
     should_set_the_flash_to /Successfully updated/
 

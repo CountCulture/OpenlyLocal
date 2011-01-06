@@ -36,11 +36,11 @@ class AreasControllerTest < ActionController::TestCase
         get :search, :postcode => 'za13 3sl'
       end
   
-      should_assign_to(:postcode) { @postcode }
-      should_assign_to(:council) { @council_1 }
-      should_assign_to(:county) { @county }
-      should_assign_to(:ward) { @ward }
-      should_assign_to(:members) { [@member_1] }
+      should assign_to(:postcode) { @postcode }
+      should assign_to(:council) { @council_1 }
+      should assign_to(:county) { @county }
+      should assign_to(:ward) { @ward }
+      should assign_to(:members) { [@member_1] }
 
       should respond_with :success
       should render_template :search
@@ -161,7 +161,7 @@ class AreasControllerTest < ActionController::TestCase
           get :search, :postcode => 'za13 3sl'
         end
 
-        should_assign_to(:postcode) { @postcode }
+        should assign_to(:postcode) { @postcode }
 
         should respond_with :success
         should render_template :search
@@ -200,11 +200,11 @@ class AreasControllerTest < ActionController::TestCase
           get :search, :postcode => 'za13 3sl', :format => "xml"
         end
 
-        should_assign_to(:postcode) { @postcode }
-        should_assign_to(:council) { @council_1 }
-        should_assign_to(:county) { @county }
-        should_assign_to(:ward) { @ward }
-        should_assign_to(:members) { [@member_1] }
+        should assign_to(:postcode) { @postcode }
+        should assign_to(:council) { @council_1 }
+        should assign_to(:county) { @county }
+        should assign_to(:ward) { @ward }
+        should assign_to(:members) { [@member_1] }
 
         should respond_with :success
         should_render_without_layout
@@ -249,11 +249,11 @@ class AreasControllerTest < ActionController::TestCase
           get :search, :postcode => 'za13 3sl', :format => "json"
         end
 
-        should_assign_to(:postcode) { @postcode }
-        should_assign_to(:council) { @council_1 }
-        should_assign_to(:county) { @county }
-        should_assign_to(:ward) { @ward }
-        should_assign_to(:members) { [@member_1] }
+        should assign_to(:postcode) { @postcode }
+        should assign_to(:council) { @council_1 }
+        should assign_to(:county) { @county }
+        should assign_to(:ward) { @ward }
+        should assign_to(:members) { [@member_1] }
 
         should respond_with :success
         should_render_without_layout

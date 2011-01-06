@@ -24,8 +24,8 @@ class DatapointsControllerTest < ActionController::TestCase
         get :show, :id => @datapoint.id
       end
 
-      should_assign_to(:datapoints) { [@datapoint_for_another_ward, @datapoint] }
-      should_assign_to(:area) { @ward }
+      should assign_to(:datapoints) { [@datapoint_for_another_ward, @datapoint] }
+      should assign_to(:area) { @ward }
       should respond_with :success
       should render_template :show
 
@@ -80,8 +80,8 @@ class DatapointsControllerTest < ActionController::TestCase
         get :show, :id => @council_datapoint.id
       end
 
-      should_assign_to(:datapoints) { [@council_datapoint, @related_council_datapoint] }
-      should_assign_to(:area) { @council }
+      should assign_to(:datapoints) { [@council_datapoint, @related_council_datapoint] }
+      should assign_to(:area) { @council }
       should respond_with :success
       should render_template :show
 

@@ -150,7 +150,7 @@ class ScraperTest < ActiveSupport::TestCase
         end
         
         should 'intialize with given attributes' do
-          assert_equal( {:foo => "FooName"}, @blank_scraper.parser.attribute_mapping)
+          assert_equal( {:foo => "fooname"}, @blank_scraper.parser.attribute_mapping)
         end
       end
       

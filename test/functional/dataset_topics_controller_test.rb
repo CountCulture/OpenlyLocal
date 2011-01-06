@@ -32,8 +32,8 @@ class DatasetTopicsControllerTest < ActionController::TestCase
         get :show, :id => @dataset_topic.id
       end
 
-      should_assign_to :dataset_topic
-      should_assign_to :datapoints
+      should assign_to :dataset_topic
+      should assign_to :datapoints
       should respond_with :success
       should render_template :show
 
@@ -92,9 +92,9 @@ class DatasetTopicsControllerTest < ActionController::TestCase
           get :show, :id => @dataset_topic.id, :area_type => "Council", :area_id => @council_1.id
         end
 
-        should_assign_to :dataset_topic
-        should_assign_to :datapoints
-        should_assign_to(:area) {@council_1}
+        should assign_to :dataset_topic
+        should assign_to :datapoints
+        should assign_to(:area) {@council_1}
         should respond_with :success
         should render_template :show
       
@@ -116,8 +116,8 @@ class DatasetTopicsControllerTest < ActionController::TestCase
           get :show, :id => @dataset_topic.id, :area_type => "Ward", :area_id => @ward.id
         end
 
-        should_assign_to(:datapoints) { [@datapoint_for_another_ward, @datapoint] }
-        should_assign_to(:area) { @ward }
+        should assign_to(:datapoints) { [@datapoint_for_another_ward, @datapoint] }
+        should assign_to(:area) { @ward }
         should respond_with :success
         should render_template :show
 
@@ -174,7 +174,7 @@ class DatasetTopicsControllerTest < ActionController::TestCase
       get :edit, :id => @dataset_topic.id
     end
 
-    should_assign_to :dataset_topic
+    should assign_to :dataset_topic
     should respond_with :success
     should render_template :edit
     should_not set_the_flash
@@ -204,7 +204,7 @@ class DatasetTopicsControllerTest < ActionController::TestCase
                      :dataset_topic => { :short_title => "New title"}}
     end
 
-    should_assign_to :dataset_topic
+    should assign_to :dataset_topic
     should_redirect_to( "the show page for dataset_topic") { dataset_topic_path(@dataset_topic.reload) }
     should_set_the_flash_to "Successfully updated DatasetTopic"
 
@@ -228,7 +228,7 @@ class DatasetTopicsControllerTest < ActionController::TestCase
       post :populate, {:id => @dataset_topic.id}
     end
   
-    should_assign_to :dataset_topic
+    should assign_to :dataset_topic
     should_redirect_to( "the show page for dataset_topic") { dataset_topic_path(@dataset_topic) }
     should_set_the_flash_to /Successfully queued Topic/
     

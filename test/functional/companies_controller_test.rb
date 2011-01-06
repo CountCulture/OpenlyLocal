@@ -11,7 +11,7 @@ class CompaniesControllerTest < ActionController::TestCase
       get :show, :id => @company.id
     end
 
-    should_assign_to(:company) { @company}
+    should assign_to(:company) { @company}
     should respond_with :success
     should render_template :show
 
@@ -34,7 +34,7 @@ class CompaniesControllerTest < ActionController::TestCase
       get :show, :id => @company.id, :format => "xml"
     end
 
-    should_assign_to(:company) { @company }
+    should assign_to(:company) { @company }
     should respond_with :success
     should_not render_with_layout
     should respond_with_content_type 'application/xml'
@@ -52,7 +52,7 @@ class CompaniesControllerTest < ActionController::TestCase
       get :show, :id => @company.id, :format => "json"
     end
 
-    should_assign_to(:company) { @company }
+    should assign_to(:company) { @company }
     should respond_with :success
     should_not render_with_layout
     should respond_with_content_type 'application/json'
@@ -67,7 +67,7 @@ class CompaniesControllerTest < ActionController::TestCase
       get :show, :id => @company.id, :format => "rdf"
     end
    
-    should_assign_to(:company) { @company }
+    should assign_to(:company) { @company }
     should respond_with :success
     should_not render_with_layout
     should respond_with_content_type 'application/rdf+xml'

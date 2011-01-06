@@ -15,7 +15,7 @@ class ToolsControllerTest < ActionController::TestCase
         get :gadget, :format => "xml"
       end
   
-      should_assign_to(:councils) { [@council]} # only parsed councils
+      should assign_to(:councils) { [@council]} # only parsed councils
       should respond_with :success
       should render_template :gadget
       should_render_without_layout
@@ -43,7 +43,7 @@ class ToolsControllerTest < ActionController::TestCase
       get :gadget_test, :format => "xml"
     end
       
-    should_assign_to(:councils) { [@council]} # only parsed councils
+    should assign_to(:councils) { [@council]} # only parsed councils
     should respond_with :success
     should render_template :gadget
     should_render_without_layout
@@ -63,7 +63,7 @@ class ToolsControllerTest < ActionController::TestCase
         get :ning, :format => "xml"
       end
   
-      should_assign_to(:councils) { [@council]} # only parsed councils
+      should assign_to(:councils) { [@council]} # only parsed councils
       should respond_with :success
       should render_template :ning
       should_render_without_layout
@@ -98,7 +98,7 @@ class ToolsControllerTest < ActionController::TestCase
       get :widget, :format => "js", :council_id => @council.id
     end
 
-    should_assign_to(:council) { @council}
+    should assign_to(:council) { @council}
     should respond_with :success
     should render_template :widget
     should_render_without_layout
@@ -113,7 +113,7 @@ class ToolsControllerTest < ActionController::TestCase
   #     get :ning_test, :format => "xml"
   #   end
   #     
-  #   should_assign_to(:councils) { [@council]} # only parsed councils
+  #   should assign_to(:councils) { [@council]} # only parsed councils
   #   should respond_with :success
   #   should render_template :gadget
   #   should_render_without_layout

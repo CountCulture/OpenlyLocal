@@ -21,7 +21,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
       get :index
     end
   
-    should_assign_to(:portal_systems) { PortalSystem.find(:all)}
+    should assign_to(:portal_systems) { PortalSystem.find(:all)}
     should respond_with :success
     should render_template :index
     should "list portal systems" do
@@ -50,10 +50,10 @@ class PortalSystemsControllerTest < ActionController::TestCase
       get :show, :id => @portal.id
     end
   
-    should_assign_to(:portal_system) { @portal}
+    should assign_to(:portal_system) { @portal}
     should respond_with :success
     should render_template :show
-    should_assign_to(:councils) { @portal.councils }
+    should assign_to(:councils) { @portal.councils }
   
     should "list all councils" do
       assert_select "#councils li", @portal.councils.size do
@@ -80,10 +80,10 @@ class PortalSystemsControllerTest < ActionController::TestCase
       get :show, :id => @portal.id
     end
   
-    should_assign_to(:portal_system) { @portal}
+    should assign_to(:portal_system) { @portal}
     should respond_with :success
     should render_template :show
-    should_assign_to(:councils) { @portal.councils }
+    should assign_to(:councils) { @portal.councils }
       
     should "list all parsers" do
       assert_select "#parsers li" do
@@ -107,7 +107,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
       get :new
     end
   
-    should_assign_to(:portal_system)
+    should assign_to(:portal_system)
     should respond_with :success
     should render_template :new
   
@@ -134,7 +134,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
        end
      
        should_change("The number of portal_systems", :by => 1) { PortalSystem.count }
-       should_assign_to :portal_system
+       should assign_to :portal_system
        should_redirect_to( "the show page for portal_system") { portal_system_path(assigns(:portal_system)) }
        should_set_the_flash_to "Successfully created portal system"
      
@@ -147,7 +147,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
        end
      
        should_not_change("The number of portal_systems") { PortalSystem.count } 
-       should_assign_to :portal_system
+       should assign_to :portal_system
        should render_template :new
        should_not set_the_flash
      end
@@ -169,7 +169,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
        get :edit, :id => @portal
      end
   
-     should_assign_to(:portal_system)
+     should assign_to(:portal_system)
      should respond_with :success
      should render_template :edit
   
@@ -197,7 +197,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
       should_not_change("The number of portal_systems") { PortalSystem.count } 
       should_change("The portal_system name", :to => "New Name") { @portal.reload.name }
       should_change("The portal_system url", :to => "http://new.name.com") { @portal.reload.url }
-      should_assign_to :portal_system
+      should assign_to :portal_system
       should_redirect_to( "the show page for portal system") { portal_system_path(assigns(:portal_system)) }
       should_set_the_flash_to "Successfully updated portal system"
     
@@ -211,7 +211,7 @@ class PortalSystemsControllerTest < ActionController::TestCase
     
       should_not_change("The number of portal_systems") { PortalSystem.count } 
       should_not_change("The portal_system name") { @portal.reload.name }
-      should_assign_to :portal_system
+      should assign_to :portal_system
       should render_template :edit
       should_not set_the_flash
     end
