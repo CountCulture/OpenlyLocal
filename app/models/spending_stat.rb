@@ -11,7 +11,7 @@ class SpendingStat < ActiveRecord::Base
   
   def calculated_average_monthly_spend
     return if calculated_total_spend.blank? || calculated_total_spend == 0
-    calculated_total_spend/months_covered
+    calculated_total_spend/calculated_months_covered
   end
   
   def calculated_payee_breakdown
@@ -50,30 +50,34 @@ class SpendingStat < ActiveRecord::Base
     @calculated_total_spend ||= organisation.financial_transactions.sum(:value)
   end
   
+  def calculated_earliest_transaction_date
+    return @calculated_earliest_transaction_date if @calculated_earliest_transaction_date
+    return unless first_transaction = organisation.financial_transactions.first(:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)', :order => 'date')
+    @calculated_earliest_transaction_date = first_transaction.date - first_transaction.date_fuzziness.to_i.days
+  end
+  
+  def calculated_latest_transaction_date
+    return @calculated_latest_transaction_date if @calculated_latest_transaction_date
+    return unless last_transaction = organisation.financial_transactions.first(:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)', :order => 'date DESC')
+    @calculated_latest_transaction_date = last_transaction.date + last_transaction.date_fuzziness.to_i.days
+  end
+  
+  def calculated_months_covered
+    self.class.difference_in_months_between_dates(calculated_earliest_transaction_date, calculated_latest_transaction_date) + 1 # add one because we want the number of months covered, not just the difference
+  end
+  
+  def months_covered
+    self.class.difference_in_months_between_dates(earliest_transaction, latest_transaction) + 1 # add one because we want the number of months covered, not just the difference
+  end
+  
   def perform
     update_attributes(:total_spend => calculated_total_spend, 
                       :average_monthly_spend => calculated_average_monthly_spend,
                       :spend_by_month => calculated_spend_by_month,
                       :breakdown => calculated_payee_breakdown,
-                      :earliest_transaction => earliest_transaction_date,
-                      :latest_transaction => latest_transaction_date
+                      :earliest_transaction => calculated_earliest_transaction_date,
+                      :latest_transaction => calculated_latest_transaction_date
                       )
-  end
-  
-  def earliest_transaction_date
-    return @earliest_transaction_date if @earliest_transaction_date
-    return unless first_transaction = organisation.financial_transactions.first(:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)', :order => 'date')
-    @earliest_transaction_date = first_transaction.date - first_transaction.date_fuzziness.to_i.days
-  end
-  
-  def latest_transaction_date
-    return @latest_transaction_date if @latest_transaction_date
-    return unless last_transaction = organisation.financial_transactions.first(:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)', :order => 'date DESC')
-    @latest_transaction_date = last_transaction.date + last_transaction.date_fuzziness.to_i.days
-  end
-  
-  def months_covered
-    self.class.difference_in_months_between_dates(earliest_transaction_date, latest_transaction_date) + 1 # add one because we want the number of months covered, not just the difference
   end
   
   private
