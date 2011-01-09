@@ -50,6 +50,10 @@ class Charity < ActiveRecord::Base
     "http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"
   end
   
+  def resource_uri
+    "http://OpenCharities.org/id/charities/#{charity_number}"
+  end
+  
   def update_from_charity_register
     attribs = CharityUtilities::Client.new(:charity_number => charity_number).get_details
     self.last_checked = Time.now

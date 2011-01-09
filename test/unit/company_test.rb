@@ -400,8 +400,8 @@ class CompanyTest < ActiveSupport::TestCase
     end
     
     context "when returning resource_uri" do
-      should 'build resource uri using DefaultDomain and id' do
-        assert_equal "http://#{DefaultDomain}/id/companies/#{@company.id}", @company.resource_uri
+      should 'return OpenCorporates uri for company' do
+        assert_equal "http://OpenCorporates.com/id/companies/uk/#{@company.company_number}", @company.resource_uri
       end
     end
     

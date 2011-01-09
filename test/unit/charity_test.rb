@@ -239,6 +239,12 @@ class CharityTest < ActiveSupport::TestCase
 
     end
 
+    context "when returning resource_uri" do
+      should 'return OpenCharities uri for charity' do
+        assert_equal "http://OpenCharities.org/id/charities/#{@charity.charity_number}", @charity.resource_uri
+      end
+    end
+    
     should "use title in to_param method" do
       @charity.title = "some title-with/stuff"
       assert_equal "#{@charity.id}-some-title-with-stuff", @charity.to_param
