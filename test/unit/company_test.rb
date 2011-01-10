@@ -401,7 +401,7 @@ class CompanyTest < ActiveSupport::TestCase
     
     context "when returning resource_uri" do
       should 'return OpenCorporates uri for company' do
-        assert_equal "http://OpenCorporates.com/id/companies/uk/#{@company.company_number}", @company.resource_uri
+        assert_equal "http://opencorporates.com/id/companies/uk/#{@company.company_number}", @company.resource_uri
       end
     end
     

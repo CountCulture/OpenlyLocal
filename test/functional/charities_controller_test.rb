@@ -20,6 +20,10 @@ class CharitiesControllerTest < ActionController::TestCase
         assert_select "title", /#{@charity.title}/
       end
 
+      should "show OpenCharities resource uri as main subject in head" do
+        assert_select "link[rel=primarytopic][href='http://opencharities.org/id/charities/#{@charity.charity_number}']"
+      end
+
       should "show api block" do
         assert_select "#api_info"
       end
@@ -79,27 +83,26 @@ class CharitiesControllerTest < ActionController::TestCase
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
 
-      should "show alternative representations" do
-        assert_match /dct:hasFormat rdf:resource.+\/charities\/#{@charity.id}.rdf/m, @response.body
-        assert_match /dct:hasFormat rdf:resource.+\/charities\/#{@charity.id}\"/m, @response.body
-        assert_match /dct:hasFormat rdf:resource.+\/charities\/#{@charity.id}.json/m, @response.body
-        assert_match /dct:hasFormat rdf:resource.+\/charities\/#{@charity.id}.xml/m, @response.body
-      end
-
-      should "show charity as primary resource" do
-        assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/charities\/#{@charity.id}/m, @response.body
+      should "identify this page being about opencharities charity resource uri" do
+        assert_match /rdf:Description.+rdf:about.+opencharities.+#{@charity.charity_number}/, @response.body
       end
 
       should "show rdf info for charity" do
-        assert_match /rdf:Description.+rdf:about.+\/id\/charities\/#{@charity.id}/, @response.body
         assert_match /rdf:Description.+rdfs:label>#{@charity.title}/m, @response.body
         assert_match /foaf:phone.+#{Regexp.escape(@charity.foaf_telephone)}/, @response.body
         assert_match /foaf:homepage>#{Regexp.escape(@charity.website)}/m, @response.body
         # assert_match /vCard:Extadd.+#{Regexp.escape(@charity.address_in_full)}/, @response.body
       end
 
-      should "show charity is same as opencharities entry" do
-        assert_match /owl:sameAs.+rdf:resource.+opencharities.+#{@charity.charity_number}/, @response.body
+      should "show alternative representations" do
+        assert_match /dct:hasFormat rdf:resource.+\/charities\/#{@charity.id}.rdf/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/charities\/#{@charity.id}.html/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/charities\/#{@charity.id}.json/m, @response.body
+        assert_match /dct:hasFormat rdf:resource.+\/charities\/#{@charity.id}.xml/m, @response.body
+      end
+
+      should "show opencharities charity as primary resource for representations" do
+        assert_match /rdf:Description.+foaf:primaryTopic.+opencharities.+#{@charity.charity_number}/m, @response.body
       end
 
     end

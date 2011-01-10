@@ -241,7 +241,7 @@ class CharityTest < ActiveSupport::TestCase
 
     context "when returning resource_uri" do
       should 'return OpenCharities uri for charity' do
-        assert_equal "http://OpenCharities.org/id/charities/#{@charity.charity_number}", @charity.resource_uri
+        assert_equal "http://opencharities.org/id/charities/#{@charity.charity_number}", @charity.resource_uri
       end
     end
     

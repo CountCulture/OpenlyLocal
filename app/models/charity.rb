@@ -51,7 +51,7 @@ class Charity < ActiveRecord::Base
   end
   
   def resource_uri
-    "http://OpenCharities.org/id/charities/#{charity_number}"
+    "http://opencharities.org/id/charities/#{charity_number}"
   end
   
   def update_from_charity_register

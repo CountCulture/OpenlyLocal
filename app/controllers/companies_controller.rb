@@ -4,6 +4,7 @@ class CompaniesController < ApplicationController
   def show
     @company = Company.find(params[:id], :include => { :supplying_relationships => :organisation })
     @title = "#{@company.title} :: Companies"
+    @resource_uri = @company.resource_uri
     respond_to do |format|
       format.html
       format.xml { render :xml => @company.to_xml(:include => { :supplying_relationships => { :include => :organisation }}) }

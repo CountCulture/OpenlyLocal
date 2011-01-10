@@ -23,6 +23,10 @@ class CompaniesControllerTest < ActionController::TestCase
       assert_select 'li .supplier_link', /#{@supplier.organisation.title}/
     end
     
+    should "show OpenCorporates resource uri as main subject in head" do
+      assert_select "link[rel=primarytopic][href='http://opencorporates.com/id/companies/uk/#{@company.company_number}']"
+    end
+
     should "show api block" do
       assert_select "#api_info"
     end
@@ -78,28 +82,25 @@ class CompaniesControllerTest < ActionController::TestCase
       assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
     end
   
+    should "identify this page being about opencorporates company resource uri" do
+      assert_match /rdf:Description.+rdf:about.+opencorporates.+#{@company.company_number}/, @response.body
+    end
+
     should "show alternative representations" do
       assert_match /dct:hasFormat rdf:resource.+\/companies\/#{@company.id}.rdf/m, @response.body
-      assert_match /dct:hasFormat rdf:resource.+\/companies\/#{@company.id}\"/m, @response.body
+      assert_match /dct:hasFormat rdf:resource.+\/companies\/#{@company.id}.html"/m, @response.body
       assert_match /dct:hasFormat rdf:resource.+\/companies\/#{@company.id}.json/m, @response.body
       assert_match /dct:hasFormat rdf:resource.+\/companies\/#{@company.id}.xml/m, @response.body
     end
     
-    should "show company as primary resource" do
-      assert_match /rdf:Description.+foaf:primaryTopic.+\/id\/companies\/#{@company.id}/m, @response.body
-    end
-    
-    should "show rdf info for company" do
+    should "show rdf info for company for alternative representations" do
       assert_match /rdf:type.+org\/FormalOrganization/m, @response.body
-      assert_match /rdf:Description.+rdf:about.+\/id\/companies\/#{@company.id}/, @response.body
+      assert_match /rdf:Description.+rdf:about.+opencorporates.+#{@company.company_number}/, @response.body
       assert_match /rdf:Description.+rdfs:label>#{@company.title}/m, @response.body
       assert_match /foaf:homepage>#{Regexp.escape(@company.url)}/m, @response.body
       assert_match /vCard:Extadd.+#{Regexp.escape(@company.address_in_full)}/, @response.body
     end
     
-    should "show company is same as opencorporates company" do
-      assert_match /owl:sameAs.+rdf:resource.+opencorporates.com\/id\/companies\/uk\/#{@company.company_number}/, @response.body
-    end    
   end
   
 

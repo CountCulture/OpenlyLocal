@@ -11,9 +11,8 @@ xml.tag! "rdf:RDF",
          "xmlns:openlylocal" => "#{rdfa_vocab_url}#" do
            
   # basic info about this resource         
-  xml.tag! "rdf:Description", "rdf:about" => resource_uri_for(@charity) do
+  xml.tag! "rdf:Description", "rdf:about" => @charity.resource_uri do
     xml.tag! "rdfs:label", @charity.title
-    xml.tag! "owl:sameAs", "rdf:resource" => "http://opencharities.org/id/charities/#{@charity.charity_number}"
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:Charity"
     xml.tag! "foaf:homepage", @charity.website if @charity.website?
     xml.tag! "foaf:phone", @charity.foaf_telephone unless @charity.foaf_telephone.blank?
@@ -29,7 +28,7 @@ xml.tag! "rdf:RDF",
   xml.tag! "rdf:Description", "rdf:about" => charity_url(:id => @charity.id) do
     xml.tag! "rdf:type", "rdf:resource" => "http://purl.org/dc/dcmitype/Text"
     xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"
-    xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@charity)
+    xml.tag! "foaf:primaryTopic", "rdf:resource" => @charity.resource_uri
     xml.tag! "dct:title", "Information about #{@charity.title}"
     xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @charity.created_at
     xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @charity.updated_at
@@ -43,7 +42,7 @@ xml.tag! "rdf:RDF",
   ResourceRepresentations.each do |format, mime_type|
     xml.tag! "rdf:Description", "rdf:about" => council_url(:id => @charity.id, :format => format) do
       xml.tag! "dct:isFormatOf", "rdf:resource" => council_url(:id => @charity.id)
-      xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@charity)
+      xml.tag! "foaf:primaryTopic", "rdf:resource" => @charity.resource_uri
       xml.tag! "rdf:type", "rdf:resource" => "http://purl.org/dc/dcmitype/Text"
       xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"
       xml.tag! "dct:format", mime_type

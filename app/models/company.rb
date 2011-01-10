@@ -75,7 +75,7 @@ class Company < ActiveRecord::Base
   end
     
   def resource_uri
-    "http://OpenCorporates.com/id/companies/uk/#{company_number}"
+    "http://opencorporates.com/id/companies/uk/#{company_number}"
   end
   
   def to_param

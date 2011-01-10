@@ -248,7 +248,7 @@ desc "Export CSV version of spending data"
 task :export_csv_spending_data  => :environment do
   require 'zip/zipfilesystem'
   dir = File.join(RAILS_ROOT, "db/data/downloads/")
-  RAILS_DEFAULT_LOGGER.info {"*** About to start exporting spending data to CSV file"}
+  RAILS_DEFAULT_LOGGER.warn {"*** About to start exporting spending data to CSV file"}
   csv_file = File.join(dir, "spending.csv")
   Dir.mkdir(dir) unless File.directory?(dir)
   FasterCSV.open(csv_file, "w") do |csv|
@@ -257,16 +257,16 @@ task :export_csv_spending_data  => :environment do
       csv << financial_transaction.csv_data
     end
   end
-  RAILS_DEFAULT_LOGGER.info {"*** Finished exporting spending data to CSV file"}
+  RAILS_DEFAULT_LOGGER.warn {"*** Finished exporting spending data to CSV file"}
 
   Zip::ZipFile.open("#{csv_file}.new.zip", Zip::ZipFile::CREATE) {
     |zipfile|
     zipfile.add('spending.csv', csv_file)
   }
-  RAILS_DEFAULT_LOGGER.info {"*** Finished zipping spending CSV file: #{csv_file}.new.zip"}
+  RAILS_DEFAULT_LOGGER.warn {"*** Finished zipping spending CSV file: #{csv_file}.new.zip"}
   File.delete(csv_file)
   FileUtils.mv "#{csv_file}.new.zip", "#{csv_file}.zip", :force => true
-  RAILS_DEFAULT_LOGGER.info {"*** Finished process. New spending data file is at: #{csv_file}.zip"}
+  RAILS_DEFAULT_LOGGER.warn {"*** Finished process. New spending data file is at: #{csv_file}.zip"}
   # FileUtils.chmod_R 0644, "#{csv_file}.zip"
 end  
 
