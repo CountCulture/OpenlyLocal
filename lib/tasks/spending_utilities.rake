@@ -254,7 +254,12 @@ task :export_csv_spending_data  => :environment do
   FasterCSV.open(csv_file, "w") do |csv|
     csv << (headings = FinancialTransaction::CsvMappings.collect{ |m| m.first })
     FinancialTransaction.find_each do |financial_transaction|
-      csv << financial_transaction.csv_data
+      begin
+        csv << financial_transaction.csv_data
+      rescue Exception => e
+        puts "Problem converting #{financial_transaction.inspect} to csv: #{e.inspect}"
+      end
+      
     end
   end
   RAILS_DEFAULT_LOGGER.warn {"*** Finished exporting spending data to CSV file"}

@@ -6,7 +6,7 @@ class FinancialTransaction < ActiveRecord::Base
   validates_presence_of :value, :date, :supplier_id
   attr_reader :organisation
   delegate :name, :openlylocal_url, :uid, :to => :supplier, :prefix => true
-  delegate :name, :id, :openlylocal_url, :to => :organisation, :prefix => :organisation
+  delegate :title, :id, :openlylocal_url, :to => :organisation, :prefix => :organisation
   delegate :organisation_type, :to => :supplier
   delegate :payee, :to => :supplier
   delegate :resource_uri, :to => :payee, :prefix => true, :allow_nil => true
@@ -22,7 +22,7 @@ class FinancialTransaction < ActiveRecord::Base
                  [:date],
                  [:date_fuzziness],
                  [:value, :value_to_two_dec_places],
-                 [:organisation_name],
+                 [:organisation_name, :organisation_title],
                  [:organisation_openlylocal_id, :organisation_id],
                  [:organisation_type],
                  [:organisation_openlylocal_url],

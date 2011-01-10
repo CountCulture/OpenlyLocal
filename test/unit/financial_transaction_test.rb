@@ -140,8 +140,8 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       assert_equal @financial_transaction.supplier.openlylocal_url, @financial_transaction.supplier_openlylocal_url
     end
     
-    should "delegate organisation_name to supplier organisation" do
-      assert_equal @financial_transaction.supplier.organisation.name, @financial_transaction.organisation_name
+    should "delegate organisation_title to supplier organisation" do
+      assert_equal @financial_transaction.supplier.organisation.title, @financial_transaction.organisation_title
     end
     
     should "delegate organisation_openlylocal_url to supplier organisation" do
