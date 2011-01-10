@@ -247,6 +247,7 @@ end
 desc "Export CSV version of spending data"
 task :export_csv_spending_data  => :environment do
   require 'zip/zipfilesystem'
+  require 'net/scp'
   dir = File.join(RAILS_ROOT, "db/data/downloads/")
   RAILS_DEFAULT_LOGGER.warn {"*** About to start exporting spending data to CSV file"}
   csv_file = File.join(dir, "spending.csv")
@@ -273,7 +274,9 @@ task :export_csv_spending_data  => :environment do
   File.delete(csv_file)
   FileUtils.mv "#{csv_file}.new.zip", "#{csv_file}.zip", :force => true
   RAILS_DEFAULT_LOGGER.warn {"*** Finished process. New spending data file is at: #{csv_file}.zip"}
-  # FileUtils.chmod_R 0644, "#{csv_file}.zip"
+  Net::SCP.start(SCP_DEST, SCP_USER, :port => 7012, :password => SCP_PASSWORD ) do |scp|
+    scp.upload!("#{csv_file}.zip", 'sites/twfy_local/shared/data/downloads/')
+  end
 end  
 
 desc "Import Islington Payments"
