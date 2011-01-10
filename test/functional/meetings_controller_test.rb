@@ -150,7 +150,8 @@ class MeetingsControllerTest < ActionController::TestCase
         get :show, :id => @meeting.id
       end
 
-      should assign_to :meeting, :committee
+      should assign_to :meeting
+      should assign_to :committee
       should assign_to(:other_meetings) { [@future_meeting] }
       should respond_with :success
       should render_template :show
