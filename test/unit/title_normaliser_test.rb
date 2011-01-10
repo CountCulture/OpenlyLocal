@@ -109,12 +109,14 @@ class TitleNormaliserTest < Test::Unit::TestCase
         assert_nil TitleNormaliser.normalise_url("")
       end
 
-      should "normalise financial_sum" do
+      should "normalise url" do
         OriginalTitleAndNormalisedUrl = {
           "http://www.foo.com" => "http://www.foo.com",
           "www.foo.com" => "http://www.foo.com",
           "https://www.foo.com" => "https://www.foo.com",
-          "http://http://www.foo.com" => "http://www.foo.com"
+          "http://http://www.foo.com" => "http://www.foo.com",
+          "//http://pages.lvillage.com/chalgrove/" => "http://pages.lvillage.com/chalgrove/",
+          "www.http://users.aol.com/snewsyn" => "http://users.aol.com/snewsyn"
         }
 
         OriginalTitleAndNormalisedUrl.each do |orig_url, normalised_url|

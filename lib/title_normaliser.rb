@@ -24,9 +24,7 @@ module TitleNormaliser
   
   def normalise_url(raw_url)
     return if raw_url.blank?
-    raw_url.match(/(http:\/\/|https:\/\/)+/) ? raw_url.gsub(/(http:\/\/|https:\/\/)+/, '\1') : "http://#{raw_url}"
-    # semi_normed_title = raw_title.gsub(/\bT\/A\b.+/i, '').gsub(/\./,'').sub(/ltd/i, 'limited').sub(/public limited company/i, 'plc')
-    # normalise_title(semi_normed_title).downcase
+    raw_url.match(/(http:\/\/|https:\/\/)+/) ? raw_url.sub(/(^.+http)+/, 'http').gsub(/(http:\/\/|https:\/\/)+/, '\1') : "http://#{raw_url}"
   end
   
 end
