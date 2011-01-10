@@ -33,5 +33,10 @@ class PensionFundTest < ActiveSupport::TestCase
       @pension_fund.name = "some title-with/stuff"
       assert_equal "#{@pension_fund.id}-some-title-with-stuff", @pension_fund.to_param
     end
+    
+    should 'return resource_uri' do
+      assert_equal "http://#{DefaultDomain}/id/pension_funds/#{@pension_fund.id}", @pension_fund.resource_uri
+    end
+    
   end
 end

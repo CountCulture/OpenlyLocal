@@ -10,4 +10,8 @@ class PoliceAuthority < ActiveRecord::Base
   default_scope :order => "name"
   alias_attribute :title, :name
   
+  def resource_uri
+    "http://#{DefaultDomain}/id/police_authorities/#{id}"
+  end
+  
 end

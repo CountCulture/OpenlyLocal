@@ -60,6 +60,10 @@ class PoliceForceTest < ActiveSupport::TestCase
       assert_equal "#{@police_force.id}-some-title-with-stuff", @police_force.to_param
     end
     
+    should 'return resource_uri' do
+      assert_equal "http://#{DefaultDomain}/id/police_forces/#{@police_force.id}", @police_force.resource_uri
+    end
+    
     context "when returning dbpedia_resource" do
 
       should "return nil if wikipedia_url blank" do

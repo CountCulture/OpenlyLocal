@@ -32,5 +32,9 @@ class PoliceForce < ActiveRecord::Base
   def openlylocal_url
     "http://#{DefaultDomain}/police_forces/#{to_param}"
   end
+  
+  def resource_uri
+    "http://#{DefaultDomain}/id/police_forces/#{id}"
+  end  
 
 end
