@@ -254,6 +254,7 @@ task :export_csv_spending_data  => :environment do
   FasterCSV.open(csv_file, "w") do |csv|
     csv << (headings = FinancialTransaction::CsvMappings.collect{ |m| m.first })
     FinancialTransaction.find_each do |financial_transaction|
+      next unless financial_transaction.organisation.is_a?(Council) # skip non-council transactions
       begin
         csv << financial_transaction.csv_data
       rescue Exception => e
