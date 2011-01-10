@@ -985,6 +985,7 @@ class CouncilsControllerTest < ActionController::TestCase
         @high_spending_supplier = Factory(:supplier, :organisation => @council)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
+        @council.spending_stat.perform
         get :show_spending, :id => @council.id
       end
 

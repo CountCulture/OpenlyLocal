@@ -16,7 +16,7 @@
 			
 				  <div id='total_spend' class='spending_count'>
 						<span class='value'>&pound;<%= number_with_delimiter(@entity.total_spend.to_i) %></span> 
-						<strong class=description>Spent in <%= @entity.spending_stat.months_covered %> months since <%= @entity.spending_stat.earliest_transaction_date.strftime("%b %Y") %></strong>
+						<strong class=description>Spent in <%= @entity.spending_stat.months_covered %> months since <%= @entity.spending_stat.earliest_transaction.strftime("%b %Y") %></strong>
 					</div>
 					<div class="explanation">
 					  <div id='average_monthly_spend' class='spending_count'><span class='value'>&pound;<%= number_with_delimiter(@entity.average_monthly_spend.to_i) %></span> <strong class=description>Spent per month</strong></div>
