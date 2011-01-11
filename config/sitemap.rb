@@ -100,6 +100,11 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
     sitemap.add charity_path(charity), :lastmod => charity.updated_at
   end
 
+  # add companies
+  Company.find_each do |company|
+    sitemap.add company_path(company), :lastmod => company.updated_at
+  end
+
   sitemap.add '/info/about_us', :priority => 0.7
   sitemap.add '/info/api', :priority => 0.7
   sitemap.add '/info/licence_info', :priority => 0.7
