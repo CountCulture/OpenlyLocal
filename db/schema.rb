@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110106162503) do
+ActiveRecord::Schema.define(:version => 20110111202515) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -420,6 +420,8 @@ ActiveRecord::Schema.define(:version => 20110106162503) do
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
   end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "index_delayed_jobs_on_priority_and_run_at"
 
   create_table "documents", :force => true do |t|
     t.column "title", :string
