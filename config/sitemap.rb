@@ -94,14 +94,18 @@ SitemapGenerator::Sitemap.add_links do |sitemap|
   Poll.all.each do |poll|
     sitemap.add poll_path(poll), :lastmod => poll.updated_at
   end
+  
+  puts "about to add charities"
 
   # add charities
-  Charity.find_each do |charity|
+  Charity.find_each(:batch_size => 500) do |charity|
     sitemap.add charity_path(charity), :lastmod => charity.updated_at
   end
 
+  puts "about to add companies"
+
   # add companies
-  Company.find_each do |company|
+  Company.find_each(:batch_size => 500) do |company|
     sitemap.add company_path(company), :lastmod => company.updated_at
   end
 

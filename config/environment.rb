@@ -37,6 +37,7 @@ Rails::Initializer.run do |config|
   config.gem "acts-as-taggable-on", :source => 'http://gemcutter.org'
   config.gem 'hoptoad_notifier'
   config.gem 'nokogiri', :version => '~> 1.4.1'
+  config.gem 'sitemap_generator', :lib => false
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 
