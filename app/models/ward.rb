@@ -14,7 +14,7 @@ class Ward < ActiveRecord::Base
   allow_access_to :committees, :via => [:uid, :normalised_title]
   validates_presence_of :name, :council_id
   # validates_uniqueness_of :name, :scope => [:council_id], :unless => Proc.new { |ward| ward.snac_id && Ward.find_by })
-  validates_uniqueness_of :snac_id, :allow_nil => true
+  validates_uniqueness_of :snac_id, :allow_blank => true
   default_scope :order => 'name'
   alias_attribute :title, :name
   

@@ -118,6 +118,12 @@ class WardTest < ActiveSupport::TestCase
         another_ward = Factory.build(:ward, :name => 'Another ward', :council => Factory(:another_council)) # snac_id => nil
         assert another_ward.valid?
       end
+      
+      should 'allow several wards with blank snac id' do
+        @ward.update_attribute(:snac_id, '')
+        another_ward = Factory.build(:ward, :name => 'Another ward', :council => Factory(:another_council), :snac_id => '') # snac_id => nil
+        assert another_ward.valid?
+      end
     end
     
     context 'should have defunkt named scope which' do
