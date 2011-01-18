@@ -266,9 +266,12 @@ task :connect_postcodes_and_crime_areas => :environment do
       next unless response && response['areas']['area']
       crime_areas = response['areas']['area']
       police_force = PoliceForce.find_by_npia_id(crime_areas.first['force_id'])
-      crime_area = police_force.crime_areas.find_by_uid(crime_areas.detect{ |ca| ca['level'] == '4' }['area_id'])
-      postcode.update_attribute(:crime_area_id, crime_area.id)
-      puts "updated postcode #{postcode.code}"
+      if crime_area = police_force.crime_areas.find_by_uid(crime_areas.detect{ |ca| ca['level'] == '4' }['area_id'])
+        postcode.update_attribute(:crime_area_id, crime_area.id)
+        puts "updated postcode #{postcode.code}"
+      else
+        puts "Failed to match postcode #{postcode.code} to crime area"
+      end
     rescue Exception => e
       postcode.update_attribute(:crime_area_id, -1)
       puts "problem updating postcode (#{postcode.code}) with crime_area: #{e.inspect}\nResponse = #{response}"
