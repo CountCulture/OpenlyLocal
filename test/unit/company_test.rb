@@ -33,6 +33,16 @@ class CompanyTest < ActiveSupport::TestCase
       assert @company.respond_to?(:address_in_full)
     end
     
+    should 'mixin SpendingStatUtilities::Base' do
+      assert @company.respond_to?(:spending_stat)
+    end
+    
+    should 'have many financial_transactions through supplying_relationships' do
+      supplier = Factory(:supplier, :payee => @company)
+      ft = Factory(:financial_transaction, :supplier => supplier)
+      assert_equal [ft], @company.financial_transactions
+    end
+    
     context "when validating" do
       should "require presence of title on create" do
         co = Factory.build(:company, :title => nil)
@@ -81,6 +91,9 @@ class CompanyTest < ActiveSupport::TestCase
     end
     
     context "after creation" do
+      setup do
+        Delayed::Job.stubs(:enqueue)# because spending stat also queued
+      end
 
       should "add company to Delayed::Job queue for processing" do
         Delayed::Job.expects(:enqueue).with(kind_of(Company))
@@ -319,6 +332,8 @@ class CompanyTest < ActiveSupport::TestCase
         end
         
         should 'add company to delayed_job queue for fetching more details' do
+          Delayed::Job.stubs(:enqueue)# because spending stat also queued
+          
           Delayed::Job.expects(:enqueue).with(kind_of(Company))
           Company.match_or_create(:company_number => "07654321", :title => 'Foo Ltd')
         end

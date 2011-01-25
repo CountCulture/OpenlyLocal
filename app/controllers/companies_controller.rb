@@ -12,4 +12,9 @@ class CompaniesController < ApplicationController
       format.rdf 
     end
   end
+  
+  def spending
+    @title = "Companies supplying Councils"
+    @biggest_companies = Company.all(:limit => 10, :joins => :spending_stat, :order => 'spending_stats.total_spend DESC')
+  end
 end
