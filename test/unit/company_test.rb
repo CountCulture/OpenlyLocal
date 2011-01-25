@@ -533,7 +533,7 @@ class CompanyTest < ActiveSupport::TestCase
     context 'when returning opencorporates_url' do
       should "return url on opencorporates" do
         @company.company_number = '012345'
-        assert_equal 'http://opencorporates.com/uk/012345', @company.opencorporates_url
+        assert_equal 'http://opencorporates.com/companies/uk/012345', @company.opencorporates_url
       end
     end
   

@@ -52,7 +52,7 @@ class Company < ActiveRecord::Base
   
   # returns opencorporates url
   def opencorporates_url
-    "http://opencorporates.com/uk/#{company_number}" if company_number?
+    "http://opencorporates.com/companies/uk/#{company_number}" if company_number?
   end
   
   # alias populate_basic_info as perform so that this gets run when doing delayed_job on a company
