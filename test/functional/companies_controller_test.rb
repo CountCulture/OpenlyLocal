@@ -67,7 +67,31 @@ class CompaniesControllerTest < ActionController::TestCase
         assert_select "#api_info"
       end
 
-    end  
+      should "not show dashboard" do
+        assert_select ".dashboard", false
+      end
+    end
+    
+    context "when company has spending data" do
+      setup do
+        20.times do
+          c = Factory(:company)
+          Factory(:spending_stat, :organisation => c, :total_spend => 500)
+        end
+        Factory(:spending_stat, :organisation => @company, :total_spend => 999999)
+        get :show, :id => @company.id
+      end
+
+
+      should "show dashboard" do
+        p @company.spending_stat.blank?
+        assert_select ".dashboard"
+      end
+      
+      should "show number of councils supplying" do
+        assert_select ".dashboard h3", /supplying 21 councils/
+      end
+    end
 
     context "with xml requested" do
       setup do

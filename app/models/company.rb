@@ -50,6 +50,13 @@ class Company < ActiveRecord::Base
     raw_number.to_s.match(/[A-Z]/) ? raw_number : sprintf("%08d", raw_number.to_i)
   end
   
+  def council_spending_breakdown
+    suppliers = supplying_relationships
+    suppliers.group_by(&:organisation_id).collect do |council_id, sups|
+      {:council_id => council_id}
+    end
+  end
+  
   # returns opencorporates url
   def opencorporates_url
     "http://opencorporates.com/companies/uk/#{company_number}" if company_number?

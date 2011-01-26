@@ -24,6 +24,7 @@ class SpendingStatTest < ActiveSupport::TestCase
     should have_db_column :breakdown
     should have_db_column :earliest_transaction
     should have_db_column :latest_transaction
+    should have_db_column :transaction_count
     
     should 'serialize spend_by_month' do
       assert_equal ['foo', 'bar'], Factory(:spending_stat, :spend_by_month => ['foo', 'bar']).reload.spend_by_month 
@@ -106,12 +107,16 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal earliest_date, @spending_stat.reload.earliest_transaction
       end
 
-
       should "should set latest_transaction" do
         latest_date = 3.weeks.ago.to_date
         @spending_stat.stubs(:calculated_latest_transaction_date).returns(latest_date)
         @spending_stat.perform
         assert_equal latest_date, @spending_stat.reload.latest_transaction
+      end
+
+      should "should set transaction_count" do
+        @spending_stat.perform
+        assert_equal @spending_stat.organisation.financial_transactions.count, @spending_stat.reload.transaction_count
       end
     end
     
@@ -172,6 +177,41 @@ class SpendingStatTest < ActiveSupport::TestCase
         @spending_stat.expects(:calculated_earliest_transaction_date).at_least_once.returns('2010-03-4'.to_date)
         @spending_stat.expects(:calculated_latest_transaction_date).at_least_once.returns('2010-07-26'.to_date)
         assert_equal 5, @spending_stat.calculated_months_covered
+      end
+    end
+    
+    context "when returning transaction_count" do
+      context "and transaction_count attribute set" do
+        setup do
+          @spending_stat[:transaction_count] = 34
+        end
+
+        should "return transaction_count attribute" do
+          assert_equal 34, @spending_stat.transaction_count
+        end
+      end
+      
+      context "and transaction_count not set" do
+        setup do
+          @spending_stat.transaction_count = nil
+          @spending_stat.total_spend = 123
+        end
+
+        should "return nil if total_spend nil" do
+          #don't bother calculating if we know there's no financial_transactions
+          @spending_stat.total_spend = nil
+          # @spending_stat.organisation.financial_transactions.delete_all
+          assert_nil @spending_stat.transaction_count
+        end
+        
+        should "return calculated transaction_count if total_spend not nil" do
+          assert_equal @spending_stat.organisation.financial_transactions.count, @spending_stat.transaction_count
+        end
+        
+        should "update spending_stat with calculated transaction_count" do
+          @spending_stat.transaction_count
+          assert_equal @spending_stat.organisation.financial_transactions.count, @spending_stat.reload.transaction_count
+        end
       end
     end
     

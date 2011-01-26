@@ -76,8 +76,17 @@ class SpendingStat < ActiveRecord::Base
                       :spend_by_month => calculated_spend_by_month,
                       :breakdown => calculated_payee_breakdown,
                       :earliest_transaction => calculated_earliest_transaction_date,
-                      :latest_transaction => calculated_latest_transaction_date
+                      :latest_transaction => calculated_latest_transaction_date,
+                      :transaction_count => organisation.financial_transactions.count
                       )
+  end
+  
+  def transaction_count
+    return self[:transaction_count] if self[:transaction_count]
+     if t_count = total_spend && organisation.financial_transactions.count
+       update_attribute(:transaction_count, t_count)
+     end
+     t_count
   end
   
   private
