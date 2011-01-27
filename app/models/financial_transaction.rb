@@ -115,7 +115,7 @@ class FinancialTransaction < ActiveRecord::Base
     self[:date] = 
     if raw_date.is_a?(String)
       cleaned_up_date = raw_date.squish.match(/^\d+\/[\d\w]+\/\d+$/) ? raw_date.gsub('/','-') : raw_date
-      cleaned_up_date.sub(/(\w{3}-)([01]\d)$/,'\120\2').sub(/(\w{3}-)([9]\d)$/,'\119\2')
+      cleaned_up_date.sub(/^(\d{1,2}-)([\w\d]+-)([01]\d)$/,'\1\220\3').sub(/^(\d{1,2}-)([\w\d]+-)([9]\d)$/,'\1\219\3')
     else
       raw_date
     end
