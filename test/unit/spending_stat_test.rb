@@ -376,7 +376,100 @@ class SpendingStatTest < ActiveSupport::TestCase
         breakdown = @organisation.spending_stat.calculated_payee_breakdown
         assert_in_delta 1012.1, breakdown[nil], 0.1
       end
+    end
+    
+    context "when updating from financial_transaction" do
+      setup do
+        @spend_by_month = [['2009-08-01'.to_date, 2519.0], ['2009-09-01'.to_date, 2519.0], ['2009-10-01'.to_date, nil], ['2009-11-01'.to_date, 5559.5]]
+        @spending_stat.update_attributes( :transaction_count => 234,
+                                          :total_spend => 12345.6,
+                                          :earliest_transaction => '2009-08-21',
+                                          :latest_transaction => '2009-11-15',
+                                          :spend_by_month => @spend_by_month, 
+                                          :average_monthly_spend => 123.45,
+                                          :average_transaction_value => 45 )
+        @ft = Factory(:financial_transaction, :value => 321.4, :date => '2010-02-08')
+        
+      end
+
+      should "increment transaction_count" do
+        @spending_stat.update_from(@ft)
+        assert_equal 235, @spending_stat.transaction_count
+      end
+
+      should "add value to total spend" do
+        @spending_stat.update_from(@ft)
+        assert_in_delta 12345.6+321.4, @spending_stat.total_spend, 0.1
+      end
+
+      should "update latest_transaction with date if financial_transaction date is later" do
+        @spending_stat.update_from(@ft)
+        assert_equal '2010-02-08'.to_date, @spending_stat.latest_transaction
+      end
+
+      should "not update latest_transaction with date if financial_transaction date is earlier" do
+        @ft.date = '2009-04-01'
+        @spending_stat.update_from(@ft)
+        assert_equal '2009-11-15'.to_date, @spending_stat.latest_transaction
+      end
+
+      should "update earliest_transaction with date if financial_transaction date is earlier" do
+        @ft.date = '2007-04-01'
+        @spending_stat.update_from(@ft)
+        assert_equal '2007-04-01'.to_date, @spending_stat.earliest_transaction
+      end
+
+      should "not update earliest_transaction with date if financial_transaction date is later" do
+        @spending_stat.update_from(@ft)
+        assert_equal '2009-08-21'.to_date, @spending_stat.earliest_transaction
+      end
+
+      should "update average_transaction_value with recalculated average_transaction_value" do
+        @spending_stat.update_from(@ft)
+        assert_in_delta (12345.6+321.4)/235, @spending_stat.average_transaction_value, 0.1
+      end
+
+      should "add financial_transaction value to spend_by_month, filling in gaps" do
+        expected_new_spend_by_month = @spend_by_month + [['2009-12-01'.to_date, nil], ['2010-01-01'.to_date, nil], ['2010-02-01'.to_date, 321.4]]
+        @spending_stat.update_from(@ft)
+        
+        assert_equal expected_new_spend_by_month, @spending_stat.spend_by_month 
+      end
       
+      context "and financial_transaction date is month with existing value" do
+        setup do
+          @ft.date = '2009-09-10'
+          @spending_stat.update_from(@ft)
+        end
+
+        should "add value to existing value" do
+          expected_new_spend_by_month = [['2009-08-01'.to_date, 2519.0], ['2009-09-01'.to_date, 2519.0+321.4], ['2009-10-01'.to_date, nil], ['2009-11-01'.to_date, 5559.5]]
+          assert_equal expected_new_spend_by_month, @spending_stat.spend_by_month
+        end
+      end
+      
+      context "and financial_transaction date is prior to existing months" do
+        setup do
+          @ft.date = '2009-06-10'
+        end
+
+        should "add financial_transaction value to spend_by_month, filling in gaps" do
+          expected_new_spend_by_month = [['2009-06-01'.to_date, 321.4], ['2009-07-01'.to_date, nil]] + @spend_by_month
+          @spending_stat.update_from(@ft)
+
+          assert_equal expected_new_spend_by_month, @spending_stat.spend_by_month 
+        end
+      end
+      
+      context "and spend_by_month is nil" do
+        setup do
+          
+        end
+
+        should "description" do
+          
+        end
+      end
     end
   end
   

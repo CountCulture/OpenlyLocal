@@ -36,14 +36,16 @@ class SpendingStat < ActiveRecord::Base
     months_with_vals = res_hsh.sort
     
     first_month, last_month = months_with_vals.first, months_with_vals.last
-    all_months = [months_with_vals.shift]
-    month_date = first_month.first
-    self.class.difference_in_months_between_dates(first_month.first, last_month.first).times do |i|
-      month_date = (month_date + 32.days).beginning_of_month
-      matched_month_value = (months_with_vals.first.first == month_date ? months_with_vals.shift.last : nil)
-      all_months << [month_date, matched_month_value]
-    end
-    all_months
+    # all_months = [months_with_vals.shift]
+    # month_date = first_month.first
+    # self.class.difference_in_months_between_dates(first_month.first, last_month.first).times do |i|
+    #   month_date = (month_date + 32.days).beginning_of_month
+    #   matched_month_value = (months_with_vals.first.first == month_date ? months_with_vals.shift.last : nil)
+    #   all_months << [month_date, matched_month_value]
+    # end
+    # all_months
+    # p months_with_vals
+    spend_by_month_array(first_month.first, last_month.first, months_with_vals)
   end
   
   def calculated_total_spend
@@ -89,9 +91,40 @@ class SpendingStat < ActiveRecord::Base
      t_count
   end
   
+  def update_from(fin_trans)
+    self.earliest_transaction = fin_trans.date if fin_trans.date < earliest_transaction
+    self.latest_transaction = fin_trans.date if fin_trans.date > latest_transaction
+    self.transaction_count += 1
+    self.total_spend += fin_trans.value
+    self.average_transaction_value = total_spend/transaction_count
+    self.average_monthly_spend = total_spend/months_covered
+    existing_spend_by_month = spend_by_month.dup
+    if matched = existing_spend_by_month.assoc(fin_trans.date.beginning_of_month)
+      existing_spend_by_month[existing_spend_by_month.index(matched)] = [matched.first, matched.last.to_f + fin_trans.value]
+    else
+      @foo = @foo.to_i + 1
+      existing_spend_by_month << [fin_trans.date.beginning_of_month, fin_trans.value]
+    end
+    self.spend_by_month = spend_by_month_array(earliest_transaction.beginning_of_month, latest_transaction.beginning_of_month, existing_spend_by_month.sort{ |a,b| a.first <=> b.first })
+    save!
+  end
+  
   private
   def self.difference_in_months_between_dates(early_date,later_date)
     (later_date.year - early_date.year) * 12 + (later_date.month - early_date.month)
+  end
+  
+  def spend_by_month_array(first_date, last_date, vals)
+    months_with_vals = vals.dup
+    
+    res = [months_with_vals.shift]
+    month_date = first_date
+    self.class.difference_in_months_between_dates(first_date, last_date).times do
+      month_date = (month_date + 32.days).beginning_of_month #increment month to beginning of next month
+      matched_month_value = (months_with_vals.first.first == month_date ? months_with_vals.shift.last : nil)
+      res << [month_date, matched_month_value]
+    end
+    res
   end
     
 end

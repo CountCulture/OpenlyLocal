@@ -68,7 +68,7 @@ Rails::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :session_key => '_twfy_local_parser_session',
+    :key => '_twfy_local_parser_session',
     :secret      => '7be73fc5eb2b6c69ebcf8bea5deec5a4ad4215c820a3bd42837ebf2ce4360c9d3996b12fa4b1228f24969fbfc87d68d5c48d274819430bec7c3bfafec8ab25aa'
   }
 
