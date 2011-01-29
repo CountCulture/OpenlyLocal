@@ -2,8 +2,8 @@ require 'test_helper'
 
 class SpendingStatTest < ActiveSupport::TestCase
   def setup
-    @spending_stat = Factory(:spending_stat)
-    @supplier = @spending_stat.organisation
+    @supplier = Factory(:supplier)
+    @spending_stat = Factory(:spending_stat, :organisation => @supplier)
     @another_supplier = Factory(:supplier)
     @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 123.45, :date => 11.months.ago)
     @financial_transaction_2 = Factory(:financial_transaction, :supplier => @supplier, :value => -32.1, :date => 3.months.ago)
@@ -379,6 +379,7 @@ class SpendingStatTest < ActiveSupport::TestCase
     
     context "when updating from financial_transaction" do
       setup do
+        @spending_stat = Factory(:spending_stat) # re instantiate, but this time with default organisation, which is council.
         @spend_by_month = [['2009-08-01'.to_date, 2519.0], ['2009-09-01'.to_date, 2519.0], ['2009-10-01'.to_date, nil], ['2009-11-01'.to_date, 5559.5]]
         @spending_stat.update_attributes( :transaction_count => 234,
                                           :total_spend => 12345.6,
@@ -427,6 +428,12 @@ class SpendingStatTest < ActiveSupport::TestCase
         
         should "set breakdown to keyed with nil if no payee" do
           assert_equal( {nil => 321.4}, @new_spending_stat.breakdown)
+        end
+        
+        should "set breakdown nil if no organisation is a supplier" do
+          supplier_ss = Factory(:spending_stat, :organisation => Factory(:supplier))
+          supplier_ss.update_from(@ft)
+          assert_nil supplier_ss.breakdown
         end
         
         context "and financial_transaction supplier has payee set" do
@@ -487,6 +494,15 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal expected_new_spend_by_month, @spending_stat.spend_by_month 
       end
       
+      should "update breakdown" do
+        @spending_stat.update_attribute(:breakdown, {'Company' => 111.1})
+        @spending_stat.update_from(@ft)
+        assert_equal( {'Company' => 111.1, nil => 321.4}, @spending_stat.breakdown)
+        @spending_stat.update_from(@ft)
+        assert_equal( {'Company' => 111.1, nil => 642.8}, @spending_stat.breakdown)
+      end
+      
+      
       context "and financial_transaction date is month with existing value" do
         setup do
           @ft.date = '2009-09-10'
@@ -530,11 +546,12 @@ class SpendingStatTest < ActiveSupport::TestCase
       
       context "and just one existing month" do
         setup do
-          
+          @new_ss = Factory(:spending_stat)
+          @new_ss.update_from(@ft)
         end
 
-        should_eventually "description" do
-          
+        should "update without exceptions" do
+          assert_nothing_raised(Exception) { @new_ss.update_from(@ft) }
         end
       end
     end

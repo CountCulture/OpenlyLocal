@@ -144,6 +144,7 @@ class SpendingStat < ActiveRecord::Base
   end
   
   def update_breakdown_with_payee(breakdown, fin_trans)
+    return nil if organisation.is_a?(Supplier)
     payee = fin_trans.payee && fin_trans.payee.class.to_s #nil if payee nil
     new_breakdown = breakdown ? breakdown.dup : {}
     new_breakdown[payee] = new_breakdown[payee].to_f + fin_trans.value
