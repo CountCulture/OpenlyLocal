@@ -2,7 +2,7 @@ class Supplier < ActiveRecord::Base
   AllowedPayeeModels = [['Council'], ['Entity', 'Government body/quango/etc'], ['Charity'], ['PoliceAuthority'], ['PoliceForce'], ['Company']]
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
-  has_many :financial_transactions, :order => 'date', :dependent => :destroy
+  has_many :financial_transactions, :dependent => :destroy
   after_create :queue_for_matching_with_payee
   include SpendingStatUtilities::Base
   validates_presence_of :organisation_id, :organisation_type
