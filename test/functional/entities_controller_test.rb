@@ -317,7 +317,7 @@ class EntitiesControllerTest < ActionController::TestCase
   end
   
   context "on GET to :show_spending" do
-    should "route open councils to index with show_open_status true" do
+    should "route to show_spending for entity" do
       assert_routing("entities/1/spending", {:controller => "entities", :action => "show_spending", :id => "1"})
     end
     
@@ -327,6 +327,7 @@ class EntitiesControllerTest < ActionController::TestCase
         @high_spending_supplier = Factory(:supplier, :organisation => @entity)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
+        @entity.spending_stat.perform
         get :show_spending, :id => @entity.id
       end
 
@@ -366,6 +367,25 @@ class EntitiesControllerTest < ActionController::TestCase
     
     context "and no spending data" do
       setup do
+        get :show_spending, :id => @another_entity.id
+      end
+
+      should respond_with :success
+      should render_template :show_spending
+      should_not set_the_flash
+      should assign_to :entity
+
+      should "show message" do
+        assert_select "p.alert", /spending data/i
+      end
+      should "not show dashboard" do
+        assert_select "div.dashboard", false
+      end
+    end
+    
+    context "and spending_stat blank" do
+      setup do
+        @another_entity.update_attribute(:spending_stat, SpendingStat.new)
         get :show_spending, :id => @another_entity.id
       end
 
