@@ -92,20 +92,33 @@ class SpendingStat < ActiveRecord::Base
   end
   
   def update_from(fin_trans)
-    self.earliest_transaction = fin_trans.date if fin_trans.date < earliest_transaction
-    self.latest_transaction = fin_trans.date if fin_trans.date > latest_transaction
-    self.transaction_count += 1
-    self.total_spend += fin_trans.value
-    self.average_transaction_value = total_spend/transaction_count
-    self.average_monthly_spend = total_spend/months_covered
-    existing_spend_by_month = spend_by_month.dup
-    if matched = existing_spend_by_month.assoc(fin_trans.date.beginning_of_month)
-      existing_spend_by_month[existing_spend_by_month.index(matched)] = [matched.first, matched.last.to_f + fin_trans.value]
+    if blank?
+      self.attributes = { :earliest_transaction => fin_trans.date,
+                          :latest_transaction => fin_trans.date,
+                          :total_spend => fin_trans.value,
+                          :average_transaction_value => fin_trans.value,
+                          :average_monthly_spend => fin_trans.value,
+                          :transaction_count => 1,
+                          :spend_by_month => [[fin_trans.date.beginning_of_month, fin_trans.value]],
+                          :breakdown => breakdown
+                          }
     else
-      @foo = @foo.to_i + 1
-      existing_spend_by_month << [fin_trans.date.beginning_of_month, fin_trans.value]
+      self.earliest_transaction = fin_trans.date if fin_trans.date < earliest_transaction
+      self.latest_transaction = fin_trans.date if fin_trans.date > latest_transaction
+      self.transaction_count += 1
+      self.total_spend += fin_trans.value
+      self.average_transaction_value = total_spend/transaction_count
+      self.average_monthly_spend = total_spend/months_covered
+      existing_spend_by_month = spend_by_month.dup
+      if matched = existing_spend_by_month.assoc(fin_trans.date.beginning_of_month)
+        existing_spend_by_month[existing_spend_by_month.index(matched)] = [matched.first, matched.last.to_f + fin_trans.value]
+      else
+        @foo = @foo.to_i + 1
+        existing_spend_by_month << [fin_trans.date.beginning_of_month, fin_trans.value]
+      end
+      self.spend_by_month = spend_by_month_array(earliest_transaction.beginning_of_month, latest_transaction.beginning_of_month, existing_spend_by_month.sort{ |a,b| a.first <=> b.first })
     end
-    self.spend_by_month = spend_by_month_array(earliest_transaction.beginning_of_month, latest_transaction.beginning_of_month, existing_spend_by_month.sort{ |a,b| a.first <=> b.first })
+    self.breakdown = update_breakdown_with_payee(breakdown, fin_trans)
     save!
   end
   
@@ -125,6 +138,13 @@ class SpendingStat < ActiveRecord::Base
       res << [month_date, matched_month_value]
     end
     res
+  end
+  
+  def update_breakdown_with_payee(breakdown, fin_trans)
+    payee = fin_trans.payee && fin_trans.payee.class.to_s #nil if payee nil
+    new_breakdown = breakdown ? breakdown.dup : {}
+    new_breakdown[payee] = new_breakdown[payee].to_f + fin_trans.value
+    new_breakdown
   end
     
 end

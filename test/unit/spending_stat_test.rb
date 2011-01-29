@@ -361,9 +361,8 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_nil Factory(:supplier).spending_stat.calculated_payee_breakdown
       end
       
-      should "return hash of arrays" do
+      should "return hash" do
         assert_kind_of Hash, breakdown = @organisation.spending_stat.calculated_payee_breakdown
-        assert_kind_of Array, breakdown.first
       end
       
       should "aggregate spend by class" do
@@ -390,6 +389,58 @@ class SpendingStatTest < ActiveSupport::TestCase
                                           :average_transaction_value => 45 )
         @ft = Factory(:financial_transaction, :value => 321.4, :date => '2010-02-08')
         
+      end
+      
+      context "and spending_stat is blank" do
+        setup do
+          @new_spending_stat = Factory(:spending_stat)
+          @new_spending_stat.update_from(@ft)
+        end
+
+        should "set total_spend as financial_transaction value" do
+          assert_equal @ft.value, @new_spending_stat.total_spend
+        end
+        
+        should "set average monthly spend to financial_transaction value" do
+          assert_equal @ft.value, @new_spending_stat.average_monthly_spend
+        end
+        
+        should "set average_transaction_value to financial_transaction value" do
+          assert_equal @ft.value, @new_spending_stat.average_transaction_value
+        end
+        
+        should "set transaction_count to 1" do
+          assert_equal 1, @new_spending_stat.transaction_count
+        end
+        
+        should "set earliest_transaction to financial_transaction date" do
+          assert_equal @ft.date, @new_spending_stat.earliest_transaction
+        end
+        
+        should "set latest_transaction to financial_transaction date" do
+          assert_equal @ft.date, @new_spending_stat.latest_transaction
+        end
+        
+        should "use financial_transaction data and value to calculate spend_by_month" do
+          assert_equal [ ['2010-02-01'.to_date, 321.4] ], @new_spending_stat.spend_by_month
+        end
+        
+        should "set breakdown to keyed with nil if no payee" do
+          assert_equal( {nil => 321.4}, @new_spending_stat.breakdown)
+        end
+        
+        context "and financial_transaction supplier has payee set" do
+          setup do
+            @supplier = @ft.supplier
+            @supplier.payee = Factory(:police_authority)
+            @new_ss = Factory(:spending_stat)
+          end
+
+          should "set breakdown to payee type" do
+            @new_ss.update_from(@ft)
+            assert_equal( {'PoliceAuthority' => 321.4}, @new_ss.breakdown)
+          end
+        end
       end
 
       should "increment transaction_count" do
@@ -461,12 +512,28 @@ class SpendingStatTest < ActiveSupport::TestCase
         end
       end
       
-      context "and spend_by_month is nil" do
+      context "and financial_transaction supplier has payee set" do
+        setup do
+          @supplier = @ft.supplier
+          @supplier.payee = Factory(:police_authority)
+          @new_ss = Factory(:spending_stat)
+        end
+
+        should "update breakdown" do
+          @new_ss.breakdown = {'Company' => 111.1}
+          @new_ss.update_from(@ft)
+          assert_equal( {'Company' => 111.1, 'PoliceAuthority' => 321.4}, @new_ss.breakdown)
+          @new_ss.update_from(@ft)
+          assert_equal( {'Company' => 111.1, 'PoliceAuthority' => 642.8}, @new_ss.breakdown)
+        end
+      end
+      
+      context "and just one existing month" do
         setup do
           
         end
 
-        should "description" do
+        should_eventually "description" do
           
         end
       end
