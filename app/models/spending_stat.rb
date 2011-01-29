@@ -59,9 +59,8 @@ class SpendingStat < ActiveRecord::Base
   
   def calculated_latest_transaction_date
     return @calculated_latest_transaction_date if @calculated_latest_transaction_date
-    extra_params = {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'}
+    extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'}
     return unless last_transaction = organisation.financial_transactions.latest.first(extra_params)
-    # return unless last_transaction = organisation.financial_transactions.latest.first(:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)', :order => 'date DESC')
     @calculated_latest_transaction_date = last_transaction.date + last_transaction.date_fuzziness.to_i.days
   end
   
