@@ -136,14 +136,14 @@ class SpendingStatTest < ActiveSupport::TestCase
           @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 23.45, :date => 12.months.ago, :date_fuzziness => 45)
         end
 
-        should "should return date less fuziness" do
+        should "should return date less fuzziness" do
           assert_equal (12.months.ago.to_date - 45.days), @spending_stat.calculated_earliest_transaction_date
         end
       end
     end
 
     context "when calculating latest_transaction_date" do
-      should "return first date" do
+      should "return last date" do
         assert_equal 3.months.ago.to_date, @spending_stat.calculated_latest_transaction_date
       end
       
@@ -158,7 +158,7 @@ class SpendingStatTest < ActiveSupport::TestCase
           @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 23.45, :date => 2.months.ago, :date_fuzziness => 45)
         end
 
-        should "should return date less fuzziness" do
+        should "should return date plus fuzziness" do
           assert_equal (2.months.ago.to_date + 45.days), @spending_stat.calculated_latest_transaction_date
         end
       end

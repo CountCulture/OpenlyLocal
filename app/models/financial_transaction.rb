@@ -5,6 +5,8 @@ class FinancialTransaction < ActiveRecord::Base
   before_validation :save_associated_supplier
   validates_presence_of :value, :date, :supplier_id
   attr_reader :organisation
+  named_scope :earliest, :order => 'financial_transactions.date'
+  named_scope :latest, :order => 'financial_transactions.date DESC'
   delegate :name, :openlylocal_url, :uid, :to => :supplier, :prefix => true
   delegate :title, :id, :openlylocal_url, :to => :organisation, :prefix => :organisation
   delegate :organisation_type, :to => :supplier

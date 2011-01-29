@@ -6,6 +6,8 @@ class FinancialTransactionTest < ActiveSupport::TestCase
   context "The FinancialTransaction class" do
     setup do
       @financial_transaction = Factory(:financial_transaction)
+      @earliest_transaction = Factory(:financial_transaction, :date => 10.years.ago)
+      @latest_transaction = Factory(:financial_transaction, :date => 1.day.ago)
     end
     
     # should validate_presence_of :supplier_id
@@ -40,7 +42,17 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should 'have many wdtk_requests as related_object' do
       wdtk_request = Factory(:wdtk_request, :related_object => @financial_transaction)
       assert_equal [wdtk_request], @financial_transaction.wdtk_requests
-    end                        
+    end 
+    
+    should "have earliest named scope" do
+      assert FinancialTransaction.respond_to? :earliest
+      assert_equal @earliest_transaction, FinancialTransaction.earliest.first
+    end                       
+    
+    should "have latest named scope" do
+      assert FinancialTransaction.respond_to? :latest
+      assert_equal @latest_transaction, FinancialTransaction.latest.first
+    end                       
     
     context "when building or updating from params" do
       setup do
@@ -86,7 +98,6 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
       
     end
-    
 
     context "when saving" do
       setup do
