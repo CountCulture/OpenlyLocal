@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110126104626) do
+ActiveRecord::Schema.define(:version => 20110130190341) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
