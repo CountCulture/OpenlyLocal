@@ -70,6 +70,9 @@ module CompanyUtilities
     def search_companies_house_for(name, options={})
       return if RAILS_ENV=='test'
       CompaniesHouse.name_search(name, options)
+    rescue CompaniesHouse::Exception => e
+      RAILS_DEFAULT_LOGGER.error "Exception generated when searching CompaniesHouse for name (#{name}): #{e.inspect}"
+      nil
     end
   end
   
