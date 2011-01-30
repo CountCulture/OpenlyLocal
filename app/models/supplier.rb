@@ -56,8 +56,12 @@ class Supplier < ActiveRecord::Base
     end
   end
   
-  def openlylocal_url
-    "http://#{DefaultDomain}/suppliers/#{to_param}"
+  def match_with_payee
+    if payee = possible_payee
+      update_attribute(:payee, payee)
+    else
+      update_attribute(:failed_payee_search, true)
+    end
   end
   
   # strip excess spaces and UTF8 spaces from name
@@ -65,13 +69,13 @@ class Supplier < ActiveRecord::Base
     self[:name] = NameParser.strip_all_spaces(raw_name) if raw_name
   end
 
+  def openlylocal_url
+    "http://#{DefaultDomain}/suppliers/#{to_param}"
+  end
+  
   # alias populate_basic_info as perform so that this gets run when doing delayed_job on a company
   def perform
-    if payee = possible_payee
-      update_attribute(:payee, payee)
-    else
-      update_attribute(:failed_payee_search, true)
-    end
+    match_with_payee
   end
 
   def possible_payee
@@ -105,7 +109,7 @@ class Supplier < ActiveRecord::Base
     
   private
   def queue_for_matching_with_payee
-    @vat_number ? Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => @vat_number, :supplier => self, :title => title)) : Delayed::Job.enqueue(self.reload) #NB reload supplier so only bare supplier is serialized, not assoc org with all associated objects, which is often longer than field allows, and thus breaks 
+    # @vat_number ? Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => @vat_number, :supplier => self, :title => title)) : Delayed::Job.enqueue(self.reload) #NB reload supplier so only bare supplier is serialized, not assoc org with all associated objects, which is often longer than field allows, and thus breaks 
     true
   end
 end

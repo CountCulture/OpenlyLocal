@@ -121,14 +121,10 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         end
       end
       
-      should "queue spending_stat of associated supplier for updating" do
-        @supplier = @financial_transaction.supplier
-        @supplier.save!
-        @spending_stat = @supplier.spending_stat
-        Delayed::Job.expects(:enqueue).with(@spending_stat)
-        @another_financial_transaction = Factory(:financial_transaction, :description => 'foobar***', :supplier => @supplier, :value => 42)
+      should "queue financial transaction for delayed_job processing" do
+        Delayed::Job.expects(:enqueue).with(@financial_transaction)
+        @financial_transaction.save!
       end
-      
     end
 
   end
@@ -311,6 +307,30 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 
       should "not convert date if not in slash format" do
         assert_equal '2006-01-04', Factory.build(:financial_transaction, :date => '2006-01-04').date.to_s
+      end
+
+    end
+
+    context "when setting invoice_date" do
+
+      should "set invoice_date as expected" do
+        date = 30.days.ago.to_date
+        assert_equal date, Factory.build(:financial_transaction, :invoice_date => date).invoice_date
+      end
+
+      should "convert UK date if in slash format" do
+        assert_equal '2006-04-01', Factory.build(:financial_transaction, :invoice_date => '01/04/2006').invoice_date.to_s
+      end
+
+      should "convert two digit year " do
+        assert_equal '2010-08-23', Factory.build(:financial_transaction, :invoice_date => '23-Aug-10').invoice_date.to_s
+        assert_equal '1998-08-23', Factory.build(:financial_transaction, :invoice_date => '23-Aug-98').invoice_date.to_s
+        assert_equal '2010-10-05', Factory.build(:financial_transaction, :invoice_date => '05/Oct/10').invoice_date.to_s
+        assert_equal '2010-10-05', Factory.build(:financial_transaction, :invoice_date => '05/10/10').invoice_date.to_s
+      end
+
+      should "not convert date if not in slash format" do
+        assert_equal '2006-01-04', Factory.build(:financial_transaction, :invoice_date => '2006-01-04').invoice_date.to_s
       end
 
     end
@@ -639,6 +659,55 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_nil @fin_trans.classification
       end
 
+ 	  end
+ 	  
+ 	  context "when performing" do
+ 	    setup do
+ 	      @supplier = @financial_transaction.supplier
+        # @financial_transaction.stubs(:supplier).returns(@supplier) # otherwise different instance may be returned
+ 	      Delayed::Job.stubs(:enqueue)
+ 	      Supplier.any_instance.stubs(:update_spending_stat_with)
+ 	    end
+
+ 	    should "update supplier spending_stat with financial_transaction" do
+ 	      Supplier.any_instance.expects(:update_spending_stat_with).with(@financial_transaction)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "match supplier with payee if no payee" do
+ 	      Supplier.any_instance.expects(:match_with_payee)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "not match supplier with payee if payee" do
+ 	      @supplier.payee = Factory(:company)
+ 	      Supplier.any_instance.expects(:match_with_payee).never
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "update supplier organisation spending_stat with financial_transaction" do
+ 	      @supplier.organisation.class.any_instance.expects(:update_spending_stat_with).with(@financial_transaction)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "not update supplier payee spending_stat with financial_transaction in general" do
+ 	      @supplier.payee = Factory(:generic_council)
+ 	      @supplier.payee.expects(:update_spending_stat_with).with(@financial_transaction).never
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "update supplier payee spending_stat with financial_transaction if payee is company" do
+ 	      @supplier.payee = Factory(:company)
+ 	      @supplier.payee.expects(:update_spending_stat_with).with(@financial_transaction)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "update supplier payee spending_stat with financial_transaction if payee is charity" do
+ 	      @supplier.payee = Factory(:charity)
+ 	      @supplier.payee.expects(:update_spending_stat_with).with(@financial_transaction)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
  	  end
 
 

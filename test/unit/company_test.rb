@@ -543,8 +543,8 @@ class CompanyTest < ActiveSupport::TestCase
           c = Factory(:generic_council)
           s = Factory(:supplier, :organisation => c, :payee => @company)
           Factory(:financial_transaction, :supplier => s)
-          s.spending_stat.perform
-          c.spending_stat.perform
+          s.create_spending_stat.perform
+          c.create_spending_stat.perform
         end
         # Factory(:spending_stat, :organisation => @company, :total_spend => 999999)
         @breakdown = @company.council_spending_breakdown

@@ -241,31 +241,31 @@ class SupplierTest < ActiveSupport::TestCase
             
     end
     
-    context "when performing" do
+    context "when matching with payee" do
       setup do
         @dummy_payee = Factory(:company)
       end
       
       should "try to match against possible payee" do
         @supplier.expects(:possible_payee)
-        @supplier.perform
+        @supplier.match_with_payee
       end
       
       should "update payee with possible payee" do
         @supplier.stubs(:possible_payee).returns(@dummy_payee)
-        @supplier.perform
+        @supplier.match_with_payee
         assert_equal @dummy_payee, @supplier.payee
       end
       
       should "not flag supplier as failed_payee_search if payee returned" do
         @supplier.stubs(:possible_payee).returns(@dummy_payee)
-        @supplier.perform
+        @supplier.match_with_payee
         assert !@supplier.failed_payee_search
       end
       
       should "flag supplier as failed_payee_search if no payee returned" do
         @supplier.stubs(:possible_payee) # returns nil
-        @supplier.perform
+        @supplier.match_with_payee
         assert @supplier.failed_payee_search
       end
     end

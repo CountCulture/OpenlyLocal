@@ -251,7 +251,7 @@ class SpendingStatTest < ActiveSupport::TestCase
         end
         
         should 'return nil if no transactions' do
-          assert_nil Factory(:supplier).spending_stat.calculated_spend_by_month
+          assert_nil Factory(:supplier).create_spending_stat.calculated_spend_by_month
         end
 
         should "return array of arrays" do
@@ -287,7 +287,7 @@ class SpendingStatTest < ActiveSupport::TestCase
         end
 
         should "return array of single array if just one transaction" do
-          assert_equal [[@unrelated_financial_transaction.date.beginning_of_month.to_date, @unrelated_financial_transaction.value]], @another_supplier.spending_stat.calculated_spend_by_month
+          assert_equal [[@unrelated_financial_transaction.date.beginning_of_month.to_date, @unrelated_financial_transaction.value]], @another_supplier.create_spending_stat.calculated_spend_by_month
         end
       end
       
@@ -350,23 +350,23 @@ class SpendingStatTest < ActiveSupport::TestCase
       end
 
       should "return nil if no transactions" do
-        assert_nil Factory(:council, :name => 'Foo Council').spending_stat.calculated_payee_breakdown
+        assert_nil Factory(:council, :name => 'Foo Council').create_spending_stat.calculated_payee_breakdown
       end
       
       should "return nil if organisation doesn't respond to financial_transactions" do
-        assert_nil Factory(:entity).spending_stat.calculated_payee_breakdown
+        assert_nil Factory(:entity).create_spending_stat.calculated_payee_breakdown
       end
       
       should "return nil if organisation is a supplier" do
-        assert_nil Factory(:supplier).spending_stat.calculated_payee_breakdown
+        assert_nil Factory(:supplier).create_spending_stat.calculated_payee_breakdown
       end
       
       should "return hash" do
-        assert_kind_of Hash, breakdown = @organisation.spending_stat.calculated_payee_breakdown
+        assert_kind_of Hash, breakdown = @organisation.create_spending_stat.calculated_payee_breakdown
       end
       
       should "aggregate spend by class" do
-        breakdown = @organisation.spending_stat.calculated_payee_breakdown
+        breakdown = @organisation.create_spending_stat.calculated_payee_breakdown
         assert_in_delta 143.45, breakdown['Council'], 0.1
         assert_in_delta (10.5 + 32.1 + 18.1), breakdown['Company'], 0.1
       end
