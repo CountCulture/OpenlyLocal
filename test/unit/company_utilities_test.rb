@@ -193,6 +193,12 @@ class CompanyUtilitiesTest < ActiveSupport::TestCase
         CompaniesHouse.stubs(:company_details).returns(resp)
         assert_equal ["7031 - Real estate agencies","7032 - Manage real estate, fee or contract"], @client.company_details_for('12345')[:sic_codes]
       end
+      
+      should "return nil if no details for company" do
+        CompaniesHouse.stubs(:company_details).raises(CompaniesHouse::Exception)
+        assert_nil @client.company_details_for('123456')
+      end
+      
     end
   end
   
