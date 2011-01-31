@@ -103,7 +103,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       setup do
         supplier = Factory.build(:supplier)
         @financial_transaction = Factory.build(:financial_transaction, :supplier => supplier)
-        Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
+      end
+      
+      should "queue financial transaction for delayed_job processing" do
+        Delayed::Job.expects(:enqueue).with(@financial_transaction)
+        @financial_transaction.save!
       end
     
       should "save associated supplier" do
@@ -122,17 +126,17 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         end
       end
       
-      should "queue financial transaction for delayed_job processing" do
-        Delayed::Job.expects(:enqueue).with(@financial_transaction)
-        @financial_transaction.save!
-      end
-      
-      should 'not in general queue for matching supplier with vat_number' do
+      should 'in general not queue for matching supplier with vat_number' do
+        Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
         Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
         @financial_transaction.save!
       end
 
       context "and supplier has vat_number" do
+        setup do
+          Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
+        end
+        
         should 'queue for matching vat_number if vat_number' do
           @financial_transaction.supplier.vat_number = 'AB123'
           Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))

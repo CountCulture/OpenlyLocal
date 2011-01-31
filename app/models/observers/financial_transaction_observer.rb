@@ -1,6 +1,5 @@
 class FinancialTransactionObserver < ActiveRecord::Observer
   def after_save(ft)
-    Delayed::Job.enqueue(ft) # add financail_transaction to DelayedJob, after VatMatcher
     unless ft.supplier.vat_number.blank?  || ft.supplier.payee || ft.supplier.failed_payee_search
       Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => ft.supplier.vat_number, :supplier => ft.supplier, :title => ft.supplier.title)) 
     end
