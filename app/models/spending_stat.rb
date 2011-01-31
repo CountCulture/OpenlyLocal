@@ -71,6 +71,11 @@ class SpendingStat < ActiveRecord::Base
     self.class.difference_in_months_between_dates(calculated_earliest_transaction_date, calculated_latest_transaction_date) + 1 # add one because we want the number of months covered, not just the difference
   end
   
+  def calculated_average_transaction_value
+    return @calculated_average_transaction_value if @calculated_average_transaction_value
+    @calculated_average_transaction_value = calculated_total_spend/transaction_count if calculated_total_spend && transaction_count
+  end
+  
   def months_covered
     self.class.difference_in_months_between_dates(earliest_transaction, latest_transaction) + 1 # add one because we want the number of months covered, not just the difference
   end
@@ -82,7 +87,8 @@ class SpendingStat < ActiveRecord::Base
                       :breakdown => calculated_payee_breakdown,
                       :earliest_transaction => calculated_earliest_transaction_date,
                       :latest_transaction => calculated_latest_transaction_date,
-                      :transaction_count => organisation.financial_transactions.count
+                      :transaction_count => organisation.financial_transactions.count,
+                      :average_transaction_value => calculated_average_transaction_value
                       )
   end
   

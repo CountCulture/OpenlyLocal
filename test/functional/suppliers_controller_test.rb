@@ -8,7 +8,7 @@ class SuppliersControllerTest < ActionController::TestCase
     @another_supplier_same_org = Factory(:supplier, :name => 'Another supplier', :organisation => @organisation)
     @financial_transaction = Factory(:financial_transaction, :supplier => @supplier, :value => 42)
     @big_financial_transaction = Factory(:financial_transaction, :supplier => @supplier, :value => 10000, :date => 2.days.ago)
-    [@supplier, @another_supplier, @another_supplier_same_org].each{ |s| s.spending_stat.perform }#can't sort without sppending_stat
+    [@supplier, @another_supplier, @another_supplier_same_org].each{ |s| s.update_attribute(:spending_stat, SpendingStat.new); s.spending_stat.perform }#can't sort without sppending_stat
   end
   
   # index test

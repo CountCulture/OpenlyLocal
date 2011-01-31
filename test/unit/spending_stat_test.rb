@@ -88,6 +88,17 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal dummy_spend_by_month, @spending_stat.reload.spend_by_month
       end
 
+      should "should calculate average_transaction_value" do
+        @spending_stat.expects(:calculated_average_transaction_value)
+        @spending_stat.perform
+      end
+      
+      should "should update with average_transaction_value" do
+        @spending_stat.stubs(:calculated_average_transaction_value).returns(12345)
+        @spending_stat.perform
+        assert_equal 12345, @spending_stat.reload.average_transaction_value
+      end
+
       should "should calculate payee breakdown" do
         @spending_stat.expects(:calculated_payee_breakdown)
         @spending_stat.perform
@@ -162,6 +173,22 @@ class SpendingStatTest < ActiveSupport::TestCase
           assert_equal (2.months.ago.to_date + 45.days), @spending_stat.calculated_latest_transaction_date
         end
       end
+    end
+    
+    context "when calculating average_transaction_value" do
+      should "return total_spend divided by transaction_count" do
+        @spending_stat.expects(:calculated_total_spend).at_least_once.returns(12345)
+        @spending_stat.expects(:transaction_count).at_least_once.returns(42)
+        assert_in_delta (12345/42), @spending_stat.calculated_average_transaction_value, 0.1
+      end
+      
+      should "cache result" do
+        @spending_stat.expects(:calculated_total_spend).twice.returns(12345) # called twice per calculated_average_transaction_value
+        @spending_stat.expects(:transaction_count).twice.returns(42)
+        @spending_stat.calculated_average_transaction_value
+        @spending_stat.calculated_average_transaction_value
+      end
+      
     end
     
     context "when returning months_covered" do
