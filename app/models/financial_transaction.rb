@@ -179,7 +179,11 @@ class FinancialTransaction < ActiveRecord::Base
 	def perform
    supplier.update_spending_stat_with(self)
    supplier.organisation.update_spending_stat_with(self)
+   # p supplier.payee
    supplier.match_with_payee unless supplier.payee
+   # supplier.save!
+   # p supplier.payee
+   
    supplier.payee.update_spending_stat_with(self) if supplier.payee && (supplier.payee.is_a?(Company) || supplier.payee.is_a?(Charity))
 	end
 	
@@ -216,7 +220,7 @@ class FinancialTransaction < ActiveRecord::Base
 	# As financial transactions are often create from CSV files, we need to set supplier 
 	# from supplied params, and when doing so may not not associated organisation
 	def supplier_name=(name)
-    self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_name(name) || Supplier.new) unless self.supplier
+    self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_name(NameParser.strip_all_spaces(name)) || Supplier.new) unless self.supplier
     self.supplier.name = name
 	end
 	

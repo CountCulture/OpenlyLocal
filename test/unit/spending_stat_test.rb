@@ -99,18 +99,6 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal 12345, @spending_stat.reload.average_transaction_value
       end
 
-      should "should calculate payee breakdown" do
-        @spending_stat.expects(:calculated_payee_breakdown)
-        @spending_stat.perform
-      end
-      
-      should "should update with payee_breakdown" do
-        dummy_payee_breakdown = {'Company' => 123}
-        @spending_stat.stubs(:calculated_payee_breakdown).returns(dummy_payee_breakdown)
-        @spending_stat.perform
-        assert_equal dummy_payee_breakdown, @spending_stat.reload.breakdown
-      end
-
       should "should set earliest_transaction" do
         earliest_date = 4.weeks.ago.to_date
         @spending_stat.stubs(:calculated_earliest_transaction_date).returns(earliest_date)
@@ -129,8 +117,72 @@ class SpendingStatTest < ActiveSupport::TestCase
         @spending_stat.perform
         assert_equal @spending_stat.organisation.financial_transactions.count, @spending_stat.reload.transaction_count
       end
+      
+      context "in general" do
+        should "should calculate payee breakdown" do
+          @spending_stat.expects(:calculated_payee_breakdown)
+          @spending_stat.perform
+        end
+
+        should "should update with payee_breakdown" do
+          dummy_payee_breakdown = {'Company' => 123}
+          @spending_stat.stubs(:calculated_payee_breakdown).returns(dummy_payee_breakdown)
+          @spending_stat.perform
+          assert_equal dummy_payee_breakdown, @spending_stat.reload.breakdown
+        end
+      end
+      
+      context "and organisation is company" do
+        setup do
+          @spending_stat.organisation = Factory(:company)
+        end
+
+        should "should not calculate payee breakdown" do
+          @spending_stat.expects(:calculated_payee_breakdown).never
+          @spending_stat.perform
+        end
+
+
+        should "should calculate payee breakdown" do
+          @spending_stat.expects(:calculated_organisation_breakdown)
+          @spending_stat.perform
+        end
+
+        should "should update with payee_breakdown" do
+          dummy_payee_breakdown = [{:organisation_id => 123, :organisation_type => 'Council'}]
+          @spending_stat.stubs(:calculated_organisation_breakdown).returns(dummy_payee_breakdown)
+          @spending_stat.perform
+          assert_equal dummy_payee_breakdown, @spending_stat.reload.breakdown
+        end
+
+      end
+      context "and organisation is charity" do
+        setup do
+          @spending_stat.organisation = Factory(:charity)
+        end
+
+        should "should not calculate payee breakdown" do
+          @spending_stat.expects(:calculated_payee_breakdown).never
+          @spending_stat.perform
+        end
+
+
+        should "should calculate payee breakdown" do
+          @spending_stat.expects(:calculated_organisation_breakdown)
+          @spending_stat.perform
+        end
+
+        should "should update with payee_breakdown" do
+          dummy_payee_breakdown = [{:organisation_id => 123, :organisation_type => 'Council'}]
+          @spending_stat.stubs(:calculated_organisation_breakdown).returns(dummy_payee_breakdown)
+          @spending_stat.perform
+          assert_equal dummy_payee_breakdown, @spending_stat.reload.breakdown
+        end
+
+      end
+
     end
-    
+
     context "when calculating earliest_transaction_date" do
       should "return first date" do
         assert_equal 11.months.ago.to_date, @spending_stat.calculated_earliest_transaction_date
@@ -475,6 +527,25 @@ class SpendingStatTest < ActiveSupport::TestCase
             assert_equal( {'PoliceAuthority' => 321.4}, @new_ss.breakdown)
           end
         end
+        
+        context "and spending_stat organisation is a company" do
+          setup do
+            @supplier = @ft.supplier
+            @supplier.payee = Factory(:police_authority)
+            @new_ss = Factory(:spending_stat, :organisation => Factory(:company))
+          end
+
+
+          should "set breakdown to supplier organisation details" do
+            expected_org_breakdown = [{ :organisation_id => @supplier.organisation_id, 
+                                        :organisation_type => @supplier.organisation_type, 
+                                        :total_spend => 321.4, 
+                                        :transaction_count => 1,
+                                        :average_transaction_value => 321.4}]
+            @new_ss.update_from(@ft)
+            assert_equal expected_org_breakdown, @new_ss.breakdown
+          end
+        end
       end
 
       should "increment transaction_count" do
@@ -521,12 +592,84 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal expected_new_spend_by_month, @spending_stat.spend_by_month 
       end
       
-      should "update breakdown" do
-        @spending_stat.update_attribute(:breakdown, {'Company' => 111.1})
+      should "update breakdown with payee breakdown" do
+        @spending_stat.update_attributes(:breakdown => {'Company' => 111.1}, :total_spend => 111.1)
         @spending_stat.update_from(@ft)
         assert_equal( {'Company' => 111.1, nil => 321.4}, @spending_stat.breakdown)
         @spending_stat.update_from(@ft)
         assert_equal( {'Company' => 111.1, nil => 642.8}, @spending_stat.breakdown)
+      end
+      
+      context "and spending_stat organisation is a company" do
+        setup do
+          @company = Factory(:company)
+          @new_ss = Factory(:spending_stat, :organisation => @company)
+        end
+
+        should "update breakdown with organisation breakdown" do
+          @organisation = @ft.supplier.organisation
+          @another_org = Factory(:generic_council)
+          expected_org_breakdown = [{ :organisation_id => @organisation.id, 
+                                      :organisation_type => @organisation.class.to_s, 
+                                      :total_spend => 321.4, 
+                                      :transaction_count => 1,
+                                      :average_transaction_value => 321.4}]
+          expected_org_breakdown_2 = [{ :organisation_id => @organisation.id, 
+                                        :organisation_type => @organisation.class.to_s, 
+                                        :total_spend => 642.8, 
+                                        :transaction_count => 2,
+                                        :average_transaction_value => 321.4}]
+          expected_org_breakdown_3 = expected_org_breakdown_2 + 
+                                     [{ :organisation_id => @another_org.id, 
+                                        :organisation_type => @another_org.class.to_s, 
+                                        :total_spend => 321.4, 
+                                        :transaction_count => 1,
+                                        :average_transaction_value => 321.4}]
+          @new_ss.update_from(@ft)
+          assert_equal expected_org_breakdown, @new_ss.breakdown
+          
+          @new_ss.update_from(@ft)
+          assert_equal expected_org_breakdown_2, @new_ss.breakdown
+          @ft.supplier.organisation = @another_org
+          @new_ss.update_from(@ft)
+          assert_equal expected_org_breakdown_3, @new_ss.breakdown
+        end
+      end
+      
+      context "and spending_stat organisation is a charity" do
+        setup do
+          @charity = Factory(:charity)
+          @new_ss = Factory(:spending_stat, :organisation => @charity)
+        end
+
+        should "update breakdown with organisation breakdown" do
+          @organisation = @ft.supplier.organisation
+          @another_org = Factory(:generic_council)
+          expected_org_breakdown = [{ :organisation_id => @organisation.id, 
+                                      :organisation_type => @organisation.class.to_s, 
+                                      :total_spend => 321.4, 
+                                      :transaction_count => 1,
+                                      :average_transaction_value => 321.4}]
+          expected_org_breakdown_2 = [{ :organisation_id => @organisation.id, 
+                                        :organisation_type => @organisation.class.to_s, 
+                                        :total_spend => 642.8, 
+                                        :transaction_count => 2,
+                                        :average_transaction_value => 321.4}]
+          expected_org_breakdown_3 = expected_org_breakdown_2 + 
+                                     [{ :organisation_id => @another_org.id, 
+                                        :organisation_type => @another_org.class.to_s, 
+                                        :total_spend => 321.4, 
+                                        :transaction_count => 1,
+                                        :average_transaction_value => 321.4}]
+          @new_ss.update_from(@ft)
+          assert_equal expected_org_breakdown, @new_ss.breakdown
+          
+          @new_ss.update_from(@ft)
+          assert_equal expected_org_breakdown_2, @new_ss.breakdown
+          @ft.supplier.organisation = @another_org
+          @new_ss.update_from(@ft)
+          assert_equal expected_org_breakdown_3, @new_ss.breakdown
+        end
       end
       
       
@@ -559,11 +702,14 @@ class SpendingStatTest < ActiveSupport::TestCase
         setup do
           @supplier = @ft.supplier
           @supplier.payee = Factory(:police_authority)
-          @new_ss = Factory(:spending_stat)
+          @new_ss = Factory(:spending_stat, :breakdown => {'Company' => 111.1}, 
+                                            :total_spend => 111.1, 
+                                            :earliest_transaction => 3.months.ago.to_date, 
+                                            :latest_transaction => 1.month.ago.to_date, 
+                                            :spend_by_month => [['2009-08-01'.to_date, 111.1]] )
         end
 
         should "update breakdown" do
-          @new_ss.breakdown = {'Company' => 111.1}
           @new_ss.update_from(@ft)
           assert_equal( {'Company' => 111.1, 'PoliceAuthority' => 321.4}, @new_ss.breakdown)
           @new_ss.update_from(@ft)
@@ -581,6 +727,63 @@ class SpendingStatTest < ActiveSupport::TestCase
           assert_nothing_raised(Exception) { @new_ss.update_from(@ft) }
         end
       end
+    end
+    
+    context "when calculating organisation_breakdown" do
+      setup do
+        @company = Factory(:company)
+        @councils = (1..20).collect do
+          c = Factory(:generic_council)
+          s = Factory(:supplier, :organisation => c, :payee => @company)
+          Factory(:financial_transaction, :supplier => s, :value => 12)
+          s.create_spending_stat.perform
+          c.create_spending_stat.perform
+          c
+        end
+        spending_stat = Factory(:spending_stat, :organisation => @company)
+        @first_council = @councils.first
+        second_supplier = Factory(:supplier, :organisation => @first_council, :payee => @company)
+        Factory(:financial_transaction, :supplier => second_supplier, :value => 101)
+        second_supplier.create_spending_stat.perform
+        @breakdown = spending_stat.calculated_organisation_breakdown
+      end
+
+      should "return an array of hashes" do
+        assert_kind_of Array, @breakdown
+        assert_kind_of Hash, @breakdown.first
+      end
+      
+      should "have one hash per council" do
+        assert_equal 20, @breakdown.size
+      end
+      
+      context "and hash" do
+        setup do
+          @council_hash = @breakdown.detect{ |h| h[:organisation_id] == @first_council.id }
+        end
+        
+        should "contain organisation id" do
+          assert @council_hash[:organisation_id]
+        end
+        should "contain organisation type" do
+          assert_equal 'Council', @council_hash[:organisation_type]
+        end
+        should "contain aggregate of supplier total spend" do
+          assert_equal 113, @council_hash[:total_spend]
+        end
+        
+        # should_eventually"contain average_monthly_spend" do
+        #   assert @first_council.spending_stat.total_spend,  @council_hash[:average_monthly_spend]
+        # end
+        
+        should "contain aggregate of supplier transaction_count" do
+          assert_equal 2, @council_hash[:transaction_count]
+        end
+        should "calculate average_transaction_size from total_spend and transaction_count" do
+          assert_in_delta 113.0/2, @council_hash[:average_transaction_size], 0.1
+        end
+      end
+      
     end
   end
   

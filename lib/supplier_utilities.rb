@@ -5,7 +5,7 @@ module SupplierUtilities
     
     attr_reader :vat_number, :title, :supplier
     def initialize(args)
-      @vat_number = args[:vat_number]
+      @vat_number = args[:vat_number].strip.sub(/^GB/,'')
       @title = args[:title]
       @supplier_id = args[:supplier].id
     end

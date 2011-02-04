@@ -526,6 +526,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 	        assert_equal @existing_supplier, @fin_trans.supplier
 	      end
 	      
+	      should 'find supplier for organisation normalising to remove spaces' do
+	        @fin_trans.supplier_name = '  Foo Supplier  '
+	        assert_equal @existing_supplier, @fin_trans.supplier
+	      end
+	      
 	      should "instantiate new supplier for organisation if it doesn't exist" do
 	        @fin_trans.supplier_name = 'Bar Supplier'
 	        assert_kind_of Supplier, supplier = @fin_trans.supplier
@@ -748,6 +753,35 @@ class FinancialTransactionTest < ActiveSupport::TestCase
  	      @financial_transaction.perform
  	    end
  	    
+      # this is sort of integration test to see if it all hangs together
+ 	    should "update all associated spending_stats with correct data" do
+ 	      @supplier = @financial_transaction.supplier
+ 	      @payee = Factory(:company)
+ 	      @supplier.update_attribute(:payee, @payee)
+        @spend_by_month = [['2009-08-01'.to_date, 2519.0], ['2009-09-01'.to_date, 2519.0], ['2009-10-01'.to_date, nil], ['2009-11-01'.to_date, 5559.5]]
+        @spending_stat = Factory(:spending_stat, :transaction_count => 234,
+                                                 :total_spend => 12345.6,
+                                                 :earliest_transaction => '2009-08-21',
+                                                 :latest_transaction => '2009-11-15',
+                                                 :spend_by_month => @spend_by_month, 
+                                                 :average_monthly_spend => 123.45,
+                                                 :average_transaction_value => 45,
+                                                 :organisation => @supplier )
+
+        # p @financial_transaction
+        p '******************'
+ 	      @financial_transaction.perform
+        # p @supplier.organisation.spending_stat
+        # p @supplier.payee.spending_stat
+        # assert_equal (567.0 + 12345.6), @supplier.spending_stat.reload.total_spend
+        # assert_equal 235, @supplier.spending_stat.transaction_count
+ 	      assert_equal 1, @supplier.organisation.spending_stat.transaction_count
+ 	      assert_equal( {'Company' => 567.0}, @supplier.organisation.spending_stat.breakdown)
+ 	      assert_equal 1, @supplier.payee.spending_stat.transaction_count
+ 	      expected_organisation_breakdown = {:organisation_id => @supplier.organisation_id, :organisation_type => @supplier.organisation_type}
+ 	      assert_equal expected_organisation_breakdown, @payee.spending_stat.breakdown
+ 	      flunk
+ 	    end
  	  end
 
 

@@ -6,7 +6,7 @@ class SpendingStat < ActiveRecord::Base
   
   # Overrides ActiveRecord method to return true if main stat values are blank
   def blank?
-    %w(total_spend average_monthly_spend average_transaction_value).all?{ |a| self.send(a).blank? || (self.send(a) == 0) }
+    %w(total_spend average_monthly_spend average_transaction_value breakdown).all?{ |a| self.send(a).blank? || (self.send(a) == 0) }
   end
   
   def calculated_average_monthly_spend
@@ -36,15 +36,6 @@ class SpendingStat < ActiveRecord::Base
     months_with_vals = res_hsh.sort
     
     first_month, last_month = months_with_vals.first, months_with_vals.last
-    # all_months = [months_with_vals.shift]
-    # month_date = first_month.first
-    # self.class.difference_in_months_between_dates(first_month.first, last_month.first).times do |i|
-    #   month_date = (month_date + 32.days).beginning_of_month
-    #   matched_month_value = (months_with_vals.first.first == month_date ? months_with_vals.shift.last : nil)
-    #   all_months << [month_date, matched_month_value]
-    # end
-    # all_months
-    # p months_with_vals
     spend_by_month_array(first_month.first, last_month.first, months_with_vals)
   end
   
@@ -78,15 +69,29 @@ class SpendingStat < ActiveRecord::Base
     @calculated_average_transaction_value = calculated_total_spend/transaction_count if calculated_total_spend && transaction_count
   end
   
+  def calculated_organisation_breakdown
+    suppliers = organisation.supplying_relationships(:include => :spending_stat)
+    suppliers.group_by(&:organisation).collect do |supplier_org, sups|
+      res = {}
+      res[:total_spend] = sups.sum{ |s| (s.spending_stat&&s.spending_stat.total_spend).to_f }
+      res[:transaction_count] = sups.sum{ |s| (s.spending_stat&&s.spending_stat.transaction_count).to_i}
+      res[:organisation_id] = supplier_org.id
+      res[:organisation_type] = supplier_org.class.to_s
+      res[:average_transaction_size] = res[:total_spend]/res[:transaction_count] rescue nil
+      res
+    end
+  end
+  
   def months_covered
     self.class.difference_in_months_between_dates(earliest_transaction, latest_transaction) + 1 # add one because we want the number of months covered, not just the difference
   end
   
   def perform
+    breakdown = (organisation.is_a?(Company) || organisation.is_a?(Charity)) ? calculated_organisation_breakdown : calculated_payee_breakdown
     update_attributes(:total_spend => calculated_total_spend, 
                       :average_monthly_spend => calculated_average_monthly_spend,
                       :spend_by_month => calculated_spend_by_month,
-                      :breakdown => calculated_payee_breakdown,
+                      :breakdown => breakdown,
                       :earliest_transaction => calculated_earliest_transaction_date,
                       :latest_transaction => calculated_latest_transaction_date,
                       :transaction_count => organisation.financial_transactions.count,
@@ -110,8 +115,7 @@ class SpendingStat < ActiveRecord::Base
                           :average_transaction_value => fin_trans.value,
                           :average_monthly_spend => fin_trans.value,
                           :transaction_count => 1,
-                          :spend_by_month => [[fin_trans.date.beginning_of_month, fin_trans.value]],
-                          :breakdown => breakdown
+                          :spend_by_month => [[fin_trans.date.beginning_of_month, fin_trans.value]]
                           }
     else
       self.earliest_transaction = fin_trans.date if fin_trans.date < earliest_transaction
@@ -129,7 +133,7 @@ class SpendingStat < ActiveRecord::Base
       end
       self.spend_by_month = spend_by_month_array(earliest_transaction.beginning_of_month, latest_transaction.beginning_of_month, existing_spend_by_month.sort{ |a,b| a.first <=> b.first })
     end
-    self.breakdown = update_breakdown_with_payee(breakdown, fin_trans)
+    self.breakdown = update_breakdown_with_transaction(self.breakdown, fin_trans)
     save!
   end
   
@@ -151,11 +155,26 @@ class SpendingStat < ActiveRecord::Base
     res
   end
   
-  def update_breakdown_with_payee(breakdown, fin_trans)
+  def update_breakdown_with_transaction(exist_breakdown, fin_trans)
     return nil if organisation.is_a?(Supplier)
-    payee = fin_trans.payee && fin_trans.payee.class.to_s #nil if payee nil
-    new_breakdown = breakdown ? breakdown.dup : {}
-    new_breakdown[payee] = new_breakdown[payee].to_f + fin_trans.value
+    if organisation.is_a?(Company) || organisation.is_a?(Charity)
+      new_breakdown = exist_breakdown ? exist_breakdown.dup : []
+      existing_entry_for_org = new_breakdown.detect{ |e| (e[:organisation_id].to_s == fin_trans.supplier.organisation_id.to_s) && (e[:organisation_type] == fin_trans.supplier.organisation_type)} || {}
+      new_breakdown.delete(existing_entry_for_org)
+      transaction_count = existing_entry_for_org[:transaction_count].to_i + 1
+      total_spend = existing_entry_for_org[:total_spend].to_f + fin_trans.value
+      existing_entry_for_org = {:organisation_id => fin_trans.supplier.organisation_id, 
+                                :organisation_type => fin_trans.supplier.organisation_type,
+                                :transaction_count => transaction_count,
+                                :average_transaction_value => total_spend/transaction_count,
+                                :total_spend => total_spend
+                                }
+      new_breakdown << existing_entry_for_org
+    else
+      payee = fin_trans.payee && fin_trans.payee.class.to_s # nil if payee nil
+      new_breakdown = exist_breakdown ? exist_breakdown.dup : {}
+      new_breakdown[payee] = new_breakdown[payee].to_f + fin_trans.value
+    end
     new_breakdown
   end
     
