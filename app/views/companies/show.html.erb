@@ -5,10 +5,8 @@
   <%= render :partial => 'attributes', :object => @company %>
 </dl>
 
-<%- if @company.spending_stat&&!@company.spending_stat.blank? -%>
-  <div id='company_spending_dashboard' class='dashboard'>
-  
-  </div>
+<%- unless @company.spending_stat.blank? -%>
+  <%= render :partial => 'spending_dashboard' %>
 <%- end -%>
 
 <div id="relationships">

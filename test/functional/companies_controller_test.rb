@@ -6,14 +6,6 @@ class CompaniesControllerTest < ActionController::TestCase
     @supplier = Factory(:supplier, :payee => @company)
   end
   
-  # context "when routing" do
-  #   should "route ward identified by snac_id to show action" do
-  #     assert_routing "companies/uk/1234", {:controller => "companies", :action => "show", :company_number => "1234", :jurisdiction_code => 'uk'}
-  #     assert_routing "companies/uk/1234.xml", {:controller => "companies", :action => "show", :company_number => "1234", :jurisdiction_code => 'uk', :format => "xml"}
-  #     assert_routing "companies/uk/1234.json", {:controller => "companies", :action => "show", :company_number => "1234", :jurisdiction_code => 'uk', :format => "json"}
-  #     assert_routing "companies/uk/1234.rdf", {:controller => "companies", :action => "show", :company_number => "1234", :jurisdiction_code => 'uk', :format => "rdf"}
-  #   end
-  # end
   
   context "on GET to :spending" do
 
@@ -74,22 +66,39 @@ class CompaniesControllerTest < ActionController::TestCase
     
     context "when company has spending data" do
       setup do
-        20.times do
-          c = Factory(:company)
-          Factory(:spending_stat, :organisation => c, :total_spend => 500)
-        end
-        Factory(:spending_stat, :organisation => @company, :total_spend => 999999)
+        @org1 = Factory(:generic_council)
+        @org2 = Factory(:police_authority)
+        @earliest_date = '2008-03-23'.to_date
+        @latest_date = '2008-02-04'.to_date
+        
+        breakdown = [{ :organisation_id => @org1.id, 
+                       :organisation_type => @org1.class.to_s, 
+                       :total_spend => 321.4, 
+                       :transaction_count => 1,
+                       :average_transaction_value => 321.4},
+                     { :organisation_id => @org2.id, 
+                       :organisation_type => @org2.class.to_s, 
+                       :total_spend => 111111.1, 
+                       :transaction_count => 21,
+                       :average_transaction_value => 42.323} ]
+        
+        Factory(:spending_stat, :organisation => @company, 
+                                :total_spend => 999999, 
+                                :transaction_count => 42,                                
+                                :average_transaction_value => 321.4,
+                                :earliest_transaction => @earliest_date,
+                                :latest_transaction => @latest_date,
+                                :breakdown => breakdown)
         get :show, :id => @company.id
       end
 
 
       should "show dashboard" do
-        p @company.spending_stat.blank?
         assert_select ".dashboard"
       end
       
-      should "show number of councils supplying" do
-        assert_select ".dashboard h3", /supplying 21 councils/
+      should_eventually "show number of organisations supplying" do
+        assert_select ".dashboard h3", /supplying 2 organisations/
       end
     end
 
