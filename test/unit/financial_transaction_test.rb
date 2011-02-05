@@ -768,19 +768,16 @@ class FinancialTransactionTest < ActiveSupport::TestCase
                                                  :average_transaction_value => 45,
                                                  :organisation => @supplier )
 
-        # p @financial_transaction
-        p '******************'
  	      @financial_transaction.perform
-        # p @supplier.organisation.spending_stat
-        # p @supplier.payee.spending_stat
-        # assert_equal (567.0 + 12345.6), @supplier.spending_stat.reload.total_spend
-        # assert_equal 235, @supplier.spending_stat.transaction_count
  	      assert_equal 1, @supplier.organisation.spending_stat.transaction_count
  	      assert_equal( {'Company' => 567.0}, @supplier.organisation.spending_stat.breakdown)
  	      assert_equal 1, @supplier.payee.spending_stat.transaction_count
- 	      expected_organisation_breakdown = {:organisation_id => @supplier.organisation_id, :organisation_type => @supplier.organisation_type}
+ 	      expected_organisation_breakdown = [{:organisation_id=>@supplier.organisation_id,
+                                            :transaction_count=>1,
+                                            :average_transaction_value=>567.0,
+                                            :organisation_type=>"PoliceForce",
+                                            :total_spend=>567.0}]
  	      assert_equal expected_organisation_breakdown, @payee.spending_stat.breakdown
- 	      flunk
  	    end
  	  end
 

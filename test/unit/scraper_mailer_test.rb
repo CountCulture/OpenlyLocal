@@ -7,8 +7,8 @@ class ScraperMailerTest < ActionMailer::TestCase
       @report = ScraperMailer.create_auto_scraping_report(:report => @report_text, :summary => "3 successes")
     end
 
-    should "be sent from countculture" do
-      assert_equal "countculture@googlemail.com", @report.from[0]
+    should "be sent from admin@openlylocal.com" do
+      assert_equal "admin@openlylocal.com", @report.from[0]
     end
     
     should "be sent to countculture" do
@@ -33,8 +33,8 @@ class ScraperMailerTest < ActionMailer::TestCase
       @report = ScraperMailer.create_scraping_report(@scraper)
     end
 
-    should "be sent from countculture" do
-      assert_equal "countculture@googlemail.com", @report.from[0]
+    should "be sent from admin@openlylocal.com" do
+      assert_equal "admin@openlylocal.com", @report.from[0]
     end
     
     should "be sent to countculture" do

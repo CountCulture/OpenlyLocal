@@ -225,23 +225,23 @@ class SupplierTest < ActiveSupport::TestCase
       # end
       #       
       
-      should 'not queue for matching with vat_number if no vat_number' do
-        Delayed::Job.expects(:enqueue).with(kind_of(Supplier))
-        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
-        Factory(:supplier, :name => 'Foo company')
-      end
-      
-      should 'not queue for matching with payee if vat_number' do
-        Delayed::Job.expects(:enqueue).with(kind_of(Supplier)).never
-        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
-        Factory(:supplier, :name => 'Foo company', :vat_number => 'AB123')
-      end
-      
-      should 'queue for matching vat_number if vat_number' do
-        Delayed::Job.expects(:enqueue).with(kind_of(Supplier)).never
-        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
-        Factory(:supplier, :name => 'Foo company', :vat_number => 'AB123')
-      end
+      # should 'not queue for matching with vat_number if no vat_number' do
+      #   Delayed::Job.expects(:enqueue).with(kind_of(Supplier))
+      #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+      #   Factory(:supplier, :name => 'Foo company')
+      # end
+      # 
+      # should 'not queue for matching with payee if vat_number' do
+      #   Delayed::Job.expects(:enqueue).with(kind_of(Supplier)).never
+      #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+      #   Factory(:supplier, :name => 'Foo company', :vat_number => 'AB123')
+      # end
+      # 
+      # should 'queue for matching vat_number if vat_number' do
+      #   Delayed::Job.expects(:enqueue).with(kind_of(Supplier)).never
+      #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+      #   Factory(:supplier, :name => 'Foo company', :vat_number => 'AB123')
+      # end
       
             
     end
