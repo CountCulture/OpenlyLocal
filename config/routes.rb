@@ -8,7 +8,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :financial_transactions
 
-  map.resources :companies
+  map.resources :companies, :collection => { :spending => :get }
 
   map.resources :suppliers
 
