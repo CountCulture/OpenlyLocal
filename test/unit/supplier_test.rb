@@ -273,6 +273,12 @@ class SupplierTest < ActiveSupport::TestCase
         @supplier.match_with_payee
         assert @supplier.failed_payee_search
       end
+      
+      should "update payee spending stat" do
+        @supplier.stubs(:possible_payee).returns(@dummy_payee)
+        @dummy_payee.expects(:update_spending_stat)
+        @supplier.match_with_payee
+      end
     end
 
     context "when matching against existing possible payees" do

@@ -59,6 +59,7 @@ class Supplier < ActiveRecord::Base
   def match_with_payee
     if payee = possible_payee
       update_attribute(:payee, payee)
+      payee.update_spending_stat
     else
       update_attribute(:failed_payee_search, true)
     end
