@@ -327,7 +327,8 @@ class EntitiesControllerTest < ActionController::TestCase
         @high_spending_supplier = Factory(:supplier, :organisation => @entity)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
-        @entity.spending_stat.perform
+        @entity.update_attribute(:spending_stat, SpendingStat.new)
+        [@entity, @supplier_1, @high_spending_supplier].each{ |e| e.update_attribute(:spending_stat, SpendingStat.new); e.spending_stat.perform }
         get :show_spending, :id => @entity.id
       end
 

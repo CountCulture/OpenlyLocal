@@ -49,7 +49,7 @@ every 1.day, :at => '2am' do
 end
 
 every 1.day, :at => '1am' do
-  command "RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/rake export_csv_spending_data"
+  command "RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /opt/ruby-enterprise-1.8/bin/rake export_csv_spending_data"
 end
 
 # every :sunday, :at => '1am' do

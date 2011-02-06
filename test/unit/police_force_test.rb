@@ -38,6 +38,10 @@ class PoliceForceTest < ActiveSupport::TestCase
       assert @police_force.respond_to?(:update_social_networking_details)
     end
     
+    should "mixin SpendingStat::Base module" do
+      assert @police_force.respond_to?(:spending_stat)
+    end
+    
     should 'have one force_crime_area' do
       non_force_crime_area = Factory(:crime_area, :police_force => @police_force, :level => 3)
       force_crime_area = Factory(:crime_area, :police_force => @police_force, :level => 1)

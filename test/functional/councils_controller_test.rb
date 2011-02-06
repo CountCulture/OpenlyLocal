@@ -690,6 +690,7 @@ class CouncilsControllerTest < ActionController::TestCase
         @council.child_authorities << @another_council # add parent/child relationship
         @supplier = Factory(:supplier, :organisation => @council)
         @financial_transaction = Factory(:financial_transaction, :supplier => @supplier)
+        create_and_update_spending_stats(@council, @supplier)
       end
       
       should "show party breakdown" do
@@ -909,7 +910,7 @@ class CouncilsControllerTest < ActionController::TestCase
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
         @non_council_supplier = Factory(:supplier)
         @non_council_transaction = Factory(:financial_transaction, :supplier => @non_council_supplier)
-        @high_spending_council.spending_stat.perform
+        create_and_update_spending_stats(@high_spending_council, @supplier_1, @high_spending_supplier, @non_council_supplier)
         SpendingStat.all(:conditions => {:organisation_type => 'Supplier'}).each(&:perform) # update all supplier spending stats
         get :spending
       end
@@ -985,7 +986,7 @@ class CouncilsControllerTest < ActionController::TestCase
         @high_spending_supplier = Factory(:supplier, :organisation => @council)
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
         @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
-        @council.spending_stat.perform
+        create_and_update_spending_stats(@council, @supplier_1, @high_spending_supplier)
         get :show_spending, :id => @council.id
       end
 
@@ -1109,5 +1110,11 @@ class CouncilsControllerTest < ActionController::TestCase
     #   end
     # end
   end
-  
+  private
+  def create_and_update_spending_stats(*items)
+    items.each do |item|
+      item.update_attribute(:spending_stat, SpendingStat.new)
+      item.spending_stat.perform
+    end
+  end
 end

@@ -3,7 +3,6 @@ class Supplier < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
   has_many :financial_transactions, :dependent => :destroy
-  after_create :queue_for_matching_with_payee
   include SpendingStatUtilities::Base
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
@@ -13,7 +12,7 @@ class Supplier < ActiveRecord::Base
                                   {} }
 
   alias_attribute :title, :name
-  attr_writer :vat_number
+  attr_accessor :vat_number
   
   def validate
     errors.add_to_base('Either a name or uid is required') if name.blank? && uid.blank?
@@ -56,8 +55,13 @@ class Supplier < ActiveRecord::Base
     end
   end
   
-  def openlylocal_url
-    "http://#{DefaultDomain}/suppliers/#{to_param}"
+  def match_with_payee
+    if payee = possible_payee
+      update_attribute(:payee, payee)
+      payee.update_spending_stat
+    else
+      update_attribute(:failed_payee_search, true)
+    end
   end
   
   # strip excess spaces and UTF8 spaces from name
@@ -65,13 +69,13 @@ class Supplier < ActiveRecord::Base
     self[:name] = NameParser.strip_all_spaces(raw_name) if raw_name
   end
 
+  def openlylocal_url
+    "http://#{DefaultDomain}/suppliers/#{to_param}"
+  end
+  
   # alias populate_basic_info as perform so that this gets run when doing delayed_job on a company
   def perform
-    if payee = possible_payee
-      update_attribute(:payee, payee)
-    else
-      update_attribute(:failed_payee_search, true)
-    end
+    match_with_payee
   end
 
   def possible_payee
@@ -97,15 +101,12 @@ class Supplier < ActiveRecord::Base
     else
       entity = self.class.allowed_payee_classes.include?(details.entity_type)&&details.entity_type.constantize.find(details.entity_id)
     end
-    if entity&&!entity.new_record? # it hasn't successfully saved
+    if res = entity&&!entity.new_record? # it hasn't successfully saved
       self.payee = entity
       self.save
     end
+    self.update_spending_stat
+    res
   end
     
-  private
-  def queue_for_matching_with_payee
-    @vat_number ? Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => @vat_number, :supplier => self, :title => title)) : Delayed::Job.enqueue(self.reload) #NB reload supplier so only bare supplier is serialized, not assoc org with all associated objects, which is often longer than field allows, and thus breaks 
-    true
-  end
 end

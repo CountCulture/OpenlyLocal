@@ -419,7 +419,7 @@ body.councils .area, .feed_entry .dateline {
 #open_data_dashboard .in_words {
 	width: 400px;
 }
-.dashboard .in_words .value {font-size: 3.3em;
+.dashboard .in_words .value {font-size: 3.2em;
 	line-height: 1em;}
 .dashboard .in_words .value {color: #036;}
 .dashboard .in_words .value.not_open {color: #8a1f11;}
@@ -428,7 +428,7 @@ body.councils .area, .feed_entry .dateline {
 	display:block;}
 .dashboard .spending_count {
 	float:left;
-	margin-right:3em;
+	margin-right:2em;
 	text-align:right;}
 #council_spending_dashboard .in_words .value {
 	font-size: 3.3em;

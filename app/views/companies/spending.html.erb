@@ -1,0 +1,28 @@
+<%= render :partial => 'shared/experimental_flash' %>
+
+<div id='spending_data_dashboard' class="dashboard">
+	<h1><%= @title %></h1>
+	
+  <div id="statistics">
+    <div class='in_words'>
+		  <div id='council_count' class='spending_count'><span class='value'><%#= @companies.size %></span> <strong class=description>Companies</strong></div>
+		  <div id='supplier_count' class='spending_count'><span class='value'><%#= number_with_delimiter(@supplier_count) %></span> <strong class=description>Suppliers</strong></div>
+		  <div id='transaction_count' class='spending_count'><span class='value'><%#= number_with_delimiter(@financial_transaction_count) %></span> <strong class=description>Financial Transactions</strong></div>
+    </div>
+  </div>
+	
+	<div id="relationships">
+		<div id="biggest_companies" class="item_grouping">
+		  <%= list_all @biggest_companies %>
+			<%= basic_table :caption => 'Companies supplying councils', 
+											:headings => ['Name', 'Total spend', 'Per month'], 
+											:classes => ['name', 'value', 'value'],
+											:data => @biggest_companies.collect{ |c| [link_to(c.title, :controller => 'companies', :action => 'show', :id => c.to_param), "£#{number_with_delimiter(c.total_spend.to_i)}", "£#{number_with_delimiter(c.average_monthly_spend.to_i)}"] } %>
+			<p>See also <%#= link_to "Open Data Scoreboard", '/councils/open' %> and <a href="https://spreadsheets.google.com/ccc?key=0AhOqra7su40fdEgtaG4yVFZGVjdYREVIWmprX2dENkE&hl=en_GB" class="external">Local Spending Data Scoreboard</a></p>
+		</div>
+	
+	</div>
+	
+	
+	
+</div>

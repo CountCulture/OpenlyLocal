@@ -114,13 +114,7 @@ class FinancialTransaction < ActiveRecord::Base
   
   # Convert UK dates using slashes (e.g. 26/03/2010) to dates that will be converted correctly (e.g. 26-03-2010)
   def date=(raw_date)
-    self[:date] = 
-    if raw_date.is_a?(String)
-      cleaned_up_date = raw_date.squish.match(/^\d+\/[\d\w]+\/\d+$/) ? raw_date.gsub('/','-') : raw_date
-      cleaned_up_date.sub(/^(\d{1,2}-)([\w\d]+-)([01]\d)$/,'\1\220\3').sub(/^(\d{1,2}-)([\w\d]+-)([9]\d)$/,'\1\219\3')
-    else
-      raw_date
-    end
+    self[:date] = normalise_uk_date(raw_date)
   end
   
   def department_name=(raw_name)
@@ -152,6 +146,11 @@ class FinancialTransaction < ActiveRecord::Base
     description? ? (service? ? "#{description} (#{service})": description ) : service 
   end
   
+  # Convert UK dates using slashes (e.g. 26/03/2010) to dates that will be converted correctly (e.g. 26-03-2010)
+  def invoice_date=(raw_date)
+    self[:invoice_date] = normalise_uk_date(raw_date)
+  end
+  
   def new_record_before_save?
     instance_variable_get(:@new_record_before_save)
   end
@@ -175,6 +174,17 @@ class FinancialTransaction < ActiveRecord::Base
   # taken from ScrapedModel mixin
 	def organisation
 	  supplier&&supplier.organisation||@organisation
+	end
+	
+	def perform
+   supplier.update_spending_stat_with(self)
+   supplier.organisation.update_spending_stat_with(self)
+   # p supplier.payee
+   supplier.match_with_payee unless supplier.payee
+   # supplier.save!
+   # p supplier.payee
+   
+   supplier.payee.update_spending_stat_with(self) if supplier.payee && (supplier.payee.is_a?(Company) || supplier.payee.is_a?(Charity))
 	end
 	
   # convenience method for assigning Proclass classification
@@ -210,7 +220,7 @@ class FinancialTransaction < ActiveRecord::Base
 	# As financial transactions are often create from CSV files, we need to set supplier 
 	# from supplied params, and when doing so may not not associated organisation
 	def supplier_name=(name)
-    self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_name(name) || Supplier.new) unless self.supplier
+    self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_name(NameParser.strip_all_spaces(name)) || Supplier.new) unless self.supplier
     self.supplier.name = name
 	end
 	
@@ -249,7 +259,16 @@ class FinancialTransaction < ActiveRecord::Base
     (later_date.year - early_date.year) * 12 + (later_date.month - early_date.month)
   end
   
-  def average_over_months(aggregate)
-    
+  # def average_over_months(aggregate)
+  #   
+  # end
+  
+  def normalise_uk_date(raw_date)
+    if raw_date.is_a?(String)
+      cleaned_up_date = raw_date.squish.match(/^\d+\/[\d\w]+\/\d+$/) ? raw_date.gsub('/','-') : raw_date
+      cleaned_up_date.sub(/^(\d{1,2}-)([\w\d]+-)([01]\d)$/,'\1\220\3').sub(/^(\d{1,2}-)([\w\d]+-)([9]\d)$/,'\1\219\3')
+    else
+      raw_date
+    end
   end
 end

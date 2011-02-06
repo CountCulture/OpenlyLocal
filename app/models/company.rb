@@ -1,6 +1,9 @@
 class Company < ActiveRecord::Base
   include AddressMethods
+  include SpendingStatUtilities::Base
+  
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
+  has_many :financial_transactions, :through => :supplying_relationships
   validates_presence_of :title, :on => :create # note initially we have some companies with company number but no title
   validates_uniqueness_of :company_number, :allow_blank => true
   validates_uniqueness_of :vat_number, :scope => :company_number, :allow_blank => true
@@ -45,6 +48,13 @@ class Company < ActiveRecord::Base
   def self.normalise_company_number(raw_number)
     return nil if raw_number.blank?
     raw_number.to_s.match(/[A-Z]/) ? raw_number : sprintf("%08d", raw_number.to_i)
+  end
+  
+  def council_spending_breakdown
+    suppliers = supplying_relationships
+    suppliers.group_by(&:organisation_id).collect do |council_id, sups|
+      {:council_id => council_id}
+    end
   end
   
   # returns opencorporates url

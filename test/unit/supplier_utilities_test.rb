@@ -12,6 +12,11 @@ class SupplierUtilitiesTest < ActiveSupport::TestCase
       assert_equal "FOO1234", @matcher.vat_number
     end
     
+    should "remove GB from vat_number" do
+      
+      assert_equal "OO1234", SupplierUtilities::VatMatcher.new(:vat_number => "GBOO1234", :title => "Foo Org", :supplier => @supplier).vat_number
+    end
+    
     should "store title as accessor" do
       assert_equal "Foo Org", @matcher.title
     end

@@ -365,7 +365,7 @@ Factory.define :investigation_subject_connection do |f|
 end
 
 Factory.define :spending_stat do |f|
-  f.association :organisation, :factory => :supplier
+  f.association :organisation, :factory => :generic_council
 end
 
 Factory.define :classification do |f|

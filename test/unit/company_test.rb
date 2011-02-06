@@ -33,6 +33,16 @@ class CompanyTest < ActiveSupport::TestCase
       assert @company.respond_to?(:address_in_full)
     end
     
+    should 'mixin SpendingStatUtilities::Base' do
+      assert @company.respond_to?(:spending_stat)
+    end
+    
+    should 'have many financial_transactions through supplying_relationships' do
+      supplier = Factory(:supplier, :payee => @company)
+      ft = Factory(:financial_transaction, :supplier => supplier)
+      assert_equal [ft], @company.financial_transactions
+    end
+    
     context "when validating" do
       should "require presence of title on create" do
         co = Factory.build(:company, :title => nil)
@@ -81,6 +91,9 @@ class CompanyTest < ActiveSupport::TestCase
     end
     
     context "after creation" do
+      setup do
+        Delayed::Job.stubs(:enqueue)# because spending stat also queued
+      end
 
       should "add company to Delayed::Job queue for processing" do
         Delayed::Job.expects(:enqueue).with(kind_of(Company))
@@ -319,6 +332,8 @@ class CompanyTest < ActiveSupport::TestCase
         end
         
         should 'add company to delayed_job queue for fetching more details' do
+          Delayed::Job.stubs(:enqueue)# because spending stat also queued
+          
           Delayed::Job.expects(:enqueue).with(kind_of(Company))
           Company.match_or_create(:company_number => "07654321", :title => 'Foo Ltd')
         end
@@ -521,6 +536,46 @@ class CompanyTest < ActiveSupport::TestCase
         assert_equal 'http://opencorporates.com/companies/uk/012345', @company.opencorporates_url
       end
     end
+    
+    # context "when returning council_spending_breakdown" do
+    #   setup do
+    #     @councils = (1..20).collect do
+    #       c = Factory(:generic_council)
+    #       s = Factory(:supplier, :organisation => c, :payee => @company)
+    #       Factory(:financial_transaction, :supplier => s)
+    #       s.create_spending_stat.perform
+    #       c.create_spending_stat.perform
+    #     end
+    #     # Factory(:spending_stat, :organisation => @company, :total_spend => 999999)
+    #     @breakdown = @company.council_spending_breakdown
+    #   end
+    # 
+    #   should "return an array of hashes" do
+    #     assert_kind_of Array, @company.council_spending_breakdown
+    #     assert_kind_of Hash, @company.council_spending_breakdown.first
+    #   end
+    #   
+    #   context "and hash" do
+    #     setup do
+    #       @council_hash = @breakdown.first
+    #     end
+    #     should "contain council id" do
+    #       assert @council_hash[:council_id]
+    #     end
+    #     should "contain total spend" do
+    #       assert @council_hash[:total_spend]
+    #     end
+    #     should "contain average_monthly_spend" do
+    #       assert @council_hash[:average_monthly_spend]
+    #     end
+    #     should "contain transaction_count" do
+    #       assert @council_hash[:average_monthly_spend]
+    #     end
+    #     should "contain average_transaction_size" do
+    #       assert @council_hash[:average_transaction_size]
+    #     end
+    #   end
+    # end
   
   end
 end

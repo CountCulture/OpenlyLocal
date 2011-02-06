@@ -1,4 +1,5 @@
 class SuppliersController < ApplicationController
+  caches_action :show, :cache_path => Proc.new { |controller| controller.params }
   
   def index
     search_filter = params[:name_filter]

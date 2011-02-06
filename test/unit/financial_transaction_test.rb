@@ -104,6 +104,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         supplier = Factory.build(:supplier)
         @financial_transaction = Factory.build(:financial_transaction, :supplier => supplier)
       end
+      
+      should "queue financial transaction for delayed_job processing" do
+        Delayed::Job.expects(:enqueue).with(@financial_transaction)
+        @financial_transaction.save!
+      end
     
       should "save associated supplier" do
         @financial_transaction.save!
@@ -121,14 +126,45 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         end
       end
       
-      should "queue spending_stat of associated supplier for updating" do
-        @supplier = @financial_transaction.supplier
-        @supplier.save!
-        @spending_stat = @supplier.spending_stat
-        Delayed::Job.expects(:enqueue).with(@spending_stat)
-        @another_financial_transaction = Factory(:financial_transaction, :description => 'foobar***', :supplier => @supplier, :value => 42)
+      should 'in general not queue for matching supplier with vat_number' do
+        Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+        @financial_transaction.save!
       end
-      
+
+      context "and supplier has vat_number" do
+        setup do
+          Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
+        end
+        
+        should 'queue for matching vat_number if vat_number' do
+          @financial_transaction.supplier.vat_number = 'AB123'
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+          @financial_transaction.save!
+        end
+        
+        should 'queue for matching vat_number before queueing financial_transaction' do
+          ft_observer = sequence('ft_observer')
+          @financial_transaction.supplier.vat_number = 'AB123'
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).in_sequence(ft_observer)
+          Delayed::Job.expects(:enqueue).with(@financial_transaction).in_sequence(ft_observer)
+          @financial_transaction.save!
+        end
+        
+        should 'not queue for matching vat_number if supplier already has payee' do
+          @financial_transaction.supplier.vat_number = 'AB123'
+          @financial_transaction.supplier.payee = Factory(:charity)
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+          @financial_transaction.save!
+        end
+        
+        should 'not queue for matching vat_number if supplier already has no payee but has failed_payee_search' do
+          @financial_transaction.supplier.vat_number = 'AB123'
+          @financial_transaction.supplier.failed_payee_search = true
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+          @financial_transaction.save!
+        end
+      end
     end
 
   end
@@ -315,6 +351,30 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 
     end
 
+    context "when setting invoice_date" do
+
+      should "set invoice_date as expected" do
+        date = 30.days.ago.to_date
+        assert_equal date, Factory.build(:financial_transaction, :invoice_date => date).invoice_date
+      end
+
+      should "convert UK date if in slash format" do
+        assert_equal '2006-04-01', Factory.build(:financial_transaction, :invoice_date => '01/04/2006').invoice_date.to_s
+      end
+
+      should "convert two digit year " do
+        assert_equal '2010-08-23', Factory.build(:financial_transaction, :invoice_date => '23-Aug-10').invoice_date.to_s
+        assert_equal '1998-08-23', Factory.build(:financial_transaction, :invoice_date => '23-Aug-98').invoice_date.to_s
+        assert_equal '2010-10-05', Factory.build(:financial_transaction, :invoice_date => '05/Oct/10').invoice_date.to_s
+        assert_equal '2010-10-05', Factory.build(:financial_transaction, :invoice_date => '05/10/10').invoice_date.to_s
+      end
+
+      should "not convert date if not in slash format" do
+        assert_equal '2006-01-04', Factory.build(:financial_transaction, :invoice_date => '2006-01-04').invoice_date.to_s
+      end
+
+    end
+
     context 'when setting department_name' do
       should 'squish spaces' do
         assert_equal 'Foo Department', Factory.build(:financial_transaction, :department_name => ' Foo   Department   ').department_name
@@ -463,6 +523,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 	      
 	      should 'find supplier for organisation if it exists' do
 	        @fin_trans.supplier_name = 'Foo Supplier'
+	        assert_equal @existing_supplier, @fin_trans.supplier
+	      end
+	      
+	      should 'find supplier for organisation normalising to remove spaces' do
+	        @fin_trans.supplier_name = '  Foo Supplier  '
 	        assert_equal @existing_supplier, @fin_trans.supplier
 	      end
 	      
@@ -639,6 +704,81 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_nil @fin_trans.classification
       end
 
+ 	  end
+ 	  
+ 	  context "when performing" do
+ 	    setup do
+ 	      @supplier = @financial_transaction.supplier
+        # @financial_transaction.stubs(:supplier).returns(@supplier) # otherwise different instance may be returned
+ 	      Delayed::Job.stubs(:enqueue)
+ 	      Supplier.any_instance.stubs(:update_spending_stat_with)
+ 	    end
+
+ 	    should "update supplier spending_stat with financial_transaction" do
+ 	      Supplier.any_instance.expects(:update_spending_stat_with).with(@financial_transaction)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "match supplier with payee if no payee" do
+ 	      Supplier.any_instance.expects(:match_with_payee)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "not match supplier with payee if payee" do
+ 	      @supplier.payee = Factory(:company)
+ 	      Supplier.any_instance.expects(:match_with_payee).never
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "update supplier organisation spending_stat with financial_transaction" do
+ 	      @supplier.organisation.class.any_instance.expects(:update_spending_stat_with).with(@financial_transaction)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "not update supplier payee spending_stat with financial_transaction in general" do
+ 	      @supplier.payee = Factory(:generic_council)
+ 	      @supplier.payee.expects(:update_spending_stat_with).with(@financial_transaction).never
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "update supplier payee spending_stat with financial_transaction if payee is company" do
+ 	      @supplier.payee = Factory(:company)
+ 	      @supplier.payee.expects(:update_spending_stat_with).with(@financial_transaction)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+ 	    should "update supplier payee spending_stat with financial_transaction if payee is charity" do
+ 	      @supplier.payee = Factory(:charity)
+ 	      @supplier.payee.expects(:update_spending_stat_with).with(@financial_transaction)
+ 	      @financial_transaction.perform
+ 	    end
+ 	    
+      # this is sort of integration test to see if it all hangs together
+ 	    should "update all associated spending_stats with correct data" do
+ 	      @supplier = @financial_transaction.supplier
+ 	      @payee = Factory(:company)
+ 	      @supplier.update_attribute(:payee, @payee)
+        @spend_by_month = [['2009-08-01'.to_date, 2519.0], ['2009-09-01'.to_date, 2519.0], ['2009-10-01'.to_date, nil], ['2009-11-01'.to_date, 5559.5]]
+        @spending_stat = Factory(:spending_stat, :transaction_count => 234,
+                                                 :total_spend => 12345.6,
+                                                 :earliest_transaction => '2009-08-21',
+                                                 :latest_transaction => '2009-11-15',
+                                                 :spend_by_month => @spend_by_month, 
+                                                 :average_monthly_spend => 123.45,
+                                                 :average_transaction_value => 45,
+                                                 :organisation => @supplier )
+
+ 	      @financial_transaction.perform
+ 	      assert_equal 1, @supplier.organisation.spending_stat.transaction_count
+ 	      assert_equal( {'Company' => 567.0}, @supplier.organisation.spending_stat.breakdown)
+ 	      assert_equal 1, @supplier.payee.spending_stat.transaction_count
+ 	      expected_organisation_breakdown = [{:organisation_id=>@supplier.organisation_id,
+                                            :transaction_count=>1,
+                                            :average_transaction_value=>567.0,
+                                            :organisation_type=>"PoliceForce",
+                                            :total_spend=>567.0}]
+ 	      assert_equal expected_organisation_breakdown, @payee.spending_stat.breakdown
+ 	    end
  	  end
 
 

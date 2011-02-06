@@ -4,8 +4,12 @@ module SpendingStatUtilities
     end
     
     module InstanceMethods
+      
+      def update_spending_stat_with(fin_trans)
+        create_spending_stat unless spending_stat
+        spending_stat.update_from(fin_trans)
+      end
 
-      private
       def update_spending_stat
         create_spending_stat unless spending_stat
         Delayed::Job.enqueue(spending_stat)
@@ -21,9 +25,7 @@ module SpendingStatUtilities
                         :average_monthly_spend, 
                         :average_transaction_value, 
                         :to => :spending_stat, 
-                        :allow_nil => true
-      receiver.after_create :update_spending_stat
-      
+                        :allow_nil => true      
     end
   end            
   

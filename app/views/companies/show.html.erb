@@ -4,6 +4,11 @@
 <dl id="main_attributes" class="attributes">
   <%= render :partial => 'attributes', :object => @company %>
 </dl>
+
+<%- unless @company.spending_stat.blank? -%>
+  <%= render :partial => 'spending_dashboard' %>
+<%- end -%>
+
 <div id="relationships">
   <h3>Supplier to:</h3>
   <ul>

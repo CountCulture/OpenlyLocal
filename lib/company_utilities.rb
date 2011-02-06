@@ -40,6 +40,9 @@ module CompanyUtilities
       company_details = CompaniesHouse.company_details(company_number) 
       RAILS_DEFAULT_LOGGER.debug "Response from Companies House API for details for company with company number #{company_number}:\n#{company_details.inspect}"
       hash_from_company_details(company_details)
+    rescue CompaniesHouse::Exception  => e
+      RAILS_DEFAULT_LOGGER.error "Exception generated when getting company details for #{company_number}: #{e.inspect}"
+      nil
     end
 
     protected
@@ -67,6 +70,9 @@ module CompanyUtilities
     def search_companies_house_for(name, options={})
       return if RAILS_ENV=='test'
       CompaniesHouse.name_search(name, options)
+    rescue CompaniesHouse::Exception => e
+      RAILS_DEFAULT_LOGGER.error "Exception generated when searching CompaniesHouse for name (#{name}): #{e.inspect}"
+      nil
     end
   end
   
