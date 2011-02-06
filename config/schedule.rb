@@ -8,7 +8,7 @@
 # set :cron_log, "/path/to/my/cron_log.log"
 #
 every 2.hours, :at => 30 do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'FeedEntry.perform' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'FeedEntry.perform' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 # every 30.minutes do
@@ -17,7 +17,7 @@ end
 # end
 
 every 3.hours do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Scraper.unproblematic.stale.find(:all, :limit => 30).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count == 0' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Scraper.unproblematic.stale.find(:all, :limit => 30).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count == 0' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 # every 7.days do
@@ -25,31 +25,31 @@ end
 # end
 
 every :sunday, :at => '3am' do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Service.refresh_all_urls' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Service.refresh_all_urls' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 every :monday, :at => '3am' do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'PoliceForce.all.each { |force| force.update_teams }' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'PoliceForce.all.each { |force| force.update_teams }' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 every :monday, :at => '4am' do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'PoliceTeam.all.each { |team| team.update_officers }' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'PoliceTeam.all.each { |team| team.update_officers }' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 every :wednesday, :at => '4am' do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Council.update_social_networking_info' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Council.update_social_networking_info' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 every 1.day, :at => '5am' do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Charity.add_new_charities' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Charity.add_new_charities' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 every 1.day, :at => '2am' do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'WdtkRequest.process' >> /home/cculture/sites/twfy_local/current/log/cron_log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'WdtkRequest.process' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 every 1.day, :at => '1am' do
-  command "RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /opt/ruby-enterprise-1.8/bin/rake export_csv_spending_data"
+  command "RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /opt/ruby-enterprise-1.8/bin/rake export_csv_spending_data >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 # every :sunday, :at => '1am' do
