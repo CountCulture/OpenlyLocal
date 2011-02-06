@@ -48,6 +48,7 @@ Rails::Initializer.run do |config|
 
   # Add additional load paths for your own custom dirs
   config.autoload_paths += %W( #{RAILS_ROOT}/app/models/observers #{RAILS_ROOT}/app/models/user_submission_types)
+  config.action_controller.page_cache_directory = "#{RAILS_ROOT}/public/cache"
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
