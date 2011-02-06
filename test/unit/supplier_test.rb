@@ -455,6 +455,11 @@ class SupplierTest < ActiveSupport::TestCase
           assert_equal @supplier.title, @supplier.payee.title
         end
         
+        should "update supplier spending_stat" do
+          @supplier.expects(:update_spending_stat)
+          @supplier.update_supplier_details(@new_details)
+        end
+        
         should "return true" do
           assert @supplier.update_supplier_details(@new_details)
         end

@@ -3,7 +3,6 @@ class Supplier < ActiveRecord::Base
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
   has_many :financial_transactions, :dependent => :destroy
-  after_create :queue_for_matching_with_payee
   include SpendingStatUtilities::Base
   validates_presence_of :organisation_id, :organisation_type
   validates_uniqueness_of :uid, :scope => [:organisation_type, :organisation_id], :allow_nil => true
@@ -102,15 +101,12 @@ class Supplier < ActiveRecord::Base
     else
       entity = self.class.allowed_payee_classes.include?(details.entity_type)&&details.entity_type.constantize.find(details.entity_id)
     end
-    if entity&&!entity.new_record? # it hasn't successfully saved
+    if res = entity&&!entity.new_record? # it hasn't successfully saved
       self.payee = entity
       self.save
     end
+    self.update_spending_stat
+    res
   end
     
-  private
-  def queue_for_matching_with_payee
-    # @vat_number ? Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => @vat_number, :supplier => self, :title => title)) : Delayed::Job.enqueue(self.reload) #NB reload supplier so only bare supplier is serialized, not assoc org with all associated objects, which is often longer than field allows, and thus breaks 
-    true
-  end
 end
