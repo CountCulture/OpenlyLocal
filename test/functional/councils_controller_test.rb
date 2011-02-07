@@ -936,7 +936,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should 'assign to council financial_transactions ordered by size' do
         assert assigns(:financial_transactions).include?(@financial_transaction_1)
         assert assigns(:financial_transactions).include?(@financial_transaction_2)
-        assert !assigns(:financial_transactions).include?(@non_council_transactions)
+        assert !assigns(:financial_transactions).include?(@non_council_transaction)
         assert_equal @financial_transaction_2, assigns(:financial_transactions).first
       end
 

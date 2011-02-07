@@ -1,0 +1,5 @@
+#!/bin/sh
+# exec 2>/dev/null
+/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/delayed_job stop
+/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/kill_delayed_job
+exec /usr/bin/sudo -u cculture RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/delayed_job -n 1 start
