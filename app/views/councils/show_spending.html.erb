@@ -7,7 +7,7 @@
 	</div>
 	<h1><%= basic_link_for @council %> :: <%= @title %></h1>
 	
-	<%- if @suppliers.blank? -%>
+	<%- if @council.spending_stat.blank? -%>
 		<p class='alert'>We don&#x27;t have spending data for this council. Probably this is because it isn&#x27;t publishing it as open data. Please <%= link_to 'contact your councillor', council_path(@council) %> to ask them why not (all councils have been told they should be publishing this by Jan 2011)</p>
 	<%- else -%>
 		<div id="council_spending_dashboard" class="dashboard">

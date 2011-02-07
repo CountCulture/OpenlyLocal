@@ -11,10 +11,6 @@ every 2.hours, :at => 30 do
   command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'FeedEntry.perform' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
-every 1.hours, :at => 45 do
-  command "find /home/cculture/sites/twfy_local/shared/cache -mmin +60 -delete"
-end
-
 # every 30.minutes do
   # runner "ScraperRunner.new(:limit => 5, :email_results => true).refresh_stale"
   # command "cd ~/sites/twfy_local/current && RAILS_ENV=production LIMIT=2 EMAIL_RESULTS=true /opt/ruby-enterprise-1.8.6/bin/rake run_stale_scrapers >> log/cron_log 2>&1"
