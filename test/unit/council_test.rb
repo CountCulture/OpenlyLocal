@@ -143,16 +143,12 @@ class CouncilTest < ActiveSupport::TestCase
         assert_equal [@another_council, @council], Council.find_by_params
       end
 
-      should "find unparsed councils by if requested" do
+      should "find unparsed councils if requested" do
         assert_equal [@another_council, @council, @tricky_council], Council.find_by_params(:include_unparsed => true)
       end
 
-      should "find unparsed councils by if requested to show_open_status" do
+      should "find unparsed councils if requested to show_open_status" do
         assert_equal [@another_council, @council, @tricky_council], Council.find_by_params(:show_open_status => true)
-      end
-
-      should "find unparsed councils by if requested to show_open_status" do
-        assert_equal [@another_council, @council, @tricky_council], Council.find_by_params(:show_1010_status => true)
       end
 
       should "find parsed councils whose name matches term" do
@@ -313,7 +309,162 @@ class CouncilTest < ActiveSupport::TestCase
         end
       end
     end
+    
+    context "when returning cached_spending_data" do
+      setup do
+        @spending_data = { :total_transactions => 42, :biggest_suppliers => [23,42,52]}
+        YAML.stubs(:load_file).returns(@spending_data)
+      end
+      
+      should "check for council_spending in data cache store" do
+        YAML.expects(:load_file).with(File.join(RAILS_ROOT, 'db', 'data', 'cache', 'council_spending'))
+        Council.cached_spending_data
+      end
+      
+      should "return nil if no cached file" do
+        YAML.expects(:load_file) # returns nil
+        assert_nil Council.cached_spending_data
+      end
+            
+      context "and council_spending_data is in cache" do
 
+        should "return spending_data hash" do
+          assert_equal @spending_data, Council.cached_spending_data
+        end
+      end
+      
+      context "and problem parsing YAML" do
+        setup do
+          YAML.expects(:load_file).raises
+        end
+
+        should "return nil" do
+          assert_nil Council.cached_spending_data
+        end
+        
+        should_eventually "email admin" do
+          
+        end
+      end
+      
+    end
+    
+    context "when calculating spending_data" do
+      setup do
+      end
+      
+      should "calculate total council transaction count" do
+        FinancialTransaction.expects(:count).with(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
+        Council.calculated_spending_data
+      end
+      
+      should "calculate total council supplier count" do
+        Supplier.expects(:count).with(:conditions => {:organisation_type => 'Council'})
+        Council.calculated_spending_data
+      end
+      
+      should "calculate total council charities count" do
+      end
+      
+      should "calculate total council companies count" do
+        Company.expects(:count).with(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
+        Council.calculated_spending_data
+      end
+      
+      should "calculate total value of council payments" do
+        FinancialTransaction.expects(:sum).with(:value, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
+        Council.calculated_spending_data
+      end
+      
+      should "find 20 largest payments" do
+        FinancialTransaction.expects(:all).with(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'").returns([])
+        Council.calculated_spending_data
+      end
+      
+      should "find 20 largest company suppliers" do
+        Company.expects(:all).with(:limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_spend').returns([])
+        Council.calculated_spending_data
+      end
+      
+      should "find 20 largest charity suppliers" do
+        Charity.expects(:all).with(:limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_spend').returns([])
+        Council.calculated_spending_data
+      end
+      
+      should "return hash of calculated spending data" do
+        assert_kind_of Hash, Council.calculated_spending_data
+      end
+      
+      context "and hash" do
+        setup do
+          @company = Factory(:company)
+          @charity = Factory(:charity)
+          @financial_transaction = Factory(:financial_transaction)
+          FinancialTransaction.stubs(:count).returns(42)
+          Supplier.stubs(:count).returns(33)
+          Company.stubs(:count).returns(21)
+          FinancialTransaction.stubs(:sum).returns(424242)
+          Company.stubs(:all).returns([@company])
+          Charity.stubs(:all).returns([@charity])
+          FinancialTransaction.stubs(:all).returns([@financial_transaction])
+          @spending_data = Council.calculated_spending_data
+        end
+
+        should "include transaction_count" do
+          assert_equal 42, @spending_data[:transaction_count]
+        end
+
+        should "include supplier_count" do
+          assert_equal 33, @spending_data[:supplier_count]
+        end
+
+        should "include total_spend" do
+          assert_equal 424242, @spending_data[:total_spend]
+        end
+
+        should "include company_count" do
+          assert_equal 21, @spending_data[:company_count]
+        end
+
+        should "include largest_transactions" do
+          assert_equal [@financial_transaction.id], @spending_data[:largest_transactions]
+        end
+
+        should "include largest_companies" do
+          assert_equal [@company.id], @spending_data[:largest_companies]
+        end
+
+        should "include largest_charities" do
+          assert_equal [@charity.id], @spending_data[:largest_charities]
+        end
+      end
+    end
+    
+    context "when caching spending data" do
+      setup do
+        Council.stubs(:calculated_spending_data).returns({:total_spend => 1234, :transaction_count => 45})
+        @cached_file_location = File.join(RAILS_ROOT, 'db', 'data', 'cache', 'council_spending')
+      end
+      
+      teardown do
+        File.delete(@cached_file_location) if File.exist?(@cached_file_location)
+      end
+      
+      should "get calculated spending data" do
+        Council.expects(:calculated_spending_data)
+        Council.cache_spending_data
+      end
+      
+      should "save calculated spending data as yaml in file" do
+        Council.cache_spending_data
+        YAML.load_file(@cached_file_location)
+      end
+
+      should "return file location" do
+        assert_equal @cached_file_location, Council.cache_spending_data
+      end
+      
+    end
   end
 
   context "A Council instance" do

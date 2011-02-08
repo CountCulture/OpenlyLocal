@@ -8,6 +8,7 @@ class Council < ActiveRecord::Base
     "County" => "http://en.wikipedia.org/wiki/Non-metropolitan_county",
     "Metropolitan Borough" => "http://en.wikipedia.org/wiki/Metropolitan_borough"
   }
+  CACHED_SPENDING_DATA_LOCATION = File.join(RAILS_ROOT, 'db', 'data', 'cache', 'council_spending')
   include PartyBreakdown
   include AreaMethods
   include TwitterAccountMethods
@@ -56,6 +57,32 @@ class Council < ActiveRecord::Base
                          'greater london authority' => 'greater london authority',
                          'kingston[\s-]upon[\s-]hull' => 'hull',
                          'city of london\b' => 'city of london'}
+  
+  def self.calculated_spending_data
+    res = {}
+    res[:total_spend] = FinancialTransaction.sum(:value, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
+    res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
+    res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
+    res[:supplier_count] = Supplier.count(:conditions => {:organisation_type => 'Council'})
+    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'").collect(&:id)
+    res[:largest_companies] = Company.all(:limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend').collect(&:id)
+    res[:largest_charities] = Charity.all(:limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend').collect(&:id)
+    res
+  end
+  
+  def self.cache_spending_data
+    data = self.calculated_spending_data
+    File.open(CACHED_SPENDING_DATA_LOCATION, "w") do |f|
+      f.write(data.to_yaml)
+    end
+    CACHED_SPENDING_DATA_LOCATION
+  end
+  
+  def self.cached_spending_data
+    
+    data_file = File.join(CACHED_SPENDING_DATA_LOCATION)
+    spending_data = YAML.load_file(data_file) rescue nil
+  end
   
   def self.find_by_params(params={})
     country, region, term, show_open_status, show_1010_status = params.delete(:country), params.delete(:region), params.delete(:term), params.delete(:show_open_status), params.delete(:show_1010_status)
