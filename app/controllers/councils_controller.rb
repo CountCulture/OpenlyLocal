@@ -3,6 +3,7 @@ class CouncilsController < ApplicationController
   before_filter :linked_data_available, :only => :show
   before_filter :find_council, :except => [:index, :new, :create, :spending]
   caches_action :index, :show, :spending, :show_spending, :cache_path => Proc.new { |controller| controller.params }
+  caches_page :show_spending
   
   def index
     @councils = Council.find_by_params(params.except(:controller, :action, :format, :callback, :_))
