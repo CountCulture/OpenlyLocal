@@ -312,7 +312,18 @@ class CouncilTest < ActiveSupport::TestCase
     
     context "when returning cached_spending_data" do
       setup do
-        @spending_data = { :total_transactions => 42, :biggest_suppliers => [23,42,52]}
+        # @suppliers = 2.times.collect{Factory(:supplier)}
+        @companies = 3.times.collect{Factory(:company)}
+        @financial_transactions = 5.times.collect{Factory(:financial_transaction)}
+        @charities = 1.times.collect{Factory(:charity)}
+        @spending_data = { :supplier_count=>77665, 
+                           :largest_transactions=>@financial_transactions.collect(&:id), 
+                           :largest_companies=>@companies.collect(&:id), 
+                           :total_spend=>3404705734.99173, 
+                           :company_count=>27204, 
+                           :largest_charities=>@charities.collect(&:id), 
+                           :transaction_count=>476422}
+        
         YAML.stubs(:load_file).returns(@spending_data)
       end
       
@@ -329,7 +340,25 @@ class CouncilTest < ActiveSupport::TestCase
       context "and council_spending_data is in cache" do
 
         should "return spending_data hash" do
-          assert_equal @spending_data, Council.cached_spending_data
+          assert_kind_of Hash, Council.cached_spending_data
+        end
+        
+        context "and Hash" do
+          setup do
+            @cached_spending_data = Council.cached_spending_data
+          end
+
+          should "replace financial_transaction_ids with financial_transactions" do
+            assert_equal @financial_transactions, @cached_spending_data[:largest_transactions]
+          end
+          
+          should "replace company ids with companies" do
+            assert_equal @companies, @cached_spending_data[:largest_companies]
+          end
+          
+          should "replace charity ids with charities" do
+            assert_equal @charities, @cached_spending_data[:largest_charities]
+          end
         end
       end
       

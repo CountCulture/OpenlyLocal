@@ -79,9 +79,12 @@ class Council < ActiveRecord::Base
   end
   
   def self.cached_spending_data
-    
     data_file = File.join(CACHED_SPENDING_DATA_LOCATION)
-    spending_data = YAML.load_file(data_file) rescue nil
+    return unless basic_spending_data = YAML.load_file(data_file) rescue nil
+    basic_spending_data[:largest_transactions] = FinancialTransaction.find(basic_spending_data[:largest_transactions])
+    basic_spending_data[:largest_companies] = Company.find(basic_spending_data[:largest_companies], :include => :spending_stat)
+    basic_spending_data[:largest_charities] = Charity.find(basic_spending_data[:largest_charities], :include => :spending_stat)
+    basic_spending_data
   end
   
   def self.find_by_params(params={})
