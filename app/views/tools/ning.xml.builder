@@ -7,7 +7,7 @@ xml.Module "xmlns:ning" => "http://developer.ning.com/opensocial/" do
                   :thumbnail => "http:/openlylocal.com/images/openlylocal_logo_120x60.png",
                   :author => "CountCulture",
                   :author_affiliation => "OpenlyLocal.com",
-                  :author_email => "countculture@gmail.com",
+                  :author_email => "info@openlylocal.com",
                   :author_link => "http://OpenlyLocal.com" do
     xml.tag! "ning:screenshot", "http://openlylocal.com/images/ning_screenshot_canvas.png", :view => "canvas"
                     

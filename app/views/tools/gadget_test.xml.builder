@@ -6,7 +6,7 @@ xml.Module do
                   :description => "Get info on what your council is doing from OpenlyLocal.com :: making Local Government more transparent",
                   :author => "CountCulture",
                   :author_affiliation => "OpenlyLocal.com",
-                  :author_email => "countculture@gmail.com",
+                  :author_email => "info@openlylocal.com",
                   :height => "250",
                   :scrolling => "true",
                   :singleton => "false",
