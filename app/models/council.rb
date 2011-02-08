@@ -65,8 +65,8 @@ class Council < ActiveRecord::Base
     res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
     res[:supplier_count] = Supplier.count(:conditions => {:organisation_type => 'Council'})
     res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'").collect(&:id)
-    res[:largest_companies] = Company.all(:limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend').collect(&:id)
-    res[:largest_charities] = Charity.all(:limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend').collect(&:id)
+    res[:largest_companies] = Company.all(:limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend DESC').collect(&:id)
+    res[:largest_charities] = Charity.all(:limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend DESC').collect(&:id)
     res
   end
   

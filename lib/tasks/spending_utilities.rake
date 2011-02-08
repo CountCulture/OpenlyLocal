@@ -927,6 +927,7 @@ end
 
 desc "Cache spending data in YAML file and transfer to webserver"
 task :cache_and_transfer_council_spending_data => :environment do
+  require 'net/scp'                                                                                                                      
   file = Council.cache_spending_data
   Net::SCP.start(SCP_DEST, SCP_USER, :port => 7012, :password => SCP_PASSWORD ) do |scp|
     scp.upload!(file, 'sites/twfy_local/shared/data/cache/')

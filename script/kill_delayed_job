@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+cmd = %Q[ps aux | grep delayed_job | grep -v grep | grep -v kill_delayed_job]
+
+line = `#{cmd}`
+
+unless line.nil? || line.strip.length == 0
+  if line.split.size > 2
+    pid = line.split[1]
+    process_name = line.split.last
+    if pid && pid[/^\d+$/] && process_name == 'delayed_job'
+      puts "ps aux: #{line}"
+      puts "delayed_job: killing process with pid #{pid}"
+      `kill -9 #{pid}`
+      puts "delayed_job: process with pid #{pid} killed"
+    end
+  end
+end
+
