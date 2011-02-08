@@ -7,7 +7,7 @@
 	    <%= image_tag(Gchart.pie(:data => %w(open_data semi_open_data no_open_data).collect{|s| [councils_with_status[s]].flatten.nitems}, :legend => %w(open_data semi_open_data no_open_data).collect(&:titleize), :bar_colors => ['003366', 'a9c0db', '8a1f11'], :background => 'eeeeee', :size => "290x120"), :class => "chart", :alt => "Open Data dashboard graph") %>
 	    <div class='in_words'>
 	      <span class='value open'><%= [councils_with_status['open_data']].flatten.nitems.to_i + [councils_with_status['semi_open_data']].flatten.nitems.to_i %></span> out of 
-				<span class='value not_open'><%= @councils.size %></span> <span class='description'>local authorities publish open data 
+				<span class='value not_open'><%= @councils.size %></span> <span class='description'> are open data councils
 					<em>(but only <%= [councils_with_status['open_data']].flatten.nitems %> are are <%= link_to "truly open", :anchor => "definitions" %>)</em>
 				</span>
 	    </div>
