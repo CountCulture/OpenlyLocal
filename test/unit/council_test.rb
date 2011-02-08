@@ -350,9 +350,7 @@ class CouncilTest < ActiveSupport::TestCase
     end
     
     context "when calculating spending_data" do
-      setup do
-      end
-      
+
       should "calculate total council transaction count" do
         FinancialTransaction.expects(:count).with(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
         Council.calculated_spending_data
@@ -361,9 +359,6 @@ class CouncilTest < ActiveSupport::TestCase
       should "calculate total council supplier count" do
         Supplier.expects(:count).with(:conditions => {:organisation_type => 'Council'})
         Council.calculated_spending_data
-      end
-      
-      should "calculate total council charities count" do
       end
       
       should "calculate total council companies count" do
