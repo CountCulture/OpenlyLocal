@@ -65,8 +65,8 @@ class Council < ActiveRecord::Base
     res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
     res[:supplier_count] = Supplier.count(:conditions => {:organisation_type => 'Council'})
     res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'").collect(&:id)
-    res[:largest_companies] = Company.all(:select => 'DISTINCT companies.id', :limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend DESC').collect(&:id)
-    res[:largest_charities] = Charity.all(:select => 'DISTINCT charities.id', :limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend DESC').collect(&:id)
+    res[:largest_companies] = Company.all(:select => 'DISTINCT companies.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend DESC').collect(&:id)
+    res[:largest_charities] = Charity.all(:select => 'DISTINCT charities.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order => 'spending_stats.total_spend DESC').collect(&:id)
     res
   end
   
@@ -81,9 +81,9 @@ class Council < ActiveRecord::Base
   def self.cached_spending_data
     data_file = File.join(CACHED_SPENDING_DATA_LOCATION)
     return unless basic_spending_data = YAML.load_file(data_file) rescue nil
-    basic_spending_data[:largest_transactions] = FinancialTransaction.find(basic_spending_data[:largest_transactions])
-    basic_spending_data[:largest_companies] = Company.find(basic_spending_data[:largest_companies], :include => :spending_stat)
-    basic_spending_data[:largest_charities] = Charity.find(basic_spending_data[:largest_charities], :include => :spending_stat)
+    basic_spending_data[:largest_transactions] = FinancialTransaction.find(basic_spending_data[:largest_transactions]).sort_by{ |ft| - ft.value }
+    basic_spending_data[:largest_companies] = Company.find(basic_spending_data[:largest_companies], :include => :spending_stat).sort_by{ |c| - c.spending_stat.total_spend.to_i }
+    basic_spending_data[:largest_charities] = Charity.find(basic_spending_data[:largest_charities], :include => :spending_stat).sort_by{ |c| - c.spending_stat.total_spend.to_i }
     basic_spending_data
   end
   

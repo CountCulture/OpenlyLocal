@@ -313,9 +313,9 @@ class CouncilTest < ActiveSupport::TestCase
     context "when returning cached_spending_data" do
       setup do
         # @suppliers = 2.times.collect{Factory(:supplier)}
-        @companies = 3.times.collect{Factory(:company)}
-        @financial_transactions = 5.times.collect{Factory(:financial_transaction)}
-        @charities = 1.times.collect{Factory(:charity)}
+        @companies = 3.times.collect{c=Factory(:company); Factory(:spending_stat, :organisation => c); c}
+        @financial_transactions = 5.times.collect{|i| Factory(:financial_transaction, :value => i*500)}
+        @charities = 1.times.collect{c=Factory(:charity); Factory(:spending_stat, :organisation => c); c}
         @spending_data = { :supplier_count=>77665, 
                            :largest_transactions=>@financial_transactions.collect(&:id), 
                            :largest_companies=>@companies.collect(&:id), 
@@ -349,7 +349,11 @@ class CouncilTest < ActiveSupport::TestCase
           end
 
           should "replace financial_transaction_ids with financial_transactions" do
-            assert_equal @financial_transactions, @cached_spending_data[:largest_transactions]
+            assert_kind_of FinancialTransaction, @cached_spending_data[:largest_transactions].first
+          end
+          
+          should "return financial_transactions biggest first" do
+            assert_equal @financial_transactions.sort_by(&:value).reverse, @cached_spending_data[:largest_transactions]
           end
           
           should "replace company ids with companies" do
@@ -406,12 +410,12 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "find 20 largest company suppliers" do
-        Company.expects(:all).with(:select => 'DISTINCT companies.id', :limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_spend DESC').returns([])
+        Company.expects(:all).with(:select => 'DISTINCT companies.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_spend DESC').returns([])
         Council.calculated_spending_data
       end
       
       should "find 20 largest charity suppliers" do
-        Charity.expects(:all).with(:select => 'DISTINCT charities.id', :limit=>10, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_spend DESC').returns([])
+        Charity.expects(:all).with(:select => 'DISTINCT charities.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_spend DESC').returns([])
         Council.calculated_spending_data
       end
       
@@ -468,10 +472,11 @@ class CouncilTest < ActiveSupport::TestCase
       setup do
         Council.stubs(:calculated_spending_data).returns({:total_spend => 1234, :transaction_count => 45})
         @cached_file_location = File.join(RAILS_ROOT, 'db', 'data', 'cache', 'council_spending')
+        File.rename(@cached_file_location, @cached_file_location + '_original') if File.exist?(@cached_file_location)
       end
       
       teardown do
-        File.delete(@cached_file_location) if File.exist?(@cached_file_location)
+        File.rename(@cached_file_location + '_original', @cached_file_location) if File.exist?(@cached_file_location + '_original')
       end
       
       should "get calculated spending data" do

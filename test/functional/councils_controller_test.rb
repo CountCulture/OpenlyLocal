@@ -113,7 +113,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should render_template :open
       
       should 'summarize number of councils with open data' do
-        assert_select '#open_data_dashboard', /2.+out of.+3.+local authorities publish open data/m
+        assert_select '#open_data_dashboard', /2.+out of.+3.+are open data/m
         assert_select '#open_data_dashboard', /only 1 are.+truly open/m
       end
       
@@ -903,15 +903,27 @@ class CouncilsControllerTest < ActionController::TestCase
     
     context "in general" do
       setup do
+        @financial_transactions = [Factory(:financial_transaction)]
+        @charities = [Factory(:charity)]
+        @companies = [Factory(:company)]
+        @cached_spending_data = { :supplier_count=>77665, 
+                                  :largest_transactions=>@financial_transactions, 
+                                  :largest_companies=>@companies, 
+                                  :total_spend=>3404705734.99, 
+                                  :company_count=>27204, 
+                                  :largest_charities=>@charities, 
+                                  :transaction_count=>476422}
         @high_spending_council = Factory(:council, :name => "High Spender")
-        @supplier_1 = Factory(:supplier, :organisation => @another_council)
-        @high_spending_supplier = Factory(:supplier, :organisation => @high_spending_council)
-        @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
-        @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
-        @non_council_supplier = Factory(:supplier)
-        @non_council_transaction = Factory(:financial_transaction, :supplier => @non_council_supplier)
-        create_and_update_spending_stats(@high_spending_council, @supplier_1, @high_spending_supplier, @non_council_supplier)
-        SpendingStat.all(:conditions => {:organisation_type => 'Supplier'}).each(&:perform) # update all supplier spending stats
+        Council.stubs(:cached_spending_data).returns(@cached_spending_data)
+        Factory(:spending_stat, :total_spend => 1234567, :organisation => @high_spending_council)
+        # # @supplier_1 = Factory(:supplier, :organisation => @another_council)
+        # # @high_spending_supplier = Factory(:supplier, :organisation => @high_spending_council)
+        # # @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
+        # # @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
+        # # @non_council_supplier = Factory(:supplier)
+        # # @non_council_transaction = Factory(:financial_transaction, :supplier => @non_council_supplier)
+        # create_and_update_spending_stats(@high_spending_council, @supplier_1, @high_spending_supplier, @non_council_supplier)
+        # SpendingStat.all(:conditions => {:organisation_type => 'Supplier'}).each(&:perform) # update all supplier spending stats
         get :spending
       end
 
@@ -926,26 +938,30 @@ class CouncilsControllerTest < ActionController::TestCase
         assert !assigns(:councils).include?(@another_council)
       end
 
-      should 'assign to council suppliers ordered by total spend' do
-        assert assigns(:suppliers).include?(@supplier_1)
-        assert assigns(:suppliers).include?(@high_spending_supplier)
-        assert !assigns(:suppliers).include?(@non_council_supplier)
-        assert_equal @high_spending_supplier, assigns(:suppliers).first
+      should 'assign to spending_data the cached_spending_data' do
+        assert_equal @cached_spending_data, assigns(:spending_data)
       end
 
-      should 'assign to council financial_transactions ordered by size' do
-        assert assigns(:financial_transactions).include?(@financial_transaction_1)
-        assert assigns(:financial_transactions).include?(@financial_transaction_2)
-        assert !assigns(:financial_transactions).include?(@non_council_transaction)
-        assert_equal @financial_transaction_2, assigns(:financial_transactions).first
-      end
+      # should 'assign to council suppliers ordered by total spend' do
+      #   assert assigns(:suppliers).include?(@supplier_1)
+      #   assert assigns(:suppliers).include?(@high_spending_supplier)
+      #   assert !assigns(:suppliers).include?(@non_council_supplier)
+      #   assert_equal @high_spending_supplier, assigns(:suppliers).first
+      # end
+      # 
+      # should 'assign to council financial_transactions ordered by size' do
+      #   assert assigns(:financial_transactions).include?(@financial_transaction_1)
+      #   assert assigns(:financial_transactions).include?(@financial_transaction_2)
+      #   assert !assigns(:financial_transactions).include?(@non_council_transaction)
+      #   assert_equal @financial_transaction_2, assigns(:financial_transactions).first
+      # end
 
       should 'show number of council transactions' do
-        assert_match /2/, css_select('#transaction_count .value').to_s # shouldn't include non-council transactions
+        assert_match /476,422/, css_select('#transaction_count .value').to_s # shouldn't include non-council transactions
       end
 
       should 'show number of council suppliers' do
-        assert_match /2/, css_select('#supplier_count .value').to_s # shouldn't include non-council suppliers
+        assert_match /77,665/, css_select('#supplier_count .value').to_s # shouldn't include non-council suppliers
       end
 
       # should 'order councils by spend' do
@@ -966,11 +982,11 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       
       should 'list suppliers' do
-        assert_select '#suppliers a', /#{@supplier_1.title}/
+        assert_select '#companies a', /#{@companies.first.title}/
       end
       
       should 'list transactions' do
-        assert_select '#financial_transactions a', /#{@supplier_1.title}/
+        assert_select '#financial_transactions a', /#{@financial_transactions.first.supplier.title}/
       end
     end
   end
@@ -994,18 +1010,6 @@ class CouncilsControllerTest < ActionController::TestCase
       should render_template :show_spending
       should_not set_the_flash
       should assign_to :council
-
-      # should 'assign to suppliers ordered by total spend' do
-      #   assert assigns(:suppliers).include?(@supplier_1)
-      #   assert assigns(:suppliers).include?(@high_spending_supplier)
-      #   assert_equal @high_spending_supplier, assigns(:suppliers).first
-      # end
-      # 
-      # should 'assign to financial_transactions ordered by size' do
-      #   assert assigns(:financial_transactions).include?(@financial_transaction_1)
-      #   assert assigns(:financial_transactions).include?(@financial_transaction_2)
-      #   assert_equal @financial_transaction_2, assigns(:financial_transactions).first
-      # end
 
       should "have basic title" do
         assert_select "title", /spending dashboard/i
