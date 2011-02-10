@@ -5,7 +5,7 @@ class AddTotalCouncilSpendToSpendingStat < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :spending_stats, :payer_breakdwon
+    remove_column :spending_stats, :payer_breakdown
     remove_column :spending_stats, :total_council_spend
   end
 end
