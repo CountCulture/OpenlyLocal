@@ -10,6 +10,6 @@
 									:data => @financial_transactions.collect{ |t| [basic_link_for(t.supplier), basic_link_for(t.organisation), link_to("£#{number_with_delimiter(t.value.to_i)}", financial_transaction_path(t))] } %>
 </div>
 
-<%= will_paginate @financial_transactions %>
+<%= will_paginate @financial_transactions, :page_links => false %>
 
 <%= render :partial => '/shared/api_info' %>
