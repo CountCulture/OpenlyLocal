@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110130190341) do
+ActiveRecord::Schema.define(:version => 20110210142935) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -905,6 +905,8 @@ ActiveRecord::Schema.define(:version => 20110130190341) do
     t.column "earliest_transaction", :date
     t.column "latest_transaction", :date
     t.column "transaction_count", :integer, :limit => 8
+    t.column "total_council_spend", :integer
+    t.column "payer_breakdown", :text
   end
 
   add_index "spending_stats", ["organisation_id", "organisation_type"], :name => "index_spending_stats_on_organisation"

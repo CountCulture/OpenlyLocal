@@ -25,6 +25,8 @@ class SpendingStatTest < ActiveSupport::TestCase
     should have_db_column :earliest_transaction
     should have_db_column :latest_transaction
     should have_db_column :transaction_count
+    should have_db_column :total_council_spend
+    should have_db_column :payer_breakdown
     
     should 'serialize spend_by_month' do
       assert_equal ['foo', 'bar'], Factory(:spending_stat, :spend_by_month => ['foo', 'bar']).reload.spend_by_month 
@@ -156,6 +158,7 @@ class SpendingStatTest < ActiveSupport::TestCase
         end
 
       end
+      
       context "and organisation is charity" do
         setup do
           @spending_stat.organisation = Factory(:charity)
