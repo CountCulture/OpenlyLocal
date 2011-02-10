@@ -4,5 +4,6 @@
 <%= attribute_tag :status, attributes.status %>
 <%= attribute_tag :registered_address, attributes.address_in_full %>
 <%= attribute_tag :vat_number, attributes.vat_number %>
+<%= attribute_tag :previous_names, attributes.previous_names.join(', ') if attributes.previous_names? %>
 <%= attribute_tag :website, link_to(attributes.url, attributes.url) if attributes.url? %>
 <%= attribute_tag :wikipedia_url, link_to(URI.unescape(attributes.wikipedia_url), attributes.wikipedia_url, :class => 'external') if attributes.wikipedia_url? %>
