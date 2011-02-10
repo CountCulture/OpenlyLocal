@@ -67,6 +67,17 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal 432.1, @spending_stat.reload.total_spend
       end
 
+      should "should calculate total_council_spend" do
+        @spending_stat.expects(:calculated_total_council_spend).at_least(1)
+        @spending_stat.perform
+      end
+      
+      should "should update with calculated_total_spend" do
+        @spending_stat.stubs(:calculated_total_council_spend).returns(432)
+        @spending_stat.perform
+        assert_equal 432, @spending_stat.reload.total_council_spend
+      end
+
       should "should recalculate average_monthly_spend" do
         @spending_stat.expects(:calculated_average_monthly_spend)
         @spending_stat.perform
@@ -146,7 +157,7 @@ class SpendingStatTest < ActiveSupport::TestCase
 
 
         should "should calculate payee breakdown" do
-          @spending_stat.expects(:calculated_organisation_breakdown)
+          @spending_stat.expects(:calculated_organisation_breakdown).at_least_once
           @spending_stat.perform
         end
 
@@ -171,7 +182,7 @@ class SpendingStatTest < ActiveSupport::TestCase
 
 
         should "should calculate payee breakdown" do
-          @spending_stat.expects(:calculated_organisation_breakdown)
+          @spending_stat.expects(:calculated_organisation_breakdown).at_least_once
           @spending_stat.perform
         end
 
@@ -306,6 +317,51 @@ class SpendingStatTest < ActiveSupport::TestCase
         FinancialTransaction.expects(:calculate).returns(42) #once
         @spending_stat.calculated_total_spend
         @spending_stat.calculated_total_spend
+      end
+    end
+    
+    context "when calculating total_council_spend" do
+      context "when organisation is not a company or charity" do
+        should "not calculate total council spending" do
+          FinancialTransaction.expects(:sum).never
+          @spending_stat.calculated_total_council_spend
+        end
+
+        should "return nil" do
+          assert_nil @spending_stat.calculated_total_council_spend
+        end
+      end
+
+      context "when organisation is a company" do
+        setup do
+          @company = Factory(:company)
+        #   @council_supplier = Factory(:supplier, :organisation => Factory(:generic_council), :payee => @company)
+        #   @another_council_supplier = Factory(:supplier, :organisation => Factory(:generic_council), :payee => @company)
+        #   @non_council_supplier = Factory(:supplier, :payee => @company)
+          @company_spending_stat = Factory(:spending_stat, :organisation => @company)
+        #   @council_financial_transaction = Factory(:financial_transaction, :supplier => @council_supplier, :value => 444.44)
+        #   @another_council_financial_transaction = Factory(:financial_transaction, :supplier => @another_council_supplier, :value => 333.33)
+        #   @non_council_financial_transaction = Factory(:financial_transaction, :supplier => @non_council_supplier, :value => 222.2)
+        @org_breakdown = [{:organisation_type => 'Council', :organisation_id => 12, :total_spend => 123.4},
+                          {:organisation_type => 'PoliceAuthority', :organisation_id => 22, :total_spend => 234},
+                          {:organisation_type => 'Council', :organisation_id => 33, :total_spend => 345}]
+        end
+        
+        should "get calculated_organisation_breakdown" do
+          @company_spending_stat.expects(:calculated_organisation_breakdown)
+          @company_spending_stat.calculated_total_council_spend
+        end
+
+        should "return aggregate of council total_spend" do
+          @company_spending_stat.stubs(:calculated_organisation_breakdown).returns(@org_breakdown)
+          assert_in_delta (123.4 + 345), @company_spending_stat.calculated_total_council_spend, 2 ** -10
+        end
+
+        should "cache results" do
+          @company_spending_stat.expects(:calculated_organisation_breakdown) #once
+          @company_spending_stat.calculated_total_council_spend
+          @company_spending_stat.calculated_total_council_spend
+        end
       end
     end
     
@@ -743,17 +799,22 @@ class SpendingStatTest < ActiveSupport::TestCase
           c.create_spending_stat.perform
           c
         end
-        spending_stat = Factory(:spending_stat, :organisation => @company)
+        @bd_spending_stat = Factory(:spending_stat, :organisation => @company)
         @first_council = @councils.first
-        second_supplier = Factory(:supplier, :organisation => @first_council, :payee => @company)
-        Factory(:financial_transaction, :supplier => second_supplier, :value => 101)
-        second_supplier.create_spending_stat.perform
-        @breakdown = spending_stat.calculated_organisation_breakdown
+        @second_supplier = Factory(:supplier, :organisation => @first_council, :payee => @company)
+        Factory(:financial_transaction, :supplier => @second_supplier, :value => 101)
+        @second_supplier.create_spending_stat.perform
+        @breakdown = @bd_spending_stat.calculated_organisation_breakdown
       end
 
       should "return an array of hashes" do
         assert_kind_of Array, @breakdown
         assert_kind_of Hash, @breakdown.first
+      end
+      
+      should "cache result" do
+        @company.expects(:supplying_relationships).never #already called once in setup
+        @bd_spending_stat.calculated_organisation_breakdown
       end
       
       should "have one hash per council" do
@@ -775,7 +836,7 @@ class SpendingStatTest < ActiveSupport::TestCase
           assert_equal 113, @council_hash[:total_spend]
         end
         
-        # should_eventually"contain average_monthly_spend" do
+        # should_eventually "contain average_monthly_spend" do
         #   assert @first_council.spending_stat.total_spend,  @council_hash[:average_monthly_spend]
         # end
         

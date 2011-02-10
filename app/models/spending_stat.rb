@@ -43,6 +43,12 @@ class SpendingStat < ActiveRecord::Base
     @calculated_total_spend ||= organisation.financial_transactions.sum(:value)
   end
   
+  def calculated_total_council_spend
+    if organisation_type =~ /Company|Charity/
+      @calculated_total_council_spend ||= (calculated_organisation_breakdown||[]).select{ |o| o[:organisation_type] == 'Council' }.sum{|o| o[:total_spend]}
+    end
+  end
+  
   def calculated_earliest_transaction_date
     return @calculated_earliest_transaction_date if @calculated_earliest_transaction_date
     # extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'}
@@ -69,8 +75,9 @@ class SpendingStat < ActiveRecord::Base
   end
   
   def calculated_organisation_breakdown
-    suppliers = organisation.supplying_relationships(:include => :spending_stat)
-    suppliers.group_by(&:organisation).collect do |supplier_org, sups|
+    return @bdown if @bdown
+    return unless suppliers = organisation.supplying_relationships(:include => :spending_stat)
+    @bdown = suppliers.group_by(&:organisation).collect do |supplier_org, sups|
       res = {}
       res[:total_spend] = sups.sum{ |s| (s.spending_stat&&s.spending_stat.total_spend).to_f }
       res[:transaction_count] = sups.sum{ |s| (s.spending_stat&&s.spending_stat.transaction_count).to_i}
@@ -93,6 +100,7 @@ class SpendingStat < ActiveRecord::Base
                       :breakdown => breakdown,
                       :earliest_transaction => calculated_earliest_transaction_date,
                       :latest_transaction => calculated_latest_transaction_date,
+                      :total_council_spend => calculated_total_council_spend,
                       :transaction_count => organisation.financial_transactions.count,
                       :average_transaction_value => calculated_average_transaction_value
                       )
