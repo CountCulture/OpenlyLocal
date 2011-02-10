@@ -11,6 +11,6 @@
   <%= render :partial => 'feed_entry', :collection => @feed_entries %>
 </div>
 
-<%= will_paginate @feed_entries %>
+<%= will_paginate @feed_entries, :page_links => false %>
 
 <%= render :partial => '/shared/api_info' %>
