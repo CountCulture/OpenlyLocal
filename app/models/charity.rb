@@ -1,6 +1,6 @@
 class Charity < ActiveRecord::Base
   has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
-  has_many :financial_transactions, :through => :supplying_relationships
+  has_many :payments_received, :through => :supplying_relationships
   has_many :classification_links, :as => :classified, :uniq => true
   has_many :classifications, :through => :classification_links
   has_many :charity_annual_reports

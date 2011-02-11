@@ -37,10 +37,10 @@ class CompanyTest < ActiveSupport::TestCase
       assert @company.respond_to?(:spending_stat)
     end
     
-    should 'have many financial_transactions through supplying_relationships' do
+    should 'have many payments_received through supplying_relationships' do
       supplier = Factory(:supplier, :payee => @company)
       ft = Factory(:financial_transaction, :supplier => supplier)
-      assert_equal [ft], @company.financial_transactions
+      assert_equal [ft], @company.payments_received
     end
     
     context "when validating" do

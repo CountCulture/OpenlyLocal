@@ -8,7 +8,7 @@ class CharityTest < ActiveSupport::TestCase
     end
     
     should have_many :supplying_relationships
-    should_have_many :financial_transactions, :through => :supplying_relationships
+    should_have_many :payments_received, :through => :supplying_relationships
 
     should have_many :classification_links
     should_have_many :classifications, :through => :classification_links

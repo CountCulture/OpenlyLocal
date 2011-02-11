@@ -35,6 +35,13 @@ class EntityTest < ActiveSupport::TestCase
     should have_db_column :external_resource_uri
     should have_db_column :other_attributes
     
+    should "have many payments_received through supplying_relationships" do
+      supplier = Factory(:supplier, :organisation => Factory(:generic_council), :payee => @entity)
+      ft = Factory(:financial_transaction, :supplier => supplier)
+      assert_equal [supplier], @entity.supplying_relationships
+      assert_equal [ft], @entity.payments_received
+    end
+    
     should 'serialize other entities' do
       assert_equal %w(foo bar), Factory(:entity, :other_attributes => %w(foo bar)).reload.other_attributes
     end
