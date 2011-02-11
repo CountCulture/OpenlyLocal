@@ -46,7 +46,7 @@ class SpendingStat < ActiveRecord::Base
   
   def calculated_total_council_spend
     if organisation_type =~ /Company|Charity/
-      @calculated_total_council_spend ||= (calculated_organisation_breakdown||[]).select{ |o| o[:organisation_type] == 'Council' }.sum{|o| o[:total_spend]}
+      @calculated_total_council_spend ||= (calculated_payer_breakdown||[]).select{ |o| o[:organisation_type] == 'Council' }.sum{|o| o[:total_spend]}
     end
   end
   
@@ -75,7 +75,7 @@ class SpendingStat < ActiveRecord::Base
     @calculated_average_transaction_value = calculated_total_spend/transaction_count if calculated_total_spend && transaction_count
   end
   
-  def calculated_organisation_breakdown
+  def calculated_payer_breakdown
     return @bdown if @bdown
     return unless suppliers = organisation.supplying_relationships(:include => :spending_stat)
     @bdown = suppliers.group_by(&:organisation).collect do |supplier_org, sups|
@@ -94,7 +94,7 @@ class SpendingStat < ActiveRecord::Base
   end
   
   def perform
-    breakdown = (organisation.is_a?(Company) || organisation.is_a?(Charity)) ? calculated_organisation_breakdown : calculated_payee_breakdown
+    breakdown = (organisation.is_a?(Company) || organisation.is_a?(Charity)) ? calculated_payer_breakdown : calculated_payee_breakdown
     update_attributes(:total_spend => calculated_total_spend, 
                       :average_monthly_spend => calculated_average_monthly_spend,
                       :spend_by_month => calculated_spend_by_month,

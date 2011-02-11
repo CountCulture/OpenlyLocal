@@ -772,12 +772,12 @@ class FinancialTransactionTest < ActiveSupport::TestCase
  	      assert_equal 1, @supplier.organisation.spending_stat.transaction_count
  	      assert_equal( {'Company' => 567.0}, @supplier.organisation.spending_stat.breakdown)
  	      assert_equal 1, @supplier.payee.spending_stat.transaction_count
- 	      expected_organisation_breakdown = [{:organisation_id=>@supplier.organisation_id,
+ 	      expected_payer_breakdown = [{:organisation_id=>@supplier.organisation_id,
                                             :transaction_count=>1,
                                             :average_transaction_value=>567.0,
                                             :organisation_type=>"PoliceForce",
                                             :total_spend=>567.0}]
- 	      assert_equal expected_organisation_breakdown, @payee.spending_stat.breakdown
+ 	      assert_equal expected_payer_breakdown, @payee.spending_stat.breakdown
  	    end
  	  end
 

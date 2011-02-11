@@ -161,13 +161,13 @@ class SpendingStatTest < ActiveSupport::TestCase
 
 
         should "should calculate payee breakdown" do
-          @spending_stat.expects(:calculated_organisation_breakdown).at_least_once
+          @spending_stat.expects(:calculated_payer_breakdown).at_least_once
           @spending_stat.perform
         end
 
         should "should update with payee_breakdown" do
           dummy_payee_breakdown = [{:organisation_id => 123, :organisation_type => 'Council'}]
-          @spending_stat.stubs(:calculated_organisation_breakdown).returns(dummy_payee_breakdown)
+          @spending_stat.stubs(:calculated_payer_breakdown).returns(dummy_payee_breakdown)
           @spending_stat.perform
           assert_equal dummy_payee_breakdown, @spending_stat.reload.breakdown
         end
@@ -186,13 +186,13 @@ class SpendingStatTest < ActiveSupport::TestCase
 
 
         should "should calculate payee breakdown" do
-          @spending_stat.expects(:calculated_organisation_breakdown).at_least_once
+          @spending_stat.expects(:calculated_payer_breakdown).at_least_once
           @spending_stat.perform
         end
 
         should "should update with payee_breakdown" do
           dummy_payee_breakdown = [{:organisation_id => 123, :organisation_type => 'Council'}]
-          @spending_stat.stubs(:calculated_organisation_breakdown).returns(dummy_payee_breakdown)
+          @spending_stat.stubs(:calculated_payer_breakdown).returns(dummy_payee_breakdown)
           @spending_stat.perform
           assert_equal dummy_payee_breakdown, @spending_stat.reload.breakdown
         end
@@ -351,18 +351,18 @@ class SpendingStatTest < ActiveSupport::TestCase
                           {:organisation_type => 'Council', :organisation_id => 33, :total_spend => 345}]
         end
         
-        should "get calculated_organisation_breakdown" do
-          @company_spending_stat.expects(:calculated_organisation_breakdown)
+        should "get calculated_payer_breakdown" do
+          @company_spending_stat.expects(:calculated_payer_breakdown)
           @company_spending_stat.calculated_total_council_spend
         end
 
         should "return aggregate of council total_spend" do
-          @company_spending_stat.stubs(:calculated_organisation_breakdown).returns(@org_breakdown)
+          @company_spending_stat.stubs(:calculated_payer_breakdown).returns(@org_breakdown)
           assert_in_delta (123.4 + 345), @company_spending_stat.calculated_total_council_spend, 2 ** -10
         end
 
         should "cache results" do
-          @company_spending_stat.expects(:calculated_organisation_breakdown) #once
+          @company_spending_stat.expects(:calculated_payer_breakdown) #once
           @company_spending_stat.calculated_total_council_spend
           @company_spending_stat.calculated_total_council_spend
         end
@@ -792,7 +792,7 @@ class SpendingStatTest < ActiveSupport::TestCase
       end
     end
     
-    context "when calculating organisation_breakdown" do
+    context "when calculating payer_breakdown" do
       setup do
         @company = Factory(:company)
         @councils = (1..20).collect do
@@ -808,7 +808,7 @@ class SpendingStatTest < ActiveSupport::TestCase
         @second_supplier = Factory(:supplier, :organisation => @first_council, :payee => @company)
         Factory(:financial_transaction, :supplier => @second_supplier, :value => 101)
         @second_supplier.create_spending_stat.perform
-        @breakdown = @bd_spending_stat.calculated_organisation_breakdown
+        @breakdown = @bd_spending_stat.calculated_payer_breakdown
       end
 
       should "return an array of hashes" do
@@ -818,7 +818,7 @@ class SpendingStatTest < ActiveSupport::TestCase
       
       should "cache result" do
         @company.expects(:supplying_relationships).never #already called once in setup
-        @bd_spending_stat.calculated_organisation_breakdown
+        @bd_spending_stat.calculated_payer_breakdown
       end
       
       should "have one hash per council" do
