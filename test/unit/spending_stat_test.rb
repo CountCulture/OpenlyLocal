@@ -25,7 +25,8 @@ class SpendingStatTest < ActiveSupport::TestCase
     should have_db_column :earliest_transaction
     should have_db_column :latest_transaction
     should have_db_column :transaction_count
-    should have_db_column :total_council_spend
+    should have_db_column :total_received
+    should have_db_column :total_received_from_councils
     should have_db_column :payer_breakdown
     
     should 'serialize spend_by_month' do
@@ -71,15 +72,15 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal 432.1, @spending_stat.reload.total_spend
       end
 
-      should "should calculate total_council_spend" do
-        @spending_stat.expects(:calculated_total_council_spend).at_least(1)
+      should "should calculate total_received_from_councils" do
+        @spending_stat.expects(:calculated_total_received_from_councils).at_least(1)
         @spending_stat.perform
       end
       
-      should "should update with calculated_total_council_spend" do
-        @spending_stat.stubs(:calculated_total_council_spend).returns(432)
+      should "should update with calculated_total_received_from_councils" do
+        @spending_stat.stubs(:calculated_total_received_from_councils).returns(432)
         @spending_stat.perform
-        assert_equal 432, @spending_stat.reload.total_council_spend
+        assert_equal 432, @spending_stat.reload.total_received_from_councils
       end
 
       should "should recalculate average_monthly_spend" do
@@ -324,15 +325,15 @@ class SpendingStatTest < ActiveSupport::TestCase
       end
     end
     
-    context "when calculating total_council_spend" do
+    context "when calculating total_received_from_councils" do
       context "when organisation is not a company or charity" do
         should "not calculate total council spending" do
           FinancialTransaction.expects(:sum).never
-          @spending_stat.calculated_total_council_spend
+          @spending_stat.calculated_total_received_from_councils
         end
 
         should "return nil" do
-          assert_nil @spending_stat.calculated_total_council_spend
+          assert_nil @spending_stat.calculated_total_received_from_councils
         end
       end
 
@@ -353,18 +354,18 @@ class SpendingStatTest < ActiveSupport::TestCase
         
         should "get calculated_payer_breakdown" do
           @company_spending_stat.expects(:calculated_payer_breakdown)
-          @company_spending_stat.calculated_total_council_spend
+          @company_spending_stat.calculated_total_received_from_councils
         end
 
         should "return aggregate of council total_spend" do
           @company_spending_stat.stubs(:calculated_payer_breakdown).returns(@org_breakdown)
-          assert_in_delta (123.4 + 345), @company_spending_stat.calculated_total_council_spend, 2 ** -10
+          assert_in_delta (123.4 + 345), @company_spending_stat.calculated_total_received_from_councils, 2 ** -10
         end
 
         should "cache results" do
           @company_spending_stat.expects(:calculated_payer_breakdown) #once
-          @company_spending_stat.calculated_total_council_spend
-          @company_spending_stat.calculated_total_council_spend
+          @company_spending_stat.calculated_total_received_from_councils
+          @company_spending_stat.calculated_total_received_from_councils
         end
       end
     end

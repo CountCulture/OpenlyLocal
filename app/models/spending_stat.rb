@@ -44,9 +44,9 @@ class SpendingStat < ActiveRecord::Base
     @calculated_total_spend ||= organisation.financial_transactions.sum(:value)
   end
   
-  def calculated_total_council_spend
+  def calculated_total_received_from_councils
     if organisation_type =~ /Company|Charity/
-      @calculated_total_council_spend ||= (calculated_payer_breakdown||[]).select{ |o| o[:organisation_type] == 'Council' }.sum{|o| o[:total_spend]}
+      @calculated_total_received_from_councils ||= (calculated_payer_breakdown||[]).select{ |o| o[:organisation_type] == 'Council' }.sum{|o| o[:total_spend]}
     end
   end
   
@@ -101,7 +101,7 @@ class SpendingStat < ActiveRecord::Base
                       :breakdown => breakdown,
                       :earliest_transaction => calculated_earliest_transaction_date,
                       :latest_transaction => calculated_latest_transaction_date,
-                      :total_council_spend => calculated_total_council_spend,
+                      :total_received_from_councils => calculated_total_received_from_councils,
                       :transaction_count => organisation.financial_transactions.count,
                       :average_transaction_value => calculated_average_transaction_value
                       )
