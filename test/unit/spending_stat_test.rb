@@ -36,6 +36,10 @@ class SpendingStatTest < ActiveSupport::TestCase
       assert_equal ['foo', 'bar'], Factory(:spending_stat, :breakdown => ['foo', 'bar']).reload.breakdown 
     end
     
+    should 'serialize payee_breakdown' do
+      assert_equal ['foo', 'bar'], Factory(:spending_stat, :payer_breakdown => ['foo', 'bar']).reload.payer_breakdown 
+    end
+    
   end
   
   context "An instance of the SpendingStat class" do
@@ -72,7 +76,7 @@ class SpendingStatTest < ActiveSupport::TestCase
         @spending_stat.perform
       end
       
-      should "should update with calculated_total_spend" do
+      should "should update with calculated_total_council_spend" do
         @spending_stat.stubs(:calculated_total_council_spend).returns(432)
         @spending_stat.perform
         assert_equal 432, @spending_stat.reload.total_council_spend

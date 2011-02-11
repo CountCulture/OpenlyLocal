@@ -3,6 +3,7 @@ class SpendingStat < ActiveRecord::Base
   validates_presence_of :organisation_type, :organisation_id
   serialize :spend_by_month
   serialize :breakdown
+  serialize :payer_breakdown
   
   # Overrides ActiveRecord method to return true if main stat values are blank
   def blank?
