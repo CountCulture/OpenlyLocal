@@ -130,6 +130,13 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal [approved_site], @council.hyperlocal_sites
     end
 
+    should "have many payments_received through supplying_relationships" do
+      supplier = Factory(:supplier, :organisation => Factory(:generic_council), :payee => @council)
+      ft = Factory(:financial_transaction, :supplier => supplier)
+      assert_equal [supplier], @council.supplying_relationships
+      assert_equal [ft], @council.payments_received
+    end
+    
     context "when finding by parameters" do
       setup do
         @member = Factory(:member, :council => @council)

@@ -325,6 +325,23 @@ class SpendingStatTest < ActiveSupport::TestCase
       end
     end
     
+    context "when calculating total received" do
+      setup do
+        @another_org_supplier = Factory(:supplier, :payee => )
+        @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 123.45, :date => 11.months.ago)        
+      end
+      
+      should "sum all financial transactions where organisation is receipient" do
+        assert_in_delta (123.45 - 32.1 + 22.1), @spending_stat.calculated_total_received, 2 ** -10
+      end
+      
+      should "cache results" do
+        FinancialTransaction.expects(:calculate).returns(42) #once
+        @spending_stat.calculated_total_received
+        @spending_stat.calculated_total_received
+      end
+    end
+    
     context "when calculating total_received_from_councils" do
       context "when organisation is not a company or charity" do
         should "not calculate total council spending" do
