@@ -1,9 +1,8 @@
 class Company < ActiveRecord::Base
   include AddressMethods
   include SpendingStatUtilities::Base
+  include SpendingStatUtilities::Payee
   
-  has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
-  has_many :payments_received, :through => :supplying_relationships, :source => :financial_transactions
   validates_presence_of :title, :on => :create # note initially we have some companies with company number but no title
   validates_uniqueness_of :company_number, :allow_blank => true
   validates_uniqueness_of :vat_number, :scope => :company_number, :allow_blank => true

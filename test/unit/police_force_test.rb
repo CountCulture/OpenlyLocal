@@ -11,8 +11,6 @@ class PoliceForceTest < ActiveSupport::TestCase
     should have_many :councils
     should have_many :police_teams
     should have_many :crime_areas
-    should have_many :suppliers
-    should_have_many :financial_transactions, :through => :suppliers
     should have_one :police_authority 
     should validate_presence_of :name
     should validate_uniqueness_of :name
@@ -41,6 +39,11 @@ class PoliceForceTest < ActiveSupport::TestCase
     should "mixin SpendingStat::Base module" do
       assert @police_force.respond_to?(:spending_stat)
     end
+    
+    should "mixin SpendingStatUtilities::Payee module" do
+      assert PoliceForce.new.respond_to?(:supplying_relationships)
+    end
+
     
     should 'have one force_crime_area' do
       non_force_crime_area = Factory(:crime_area, :police_force => @police_force, :level => 3)

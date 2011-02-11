@@ -45,3 +45,12 @@ class TestModelWithSpendingStat <ActiveRecord::Base
   set_table_name "suppliers"
 end
 
+class TestModelWithSpendingStatPayee <ActiveRecord::Base
+  include SpendingStatUtilities::Payee
+  set_table_name "companies"
+end
+
+class TestModelWithSpendingStatPayer <ActiveRecord::Base
+  include SpendingStatUtilities::Payer
+  set_table_name "police_authorities"
+end

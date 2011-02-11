@@ -5,12 +5,19 @@ class EntityTest < ActiveSupport::TestCase
     setup do
       @entity = Factory(:entity)
     end
-    should have_many :supplying_relationships
-    should have_many :suppliers
+
     should_have_many :financial_transactions, :through => :suppliers
     
-    should "mixin SpendingStat::Base module" do
+    should "mixin SpendingStatUtilities::Base module" do
       assert Entity.new.respond_to?(:spending_stat)
+    end
+    
+    should "mixin SpendingStatUtilities::Payee module" do
+      assert Entity.new.respond_to?(:supplying_relationships)
+    end
+
+    should "mixin SpendingStatUtilities::Payer module" do
+      assert Entity.new.respond_to?(:payments)
     end
     
     should 'mixin AddressMethods module' do
@@ -35,14 +42,7 @@ class EntityTest < ActiveSupport::TestCase
     should have_db_column :external_resource_uri
     should have_db_column :other_attributes
     
-    should "have many payments_received through supplying_relationships" do
-      supplier = Factory(:supplier, :organisation => Factory(:generic_council), :payee => @entity)
-      ft = Factory(:financial_transaction, :supplier => supplier)
-      assert_equal [supplier], @entity.supplying_relationships
-      assert_equal [ft], @entity.payments_received
-    end
-    
-    should 'serialize other entities' do
+    should 'serialize other attributes' do
       assert_equal %w(foo bar), Factory(:entity, :other_attributes => %w(foo bar)).reload.other_attributes
     end
     

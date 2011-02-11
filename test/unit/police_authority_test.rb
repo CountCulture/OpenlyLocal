@@ -13,7 +13,6 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
     should_validate_uniqueness_of :name, :police_force_id
     should belong_to :police_force
     should have_many :councils#, :through => :police_force
-    should have_many :supplying_relationships
     
     should have_db_column :url
     should have_db_column :wikipedia_url
@@ -26,6 +25,10 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
         
     should "mixin SpendingStat::Base module" do
       assert PoliceAuthority.new.respond_to?(:spending_stat)
+    end
+
+    should "mixin SpendingStatUtilities::Payee module" do
+      assert PoliceAuthority.new.respond_to?(:supplying_relationships)
     end
 
   end

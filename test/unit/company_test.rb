@@ -5,9 +5,7 @@ class CompanyTest < ActiveSupport::TestCase
     setup do
       @company = Factory(:company)
     end
-  
-    should have_many :supplying_relationships
-  
+    
     should have_db_column :title
     should have_db_column :company_number
     should have_db_column :url
@@ -37,12 +35,10 @@ class CompanyTest < ActiveSupport::TestCase
       assert @company.respond_to?(:spending_stat)
     end
     
-    should 'have many payments_received through supplying_relationships' do
-      supplier = Factory(:supplier, :payee => @company)
-      ft = Factory(:financial_transaction, :supplier => supplier)
-      assert_equal [ft], @company.payments_received
+    should "mixin SpendingStatUtilities::Payee module" do
+      assert Company.new.respond_to?(:supplying_relationships)
     end
-    
+
     context "when validating" do
       should "require presence of title on create" do
         co = Factory.build(:company, :title => nil)

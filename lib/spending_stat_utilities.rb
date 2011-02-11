@@ -29,4 +29,37 @@ module SpendingStatUtilities
     end
   end            
   
+  module Payer
+    module ClassMethods
+      
+    end
+    
+    module InstanceMethods
+      
+    end
+    
+    def self.included(receiver)
+      receiver.extend         ClassMethods
+      receiver.send :include, InstanceMethods
+      receiver.has_many :suppliers, :as => :organisation
+      receiver.has_many :payments, :through => :suppliers, :source => :financial_transactions
+    end
+  end
+  
+  module Payee
+    module ClassMethods
+      
+    end
+    
+    module InstanceMethods
+      
+    end
+    
+    def self.included(receiver)
+      receiver.extend         ClassMethods
+      receiver.send :include, InstanceMethods
+      receiver.has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
+      receiver.has_many :payments_received, :through => :supplying_relationships, :source => :financial_transactions
+    end
+  end
 end

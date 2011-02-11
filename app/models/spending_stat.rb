@@ -23,7 +23,7 @@ class SpendingStat < ActiveRecord::Base
   
   # Returns array of arrays, corresponding to spend per month. The array is 
   def calculated_spend_by_month
-    return if organisation.financial_transactions.count == 0
+    return if !organisation.respond_to?(:financial_transactions) || organisation.financial_transactions.count == 0
     res_hsh = {}
     ft_sums = organisation.financial_transactions.sum(:value, :group => 'last_day(date)', :conditions => 'date_fuzziness IS NULL', :order => 'date').to_a
     fuzzy_sums = organisation.financial_transactions.all(:conditions => 'date_fuzziness IS NOT NULL', :select=>'sum(VALUE) AS value, DATE AS date, date_fuzziness', :group=>'date, date_fuzziness')
@@ -41,7 +41,11 @@ class SpendingStat < ActiveRecord::Base
   end
   
   def calculated_total_spend
-    @calculated_total_spend ||= organisation.financial_transactions.sum(:value)
+    @calculated_total_spend ||= organisation.financial_transactions.sum(:value) if organisation.respond_to?(:financial_transactions)
+  end
+  
+  def calculated_total_received
+    
   end
   
   def calculated_total_received_from_councils

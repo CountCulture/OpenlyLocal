@@ -31,9 +31,7 @@ class CouncilTest < ActiveSupport::TestCase
     should belong_to :pension_fund
     should have_many :datapoints
     should_have_many :dataset_topics, :through => :datapoints
-    should have_many :suppliers
     should_have_many :financial_transactions, :through => :suppliers
-    should have_many :supplying_relationships
     should have_many :account_lines
     should have_db_column :notes
     should have_db_column :wikipedia_url
@@ -68,8 +66,16 @@ class CouncilTest < ActiveSupport::TestCase
       assert Council.new.respond_to?(:grouped_datapoints)
     end
         
-    should "mixin SpendingStat::Base module" do
+    should "mixin SpendingStatUtilities::Base module" do
       assert Council.new.respond_to?(:spending_stat)
+    end
+
+    should "mixin SpendingStatUtilities::Payee module" do
+      assert Council.new.respond_to?(:supplying_relationships)
+    end
+
+    should "mixin SpendingStatUtilities::Payer module" do
+      assert Council.new.respond_to?(:payments)
     end
 
     context "should have parsed named_scope which" do
@@ -130,13 +136,6 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal [approved_site], @council.hyperlocal_sites
     end
 
-    should "have many payments_received through supplying_relationships" do
-      supplier = Factory(:supplier, :organisation => Factory(:generic_council), :payee => @council)
-      ft = Factory(:financial_transaction, :supplier => supplier)
-      assert_equal [supplier], @council.supplying_relationships
-      assert_equal [ft], @council.payments_received
-    end
-    
     context "when finding by parameters" do
       setup do
         @member = Factory(:member, :council => @council)

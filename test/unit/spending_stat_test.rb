@@ -314,6 +314,7 @@ class SpendingStatTest < ActiveSupport::TestCase
     end
     
     context "when calculating total_spend" do
+      
       should "sum all financial transactions for organisation" do
         assert_in_delta (123.45 - 32.1 + 22.1), @spending_stat.calculated_total_spend, 2 ** -10
       end
@@ -327,7 +328,7 @@ class SpendingStatTest < ActiveSupport::TestCase
     
     context "when calculating total received" do
       setup do
-        @another_org_supplier = Factory(:supplier, :payee => )
+        # @another_org_supplier = Factory(:supplier, :payee => )
         @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier, :value => 123.45, :date => 11.months.ago)        
       end
       

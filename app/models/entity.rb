@@ -6,14 +6,14 @@ class Entity < ActiveRecord::Base
                     'RIEP' => ['Regional Improvement & Efficiency Partnership'],
                     'Dept' => ['Government Department or Ministry']}
   
-  has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
-  has_many :suppliers, :as => :organisation
-  has_many :financial_transactions, :through => :suppliers
-  has_many :payments_received, :through => :supplying_relationships, :source => :financial_transactions
-  default_scope :order => 'title'
   include SpendingStatUtilities::Base
+  include SpendingStatUtilities::Payee
+  include SpendingStatUtilities::Payer
   include AddressMethods
   include ResourceMethods
+  has_many :financial_transactions, :through => :suppliers
+  default_scope :order => 'title'
+
   validates_presence_of :title
   before_save :normalise_title
   serialize :other_attributes

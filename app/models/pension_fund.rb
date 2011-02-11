@@ -1,4 +1,7 @@
 class PensionFund < ActiveRecord::Base
+  include SpendingStatUtilities::Base
+  include SpendingStatUtilities::Payee
+
   has_many :councils
   validates_presence_of :name
   validates_uniqueness_of :name

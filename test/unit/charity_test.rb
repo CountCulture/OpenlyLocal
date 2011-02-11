@@ -7,9 +7,6 @@ class CharityTest < ActiveSupport::TestCase
       @charity = Factory(:charity)
     end
     
-    should have_many :supplying_relationships
-    should_have_many :payments_received, :through => :supplying_relationships
-
     should have_many :classification_links
     should_have_many :classifications, :through => :classification_links
     should have_many :charity_annual_reports
@@ -56,8 +53,12 @@ class CharityTest < ActiveSupport::TestCase
       end
     end
     
-    should "mixin SpendingStat::Base module" do
+    should "mixin SpendingStatUtilities::Base module" do
       assert Charity.new.respond_to?(:spending_stat)
+    end
+
+    should "mixin SpendingStatUtilities::Payee module" do
+      assert Charity.new.respond_to?(:supplying_relationships)
     end
 
     should 'mixin AddressMethods module' do

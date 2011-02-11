@@ -13,6 +13,8 @@ class Council < ActiveRecord::Base
   include AreaMethods
   include TwitterAccountMethods
   include SpendingStatUtilities::Base
+  include SpendingStatUtilities::Payer
+  include SpendingStatUtilities::Payee
   has_many :members, :order => "last_name"
   has_many :committees, :order => "title"
   has_many :memberships, :through => :members
@@ -32,10 +34,7 @@ class Council < ActiveRecord::Base
   has_many :child_authorities, :class_name => "Council", :foreign_key => "parent_authority_id", :order => "name"
   has_many :hyperlocal_sites, :conditions => {:approved => true}
   has_many :feed_entries, :as => :feed_owner
-  has_many :suppliers, :as => :organisation
   has_many :financial_transactions, :through => :suppliers
-  has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
-  has_many :payments_received, :through => :supplying_relationships, :source => :financial_transactions
   has_many :account_lines, :as => :organisation
   belongs_to :portal_system
   belongs_to :police_force
