@@ -19,8 +19,8 @@ end
 every 3.hours do
   command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Scraper.unproblematic.stale.find(:all, :limit => 30).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count == 0' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
-every 2.hours do
-  command "RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /opt/ruby-enterprise-1.8/bin/rake cache_and_transfer_council_spending_data >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
+every 2.hours, :at => 15 do
+  command "cd /home/cculture/sites/twfy_local/current && RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /opt/ruby-enterprise-1.8/bin/rake cache_and_transfer_council_spending_data >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 
@@ -53,7 +53,7 @@ every 1.day, :at => '2am' do
 end
 
 every 1.day, :at => '1am' do
-  command "RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /opt/ruby-enterprise-1.8/bin/rake export_csv_spending_data >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
+  command "cd /home/cculture/sites/twfy_local/current && RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /opt/ruby-enterprise-1.8/bin/rake export_csv_spending_data >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 # every :sunday, :at => '1am' do
