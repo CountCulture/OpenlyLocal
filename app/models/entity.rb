@@ -11,7 +11,7 @@ class Entity < ActiveRecord::Base
   include SpendingStatUtilities::Payer
   include AddressMethods
   include ResourceMethods
-  has_many :financial_transactions, :through => :suppliers
+  # has_many :financial_transactions, :through => :suppliers
   default_scope :order => 'title'
 
   validates_presence_of :title

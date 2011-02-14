@@ -171,6 +171,12 @@ class SupplierTest < ActiveSupport::TestCase
     should "show extract class names from AllowedPayeeModels as allowed_payee_classes method" do
       assert_equal Supplier::AllowedPayeeModels.collect(&:first), Supplier.allowed_payee_classes
     end
+    
+    should "alias financial_transactions as payments" do
+      Factory(:financial_transaction, :supplier => @supplier)
+      Factory(:financial_transaction, :supplier => @supplier)
+      assert_equal @supplier.financial_transactions, @supplier.payments
+    end
   end
   
   context "An instance of the Supplier class" do

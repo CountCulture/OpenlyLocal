@@ -166,7 +166,24 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         end
       end
     end
+    
+    context "when destroying" do
+      setup do
+        
+      end
 
+      should "queue spending_stat for supplier for recalculation" do
+        flunk
+      end
+
+      should "queue spending_stat for supplier organisation for recalculation" do
+        flunk
+      end
+
+      should "queue spending_stat for supplier payee for recalculation if it exists" do
+        flunk
+      end
+    end
   end
   
   context 'an instance of the FinancialTransaction class' do

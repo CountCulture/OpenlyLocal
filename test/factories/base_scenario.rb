@@ -320,7 +320,7 @@ end
 
 Factory.define :supplier do |f|
   f.sequence(:name) { |n| "Supplier #{n}" }
-  f.association :organisation, :factory => :police_force 
+  f.association :organisation, :factory => :entity 
 end
 
 Factory.define :council_supplier, :class => :supplier do |f|

@@ -38,6 +38,11 @@ class Supplier < ActiveRecord::Base
     TitleNormaliser.normalise_company_title(raw_title)
   end
   
+  # alias financial_transactions to make spending_stat calculations cleaner
+  def payments
+    financial_transactions
+  end
+  
   # returns associated suppliers (i.e. those with same company)
   def associateds
     return [] unless payee
