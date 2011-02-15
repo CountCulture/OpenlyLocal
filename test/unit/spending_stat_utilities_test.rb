@@ -114,7 +114,7 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
         @supplier = Factory(:supplier)
       end
 
-      should "description" do
+      should "update_spending_stat for self, organisation and supplying_relationship" do
         @supplier.expects(:update_spending_stat)
         @supplier.organisation.expects(:update_spending_stat)
         @payee.expects(:update_spending_stat)
@@ -129,7 +129,7 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
         @payee.supplying_relationships << @supplier
       end
 
-      should "update_spending_stat for self, organisation and payee" do
+      should "update_spending_stat for self, organisation and supplying_relationship" do
         @supplier.expects(:update_spending_stat)
         @supplier.organisation.expects(:update_spending_stat)
         @payee.expects(:update_spending_stat)
