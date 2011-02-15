@@ -13,7 +13,7 @@
 <%- if @organisation -%>
     <dl id="overview" class="attributes">
       <%= attribute_tag :number_of_suppliers, @organisation.suppliers.count %>
-      <%= attribute_tag :number_of_transactions, @organisation.financial_transactions.count %>
+      <%= attribute_tag :number_of_transactions, @organisation.payments.count %>
     </dl>
 <%- end -%>
 

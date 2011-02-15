@@ -21,7 +21,7 @@
 					<div class="explanation">
 					  <div id='average_monthly_spend' class='spending_count'><span class='value'>&pound;<%= number_with_delimiter(@entity.average_monthly_spend.to_i) %></span> <strong class=description>Spent per month</strong></div>
 					  <div id='supplier_count' class='spending_count'><span class='value'><%= number_with_delimiter(@entity.suppliers.count) %></span> <strong class=description>Recipients</strong></div>
-					  <div id='transaction_count' class='spending_count'><span class='value'><%= number_with_delimiter(@entity.financial_transactions.count) %></span> <strong class=description>Financial Transactions</strong></div>
+					  <div id='transaction_count' class='spending_count'><span class='value'><%= number_with_delimiter(@entity.payments.count) %></span> <strong class=description>Payments</strong></div>
 					</div>
 		    </div>
 		  </div>

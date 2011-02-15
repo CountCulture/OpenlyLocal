@@ -77,7 +77,7 @@ class SuppliersControllerTest < ActionController::TestCase
     
     context 'when enough results' do
       setup do
-        30.times { Factory(:supplier) }
+        30.times { Factory(:supplier).create_spending_stat }
       end
       
       context 'in general' do

@@ -2,7 +2,7 @@ class FinancialTransactionsController < ApplicationController
   def index
     @organisation = params[:organisation_type].constantize.find(params[:organisation_id]) if params[:organisation_type] && params[:organisation_id]
     @title = (@organisation ? "#{@organisation.title} " : "") + "Transactions :: Spending Data :: Page #{(params[:page]||1).to_i}"
-    @financial_transactions = @organisation ? @organisation.financial_transactions.paginate(:page => params[:page], :order => 'value DESC') : 
+    @financial_transactions = @organisation ? @organisation.payments.paginate(:page => params[:page], :order => 'value DESC') : 
                                               FinancialTransaction.paginate(:page => params[:page], :order => 'value DESC')
     respond_to do |format|
       format.html
