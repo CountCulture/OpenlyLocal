@@ -8,5 +8,12 @@ class FinancialTransactionObserver < ActiveRecord::Observer
     Delayed::Job.enqueue(FinancialTransaction.find(ft.id))# reload FinancialTransaction (nb ft.clear_association_cache or ft.rleoad should work but soesn't seem to), add financial_transaction to DelayedJob, after VatMatcher
     true
   end
+  
+  def after_destroy(ft)
+    ft.supplier.update_spending_stat
+    ft.supplier.organisation.update_spending_stat
+    ft.supplier.payee.update_spending_stat if ft.supplier.payee
+    true
+  end
     
 end

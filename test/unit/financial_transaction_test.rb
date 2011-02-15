@@ -169,19 +169,23 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     
     context "when destroying" do
       setup do
-        
+        # Delayed::Job.stubs(:enqueue)
       end
 
-      should "queue spending_stat for supplier for recalculation" do
-        flunk
+      should "update spending_stat for supplier" do
+        @financial_transaction.supplier.expects(:update_spending_stat)
+        @financial_transaction.destroy
       end
 
       should "queue spending_stat for supplier organisation for recalculation" do
-        flunk
+        @financial_transaction.supplier.organisation.expects(:update_spending_stat)
+        @financial_transaction.destroy
       end
 
       should "queue spending_stat for supplier payee for recalculation if it exists" do
-        flunk
+        @financial_transaction.supplier.payee = Factory(:company)
+        @financial_transaction.supplier.payee.expects(:update_spending_stat)
+        @financial_transaction.destroy
       end
     end
   end
