@@ -170,7 +170,7 @@ class SpendingStatTest < ActiveSupport::TestCase
         @spending_stat.perform
         assert_equal dummy_payee_breakdown, @spending_stat.reload.payer_breakdown
       end
-
+      
     end
 
     context "when calculating earliest_transaction_date" do
@@ -256,29 +256,34 @@ class SpendingStatTest < ActiveSupport::TestCase
     context "when calculating average_transaction_value" do
       should "return total_spend divided by transaction_count" do
         @spending_stat.expects(:calculated_total_spend).at_least_once.returns(12345)
-        @spending_stat.expects(:transaction_count).at_least_once.returns(42)
+        @spending_stat.expects(:calculated_transaction_count).at_least_once.returns(42)
         assert_in_delta (12345/42), @spending_stat.calculated_average_transaction_value, 0.1
       end
       
       should "cache result" do
         @spending_stat.expects(:calculated_total_spend).twice.returns(12345) # called twice per calculated_average_transaction_value
-        @spending_stat.expects(:transaction_count).twice.returns(42)
+        @spending_stat.expects(:calculated_transaction_count).twice.returns(42)
         @spending_stat.calculated_average_transaction_value
         @spending_stat.calculated_average_transaction_value
       end
       
       should "return nil if transaction_count is nil" do
         @spending_stat.stubs(:calculated_total_spend).returns(12345) # called twice per calculated_average_transaction_value
-        @spending_stat.stubs(:transaction_count) # => nil
+        @spending_stat.stubs(:calculated_transaction_count) # => nil
         assert_nil @spending_stat.calculated_average_transaction_value
       end
       
       should "return nil if calculated_total_spend is nil" do
         @spending_stat.stubs(:calculated_total_spend) # => nil
-        @spending_stat.stubs(:transaction_count).returns(42)
+        @spending_stat.stubs(:calculated_transaction_count).returns(42)
         assert_nil @spending_stat.calculated_average_transaction_value
       end
       
+      should "return nil if transaction_count is 0" do
+        @spending_stat.stubs(:calculated_total_spend).returns(12345.0) # called twice per calculated_average_transaction_value
+        @spending_stat.stubs(:calculated_transaction_count).returns(0)
+        assert_nil @spending_stat.calculated_average_transaction_value
+      end
     end
     
     context "when returning months_covered" do

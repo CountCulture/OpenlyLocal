@@ -106,7 +106,7 @@ class SpendingStat < ActiveRecord::Base
   
   def calculated_average_transaction_value
     return @calculated_average_transaction_value if @calculated_average_transaction_value
-    @calculated_average_transaction_value = calculated_total_spend/transaction_count if calculated_total_spend && transaction_count
+    @calculated_average_transaction_value = calculated_total_spend/calculated_transaction_count if calculated_total_spend && (calculated_transaction_count.to_i > 0)
   end
   
   def calculated_payer_breakdown
