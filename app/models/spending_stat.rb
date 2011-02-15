@@ -148,7 +148,7 @@ class SpendingStat < ActiveRecord::Base
     if payer_or_supplier
       self.earliest_transaction = fin_trans.date if earliest_transaction.nil? || (fin_trans.date < earliest_transaction)
       self.latest_transaction = fin_trans.date if latest_transaction.nil? || (fin_trans.date > latest_transaction)
-      self.transaction_count = transaction_count ? transaction_count + 1 : 1
+      self.transaction_count = transaction_count.to_i + 1
       self.total_spend = total_spend.to_f + fin_trans.value
       self.average_transaction_value = total_spend/transaction_count
       self.average_monthly_spend = total_spend/months_covered

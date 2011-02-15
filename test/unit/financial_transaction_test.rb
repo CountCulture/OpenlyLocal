@@ -626,7 +626,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 
 	  context 'when setting organisation' do
 	    setup do
-	      @organisation = Factory(:police_force)
+	      @organisation = Factory(:entity)
 	    end
 	    
 	    context 'and supplier not set' do
@@ -772,7 +772,11 @@ class FinancialTransactionTest < ActiveSupport::TestCase
  	    
       # this is sort of integration test to see if it all hangs together
  	    should "update all associated spending_stats with correct data" do
+ 	      @financial_transaction.date = '2009-10-22'.to_date
+ 	      @financial_transaction.value = 456.78
  	      @supplier = @financial_transaction.supplier
+ 	      @org = @supplier.organisation
+        # p @financial_transaction, @supplier
  	      @payee = Factory(:company)
  	      @supplier.update_attribute(:payee, @payee)
         @spend_by_month = [['2009-08-01'.to_date, 2519.0], ['2009-09-01'.to_date, 2519.0], ['2009-10-01'.to_date, nil], ['2009-11-01'.to_date, 5559.5]]
@@ -783,18 +787,20 @@ class FinancialTransactionTest < ActiveSupport::TestCase
                                                  :spend_by_month => @spend_by_month, 
                                                  :average_monthly_spend => 123.45,
                                                  :average_transaction_value => 45,
-                                                 :organisation => @supplier )
+                                                 :organisation => @org )
 
  	      @financial_transaction.perform
- 	      assert_equal 1, @supplier.organisation.spending_stat.transaction_count
- 	      assert_equal( {'Company' => 567.0}, @supplier.organisation.spending_stat.breakdown)
- 	      assert_equal 1, @supplier.payee.spending_stat.transaction_count
- 	      expected_payer_breakdown = [{:organisation_id=>@supplier.organisation_id,
-                                            :transaction_count=>1,
-                                            :average_transaction_value=>567.0,
-                                            :organisation_type=>"PoliceForce",
-                                            :total_spend=>567.0}]
- 	      assert_equal expected_payer_breakdown, @payee.spending_stat.breakdown
+ 	      assert_equal 235, @org.spending_stat.transaction_count
+ 	      assert_equal( {'Company' => @financial_transaction.value}, @org.spending_stat.breakdown)
+ 	      assert_equal 12345.6 + @financial_transaction.value, @org.spending_stat.total_spend
+ 	      assert_equal [['2009-08-01'.to_date, 2519.0], ['2009-09-01'.to_date, 2519.0], ['2009-10-01'.to_date, 456.78], ['2009-11-01'.to_date, 5559.5]], @org.spending_stat.spend_by_month
+ 	      assert_nil @payee.spending_stat.transaction_count #don't change this
+        expected_payer_breakdown = [{:organisation_id=>@org.id,
+                                                    :transaction_count=>1,
+                                                    :average_transaction_value => @financial_transaction.value,
+                                                    :organisation_type=>"Entity",
+                                                    :total_spend => @financial_transaction.value}]
+ 	      assert_equal expected_payer_breakdown, @payee.spending_stat.payer_breakdown
  	    end
  	  end
 
@@ -813,7 +819,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     
     should 'be able to be created when supplied with necessary supplier params' do
       # This is sort of integration test for whole lifecycle of saving with supplier info, as happens when parsing csv files
-      org = Factory(:police_force)
+      org = Factory(:entity)
       ft = FinancialTransaction.new(:value => "32.40", :date => 2.days.ago, :supplier_name => 'Foo Inc', :organisation => org)
       assert ft.save
       assert ft.errors.empty?

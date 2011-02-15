@@ -22,6 +22,10 @@ class Entity < ActiveRecord::Base
     TitleNormaliser.normalise_title(raw_title)
   end
   
+  def openlylocal_url
+    "http://#{DefaultDomain}/entities/#{to_param}"
+  end
+  
   def resource_uri
     "http://#{DefaultDomain}/id/entities/#{id}"
   end

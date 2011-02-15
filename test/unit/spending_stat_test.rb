@@ -1062,11 +1062,10 @@ class SpendingStatTest < ActiveSupport::TestCase
       
       should "return nil if spending_stat organisation doesn't have supplying_relationships" do
         assert_nil @second_supplier.create_spending_stat.calculated_payer_breakdown
-        # assert_nil , @breakdown
       end
       
       should "cache result" do
-        @company.expects(:supplying_relationships).never #already called once in setup
+        @company.expects(:supplying_relationships).never # already called once in setup
         @bd_spending_stat.calculated_payer_breakdown
       end
       

@@ -53,6 +53,10 @@ class EntityTest < ActiveSupport::TestCase
       end
     end
     
+    should 'return correct url as openlylocal_url' do
+      assert_equal "http://#{DefaultDomain}/entities/#{@entity.to_param}", @entity.openlylocal_url
+    end
+    
     should "include ResourceMethods" do
       assert Entity.new.respond_to? :foaf_telephone
     end
