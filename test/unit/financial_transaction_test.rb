@@ -99,7 +99,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       
     end
 
-    context "when saving" do
+    context "when creating" do
       setup do
         supplier = Factory.build(:supplier)
         @financial_transaction = Factory.build(:financial_transaction, :supplier => supplier)
@@ -167,10 +167,58 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
     end
     
-    context "when destroying" do
+    context "when saving" do
       setup do
-        # Delayed::Job.stubs(:enqueue)
+        @financial_transaction = Factory.create(:financial_transaction)
       end
+      
+      should "not queue financial transaction for delayed_job processing" do
+        Delayed::Job.expects(:enqueue).with(@financial_transaction).never
+        @financial_transaction.save!
+      end
+      #     
+      # should 'in general not queue for matching supplier with vat_number' do
+      #   Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
+      #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+      #   @financial_transaction.save!
+      # end
+      # 
+      # context "and supplier has vat_number" do
+      #   setup do
+      #     Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
+      #   end
+      #   
+      #   should 'queue for matching vat_number if vat_number' do
+      #     @financial_transaction.supplier.vat_number = 'AB123'
+      #     Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+      #     @financial_transaction.save!
+      #   end
+      #   
+      #   should 'queue for matching vat_number before queueing financial_transaction' do
+      #     ft_observer = sequence('ft_observer')
+      #     @financial_transaction.supplier.vat_number = 'AB123'
+      #     Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).in_sequence(ft_observer)
+      #     Delayed::Job.expects(:enqueue).with(@financial_transaction).in_sequence(ft_observer)
+      #     @financial_transaction.save!
+      #   end
+      #   
+      #   should 'not queue for matching vat_number if supplier already has payee' do
+      #     @financial_transaction.supplier.vat_number = 'AB123'
+      #     @financial_transaction.supplier.payee = Factory(:charity)
+      #     Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+      #     @financial_transaction.save!
+      #   end
+      #   
+      #   should 'not queue for matching vat_number if supplier already has no payee but has failed_payee_search' do
+      #     @financial_transaction.supplier.vat_number = 'AB123'
+      #     @financial_transaction.supplier.failed_payee_search = true
+      #     Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+      #     @financial_transaction.save!
+      #   end
+      # end
+    end
+    
+    context "when destroying" do
 
       should "update spending_stat for supplier" do
         @financial_transaction.supplier.expects(:update_spending_stat)
