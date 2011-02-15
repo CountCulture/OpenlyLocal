@@ -39,6 +39,14 @@ class CompanyTest < ActiveSupport::TestCase
       assert Company.new.respond_to?(:supplying_relationships)
     end
 
+    should "have one charity with company_number as foreign key" do
+      charity_1 = Factory(:charity)
+      charity_2 = Factory(:charity, :company_number => @company.company_number)
+      charity_3 = Factory(:charity, :company_number => 'AB87654')
+      assert_equal charity_2, @company.charity
+      assert_nil Factory(:company, :company_number => nil, :vat_number => '12345').charity # don't try to match charities without company_number
+    end
+    
     context "when validating" do
       should "require presence of title on create" do
         co = Factory.build(:company, :title => nil)
