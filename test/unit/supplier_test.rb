@@ -213,45 +213,6 @@ class SupplierTest < ActiveSupport::TestCase
       end
     end
 
-    context 'after creating' do
-      setup do
-        Delayed::Job.stubs(:enqueue)#.with(kind_of(SpendingStat))
-      end
-      
-      # should 'queue for matching with payee' do
-      #   Delayed::Job.stubs(:enqueue).with(kind_of(SpendingStat))
-      #   Delayed::Job.expects(:enqueue).with(kind_of(Supplier))
-      #   Factory(:supplier, :name => 'Foo company')
-      # end
-      #       
-      # should 'queue bare supplier without organisation association' do
-      #   supplier = Factory(:supplier, :name => 'Foo company')
-      #   delayed_job = Delayed::Job.last(:order => 'id DESC')
-      #   assert_no_match /ruby\/object:#{supplier.organisation_type}/, delayed_job.read_attribute(:handler)
-      # end
-      #       
-      
-      # should 'not queue for matching with vat_number if no vat_number' do
-      #   Delayed::Job.expects(:enqueue).with(kind_of(Supplier))
-      #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
-      #   Factory(:supplier, :name => 'Foo company')
-      # end
-      # 
-      # should 'not queue for matching with payee if vat_number' do
-      #   Delayed::Job.expects(:enqueue).with(kind_of(Supplier)).never
-      #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
-      #   Factory(:supplier, :name => 'Foo company', :vat_number => 'AB123')
-      # end
-      # 
-      # should 'queue for matching vat_number if vat_number' do
-      #   Delayed::Job.expects(:enqueue).with(kind_of(Supplier)).never
-      #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
-      #   Factory(:supplier, :name => 'Foo company', :vat_number => 'AB123')
-      # end
-      
-            
-    end
-    
     context "when matching with payee" do
       setup do
         @dummy_payee = Factory(:company)

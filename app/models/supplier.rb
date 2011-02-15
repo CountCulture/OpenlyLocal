@@ -113,5 +113,5 @@ class Supplier < ActiveRecord::Base
     self.update_spending_stat
     res
   end
-    
+  
 end
