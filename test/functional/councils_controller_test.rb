@@ -1002,6 +1002,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should render_template :show_spending
       should_not set_the_flash
       should assign_to :council
+      should assign_to(:spending_stat) {@council.spending_stat}
 
       should "have basic title" do
         assert_select "title", /spending dashboard/i
@@ -1017,6 +1018,10 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should 'list transactions' do
         assert_select '#financial_transactions a', /#{@supplier_1.title}/
+      end
+      
+      should "show payee_breakdown" do
+        assert_select "div#payee_breakdown"
       end
     end
     
@@ -1035,6 +1040,10 @@ class CouncilsControllerTest < ActionController::TestCase
       end
       should "not show dashboard" do
         assert_select "div.dashboard", false
+      end
+      
+      should "not show payee_breakdown" do
+        assert_select "div.payee_breakdown", false
       end
     end
   end

@@ -15,22 +15,30 @@
 		    <div class='in_words'>
 			
 				  <div id='total_spend' class='spending_count'>
-						<span class='value'>&pound;<%= number_with_delimiter(@council.total_spend.to_i) %></span> 
-						<strong class=description>Spent in <%= @council.spending_stat.months_covered %> months since <%= @council.spending_stat.earliest_transaction.strftime("%b %Y") %></strong>
+						<span class='value'>&pound;<%= number_with_delimiter(@spending_stat.total_spend.to_i) %></span> 
+						<strong class=description>Spent in <%= @spending_stat.months_covered %> months since <%= @spending_stat.earliest_transaction.strftime("%b %Y") %></strong>
 					</div>
 					<div class="explanation">
-					  <div id='average_monthly_spend' class='spending_count'><span class='value'>&pound;<%= number_with_delimiter(@council.average_monthly_spend.to_i) %></span> <strong class=description>Spent per month</strong></div>
+					  <div id='average_monthly_spend' class='spending_count'><span class='value'>&pound;<%= number_with_delimiter(@spending_stat.average_monthly_spend.to_i) %></span> <strong class=description>Spent per month</strong></div>
 					  <div id='supplier_count' class='spending_count'><span class='value'><%= number_with_delimiter(@council.suppliers.count) %></span> <strong class=description>Suppliers</strong></div>
-					  <div id='transaction_count' class='spending_count'><span class='value'><%= number_with_delimiter(@council.financial_transactions.count) %></span> <strong class=description>Financial Transactions</strong></div>
+					  <div id='transaction_count' class='spending_count'><span class='value'><%= number_with_delimiter(@spending_stat.transaction_count) %></span> <strong class=description>Financial Transactions</strong></div>
 					</div>
 		    </div>
 		  </div>
 		</div>
+		
 		<div id="relationships">
-	
 			<div id="spend_by_month" class="graphed_datapoints">
 				<h3>Spend by month</h3>
-				<%= spend_by_month_graph(@council.spending_stat.spend_by_month) %>
+				<%= spend_by_month_graph(@spending_stat.spend_by_month) %>
+			</div>
+			<div id="payee_breakdown" class="graphed_datapoints">
+  				<%= basic_table :caption => 'Recipient breakdown', 
+  												:headings => ['Type', 'Value'], 
+  												:classes => ['name', 'value'],
+  												:data => @spending_stat.breakdown.collect{ |klass,val| [(klass || 'Unmatched'), "&pound;#{number_with_delimiter(val.to_i)}"] },
+  												:more_info_url => suppliers_path(:organisation_id => @council.id, :organisation_type => 'Council', :order => 'total_spend') %>
+  			</div>
 			</div>
 			<div id="suppliers" class="item_grouping">
 				<%= basic_table :caption => 'Biggest suppliers', 
