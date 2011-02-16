@@ -29,7 +29,7 @@
 	
 		<div id="companies" class="item_grouping">
 			<%= basic_table :caption => 'Biggest company suppliers', 
-											:headings => ['Name', 'Total paid', 'Councils supplies'], 
+											:headings => ['Name', 'Total paid', 'Councils supplied'], 
 											:classes => ['name', 'value', 'value'],
 											:data => @spending_data[:largest_companies].collect{ |s| [basic_link_for(s), "£#{number_with_delimiter(s.spending_stat.total_received_from_councils.to_i)}", s.spending_stat.number_of_councils] }#,
                       # :more_info_url => suppliers_path(:order => 'total_spend') 

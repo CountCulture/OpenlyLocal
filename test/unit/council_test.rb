@@ -319,9 +319,9 @@ class CouncilTest < ActiveSupport::TestCase
     context "when returning cached_spending_data" do
       setup do
         # @suppliers = 2.times.collect{Factory(:supplier)}
-        @companies = 3.times.collect{c=Factory(:company); Factory(:spending_stat, :organisation => c); c}
+        @companies = 3.times.collect{ |i| c=Factory(:company); Factory(:spending_stat, :organisation => c, :total_received_from_councils => i*1000); c}
         @financial_transactions = 5.times.collect{|i| Factory(:financial_transaction, :value => i*500)}
-        @charities = 1.times.collect{c=Factory(:charity); Factory(:spending_stat, :organisation => c); c}
+        @charities = 1.times.collect{ |i| c=Factory(:charity); Factory(:spending_stat, :organisation => c, :total_received_from_councils => i*1000); c}
         @spending_data = { :supplier_count=>77665, 
                            :largest_transactions=>@financial_transactions.collect(&:id), 
                            :largest_companies=>@companies.collect(&:id), 
@@ -362,12 +362,14 @@ class CouncilTest < ActiveSupport::TestCase
             assert_equal @financial_transactions.sort_by(&:value).reverse, @cached_spending_data[:largest_transactions]
           end
           
-          should "replace company ids with companies" do
-            assert_equal @companies, @cached_spending_data[:largest_companies]
+          should "replace company ids with companies, ordered by total_received_from_councils" do
+            assert_equal @companies.size, @cached_spending_data[:largest_companies].size
+            assert_equal @companies.last, @cached_spending_data[:largest_companies].first
           end
           
           should "replace charity ids with charities" do
-            assert_equal @charities, @cached_spending_data[:largest_charities]
+            assert_equal @charities.size, @cached_spending_data[:largest_charities].size
+            assert_equal @charities.last, @cached_spending_data[:largest_charities].first
           end
         end
       end
@@ -415,16 +417,6 @@ class CouncilTest < ActiveSupport::TestCase
         Council.calculated_spending_data
       end
       
-      should "find 20 largest company suppliers" do
-        Company.expects(:all).with(:select => 'DISTINCT companies.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_received_from_councils DESC').returns([])
-        Council.calculated_spending_data
-      end
-      
-      should "find 20 largest charity suppliers" do
-        Charity.expects(:all).with(:select => 'DISTINCT charities.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_received_from_councils DESC').returns([])
-        Council.calculated_spending_data
-      end
-      
       should "return hash of calculated spending data" do
         assert_kind_of Hash, Council.calculated_spending_data
       end
@@ -438,8 +430,8 @@ class CouncilTest < ActiveSupport::TestCase
           Supplier.stubs(:count).returns(33)
           Company.stubs(:count).returns(21)
           FinancialTransaction.stubs(:sum).returns(424242)
-          Company.stubs(:all).returns([@company])
-          Charity.stubs(:all).returns([@charity])
+          # Company.stubs(:all).returns([@company])
+          # Charity.stubs(:all).returns([@charity])
           FinancialTransaction.stubs(:all).returns([@financial_transaction])
           @spending_data = Council.calculated_spending_data
         end
@@ -464,13 +456,22 @@ class CouncilTest < ActiveSupport::TestCase
           assert_equal [@financial_transaction.id], @spending_data[:largest_transactions]
         end
 
-        should "include largest_companies" do
-          assert_equal [@company.id], @spending_data[:largest_companies]
+        should "include 20 largest company suppliers based on money received from councils" do
+          big_non_council_company = Factory(:company).create_spending_stat(:total_received_from_councils => 50)
+          25.times { |i| Factory(:company).create_spending_stat(:total_received_from_councils => i*1000) }
+          csd = Council.calculated_spending_data[:largest_companies]
+          assert_equal 20, csd.size
+          assert !csd.include?(big_non_council_company.id)
         end
 
-        should "include largest_charities" do
-          assert_equal [@charity.id], @spending_data[:largest_charities]
+        should "include 20 largest charity suppliers based on money received from councils" do
+          big_non_council_charity = Factory(:charity).create_spending_stat(:total_received_from_councils => 50)
+          25.times { |i| Factory(:charity).create_spending_stat(:total_received_from_councils => i*1000) }
+          csd = Council.calculated_spending_data[:largest_charities]
+          assert_equal 20, csd.size
+          assert !csd.include?(big_non_council_charity.id)
         end
+
       end
     end
     
