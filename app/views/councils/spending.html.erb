@@ -36,6 +36,15 @@
 											%>
 		</div>
 
+		<div id="charities" class="item_grouping">
+			<%= basic_table :caption => 'Biggest charity suppliers', 
+											:headings => ['Name', 'Total paid', 'Councils supplied'], 
+											:classes => ['name', 'value', 'value'],
+											:data => @spending_data[:largest_charities].collect{ |s| [basic_link_for(s), "£#{number_with_delimiter(s.spending_stat.total_received_from_councils.to_i)}", s.spending_stat.number_of_councils] }#,
+                      # :more_info_url => suppliers_path(:order => 'total_spend') 
+											%>
+		</div>
+
 		<div id="financial_transactions" class="item_grouping">
 			<%= basic_table :caption => 'Biggest transactions', 
 											:headings => ['Supplier', 'Council', 'Value'], 
