@@ -5,20 +5,22 @@
 	
   <div id="statistics">
     <div class='in_words'>
-		  <div id='council_count' class='spending_count'><span class='value'><%#= @companies.size %></span> <strong class=description>Companies</strong></div>
-		  <div id='supplier_count' class='spending_count'><span class='value'><%#= number_with_delimiter(@supplier_count) %></span> <strong class=description>Suppliers</strong></div>
+		  <div id='council_count' class='spending_count'><span class='value'><%= number_with_delimiter(@council_spending_data[:company_count]) %></span> <strong class=description>Companies</strong></div>
+		  <div id='supplier_count' class='spending_count'><span class='value'><%#= number_with_delimiter(@council_spending_data.size) %></span> <strong class=description>Suppliers</strong></div>
 		  <div id='transaction_count' class='spending_count'><span class='value'><%#= number_with_delimiter(@financial_transaction_count) %></span> <strong class=description>Financial Transactions</strong></div>
     </div>
   </div>
 	
 	<div id="relationships">
 		<div id="biggest_companies" class="item_grouping">
-		  <%= list_all @biggest_companies %>
 			<%= basic_table :caption => 'Companies supplying councils', 
-											:headings => ['Name', 'Total spend', 'Per month'], 
-											:classes => ['name', 'value', 'value'],
-											:data => @biggest_companies.collect{ |c| [link_to(c.title, :controller => 'companies', :action => 'show', :id => c.to_param), "£#{number_with_delimiter(c.total_spend.to_i)}", "£#{number_with_delimiter(c.average_monthly_spend.to_i)}"] } %>
-			<p>See also <%#= link_to "Open Data Scoreboard", '/councils/open' %> and <a href="https://spreadsheets.google.com/ccc?key=0AhOqra7su40fdEgtaG4yVFZGVjdYREVIWmprX2dENkE&hl=en_GB" class="external">Local Spending Data Scoreboard</a></p>
+											:headings => ['Name', 'Total spend', 'Councils supplied', 'Largest council'], 
+											:classes => ['name', 'value', 'value', 'name'],
+											:data => @council_spending_data[:largest_companies].collect{ |c| [ link_to(c.title, :controller => 'companies', :action => 'show', :id => c.to_param), 
+											                                                                   "£#{number_with_delimiter(c.spending_stat.total_received_from_councils.to_i)}", 
+											                                                                   c.spending_stat.number_of_councils,
+											                                                                   basic_link_for(c.spending_stat.biggest_council)] } %>
+			<p>See also <%= link_to "Council Spending Dashboard", '/councils/spending' %></p>
 		</div>
 	
 	</div>

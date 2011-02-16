@@ -307,10 +307,6 @@ class SpendingStatTest < ActiveSupport::TestCase
     end
     
     context "when returning number of councils" do
-      setup do
-        
-      end
-
       should "return nil by default" do
         assert_nil @spending_stat.number_of_councils
       end
@@ -320,6 +316,28 @@ class SpendingStatTest < ActiveSupport::TestCase
                                           {:organisation_type => 'PoliceAuthority', :organisation_id => 22, :total_spend => 234},
                                           {:organisation_type => 'Council', :organisation_id => 33, :total_spend => 345}]
         assert_equal 2, @spending_stat.number_of_councils
+      end
+    end
+    
+    context "when returning biggest_council" do
+      should "return nil by default" do
+        assert_nil @spending_stat.biggest_council
+      end
+      
+      should "return biggest of council listed in payer_breakdown" do
+        @council_1 = Factory(:generic_council)
+        @council_2 = Factory(:generic_council)
+        @entity = Factory(:entity)
+        @spending_stat.payer_breakdown = [{:organisation_type => 'Council', :organisation_id => @council_1.id, :total_spend => 123.4},
+                                          {:organisation_type => 'Entity', :organisation_id => @entity.id, :total_spend => 1234},
+                                          {:organisation_type => 'Council', :organisation_id => @council_2.id, :total_spend => 345}]
+        assert_equal @council_2, @spending_stat.biggest_council
+      end
+      
+      should "return nil if no councils listed in payer_breakdown" do
+        @entity = Factory(:entity)
+        @spending_stat.payer_breakdown = [{:organisation_type => 'Entity', :organisation_id => @entity.id, :total_spend => 1234}]
+        assert_nil @spending_stat.biggest_council
       end
     end
     

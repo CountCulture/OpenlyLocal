@@ -29,6 +29,13 @@ class SpendingStat < ActiveRecord::Base
     %w(total_spend average_monthly_spend average_transaction_value breakdown total_received total_received_from_councils).all?{ |a| self.send(a).blank? || (self.send(a) == 0) }
   end
   
+  # convenience method to return the biggest council among payers. Looks in payer_breakdown, or returns nil.
+  def biggest_council
+    return if payer_breakdown.blank? || payer_breakdown.all?{ |o| o[:organisation_type] != 'Council' }
+    council_details = payer_breakdown.select{ |o| o[:organisation_type] == 'Council'}.sort{|a,b| b[:total_spend] <=> a[:total_spend]}.first
+    Council.find_by_id(council_details[:organisation_id])
+  end
+  
   def calculated_average_monthly_spend
     return if calculated_total_spend.blank? || calculated_months_covered.blank? || calculated_total_spend == 0
     calculated_total_spend/calculated_months_covered

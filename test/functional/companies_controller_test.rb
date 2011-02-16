@@ -10,16 +10,30 @@ class CompaniesControllerTest < ActionController::TestCase
   context "on GET to :spending" do
 
     setup do
-      20.times do
-        c = Factory(:company)
-        Factory(:spending_stat, :organisation => c, :total_spend => 500)
-      end
-      @big_company = Factory(:company)
-      Factory(:spending_stat, :organisation => @big_company, :total_spend => 999999)
+      @financial_transactions = [Factory(:financial_transaction)]
+      @charities = [Factory(:charity, :spending_stat => Factory(:spending_stat))]
+      @companies = [Factory(:company, :spending_stat => Factory(:spending_stat))]
+
+      @cached_spending_data = { :supplier_count=>77665, 
+                                :largest_transactions=>@financial_transactions, 
+                                :largest_companies=>@companies, 
+                                :total_spend=>3404705734.99, 
+                                :company_count=>27204, 
+                                :largest_charities=>@charities, 
+                                :transaction_count=>476422}
+      @high_spending_council = Factory(:council, :name => "High Spender")
+      Council.stubs(:cached_spending_data).returns(@cached_spending_data)
+      # 20.times do
+      #   c = Factory(:company)
+      #   Factory(:spending_stat, :organisation => c, :total_spend => 500)
+      # end
+      # @big_company = Factory(:company)
+      # Factory(:spending_stat, :organisation => @big_company, :total_spend => 999999)
       get :spending
     end
 
     should assign_to(:biggest_companies)
+    should assign_to(:council_spending_data){@cached_spending_data}
     should respond_with :success
     should render_template :spending
 

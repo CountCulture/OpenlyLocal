@@ -15,6 +15,7 @@ class CompaniesController < ApplicationController
   
   def spending
     @title = "Companies supplying Councils"
-    @biggest_companies = Company.all(:limit => 10, :joins => :spending_stat, :order => 'spending_stats.total_spend DESC')
+    @council_spending_data = Council.cached_spending_data
+    # @biggest_companies = Company.all(:limit => 10, :joins => :spending_stat, :order => 'spending_stats.total_spend DESC')
   end
 end
