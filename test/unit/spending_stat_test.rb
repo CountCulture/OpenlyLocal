@@ -306,6 +306,23 @@ class SpendingStatTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning number of councils" do
+      setup do
+        
+      end
+
+      should "return nil by default" do
+        assert_nil @spending_stat.number_of_councils
+      end
+      
+      should "return number of councils listed in payer_breakdown" do
+        @spending_stat.payer_breakdown = [{:organisation_type => 'Council', :organisation_id => 12, :total_spend => 123.4},
+                                          {:organisation_type => 'PoliceAuthority', :organisation_id => 22, :total_spend => 234},
+                                          {:organisation_type => 'Council', :organisation_id => 33, :total_spend => 345}]
+        assert_equal 2, @spending_stat.number_of_councils
+      end
+    end
+    
     context "when returning calculated_months_covered" do
       should "return number of months between calculated_earliest_transaction_date and calculated_latest_transaction_date" do
         @spending_stat.expects(:calculated_earliest_transaction_date).at_least_once.returns('2010-03-4'.to_date)

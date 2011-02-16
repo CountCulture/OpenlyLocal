@@ -416,12 +416,12 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "find 20 largest company suppliers" do
-        Company.expects(:all).with(:select => 'DISTINCT companies.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_spend DESC').returns([])
+        Company.expects(:all).with(:select => 'DISTINCT companies.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_received_from_councils DESC').returns([])
         Council.calculated_spending_data
       end
       
       should "find 20 largest charity suppliers" do
-        Charity.expects(:all).with(:select => 'DISTINCT charities.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_spend DESC').returns([])
+        Charity.expects(:all).with(:select => 'DISTINCT charities.id', :limit=>20, :joins => [:supplying_relationships, :spending_stat], :conditions => 'suppliers.organisation_type = "Council"', :order=>'spending_stats.total_received_from_councils DESC').returns([])
         Council.calculated_spending_data
       end
       

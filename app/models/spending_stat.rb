@@ -128,6 +128,11 @@ class SpendingStat < ActiveRecord::Base
     self.class.difference_in_months_between_dates(earliest_transaction, latest_transaction) + 1 # add one because we want the number of months covered, not just the difference
   end
   
+  # convenience method to return number of councils in payer breakdown
+  def number_of_councils
+    payer_breakdown && payer_breakdown.select{ |p| p[:organisation_type] == 'Council' }.size
+  end
+  
   def perform
     # breakdown = (organisation.is_a?(Company) || organisation.is_a?(Charity)) ? calculated_payer_breakdown : calculated_payee_breakdown
     update_attributes(:total_spend => calculated_total_spend, 

@@ -24,14 +24,14 @@
 											:headings => ['Name', 'Total spend', 'Per month'], 
 											:classes => ['name', 'value', 'value'],
 											:data => @councils.collect{ |c| [link_to(c.title, :controller => 'councils', :action => 'show_spending', :id => c.to_param), "£#{number_with_delimiter(c.total_spend.to_i)}", "£#{number_with_delimiter(c.average_monthly_spend.to_i)}"] } %>
-			<p>See also <%= link_to "Open Data Scoreboard", '/councils/open' %> and <a href="https://spreadsheets.google.com/ccc?key=0AhOqra7su40fdEgtaG4yVFZGVjdYREVIWmprX2dENkE&hl=en_GB" class="external">Local Spending Data Scoreboard</a></p>
+			<p>See also <%= link_to "Open Data Scoreboard", '/councils/open' %></p>
 		</div>
 	
 		<div id="companies" class="item_grouping">
 			<%= basic_table :caption => 'Biggest company suppliers', 
-											:headings => ['Name', 'Total spend', 'Per month'], 
+											:headings => ['Name', 'Total paid', 'Councils supplies'], 
 											:classes => ['name', 'value', 'value'],
-											:data => @spending_data[:largest_companies].collect{ |s| [basic_link_for(s), "£#{number_with_delimiter(s.total_spend.to_i)}", "£#{number_with_delimiter(s.average_monthly_spend.to_i)}"] }#,
+											:data => @spending_data[:largest_companies].collect{ |s| [basic_link_for(s), "£#{number_with_delimiter(s.spending_stat.total_received_from_councils.to_i)}", s.spending_stat.number_of_councils] }#,
                       # :more_info_url => suppliers_path(:order => 'total_spend') 
 											%>
 		</div>
