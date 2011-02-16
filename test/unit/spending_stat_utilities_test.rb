@@ -108,6 +108,36 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
       assert_equal [payment_received], @test_model_with_spending_stat_payee.payments_received
     end
     
+    context "when supplying_relationship added" do
+      setup do
+        @payee = Factory(:entity)
+        @supplier = Factory(:supplier)
+      end
+
+      should "update_spending_stat for self, organisation and supplying_relationship" do
+        @supplier.expects(:update_spending_stat)
+        @supplier.organisation.expects(:update_spending_stat)
+        @payee.expects(:update_spending_stat)
+        @payee.supplying_relationships << @supplier
+      end
+    end
+    
+    context "when supplying_relationship removed" do
+      setup do
+        @payee = Factory(:entity)
+        @supplier = Factory(:supplier)
+        @payee.supplying_relationships << @supplier
+      end
+
+      should "update_spending_stat for self, organisation and supplying_relationship" do
+        @supplier.expects(:update_spending_stat)
+        @supplier.organisation.expects(:update_spending_stat)
+        @payee.expects(:update_spending_stat)
+        @payee.supplying_relationships.delete(@supplier)
+      end
+      
+    end    
+    
   end
   
 end

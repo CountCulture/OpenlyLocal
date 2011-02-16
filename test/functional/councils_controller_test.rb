@@ -904,8 +904,8 @@ class CouncilsControllerTest < ActionController::TestCase
     context "in general" do
       setup do
         @financial_transactions = [Factory(:financial_transaction)]
-        @charities = [Factory(:charity)]
-        @companies = [Factory(:company)]
+        @charities = [Factory(:charity, :spending_stat => Factory(:spending_stat))]
+        @companies = [Factory(:company, :spending_stat => Factory(:spending_stat))]
         @cached_spending_data = { :supplier_count=>77665, 
                                   :largest_transactions=>@financial_transactions, 
                                   :largest_companies=>@companies, 

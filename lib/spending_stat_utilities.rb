@@ -53,12 +53,21 @@ module SpendingStatUtilities
     
     module InstanceMethods
       
+      private
+      def update_associated_spending_stats(supplier)
+        supplier.update_spending_stat
+        supplier.organisation.update_spending_stat
+        self.update_spending_stat
+      end
+      
     end
     
     def self.included(receiver)
       receiver.extend         ClassMethods
       receiver.send :include, InstanceMethods
-      receiver.has_many :supplying_relationships, :class_name => "Supplier", :as => :payee
+      receiver.has_many :supplying_relationships, :class_name => "Supplier", :as => :payee, 
+                                                  :after_add => :update_associated_spending_stats,
+                                                  :after_remove => :update_associated_spending_stats
       receiver.has_many :payments_received, :through => :supplying_relationships, :source => :financial_transactions
     end
   end

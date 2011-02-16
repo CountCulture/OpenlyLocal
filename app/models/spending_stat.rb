@@ -106,7 +106,7 @@ class SpendingStat < ActiveRecord::Base
   
   def calculated_average_transaction_value
     return @calculated_average_transaction_value if @calculated_average_transaction_value
-    @calculated_average_transaction_value = calculated_total_spend/transaction_count if calculated_total_spend && transaction_count
+    @calculated_average_transaction_value = calculated_total_spend/calculated_transaction_count if calculated_total_spend && (calculated_transaction_count.to_i > 0)
   end
   
   def calculated_payer_breakdown
@@ -126,6 +126,11 @@ class SpendingStat < ActiveRecord::Base
   def months_covered
     return unless earliest_transaction && latest_transaction
     self.class.difference_in_months_between_dates(earliest_transaction, latest_transaction) + 1 # add one because we want the number of months covered, not just the difference
+  end
+  
+  # convenience method to return number of councils in payer breakdown
+  def number_of_councils
+    payer_breakdown && payer_breakdown.select{ |p| p[:organisation_type] == 'Council' }.size
   end
   
   def perform
