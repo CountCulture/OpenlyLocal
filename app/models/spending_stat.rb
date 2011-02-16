@@ -76,7 +76,7 @@ class SpendingStat < ActiveRecord::Base
   end
   
   def calculated_total_received
-    @calculated_total_received ||= organisation.payments_received.sum(:value)
+    @calculated_total_received ||= organisation.payments_received.sum(:value) if organisation.respond_to?(:payments_received)
   end
   
   def calculated_total_received_from_councils
@@ -150,6 +150,7 @@ class SpendingStat < ActiveRecord::Base
                       :earliest_transaction => calculated_earliest_transaction_date,
                       :latest_transaction => calculated_latest_transaction_date,
                       :total_received_from_councils => calculated_total_received_from_councils,
+                      :total_received => calculated_total_received,
                       :transaction_count => calculated_transaction_count,
                       :average_transaction_value => calculated_average_transaction_value
                       )

@@ -81,6 +81,17 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal 432.1, @spending_stat.reload.total_spend
       end
 
+      should "should calculate total_receivedd" do
+        @spending_stat.expects(:calculated_total_received).at_least(1)
+        @spending_stat.perform
+      end
+      
+      should "should update with calculated_total_spend" do
+        @spending_stat.stubs(:calculated_total_received).returns(432)
+        @spending_stat.perform
+        assert_equal 432, @spending_stat.reload.total_received
+      end
+
       should "should calculate total_received_from_councils" do
         @spending_stat.expects(:calculated_total_received_from_councils).at_least(1)
         @spending_stat.perform
