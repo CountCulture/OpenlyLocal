@@ -916,14 +916,6 @@ class CouncilsControllerTest < ActionController::TestCase
         @high_spending_council = Factory(:council, :name => "High Spender")
         Council.stubs(:cached_spending_data).returns(@cached_spending_data)
         Factory(:spending_stat, :total_spend => 1234567, :organisation => @high_spending_council)
-        # # @supplier_1 = Factory(:supplier, :organisation => @another_council)
-        # # @high_spending_supplier = Factory(:supplier, :organisation => @high_spending_council)
-        # # @financial_transaction_1 = Factory(:financial_transaction, :supplier => @supplier_1)
-        # # @financial_transaction_2 = Factory(:financial_transaction, :value => 1000000, :supplier => @high_spending_supplier)
-        # # @non_council_supplier = Factory(:supplier)
-        # # @non_council_transaction = Factory(:financial_transaction, :supplier => @non_council_supplier)
-        # create_and_update_spending_stats(@high_spending_council, @supplier_1, @high_spending_supplier, @non_council_supplier)
-        # SpendingStat.all(:conditions => {:organisation_type => 'Supplier'}).each(&:perform) # update all supplier spending stats
         get :spending
       end
 
