@@ -345,6 +345,95 @@ class CompanyTest < ActiveSupport::TestCase
       end
     end
     
+    context "when calculating spending_data" do
+
+      should "calculate total number of council payments to companies" do
+        FinancialTransaction.expects(:count).with(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'")
+        Company.calculated_spending_data
+      end
+      
+      should "calculate total number of companies supplying to councils" do
+        Company.stubs(:count)
+        Company.expects(:count).with(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
+        Company.calculated_spending_data
+      end
+      
+      should "calculate total value of council payments to companies" do
+        SpendingStat.expects(:sum).with(:total_received_from_councils, :conditions => "spending_stats.organisation_type = 'Company'")
+        Company.calculated_spending_data
+      end
+      
+      should "calculate breakdown of company types" do
+        Company.stubs(:count)
+        Company.expects(:count).with(:group => 'company_type', :conditions=>'company_number IS NOT NULL AND suppliers.organisation_type = "Council"', :joins => :supplying_relationships)
+        Company.calculated_spending_data
+      end
+      
+      should "find 20 largest payments" do
+        FinancialTransaction.expects(:all).with(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'").returns([])
+        Company.calculated_spending_data
+      end
+      
+      should "return hash of calculated spending data" do
+        assert_kind_of Hash, Company.calculated_spending_data
+      end
+      
+      context "and hash" do
+        setup do
+          @company = Factory(:company)
+          @financial_transaction = Factory(:financial_transaction)
+          FinancialTransaction.stubs(:count).returns(42)
+          Supplier.stubs(:count).returns(33)
+          Company.stubs(:count).returns(21)
+          @company_type_breakdown = {"Private Limited Company" => 5, "Public Limited Company" => 8}
+          Company.stubs(:count).with(has_key(:group)).returns(@company_type_breakdown)
+          FinancialTransaction.stubs(:sum).returns(424242)
+          SpendingStat.stubs(:sum).returns(3333)
+          # Company.stubs(:all).returns([@company])
+          # Charity.stubs(:all).returns([@charity])
+          FinancialTransaction.stubs(:all).returns([@financial_transaction])
+          @spending_data = Company.calculated_spending_data
+        end
+
+        should "include transaction_count" do
+          assert_equal 42, @spending_data[:transaction_count]
+        end
+
+        should "include total_paid_by_councils" do
+          assert_equal 3333, @spending_data[:total_received_from_councils]
+        end
+
+        should "include company_count" do
+          assert_equal 21, @spending_data[:company_count]
+        end
+
+        should "include largest_transactions" do
+          assert_equal [@financial_transaction.id], @spending_data[:largest_transactions]
+        end
+
+        should "include 20 largest company suppliers based on money received from councils" do
+          big_non_council_company = Factory(:company).create_spending_stat(:total_received_from_councils => 50)
+          25.times { |i| Factory(:company).create_spending_stat(:total_received_from_councils => i*1000) }
+          csd = Council.calculated_spending_data[:largest_companies]
+          assert_equal 20, csd.size
+          assert !csd.include?(big_non_council_company.id)
+        end
+        
+        should "include breakdown of company types" do
+          assert_equal @company_type_breakdown, @spending_data[:company_type_breakdown]
+        end
+
+        # should "include 20 largest charity suppliers based on money received from councils" do
+        #   big_non_council_charity = Factory(:charity).create_spending_stat(:total_received_from_councils => 50)
+        #   25.times { |i| Factory(:charity).create_spending_stat(:total_received_from_councils => i*1000) }
+        #   csd = Council.calculated_spending_data[:largest_charities]
+        #   assert_equal 20, csd.size
+        #   assert !csd.include?(big_non_council_charity.id)
+        # end
+
+      end
+    end
+    
   end
   
   context "An instance of the Company class" do

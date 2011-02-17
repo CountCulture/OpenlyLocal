@@ -17,6 +17,16 @@ class Company < ActiveRecord::Base
     errors.add_to_base('Either the company number or vat number must be present') unless (company_number? || vat_number?)
   end
   
+  def self.calculated_spending_data
+    res = {}
+    res[:total_received_from_councils] = SpendingStat.sum(:total_received_from_councils, :conditions => "spending_stats.organisation_type = 'Company'")
+    res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'")
+    res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
+    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'").collect(&:id)
+    res[:company_type_breakdown] = Company.count(:group => 'company_type', :conditions=>'company_number IS NOT NULL AND suppliers.organisation_type = "Council"', :joins => :supplying_relationships)
+    res
+  end
+  
   # matches normalised version of given title with
   def self.from_title(raw_title, options={})
     if existing_company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
