@@ -32,7 +32,6 @@ class CompaniesControllerTest < ActionController::TestCase
       get :spending
     end
 
-    should assign_to(:biggest_companies)
     should assign_to(:council_spending_data){@cached_spending_data}
     should respond_with :success
     should render_template :spending
@@ -41,9 +40,8 @@ class CompaniesControllerTest < ActionController::TestCase
       assert_select "title", /companies supplying/i
     end
 
-    should 'list largest companies in descending order of total_spend' do
-      assert_select 'li .company_link', /#{@big_company.title}/
-      assert_equal @big_company, assigns(:biggest_companies).first
+    should 'list largest companies' do
+      assert_select 'table .company_link', /#{@companies.first.title}/
     end
   end
 

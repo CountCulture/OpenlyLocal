@@ -1,6 +1,33 @@
 module SpendingStatUtilities
   module Base
     module ClassMethods
+      def cache_spending_data
+        data = calculated_spending_data
+        File.open(cached_spending_data_location, "w") do |f|
+          f.write(data.to_yaml)
+        end
+        cached_spending_data_location
+      end
+      
+      def cached_spending_data_location
+        File.join(RAILS_ROOT, 'db', 'data', 'cache', "#{self.to_s.underscore}_spending")
+      end
+      
+      def cached_spending_data
+        data_file = cached_spending_data_location
+        return unless basic_spending_data = YAML.load_file(data_file) rescue nil
+        basic_spending_data.select{ |k,v| k.to_s.match(/^largest_/) }.each do |k,v|
+          klass = k.to_s.sub(/^largest_/,'').classify.constantize rescue nil
+          # logger.debug "klass_name = #{klass}. defined = #{Object.const_defined?(klass_name)}"
+          if klass
+            logger.debug "klass_name = #{klass}"
+            basic_spending_data[k] = klass.find(basic_spending_data[k]).sort{ |a,b| basic_spending_data[k].index(a.id) <=> basic_spending_data[k].index(b.id)}
+          end
+          logger.debug "&&&&&&&&&&#{basic_spending_data.inspect}"
+        end
+        basic_spending_data
+      end
+
     end
     
     module InstanceMethods

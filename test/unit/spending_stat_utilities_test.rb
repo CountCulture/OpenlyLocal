@@ -65,6 +65,108 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
       end
     end
     
+    context "when caching spending data" do
+      setup do
+        TestModelWithSpendingStat.stubs(:calculated_spending_data).returns({:total_spend => 1234, :transaction_count => 45})
+        @cached_file_location = File.join(RAILS_ROOT, 'db', 'data', 'cache', 'test_model_with_spending_stat_spending')
+        File.rename(@cached_file_location, @cached_file_location + '_original') if File.exist?(@cached_file_location)
+      end
+      
+      teardown do
+        File.rename(@cached_file_location + '_original', @cached_file_location) if File.exist?(@cached_file_location + '_original')
+      end
+      
+      should "get calculated spending data" do
+        TestModelWithSpendingStat.expects(:calculated_spending_data)
+        TestModelWithSpendingStat.cache_spending_data
+      end
+      
+      should "save calculated spending data as yaml in file" do
+        TestModelWithSpendingStat.cache_spending_data
+        YAML.load_file(@cached_file_location)
+      end
+
+      should "return file location" do
+        assert_equal @cached_file_location, TestModelWithSpendingStat.cache_spending_data
+      end
+      
+    end
+    
+    context "when returning cached_spending_data_location" do
+      should "build from class_name" do
+        assert_equal File.join(RAILS_ROOT, 'db', 'data', 'cache', "test_model_with_spending_stat_spending"), TestModelWithSpendingStat.cached_spending_data_location
+      end
+    end
+    
+    context "when returning cached_spending_data" do
+      setup do
+        @companies = 3.times.collect{ |i| c=Factory(:company); Factory(:spending_stat, :organisation => c, :total_received_from_councils => i*1000); c}
+        @financial_transactions = 5.times.collect{|i| Factory(:financial_transaction, :value => i*500)}
+        @charities = 1.times.collect{ |i| c=Factory(:charity); Factory(:spending_stat, :organisation => c, :total_received_from_councils => i*1000); c}
+        @spending_data = { :supplier_count=>77665, 
+                           :largest_transactions=>@financial_transactions.collect(&:id), 
+                           :largest_companies=>@companies.collect(&:id), 
+                           :total_spend=>3404705734.99173, 
+                           :company_count=>27204, 
+                           :largest_charities=>@charities.collect(&:id), 
+                           :transaction_count=>476422}
+        
+        YAML.stubs(:load_file).returns(@spending_data)
+      end
+      
+      should "check for council_spending in data cache store" do
+        YAML.expects(:load_file).with(File.join(RAILS_ROOT, 'db', 'data', 'cache', 'test_model_with_spending_stat_spending'))
+        TestModelWithSpendingStat.cached_spending_data
+      end
+      
+      should "return nil if no cached file" do
+        YAML.expects(:load_file) # returns nil
+        assert_nil TestModelWithSpendingStat.cached_spending_data
+      end
+            
+      context "and spending_data is in cache" do
+
+        should "return spending_data hash" do
+          assert_kind_of Hash, TestModelWithSpendingStat.cached_spending_data
+        end
+        
+        context "and Hash" do
+          setup do
+            @cached_spending_data = TestModelWithSpendingStat.cached_spending_data
+          end
+
+          should "replace ids for largest items where name translates into class" do
+            assert_equal @companies.size, @cached_spending_data[:largest_companies].size
+            assert_kind_of Company, @cached_spending_data[:largest_companies].first
+          end
+          
+          should "sort by order in cached_spending_data" do
+            assert_equal @companies.first, @cached_spending_data[:largest_companies].first
+          end
+          
+          should "not replace ids for largest items where name does not translate into class" do
+            assert_equal @financial_transactions.first.id, @cached_spending_data[:largest_transactions].first
+          end
+          
+        end
+      end
+      
+      context "and problem parsing YAML" do
+        setup do
+          YAML.expects(:load_file).raises
+        end
+
+        should "return nil" do
+          assert_nil Council.cached_spending_data
+        end
+        
+        should_eventually "email admin" do
+          
+        end
+      end
+      
+    end
+    
   end
 
   context "A class that mixes in SpendingStatUtilities::Payer" do

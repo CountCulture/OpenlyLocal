@@ -434,6 +434,37 @@ class CompanyTest < ActiveSupport::TestCase
       end
     end
     
+    # context "when getting cached_spending_data" do
+    # 
+    #   should "return spending_data hash" do
+    #     assert_kind_of Hash, Company.cached_spending_data
+    #   end
+    #   
+    #   context "and Hash" do
+    #     setup do
+    #       @cached_spending_data = Council.cached_spending_data
+    #     end
+    # 
+    #     should "replace financial_transaction_ids with financial_transactions" do
+    #       assert_kind_of FinancialTransaction, @cached_spending_data[:largest_transactions].first
+    #     end
+    #     
+    #     should "return financial_transactions biggest first" do
+    #       assert_equal @financial_transactions.sort_by(&:value).reverse, @cached_spending_data[:largest_transactions]
+    #     end
+    #     
+    #     should "replace company ids with companies, ordered by total_received_from_councils" do
+    #       assert_equal @companies.size, @cached_spending_data[:largest_companies].size
+    #       assert_equal @companies.first, @cached_spending_data[:largest_companies].first
+    #     end
+    #     
+    #     should "replace charity ids with charities" do
+    #       assert_equal @charities.size, @cached_spending_data[:largest_charities].size
+    #       assert_equal @charities.first, @cached_spending_data[:largest_charities].first
+    #     end
+    #   end
+    #   
+    # end
   end
   
   context "An instance of the Company class" do

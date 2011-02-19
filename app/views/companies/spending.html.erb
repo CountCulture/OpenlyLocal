@@ -16,10 +16,10 @@
 			<%= basic_table :caption => 'Companies supplying councils', 
 											:headings => ['Name', 'Total spend', 'Councils supplied', 'Largest council'], 
 											:classes => ['name', 'value', 'value', 'name'],
-											:data => @council_spending_data[:largest_companies].collect{ |c| [ link_to(c.title, :controller => 'companies', :action => 'show', :id => c.to_param), 
-											                                                                   "£#{number_with_delimiter(c.spending_stat.total_received_from_councils.to_i)}", 
-											                                                                   c.spending_stat.number_of_councils,
-											                                                                   basic_link_for(c.spending_stat.biggest_council)] } %>
+											:data => @council_spending_data[:largest_companies].collect{ |co| [ basic_link_for(co), 
+											                                                                   "£#{number_with_delimiter(co.spending_stat.total_received_from_councils.to_i)}", 
+											                                                                   co.spending_stat.number_of_councils,
+											                                                                   basic_link_for(co.spending_stat.biggest_council)] } %>
 			<p>See also <%= link_to "Council Spending Dashboard", '/councils/spending' %></p>
 		</div>
 	

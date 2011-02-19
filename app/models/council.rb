@@ -8,7 +8,7 @@ class Council < ActiveRecord::Base
     "County" => "http://en.wikipedia.org/wiki/Non-metropolitan_county",
     "Metropolitan Borough" => "http://en.wikipedia.org/wiki/Metropolitan_borough"
   }
-  CACHED_SPENDING_DATA_LOCATION = File.join(RAILS_ROOT, 'db', 'data', 'cache', 'council_spending')
+
   include PartyBreakdown
   include AreaMethods
   include TwitterAccountMethods
@@ -70,20 +70,9 @@ class Council < ActiveRecord::Base
     res
   end
   
-  def self.cache_spending_data
-    data = self.calculated_spending_data
-    File.open(CACHED_SPENDING_DATA_LOCATION, "w") do |f|
-      f.write(data.to_yaml)
-    end
-    CACHED_SPENDING_DATA_LOCATION
-  end
-  
   def self.cached_spending_data
-    data_file = File.join(CACHED_SPENDING_DATA_LOCATION)
-    return unless basic_spending_data = YAML.load_file(data_file) rescue nil
+    return unless basic_spending_data = super
     basic_spending_data[:largest_transactions] = FinancialTransaction.find(basic_spending_data[:largest_transactions]).sort_by{ |ft| - ft.value }
-    basic_spending_data[:largest_companies] = Company.find(basic_spending_data[:largest_companies], :include => :spending_stat).sort_by{ |c| - c.spending_stat.total_received_from_councils.to_i }
-    basic_spending_data[:largest_charities] = Charity.find(basic_spending_data[:largest_charities], :include => :spending_stat).sort_by{ |c| - c.spending_stat.total_received_from_councils.to_i }
     basic_spending_data
   end
   

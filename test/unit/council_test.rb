@@ -364,12 +364,12 @@ class CouncilTest < ActiveSupport::TestCase
           
           should "replace company ids with companies, ordered by total_received_from_councils" do
             assert_equal @companies.size, @cached_spending_data[:largest_companies].size
-            assert_equal @companies.last, @cached_spending_data[:largest_companies].first
+            assert_equal @companies.first, @cached_spending_data[:largest_companies].first
           end
           
           should "replace charity ids with charities" do
             assert_equal @charities.size, @cached_spending_data[:largest_charities].size
-            assert_equal @charities.last, @cached_spending_data[:largest_charities].first
+            assert_equal @charities.first, @cached_spending_data[:largest_charities].first
           end
         end
       end
