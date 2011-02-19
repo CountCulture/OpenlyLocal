@@ -88,6 +88,8 @@ class Supplier < ActiveRecord::Base
     case name
     when /Police Authority/i
       PoliceAuthority.find_by_name(name)
+    when /Pension Fund/i
+      PensionFund.find_by_name(name)
     when /Council|Borough|(City of)|Authority/i
       Council.find_by_normalised_title(Council.normalise_title(name))
     else

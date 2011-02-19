@@ -272,6 +272,17 @@ class SupplierTest < ActiveSupport::TestCase
         end
       end
       
+      context "and name is pension fund-like" do
+        setup do
+          @supplier.name = 'Foo Pension Fund'
+        end
+
+        should "try to match against pension fund" do
+          PensionFund.expects(:find_by_name).with('Foo Pension Fund')
+          @supplier.possible_payee
+        end
+      end
+      
       context "and name is council-like" do
         setup do
           @supplier.name = 'Foo Council'
