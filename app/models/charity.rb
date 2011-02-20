@@ -53,6 +53,11 @@ class Charity < ActiveRecord::Base
     "http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"
   end
   
+  def company_number=(raw_number)
+    self[:company_number] = raw_number
+    self[:normalised_company_number] = Company.normalise_company_number(raw_number)
+  end
+  
   def resource_uri
     "http://opencharities.org/id/charities/#{charity_number}"
   end

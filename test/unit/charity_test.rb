@@ -236,18 +236,27 @@ class CharityTest < ActiveSupport::TestCase
       end
     end
     
-    # context "when setting company_number" do
-    #   setup do
-    #     
-    #   end
-    # 
-    #   should "find company from normalised company_number" do
-    #     
-    #   end
-    #   
-    #   should "associate charity with company if"
-    # end
-    # 
+    context "when setting company_number" do
+      setup do
+        Company.stubs(:normalise_company_number).returns('BC4567')
+      end
+      
+      should "set company number" do
+        @charity.company_number = 'AB1234'
+        assert_equal 'AB1234', @charity.company_number
+      end
+      
+      should "normalised company_number" do
+        Company.expects(:normalise_company_number).with('AB1234')
+        @charity.company_number = 'AB1234'
+      end
+      
+      should "set normalise_company_number to normalised company number" do
+        @charity.company_number = 'AB1234'
+        assert_equal 'BC4567', @charity.normalised_company_number
+      end
+    end
+    
     context "when returning foaf version of telephone number" do
 
       should "return nil if telephone blank" do
