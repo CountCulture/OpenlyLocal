@@ -188,9 +188,22 @@ class CompanyTest < ActiveSupport::TestCase
       end
       
       should "return company that matching normalised title" do
-        some_co = stub
+        some_co = stub_everything
         Company.stubs(:first).returns(some_co)
         assert_equal some_co, Company.from_title('Foo')
+      end
+      
+      context "and company has associated charity" do
+        setup do
+          @charity_company = Factory(:company)
+          @charity = Factory(:charity, :company_number => @charity_company.company_number)
+          Company.stubs(:first).returns(@charity_company)
+        end
+        
+        should "return charity" do
+          # p @charity_company.charity
+          assert_equal @charity, Company.from_title('foo bar')
+        end
       end
       
       context "and no company matches normalised title" do

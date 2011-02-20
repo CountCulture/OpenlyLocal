@@ -29,13 +29,15 @@ class Company < ActiveRecord::Base
   
   # matches normalised version of given title with
   def self.from_title(raw_title, options={})
-    if existing_company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
-      return existing_company 
-    elsif company_info = CompanyUtilities::Client.new.find_company_by_name(raw_title)
-      existing_company = Company.find_by_company_number(company_info[:company_number])
-      return existing_company if existing_company
-      options[:no_create] ? company_info : Company.create(company_info) #we may be returned company that has slightly diff name  but same company_number
+    company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
+    if !company && company_info = CompanyUtilities::Client.new.find_company_by_name(raw_title)
+      company = Company.find_by_company_number(company_info[:company_number])
+      # return existing_company if existing_company
+      company = options[:no_create] ? company_info : Company.create(company_info) unless company
+      # we may be returned company that has slightly diff name  but same company_number
     end
+    # return associated charity if there is one, as we really want association to be with the charity, not the company
+    company.is_a?(Company) && company.charity ? company.charity : company
   end
   
   def self.match_or_create(params={})
