@@ -3,7 +3,7 @@ class Company < ActiveRecord::Base
   include SpendingStatUtilities::Base
   include SpendingStatUtilities::Payee
   
-  has_one :charity, :primary_key => "company_number", :foreign_key => "company_number"
+  has_one :charity, :primary_key => "company_number", :foreign_key => "normalised_company_number"
   
   validates_presence_of :title, :on => :create # note initially we have some companies with company number but no title
   validates_uniqueness_of :company_number, :allow_blank => true

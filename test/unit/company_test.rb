@@ -18,6 +18,7 @@ class CompanyTest < ActiveSupport::TestCase
     should have_db_column :previous_names
     should have_db_column :sic_codes
     should have_db_column :country
+    should have_one :charity
     
     should 'serialize previous_names' do
       assert_equal ['foo', 'bar'], Factory(:company, :previous_names => ['foo', 'bar']).reload.previous_names 
@@ -39,9 +40,9 @@ class CompanyTest < ActiveSupport::TestCase
       assert Company.new.respond_to?(:supplying_relationships)
     end
 
-    should "have one charity with company_number as foreign key" do
+    should "have one charity with normalised_company_number as foreign key" do
       charity_1 = Factory(:charity)
-      charity_2 = Factory(:charity, :company_number => @company.company_number)
+      charity_2 = Factory(:charity, :normalised_company_number => @company.company_number)
       charity_3 = Factory(:charity, :company_number => 'AB87654')
       assert_equal charity_2, @company.charity
       assert_nil Factory(:company, :company_number => nil, :vat_number => '12345').charity # don't try to match charities without company_number
@@ -196,12 +197,11 @@ class CompanyTest < ActiveSupport::TestCase
       context "and company has associated charity" do
         setup do
           @charity_company = Factory(:company)
-          @charity = Factory(:charity, :company_number => @charity_company.company_number)
+          @charity = Factory(:charity, :normalised_company_number => @charity_company.company_number)
           Company.stubs(:first).returns(@charity_company)
         end
         
         should "return charity" do
-          # p @charity_company.charity
           assert_equal @charity, Company.from_title('foo bar')
         end
       end

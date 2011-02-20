@@ -45,12 +45,27 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :fax
     should have_db_column :area_of_benefit
     should have_db_column :signed_up_for_1010
+    should have_db_column :normalised_company_number
     
     should "serialize mixed data columns" do
       %w(financial_breakdown other_names trustees accounts).each do |attrib|
         @charity.update_attribute(attrib, [{:foo => 'bar'}])
         assert_equal [{:foo => 'bar'}], @charity.reload.send(attrib), "#{attrib} attribute is not serialized"
       end
+    end
+    
+    should "have belong_to company with normalised_company_number as foreign key" do
+      company = Factory(:company)
+      company_charity = Factory(:charity, :normalised_company_number => company.company_number)
+      assert_equal company, company_charity.company
+    end
+    
+    should "validate uniqueness of non-blank company_number" do
+      another_charity = Factory.build(:charity)
+      assert another_charity.valid?
+      @charity.update_attribute(:company_number, 'AB12345')
+      dup_charity = Factory.build(:charity, :company_number => @charity.company_number)
+      assert !dup_charity.valid?
     end
     
     should "mixin SpendingStatUtilities::Base module" do
@@ -220,7 +235,19 @@ class CharityTest < ActiveSupport::TestCase
         assert_equal 'http://foo.com', Charity.new(:website => 'foo.com').website
       end
     end
-
+    
+    # context "when setting company_number" do
+    #   setup do
+    #     
+    #   end
+    # 
+    #   should "find company from normalised company_number" do
+    #     
+    #   end
+    #   
+    #   should "associate charity with company if"
+    # end
+    # 
     context "when returning foaf version of telephone number" do
 
       should "return nil if telephone blank" do

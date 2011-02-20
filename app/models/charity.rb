@@ -3,6 +3,7 @@ class Charity < ActiveRecord::Base
   has_many :classification_links, :as => :classified, :uniq => true
   has_many :classifications, :through => :classification_links
   has_many :charity_annual_reports
+  belongs_to :company, :primary_key => "company_number", :foreign_key => "normalised_company_number"
   include SpendingStatUtilities::Base
   include SpendingStatUtilities::Payee
   include AddressMethods
@@ -15,6 +16,8 @@ class Charity < ActiveRecord::Base
   
   validates_presence_of :title, :charity_number
   validates_uniqueness_of :charity_number
+  validates_uniqueness_of :company_number, :allow_nil => true
+  validates_uniqueness_of :normalised_company_number, :allow_nil => true
   before_save :normalise_title
   alias_attribute :url, :website  
   

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110216111414) do
+ActiveRecord::Schema.define(:version => 20110220121444) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -100,6 +100,7 @@ ActiveRecord::Schema.define(:version => 20110216111414) do
     t.column "subsidiary_number", :integer
     t.column "area_of_benefit", :string
     t.column "signed_up_for_1010", :boolean, :default => false
+    t.column "normalised_company_number", :string
   end
 
   add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number"
@@ -108,7 +109,7 @@ ActiveRecord::Schema.define(:version => 20110216111414) do
   add_index "charities", ["spending"], :name => "index_charities_on_spending"
   add_index "charities", ["normalised_title"], :name => "index_charities_on_normalised_title"
   add_index "charities", ["title"], :name => "index_charities_on_title"
-  add_index "charities", ["company_number"], :name => "index_charities_on_company_number"
+  add_index "charities", ["normalised_company_number"], :name => "index_charities_on_normalised_company_number"
 
   create_table "charity_annual_reports", :force => true do |t|
     t.column "charity_id", :integer

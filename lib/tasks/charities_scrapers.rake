@@ -219,7 +219,6 @@ task :import_1010_charities => :environment do
   puts "Total number of signed up charities = #{result_count}"
 end
 
-
 def create_charity(c)
   unless Charity.find_by_charity_number(c.first)
     c = Charity.create!(:charity_number => c.first, :title => c.last)
