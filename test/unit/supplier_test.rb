@@ -260,6 +260,39 @@ class SupplierTest < ActiveSupport::TestCase
       end
     end
 
+    context "when updating payee" do
+      setup do
+        @dummy_payee = Factory(:company)
+        @new_payee = Factory(:entity)
+        @supplier.update_attribute(:payee, @dummy_payee)
+      end
+      
+      should "update payee with new payee" do
+        @supplier.update_payee(@new_payee)
+        assert_equal @new_payee, @supplier.reload.payee
+      end
+      
+      should "update new payee spending stat" do
+        @new_payee.expects(:update_spending_stat)
+        @supplier.update_payee(@new_payee)
+      end
+      
+      should "update old payee spending stat" do
+        @dummy_payee.expects(:update_spending_stat)
+        @supplier.update_payee(@new_payee)
+      end
+      
+      should "update supplier spending stat" do
+        @supplier.expects(:update_spending_stat)
+        @supplier.update_payee(@new_payee)
+      end
+      
+      should "update supplier organisation spending stat" do
+        @supplier.organisation.expects(:update_spending_stat)
+        @supplier.update_payee(@new_payee)
+      end
+    end
+
     context "when matching against existing possible payees" do
       context "and name is company-like" do
         setup do

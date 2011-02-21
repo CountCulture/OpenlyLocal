@@ -68,6 +68,14 @@ class Supplier < ActiveRecord::Base
     end
   end
   
+  def update_payee(new_payee)
+    if old_payee = self.payee
+      self.payee = nil
+      old_payee.update_spending_stat # we do it manually rather than using after_remove callbacks as these duplicate some of the ones when adding supplier, and these should be called after new relationship added
+    end
+    new_payee.supplying_relationships << self #doing it this way rather than setting payee means after_add callbacks are triggered
+  end
+  
   # strip excess spaces and UTF8 spaces from name
   def name=(raw_name)
     self[:name] = NameParser.strip_all_spaces(raw_name) if raw_name
