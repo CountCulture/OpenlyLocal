@@ -291,6 +291,12 @@ class SupplierTest < ActiveSupport::TestCase
         @supplier.organisation.expects(:update_spending_stat)
         @supplier.update_payee(@new_payee)
       end
+      
+      context "and there is no existing payee" do
+        should "not raise exception" do
+          assert_nothing_raised(Exception) { Factory(:supplier).update_payee(Factory(:company)) }
+        end
+      end
     end
 
     context "when matching against existing possible payees" do
