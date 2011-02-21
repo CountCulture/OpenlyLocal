@@ -246,6 +246,18 @@ class SupplierTest < ActiveSupport::TestCase
         @dummy_payee.expects(:update_spending_stat)
         @supplier.match_with_payee
       end
+      
+      should "update supplier spending stat" do
+        @supplier.stubs(:possible_payee).returns(@dummy_payee)
+        @supplier.expects(:update_spending_stat)
+        @supplier.match_with_payee
+      end
+      
+      should "update supplier organisation spending stat" do
+        @supplier.stubs(:possible_payee).returns(@dummy_payee)
+        @supplier.organisation.expects(:update_spending_stat)
+        @supplier.match_with_payee
+      end
     end
 
     context "when matching against existing possible payees" do

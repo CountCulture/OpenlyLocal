@@ -62,8 +62,7 @@ class Supplier < ActiveRecord::Base
   
   def match_with_payee
     if payee = possible_payee
-      update_attribute(:payee, payee)
-      payee.update_spending_stat
+      payee.supplying_relationships << self #doing it this way rather than setting payee means after_add callbacks are triggered
     else
       update_attribute(:failed_payee_search, true)
     end

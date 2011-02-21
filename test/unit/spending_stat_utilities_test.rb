@@ -224,6 +224,20 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
       end
     end
     
+    context "when supplying_relationship added by setting supplier payee" do
+      setup do
+        @payee = Factory(:entity)
+        @supplier = Factory(:supplier)
+      end
+
+      should "update_spending_stat for self, organisation and supplying_relationship" do
+        @supplier.expects(:update_spending_stat)
+        @supplier.organisation.expects(:update_spending_stat)
+        @payee.expects(:update_spending_stat)
+        @supplier.update_attribute(:payee, @payee)
+      end
+    end
+
     context "when supplying_relationship removed" do
       setup do
         @payee = Factory(:entity)
@@ -237,6 +251,24 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
         @payee.expects(:update_spending_stat)
         @payee.supplying_relationships.delete(@supplier)
       end
+      
+    end    
+    
+    context "when supplying_relationship payee changed" do
+      
+      # setup do
+      #   @payee_1 = Factory(:entity)
+      #   @payee_2 = Factory(:company)
+      #   @supplier = Factory(:supplier)
+      #   Factory(:supplier).
+      # end
+      # 
+      # should "update_spending_stat for self, organisation and supplying_relationship" do
+      #   @supplier.expects(:update_spending_stat)
+      #   @supplier.organisation.expects(:update_spending_stat)
+      #   @payee.expects(:update_spending_stat)
+      #   @payee.supplying_relationships.delete(@supplier)
+      # end
       
     end    
     
