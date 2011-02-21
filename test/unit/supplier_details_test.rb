@@ -27,6 +27,16 @@ class SupplierDetailsTest < ActiveSupport::TestCase
       assert @supplier_details.respond_to?(:resource_uri=)
     end
     
+    should 'have company_number accessor' do
+      assert @supplier_details.respond_to?(:company_number)
+      assert @supplier_details.respond_to?(:company_number=)
+    end
+    
+    should 'have charity_number accessor' do
+      assert @supplier_details.respond_to?(:charity_number)
+      assert @supplier_details.respond_to?(:charity_number=)
+    end
+    
     context "when assigning url" do
 
       should "clean up using url_normaliser" do

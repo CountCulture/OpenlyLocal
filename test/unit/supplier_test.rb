@@ -452,49 +452,114 @@ class SupplierTest < ActiveSupport::TestCase
     
     context 'and when updating supplier details' do
       
-      setup do
-        @new_details = SupplierDetails.new( :url => 'http://foo.com', 
-                                            :company_number => '01234', 
-                                            :wikipedia_url => 'http://en.wikipedia.org/wiki/foo', 
-                                            :source_for_info => 'http://foo.com/about_us')
-      end
-      
-      context "in general" do
+      context "and company information supplied" do
+        setup do
+          @new_details = SupplierDetails.new( :url => 'http://foo.com', 
+                                              :company_number => '01234',
+                                              :entity_type => 'Company',
+                                              :wikipedia_url => 'http://en.wikipedia.org/wiki/foo', 
+                                              :source_for_info => 'http://foo.com/about_us')
+        end
 
-        should "create new company" do
-          assert_difference "Company.count", 1 do
+        context "in general" do
+
+          should "create new company" do
+            assert_difference "Company.count", 1 do
+              @supplier.update_supplier_details(@new_details)
+            end
+          end
+
+          should "associate new company with supplier" do
+            @supplier.update_supplier_details(@new_details)
+            assert_kind_of Company, c = @supplier.reload.payee
+            assert_equal "00001234", c.company_number
+          end
+
+          should "assign url and wikipedia_url to new company" do
+            @supplier.update_supplier_details(@new_details)
+            assert_equal 'http://foo.com', @supplier.payee.url
+            assert_equal 'http://en.wikipedia.org/wiki/foo', @supplier.payee.wikipedia_url
+          end
+
+          should "assign supplier title to new company" do
+            @supplier.update_supplier_details(@new_details)
+            assert_equal @supplier.title, @supplier.payee.title
+          end
+
+          should "update supplier spending_stat" do
+            @supplier.expects(:update_spending_stat)
             @supplier.update_supplier_details(@new_details)
           end
+
+          should "return true" do
+            assert @supplier.update_supplier_details(@new_details)
+          end
+
         end
-        
-        should "associate new company with supplier" do
+
+        context "when company with given company number already exists" do
+          setup do
+            @existing_company = Factory(:company, :company_number => '00001234')
+          end
+
+          should "not create new company" do
+            assert_no_difference "Company.count" do
+              @supplier.update_supplier_details(@new_details)
+            end
+          end
+
+          should "associate existing company with supplier" do
+            @supplier.update_supplier_details(@new_details)
+            assert_equal @existing_company, @supplier.reload.payee
+          end
+
+          # should "assign url and wikipedia_url to new company" do
+          #   @supplier.update_supplier_details(@new_details)
+          #   assert_equal 'http://foo.com', @existing_company.url
+          #   assert_equal 'http://en.wikipedia.org/wiki/foo', @existing_company.wikipedia_url
+          # end
+
+          should "return true" do
+            assert @supplier.update_supplier_details(@new_details)
+          end
+        end
+
+        context 'when missing essential data' do
+          should 'return false' do
+            assert !@supplier.update_supplier_details(SupplierDetails.new(:entity_type => 'Company', :company_number => ''))
+          end
+        end
+        # should 'set website if not set' do
+        #   @supplier.update_supplier_details(@new_details)
+        #   assert_equal 'http://foo.com', @supplier.reload.url
+        # end
+        # 
+        # should 'update website if set' do
+        #   @supplier.update_attribute(:url, 'htp://bar.com')
+        #   @supplier.update_supplier_details(@new_details)
+        #   assert_equal 'http://foo.com', @supplier.reload.url
+        # end
+        # 
+        should 'assign company with (normalised version of) given company number' do
           @supplier.update_supplier_details(@new_details)
-          assert_kind_of Company, c = @supplier.reload.payee
-          assert_equal "00001234", c.company_number
+          assert_equal '00001234', @supplier.reload.payee.company_number
         end
-        
-        should "assign url and wikipedia_url to new company" do
-          @supplier.update_supplier_details(@new_details)
-          assert_equal 'http://foo.com', @supplier.payee.url
-          assert_equal 'http://en.wikipedia.org/wiki/foo', @supplier.payee.wikipedia_url
+
+        should 'not delete existing url if nil given for url' do
+          @supplier.update_attribute(:url, 'http://bar.com')
+          @supplier.update_supplier_details(SupplierDetails.new(:url => nil))
+          assert_equal 'http://bar.com', @supplier.reload.url
         end
-        
-        should "assign supplier title to new company" do
-          @supplier.update_supplier_details(@new_details)
-          assert_equal @supplier.title, @supplier.payee.title
+
+        should 'not delete existing company if nil given for company_number' do
+          @company = Factory(:company)
+          @supplier.update_attribute(:payee, @company)
+          @supplier.update_supplier_details(SupplierDetails.new(:company_number => nil))
+          assert_equal @company, @supplier.reload.payee
         end
-        
-        should "update supplier spending_stat" do
-          @supplier.expects(:update_spending_stat)
-          @supplier.update_supplier_details(@new_details)
-        end
-        
-        should "return true" do
-          assert @supplier.update_supplier_details(@new_details)
-        end
-        
+
       end
-     
+      
       context "when supplier details includes info about entity" do
         setup do
           @entity = Factory(:entity)
@@ -506,7 +571,7 @@ class SupplierTest < ActiveSupport::TestCase
           @supplier.update_supplier_details(@entity_details)
           assert_equal @entity, @supplier.reload.payee
         end
-        
+
         should "not associate entity with supplier as payee when entity type can't be a payee" do
           non_entity = Factory(:financial_transaction)
           non_entity_details = SupplierDetails.new( :entity_type => 'FinancialTransaction', 
@@ -514,73 +579,26 @@ class SupplierTest < ActiveSupport::TestCase
           @supplier.update_supplier_details(non_entity_details)
           assert_nil @supplier.reload.payee
         end
-        
+
         should "return true" do
           assert @supplier.update_supplier_details(@entity_details)
         end
       end
 
-      context "when company with given company number already exists" do
+      context "and charity information supplied" do
         setup do
-          @existing_company = Factory(:company, :company_number => '00001234')
+          @matching_charity = Factory(:charity)
+          @new_details = SupplierDetails.new( :charity_number => @matching_charity.charity_number,
+                                              :entity_type => 'Charity',
+                                              :source_for_info => 'http://foo.com/about_us')
         end
 
-        should "not create new company" do
-          assert_no_difference "Company.count" do
-            @supplier.update_supplier_details(@new_details)
-          end
-        end
-
-        should "associate existing company with supplier" do
+        should "associate matching charity with supplier as payee" do
           @supplier.update_supplier_details(@new_details)
-          assert_equal @existing_company, @supplier.reload.payee
+          assert_equal @matching_charity, @supplier.reload.payee
         end
-        
-        # should "assign url and wikipedia_url to new company" do
-        #   @supplier.update_supplier_details(@new_details)
-        #   assert_equal 'http://foo.com', @existing_company.url
-        #   assert_equal 'http://en.wikipedia.org/wiki/foo', @existing_company.wikipedia_url
-        # end
-        
-        should "return true" do
-          assert @supplier.update_supplier_details(@new_details)
-        end
+
       end
-      
-      context 'when missing essential data' do
-        should 'return false' do
-          assert !@supplier.update_supplier_details(SupplierDetails.new(:company_number => ''))
-        end
-      end
-      # should 'set website if not set' do
-      #   @supplier.update_supplier_details(@new_details)
-      #   assert_equal 'http://foo.com', @supplier.reload.url
-      # end
-      # 
-      # should 'update website if set' do
-      #   @supplier.update_attribute(:url, 'htp://bar.com')
-      #   @supplier.update_supplier_details(@new_details)
-      #   assert_equal 'http://foo.com', @supplier.reload.url
-      # end
-      # 
-      should 'assign company with (normalised version of) given company number' do
-        @supplier.update_supplier_details(@new_details)
-        assert_equal '00001234', @supplier.reload.payee.company_number
-      end
-      
-      should 'not delete existing url if nil given for url' do
-        @supplier.update_attribute(:url, 'http://bar.com')
-        @supplier.update_supplier_details(SupplierDetails.new(:url => nil))
-        assert_equal 'http://bar.com', @supplier.reload.url
-      end
-      
-      should 'not delete existing company if nil given for company_number' do
-        @company = Factory(:company)
-        @supplier.update_attribute(:payee, @company)
-        @supplier.update_supplier_details(SupplierDetails.new(:company_number => nil))
-        assert_equal @company, @supplier.reload.payee
-      end
-      
     end
 
   end

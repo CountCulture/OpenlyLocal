@@ -110,8 +110,9 @@ class Supplier < ActiveRecord::Base
   
   def update_supplier_details(details)
     non_nil_attribs = details.attributes.delete_if { |k,v| v.blank? }
-    if details.entity_type.blank? || details.entity_id.blank?
-      entity = Company.match_or_create(non_nil_attribs.except(:source_for_info, :entity_type, :entity_id).merge(:title => title))
+    if details.entity_id.blank?
+      entity = Company.match_or_create(non_nil_attribs.except(:source_for_info, :entity_type, :entity_id).merge(:title => title)) if details.entity_type == 'Company'
+      entity = Charity.find_by_charity_number(non_nil_attribs[:charity_number]) if details.entity_type == 'Charity'
     else
       entity = self.class.allowed_payee_classes.include?(details.entity_type)&&details.entity_type.constantize.find(details.entity_id)
     end
