@@ -408,7 +408,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "calculate total value of council payments grouped by supplier type" do
-        FinancialTransaction.expects(:sum).with(:value, :joins => :supplier, :group => 'suppliers.payee_type', :conditions => 'suppliers.organisation_type = "Council"')
+        FinancialTransaction.expects(:sum).with(:value, :joins => :supplier, :group => 'suppliers.payee_type', :conditions => 'suppliers.organisation_type = "Council"').returns({"Entity" => 123.4})
         Council.calculated_spending_data
       end
       
