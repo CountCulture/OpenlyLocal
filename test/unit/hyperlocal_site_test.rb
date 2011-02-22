@@ -11,6 +11,7 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
     should_validate_presence_of :title
     should_validate_presence_of :url
     should_validate_presence_of :email
+    should validate_uniqueness_of(:url)
     should belong_to :hyperlocal_group
     should belong_to :council
     should have_many :feed_entries

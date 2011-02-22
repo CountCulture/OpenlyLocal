@@ -5,7 +5,8 @@ class HyperlocalSite < ActiveRecord::Base
   belongs_to :hyperlocal_group
   belongs_to :council
   has_many :feed_entries, :as => :feed_owner, :limit => 5
-  validates_presence_of :title, :url, :email
+  validates_presence_of :title, :email, :url
+  validates_uniqueness_of :url, :case_sensitive => false
   validates_presence_of :lat, :lng, :distance_covered, :description, :on => :create, :message => "can't be blank"
   # validates_uniqueness_of :title
   # validates_uniqueness_of :url
