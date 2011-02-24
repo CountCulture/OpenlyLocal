@@ -9,6 +9,7 @@ class ParishCouncilTest < ActiveSupport::TestCase
   should have_db_column :website
   should have_db_column :os_id
   should have_db_column :council_id
+  should have_db_column :gss_code
   should have_db_column :wdtk_name
   should have_db_column :vat_number
   should have_db_column :normalised_title

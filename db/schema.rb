@@ -682,6 +682,7 @@ ActiveRecord::Schema.define(:version => 20110224162550) do
     t.column "title", :text
     t.column "os_id", :text
     t.column "website", :text
+    t.column "gss_code", :text
     t.column "council_id", :text
     t.column "wdtk_name", :text
     t.column "vat_number", :text

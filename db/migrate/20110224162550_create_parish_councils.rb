@@ -5,6 +5,7 @@ class CreateParishCouncils < ActiveRecord::Migration
       t.text      :os_id
       t.text      :website
       t.text      :os_id
+      t.text      :gss_code
       t.text      :council_id
       t.text      :wdtk_name
       t.text      :vat_number
