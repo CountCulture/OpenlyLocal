@@ -1,5 +1,11 @@
 require 'test_helper'
 
+class TestNormalisedModel <ActiveRecord::Base
+  set_table_name "entities"
+  include TitleNormaliser::Base
+end
+
+
 class TitleNormaliserTest < Test::Unit::TestCase
   
   context "The TitleNormaliser module" do
@@ -126,4 +132,40 @@ class TitleNormaliserTest < Test::Unit::TestCase
     end
   end
   
+  context "A class which mixes in the TitleNormaliser::Base module" do
+    setup do
+      
+    end
+
+    should 'have normalise_title class method' do
+      assert TestNormalisedModel.respond_to?(:normalise_title)
+    end
+    
+    context "and when normalising title" do
+      should "normalise title using TitleNormaliser" do
+        TitleNormaliser.expects(:normalise_title).with('foo bar')
+        TestNormalisedModel.normalise_title('foo bar')
+      end
+    end  
+  end
+  
+  context "An instance of a class which mixes in the TitleNormaliser::Base module" do
+    setup do
+      @test_normalised_model = TestNormalisedModel.new
+    end
+
+    context "when saving" do
+      should "normalise title" do
+        @test_normalised_model.expects(:normalise_title)
+        @test_normalised_model.save!
+      end
+  
+      should "save normalised title" do
+        @test_normalised_model.title = "Foo & Baz Dept"
+        @test_normalised_model.save!
+        assert_equal "foo and baz dept", @test_normalised_model.reload.normalised_title
+      end
+    end
+
+  end
 end

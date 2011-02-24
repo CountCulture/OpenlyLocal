@@ -24,6 +24,10 @@ class EntityTest < ActiveSupport::TestCase
       assert @entity.respond_to?(:address_in_full)
     end
         
+    should 'mixin TitleNormaliser::Base module' do
+      assert Entity.respond_to?(:normalise_title)
+    end
+        
     should validate_presence_of :title
     
     should have_db_column :title

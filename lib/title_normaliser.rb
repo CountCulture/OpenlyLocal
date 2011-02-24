@@ -27,4 +27,27 @@ module TitleNormaliser
     raw_url.match(/(http:\/\/|https:\/\/)+/) ? raw_url.sub(/(^.+http)+/, 'http').gsub(/(http:\/\/|https:\/\/)+/, '\1') : "http://#{raw_url}"
   end
   
+  module Base
+    module ClassMethods
+      def normalise_title(raw_title)
+        TitleNormaliser.normalise_title(raw_title)
+      end
+
+    end
+    
+    module InstanceMethods
+  
+      private
+      def normalise_title
+        self.normalised_title = self.class.normalise_title(title)
+      end
+    end
+    
+    def self.included(receiver)
+      receiver.extend         ClassMethods
+      receiver.send :include, InstanceMethods
+      receiver.before_save :normalise_title
+    end
+  end
+  
 end
