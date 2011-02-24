@@ -28,6 +28,11 @@ class SupplierTest < ActiveSupport::TestCase
       assert @supplier.respond_to?(:vat_number=)
     end
     
+    should "have company_number accessor" do
+      assert @supplier.respond_to?(:company_number)
+      # assert @supplier.respond_to?(:vat_number=)
+    end
+    
     should 'mixin SpendingStatUtilities::Base' do
       assert @supplier.respond_to?(:spending_stat)
     end

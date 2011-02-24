@@ -1,4 +1,5 @@
 module SupplierUtilities
+  
   class VatMatcher
     
     EntityTypesToBeMatched = %w(Charity Entity Company)
@@ -66,4 +67,31 @@ module SupplierUtilities
     end
   end
 
+  class CompanyNumberMatcher
+    attr_reader :company_number, :supplier
+    def initialize(args)
+      @company_number = args[:company_number]
+      @supplier_id = args[:supplier].id
+    end
+    
+    # Because CompanyNumberMatchers will be usually used in the context of a Delayed::Job, 
+    # we can't store supplier as an instance variable, as when VatMatcher is 
+    # deserialized it prob won't be deserialized properly, or at least may have 
+    # unintended consequences
+    def supplier
+      @supplier = Supplier.find(@supplier_id)
+    end
+    
+    def perform
+      if supplier.payee && (supplier.payee.company_number != @company_number)
+        AdminMailer.deliver_admin_alert!( :title => "Submitted company_number (#{@company_number}) does not match existing company number", 
+                                          :details => "Given company_number for #{supplier.title} (#{supplier.organisation.title}) does not to match existing company_number (#{supplier.payee.company_number}). \nSupplier details\n#{supplier.inspect}")
+        
+      elsif company = Company.match_or_create(:company_number => @company_number)
+        supplier.update_attribute(:payee, company)
+      end
+    end
+    
+    
+  end
 end

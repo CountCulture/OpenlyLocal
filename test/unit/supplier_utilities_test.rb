@@ -25,7 +25,7 @@ class SupplierUtilitiesTest < ActiveSupport::TestCase
       assert_equal @supplier.id, @matcher.instance_variable_get(:@supplier_id)
     end
     
-    should "get return supplier indentified with supplier id as supplier" do
+    should "return supplier indentified with supplier id as supplier" do
       assert_equal @supplier, @matcher.supplier
     end
         
@@ -150,9 +150,7 @@ class SupplierUtilitiesTest < ActiveSupport::TestCase
             @matcher.expects(:find_entity)
             @matcher.match_using_external_data
           end
-
         end
-        
         
       end 
 
@@ -226,5 +224,70 @@ class SupplierUtilitiesTest < ActiveSupport::TestCase
       end
     end
   end
+  
+  context "A CompanyNumberMatcher instance" do
+    setup do
+      @supplier = Factory(:supplier)
+      @matcher = SupplierUtilities::CompanyNumberMatcher.new(:company_number => "ABOO1234", :supplier => @supplier)
+    end
 
+    should "store company_number as accessor" do
+      assert_equal "ABOO1234", @matcher.company_number
+    end
+
+    should "store submitted supplier_id as instance_variable" do
+      assert_equal @supplier.id, @matcher.instance_variable_get(:@supplier_id)
+    end
+    
+    should "return supplier indentified with supplier id as supplier" do
+      assert_equal @supplier, @matcher.supplier
+    end
+        
+    context "when performing" do
+      setup do
+        @company = Factory(:company)
+      end
+
+      should "match or create company from number" do
+        Company.expects(:match_or_create).with(:company_number => @matcher.company_number)
+        @matcher.perform
+      end
+      
+      should "associate found company with supplier" do
+        Company.stubs(:match_or_create).returns(@company)
+        @matcher.perform
+        assert_equal @company, @supplier.reload.payee
+      end
+      
+      context "and supplier already has payee" do
+        setup do
+          @another_company = Factory(:company)
+          @supplier.update_attribute(:payee, @another_company)
+          Company.stubs(:match_or_create)
+        end
+      
+        should "not get company from number if company number different from payee company" do
+          Company.expects(:match_or_create).never
+          @matcher.perform
+        end
+        
+        should "update not change payee company" do
+          @matcher.perform
+          assert_equal @another_company, @matcher.supplier.payee
+        end
+        
+        should "send alert if company number different from payee company" do
+          AdminMailer.expects(:deliver_admin_alert!)
+          @matcher.perform
+        end
+        
+        should "not send alert if company number not different from payee company" do
+          AdminMailer.expects(:deliver_admin_alert!).never
+          @matcher.instance_variable_set(:@company_number, @another_company.company_number)
+          @matcher.perform
+        end
+        
+      end
+    end
+  end
 end

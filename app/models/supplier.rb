@@ -13,6 +13,7 @@ class Supplier < ActiveRecord::Base
 
   alias_attribute :title, :name
   attr_accessor :vat_number
+  attr_reader :company_number
   
   def validate
     errors.add_to_base('Either a name or uid is required') if name.blank? && uid.blank?

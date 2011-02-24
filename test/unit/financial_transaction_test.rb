@@ -165,6 +165,46 @@ class FinancialTransactionTest < ActiveSupport::TestCase
           @financial_transaction.save!
         end
       end
+      
+      should 'in general not queue for matching supplier with company_number' do
+        Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher)).never
+        @financial_transaction.save!
+      end
+
+      context "and supplier has company_number" do
+        setup do
+          Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
+        end
+        
+        should 'queue for matching company_number if company_number' do
+          @financial_transaction.supplier.instance_variable_set(:@company_number, '123')
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher))
+          @financial_transaction.save!
+        end
+        
+        should 'queue for matching company_number before queueing financial_transaction' do
+          ft_observer = sequence('ft_observer')
+          @financial_transaction.supplier.instance_variable_set(:@company_number, '123')
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher)).in_sequence(ft_observer)
+          Delayed::Job.expects(:enqueue).with(@financial_transaction).in_sequence(ft_observer)
+          @financial_transaction.save!
+        end
+        
+        should 'not queue for matching company_number if supplier already has payee' do
+          @financial_transaction.supplier.instance_variable_set(:@company_number, '123')
+          @financial_transaction.supplier.payee = Factory(:charity)
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher)).never
+          @financial_transaction.save!
+        end
+        
+        should 'not queue for matching company_number if supplier already has no payee but has failed_payee_search' do
+          @financial_transaction.supplier.instance_variable_set(:@company_number, '123')
+          @financial_transaction.supplier.failed_payee_search = true
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher)).never
+          @financial_transaction.save!
+        end
+      end
     end
     
     context "when saving" do
@@ -733,6 +773,29 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       should "not instantiate new supplier if set" do
         @fin_trans.supplier_name = 'Bar Supplier'
         @fin_trans.supplier_vat_number = 'GB12345'
+        assert_equal 'Bar Supplier', @fin_trans.supplier.name
+      end
+      
+    end
+    
+    context "when setting supplier company number" do
+      setup do
+        @fin_trans = FinancialTransaction.new
+      end
+      
+      should "instantiate supplier if not set yet" do
+        @fin_trans.supplier_company_number = '12345'
+        assert_kind_of Supplier, @fin_trans.supplier
+      end
+      
+      should 'assign to company_number instance_variable' do
+        @fin_trans.supplier_company_number = '12345'
+        assert_equal '12345', @fin_trans.supplier.instance_variable_get(:@company_number)
+      end
+      
+      should "not instantiate new supplier if set" do
+        @fin_trans.supplier_name = 'Bar Supplier'
+        @fin_trans.supplier_company_number = '12345'
         assert_equal 'Bar Supplier', @fin_trans.supplier.name
       end
       

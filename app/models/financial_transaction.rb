@@ -231,10 +231,20 @@ class FinancialTransaction < ActiveRecord::Base
     # self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
 	end
 
-	def supplier_vat_number=(vat_number)
-	  self.supplier = supplier ? (supplier.vat_number = vat_number; supplier) : Supplier.new(:vat_number => vat_number)
+	def supplier_company_number=(co_no)
+    if supplier 
+      supplier.instance_variable_set(:@company_number, co_no)
+    else
+      s = Supplier.new
+      s.instance_variable_set(:@company_number, co_no)
+      self.supplier = s
+    end
     # self.supplier = organisation ? (organisation.suppliers.find_by_uid(uid) || Supplier.new(:name => uid, :organisation => organisation)) : Supplier.new(:uid => uid)
     # self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
+	end
+
+	def supplier_vat_number=(vat_number)
+	  self.supplier = supplier ? (supplier.vat_number = vat_number; supplier) : Supplier.new(:vat_number => vat_number)
 	end
 
   def title
