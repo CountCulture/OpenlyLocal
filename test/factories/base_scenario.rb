@@ -388,3 +388,9 @@ end
 Factory.define :charity_annual_report do |f|
   # f.association :charity
 end
+
+Factory.define :parish_council do |f|
+  f.sequence( :title) {|n| "Foo Parish #{n}"}
+  f.os_id '70012345'
+end
+

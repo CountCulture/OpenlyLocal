@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110220121444) do
+ActiveRecord::Schema.define(:version => 20110224162550) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -677,6 +677,18 @@ ActiveRecord::Schema.define(:version => 20110220121444) do
   end
 
   add_index "output_areas", ["ward_id"], :name => "index_output_areas_on_ward_id"
+
+  create_table "parish_councils", :force => true do |t|
+    t.column "title", :text
+    t.column "os_id", :text
+    t.column "website", :text
+    t.column "council_id", :text
+    t.column "wdtk_name", :text
+    t.column "vat_number", :text
+    t.column "normalised_title", :text
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "parsers", :force => true do |t|
     t.column "description", :string
