@@ -37,9 +37,29 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'hyperlocal_sites/custom_search.xml', :controller => "hyperlocal_sites", :action => "index", :custom_search => true, :format => "xml"
   map.resources :hyperlocal_sites, :collection => { :custom_search_results => :get, :destroy_multiple => :delete }
   
-  map.resources :committees, :documents, :hyperlocal_groups, :hyperlocal_sites, :members, :datapoints, :dataset_topic_groupings, :parsers, :pension_funds, :portal_systems, :police_forces, :police_authorities, :police_teams, :political_parties, :polls, :services, :twitter_accounts, :user_submissions, :wards, :feed_entries
+  map.resources :committees, 
+                :documents, 
+                :hyperlocal_groups, 
+                :hyperlocal_sites, 
+                :members, 
+                :datapoints, 
+                :dataset_topic_groupings, 
+                :parsers, 
+                :pension_funds, 
+                :portal_systems, 
+                :police_forces, 
+                :police_authorities, 
+                :police_teams, 
+                :political_parties, 
+                :polls, 
+                :services, 
+                :twitter_accounts, 
+                :user_submissions, 
+                :wards, 
+                :feed_entries
   
   map.resources :related_articles, :only => [:new, :create, :index]
+  map.resources :parish_councils, :only => [:show]
 
   map.resources :councils, :collection => { :spending => :get }, :member => { :accounts => :get} do |councils|
     councils.resources :datasets, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
@@ -73,6 +93,7 @@ ActionController::Routing::Routes.draw do |map|
     restype.resources :entities
     restype.resources :companies
     restype.resources :entities
+    restype.resources :parish_councils
   end
   
   map.connect 'areas/postcodes/:postcode', :controller => 'areas', :action => 'search'

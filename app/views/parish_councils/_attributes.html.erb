@@ -1,0 +1,3 @@
+<%= attribute_tag :council, basic_link_for( attributes.council), :text => 'Parent council' %>
+<%= attribute_tag :web_page, link_to(attributes.website, attributes.website, :class => "external") if attributes.website? %>
+<%= attribute_tag :os_id, link_to(attributes.os_id, "http://data.ordnancesurvey.co.uk/doc/#{attributes.os_id}", :class => "external"), :text => "Ordnance Survey ID" %>

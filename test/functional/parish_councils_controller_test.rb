@@ -2,6 +2,11 @@ require 'test_helper'
 
 class ParishCouncilsControllerTest < ActionController::TestCase
 
+  should "route resource to show action" do
+    assert_routing "/parish_councils/23", {:controller => "parish_councils", :action => "show", :id => "23"} #default route
+    assert_routing "/id/parish_councils/23", {:controller => "parish_councils", :action => "show", :id => "23", :redirect_from_resource => true}
+  end
+  
   should "route council identified by os_id to show action" do
     assert_routing "parish_councils/os_id/1023", {:controller => "parish_councils", :action => "show", :os_id => "1023"}
     assert_routing "parish_councils/os_id/1023.xml", {:controller => "parish_councils", :action => "show", :os_id => "1023", :format => "xml"}
@@ -26,7 +31,7 @@ class ParishCouncilsControllerTest < ActionController::TestCase
       should render_with_layout
 
       should "link to parent council" do
-        assert_select "#main_attributes a.council_link", @parish_council.council.title
+        assert_select ".attributes a.council_link", @parish_council.council.title
       end
 
       should "show parish_council in title" do

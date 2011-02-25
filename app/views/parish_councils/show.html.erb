@@ -1,9 +1,8 @@
 <h1><%= h @title %></h1>
+
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :council, basic_link_for( @parish_council.council), :text => 'Parent council' %>
-  <%= attribute_tag :web_page, link_to(@parish_council.website, @parish_council.website, :class => "external") if @parish_council.website? %>
-  <%= attribute_tag :web_page, link_to(@parish_council.website, @parish_council.website, :class => "external") if @parish_council.website? %>
-  <%= attribute_tag :os_id, link_to(@parish_council.os_id, "http://data.ordnancesurvey.co.uk/doc/#{@parish_council.os_id}", :class => "external"), :text => "Ordnance Survey ID" %>
+  <%= render :partial => 'attributes', :object => @parish_council %>
 </dl>
+
 
 <%= timestamp_data_for @parish_council %>
