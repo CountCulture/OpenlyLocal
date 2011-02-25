@@ -20,8 +20,9 @@ class WdtkRequest < ActiveRecord::Base
     requests = JSON.parse(response).group_by{|r| r['info_request']}
     requests.collect do |request_name, request_detail_items|
       latest_reponse = request_detail_items.sort{ |a,b| a['created_at'] <=> b['created_at'] }.detect{|r| r['calculated_state']}
-      org = Council.find_by_wdtk_name(request_detail_items.first['public_body'])||Entity.find_by_wdtk_name(request_detail_items.first['public_body'])
-      req = find_or_initialize_by_request_name(:request_name => request_name)
+      wdtk_name = request_detail_items.first['public_body']['url_name']
+      org = Council.find_by_wdtk_name(wdtk_name)||Entity.find_by_wdtk_name(wdtk_name)
+      req = find_or_initialize_by_request_name(:request_name => request_name['url_title'])
       req.update_attributes(:organisation => org, :status => latest_reponse['calculated_state'] )
       req.update_from_website
     end
