@@ -22,7 +22,7 @@ class ParishCouncilsControllerTest < ActionController::TestCase
     
     context "in general" do
       setup do
-        get :show, :os_id => @parish_council.os_id
+        get :show, :id => @parish_council.id
       end
 
       should assign_to(:parish_council) { @parish_council}
@@ -45,6 +45,17 @@ class ParishCouncilsControllerTest < ActionController::TestCase
       # should "show api block" do
       #   assert_select "#api_info"
       # end
+    end
+    
+    context "with os_id used to identify parish_council" do
+      setup do
+        get :show, :os_id => @parish_council.os_id
+      end
+
+      should assign_to(:parish_council) { @parish_council}
+      should respond_with :success
+      should render_template :show
+      should render_with_layout
     end
   end  
   
