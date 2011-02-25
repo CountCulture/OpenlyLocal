@@ -3,6 +3,12 @@
 <dl id="main_attributes" class="attributes">
   <%= render :partial => 'attributes', :object => @parish_council %>
 </dl>
+<div class="extra_info">
+  <h3>Other info</h3>
+  <%- if @parish_council.wdtk_name? -%>
+    <%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@parish_council.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@parish_council.wdtk_name}", :class => "feed" %>)
+  <%- end -%>
+</div>
 
 
 <%= timestamp_data_for @parish_council %>
