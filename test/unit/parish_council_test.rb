@@ -13,6 +13,7 @@ class ParishCouncilTest < ActiveSupport::TestCase
   should have_db_column :wdtk_name
   should have_db_column :vat_number
   should have_db_column :normalised_title
+  should belong_to :council
 
 
   should 'mixin TitleNormaliser::Base module' do

@@ -12,7 +12,7 @@ class ParishCouncilsControllerTest < ActionController::TestCase
   # show test
   context "on GET to :show" do
     setup do
-      @parish_council = Factory(:parish_council)
+      @parish_council = Factory(:parish_council, :council => Factory(:generic_council))
     end
     
     context "in general" do
@@ -25,11 +25,9 @@ class ParishCouncilsControllerTest < ActionController::TestCase
       should render_template :show
       should render_with_layout
 
-      # should "list all associated councils" do
-      #   assert_select "#councils li", @parish_council.councils.size do
-      #     assert_select "a", @council.title
-      #   end
-      # end
+      should "link to parent council" do
+        assert_select "#main_attributes a.council_link", @parish_council.council.title
+      end
 
       should "show parish_council in title" do
         assert_select "title", /#{@parish_council.title}/
