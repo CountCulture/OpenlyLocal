@@ -1,8 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :parish_councils
 
   map.resources :charities
-
 
   map.resources :investigations
 
@@ -93,6 +91,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'id/councils/snac_id/:snac_id', :controller => "councils", :action => "show", :requirements => { :snac_id => /\w+/, :redirect_from_resource => true }
   map.connect 'id/wards/snac_id/:snac_id.:format', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/, :redirect_from_resource => true }
   map.connect 'id/wards/snac_id/:snac_id', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/, :redirect_from_resource => true }
+  map.connect 'parish_councils/os_id/:os_id.:format', :controller => "parish_councils", :action => "show", :requirements => { :os_id => /\d+/ }
+  map.connect 'parish_councils/os_id/:os_id', :controller => "parish_councils", :action => "show", :requirements => { :os_id => /\d+/ }
 
   # The priority is based upon order of creation: first created -> highest priority.
 
