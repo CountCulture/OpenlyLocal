@@ -19,5 +19,14 @@ class ParishCouncilTest < ActiveSupport::TestCase
   should 'mixin TitleNormaliser::Base module' do
     assert ParishCouncil.respond_to?(:normalise_title)
   end
+  
+  should "mixin SpendingStatUtilities::Base module" do
+    assert ParishCouncil.new.respond_to?(:spending_stat)
+  end
+  
+  should "mixin SpendingStatUtilities::Payee module" do
+    assert ParishCouncil.new.respond_to?(:supplying_relationships)
+  end
+
       
 end

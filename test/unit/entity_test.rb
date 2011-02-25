@@ -5,8 +5,6 @@ class EntityTest < ActiveSupport::TestCase
     setup do
       @entity = Factory(:entity)
     end
-
-    # should_have_many :financial_transactions, :through => :suppliers
     
     should "mixin SpendingStatUtilities::Base module" do
       assert Entity.new.respond_to?(:spending_stat)
