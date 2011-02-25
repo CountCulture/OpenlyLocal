@@ -115,6 +115,7 @@ class Supplier < ActiveRecord::Base
       entity = Charity.find_by_charity_number(non_nil_attribs[:charity_number]) if details.entity_type == 'Charity'
     else
       entity = self.class.allowed_payee_classes.include?(details.entity_type)&&details.entity_type.constantize.find(details.entity_id)
+      entity.update_attribute(:url, details.url) if details.url && entity.respond_to?(:url) && entity.url.blank?
     end
     if res = entity&&!entity.new_record? # it hasn't successfully saved
       self.payee = entity

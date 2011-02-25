@@ -63,6 +63,11 @@ class EntityTest < ActiveSupport::TestCase
       assert Entity.new.respond_to? :foaf_telephone
     end
     
+    should "alias website as url" do
+      assert_equal 'http://foo.com', Entity.new(:website => 'http://foo.com').url
+      assert_equal 'http://foo.com', Entity.new(:url => 'http://foo.com').website
+    end
+    
   end
   
   context "an instance of the Entity class" do

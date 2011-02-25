@@ -45,7 +45,13 @@ class ParishCouncilTest < ActiveSupport::TestCase
         end
       end
     end
-
+    
+    should "alias website as url" do
+      assert_equal 'http://foo.com', ParishCouncil.new(:website => 'http://foo.com').url
+      assert_equal 'http://foo.com', ParishCouncil.new(:url => 'http://foo.com').website
+    end
+    
+    
   end
   
   context "an instance of the ParishCouncil class" do

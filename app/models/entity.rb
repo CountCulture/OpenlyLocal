@@ -16,6 +16,7 @@ class Entity < ActiveRecord::Base
 
   validates_presence_of :title
   serialize :other_attributes
+  alias_attribute :url, :website
   
   def openlylocal_url
     "http://#{DefaultDomain}/entities/#{to_param}"
