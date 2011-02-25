@@ -21,17 +21,21 @@ module GenericEntityMatcher
   end
   
   class MatchResult
-    attr_reader :match, :id, :score, :name, :type, :base_object
+    attr_reader :match, :id, :score, :title, :type, :base_object
     def initialize(args={})
       if @base_object = args[:base_object]
         @id = @base_object.id
         @type = @base_object.class.to_s
-        @name = @base_object.title
+        @title = @base_object.title
+        @extended_title = @base_object.extended_title if @base_object.respond_to?(:extended_title)
         @score = args[:score]
         @match = args[:match]
       end
     end
     
+    def extended_title
+      @extended_title || @title
+    end
     
   end
 end

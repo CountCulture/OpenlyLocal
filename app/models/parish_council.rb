@@ -11,5 +11,9 @@ class ParishCouncil < ActiveRecord::Base
     semi_normed_title = raw_title.squish.gsub(/Parish Council|Town Council|Council/mi, '')
     TitleNormaliser.normalise_title(semi_normed_title)
   end
+  
+  def extended_title
+    council ? "#{title} (#{council.title})" : title
+  end
 
 end

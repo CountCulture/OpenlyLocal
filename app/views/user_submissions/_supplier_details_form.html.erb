@@ -1,7 +1,7 @@
 <%- if !@possible_entities.blank? -%>
 	<h4>Possible matches</h4>
 	<%= detail_form.label :entity_id, "Choose #{@user_submission.submission_details.entity_type}" %>
-	<%= detail_form.select :entity_id, @possible_entities.collect {|e| [ e.name, e.id ] }, { :include_blank => true } %>
+	<%= detail_form.select :entity_id, @possible_entities.collect {|e| [ e.extended_title, e.id ] }, { :include_blank => true } %>
   <%= detail_form.hidden_field :entity_type %>
 	<p>
 	  <%= f.submit "Submit" %>

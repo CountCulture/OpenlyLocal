@@ -47,5 +47,22 @@ class ParishCouncilTest < ActiveSupport::TestCase
     end
 
   end
-        
+  
+  context "an instance of the ParishCouncil class" do
+    setup do
+      @parish_council = Factory(:parish_council)
+    end
+    
+    context "when returning extended_title" do
+
+      should "return title by default" do
+        assert_equal @parish_council.title, @parish_council.extended_title
+      end
+      
+      should "return with parent council in brackets when it has one" do
+        @parish_council.council = Factory(:generic_council)
+        assert_equal "#{@parish_council.title} (#{@parish_council.council.title})", @parish_council.extended_title
+      end
+    end
+  end      
 end

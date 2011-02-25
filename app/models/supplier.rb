@@ -1,5 +1,5 @@
 class Supplier < ActiveRecord::Base
-  AllowedPayeeModels = [['Council'], ['Entity', 'Government body/quango/etc'], ['Charity'], ['PoliceAuthority'], ['PoliceForce'], ['Company']]
+  AllowedPayeeModels = [['Council', 'District, Borough, County Council'], ['ParishCouncil', 'Parish or Town Council'], ['Entity', 'Government body/quango/etc'], ['Charity'], ['PoliceAuthority'], ['PoliceForce'], ['Company']]
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
   has_many :financial_transactions, :dependent => :destroy
