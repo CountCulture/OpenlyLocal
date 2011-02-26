@@ -1,5 +1,5 @@
 class Supplier < ActiveRecord::Base
-  AllowedPayeeModels = [['Council'], ['Entity', 'Government body/quango/etc'], ['Charity'], ['PoliceAuthority'], ['PoliceForce'], ['Company']]
+  AllowedPayeeModels = [['Council', 'District, Borough, County Council'], ['ParishCouncil', 'Parish or Town Council'], ['Entity', 'Government body/quango/etc'], ['Charity'], ['PoliceAuthority'], ['PoliceForce'], ['Company']]
   belongs_to :organisation, :polymorphic => true
   belongs_to :payee, :polymorphic => true
   has_many :financial_transactions, :dependent => :destroy
@@ -98,6 +98,9 @@ class Supplier < ActiveRecord::Base
       PoliceAuthority.find_by_name(name)
     when /Pension Fund/i
       PensionFund.find_by_name(name)
+    when /Town Council|Parish Council/i
+      pcs = ParishCouncil.find_all_by_normalised_title(ParishCouncil.normalise_title(name))
+      pcs && (pcs.size == 1) ? pcs.first : nil
     when /Council|Borough|(City of)|Authority/i
       Council.find_by_normalised_title(Council.normalise_title(name))
     else
@@ -116,6 +119,7 @@ class Supplier < ActiveRecord::Base
       entity = Charity.find_by_charity_number(non_nil_attribs[:charity_number]) if details.entity_type == 'Charity'
     else
       entity = self.class.allowed_payee_classes.include?(details.entity_type)&&details.entity_type.constantize.find(details.entity_id)
+      entity.update_attribute(:url, details.url) if details.url && entity.respond_to?(:url) && entity.url.blank?
     end
     if res = entity&&!entity.new_record? # it hasn't successfully saved
       self.payee = entity

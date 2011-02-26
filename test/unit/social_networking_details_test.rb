@@ -12,9 +12,9 @@ class SocialNetworkingDetailsTest < ActiveSupport::TestCase
       assert @social_networking_details.respond_to?(:blog_url=)
     end
     
-    should 'have blog_url accessor' do
-      assert @social_networking_details.respond_to?(:blog_url)
-      assert @social_networking_details.respond_to?(:blog_url=)
+    should 'have website accessor' do
+      assert @social_networking_details.respond_to?(:website)
+      assert @social_networking_details.respond_to?(:website=)
     end
     
     should 'have twitter_account_name accessor' do

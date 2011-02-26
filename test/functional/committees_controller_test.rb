@@ -85,7 +85,7 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should assign_to :committee
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'application/xml'
        
        should "include members in response" do
@@ -108,7 +108,7 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should assign_to :committee
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'application/json'
        
        should "include members in response" do
@@ -131,7 +131,7 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should assign_to(:committee) { @committee }
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'text/calendar'
      end
      
@@ -142,7 +142,7 @@ class CommitteesControllerTest < ActionController::TestCase
 
        should assign_to(:committee) { @committee }
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'application/rdf+xml'
 
        should "show rdf headers" do
@@ -256,7 +256,7 @@ class CommitteesControllerTest < ActionController::TestCase
        should assign_to :committees
        should assign_to(:council) { @council }
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'application/xml'
        
        should "list committees" do
@@ -280,7 +280,7 @@ class CommitteesControllerTest < ActionController::TestCase
        should assign_to :committees
        should assign_to(:council) { @council }
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'application/json'
        
        should "list committees" do

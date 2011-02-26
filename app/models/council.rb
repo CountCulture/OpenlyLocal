@@ -60,7 +60,8 @@ class Council < ActiveRecord::Base
   
   def self.calculated_spending_data
     res = {}
-    res[:total_spend] = FinancialTransaction.sum(:value, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
+    res[:payee_breakdown] = FinancialTransaction.sum(:value, :joins => :supplier, :group => 'suppliers.payee_type', :conditions => 'suppliers.organisation_type = "Council"')
+    res[:total_spend] = res[:payee_breakdown].sum{ |type, val| val }
     res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
     res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
     res[:supplier_count] = Supplier.count(:conditions => {:organisation_type => 'Council'})

@@ -1,0 +1,25 @@
+<h1><%= h @title %></h1>
+
+<dl id="main_attributes" class="attributes">
+  <%= render :partial => 'attributes', :object => @parish_council %>
+  <%= attribute_tag :social_networking, social_networking_links_for(@parish_council) %>
+</dl>
+<%- if @parish_council.wdtk_name? -%>
+  <div class="extra_info">
+    <h3>Other info</h3>
+    <%= link_to "WhatDoTheyKnow.com FoI requests", "http://www.whatdotheyknow.com/body/#{@parish_council.wdtk_name}", :class => 'external', :rel => "openlylocal:foi-data" %> (<%= link_to "feed", "http://www.whatdotheyknow.com/feed/body/#{@parish_council.wdtk_name}", :class => "feed" %>)
+  </div>
+<%- end -%>
+
+<%- unless @parish_council.supplying_relationships.blank? -%>
+	<div id="relationships">
+	  <h3>Funding includes:</h3>
+	  <ul>
+	    <%- @parish_council.supplying_relationships.each do |supplier| -%>
+	      <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %>, Average monthly spend £<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %></span></li>
+	    <%- end -%>
+	  </ul>
+	</div>
+<%- end -%>
+
+<%= timestamp_data_for @parish_council %>

@@ -9,18 +9,14 @@ class Entity < ActiveRecord::Base
   include SpendingStatUtilities::Base
   include SpendingStatUtilities::Payee
   include SpendingStatUtilities::Payer
+  include TitleNormaliser::Base
   include AddressMethods
   include ResourceMethods
-  # has_many :financial_transactions, :through => :suppliers
   default_scope :order => 'title'
 
   validates_presence_of :title
-  before_save :normalise_title
   serialize :other_attributes
-  
-  def self.normalise_title(raw_title)
-    TitleNormaliser.normalise_title(raw_title)
-  end
+  alias_attribute :url, :website
   
   def openlylocal_url
     "http://#{DefaultDomain}/entities/#{to_param}"
@@ -29,10 +25,5 @@ class Entity < ActiveRecord::Base
   def resource_uri
     "http://#{DefaultDomain}/id/entities/#{id}"
   end
-  
-  private
-  def normalise_title
-    self.normalised_title = self.class.normalise_title(title)
-  end
-               
+                 
 end

@@ -107,6 +107,11 @@ module ApplicationHelper
                       link_to(service.to_s.capitalize, "http://#{service}.com/#{account_name}", :class => "#{service} feed url", :rel => "me tag", :title => "#{service.to_s.capitalize} page for #{account_name}")
   end
 
+  def social_networking_links_for(obj)
+    return "None known. #{link_to('Add social networking info now?', new_user_submission_path(:user_submission => {:item_id => obj.id, :item_type => obj.class.to_s, :submission_type => 'social_networking_details'}))}" unless obj.twitter_account_name || obj.facebook_account_name?
+    [twitter_link_for(obj.twitter_account_name), facebook_link_for(obj.facebook_account_name)].compact.join(' ')
+  end
+
   def list_all(coll=nil, options={})
     if coll.blank?
       "<p class='no_results'>No results</p>"

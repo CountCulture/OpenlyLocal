@@ -1,16 +1,20 @@
-<p class='required'>
-  <%#= f.label :member_id %>
-  <%#= f.select :member_id, @user_submission.council.members.all.collect{ |m| [m.title, m.id] }, { :include_blank => true } %>
-</p>
-<%#- else -%>
   <p>
     <%= detail_form.label :twitter_account_name %>
     <%= detail_form.text_field :twitter_account_name %>
   </p>
-  <p>
-    <%= detail_form.label :blog_url %>
-    <%= detail_form.text_field :blog_url %>
-  </p>
+  <%#- p @item -%>
+  <%- if @user_submission.item.is_a?(Member) -%>
+    <p>
+      <%= detail_form.label :blog_url %>
+      <%= detail_form.text_field :blog_url %>
+    </p>
+  <%- end -%>
+  <%- if @user_submission.item.respond_to?(:website) && @user_submission.item.website.blank? -%>
+    <p>
+      <%= detail_form.label :website %>
+      <%= detail_form.text_field :website %>
+    </p>
+  <%- end -%>
   <p>
     <%= detail_form.label :facebook_account_name %>
     <%= detail_form.text_field :facebook_account_name %>

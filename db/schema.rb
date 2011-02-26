@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110220121444) do
+ActiveRecord::Schema.define(:version => 20110226132602) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -677,6 +677,26 @@ ActiveRecord::Schema.define(:version => 20110220121444) do
   end
 
   add_index "output_areas", ["ward_id"], :name => "index_output_areas_on_ward_id"
+
+  create_table "parish_councils", :force => true do |t|
+    t.column "title", :text
+    t.column "os_id", :text
+    t.column "website", :text
+    t.column "gss_code", :text
+    t.column "council_id", :integer
+    t.column "wdtk_name", :text
+    t.column "vat_number", :text
+    t.column "normalised_title", :text
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+    t.column "feed_url", :string
+    t.column "facebook_account_name", :string
+    t.column "youtube_account_name", :string
+  end
+
+  add_index "parish_councils", ["os_id"], :name => "index_parish_councils_on_os_id"
+  add_index "parish_councils", ["council_id"], :name => "index_parish_councils_on_council_id"
+  add_index "parish_councils", ["title"], :name => "index_parish_councils_on_title"
 
   create_table "parsers", :force => true do |t|
     t.column "description", :string

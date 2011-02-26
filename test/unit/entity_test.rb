@@ -5,8 +5,6 @@ class EntityTest < ActiveSupport::TestCase
     setup do
       @entity = Factory(:entity)
     end
-
-    # should_have_many :financial_transactions, :through => :suppliers
     
     should "mixin SpendingStatUtilities::Base module" do
       assert Entity.new.respond_to?(:spending_stat)
@@ -22,6 +20,10 @@ class EntityTest < ActiveSupport::TestCase
     
     should 'mixin AddressMethods module' do
       assert @entity.respond_to?(:address_in_full)
+    end
+        
+    should 'mixin TitleNormaliser::Base module' do
+      assert Entity.respond_to?(:normalise_title)
     end
         
     should validate_presence_of :title
@@ -59,6 +61,11 @@ class EntityTest < ActiveSupport::TestCase
     
     should "include ResourceMethods" do
       assert Entity.new.respond_to? :foaf_telephone
+    end
+    
+    should "alias website as url" do
+      assert_equal 'http://foo.com', Entity.new(:website => 'http://foo.com').url
+      assert_equal 'http://foo.com', Entity.new(:url => 'http://foo.com').website
     end
     
   end

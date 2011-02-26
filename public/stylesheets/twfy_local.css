@@ -419,7 +419,7 @@ body.councils .area, .feed_entry .dateline {
 #open_data_dashboard .in_words {
 	width: 400px;
 }
-.dashboard #total_spend .value, .dashboard #council_count .value {font-size: 3.8em;
+.dashboard #total_spend .value, .dashboard #council_count .value {font-size: 3.4em;
 	line-height: 1em;}
 .dashboard .in_words .value {font-size: 3.2em;
 	line-height: 1em;}

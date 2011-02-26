@@ -44,7 +44,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
 
       should assign_to(:police_forces) { PoliceForce.find(:all) }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
       should "not include npia_id" do
         assert_no_match /<npia-id/, @response.body
@@ -58,7 +58,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
   
       should assign_to(:police_forces) { PoliceForce.find(:all) }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
     end
     
@@ -75,7 +75,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
     should assign_to(:police_force) { @police_force}
     should respond_with :success
     should render_template :show
-    should_render_with_layout
+    should render_with_layout
   
     should "list all associated councils" do
       assert_select "#councils li", @police_force.councils.size do
@@ -118,7 +118,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
   
     should assign_to(:police_force) { @police_force}
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/xml'
     
     should "include attributes in response" do
@@ -151,7 +151,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
    
     should assign_to(:police_force) { @police_force}
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/rdf+xml'
    
     should "show rdf headers" do
@@ -198,7 +198,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
      end
   
      should respond_with :success
-     should_render_without_layout
+     should_not render_with_layout
      should respond_with_content_type 'application/json'
      
      should "include attributes in response" do

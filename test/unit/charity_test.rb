@@ -257,6 +257,29 @@ class CharityTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning extended_title" do
+      
+      should "return charity with charity number in brackets" do
+        assert_equal "#{@charity.title} (charity number #{@charity.charity_number})", @charity.extended_title
+      end
+      
+      should "include status in brackets if status not nil" do
+        @charity.stubs(:status).returns('removed')
+        assert_equal "#{@charity.title} (charity number #{@charity.charity_number}, removed)", @charity.extended_title
+      end
+    end
+    
+    context "when returning status" do
+      
+      should "return nil by default" do
+        assert_nil @charity.status
+      end
+      
+      should "return 'removed' if date_removed not nil" do
+        assert_equal "removed", Charity.new(:date_removed => 3.days.ago.to_date).status
+      end
+    end
+    
     context "when returning foaf version of telephone number" do
 
       should "return nil if telephone blank" do

@@ -85,7 +85,7 @@ class SpendingStat < ActiveRecord::Base
   end
   
   def calculated_transaction_count
-    @calculated_total_received ||= organisation.payments.count if organisation.respond_to?(:payments)
+    @calculated_transaction_count ||= organisation.payments.count if organisation.respond_to?(:payments)
   end
   
   def calculated_earliest_transaction_date

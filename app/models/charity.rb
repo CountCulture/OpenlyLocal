@@ -28,7 +28,7 @@ class Charity < ActiveRecord::Base
   end
   
   def self.add_new_charities(options={})
-    puts"***About to get new charities from Charity Register" # usually run from cron job, so this will get added to cron log
+    puts "***About to get new charities from Charity Register" # usually run from cron job, so this will get added to cron log
     new_charities = CharityUtilities::Client.new.get_recent_charities(options[:start_date], options[:end_date]).collect do |charity_info|
       charity = Charity.create(charity_info)
       begin
@@ -58,8 +58,16 @@ class Charity < ActiveRecord::Base
     self[:normalised_company_number] = Company.normalise_company_number(raw_number)
   end
   
+  def extended_title
+    "#{title} (charity number #{charity_number}" + (status ? ", #{status})" : ")")
+  end
+  
   def resource_uri
     "http://opencharities.org/id/charities/#{charity_number}"
+  end
+  
+  def status
+    'removed' if date_removed?
   end
   
   def update_from_charity_register

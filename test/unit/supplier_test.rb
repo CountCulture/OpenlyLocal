@@ -339,6 +339,60 @@ class SupplierTest < ActiveSupport::TestCase
         end
       end
       
+      context "and name is town council-like" do
+        setup do
+          @supplier.name = 'Foo Town Council'
+          @parish_council = Factory(:parish_council)
+        end
+
+        should "try to match all parish_councils matching normalised name" do
+          ParishCouncil.expects(:find_all_by_normalised_title).with('foo')
+          @supplier.possible_payee
+        end
+        
+        should "return council if just one returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title).returns([@parish_council])
+          assert_equal @parish_council, @supplier.possible_payee
+        end
+        
+        should "return nil if more than one returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title).returns([@parish_council, @parish_council])
+          assert_nil @supplier.possible_payee
+        end
+        
+        should "return nil if none returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title)
+          assert_nil @supplier.possible_payee
+        end
+      end
+      
+      context "and name is parish council-like" do
+        setup do
+          @supplier.name = 'Bar Parish Council'
+          @parish_council = Factory(:parish_council)
+        end
+
+        should "try to match all parish_councils matching normalised name" do
+          ParishCouncil.expects(:find_all_by_normalised_title).with('bar')
+          @supplier.possible_payee
+        end
+        
+        should "return council if just one returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title).returns([@parish_council])
+          assert_equal @parish_council, @supplier.possible_payee
+        end
+        
+        should "return nil if more than one returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title).returns([@parish_council, @parish_council])
+          assert_nil @supplier.possible_payee
+        end
+        
+        should "return nil if none returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title)
+          assert_nil @supplier.possible_payee
+        end
+      end
+      
       context "and name is council-like" do
         setup do
           @supplier.name = 'Foo Council'
@@ -457,6 +511,51 @@ class SupplierTest < ActiveSupport::TestCase
     
     context 'and when updating supplier details' do
       
+      context "in general" do
+        setup do
+          @entity = Factory(:entity)
+          @entity_details = SupplierDetails.new( :entity_type => 'Entity', 
+                                                 :entity_id => @entity.id)
+        end
+
+        should "associate object described by entity_id and entity_type with supplier as payee" do
+          @supplier.update_supplier_details(@entity_details)
+          assert_equal @entity, @supplier.reload.payee
+        end
+
+        should "not associate entity with supplier as payee when entity type can't be a payee" do
+          non_entity = Factory(:financial_transaction)
+          non_entity_details = SupplierDetails.new( :entity_type => 'FinancialTransaction', 
+                                                    :entity_id => non_entity.id)
+          @supplier.update_supplier_details(non_entity_details)
+          assert_nil @supplier.reload.payee
+        end
+
+        should "return true" do
+          assert @supplier.update_supplier_details(@entity_details)
+        end
+        
+        context "and url supplied in params" do
+          setup do
+            @entity = Factory(:entity)
+            @entity_details = SupplierDetails.new( :entity_type => 'Entity', 
+                                                   :entity_id => @entity.id,
+                                                   :url => 'http://foo.com')
+          end
+
+          should "update payee url" do
+            @supplier.update_supplier_details(@entity_details)
+            assert_equal 'http://foo.com', @entity.reload.url
+          end
+
+          should "not update payee url if already set" do
+            @entity.update_attribute(:url, 'http://bar.com')
+            @supplier.update_supplier_details(@entity_details)
+            assert_equal 'http://bar.com', @entity.reload.url
+          end
+        end
+      end
+
       context "and company information supplied" do
         setup do
           @new_details = SupplierDetails.new( :url => 'http://foo.com', 
@@ -565,31 +664,6 @@ class SupplierTest < ActiveSupport::TestCase
 
       end
       
-      context "when supplier details includes info about entity" do
-        setup do
-          @entity = Factory(:entity)
-          @entity_details = SupplierDetails.new( :entity_type => 'Entity', 
-                                                 :entity_id => @entity.id)
-        end
-
-        should "associate entity with supplier as payee" do
-          @supplier.update_supplier_details(@entity_details)
-          assert_equal @entity, @supplier.reload.payee
-        end
-
-        should "not associate entity with supplier as payee when entity type can't be a payee" do
-          non_entity = Factory(:financial_transaction)
-          non_entity_details = SupplierDetails.new( :entity_type => 'FinancialTransaction', 
-                                                    :entity_id => non_entity.id)
-          @supplier.update_supplier_details(non_entity_details)
-          assert_nil @supplier.reload.payee
-        end
-
-        should "return true" do
-          assert @supplier.update_supplier_details(@entity_details)
-        end
-      end
-
       context "and charity information supplied" do
         setup do
           @matching_charity = Factory(:charity)

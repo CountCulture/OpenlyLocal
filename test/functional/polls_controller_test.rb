@@ -40,7 +40,7 @@ class PollsControllerTest < ActionController::TestCase
       
       should assign_to(:polls)
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
       
       should 'list first page of polls' do
@@ -64,7 +64,7 @@ class PollsControllerTest < ActionController::TestCase
       
       should assign_to(:polls)
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
       
       should 'list polls' do
@@ -87,7 +87,7 @@ class PollsControllerTest < ActionController::TestCase
     #   end
     #   
     #   should respond_with :success
-    #   should_render_without_layout
+    #   should_not render_with_layout
     #   should respond_with_content_type 'text/csv'
     #   
     #   should 'list attributes in header' do
@@ -144,7 +144,7 @@ class PollsControllerTest < ActionController::TestCase
 
         should assign_to(:polls)
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
 
         should 'list first page of polls' do
@@ -168,7 +168,7 @@ class PollsControllerTest < ActionController::TestCase
 
         should assign_to(:polls)
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/json'
 
         should 'list polls' do
@@ -246,7 +246,7 @@ class PollsControllerTest < ActionController::TestCase
       
       should assign_to(:poll) { @poll}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
       
       should 'list poll details' do
@@ -271,7 +271,7 @@ class PollsControllerTest < ActionController::TestCase
       
       should assign_to(:poll)
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
       
       should 'list poll details' do
@@ -297,7 +297,7 @@ class PollsControllerTest < ActionController::TestCase
       
       should assign_to(:poll) { @poll}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
@@ -352,7 +352,7 @@ class PollsControllerTest < ActionController::TestCase
       
       should assign_to(:poll) { @poll}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rdf+xml'
      
       should "show poll is same as openelectiondata uri using ol_identifier" do

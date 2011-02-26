@@ -32,7 +32,7 @@ class InfoControllerTest < ActionController::TestCase
     end
     should respond_with :success
     should render_template :vocab
-    should_render_without_layout
+    should_not render_with_layout
   end
   
   context "on GET to :licence_info" do

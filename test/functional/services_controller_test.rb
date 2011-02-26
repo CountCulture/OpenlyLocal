@@ -97,7 +97,7 @@ class ServicesControllerTest < ActionController::TestCase
       should assign_to :services
       should assign_to :council
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
       
       should "show services for council" do
@@ -115,7 +115,7 @@ class ServicesControllerTest < ActionController::TestCase
       should assign_to :services
       should assign_to :council
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
       
       should "show services for council" do

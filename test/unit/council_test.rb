@@ -407,8 +407,8 @@ class CouncilTest < ActiveSupport::TestCase
         Council.calculated_spending_data
       end
       
-      should "calculate total value of council payments" do
-        FinancialTransaction.expects(:sum).with(:value, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
+      should "calculate total value of council payments grouped by supplier type" do
+        FinancialTransaction.expects(:sum).with(:value, :joins => :supplier, :group => 'suppliers.payee_type', :conditions => 'suppliers.organisation_type = "Council"').returns({"Entity" => 123.4})
         Council.calculated_spending_data
       end
       
@@ -426,10 +426,11 @@ class CouncilTest < ActiveSupport::TestCase
           @company = Factory(:company)
           @charity = Factory(:charity)
           @financial_transaction = Factory(:financial_transaction)
+          @payee_breakdown = {"Charity"=>123.4, nil=>193.1, "Company"=>456.2}
           FinancialTransaction.stubs(:count).returns(42)
           Supplier.stubs(:count).returns(33)
           Company.stubs(:count).returns(21)
-          FinancialTransaction.stubs(:sum).returns(424242)
+          FinancialTransaction.stubs(:sum).returns(@payee_breakdown)
           # Company.stubs(:all).returns([@company])
           # Charity.stubs(:all).returns([@charity])
           FinancialTransaction.stubs(:all).returns([@financial_transaction])
@@ -444,8 +445,12 @@ class CouncilTest < ActiveSupport::TestCase
           assert_equal 33, @spending_data[:supplier_count]
         end
 
-        should "include total_spend" do
-          assert_equal 424242, @spending_data[:total_spend]
+        should "include breakdown of spending by payee types" do
+          assert_equal @payee_breakdown, @spending_data[:payee_breakdown]
+        end
+
+        should "include sum of payee_breakdown as total_spend" do
+          assert_equal (123.4 + 193.1 + 456.2), @spending_data[:total_spend]
         end
 
         should "include company_count" do

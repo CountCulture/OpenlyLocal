@@ -427,9 +427,9 @@ class CompanyTest < ActiveSupport::TestCase
         should "include 20 largest company suppliers based on money received from councils" do
           big_non_council_company = Factory(:company).create_spending_stat(:total_received_from_councils => 50)
           25.times { |i| Factory(:company).create_spending_stat(:total_received_from_councils => i*1000) }
-          csd = Council.calculated_spending_data[:largest_companies]
-          assert_equal 20, csd.size
-          assert !csd.include?(big_non_council_company.id)
+          l_cos = Company.calculated_spending_data[:largest_companies]
+          assert_equal 20, l_cos.size
+          assert !l_cos.include?(big_non_council_company.id)
         end
         
         should "include breakdown of company types" do
@@ -487,23 +487,6 @@ class CompanyTest < ActiveSupport::TestCase
       @company_with_no_title.title=nil
     end
     
-    # context "when returning title" do
-    #   
-    #   should "use title attribute by default" do
-    #     @company.update_attribute(:title, 'Foo Incorp')
-    #     assert_equal 'Foo Incorp', @company.title
-    #   end
-    #   
-    #   should "use company number if title is nil" do
-    #     @company.title = nil
-    #     assert_equal "Company number #{@company_with_no_title.company_number}", @company_with_no_title.title
-    #   end
-    #   
-    #   should "use vat number if title and company_number is nil" do
-    #     @company_with_no_title.attributes = {:company_number => nil, :vat_number => 'GB1234'}
-    #     assert_equal "Company with VAT number GB1234", @company_with_no_title.title
-    #   end
-    # end
     
     should "use title when converting to_param" do
       @company.title = "some title-with/stuff"
@@ -556,6 +539,33 @@ class CompanyTest < ActiveSupport::TestCase
         assert_equal "http://opencorporates.com/id/companies/uk/#{@company.company_number}", @company.resource_uri
       end
     end
+    
+    context "when returning extended_title" do
+      
+      should "return company with company number in brackets" do
+        assert_equal "#{@company.title} (#{@company.company_number})", @company.extended_title
+      end
+      
+      should "return company without company number in brackets if no company number" do
+        assert_equal "Foo Corp", Company.new(:title => "Foo Corp").extended_title
+      end
+      
+      should "include status in brackets if status not nil" do
+        @company.status = 'removed'
+        assert_equal "#{@company.title} (#{@company.company_number}, removed)", @company.extended_title
+      end
+    end
+    
+    # context "when returning status" do
+    #   
+    #   should "return nil by default" do
+    #     assert_nil @company.status
+    #   end
+    #   
+    #   should "return 'removed' if date_removed not nil" do
+    #     assert_equal "removed", Company.new(:date_removed => 3.days.ago.to_date).status
+    #   end
+    # end
     
     context "when populating basic info" do
       

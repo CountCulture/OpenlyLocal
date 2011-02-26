@@ -69,7 +69,7 @@ class DocumentsControllerTest < ActionController::TestCase
       should assign_to(:council) { @council } 
       should assign_to(:documents) { [@document, @another_document] }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
       should "return basic attributes only" do
         assert_select "document>title"
@@ -87,7 +87,7 @@ class DocumentsControllerTest < ActionController::TestCase
       should assign_to(:council) { @council } 
       should assign_to(:documents) { [@document, @another_document] }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
     end
     
@@ -99,7 +99,7 @@ class DocumentsControllerTest < ActionController::TestCase
       should assign_to(:council) { @council } 
       should assign_to(:documents) { [@document, @another_document] }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rss+xml'
       should "have title " do
         assert_select "title", "#{@council.title}: Committee documents"
@@ -144,7 +144,7 @@ class DocumentsControllerTest < ActionController::TestCase
     
     should assign_to(:document) { @document}
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/xml'
     should "return full attributes only" do
       assert_select "document>title"
@@ -161,7 +161,7 @@ class DocumentsControllerTest < ActionController::TestCase
     
     should assign_to(:document) { @document}
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/json'
   end
   

@@ -14,7 +14,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       should assign_to(:user_submission)
       should respond_with :success
       should render_template :new
-      should_render_with_layout
+      should render_with_layout
 
       should "set submission_details for user submission" do
         assert_kind_of SocialNetworkingDetails, assigns(:user_submission).submission_details
@@ -42,7 +42,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       end
       
       should "show text_fields for submission_details" do
-        assert_select "input#user_submission_submission_details_blog_url"
+        assert_select "input#user_submission_submission_details_twitter_account_name"
       end
       
       should 'show item as hidden field' do
@@ -165,6 +165,85 @@ class UserSubmissionsControllerTest < ActionController::TestCase
         end
       end
     end
+    
+    context "when submission_type is social networking details" do
+      context "in general" do
+        setup do
+          @item = Factory(:council)
+          get :new, :user_submission => {:submission_type => 'social_networking_details', :item_type => 'Council', :item_id => @item.id}
+        end
+
+        should respond_with :success
+
+        should "not show blog_url field" do
+          assert_select "input#user_submission_submission_details_blog_url", false
+        end
+      end
+      
+      context "when item is Member" do
+        setup do
+          @item = Factory(:member)
+          get :new, :user_submission => {:submission_type => 'social_networking_details', :item_type => 'Member', :item_id => @item.id}
+        end
+
+        should respond_with :success
+
+        should "show blog_url field" do
+          assert_select "input#user_submission_submission_details_blog_url"
+        end
+        
+        should "show url field" do
+          assert_select "input#user_submission_submission_details_url", false
+        end
+      end
+      
+      context "when item doesn't have website attribute" do
+        setup do
+          @item = Factory(:member)
+          get :new, :user_submission => {:submission_type => 'social_networking_details', :item_type => 'Member', :item_id => @item.id}
+        end
+
+        should "not show website field" do
+          assert_select "input#user_submission_submission_details_website", false
+        end
+        
+      end
+      
+      context "when item has website attribute" do
+        setup do
+          @item = Factory(:parish_council)
+        end
+
+        should "show website field" do
+          get :new, :user_submission => {:submission_type => 'social_networking_details', :item_type => 'ParishCouncil', :item_id => @item.id}
+          assert_select "input#user_submission_submission_details_website"
+        end
+        
+        should "not show website field when website already set" do
+          @item.update_attribute(:website, 'http://foo.com') 
+          get :new, :user_submission => {:submission_type => 'social_networking_details', :item_type => 'ParishCouncil', :item_id => @item.id}
+          assert_select "input#user_submission_submission_details_website", false
+        end
+        
+      end
+      
+      # setup do
+      #   @item = Factory(:council)
+      #   get :new, :user_submission => {:submission_type => 'social_networking_details', :item_type => 'Council', :item_id => @item.id}
+      # end
+      
+      # should assign_to(:user_submission)
+      # should render_template :new
+      # should render_with_layout
+      # 
+      # should "set submission_details for user submission" do
+      #   assert_kind_of SocialNetworkingDetails, assigns(:user_submission).submission_details
+      # end
+      # 
+      # should "associate given item with user submission" do
+      #   assert_equal @item, assigns(:user_submission).item
+      # end
+    end
   end
   
 # create test
@@ -242,7 +321,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       should assign_to(:user_submission) { @user_submission}
       should respond_with :success
       should render_template :edit
-      should_render_with_layout
+      should render_with_layout
   
       should "show title" do
         assert_select 'title', /edit submission/i

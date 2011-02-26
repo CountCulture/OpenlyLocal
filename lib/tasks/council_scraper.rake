@@ -563,5 +563,53 @@ task :import_lgsl_ids => :environment do
     ls = LdgService.find_or_initialize_by_lgsl_and_lgil(:lgsl => row[1], :lgil => row[2])
     ls.update_attributes!( :category => row[0], :service_name => row[3], :authority_level => row[4], :url => row[5])
   end
-  
+end
+
+desc "Import missing OS council ids"
+task :import_missing_os_council_ids => :environment do
+  Council.all(:conditions => {:os_id => nil}).each do |council|
+    begin
+      json_snac_data = JSON.parse(open("http://statistics.data.gov.uk/doc/local-authority-district/#{council.snac_id}.json").read)
+      os_id = json_snac_data["http://statistics.data.gov.uk/id/local-authority-district/#{council.snac_id}"]["http://www.w3.org/2002/07/owl#sameAs"].first['value'].scan(/\d+/).to_s.scan(/\d+/).to_s rescue nil
+      if os_id
+        council.update_attribute(:os_id, os_id)
+        puts "Updated #{council.title} with os_id #{os_id}"
+      else
+        puts "Prob updating #{council.title} with os_id"
+      end
+    rescue Exception => e
+      puts "**** Exception raised when getting json data for #{council.title}: #{e.inspect}"
+    end
+    
+  end
+end
+
+desc "Import parish councils from OS"
+task :import_os_parish_councils => :environment do
+  require 'open-uri'
+  england_query_url = "http://api.talis.com/stores/ordnance-survey/services/sparql?query=%0D%0Aselect+%3Fparish%0D%0A+where%0D%0A++%7B++%0D%0A%3Fparish+a+%3Chttp%3A%2F%2Fdata.ordnancesurvey.co.uk%2Fontology%2Fadmingeo%2FCivilParish%3E+.+%0D%0A%7D"
+  wales_query_url = "http://api.talis.com/stores/ordnance-survey/services/sparql?query=%0D%0Aselect+%3Fparish%0D%0A+where%0D%0A++%7B++%0D%0A%3Fparish+a+%3Chttp%3A%2F%2Fdata.ordnancesurvey.co.uk%2Fontology%2Fadmingeo%2FCommunity%3E+.+%0D%0A%7D"
+
+  title_key = "http://www.w3.org/2004/02/skos/core#prefLabel"
+  gss_code_key = "http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode"
+  district_key = "http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict"
+  [wales_query_url, england_query_url].each do |country_url|
+    resp = open(country_url).read
+    os_ids = resp.scan(/id\/(\d+)<\/uri/m).flatten.each do |os_id|
+      begin
+        os_uri = "http://data.ordnancesurvey.co.uk/id/#{os_id}"
+        json_data = JSON.parse(open("http://data.ordnancesurvey.co.uk/doc/#{os_id}.json").read)[os_uri]
+        title = json_data[title_key].first["value"]
+        gss_code = json_data[gss_code_key].first["value"]
+        district_os_id = json_data[district_key].first["value"].scan(/\d+/).to_s
+        council_id = Council.find_by_os_id(district_os_id).try(:id)
+        parish_council = ParishCouncil.find_or_create_by_os_id(:os_id => os_id, :title => title, :council_id => council_id, :gss_code => gss_code)
+        print '.'
+        STDOUT.flush
+      rescue Exception => e
+        puts "**** Exception raised while getting info for os_id #{os_id}: #{e.inspect}"
+      end
+
+    end
+  end
 end

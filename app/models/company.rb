@@ -23,6 +23,7 @@ class Company < ActiveRecord::Base
     res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'")
     res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
     res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'").collect(&:id)
+    res[:largest_companies] = Company.all(:joins => :spending_stat, :order => 'total_received_from_councils DESC', :limit => 20).collect(&:id)
     res[:company_type_breakdown] = Company.count(:group => 'company_type', :conditions=>'company_number IS NOT NULL AND suppliers.organisation_type = "Council"', :joins => :supplying_relationships)
     res
   end
@@ -70,6 +71,11 @@ class Company < ActiveRecord::Base
     end
   end
   
+  def extended_title
+    details = [company_number, status].delete_if(&:blank?)
+    details.empty? ? title : "#{title} (#{details.join(', ')})" 
+  end
+  
   # returns opencorporates url
   def opencorporates_url
     "http://opencorporates.com/companies/uk/#{company_number}" if company_number?
@@ -105,9 +111,6 @@ class Company < ActiveRecord::Base
     self[:title] ? "#{id}-#{title.parameterize}" : id.to_s
   end
   
-  # def title
-  #   self[:title] || (company_number? ? "Company number #{company_number}" : "Company with VAT number #{vat_number}")
-  # end
   
   private
   def normalise_title

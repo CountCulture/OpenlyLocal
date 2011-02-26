@@ -60,7 +60,7 @@ class GenericEntityMatcherTest < ActiveSupport::TestCase
           should "return array of MatchResult keyed to result" do
             assert_kind_of Array, result = @results[:result]
             assert_kind_of GenericEntityMatcher::MatchResult, result.first
-            assert_equal @result_1.title, result.first.name
+            assert_equal @result_1.title, result.first.title
           end
           
           should "mark item as matching if titles match" do
@@ -103,9 +103,9 @@ class GenericEntityMatcherTest < ActiveSupport::TestCase
         assert_equal 'foo', @result.score
       end
       
-      should "have name accessor" do
-        @result.instance_variable_set(:@name, 'foo')
-        assert_equal 'foo', @result.name
+      should "have title accessor" do
+        @result.instance_variable_set(:@title, 'foo')
+        assert_equal 'foo', @result.title
       end
       
       should "have type accessor" do
@@ -132,8 +132,18 @@ class GenericEntityMatcherTest < ActiveSupport::TestCase
           assert_equal 'Council', @result.type
         end
 
-        should "set name to be name of object" do
-          assert_equal @base_obj.title, @result.name
+        should "set title to be name of object" do
+          assert_equal @base_obj.title, @result.title
+        end
+
+        should "set extended_title instance variable to be extended_title of object if it has one" do
+          @base_obj = Factory(:parish_council, :council => Factory(:generic_council))
+          @result = GenericEntityMatcher::MatchResult.new(:base_object => @base_obj, :score => 42, :match => 'bar')
+          assert_equal @base_obj.extended_title, @result.instance_variable_get(:@extended_title)
+        end
+
+        should "leave extended_title as nil if object doesn't have extended_title method" do
+          assert_nil @result.instance_variable_get(:@extended_title)
         end
 
         should "store base object in base_object instance variable " do
@@ -149,6 +159,20 @@ class GenericEntityMatcherTest < ActiveSupport::TestCase
         end
       end
       
+      context "when returning extended_title" do
+        setup do
+          @result.instance_variable_set(:@title, 'Foo')
+        end
+
+        should "return extended_title instance_variable if set" do
+          @result.instance_variable_set(:@extended_title, 'Foo Bar')
+          assert_equal 'Foo Bar', @result.extended_title
+        end
+
+        should "return title if extended_title instance_variable not set" do
+          assert_equal 'Foo', @result.extended_title
+        end
+      end
     end
 
   end
