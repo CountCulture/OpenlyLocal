@@ -47,6 +47,17 @@ class ParishCouncilsControllerTest < ActionController::TestCase
       # end
     end
     
+    context "when parish_council has supplying relationships" do
+      setup do
+        @supplier = Factory(:supplier, :payee => @parish_council)
+        get :show, :id => @parish_council.id
+      end
+
+      should 'list suppliers as organisation' do
+        assert_select 'li .supplier_link', /#{@supplier.organisation.title}/
+      end
+    end
+
     context "with os_id used to identify parish_council" do
       setup do
         get :show, :os_id => @parish_council.os_id
