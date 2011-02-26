@@ -70,6 +70,11 @@ class Company < ActiveRecord::Base
     end
   end
   
+  def extended_title
+    details = [company_number, status].delete_if(&:blank?)
+    details.empty? ? title : "#{title} (#{details.join(', ')})" 
+  end
+  
   # returns opencorporates url
   def opencorporates_url
     "http://opencorporates.com/companies/uk/#{company_number}" if company_number?
@@ -105,9 +110,6 @@ class Company < ActiveRecord::Base
     self[:title] ? "#{id}-#{title.parameterize}" : id.to_s
   end
   
-  # def title
-  #   self[:title] || (company_number? ? "Company number #{company_number}" : "Company with VAT number #{vat_number}")
-  # end
   
   private
   def normalise_title
