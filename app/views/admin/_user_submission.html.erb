@@ -1,8 +1,9 @@
 <%- div_for user_submission do -%>
   <h4><strong><%= user_submission.submission_type.humanize %></strong> for <%= basic_link_for user_submission.item %></h4>
   <dl class="attributes">
+    <%= attribute_tag :entity, basic_link_for(user_submission.submission_details.entity) %>
     <%- user_submission.submission_details.attributes.each do |k,v| -%>
-      <%= attribute_tag k, v %>
+      <%= k.to_s.match(/website|url/)&&v ? attribute_tag(k, link_to(v,v)) : attribute_tag(k, v) %>
     <%- end -%>
   </dl>
   <div class='buttons'>

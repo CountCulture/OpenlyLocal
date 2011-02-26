@@ -40,6 +40,26 @@ class UserSubmissionDetailsTest < ActiveSupport::TestCase
       assert @user_submission_details.respond_to?(:entity_id=)
     end
     
+    context "when returning entity" do
+      setup do
+        @obj = Factory(:generic_council)
+      end
+      
+      should "return instantiated entity if entity_type and entity_id" do
+        assert_equal @obj, UserSubmissionDetails.new(:entity_type => @obj.class.to_s, :entity_id => @obj.id).entity
+      end
+      
+      should "return nil if either entity_type or entity_id or both missing" do
+        assert_nil UserSubmissionDetails.new(:entity_type => @obj.class.to_s, :entity_id => nil).entity
+        assert_nil UserSubmissionDetails.new(:entity_type => nil, :entity_id => @obj.id).entity
+        assert_nil UserSubmissionDetails.new(:entity_type => nil, :entity_id => nil).entity
+        assert_nil UserSubmissionDetails.new.entity
+      end
+      
+      should "return nil if no such entity" do
+        assert_nil UserSubmissionDetails.new(:entity_type => @obj.class.to_s, :entity_id => 99999).entity
+      end
+    end
   end
   
   context "An instance of a class that inherits from UserSubmissionDetail" do
@@ -78,6 +98,7 @@ class UserSubmissionDetailsTest < ActiveSupport::TestCase
         assert_equal true, ChildSubmissionDetails.new(:another_dummy => 'foo').valid?
       end
     end
+    
   end
   
 end

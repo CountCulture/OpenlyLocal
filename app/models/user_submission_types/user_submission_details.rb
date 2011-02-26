@@ -21,6 +21,10 @@ class UserSubmissionDetails
     attrib_hash
   end
   
+  def entity
+    entity_id&&entity_type&&entity_type.constantize.find(entity_id) rescue nil
+  end
+  
   # by default returns false if all attributes are blank, true otherwise. Overwrite in subclasses for different behaviour
   def valid?
     attributes.any?{ |k,v| !v.blank? }
