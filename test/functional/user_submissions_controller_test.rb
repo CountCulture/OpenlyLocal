@@ -14,7 +14,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       should assign_to(:user_submission)
       should respond_with :success
       should render_template :new
-      should_render_with_layout
+      should render_with_layout
 
       should "set submission_details for user submission" do
         assert_kind_of SocialNetworkingDetails, assigns(:user_submission).submission_details
@@ -234,7 +234,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       
       # should assign_to(:user_submission)
       # should render_template :new
-      # should_render_with_layout
+      # should render_with_layout
       # 
       # should "set submission_details for user submission" do
       #   assert_kind_of SocialNetworkingDetails, assigns(:user_submission).submission_details
@@ -321,7 +321,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       should assign_to(:user_submission) { @user_submission}
       should respond_with :success
       should render_template :edit
-      should_render_with_layout
+      should render_with_layout
   
       should "show title" do
         assert_select 'title', /edit submission/i
