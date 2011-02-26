@@ -257,6 +257,16 @@ class CharityTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning extended_title" do
+      # should "return title by default" do
+      #   assert_equal @charity.title, @charity.extended_title
+      # end
+      
+      should "return charity with status, and charity number in brackets" do
+        # @parish_council.council = Factory(:generic_council)
+        assert_equal "#{@charity.title} (#{@charity.council.title})", @charity.extended_title
+      end
+    end
     context "when returning foaf version of telephone number" do
 
       should "return nil if telephone blank" do

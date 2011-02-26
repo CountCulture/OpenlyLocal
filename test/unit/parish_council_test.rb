@@ -51,7 +51,6 @@ class ParishCouncilTest < ActiveSupport::TestCase
       assert_equal 'http://foo.com', ParishCouncil.new(:url => 'http://foo.com').website
     end
     
-    
   end
   
   context "an instance of the ParishCouncil class" do
@@ -60,7 +59,6 @@ class ParishCouncilTest < ActiveSupport::TestCase
     end
     
     context "when returning extended_title" do
-
       should "return title by default" do
         assert_equal @parish_council.title, @parish_council.extended_title
       end
@@ -70,5 +68,21 @@ class ParishCouncilTest < ActiveSupport::TestCase
         assert_equal "#{@parish_council.title} (#{@parish_council.council.title})", @parish_council.extended_title
       end
     end
+    
+    should "include title in to_param method" do
+      @parish_council.title = "some title-with/stuff"
+      assert_equal "#{@parish_council.id}-some-title-with-stuff", @parish_council.to_param
+    end
+
+    should 'return resource_uri' do
+      assert_equal "http://#{DefaultDomain}/id/parish_councils/#{@parish_council.id}", @parish_council.resource_uri
+    end
+    
+    context "when returning openlylocal_url" do
+      should "build from parish_council.to_param and default domain" do
+        assert_equal "http://#{DefaultDomain}/parish_councils/#{@parish_council.to_param}", @parish_council.openlylocal_url
+      end
+    end
+    
   end      
 end

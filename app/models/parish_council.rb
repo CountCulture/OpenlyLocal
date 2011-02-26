@@ -16,5 +16,17 @@ class ParishCouncil < ActiveRecord::Base
   def extended_title
     council ? "#{title} (#{council.title})" : title
   end
+  
+  def openlylocal_url
+    "http://#{DefaultDomain}/parish_councils/#{to_param}"
+  end
+  
+  def resource_uri
+    "http://#{DefaultDomain}/id/parish_councils/#{id}"
+  end
 
+  def to_param
+    id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
+  end
+  
 end
