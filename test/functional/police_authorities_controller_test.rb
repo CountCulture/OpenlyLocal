@@ -42,7 +42,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
 
       should assign_to(:police_authorities) { PoliceAuthority.find(:all) }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
     end
     
@@ -53,7 +53,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
   
       should assign_to(:police_authorities) { PoliceAuthority.find(:all) }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
     end
     
@@ -101,7 +101,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
   
     should assign_to(:police_authority) { @police_authority}
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/xml'
     
     should "include attributes in response" do
@@ -130,7 +130,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
    
     should assign_to(:police_authority) { @police_authority}
     should respond_with :success
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/rdf+xml'
    
     should "show rdf headers" do
@@ -177,7 +177,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
      end
   
      should respond_with :success
-     should_render_without_layout
+     should_not render_with_layout
      should respond_with_content_type 'application/json'
      
      should "include attributes in response" do

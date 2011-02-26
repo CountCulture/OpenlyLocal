@@ -207,7 +207,7 @@ class AreasControllerTest < ActionController::TestCase
         should assign_to(:members) { [@member_1] }
 
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
 
         should "return postcode" do
@@ -256,7 +256,7 @@ class AreasControllerTest < ActionController::TestCase
         should assign_to(:members) { [@member_1] }
 
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/json'
 
         should "include councillors in response" do

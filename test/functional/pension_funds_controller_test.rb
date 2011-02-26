@@ -40,7 +40,7 @@ class PensionFundsControllerTest < ActionController::TestCase
 
       should assign_to(:pension_funds) { PensionFund.find(:all) }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
     end
 
@@ -51,7 +51,7 @@ class PensionFundsControllerTest < ActionController::TestCase
 
       should assign_to(:pension_funds) { PensionFund.find(:all) }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
     end
   end

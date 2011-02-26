@@ -18,7 +18,7 @@ class ToolsControllerTest < ActionController::TestCase
       should assign_to(:councils) { [@council]} # only parsed councils
       should respond_with :success
       should render_template :gadget
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
       
       should "list all parsed councils" do
@@ -46,7 +46,7 @@ class ToolsControllerTest < ActionController::TestCase
     should assign_to(:councils) { [@council]} # only parsed councils
     should respond_with :success
     should render_template :gadget
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'application/xml'
   end
     
@@ -66,7 +66,7 @@ class ToolsControllerTest < ActionController::TestCase
       should assign_to(:councils) { [@council]} # only parsed councils
       should respond_with :success
       should render_template :ning
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
       
       should "list namespace for module" do
@@ -101,7 +101,7 @@ class ToolsControllerTest < ActionController::TestCase
     should assign_to(:council) { @council}
     should respond_with :success
     should render_template :widget
-    should_render_without_layout
+    should_not render_with_layout
     should respond_with_content_type 'text/javascript'
   end
 
@@ -116,7 +116,7 @@ class ToolsControllerTest < ActionController::TestCase
   #   should assign_to(:councils) { [@council]} # only parsed councils
   #   should respond_with :success
   #   should render_template :gadget
-  #   should_render_without_layout
+  #   should_not render_with_layout
   #   should respond_with_content_type 'application/xml'
   # end
     

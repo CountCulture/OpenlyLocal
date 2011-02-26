@@ -49,7 +49,7 @@ class CharitiesControllerTest < ActionController::TestCase
 
       should assign_to(:charity) { @charity}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/xml'
 
       should "include attributes in response" do
@@ -74,7 +74,7 @@ class CharitiesControllerTest < ActionController::TestCase
 
       should assign_to(:charity) { @charity}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
@@ -115,7 +115,7 @@ class CharitiesControllerTest < ActionController::TestCase
        end
 
        should respond_with :success
-       should_render_without_layout
+       should_not render_with_layout
        should respond_with_content_type 'application/json'
 
        should "include attributes in response" do

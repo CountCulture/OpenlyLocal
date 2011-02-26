@@ -89,7 +89,7 @@ class MeetingsControllerTest < ActionController::TestCase
         should assign_to(:council) { @council } 
         should assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
         should "show status of meeting" do
           assert_select "meetings>meeting>status" do
@@ -105,7 +105,7 @@ class MeetingsControllerTest < ActionController::TestCase
         should assign_to(:council) { @council } 
         should assign_to(:meetings) { [@meeting, @future_meeting, @other_committee_meeting, @cancelled_committee_meeting]}
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
         should "show status of meeting" do
           assert_select "meetings>meeting>status" do
@@ -124,7 +124,7 @@ class MeetingsControllerTest < ActionController::TestCase
       should assign_to(:council) { @council } 
       should assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
     end
     
@@ -136,7 +136,7 @@ class MeetingsControllerTest < ActionController::TestCase
       should assign_to(:council) { @council } 
       should assign_to(:meetings) { [@future_meeting, @other_committee_meeting]}
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'text/calendar'
     end
     
@@ -221,7 +221,7 @@ class MeetingsControllerTest < ActionController::TestCase
 
         should assign_to :meeting
         should respond_with :success
-        should_render_without_layout
+        should_not render_with_layout
         should respond_with_content_type 'application/xml'
       end
       context "when meeting is cancelled" do
@@ -240,7 +240,7 @@ class MeetingsControllerTest < ActionController::TestCase
     
       should assign_to :meeting
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/json'
     end
     
@@ -251,7 +251,7 @@ class MeetingsControllerTest < ActionController::TestCase
 
       should assign_to(:meeting) { @meeting }
       should respond_with :success
-      should_render_without_layout
+      should_not render_with_layout
       should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
