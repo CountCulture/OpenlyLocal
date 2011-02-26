@@ -334,6 +334,60 @@ class SupplierTest < ActiveSupport::TestCase
         end
       end
       
+      context "and name is town council-like" do
+        setup do
+          @supplier.name = 'Foo Town Council'
+          @parish_council = Factory(:parish_council)
+        end
+
+        should "try to match all parish_councils matching normalised name" do
+          ParishCouncil.expects(:find_all_by_normalised_title).with('foo')
+          @supplier.possible_payee
+        end
+        
+        should "return council if just one returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title).returns([@parish_council])
+          assert_equal @parish_council, @supplier.possible_payee
+        end
+        
+        should "return nil if more than one returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title).returns([@parish_council, @parish_council])
+          assert_nil @supplier.possible_payee
+        end
+        
+        should "return nil if none returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title)
+          assert_nil @supplier.possible_payee
+        end
+      end
+      
+      context "and name is parish council-like" do
+        setup do
+          @supplier.name = 'Bar Parish Council'
+          @parish_council = Factory(:parish_council)
+        end
+
+        should "try to match all parish_councils matching normalised name" do
+          ParishCouncil.expects(:find_all_by_normalised_title).with('bar')
+          @supplier.possible_payee
+        end
+        
+        should "return council if just one returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title).returns([@parish_council])
+          assert_equal @parish_council, @supplier.possible_payee
+        end
+        
+        should "return nil if more than one returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title).returns([@parish_council, @parish_council])
+          assert_nil @supplier.possible_payee
+        end
+        
+        should "return nil if none returned" do
+          ParishCouncil.stubs(:find_all_by_normalised_title)
+          assert_nil @supplier.possible_payee
+        end
+      end
+      
       context "and name is council-like" do
         setup do
           @supplier.name = 'Foo Council'

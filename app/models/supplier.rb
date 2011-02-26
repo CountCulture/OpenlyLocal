@@ -97,6 +97,9 @@ class Supplier < ActiveRecord::Base
       PoliceAuthority.find_by_name(name)
     when /Pension Fund/i
       PensionFund.find_by_name(name)
+    when /Town Council|Parish Council/i
+      pcs = ParishCouncil.find_all_by_normalised_title(ParishCouncil.normalise_title(name))
+      pcs && (pcs.size == 1) ? pcs.first : nil
     when /Council|Borough|(City of)|Authority/i
       Council.find_by_normalised_title(Council.normalise_title(name))
     else
