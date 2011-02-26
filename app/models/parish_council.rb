@@ -3,6 +3,7 @@ class ParishCouncil < ActiveRecord::Base
   include TitleNormaliser::Base
   include SpendingStatUtilities::Base
   include SpendingStatUtilities::Payee
+  include SocialNetworkingUtilities::Base
   
   validates_presence_of :title, :os_id
   alias_attribute :url, :website

@@ -13,6 +13,9 @@ class ParishCouncilTest < ActiveSupport::TestCase
     should have_db_column :gss_code
     should have_db_column :wdtk_name
     should have_db_column :vat_number
+    should have_db_column :youtube_account_name
+    should have_db_column :facebook_account_name
+    should have_db_column :feed_url
     should have_db_column :normalised_title
     should belong_to :council
 
@@ -29,6 +32,10 @@ class ParishCouncilTest < ActiveSupport::TestCase
       assert ParishCouncil.new.respond_to?(:supplying_relationships)
     end
 
+    should "include SocialNetworkingUtilities::Base mixin" do
+      assert ParishCouncil.new.respond_to?(:update_social_networking_details)
+    end
+    
     context "when normalising title" do
       setup do
         @original_title_and_normalised_title = {

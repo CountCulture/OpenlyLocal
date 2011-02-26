@@ -2,6 +2,7 @@
 
 <dl id="main_attributes" class="attributes">
   <%= render :partial => 'attributes', :object => @parish_council %>
+  <%= attribute_tag :social_networking, social_networking_links_for(@parish_council) %>
 </dl>
 <%- if @parish_council.wdtk_name? -%>
   <div class="extra_info">

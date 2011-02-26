@@ -673,6 +673,29 @@ class ApplicationHelperTest < ActionView::TestCase
     
   end
 
+  context 'social_networking_link_for object' do
+    setup do
+      @member = Factory(:member)
+      @member.facebook_account_name = 'bar'
+    end
+    
+    should 'return single_social networking links for object if only one' do
+      assert_equal "#{facebook_link_for(@member.facebook_account_name)}", social_networking_links_for(@member)
+    end 
+    
+    should 'show link to add social_networking_info if none known' do
+      @member.facebook_account_name = nil
+      @parish_council = Factory(:parish_council)
+      assert_equal "None known. #{link_to('Add social networking info now?', new_user_submission_path(:user_submission => {:item_id => @member.id, :item_type => 'Member', :submission_type => 'social_networking_details'}))}", social_networking_links_for(@member)
+      assert_equal "None known. #{link_to('Add social networking info now?', new_user_submission_path(:user_submission => {:item_id => @parish_council.id, :item_type => 'ParishCouncil', :submission_type => 'social_networking_details'}))}", social_networking_links_for(@parish_council)
+    end
+    
+    should 'return all social networking links for member' do
+      @member.twitter_account_name = 'foo'
+      assert_equal "#{twitter_link_for(@member.twitter_account_name)} #{facebook_link_for(@member.facebook_account_name)}", social_networking_links_for(@member)
+    end
+  end
+
   private
   def stale_factory_object(name, options={})
     obj = Factory(name, options)

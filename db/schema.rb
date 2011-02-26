@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110225120441) do
+ActiveRecord::Schema.define(:version => 20110226132602) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -689,6 +689,9 @@ ActiveRecord::Schema.define(:version => 20110225120441) do
     t.column "normalised_title", :text
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "feed_url", :string
+    t.column "facebook_account_name", :string
+    t.column "youtube_account_name", :string
   end
 
   add_index "parish_councils", ["os_id"], :name => "index_parish_councils_on_os_id"
