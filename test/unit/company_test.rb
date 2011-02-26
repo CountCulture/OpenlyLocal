@@ -427,9 +427,9 @@ class CompanyTest < ActiveSupport::TestCase
         should "include 20 largest company suppliers based on money received from councils" do
           big_non_council_company = Factory(:company).create_spending_stat(:total_received_from_councils => 50)
           25.times { |i| Factory(:company).create_spending_stat(:total_received_from_councils => i*1000) }
-          csd = Council.calculated_spending_data[:largest_companies]
-          assert_equal 20, csd.size
-          assert !csd.include?(big_non_council_company.id)
+          l_cos = Company.calculated_spending_data[:largest_companies]
+          assert_equal 20, l_cos.size
+          assert !l_cos.include?(big_non_council_company.id)
         end
         
         should "include breakdown of company types" do
