@@ -30,7 +30,6 @@ class SupplierTest < ActiveSupport::TestCase
     
     should "have company_number accessor" do
       assert @supplier.respond_to?(:company_number)
-      # assert @supplier.respond_to?(:vat_number=)
     end
     
     should 'mixin SpendingStatUtilities::Base' do
@@ -529,6 +528,13 @@ class SupplierTest < ActiveSupport::TestCase
                                                     :entity_id => non_entity.id)
           @supplier.update_supplier_details(non_entity_details)
           assert_nil @supplier.reload.payee
+        end
+        
+        should "update spending_stats for self, payee and organisations" do
+          @supplier.expects(:update_spending_stat)
+          @supplier.organisation.expects(:update_spending_stat)
+          Entity.any_instance.expects(:update_spending_stat) # this is reinstantiated as we only submit id
+          @supplier.update_supplier_details(@entity_details)
         end
 
         should "return true" do

@@ -122,10 +122,8 @@ class Supplier < ActiveRecord::Base
       entity.update_attribute(:url, details.url) if details.url && entity.respond_to?(:url) && entity.url.blank?
     end
     if res = entity&&!entity.new_record? # it hasn't successfully saved
-      self.payee = entity
-      self.save
+      entity.supplying_relationships << self
     end
-    self.update_spending_stat
     res
   end
   
