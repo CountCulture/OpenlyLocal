@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110226132602) do
+ActiveRecord::Schema.define(:version => 20110227143522) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -33,9 +33,12 @@ ActiveRecord::Schema.define(:version => 20110226132602) do
     t.column "updated_at", :datetime
     t.column "region", :string
     t.column "former", :boolean, :default => false
+    t.column "lat", :float
+    t.column "lng", :float
   end
 
   add_index "addresses", ["addressee_id", "addressee_type"], :name => "index_addresses_on_addressee_id_and_addressee_type"
+  add_index "addresses", ["lat", "lng"], :name => "index_addresses_on_lat_and_lng"
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
