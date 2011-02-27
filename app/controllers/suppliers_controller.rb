@@ -22,7 +22,7 @@ class SuppliersController < ApplicationController
         render :json => { :page => (params[:page]||1).to_i,
                           :per_page => @suppliers.per_page,
                           :total_entries => @suppliers.total_entries,
-                          :suppliers => @suppliers.to_json
+                          :suppliers => @suppliers
                         }
       end
     end
