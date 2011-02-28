@@ -46,23 +46,29 @@ class AddressTest < ActiveSupport::TestCase
     end
     
     context 'when setting address from in full' do
-      
-      should 'parse address' do
-        original_and_parsed_address = {
-          "32 Acacia Avenue, Anytown, AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
-          "32 Acacia Avenue\nAnytown\r\nAT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
-          "32 Acacia Avenue\n Anytown\r\n AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
-          "32 Acacia Avenue,\n Anytown,\r\n AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
-          "32 Acacia Avenue, Little Village, Anytown, AT1 2BT" => {:street_address => '32 Acacia Avenue, Little Village', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
-          "32 Acacia Avenue, Anytown" => {:street_address => '32 Acacia Avenue', :postal_code => nil, :locality => 'Anytown'},
-          "32, Acacia Avenue, Anytown, AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'}
-        }.each do |orig, parsed|
-          blank_address = Address.new
-          blank_address.in_full = orig
-          assert parsed.all?{ |attrib,value| blank_address.send(attrib) == value }, "failed for #{orig}. Parsed address = #{blank_address.attributes.inspect}"
-        end
+      setup do
+        @address_text = "32 Acacia Avenue, Anytown, AT1 2BT, United Kingdom"
       end
       
+      should 'parse address' do
+        AddressUtilities::Parser.expects(:parse).with(@address_text)
+        @address.in_full = @address_text
+      end
+      
+      should "set attributes to parsed address results" do
+        
+        address_result = {:street_address => '32 Acacia Avenue', 
+                          :postal_code => 'AT1 2BT', 
+                          :locality => 'Anytown', 
+                          :country => 'United Kingdom'}
+        Parser.stubs(:parse).returns(address_result)
+        @address.in_full = @address_text
+        assert_equal '32 Acacia Avenue', @address.street_address
+        assert_equal 'Anytown', @address.locality
+        assert_equal 'AT1 2BT', @address.postal_code
+        assert_equal 'United Kingdom', @address.country
+        
+      end
     end
 
     context "when performing" do
