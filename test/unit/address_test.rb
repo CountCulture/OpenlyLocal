@@ -16,6 +16,7 @@ class AddressTest < ActiveSupport::TestCase
     should have_db_column :former
     should have_db_column :lat
     should have_db_column :lng
+    should have_db_column :raw_address    
     should validate_presence_of :addressee_id
     should validate_presence_of :addressee_type
     
@@ -27,6 +28,9 @@ class AddressTest < ActiveSupport::TestCase
   end
     
   context 'an instance of the Address class' do
+    setup do
+      @address = Factory(:address)
+    end
     
     context 'when returning in full' do
       should 'build from address attributes' do
@@ -59,6 +63,35 @@ class AddressTest < ActiveSupport::TestCase
         end
       end
       
+    end
+
+    context "when performing" do
+
+      should "geocode address" do
+        Geokit::LatLng.expects(:normalize).with(@address.in_full).returns(stub(:lat => 12.3, :lng => 34.5))
+        @address.perform
+      end
+
+      should "update address with lat lng from geocoding" do
+        Geokit::LatLng.stubs(:normalize).returns(stub(:lat => 12.3, :lng => 34.5))
+        @address.perform
+        assert_equal 12.3, @address.lat
+        assert_equal 34.5, @address.lng
+      end
+
+      should "not update address if error geocoding" do
+        Geokit::LatLng.stubs(:normalize).raises(Geokit::Geocoders::GeocodeError)
+        @address.perform
+        assert_nil @address.lat
+        assert_nil @address.lng
+      end
+    end
+    
+    context "after saving" do
+      should "should queue for performing" do
+        Delayed::Job.expects(:enqueue).with(@address)
+        @address.save!
+      end
     end
   end
 end

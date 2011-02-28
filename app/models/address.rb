@@ -2,6 +2,7 @@ class Address < ActiveRecord::Base
   belongs_to :addressee, :polymorphic => true
   validates_presence_of :addressee_type, :addressee_id
   UKPostcodeRegex = /[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][A-Z]{2}/
+  after_save :queue_for_geocoding
 
 
   def in_full
@@ -14,5 +15,17 @@ class Address < ActiveRecord::Base
     split_address = raw_address.sub(/^(\d+),/, '\1').split(/,\s*|,?[\r\n]+/).delete_if(&:blank?)
     self.locality = split_address.pop.strip if split_address.size > 1
     self.street_address = split_address.join(', ')
+  end
+  
+  def perform
+    location = Geokit::LatLng.normalize(in_full)
+    update_attributes(:lat => location.lat, :lng => location.lng)
+  rescue Geokit::Geocoders::GeocodeError
+    logger.error { "Error geocoding address #{in_full} for #{self.inspect}" }
+  end
+  
+  private
+  def queue_for_geocoding
+    Delayed::Job.enqueue(self)
   end
 end
