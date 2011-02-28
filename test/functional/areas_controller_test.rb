@@ -304,7 +304,7 @@ class AreasControllerTest < ActionController::TestCase
       end
   
       should respond_with :success
-      should_render_with_layout
+      should render_with_layout
       should 'say so' do
         assert_select '.alert', /couldn't find postcode/i
       end
@@ -316,7 +316,7 @@ class AreasControllerTest < ActionController::TestCase
       end
   
       should respond_with :success
-      should_render_with_layout
+      should render_with_layout
       should 'say so' do
         assert_select '.alert', /couldn't find postcode/i
       end
@@ -329,7 +329,7 @@ class AreasControllerTest < ActionController::TestCase
       end
   
       should respond_with :success
-      should_render_with_layout
+      should render_with_layout
       should 'say no info about this area' do
         assert_select '.alert', /No info/i
       end

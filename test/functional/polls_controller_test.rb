@@ -18,7 +18,7 @@ class PollsControllerTest < ActionController::TestCase
       end
       should assign_to(:polls)
       should respond_with :success
-      should_render_with_layout
+      should render_with_layout
       
       should 'list only first page of polls' do
         assert_select 'a.poll_link', 30
@@ -120,7 +120,7 @@ class PollsControllerTest < ActionController::TestCase
         should assign_to(:polls)
         should assign_to(:council) { @council }
         should respond_with :success
-        should_render_with_layout
+        should render_with_layout
 
         should 'not include non-council related wards' do
           assert !assigns(:polls).include?(@another_council_poll)
@@ -207,7 +207,7 @@ class PollsControllerTest < ActionController::TestCase
       should assign_to(:total_votes) { 537 + 210 }
       should respond_with :success
       should render_template :show
-      should_render_with_layout
+      should render_with_layout
 
       should "list associated area" do
         assert_select "a", @area.title

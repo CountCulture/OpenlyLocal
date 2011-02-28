@@ -18,7 +18,7 @@ class EntityTest < ActiveSupport::TestCase
       assert Entity.new.respond_to?(:payments)
     end
     
-    should 'mixin AddressMethods module' do
+    should 'mixin AddressUtilities::Base module' do
       assert @entity.respond_to?(:address_in_full)
     end
         

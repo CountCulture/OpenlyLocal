@@ -68,7 +68,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
     should assign_to(:police_authority) { @police_authority}
     should respond_with :success
     should render_template :show
-    should_render_with_layout
+    should render_with_layout
   
     should "list all associated councils" do
       assert_select "#councils li", @police_authority.councils.size do

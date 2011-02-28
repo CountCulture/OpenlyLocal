@@ -10,7 +10,7 @@ class Entity < ActiveRecord::Base
   include SpendingStatUtilities::Payee
   include SpendingStatUtilities::Payer
   include TitleNormaliser::Base
-  include AddressMethods
+  include AddressUtilities::Base
   include ResourceMethods
   default_scope :order => 'title'
 

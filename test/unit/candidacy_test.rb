@@ -20,7 +20,7 @@ class CandidacyTest < ActiveSupport::TestCase
       assert_equal @poll.area, @candidacy.area
     end
     
-    should 'mixin AddressMethods module' do
+    should 'mixin AddressUtilities::Base module' do
       assert @candidacy.respond_to?(:address_in_full)
     end
 

@@ -52,7 +52,7 @@ class TwitterAccountsControllerTest < ActionController::TestCase
     should assign_to(:twitter_account) { @twitter_account}
     should respond_with :success
     should render_template :show
-    should_render_with_layout
+    should render_with_layout
   
     should "show title" do
       assert_select 'title', /twitter account for #{@user.title}/i

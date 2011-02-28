@@ -76,7 +76,7 @@ class CharityTest < ActiveSupport::TestCase
       assert Charity.new.respond_to?(:supplying_relationships)
     end
 
-    should 'mixin AddressMethods module' do
+    should 'mixin AddressUtilities::Base module' do
       assert @charity.respond_to?(:address_in_full)
     end
         

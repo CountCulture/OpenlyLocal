@@ -301,7 +301,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
         end
         
         should respond_with :success
-        should_render_with_layout
+        should render_with_layout
         should "have title " do
           assert_select "title", /Hyperlocal Sites Search Results/i
         end

@@ -9,7 +9,7 @@ class RelatedArticlesControllerTest < ActionController::TestCase
 
     should respond_with :success
     should render_template :new
-    should_render_with_layout
+    should render_with_layout
     
     should assign_to :related_article
     

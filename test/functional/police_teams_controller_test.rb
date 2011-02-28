@@ -17,7 +17,7 @@ class PoliceTeamsControllerTest < ActionController::TestCase
     should assign_to(:police_team) { @police_team}
     should respond_with :success
     should render_template :show
-    should_render_with_layout
+    should render_with_layout
   
     should "show police_team in title" do
       assert_select "title", /#{@police_team.name}/

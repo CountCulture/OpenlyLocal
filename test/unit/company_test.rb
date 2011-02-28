@@ -28,7 +28,7 @@ class CompanyTest < ActiveSupport::TestCase
       assert_equal ['foo', 'bar'], Factory(:company, :sic_codes => ['foo', 'bar']).reload.sic_codes 
     end
 
-    should 'mixin AddressMethods module' do
+    should 'mixin AddressUtilities::Base module' do
       assert @company.respond_to?(:address_in_full)
     end
     

@@ -2,12 +2,12 @@ require "test_helper"
 
 class TestAddresseeModel <ActiveRecord::Base
   set_table_name "candidates"
-  include AddressMethods
+  include AddressUtilities::Base
 end
 
-class AddressMethodsTest < ActiveSupport::TestCase
+class AddressUtilitiesTest < ActiveSupport::TestCase
   
-  context "A class that includes AddressMethods mixin" do
+  context "A class that includes AddressUtilities::Base mixin" do
     subject { @test_model_with_address }
     
     setup do
@@ -168,7 +168,7 @@ class AddressMethodsTest < ActiveSupport::TestCase
     end
   end
  
-  context "An instance of a class that includes AddressMethods mixin" do
+  context "An instance of a class that includes AddressUtilities::Base mixin" do
     setup do
       @test_model = TestAddresseeModel.create!
     end
@@ -231,4 +231,27 @@ class AddressMethodsTest < ActiveSupport::TestCase
     
   end
   
+  context "the Parser module" do
+    
+    context "when parsing" do
+      should "parse address from string" do
+        original_and_parsed_address = {
+          "32 Acacia Avenue, Anytown, AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, United Kingdom" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, UK" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
+          "CANUK House, 32 Acacia Avenue, Anytown, AT1 2BT" => {:street_address => 'CANUK House, 32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, U.K." => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
+          "32 Acacia Avenue\nAnytown\r\nAT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
+          "32 Acacia Avenue\n Anytown\r\n AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
+          "32 Acacia Avenue,\n Anytown,\r\n AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
+          "32 Acacia Avenue, Little Village, Anytown, AT1 2BT" => {:street_address => '32 Acacia Avenue, Little Village', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
+          "32 Acacia Avenue, Anytown" => {:street_address => '32 Acacia Avenue', :postal_code => nil, :locality => 'Anytown'},
+          "32, Acacia Avenue, Anytown, AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'}
+        }.each do |orig, expected|
+          parsed = AddressUtilities::Parser.parse(orig)
+          assert_equal expected, parsed, "failed for #{orig}. Parsed address = #{parsed.inspect}"
+        end
+      end
+    end
+  end
 end

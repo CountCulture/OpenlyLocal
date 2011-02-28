@@ -8,7 +8,7 @@ class InfoControllerTest < ActionController::TestCase
     end
     should respond_with :success
     should render_template :about_us
-    should_render_with_layout
+    should render_with_layout
     should "show pretty version of action name in title" do
       assert_select "title", /About Us :: Info/
     end
@@ -20,7 +20,7 @@ class InfoControllerTest < ActionController::TestCase
     end
     should respond_with :success
     should render_template :resources
-    should_render_with_layout
+    should render_with_layout
     should "show pretty version of action name in title" do
       assert_select "title", /Resources :: Info/
     end
@@ -41,7 +41,7 @@ class InfoControllerTest < ActionController::TestCase
     end
     should respond_with :success
     should render_template :licence_info
-    should_render_with_layout
+    should render_with_layout
   end
   
   context "on GET to :api" do
@@ -51,7 +51,7 @@ class InfoControllerTest < ActionController::TestCase
     end
     should respond_with :success
     should render_template :api
-    should_render_with_layout
+    should render_with_layout
     should assign_to :sample_council
     
     should "show pretty version of action name in title" do

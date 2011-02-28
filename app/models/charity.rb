@@ -6,7 +6,7 @@ class Charity < ActiveRecord::Base
   belongs_to :company, :primary_key => "company_number", :foreign_key => "normalised_company_number"
   include SpendingStatUtilities::Base
   include SpendingStatUtilities::Payee
-  include AddressMethods
+  include AddressUtilities::Base
   include ResourceMethods
   include SocialNetworkingUtilities::Base
   serialize :financial_breakdown

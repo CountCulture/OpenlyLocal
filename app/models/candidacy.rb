@@ -1,6 +1,6 @@
 class Candidacy < ActiveRecord::Base
   set_table_name 'candidates'
-  include AddressMethods
+  include AddressUtilities::Base
   belongs_to :poll
   belongs_to :political_party
   belongs_to :member

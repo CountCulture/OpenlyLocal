@@ -1,5 +1,5 @@
 class Company < ActiveRecord::Base
-  include AddressMethods
+  include AddressUtilities::Base
   include SpendingStatUtilities::Base
   include SpendingStatUtilities::Payee
   

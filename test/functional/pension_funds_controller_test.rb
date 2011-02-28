@@ -66,7 +66,7 @@ class PensionFundsControllerTest < ActionController::TestCase
     should assign_to(:pension_fund) { @pension_fund}
     should respond_with :success
     should render_template :show
-    should_render_with_layout
+    should render_with_layout
   
     should 'show title' do
       assert_select "title", /#{@pension_fund.name}/i
