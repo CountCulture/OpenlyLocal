@@ -238,15 +238,31 @@ class AddressUtilitiesTest < ActiveSupport::TestCase
         original_and_parsed_address = {
           "32 Acacia Avenue, Anytown, AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
           "32 Acacia Avenue, Anytown, AT1 2BT, United Kingdom" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
-          "32 Acacia Avenue, Anytown, AT1 2BT, UK" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
           "CANUK House, 32 Acacia Avenue, Anytown, AT1 2BT" => {:street_address => 'CANUK House, 32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
-          "32 Acacia Avenue, Anytown, AT1 2BT, U.K." => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
           "32 Acacia Avenue\nAnytown\r\nAT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
           "32 Acacia Avenue\n Anytown\r\n AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
           "32 Acacia Avenue,\n Anytown,\r\n AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
           "32 Acacia Avenue, Little Village, Anytown, AT1 2BT" => {:street_address => '32 Acacia Avenue, Little Village', :postal_code => 'AT1 2BT', :locality => 'Anytown'},
           "32 Acacia Avenue, Anytown" => {:street_address => '32 Acacia Avenue', :postal_code => nil, :locality => 'Anytown'},
           "32, Acacia Avenue, Anytown, AT1 2BT" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown'}
+        }.each do |orig, expected|
+          parsed = AddressUtilities::Parser.parse(orig)
+          assert_equal expected, parsed, "failed for #{orig}. Parsed address = #{parsed.inspect}"
+        end
+      end
+      
+      should "extract country from address with UK tye postcodes" do
+        original_and_parsed_address = {
+          "32 Acacia Avenue, Anytown, AT1 2BT, United Kingdom" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, UNITED KINGDOM" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, UK" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, U.K." => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'United Kingdom'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, Jersey Channel Islands" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'Jersey'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, Jersey, Channel Islands" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'Jersey'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, JERSEY CHANNEL ISLANDS" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'Jersey'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, GUERNSEY CHANNEL ISLANDS" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'Guernsey'},
+          "32 Acacia Avenue, Anytown, AT1 2BT  IoM" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'Isle of Man'},
+          "32 Acacia Avenue, Anytown, AT1 2BT, ISLE OF MAN" => {:street_address => '32 Acacia Avenue', :postal_code => 'AT1 2BT', :locality => 'Anytown', :country => 'Isle of Man'}
         }.each do |orig, expected|
           parsed = AddressUtilities::Parser.parse(orig)
           assert_equal expected, parsed, "failed for #{orig}. Parsed address = #{parsed.inspect}"

@@ -43,13 +43,19 @@ module AddressUtilities
   
   module Parser 
     UKPostcodeRegex = /[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][A-Z]{2}/
+    CountryRegex = [ [/\bUnited Kingdom\s*$|\bUK\s*$|\bU\.K\.\s*$/i, 'United Kingdom'],
+                     [/\bGuernsey,?\s+Channel Islands\s*$/i, "Guernsey"],
+                     [/\bJersey,?\s+Channel Islands\s*$/i, "Jersey"],
+                     [/\bIsle of Man|\bIoM\s*$/i, "Isle of Man"]
+                   ]
        
     extend self
     
     def parse(raw_addr)
       raw_address = raw_addr.dup
       res = {}
-      res[:country] = 'United Kingdom' if raw_address.slice!(/\bUnited Kingdom|\bUK|\bU\.K\./)
+      CountryRegex.each{ |rx, country| res[:country] = country if raw_address.slice!(rx) }
+      # res[:country] = 'United Kingdom' if raw_address.slice!(/\bUnited Kingdom\s*$|\bUK\s*$|\bU\.K\.\s*$/i)
       res[:postal_code] = raw_address.slice!(UKPostcodeRegex)
       split_address = raw_address.sub(/^(\d+),/, '\1').split(/,\s*|,?[\r\n]+/).delete_if(&:blank?)
       res[:locality] = split_address.pop.strip if split_address.size > 1
