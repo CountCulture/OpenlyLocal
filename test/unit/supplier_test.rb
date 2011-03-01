@@ -424,7 +424,7 @@ class SupplierTest < ActiveSupport::TestCase
     context 'when assigning company_number' do
       setup do
         @company = Factory(:company, :company_number => 'AB123456')
-        @another_company = Factory(:company, :company_number => 'CD456')
+        @another_company = Factory(:company, :company_number => 'CD00000456')
       end
       
       should 'associate company matching company number as payee' do
@@ -438,15 +438,15 @@ class SupplierTest < ActiveSupport::TestCase
         assert_equal title, @supplier.payee.reload.title
       end
             
+      should 'normalise company number' do
+        Company.expects(:normalise_company_number).with('AB123456')
+        @supplier.company_number = 'AB123456'
+      end
+            
       context "and supplier already has associated company" do
         setup do
           @supplier.update_attribute(:payee, @company)
         end
-
-        # should 'not match or create company from company number' do
-        #   Company.expects(:match_or_create).never
-        #   @supplier.company_number = 'AB123456'
-        # end
         
         should "not update company with new company number" do
           company_number = @company.company_number
@@ -454,10 +454,12 @@ class SupplierTest < ActiveSupport::TestCase
           assert_equal company_number, @company.reload.company_number 
         end
         
-        should "match existing company and associate as payeee" do
+        should 'match existing company and associate as payeee using normalised company number' do
+          Company.stubs(:normalise_company_number).with('CD456').returns('CD00000456')
           @supplier.company_number = 'CD456'
           assert_equal @another_company, @supplier.payee
         end
+
       end
       
       context "and no company with company number exists" do
@@ -471,6 +473,12 @@ class SupplierTest < ActiveSupport::TestCase
         should "not save new company" do
           @supplier.company_number = 'EF987'
           assert @supplier.payee.new_record?
+        end
+        
+        should "use normalised company number" do
+          Company.stubs(:normalise_company_number).returns('EF00000987')
+          @supplier.company_number = 'EF987'
+          assert_equal 'EF00000987', @supplier.payee.company_number
         end
       end
     end

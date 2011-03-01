@@ -52,12 +52,10 @@ class Supplier < ActiveRecord::Base
   
   # convenience method for assigning company given company number. Creates company if no company with given company_number exists
   def company_number=(comp_no)
-    unless payee && (payee.company_number == comp_no)
-      # payee.update_attribute(:company_number, comp_no)
-    # else
-      company = Company.find_or_initialize_by_company_number(:company_number => comp_no)
+    normalised_company_number = Company.normalise_company_number(comp_no)
+    unless payee && (payee.company_number == normalised_company_number)
+      company = Company.find_or_initialize_by_company_number(:company_number => normalised_company_number)
       self.payee = company
-      # update_attribute(:payee, company)
     end
   end
   
