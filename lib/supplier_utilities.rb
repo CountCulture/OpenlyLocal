@@ -75,7 +75,7 @@ module SupplierUtilities
     end
     
     # Because CompanyNumberMatchers will be usually used in the context of a Delayed::Job, 
-    # we can't store supplier as an instance variable, as when VatMatcher is 
+    # we can't store supplier as an instance variable, as when CompanyNumberMatcher is 
     # deserialized it prob won't be deserialized properly, or at least may have 
     # unintended consequences
     def supplier

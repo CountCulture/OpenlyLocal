@@ -205,6 +205,35 @@ class FinancialTransactionTest < ActiveSupport::TestCase
           @financial_transaction.save!
         end
       end
+
+      context "and supplier has company_number and vat_number" do
+        setup do
+          @financial_transaction.supplier.instance_variable_set(:@company_number, '123')
+          @financial_transaction.supplier.instance_variable_set(:@vat_number,'45678')
+          Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
+        end
+        
+        should 'queue for matching company_number before queueing vat_number' do
+          ft_observer = sequence('ft_observer')
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher)).in_sequence(ft_observer)
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).in_sequence(ft_observer)
+          @financial_transaction.save!
+        end
+        
+        # should 'not queue for matching company_number if supplier already has payee' do
+        #   @financial_transaction.supplier.instance_variable_set(:@company_number, '123')
+        #   @financial_transaction.supplier.payee = Factory(:charity)
+        #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher)).never
+        #   @financial_transaction.save!
+        # end
+        # 
+        # should 'not queue for matching company_number if supplier already has no payee but has failed_payee_search' do
+        #   @financial_transaction.supplier.instance_variable_set(:@company_number, '123')
+        #   @financial_transaction.supplier.failed_payee_search = true
+        #   Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher)).never
+        #   @financial_transaction.save!
+        # end
+      end
     end
     
     context "when saving" do
