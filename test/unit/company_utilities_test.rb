@@ -199,6 +199,22 @@ class CompanyUtilitiesTest < ActiveSupport::TestCase
         assert_nil @client.company_details_for('123456')
       end
       
+      context "and company has IP prefix" do
+        setup do
+          
+        end
+
+        should "not make call to CompaniesHouse api" do
+          CompaniesHouse.expects(:company_details).never
+          @client.company_details_for('IP123456')
+        end
+        
+        should "return company_type as 'Industrial & Provident Society'" do
+          expected_result = {:company_type => 'Industrial & Provident Society'}
+          assert_equal expected_result, @client.company_details_for('IP123456')
+        end
+      end
+      
     end
   end
   

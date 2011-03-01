@@ -37,6 +37,7 @@ module CompanyUtilities
     
     def company_details_for(company_number)
       return if company_number.blank?
+      return {:company_type => 'Industrial & Provident Society'} if company_number.match(/^IP\d+/)
       company_details = CompaniesHouse.company_details(company_number) 
       RAILS_DEFAULT_LOGGER.debug "Response from Companies House API for details for company with company number #{company_number}:\n#{company_details.inspect}"
       hash_from_company_details(company_details)
