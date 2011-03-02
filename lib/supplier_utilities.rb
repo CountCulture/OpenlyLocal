@@ -70,7 +70,7 @@ module SupplierUtilities
   class CompanyNumberMatcher
     attr_reader :company_number, :supplier
     def initialize(args)
-      @company_number = args[:company_number]
+      @company_number = args[:company_number] #nb we don't need to normalise as Company class does that when matching or creating 
       @supplier_id = args[:supplier].id
     end
     
@@ -83,12 +83,17 @@ module SupplierUtilities
     end
     
     def perform
-      if supplier.payee && (supplier.payee.company_number != @company_number)
+      if supplier.payee
+        return if Company.normalise_company_number(supplier.payee.company_number) == Company.normalise_company_number(company_number) # note we have to normalis both submitted company number and payee company number, as payee may be charity 
         AdminMailer.deliver_admin_alert!( :title => "Submitted company_number (#{@company_number}) does not match existing company number", 
                                           :details => "Given company_number for #{supplier.title} (#{supplier.organisation.title}) does not to match existing company_number (#{supplier.payee.company_number}). \nSupplier details\n#{supplier.inspect}")
         
       elsif company = Company.match_or_create(:company_number => @company_number)
         supplier.update_attribute(:payee, company)
+      else
+        AdminMailer.deliver_admin_alert!( :title => "No matching company found for company_number (#{@company_number})", 
+                                          :details => "Given company_number for #{supplier.title} (#{supplier.organisation.title}) does not to match a UK company. \nSupplier details\n#{supplier.inspect}")
+        
       end
     end
     

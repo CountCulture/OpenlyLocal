@@ -163,7 +163,7 @@ class FinancialTransaction < ActiveRecord::Base
   # organisation directly, and also org may be known after the Supplier Name, so only update supplier if org 
 	def organisation=(org)
 	  if supplier 
-      exist_supplier = org.suppliers.find_from_params(:name => supplier.name, :uid => supplier.uid, :organisation => org)
+      exist_supplier = org.suppliers.find_or_build_from(:name => supplier.name, :uid => supplier.uid, :organisation => org)
       self.supplier = exist_supplier || supplier
       self.supplier.organisation = org unless exist_supplier
     else

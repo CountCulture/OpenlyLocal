@@ -10,10 +10,10 @@ class Supplier < ActiveRecord::Base
   named_scope :filter_by, lambda { |filter_hash| filter_hash[:name] ? 
                                   { :conditions => ["name LIKE ?", "%#{filter_hash[:name]}%"] } : 
                                   {} }
-
+  after_create :queue_matching_company_and_vat_info
   alias_attribute :title, :name
   attr_accessor :vat_number
-  attr_reader :company_number
+  attr_accessor :company_number
   
   def validate
     errors.add_to_base('Either a name or uid is required') if name.blank? && uid.blank?
@@ -26,12 +26,20 @@ class Supplier < ActiveRecord::Base
   # Finds supplier given params, one of which must be :organisation (and that organisation 
   # should have_many suppliers). If a :uid is supplied, checks 
   # suppliers belonging to organisation with uid and if not for suppliers with matching name
-  def self.find_from_params(params)
-    if params[:uid].blank?
-      params[:name].blank? ? nil : params[:organisation].suppliers.find_by_name(params[:name])
+  def self.find_or_build_from(params)
+    squished_name = params[:name]&&params[:name].squish
+    supplier = if params[:uid].blank?
+      squished_name.blank? ? nil : params[:organisation].suppliers.find_by_name(squished_name)
     else
       params[:organisation].suppliers.find_by_uid(params[:uid])
-    end 
+    end
+    if supplier
+      supplier.instance_variable_set(:@vat_number, params[:vat_number]) if params[:vat_number]
+      supplier.instance_variable_set(:@company_number, params[:company_number]) if params[:company_number]
+      supplier
+    else
+      Supplier.new(params)
+    end
   end
 
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising supplier titles
@@ -51,13 +59,13 @@ class Supplier < ActiveRecord::Base
   end
   
   # convenience method for assigning company given company number. Creates company if no company with given company_number exists
-  def company_number=(comp_no)
-    normalised_company_number = Company.normalise_company_number(comp_no)
-    unless payee && (payee.company_number == normalised_company_number)
-      company = Company.find_or_initialize_by_company_number(:company_number => normalised_company_number)
-      self.payee = company
-    end
-  end
+  # def company_number=(comp_no)
+  #   normalised_company_number = Company.normalise_company_number(comp_no)
+  #   unless payee && (payee.company_number == normalised_company_number)
+  #     company = Company.find_or_initialize_by_company_number(:company_number => normalised_company_number)
+  #     self.payee = company
+  #   end
+  # end
   
   def match_with_payee
     if payee = possible_payee
@@ -123,6 +131,18 @@ class Supplier < ActiveRecord::Base
       entity.supplying_relationships << self
     end
     res
+  end
+  
+  private
+  def queue_matching_company_and_vat_info
+    if company_number
+      matcher = SupplierUtilities::CompanyNumberMatcher.new(:company_number => company_number, :supplier => self)
+      Delayed::Job.enqueue matcher
+    end
+    if vat_number
+      matcher = SupplierUtilities::VatMatcher.new(:vat_number => vat_number, :supplier => self, :title => title)
+      Delayed::Job.enqueue matcher
+    end
   end
   
 end

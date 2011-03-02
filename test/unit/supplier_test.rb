@@ -30,6 +30,7 @@ class SupplierTest < ActiveSupport::TestCase
     
     should "have company_number accessor" do
       assert @supplier.respond_to?(:company_number)
+      assert @supplier.respond_to?(:company_number=)
     end
     
     should 'mixin SpendingStatUtilities::Base' do
@@ -124,7 +125,7 @@ class SupplierTest < ActiveSupport::TestCase
       end
     end
     
-    context "when finding_from_params" do
+    context "when finding or building from params" do
       setup do
         @existing_supplier = Factory(:supplier, :name => 'Foo Company')
         @organisation = @existing_supplier.organisation
@@ -134,41 +135,76 @@ class SupplierTest < ActiveSupport::TestCase
         @another_org_supplier_with_uid_and_no_name = Factory(:supplier, :name => nil, :uid => 'bc456', :organisation => @another_org)
       end
       
-      should "return supplier with given name found for organisation" do
-        assert_equal @existing_supplier, Supplier.find_from_params(:organisation => @organisation, :name => 'Foo Company')
+      should "return supplier with given name for organisation" do
+        assert_equal @existing_supplier, Supplier.find_or_build_from(:organisation => @organisation, :name => 'Foo Company')
       end
-      
-      should "return supplier with given uid ignoring title if uid given" do
-        assert_equal @existing_supplier_with_uid, Supplier.find_from_params(:organisation => @organisation, :uid => 'ab123', :name => 'Foo Company')
+            
+      should "return supplier with given uid ignoring name if uid given" do
+        assert_equal @existing_supplier_with_uid, Supplier.find_or_build_from(:organisation => @organisation, :uid => 'ab123', :name => 'Foo Company')
       end
 
       should "raise exception if no organisation" do
-        assert_raise(NoMethodError) { Supplier.find_from_params(:name => 'Foo Company') }
+        assert_raise(NoMethodError) { Supplier.find_or_build_from(:name => 'Foo Company') }
       end
       
-      should "return nil if no supplier with given name found for organisation" do
-        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => 'Foo Company')
+      should "search using squished version of name" do
+        assert_equal @existing_supplier, Supplier.find_or_build_from(:organisation => @organisation, :name => '    Foo  Company   ')
       end
       
       should "not search using uid if uid blank" do
-        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => 'Foo Company', :uid => '')
-        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => 'Foo Company', :uid => nil)
-        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => nil, :uid => nil)
+        assert Supplier.find_or_build_from(:organisation => @another_org, :name => 'Foo Company', :uid => '').new_record? #don't return existing one, build new one
+        assert Supplier.find_or_build_from(:organisation => @another_org, :name => 'Foo Company', :uid => nil).new_record? #don't return existing one, build new one
+        assert Supplier.find_or_build_from(:organisation => @another_org, :name => nil, :uid => nil).new_record? #don't return existing one, build new one
       end
       
       should "search using name if uid blank" do
-        assert_equal @existing_supplier, Supplier.find_from_params(:organisation => @organisation, :name => 'Foo Company', :uid => '')
-        assert_equal @existing_supplier, Supplier.find_from_params(:organisation => @organisation, :name => 'Foo Company', :uid => nil)
+        assert_equal @existing_supplier, Supplier.find_or_build_from(:organisation => @organisation, :name => 'Foo Company', :uid => '')
+        assert_equal @existing_supplier, Supplier.find_or_build_from(:organisation => @organisation, :name => 'Foo Company', :uid => nil)
+        assert_equal @existing_supplier, Supplier.find_or_build_from(:organisation => @organisation, :name => '  Foo  Company    ', :uid => nil)
       end
       
       should "not search using name if name blank" do
-        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => '', :uid => 'ab123')
-        assert_nil Supplier.find_from_params(:organisation => @another_org, :name => nil, :uid => 'ab123')
+        assert Supplier.find_or_build_from(:organisation => @another_org, :name => '', :uid => 'ab123').new_record? #don't return existing one, build new one
+        assert Supplier.find_or_build_from(:organisation => @another_org, :name => nil, :uid => 'ab123').new_record? #don't return existing one, build new one
       end
       
       should "search using uid if name blank" do
-        assert_equal @another_org_supplier_with_uid_and_no_name, Supplier.find_from_params(:organisation => @another_org, :name => '', :uid => 'bc456')
-        assert_equal @another_org_supplier_with_uid_and_no_name, Supplier.find_from_params(:organisation => @another_org, :name => nil, :uid => 'bc456')
+        assert_equal @another_org_supplier_with_uid_and_no_name, Supplier.find_or_build_from(:organisation => @another_org, :name => '', :uid => 'bc456')
+        assert_equal @another_org_supplier_with_uid_and_no_name, Supplier.find_or_build_from(:organisation => @another_org, :name => nil, :uid => 'bc456')
+      end
+      
+      context "and extra params passed" do
+
+        should "set vat_number if given" do
+          @existing_supplier = Supplier.find_or_build_from(:organisation => @organisation, :name => 'Foo Company', :vat_number => '1234')
+          assert_equal '1234', @existing_supplier.vat_number
+        end
+
+        should "set company_number if given" do
+          @existing_supplier = Supplier.find_or_build_from(:organisation => @organisation, :name => 'Foo Company', :company_number => '00123')
+          assert_equal '00123', @existing_supplier.company_number
+        end
+
+        should "set vat_number and company_number if given" do
+          @existing_supplier = Supplier.find_or_build_from(:organisation => @organisation, :name => 'Foo Company', :company_number => '00123', :vat_number => '1234')
+          assert_equal '00123', @existing_supplier.company_number
+          assert_equal '1234', @existing_supplier.vat_number
+        end
+      end
+      
+      context "and no matching supplier" do
+
+        should "return build new supplier using given params" do
+          assert_kind_of Supplier, new_supplier = Supplier.find_or_build_from(:organisation => @another_org, :name => 'FooBar Company')
+          assert_equal @another_org, new_supplier.organisation
+          assert_equal 'FooBar Company', new_supplier.name
+        end
+        
+        should "assign vat_number and company number if in params" do
+          assert_equal '123456', Supplier.find_or_build_from(:organisation => @another_org, :name => 'FooBar Company', :vat_number => '123456').vat_number
+          assert_equal '00123', Supplier.find_or_build_from(:organisation => @another_org, :name => 'FooBar Company', :company_number => '00123').company_number
+        end
+
       end
     end
     
@@ -204,6 +240,52 @@ class SupplierTest < ActiveSupport::TestCase
     should "use id when converting to_param and no title" do
       @supplier[:name] = nil
       assert_equal "#{@supplier.id}-", @supplier.to_param
+    end
+    
+    context "when creating" do
+      setup do
+        @supplier = Factory.build(:supplier)
+      end
+      
+      should "in general not queue CompanyNumberMatcher or VatMatcher" do
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher)).never
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+        @supplier.save!
+      end
+
+      context "and supplier has company_number instance_variable" do
+        setup do
+          @supplier.instance_variable_set(:@company_number, '1234')
+        end
+        
+        should "use company number and supplier to create CompanyNumberMatcher" do
+          dummy_matcher = stub(:perform => nil)
+          SupplierUtilities::CompanyNumberMatcher.expects(:new).with(:company_number => '1234', :supplier => @supplier).returns(dummy_matcher)
+          @supplier.save!
+        end
+
+        should "add CompanyNumberMatcher to Delayed::Job queue" do
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher))
+          @supplier.save!
+        end
+      end
+      
+      context "and supplier has vat_number instance_variable" do
+        setup do
+          @supplier.instance_variable_set(:@vat_number, '123432123')
+        end
+        
+        should "use company number and supplier to create VatMatcher" do
+          dummy_matcher = stub(:perform => nil)
+          SupplierUtilities::VatMatcher.expects(:new).with(:vat_number => '123432123', :supplier => @supplier, :title => @supplier.title).returns(dummy_matcher)
+          @supplier.save!
+        end
+
+        should "add CompanyNumberMatcher to Delayed::Job queue" do
+          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+          @supplier.save!
+        end
+      end
     end
     
     context "when assigning name" do
@@ -427,40 +509,40 @@ class SupplierTest < ActiveSupport::TestCase
         @another_company = Factory(:company, :company_number => 'CD00000456')
       end
       
-      should 'associate company matching company number as payee' do
-        @supplier.company_number = 'AB123456'
-        assert_equal @company, @supplier.payee
-      end
-      
-      should 'not change title of company matching company number' do
-        title = @company.title
-        @supplier.company_number = 'AB123456'
-        assert_equal title, @supplier.payee.reload.title
-      end
+      # should 'associate company matching company number as payee' do
+      #   @supplier.company_number = 'AB123456'
+      #   assert_equal @company, @supplier.payee
+      # end
+      # 
+      # should 'not change title of company matching company number' do
+      #   title = @company.title
+      #   @supplier.company_number = 'AB123456'
+      #   assert_equal title, @supplier.payee.reload.title
+      # end
+      #       
+      # should 'normalise company number' do
+      #   Company.expects(:normalise_company_number).with('AB123456')
+      #   @supplier.company_number = 'AB123456'
+      # end
             
-      should 'normalise company number' do
-        Company.expects(:normalise_company_number).with('AB123456')
-        @supplier.company_number = 'AB123456'
-      end
-            
-      context "and supplier already has associated company" do
-        setup do
-          @supplier.update_attribute(:payee, @company)
-        end
-        
-        should "not update company with new company number" do
-          company_number = @company.company_number
-          @supplier.company_number = 'DE987'
-          assert_equal company_number, @company.reload.company_number 
-        end
-        
-        should 'match existing company and associate as payeee using normalised company number' do
-          Company.stubs(:normalise_company_number).with('CD456').returns('CD00000456')
-          @supplier.company_number = 'CD456'
-          assert_equal @another_company, @supplier.payee
-        end
-
-      end
+      # context "and supplier already has associated company" do
+      #   setup do
+      #     @supplier.update_attribute(:payee, @company)
+      #   end
+      #   
+      #   should "not update company with new company number" do
+      #     company_number = @company.company_number
+      #     @supplier.company_number = 'DE987'
+      #     assert_equal company_number, @company.reload.company_number 
+      #   end
+      #   
+      #   should 'match existing company and associate as payeee using normalised company number' do
+      #     Company.stubs(:normalise_company_number).with('CD456').returns('CD00000456')
+      #     @supplier.company_number = 'CD456'
+      #     assert_equal @another_company, @supplier.payee
+      #   end
+      # 
+      # end
       
       context "and no company with company number exists" do
 

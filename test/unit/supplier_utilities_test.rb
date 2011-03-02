@@ -265,28 +265,62 @@ class SupplierUtilitiesTest < ActiveSupport::TestCase
           @supplier.update_attribute(:payee, @another_company)
           Company.stubs(:match_or_create)
         end
+        
+        context "and normalised company_number is same as company_number of payee" do
+          setup do
+            normalised_number = 'AB0001234'
+            @supplier.payee.update_attribute(:company_number, normalised_number)
+            Company.expects(:normalise_company_number).with(@matcher.company_number).returns(normalised_number)
+            Company.expects(:normalise_company_number).with(@another_company.company_number).returns(normalised_number)
+          end
+
+          should "not match company from number" do
+            Company.expects(:match_or_create).never
+            @matcher.perform
+          end
+          
+          should "not change payee company" do
+            @matcher.perform
+            assert_equal @another_company, @matcher.supplier.payee
+          end
+          
+          should "not send alert" do
+            AdminMailer.expects(:deliver_admin_alert!).never
+            @matcher.perform
+          end
+
+        end
+        
+        context "and normalised company_number is different from company_number of payee" do
+
+          should "not match company from number" do
+            Company.expects(:match_or_create).never
+            @matcher.perform
+          end
+          
+          should "not change payee company" do
+            @matcher.perform
+            assert_equal @another_company, @matcher.supplier.payee
+          end
+
+          should "send alert" do
+            AdminMailer.expects(:deliver_admin_alert!)
+            @matcher.perform
+          end
+
+        end
+                
+      end
       
-        should "not get company from number if company number different from payee company" do
-          Company.expects(:match_or_create).never
-          @matcher.perform
+      context "and no company returned from matching or creating" do
+        setup do
+          Company.stubs(:match_or_create)
         end
-        
-        should "update not change payee company" do
-          @matcher.perform
-          assert_equal @another_company, @matcher.supplier.payee
-        end
-        
-        should "send alert if company number different from payee company" do
+
+        should "send alert" do
           AdminMailer.expects(:deliver_admin_alert!)
           @matcher.perform
         end
-        
-        should "not send alert if company number not different from payee company" do
-          AdminMailer.expects(:deliver_admin_alert!).never
-          @matcher.instance_variable_set(:@company_number, @another_company.company_number)
-          @matcher.perform
-        end
-        
       end
     end
   end
