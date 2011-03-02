@@ -45,7 +45,8 @@ class Company < ActiveRecord::Base
     params[:company_number] = normalise_company_number(params[:company_number]) if params[:company_number] # use normalised version of company number
     company = params[:company_number].blank? ? (params[:vat_number].blank? ? Company.new(params) : find_or_create_by_vat_number(params)) : find_or_create_by_company_number(params) 
     # company = params[:company_number].blank? ? Company.new(params) : find_or_create_by_company_number(params) 
-    company
+    # return associated charity if there is one, as we really want association to be with the charity, not the company
+    company.is_a?(Company) && company.charity ? company.charity : company
   end
   
   def self.probable_company?(name)

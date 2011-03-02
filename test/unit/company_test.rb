@@ -356,6 +356,18 @@ class CompanyTest < ActiveSupport::TestCase
         end
 
       end
+      
+      context "and company has associated charity" do
+        setup do
+          @charity_company = Factory(:company)
+          @charity = Factory(:charity, :normalised_company_number => @charity_company.company_number)
+          Company.stubs(:first).returns(@charity_company)
+        end
+        
+        should "return charity" do
+          assert_equal @charity, Company.match_or_create(:company_number => @charity_company.company_number)
+        end
+      end
     end
     
     context "when calculating spending_data" do
