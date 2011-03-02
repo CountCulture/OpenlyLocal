@@ -11,11 +11,6 @@ class Address < ActiveRecord::Base
   
   def in_full=(raw_addr)
     self.attributes = AddressUtilities::Parser.parse(raw_addr)
-    # raw_address = raw_addr.dup
-    # self.postal_code = raw_address.slice!(UKPostcodeRegex)
-    # split_address = raw_address.sub(/^(\d+),/, '\1').split(/,\s*|,?[\r\n]+/).delete_if(&:blank?)
-    # self.locality = split_address.pop.strip if split_address.size > 1
-    # self.street_address = split_address.join(', ')
   end
   
   def perform
@@ -27,6 +22,6 @@ class Address < ActiveRecord::Base
   
   private
   def queue_for_geocoding
-    Delayed::Job.enqueue(self)
+    Delayed::Job.enqueue(self) if lat.nil? #don't geocode if already got address
   end
 end

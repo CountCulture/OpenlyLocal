@@ -252,8 +252,6 @@ class FinancialTransaction < ActiveRecord::Base
                                                                   :organisation => organisation)
     end
     self.supplier ||= Supplier.new(:uid => uid)
-    # self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_uid(uid) || Supplier.new) unless self.supplier
-    # self.supplier.uid = uid
 	end
 
 	def supplier_company_number=(company_number)
