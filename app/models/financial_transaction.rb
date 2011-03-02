@@ -163,7 +163,11 @@ class FinancialTransaction < ActiveRecord::Base
   # organisation directly, and also org may be known after the Supplier Name, so only update supplier if org 
 	def organisation=(org)
 	  if supplier 
-      exist_supplier = org.suppliers.find_or_build_from(:name => supplier.name, :uid => supplier.uid, :organisation => org)
+      exist_supplier = org.suppliers.find_or_build_from( :name => supplier.name, 
+                                                         :uid => supplier.uid, 
+                                                         :organisation => org, 
+                                                         :vat_number => supplier.vat_number, 
+                                                         :company_number => supplier.company_number)
       self.supplier = exist_supplier || supplier
       self.supplier.organisation = org unless exist_supplier
     else
@@ -181,8 +185,6 @@ class FinancialTransaction < ActiveRecord::Base
    supplier.organisation.update_spending_stat_with(self)
    # p supplier.payee
    supplier.match_with_payee unless supplier.payee
-   # supplier.save!
-   # p supplier.payee
    
    supplier.payee.update_spending_stat_with(self) if supplier.payee && (supplier.payee.is_a?(Company) || supplier.payee.is_a?(Charity))
 	end
@@ -220,27 +222,42 @@ class FinancialTransaction < ActiveRecord::Base
 	# As financial transactions are often create from CSV files, we need to set supplier 
 	# from supplied params, and when doing so may not not associated organisation
 	def supplier_name=(name)
-    self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_name(NameParser.strip_all_spaces(name)) || Supplier.new) unless self.supplier
-    self.supplier.name = name
+    if supplier && organisation
+      self.supplier = organisation.suppliers.find_or_build_from(  :name => name, 
+                                                                  :uid => supplier.uid, 
+                                                                  :organisation => organisation, 
+                                                                  :vat_number => supplier.vat_number, 
+                                                                  :company_number => supplier.company_number)
+    elsif supplier
+      self.supplier.name = name
+    elsif organisation
+      self.supplier = organisation.suppliers.find_or_build_from(  :name => name,
+                                                                  :organisation => organisation)
+    end
+    self.supplier ||= Supplier.new(:name => name)
 	end
 	
 	def supplier_uid=(uid)
 	  return if uid.blank?
-    self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_uid(uid) || Supplier.new) unless self.supplier
-    self.supplier.uid = uid
-    # self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
+	  if supplier && organisation
+      self.supplier = organisation.suppliers.find_or_build_from(  :name => supplier.name, 
+                                                                  :uid => uid, 
+                                                                  :organisation => organisation, 
+                                                                  :vat_number => supplier.vat_number, 
+                                                                  :company_number => supplier.company_number)
+    elsif supplier
+      self.supplier.uid = uid
+    elsif organisation
+      self.supplier = organisation.suppliers.find_or_build_from(  :uid => uid,
+                                                                  :organisation => organisation)
+    end
+    self.supplier ||= Supplier.new(:uid => uid)
+    # self.supplier = (organisation&&organisation.suppliers.find_or_initialize_by_uid(uid) || Supplier.new) unless self.supplier
+    # self.supplier.uid = uid
 	end
 
-	def supplier_company_number=(co_no)
-    if supplier 
-      supplier.instance_variable_set(:@company_number, co_no)
-    else
-      s = Supplier.new
-      s.instance_variable_set(:@company_number, co_no)
-      self.supplier = s
-    end
-    # self.supplier = organisation ? (organisation.suppliers.find_by_uid(uid) || Supplier.new(:name => uid, :organisation => organisation)) : Supplier.new(:uid => uid)
-    # self.supplier = supplier ? (supplier.uid = uid; supplier) : Supplier.new(:uid => uid)
+	def supplier_company_number=(company_number)
+	  self.supplier = supplier ? (supplier.company_number = company_number; supplier) : Supplier.new(:company_number => company_number)
 	end
 
 	def supplier_vat_number=(vat_number)

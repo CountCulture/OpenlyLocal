@@ -27,7 +27,8 @@ class Supplier < ActiveRecord::Base
   # should have_many suppliers). If a :uid is supplied, checks 
   # suppliers belonging to organisation with uid and if not for suppliers with matching name
   def self.find_or_build_from(params)
-    squished_name = params[:name]&&params[:name].squish
+    # 
+    squished_name = NameParser.strip_all_spaces(params[:name]).try(:squish)
     supplier = if params[:uid].blank?
       squished_name.blank? ? nil : params[:organisation].suppliers.find_by_name(squished_name)
     else
@@ -58,15 +59,6 @@ class Supplier < ActiveRecord::Base
     payee.supplying_relationships - [self]
   end
   
-  # convenience method for assigning company given company number. Creates company if no company with given company_number exists
-  # def company_number=(comp_no)
-  #   normalised_company_number = Company.normalise_company_number(comp_no)
-  #   unless payee && (payee.company_number == normalised_company_number)
-  #     company = Company.find_or_initialize_by_company_number(:company_number => normalised_company_number)
-  #     self.payee = company
-  #   end
-  # end
-  
   def match_with_payee
     if payee = possible_payee
       payee.supplying_relationships << self #doing it this way rather than setting payee means after_add callbacks are triggered
@@ -85,7 +77,7 @@ class Supplier < ActiveRecord::Base
   
   # strip excess spaces and UTF8 spaces from name
   def name=(raw_name)
-    self[:name] = NameParser.strip_all_spaces(raw_name) if raw_name
+    self[:name] = NameParser.strip_all_spaces(raw_name).try(:squish) if raw_name
   end
 
   def openlylocal_url
@@ -135,11 +127,11 @@ class Supplier < ActiveRecord::Base
   
   private
   def queue_matching_company_and_vat_info
-    if company_number
+    if self.company_number
       matcher = SupplierUtilities::CompanyNumberMatcher.new(:company_number => company_number, :supplier => self)
       Delayed::Job.enqueue matcher
     end
-    if vat_number
+    if self.vat_number
       matcher = SupplierUtilities::VatMatcher.new(:vat_number => vat_number, :supplier => self, :title => title)
       Delayed::Job.enqueue matcher
     end

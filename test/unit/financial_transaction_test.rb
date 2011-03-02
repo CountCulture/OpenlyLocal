@@ -242,6 +242,45 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       # end
     end
     
+    # this simulates what happens when importing financial_transactions from CSV file
+    context "when creating from params, including supplier params" do
+      setup do
+        @organisation = Factory(:generic_council)
+        @params = { :organisation => @organisation,
+                    :value => 123.4,
+                    :date => '2010-01-28',
+                    :supplier_name => 'Foo Industries Ltd',
+                    :supplier_vat_number => '123456789',
+                    :supplier_company_number => '1234'}
+      end
+
+      should "create associated supplier" do
+        assert_difference "Supplier.count", +1 do
+          @financial_transaction = FinancialTransaction.create(@params)
+        end
+        assert_equal @organisation, @financial_transaction.supplier.organisation
+      end
+      
+      should "add VatMatcher and CompanyNumberMatcher to Delayed::Job queue" do
+        Delayed::Job.stubs(:enqueue)
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher))
+        @financial_transaction = FinancialTransaction.create(@params)
+      end
+      
+      should "use vat_number when queuing VatMatcher" do
+        @financial_transaction = FinancialTransaction.create(@params)
+        assert Delayed::Job.all.detect{ |j| j.payload_object.respond_to?(:vat_number)&&j.payload_object.vat_number == '123456789' }
+      end
+      
+      
+      should "use company_number when queuing CompanyNumberMatcher" do
+        @financial_transaction = FinancialTransaction.create(@params)
+        assert Delayed::Job.all.detect{ |j| j.payload_object.respond_to?(:company_number)&&j.payload_object.company_number == '1234' }
+      end
+            
+    end
+
     context "when saving" do
       setup do
         @financial_transaction = Factory.create(:financial_transaction)
@@ -658,6 +697,18 @@ class FinancialTransactionTest < ActiveSupport::TestCase
  	        assert_equal 'Bar Supplier', supplier.name
  	        assert_equal 'ab123', supplier.uid
  	      end
+	      
+	      should "not lose supplier vat_number when set" do
+	        @fin_trans = FinancialTransaction.new(:supplier_vat_number => 'GB1234')
+          @fin_trans.supplier_name = 'Bar Supplier'
+	        assert_equal 'GB1234', @fin_trans.supplier.vat_number
+	      end
+	      
+	      should "not lose supplier company_number when set" do
+	        @fin_trans = FinancialTransaction.new(:supplier_company_number => '000123')
+          @fin_trans.supplier_name = 'Bar Supplier'
+	        assert_equal '000123', @fin_trans.supplier.company_number
+	      end
 	    end
 	 
 	    context 'and organisation set' do
@@ -668,6 +719,22 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 	      should 'find supplier for organisation if it exists' do
 	        @fin_trans.supplier_name = 'Foo Supplier'
 	        assert_equal @existing_supplier, @fin_trans.supplier
+	      end
+	      
+	      should 'find supplier for organisation and update with vat number if given' do
+          # this is partly regression test. Wasn't finding existing supplier when vat_number was set
+	        @fin_trans.supplier_vat_number = 'GB1234'
+	        @fin_trans.supplier_name = 'Foo Supplier'
+	        assert_equal @existing_supplier, @fin_trans.supplier 
+	        assert_equal 'GB1234', @fin_trans.supplier.vat_number
+	      end
+	      
+	      should 'find supplier for organisation and update with company_number if given' do
+          # this is partly regression test. Wasn't finding existing supplier when vat_number was set
+	        @fin_trans.supplier_company_number = '000123'
+	        @fin_trans.supplier_name = 'Foo Supplier'
+	        assert_equal @existing_supplier, @fin_trans.supplier 
+	        assert_equal '000123', @fin_trans.supplier.company_number
 	      end
 	      
 	      should 'find supplier for organisation normalising to remove spaces' do
@@ -721,6 +788,19 @@ class FinancialTransactionTest < ActiveSupport::TestCase
  	        assert_equal 'ab123', supplier.uid
  	        assert_equal 'Bar Supplier', supplier.name
  	      end
+ 	      
+	      should "not lose supplier vat_number when set" do
+	        @fin_trans = FinancialTransaction.new(:supplier_vat_number => 'GB1234')
+          @fin_trans.supplier_uid = 'ab123'
+	        assert_equal 'GB1234', @fin_trans.supplier.vat_number
+	      end
+	      
+	      should "not lose supplier company_number when set" do
+	        @fin_trans = FinancialTransaction.new(:supplier_company_number => '000123')
+          @fin_trans.supplier_uid = 'ab123'
+	        assert_equal '000123', @fin_trans.supplier.company_number
+	      end
+	      
  	    end
 
  	    context 'and organisation set' do
@@ -733,6 +813,22 @@ class FinancialTransactionTest < ActiveSupport::TestCase
  	        assert_equal @existing_supplier, @fin_trans.supplier
  	      end
 
+	      should 'find supplier for organisation and update with vat number if given' do
+          # this is partly regression test. Wasn't finding existing supplier when vat_number was set
+	        @fin_trans.supplier_vat_number = 'GB1234'
+ 	        @fin_trans.supplier_uid = 'ab123'
+	        assert_equal @existing_supplier, @fin_trans.supplier 
+	        assert_equal 'GB1234', @fin_trans.supplier.vat_number
+	      end
+	      
+	      should 'find supplier for organisation and update with company_number if given' do
+          # this is partly regression test. Wasn't finding existing supplier when vat_number was set
+	        @fin_trans.supplier_company_number = '000123'
+ 	        @fin_trans.supplier_uid = 'ab123'
+	        assert_equal @existing_supplier, @fin_trans.supplier 
+	        assert_equal '000123', @fin_trans.supplier.company_number
+	      end
+	      
  	      should "instantiate new supplier for organisation if it doesn't exist" do
  	        @fin_trans.supplier_uid = 'cd123'
  	        assert_kind_of Supplier, supplier = @fin_trans.supplier
@@ -787,6 +883,18 @@ class FinancialTransactionTest < ActiveSupport::TestCase
 	        assert_equal exist_supplier, @fin_trans.supplier
 	      end
 	      
+	      should "not lose supplier vat_number when set" do
+	        @fin_trans = FinancialTransaction.new(:supplier_vat_number => 'GB1234')
+	        @fin_trans.organisation = @organisation
+	        assert_equal 'GB1234', @fin_trans.supplier.vat_number
+	      end
+	      
+	      should "not lose supplier company_number when set" do
+	        @fin_trans = FinancialTransaction.new(:supplier_company_number => '000123')
+	        @fin_trans.organisation = @organisation
+	        assert_equal '000123', @fin_trans.supplier.company_number
+	      end
+	      
 	    end
 	  end
 
@@ -811,6 +919,12 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         assert_equal 'Bar Supplier', @fin_trans.supplier.name
       end
       
+      
+      should "not lose company_number if set" do
+        @fin_trans.supplier_company_number = '12345'
+        @fin_trans.supplier_vat_number = 'GB12345'
+        assert_equal '12345', @fin_trans.supplier.company_number
+      end
     end
     
     context "when setting supplier company number" do
@@ -825,13 +939,19 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       
       should 'assign to company_number instance_variable' do
         @fin_trans.supplier_company_number = '12345'
-        assert_equal '12345', @fin_trans.supplier.instance_variable_get(:@company_number)
+        assert_equal '12345', @fin_trans.supplier.company_number
       end
       
       should "not instantiate new supplier if set" do
         @fin_trans.supplier_name = 'Bar Supplier'
         @fin_trans.supplier_company_number = '12345'
         assert_equal 'Bar Supplier', @fin_trans.supplier.name
+      end
+      
+      should "not lose vat_number if set" do
+        @fin_trans.supplier_vat_number = '000456'
+        @fin_trans.supplier_company_number = '12345'
+        assert_equal '000456', @fin_trans.supplier.vat_number
       end
       
     end

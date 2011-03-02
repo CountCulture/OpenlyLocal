@@ -138,6 +138,11 @@ class SupplierTest < ActiveSupport::TestCase
       should "return supplier with given name for organisation" do
         assert_equal @existing_supplier, Supplier.find_or_build_from(:organisation => @organisation, :name => 'Foo Company')
       end
+      
+      should "strip multiple and UTF8 spaces when searching for name" do
+        assert_equal @existing_supplier, Supplier.find_or_build_from(:organisation => @organisation, :name => "    Foo#{160.chr}Company\n ")
+        
+      end
             
       should "return supplier with given uid ignoring name if uid given" do
         assert_equal @existing_supplier_with_uid, Supplier.find_or_build_from(:organisation => @organisation, :uid => 'ab123', :name => 'Foo Company')
@@ -389,7 +394,6 @@ class SupplierTest < ActiveSupport::TestCase
       context "and name is company-like" do
         setup do
           @supplier.name = 'Foo Ltd'
-          # Company.stubs(:probable_company?).returns(true)
         end
 
         should "try to match against company" do
@@ -509,59 +513,9 @@ class SupplierTest < ActiveSupport::TestCase
         @another_company = Factory(:company, :company_number => 'CD00000456')
       end
       
-      # should 'associate company matching company number as payee' do
-      #   @supplier.company_number = 'AB123456'
-      #   assert_equal @company, @supplier.payee
-      # end
-      # 
-      # should 'not change title of company matching company number' do
-      #   title = @company.title
-      #   @supplier.company_number = 'AB123456'
-      #   assert_equal title, @supplier.payee.reload.title
-      # end
-      #       
-      # should 'normalise company number' do
-      #   Company.expects(:normalise_company_number).with('AB123456')
-      #   @supplier.company_number = 'AB123456'
-      # end
-            
-      # context "and supplier already has associated company" do
-      #   setup do
-      #     @supplier.update_attribute(:payee, @company)
-      #   end
-      #   
-      #   should "not update company with new company number" do
-      #     company_number = @company.company_number
-      #     @supplier.company_number = 'DE987'
-      #     assert_equal company_number, @company.reload.company_number 
-      #   end
-      #   
-      #   should 'match existing company and associate as payeee using normalised company number' do
-      #     Company.stubs(:normalise_company_number).with('CD456').returns('CD00000456')
-      #     @supplier.company_number = 'CD456'
-      #     assert_equal @another_company, @supplier.payee
-      #   end
-      # 
-      # end
-      
-      context "and no company with company number exists" do
-
-        should "associate with new company with company_number as payee" do
-          @supplier.company_number = 'EF987'
-          assert_kind_of Company, @supplier.payee
-          assert_equal 'EF987', @supplier.payee.company_number
-        end
-        
-        should "not save new company" do
-          @supplier.company_number = 'EF987'
-          assert @supplier.payee.new_record?
-        end
-        
-        should "use normalised company number" do
-          Company.stubs(:normalise_company_number).returns('EF00000987')
-          @supplier.company_number = 'EF987'
-          assert_equal 'EF00000987', @supplier.payee.company_number
-        end
+      should 'assign to company_number instance_variable' do
+        @supplier.company_number = '123456'
+        assert_equal '123456', @supplier.instance_variable_get(:@company_number)
       end
     end
         
