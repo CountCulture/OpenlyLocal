@@ -1103,6 +1103,10 @@ class SpendingStatTest < ActiveSupport::TestCase
         @second_supplier = Factory(:supplier, :organisation => @first_council, :payee => @company)
         Factory(:financial_transaction, :supplier => @second_supplier, :value => 101)
         @second_supplier.create_spending_stat.perform
+        @council_with_zero_total_spend = Factory(:generic_council)
+        Factory(:supplier, :organisation => @council_with_zero_total_spend, :payee => @company)
+        @council_with_zero_total_spend.create_spending_stat.perform
+
         @breakdown = @bd_spending_stat.calculated_payer_breakdown
       end
 
@@ -1127,6 +1131,10 @@ class SpendingStatTest < ActiveSupport::TestCase
       context "and hash" do
         setup do
           @council_hash = @breakdown.detect{ |h| h[:organisation_id] == @first_council.id }
+        end
+        
+        should "not include organisations with zero total spend" do
+          assert !@breakdown.any?{ |h| h[:organisation_id] == @council_with_zero_total_spend.id }
         end
         
         should "contain organisation id" do

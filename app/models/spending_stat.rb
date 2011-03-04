@@ -128,6 +128,7 @@ class SpendingStat < ActiveRecord::Base
       res[:average_transaction_size] = res[:total_spend]/res[:transaction_count] rescue nil
       res
     end
+    @bdown.delete_if{ |o| o[:total_spend].to_i == 0 }
   end
   
   def months_covered
