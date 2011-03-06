@@ -59,10 +59,6 @@ class CompaniesControllerTest < ActionController::TestCase
         assert_select "title", /#{@company.title}/
       end
 
-      should 'list suppliers as organisation' do
-        assert_select 'li .supplier_link', /#{@supplier.organisation.title}/
-      end
-
       should "show OpenCorporates resource uri as main subject in head" do
         assert_select "link[rel=primarytopic][href='http://opencorporates.com/id/companies/uk/#{@company.company_number}']"
       end
@@ -80,19 +76,25 @@ class CompaniesControllerTest < ActionController::TestCase
       setup do
         @org1 = Factory(:generic_council)
         @org2 = Factory(:police_authority)
+        @org3 = Factory(:generic_council)
         @earliest_date = '2008-03-23'.to_date
         @latest_date = '2008-02-04'.to_date
         
-        breakdown = [{ :organisation_id => @org1.id, 
-                       :organisation_type => @org1.class.to_s, 
-                       :total_spend => 321.4, 
-                       :transaction_count => 1,
-                       :average_transaction_value => 321.4},
-                     { :organisation_id => @org2.id, 
-                       :organisation_type => @org2.class.to_s, 
-                       :total_spend => 111111.1, 
-                       :transaction_count => 21,
-                       :average_transaction_value => 42.323} ]
+        payer_breakdown = [{ :organisation_id => @org1.id, 
+                             :organisation_type => @org1.class.to_s, 
+                             :total_spend => 321.4, 
+                             :transaction_count => 1,
+                             :average_transaction_value => 321.4},
+                           { :organisation_id => @org2.id, 
+                             :organisation_type => @org2.class.to_s, 
+                             :total_spend => 111111.1, 
+                             :transaction_count => 21,
+                             :average_transaction_value => 42.323},
+                           { :organisation_id => @org3.id, 
+                             :organisation_type => @org3.class.to_s, 
+                             :total_spend => 222.2, 
+                             :transaction_count => 2,
+                             :average_transaction_value => 102.2} ]
         
         Factory(:spending_stat, :organisation => @company, 
                                 :total_spend => 999999, 
@@ -100,7 +102,7 @@ class CompaniesControllerTest < ActionController::TestCase
                                 :average_transaction_value => 321.4,
                                 :earliest_transaction => @earliest_date,
                                 :latest_transaction => @latest_date,
-                                :breakdown => breakdown)
+                                :payer_breakdown => payer_breakdown )
         get :show, :id => @company.id
       end
 
@@ -109,8 +111,12 @@ class CompaniesControllerTest < ActionController::TestCase
         assert_select ".dashboard"
       end
       
-      should_eventually "show number of organisations supplying" do
-        assert_select ".dashboard h3", /supplying 2 organisations/
+      should "show number of councils supplying" do
+        assert_select ".dashboard h3", /2 councils/
+      end
+      
+      should "show payer_breakdown table" do
+        assert_select "table#payer_breakdown"
       end
     end
 

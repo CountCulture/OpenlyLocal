@@ -628,7 +628,7 @@ table.statistics .selected td {
 	font-weight: bold;
 }
 #grouped_datapoints table th, table.statistics th {
-	background-color: #bcd;
+	background-color: #cde;
 }
 #grouped_datapoints table caption, table.statistics caption {
 	background-color: #fff;
@@ -670,6 +670,11 @@ table.datapoints tr.total td {
 }
 table.datapoints td.more_info {
 	width: 50px;
+}
+table.statistics tr.subtotal td {
+  font-weight: bold;
+  border-bottom: 1px solid #aaa;
+  border-top: 1px solid #ccc;
 }
 
 /*Election data formatting*/

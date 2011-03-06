@@ -10,12 +10,7 @@
 <%- end -%>
 
 <div id="relationships">
-  <h3>Supplier to:</h3>
-  <ul>
-    <%- @company.supplying_relationships.each do |supplier| -%>
-      <li><strong><%= link_for supplier, :text => supplier.organisation.title %></strong> Total spend: <span class='value'>£<%= number_with_delimiter(supplier.total_spend.to_i) %>, Average monthly spend £<%= number_with_delimiter(supplier.average_monthly_spend.to_i) %></span></li>
-      <%- end -%>
-  </ul>
+  <%= payer_breakdown_table(@company.data_for_payer_breakdown) %>
 </div>
 
 <%= timestamp_data_for @company %>

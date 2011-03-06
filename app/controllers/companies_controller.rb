@@ -2,7 +2,7 @@ class CompaniesController < ApplicationController
   before_filter :linked_data_available, :only => :show
 
   def show
-    @company = Company.find(params[:id], :include => { :supplying_relationships => :organisation })
+    @company = Company.find(params[:id], :include => { :supplying_relationships => [:organisation, :spending_stat] })
     @title = "#{@company.title} :: Companies"
     @resource_uri = @company.resource_uri
     respond_to do |format|
