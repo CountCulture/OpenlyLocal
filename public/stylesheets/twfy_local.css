@@ -683,6 +683,9 @@ table.statistics tr.subtotal td {
   border-bottom: 1px solid #aaa;
   border-top: 1px solid #ccc;
 }
+table#payer_breakdown span.description {
+  font-weight: normal;
+}
 
 /*Election data formatting*/
 .candidacy.elected * {

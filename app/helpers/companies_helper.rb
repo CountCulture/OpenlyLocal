@@ -22,7 +22,7 @@ module CompaniesHelper
       end
       content << content_tag(:tr, :class => 'subtotal') do
         subtotal_data = org_data[:subtotal]
-        content_tag(:td, "Subtotal for #{org.title}", :class => classes[0]) +
+        content_tag(:td, "#{org.title} <span class='description' style='display:none'>subtotal</span>", :class => classes[0]) +
         content_tag(:td, number_to_currency(subtotal_data[1], :unit => '&pound;', :precision => 0), :class => classes[1]) +
         content_tag(:td, number_to_currency(subtotal_data[2], :unit => '&pound;', :precision => 0), :class => classes[2])
       end
