@@ -439,6 +439,13 @@ body.councils .area, .feed_entry .dateline {
 #entity_spending_dashboard .in_words .value {
 	font-size: 2.6em;
 	line-height: 1em;}
+#company_spending_dashboard .in_words {
+	font-size: 1.2em;
+	float:right;
+	text-align: right;
+	width: 400px;}
+#company_spending_dashboard .in_words .value {
+	font-size: 2em;}
 .dashboard .in_words .explanation {
 	float:left;
 }

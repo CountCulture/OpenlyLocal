@@ -59,7 +59,6 @@ $(document).ready( function() {
 		
 		$('table#payer_breakdown').click(function(event){
 				$(this).find('tr.element').toggle();
-        // event.preventDefault();          
 		});
 		
 		$('.graphed_datapoints img').click(function(event){

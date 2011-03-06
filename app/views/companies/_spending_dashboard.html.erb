@@ -1,3 +1,5 @@
 <div id='company_spending_dashboard' class='dashboard'>
-  <h3>Matched payments totalling &pound;<%=  number_with_delimiter(@company.spending_stat.total_received_from_councils) %> from <%= @company.spending_stat.number_of_councils %> councils</h3>
+  <div class='in_words'>
+    <h3>Matched payments totalling<br /><span class='value'>&pound;<%=  number_with_delimiter(@company.spending_stat.total_received_from_councils) %></span><br />from <span class='value'><%= @company.spending_stat.number_of_councils %></span> councils</h3>
+  </div>
 </div>
