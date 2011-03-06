@@ -48,6 +48,8 @@ module SpendingStatUtilities
       receiver.delegate :total_spend, 
                         :average_monthly_spend, 
                         :average_transaction_value, 
+                        :earliest_transaction,
+                        :latest_transaction,
                         :to => :spending_stat, 
                         :allow_nil => true      
     end
@@ -77,11 +79,27 @@ module SpendingStatUtilities
     
     module InstanceMethods
       
+      def data_for_payer_breakdown
+        supplying_groups = supplying_relationships.group_by(&:organisation).sort{ |a,b| a[0].title <=> b[0].title }
+        return if supplying_groups.blank?
+        supplying_groups.collect do |org, srs|
+          total_spend = srs.sum{ |s| s.total_spend.to_i }
+          dates = srs.collect{ |s| [s.earliest_transaction, s.latest_transaction] }.flatten.compact.sort
+          average_spend_per_month = (total_spend/(difference_in_months_between_dates(dates.first, dates.last)+1)).to_i rescue nil
+          subtotal = [org, total_spend, average_spend_per_month]
+          [org, {:elements => srs, :subtotal => subtotal}]
+        end
+      end
+      
       private
       def update_associated_spending_stats(supplier)
         supplier.update_spending_stat
         supplier.organisation.update_spending_stat
         self.update_spending_stat
+      end
+      
+      def difference_in_months_between_dates(early_date,later_date)
+        (later_date.year - early_date.year) * 12 + (later_date.month - early_date.month)
       end
       
     end

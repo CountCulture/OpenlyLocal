@@ -5,7 +5,11 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
   context 'A class that mixes in SpendingStatUtilities::Base' do
     setup do
       @test_model_with_spending_stat = TestModelWithSpendingStat.create!
-      @spending_stat = @test_model_with_spending_stat.create_spending_stat
+      @spending_stat = @test_model_with_spending_stat.create_spending_stat( :total_spend => 12345, 
+                                                                            :average_monthly_spend => 420,
+                                                                            :average_transaction_value => 34,
+                                                                            :earliest_transaction => '2008-08-01',
+                                                                            :latest_transaction => '2010-03-24')
     end
     
     should 'have one spending_stat' do
@@ -24,7 +28,7 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
       assert_equal @spending_stat.average_monthly_spend, @test_model_with_spending_stat.average_monthly_spend
     end
     
-    should "return for average_monthly_spend if no spending_stat" do
+    should "return nil for average_monthly_spend if no spending_stat" do
       assert_nil TestModelWithSpendingStat.new.average_monthly_spend
     end
     
@@ -32,8 +36,24 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
       assert_equal @spending_stat.average_transaction_value, @test_model_with_spending_stat.average_transaction_value
     end
     
-    should "return for average_transaction_value if no spending_stat" do
+    should "return nil for average_transaction_value if no spending_stat" do
       assert_nil TestModelWithSpendingStat.new.average_transaction_value
+    end
+    
+    should "delegate earliest_transaction to spending_stat" do
+      assert_equal @spending_stat.earliest_transaction, @test_model_with_spending_stat.earliest_transaction
+    end
+    
+    should "return nil for earliest_transaction if no spending_stat" do
+      assert_nil TestModelWithSpendingStat.new.earliest_transaction
+    end
+    
+    should "delegate latest_transaction to spending_stat" do
+      assert_equal @spending_stat.latest_transaction, @test_model_with_spending_stat.latest_transaction
+    end
+    
+    should "return nil for latest_transaction if no spending_stat" do
+      assert_nil TestModelWithSpendingStat.new.latest_transaction
     end
     
     should "have update_spending_stat_with method" do
@@ -192,6 +212,7 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
       payment = Factory(:financial_transaction, :supplier => supplier)
       assert_equal [payment], @test_model_with_spending_stat_payer.payments
     end
+    
   end
   
   context "A class that mixes in SpendingStatUtilities::Payee" do
@@ -239,7 +260,69 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
       end
       
     end    
+      
+    should 'have data_for_payer_breakdown instance method' do
+      assert TestModelWithSpendingStatPayee.new.respond_to?(:data_for_payer_breakdown)
+    end
+      
+    context "and data_for_payer_breakdown" do
+      setup do
+        @org_1 = Factory(:generic_council, :title  => "Z Council")
+        @org_2 = Factory(:entity, :title  => "An entity")
+        @supplying_relationship_1 = Factory(:supplier, :payee => @test_model_with_spending_stat_payee, :organisation => @org_1)
+        @supplying_relationship_1a = Factory(:supplier, :payee => @test_model_with_spending_stat_payee, :organisation => @org_1)
+        @supplying_relationship_1b = Factory(:supplier, :payee => @test_model_with_spending_stat_payee, :organisation => @org_1)
+        @supplying_relationship_2 = Factory(:supplier, :payee => @test_model_with_spending_stat_payee, :organisation => @org_2)
+      end
+
+      should "return nil if no supplying_relationships" do
+        assert_nil TestModelWithSpendingStatPayee.create.data_for_payer_breakdown
+      end
+      
+      should "return array of arrays" do
+        assert_kind_of Array, @test_model_with_spending_stat_payee.data_for_payer_breakdown
+        assert_kind_of Array, @test_model_with_spending_stat_payee.data_for_payer_breakdown.first
+      end
+      
+      should "have organisation as first element of arrays" do
+        assert @test_model_with_spending_stat_payee.data_for_payer_breakdown.assoc(@org_1)
+        assert @test_model_with_spending_stat_payee.data_for_payer_breakdown.assoc(@org_2)
+      end
+      
+      should "return arrays in order of title of supplying_relationship organisation" do
+        assert_equal @org_2, @test_model_with_spending_stat_payee.data_for_payer_breakdown.first.first
+      end
+      
+      should "have hash as first second element of arrays" do
+        assert_kind_of Hash, @test_model_with_spending_stat_payee.data_for_payer_breakdown.first[1]
+      end
+      
+      context "and hash" do
+        setup do
+          @supplying_relationship_1.create_spending_stat(:total_spend => 123.4, :earliest_transaction => "2008-03-25", :latest_transaction => "2008-08-10")
+          @supplying_relationship_1b.create_spending_stat(:total_spend => 234.5, :earliest_transaction => "2008-06-25", :latest_transaction => "2008-10-10")
+          @subtotal_hash = @test_model_with_spending_stat_payee.data_for_payer_breakdown.assoc(@org_1)[1][:subtotal]
+        end
+
+        should "have supplying_relationships keyed to :elements" do
+          srs = [@supplying_relationship_1, @supplying_relationship_1a, @supplying_relationship_1b]
+          assert_equal srs, @test_model_with_spending_stat_payee.data_for_payer_breakdown.assoc(@org_1)[1][:elements]
+        end
         
+        should "have subtotal array keyed to :subtotal with organisation as first element" do
+          assert_equal @org_1, @subtotal_hash.first
+        end
+        
+        should "sum supplying_relationships total_spend as integers for second element of :elements" do
+          assert_equal 123+234, @subtotal_hash[1]
+        end
+        
+        should "average total_spend over number of months for third element of :elements" do
+          assert_equal ((123+234)/8).to_i, @subtotal_hash[2]
+        end
+        
+      end
+    end
   end
   
 end
