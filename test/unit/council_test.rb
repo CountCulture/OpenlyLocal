@@ -544,6 +544,32 @@ class CouncilTest < ActiveSupport::TestCase
       assert_equal "http://#{DefaultDomain}/id/councils/#{@council.id}", @council.resource_uri
     end
     
+    should "delegate chief_executive_full_name to chief_executive" do
+      chief_exec = Factory(:officer, :position => "Chief Executive", :council => @council)
+      assert_equal chief_exec.full_name, @council.chief_executive_full_name
+    end
+    
+    should "return nil for chief_executive_full_name when no chief_executive record" do
+      assert_nil @council.chief_executive_full_name
+    end
+    
+    context "when setting chief_executive_full_name" do
+
+      should "create chief executive if none set" do
+        assert_difference "Officer.count", +1 do
+          @council.chief_executive_full_name = "Fred Blogs"
+        end
+        assert_equal "Fred Blogs", @council.chief_executive.full_name
+      end
+      
+      should "change chief executive name if already chief executive" do
+        exist_chief_exec = Factory(:officer, :position => "Chief Executive", :council => @council)
+        @council.chief_executive_full_name = "Fred Blogs"
+        assert_equal "Fred Blogs", exist_chief_exec.reload.full_name
+        
+      end
+    end
+    
     context "when saving" do
       should "normalise title" do
         @council.expects(:normalise_title)

@@ -50,6 +50,7 @@ class Council < ActiveRecord::Base
                         :select => 'councils.*, COUNT(members.id) AS member_count'} }
   default_scope :order => 'councils.name' # fully specify councils.name, in case clashes with another model we're including
   before_save :normalise_title
+  delegate :full_name, :to => :chief_executive, :prefix => true, :allow_nil => true
   alias_attribute :title, :name
   alias_method :old_to_xml, :to_xml
   
@@ -148,6 +149,11 @@ class Council < ActiveRecord::Base
   
   def base_url
     read_attribute(:base_url).blank? ? url : read_attribute(:base_url)
+  end
+  
+  def chief_executive_full_name=(ce_name)
+    chief_executive ? chief_executive.full_name=(ce_name) : build_chief_executive(:full_name => ce_name)
+    chief_executive.save!
   end
   
   # convenience method to allow us to get council for an area, without having to worry whether it is a ward or a council
