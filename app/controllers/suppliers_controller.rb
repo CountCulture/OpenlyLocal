@@ -3,23 +3,25 @@ class SuppliersController < ApplicationController
   
   def index
     search_filter = params[:name_filter]
+    page = (params[:page]||1).to_i
+    page = 500 if page > 500
     @organisation = params[:organisation_type].constantize.find(params[:organisation_id]) if params[:organisation_type] && params[:organisation_id]
     @title = @organisation ? "Suppliers to #{@organisation.title}" : 'Suppliers to Local Authorities'
     sort_order = params[:order] == 'total_spend' ? 'spending_stats.total_spend DESC' : 'name'
     @suppliers = @organisation ? @organisation.suppliers.paginate(:joins => :spending_stat, :page => params[:page], :order => sort_order) : 
                                  Supplier.filter_by(:name => params[:name_filter]).paginate(:joins => :spending_stat, :page => params[:page], :order => sort_order)
-    @title += " :: Page #{(params[:page]||1).to_i}"
+    @title += " :: Page #{page}"
     respond_to do |format|
       format.html
       format.xml do
         render :xml => @suppliers.to_xml { |xml|
                     xml.tag! 'total-entries', @suppliers.total_entries
                     xml.tag! 'per-page', @suppliers.per_page
-                    xml.tag! 'page', (params[:page]||1).to_i
+                    xml.tag! 'page', page
                   }
       end
       format.json do
-        render :json => { :page => (params[:page]||1).to_i,
+        render :json => { :page => page,
                           :per_page => @suppliers.per_page,
                           :total_entries => @suppliers.total_entries,
                           :suppliers => @suppliers
