@@ -36,6 +36,6 @@
     <%- end -%>
   </table>
 </div>
-<%= will_paginate @suppliers %>
+<%= will_paginate @suppliers, :page_links => false %>
 
 <%= render :partial => '/shared/api_info' %>
