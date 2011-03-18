@@ -60,7 +60,7 @@ class CompaniesControllerTest < ActionController::TestCase
       end
 
       should "show OpenCorporates resource uri as main subject in head" do
-        assert_select "link[rel=primarytopic][href='http://opencorporates.com/id/companies/uk/#{@company.company_number}']"
+        assert_select "link[rel=primarytopic][href='http://opencorporates.com/id/companies/gb/#{@company.company_number}']"
       end
 
       should "show api block" do

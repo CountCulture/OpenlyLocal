@@ -548,7 +548,7 @@ class CompanyTest < ActiveSupport::TestCase
     
     context "when returning resource_uri" do
       should 'return OpenCorporates uri for company' do
-        assert_equal "http://opencorporates.com/id/companies/uk/#{@company.company_number}", @company.resource_uri
+        assert_equal "http://opencorporates.com/id/companies/gb/#{@company.company_number}", @company.resource_uri
       end
     end
     
@@ -692,7 +692,7 @@ class CompanyTest < ActiveSupport::TestCase
     context 'when returning opencorporates_url' do
       should "return url on opencorporates" do
         @company.company_number = '012345'
-        assert_equal 'http://opencorporates.com/companies/uk/012345', @company.opencorporates_url
+        assert_equal 'http://opencorporates.com/companies/gb/012345', @company.opencorporates_url
       end
     end
     
