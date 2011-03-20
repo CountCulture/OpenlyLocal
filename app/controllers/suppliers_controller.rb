@@ -8,8 +8,8 @@ class SuppliersController < ApplicationController
     @organisation = params[:organisation_type].constantize.find(params[:organisation_id]) if params[:organisation_type] && params[:organisation_id]
     @title = @organisation ? "Suppliers to #{@organisation.title}" : 'Suppliers to Local Authorities'
     sort_order = params[:order] == 'total_spend' ? 'spending_stats.total_spend DESC' : 'name'
-    @suppliers = @organisation ? @organisation.suppliers.paginate(:joins => :spending_stat, :page => params[:page], :order => sort_order) : 
-                                 Supplier.filter_by(:name => params[:name_filter]).paginate(:joins => :spending_stat, :page => params[:page], :order => sort_order)
+    @suppliers = @organisation ? @organisation.suppliers.paginate(:joins => :spending_stat, :page => page, :order => sort_order) : 
+                                 Supplier.filter_by(:name => params[:name_filter]).paginate(:joins => :spending_stat, :page => page, :order => sort_order)
     @title += " :: Page #{page}"
     respond_to do |format|
       format.html
