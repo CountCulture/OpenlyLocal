@@ -21,7 +21,7 @@
       <li><%= link_to "#{HyperlocalSite.approved.size} hyperlocal sites", hyperlocal_sites_path %></li>
       <li><%= number_with_delimiter(Document.quick_count) %> documents</li>
       <li>Over <%= number_with_delimiter(Datapoint.count) %> pieces of data</li>
-      <li><%= link_to "#{number_with_delimiter(FinancialTransaction.count)} financial transactions", :controller => 'councils', :action => 'spending' %></li>
+      <li><%= link_to "#{number_with_delimiter(FinancialTransaction.full_table_count)} financial transactions", :controller => 'councils', :action => 'spending' %></li>
     </ul>
   </div>
   <p class="clear-left">Most of the data is accessible as <%= link_to "XML", 'http://en.wikipedia.org/wiki/XML', :class => 'external' %> or <%= link_to "json", 'http://en.wikipedia.org/wiki/JSON', :class => 'external' %> data through a <%= link_to "simple API", :controller => "info", :action => "api" %> (basically add .xml or .json to the main part of the URL). There is also a <a href="http://countculture.wordpress.com/2009/10/09/openlylocal-info-on-your-website-part-1-google-gadgets/" title="OpenlyLocal info on your website, Part 1: Google Gadgets &laquo;  countculture">Google Gadget</a>, an <a href="http://countculture.wordpress.com/2009/11/20/openlylocal-info-on-your-hyperlocal-website-part-2-ning-app/" title="OpenlyLocal info on your hyperlocal website, Part 2: Ning app &laquo;  countculture">app for Hyperlocal sites using Ning</a>, and <a href="http://countculture.wordpress.com/2010/04/17/expirimental-openlylocal-widget-council-info-on-any-website/" title="Experimental OpenlyLocal widget: council info on any website &laquo;  countculture">a simple javascript widget</a></p>
