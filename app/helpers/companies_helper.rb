@@ -1,6 +1,6 @@
 module CompaniesHelper
   def payer_breakdown_table(payer_breakdown_data=[])
-    return if payer_breakdown_data.empty?
+    return if payer_breakdown_data.blank?
     headings = ['Payed By', 'Total Spend', 'Average Monthly Spend']
     classes = ['description', 'value', 'value']
     content = ''
