@@ -909,6 +909,35 @@ task :import_arts_council_grants => :environment do
 
 end
 
+desc "Import Transition Fund Grants"
+task :import_transition_fund_grants => :environment do
+  civ_soc = Entity.find_by_title('Office for Civil Society')
+  FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/transition_fund_recipients.csv"), :headers => true) do |csv_file|
+    # puts "Adding transactions for #{council.title}"
+    # "Ref No","Recipient","Project name","Award amount","Award date","Region","Consitituency","Local authority","Main artform","Applicant type"
+
+    csv_file.each do |row|
+      next unless charity = Charity.find_by_charity_number(row['ccnum'])
+      # p "date = #{row['Date Announced']}"
+      ft = FinancialTransaction.new(:organisation => civ_soc,
+                                    :date => row['Date Announced'].to_date,
+                                    :value => row['Award'],
+                                    :supplier_name => row['Applicant'],
+                                    :transaction_type => 'Grant',
+                                    # :uid => row['Ref No'],
+                                    # :service => row["Main artform"],
+                                    :description => 'Transition Fund',
+                                    # :csv_line_number => csv_file.lineno,
+                                    :source_url => 'http://www.cabinetoffice.gov.uk/sites/default/files/resources/immediate-payouts-22052010.pdf'
+                                    )
+      ft.save!
+      ft.supplier.update_attribute(:payee, charity)
+      puts "."
+    end
+    # civ_soc.spending_stat.perform    
+  end
+end
+
 desc "Import GLA Supppliers"
 task :import_gla_suppliers => :environment do
   gla = Council.first(:conditions => "name = 'Greater London Authority'")

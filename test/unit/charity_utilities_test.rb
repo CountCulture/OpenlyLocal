@@ -313,5 +313,36 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
         assert_nil framework_info[:other_names]
       end
     end
+
+    context "when getting company_number for charity" do
+      setup do
+        @charity = stub(:charity_number => '1234', :title => 'Foo Bar Ltd')
+      end
+
+      should "reconcile charity name with OpenCorporates reconciliation service" do
+        @client.expects(:_http_get).with("http://opencorporates.com/reconcile/uk?query=#{URI.escape(@charity.title)}")#.returns(@dummy_response)
+        @client.company_number_for(@charity)
+      end
+      
+      should "extract top ranking company_number from companies returned by reconciliation services" do
+        reconciliation_response = { :result => [{:id => "/companies/gb/01234567", :name => "Foo Bar Limited", :score => 0.71},
+                                                {:id => "/companies/gb/98765432", :name => "Foo Bar PLC", :score => 0.61}]}.to_json
+        @client.stubs(:_http_get).returns(reconciliation_response)
+        assert_equal '01234567', @client.company_number_for(@charity)
+      end
+      
+      should "return nil if no company_number with score greater or equal to 0.6" do
+        reconciliation_response = { :result => [{:id => "/companies/gb/01234567", :name => "Foo Bar Limited", :score => 0.51},
+                                                {:id => "/companies/gb/98765432", :name => "Foo Bar PLC", :score => 0.41}]}.to_json
+        @client.stubs(:_http_get).returns(reconciliation_response)
+        assert_nil @client.company_number_for(@charity)
+      end
+      
+      should "return nil if no matching companies" do
+        reconciliation_response = { :result => []}.to_json
+        @client.stubs(:_http_get).returns(reconciliation_response)
+        assert_nil @client.company_number_for(@charity)
+      end
+    end
   end
 end

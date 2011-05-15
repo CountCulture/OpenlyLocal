@@ -11,6 +11,16 @@ module CharityUtilities
       @charity_number = args[:charity_number]
     end
     
+    def company_number_for(charity)
+      url = "http://opencorporates.com/reconcile/uk?query=#{URI.escape(charity.title)}"
+      RAILS_DEFAULT_LOGGER.debug "reconciling company number from url: #{url}"
+      resp = _http_get(url)
+      RAILS_DEFAULT_LOGGER.debug "reconciliation response: #{resp}"
+      first_result = JSON.parse(resp)['result'].first rescue nil
+      return unless first_result
+      first_result['score'] >= 0.6 ? first_result['id'].scan(/\d+$/).to_s : nil
+    end
+    
     def get_details
       main_page = Nokogiri.HTML(_http_get(BaseUrl + "SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"))
 

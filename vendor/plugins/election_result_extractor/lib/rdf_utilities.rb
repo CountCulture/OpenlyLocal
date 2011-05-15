@@ -3,7 +3,8 @@ module RdfUtilities
   require 'open-uri'
   require 'rubygems'
   require 'rdf'
-  require 'rdf/raptor'
+  # include RDF
+  require 'rdf/rdfxml'
   
   extend self
   
@@ -19,8 +20,9 @@ module RdfUtilities
       return unless response = rdfxml_url ? _http_get(url).read : _http_get("http://www.w3.org/2007/08/pyRdfa/extract?uri=#{CGI.escape(url)}").read  rescue nil
     end
     graph = RDF::Graph.new
-    reader = RDF::Reader.for(:rdfxml).new(response)
-    reader.each_statement { |st| graph << st }
+    RDF::Reader.for(:rdfxml).new(response)  do |reader|
+      reader.each_statement { |st| graph << st }
+    end
     graph
   end
   

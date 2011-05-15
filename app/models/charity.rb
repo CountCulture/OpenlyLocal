@@ -3,7 +3,7 @@ class Charity < ActiveRecord::Base
   has_many :classification_links, :as => :classified, :uniq => true
   has_many :classifications, :through => :classification_links
   has_many :charity_annual_reports
-  belongs_to :company, :primary_key => "company_number", :foreign_key => "normalised_company_number"
+  belongs_to :company, :primary_key => "company_number", :foreign_key => "corrected_company_number"
   include SpendingStatUtilities::Base
   include SpendingStatUtilities::Payee
   include AddressUtilities::Base
@@ -17,8 +17,9 @@ class Charity < ActiveRecord::Base
   validates_presence_of :title, :charity_number
   validates_uniqueness_of :charity_number
   validates_uniqueness_of :company_number, :allow_nil => true
-  validates_uniqueness_of :normalised_company_number, :allow_nil => true
+  validates_uniqueness_of :corrected_company_number, :allow_nil => true
   before_save :normalise_title
+  after_create :update_with_company_number
   alias_attribute :url, :website  
   
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising charity titles
@@ -28,7 +29,7 @@ class Charity < ActiveRecord::Base
   end
   
   def self.add_new_charities(options={})
-    puts "***About to get new charities from Charity Register" # usually run from cron job, so this will get added to cron log
+    puts "***About to get new charities from Charity Register" unless RAILS_ENV=='test' # usually run from cron job, so this will get added to cron log
     new_charities = CharityUtilities::Client.new.get_recent_charities(options[:start_date], options[:end_date]).collect do |charity_info|
       charity = Charity.create(charity_info)
       begin
@@ -55,11 +56,19 @@ class Charity < ActiveRecord::Base
   
   def company_number=(raw_number)
     self[:company_number] = raw_number
-    self[:normalised_company_number] = Company.normalise_company_number(raw_number)
+    self[:corrected_company_number] = Company.normalise_company_number(raw_number)
   end
   
   def extended_title
     "#{title} (charity number #{charity_number}" + (status ? ", #{status})" : ")")
+  end
+  
+  def match_company_number
+    
+  end
+  
+  def possible_company?
+    governing_document&&governing_document.match(/Mem|M&A|M & A/i)
   end
   
   def resource_uri
@@ -89,5 +98,11 @@ class Charity < ActiveRecord::Base
   private
   def normalise_title
     self.normalised_title = self.class.normalise_title(title)
+  end
+  
+  def update_with_company_number
+    return if company_number? || !possible_company?
+    matched_company_number = match_company_number
+    update_attribute(:company_number, matched_company_number) if matched_company_number
   end
 end

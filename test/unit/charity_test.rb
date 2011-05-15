@@ -45,7 +45,7 @@ class CharityTest < ActiveSupport::TestCase
     should have_db_column :fax
     should have_db_column :area_of_benefit
     should have_db_column :signed_up_for_1010
-    should have_db_column :normalised_company_number
+    should have_db_column :corrected_company_number
     
     should "serialize mixed data columns" do
       %w(financial_breakdown other_names trustees accounts).each do |attrib|
@@ -54,9 +54,9 @@ class CharityTest < ActiveSupport::TestCase
       end
     end
     
-    should "have belong_to company with normalised_company_number as foreign key" do
+    should "have belong_to company with corrected_company_number as foreign key" do
       company = Factory(:company)
-      company_charity = Factory(:charity, :normalised_company_number => company.company_number)
+      company_charity = Factory(:charity, :corrected_company_number => company.company_number)
       assert_equal company, company_charity.company
     end
     
@@ -211,6 +211,52 @@ class CharityTest < ActiveSupport::TestCase
     setup do
       @charity = Factory(:charity)
     end
+    
+    context "after creation" do
+      setup do
+        @poss_company_charity = Factory.build(:charity)
+      end
+      
+      context "and charity is possible_company?" do
+        setup do
+          @poss_company_charity.stubs(:possible_company?).returns(true)
+        end
+
+        should "match company_number" do
+          @poss_company_charity.expects(:match_company_number)
+          @poss_company_charity.save!
+        end
+        
+        should "update charity with matched company number" do
+          @poss_company_charity.stubs(:match_company_number).returns('98765432')
+          @poss_company_charity.save!
+          assert @poss_company_charity.reload.company_number == '98765432'
+        end
+      end
+      
+      context "and charity is not possible_company?" do
+        setup do
+          @poss_company_charity.stubs(:possible_company?)
+        end
+
+        should "not match_company_number" do
+          @poss_company_charity.expects(:match_company_number).never
+          @poss_company_charity.save!
+        end
+      end
+      
+      context "and charity already has company_number" do
+        setup do
+          @poss_company_charity.company_number = '12345678'
+          @poss_company_charity.stubs(:possible_company?).returns(true)
+        end
+
+        should "not match_company_number" do
+          @poss_company_charity.expects(:match_company_number).never
+          @poss_company_charity.save!
+        end
+      end
+    end
 
     context "when saving" do
       should "normalise title" do
@@ -230,7 +276,6 @@ class CharityTest < ActiveSupport::TestCase
     end
     
     context "when setting website" do
-
       should "clean up using url_normaliser" do
         assert_equal 'http://foo.com', Charity.new(:website => 'foo.com').website
       end
@@ -253,7 +298,7 @@ class CharityTest < ActiveSupport::TestCase
       
       should "set normalise_company_number to normalised company number" do
         @charity.company_number = 'AB1234'
-        assert_equal 'BC4567', @charity.normalised_company_number
+        assert_equal 'BC4567', @charity.corrected_company_number
       end
     end
     
@@ -302,6 +347,28 @@ class CharityTest < ActiveSupport::TestCase
     context "when returning resource_uri" do
       should 'return OpenCharities uri for charity' do
         assert_equal "http://opencharities.org/id/charities/#{@charity.charity_number}", @charity.resource_uri
+      end
+    end
+    
+    context "when returning possible_company?" do
+      should "return true only if Governing Document begins with Mem etc" do
+        assert Charity.new(:governing_document => 'Memorandum etc').possible_company?
+        assert Charity.new(:governing_document => 'MEMORANDUM').possible_company?
+        assert Charity.new(:governing_document => 'Mem & Art').possible_company?
+        assert Charity.new(:governing_document => 'M&A').possible_company?
+        assert Charity.new(:governing_document => 'M & A').possible_company?
+        assert !Charity.new(:governing_document => 'foo').possible_company?
+        assert !Charity.new.possible_company?
+      end
+    end
+    
+    context "when matching company_number" do
+      setup do
+        @possible_company_charity = Factory(:charity, :title => 'Foo Bar Ltd')
+      end
+
+      should "reconcile against OpenCorporates" do
+        
       end
     end
     
