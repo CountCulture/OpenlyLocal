@@ -56,7 +56,7 @@ class Charity < ActiveRecord::Base
   
   def company_number=(raw_number)
     self[:company_number] = raw_number
-    self[:corrected_company_number] = Company.normalise_company_number(raw_number)
+    self[:corrected_company_number] ||= Company.normalise_company_number(raw_number)
   end
   
   def extended_title

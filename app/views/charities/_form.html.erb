@@ -1,0 +1,26 @@
+<%= error_messages_for :charity %>
+
+<% form_for @charity do |f| -%>
+  <p>
+    <%= f.label :contact_name %>
+    <%= f.text_field :contact_name %>
+  </p>
+  <p>
+    <%= f.label :website %>
+    <%= f.text_field :website %>
+  </p>
+  <p>
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </p>
+  <p>
+    <%= f.label :telephone %>
+    <%= f.text_field :telephone %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+  <p>
+    <%= f.submit "Update from CC website" %>
+  </p>
+<% end -%>

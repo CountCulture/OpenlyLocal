@@ -123,9 +123,92 @@ class CharitiesControllerTest < ActionController::TestCase
        end
 
        should "not include email in response" do
-         assert_no_match /charity\":.+email\":/, @response.body
+         assert_no_match %r(charity\":.+email\":), @response.body
        end
 
      end
   end
+
+   # edit test
+   context "on GET to :edit without auth" do
+     setup do
+       get :edit, :id => @charity
+     end
+
+     should respond_with 401
+   end
+
+   context "on GET to :edit with existing record" do
+     setup do
+       stub_authentication
+       get :edit, :id => @charity
+     end
+  
+     should assign_to(:charity)
+     should respond_with :success
+     should render_template :edit
+  
+     should "show form" do
+       assert_select "form#edit_charity_#{@charity.id}"
+     end
+   end  
+  
+  # update test
+  context "on PUT to :update" do
+    context "without auth" do
+      setup do
+        put :update, :id => @charity.id, :charity => { :title => "New Name", :website => "http://new.name.com"}
+      end
+
+      should respond_with 401
+    end
+    
+    context "with valid params" do
+      setup do
+        stub_authentication
+        put :update, :id => @charity.id, :charity => { :website => "http://new.name.com"}
+      end
+    
+      should_not_change("The number of entities") { Entity.count }
+      should_change("The charity website", :to => "http://new.name.com") { @charity.reload.website }
+      should assign_to :charity
+      should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
+      should_set_the_flash_to "Successfully updated charity"
+    
+    end
+    
+    context "with asked to Update from CC website" do
+      setup do
+        stub_authentication
+        Charity.any_instance.stubs(:update_from_charity_register)
+        put :update, :id => @charity.id, :commit => "Update from CC website"
+      end
+    
+      should_not_change("The number of entities") { Entity.count }
+      should assign_to :charity
+      should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
+      should_set_the_flash_to "Successfully updated charity from Charity Commission website"
+      
+      should "update from register" do
+        Charity.any_instance.expects(:update_from_charity_register)
+        put :update, :id => @charity.id, :commit => "Update from CC website"
+      end
+    
+    end
+    
+    context "with invalid params" do
+      setup do
+        stub_authentication
+        put :update, :id => @charity.id, :charity => {:title => ""}
+      end
+    
+      should_not_change("The number of entities") { Entity.count }
+      should_not_change("The charity name") { @charity.reload.title }
+      should assign_to :charity
+      should render_template :edit
+      should_not set_the_flash
+    end
+  
+  end  
+  
 end

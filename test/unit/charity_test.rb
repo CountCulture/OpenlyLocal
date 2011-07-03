@@ -296,9 +296,20 @@ class CharityTest < ActiveSupport::TestCase
         @charity.company_number = 'AB1234'
       end
       
-      should "set normalise_company_number to normalised company number" do
+      should "set corrected_company_number to normalised company number" do
         @charity.company_number = 'AB1234'
         assert_equal 'BC4567', @charity.corrected_company_number
+      end
+      
+      context "and corrected_company_number already set" do
+        setup do
+          @charity.corrected_company_number = 'AB5678'
+        end
+
+        should "not change corrected_company_number" do
+          @charity.company_number = 'AB1234'
+          assert_equal 'AB5678', @charity.corrected_company_number
+        end
       end
     end
     
