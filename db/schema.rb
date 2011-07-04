@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110512190859) do
+ActiveRecord::Schema.define(:version => 20110703142948) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(:version => 20110512190859) do
     t.column "area_of_benefit", :string
     t.column "signed_up_for_1010", :boolean, :default => false
     t.column "corrected_company_number", :string
+    t.column "manually_updated", :datetime
   end
 
   add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number"
