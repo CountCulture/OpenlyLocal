@@ -68,6 +68,11 @@ $(document).ready( function() {
 				event.preventDefault();					
 		});
 		
+		$('dd.company_number a').click(function(event){
+	    $.getJSON($(this).attr("href")+'.json?callback=?', function(data) {populateCompanyData(data)});					
+			event.preventDefault();					
+		});
+		
 });
 
 // Map Geography Utility functions - see http://www.movable-type.co.uk/scripts/latlong.html#destPoint  
@@ -94,4 +99,24 @@ function getBoundaries(centrePt, radius) {
  var sw = getDestLatLng(centrePt, 225, hypotenuse);
  var ne = getDestLatLng(centrePt, 45, hypotenuse);
  return new GLatLngBounds(sw, ne);
+}
+
+function populateCompanyData(companyData) {
+  var company = companyData.company;
+  var dlData = {};
+  dlData['status'] = company.current_status;
+  dlData['registered_address'] = company.registered_address_in_full;
+  var previous_names = company.previous_names;
+  // dlData ['dissolution_date'] = company.dissolution_date
+  // var attribs = ['status','registered_address','dissolution_date']
+  var dlString = '';
+  // $.each(dlData, function(k,v) { 
+  //   dlString = dlString + buildDlElement(k,v);
+  //   } )
+  // $('dl#main_attributes').append(dlString);
+  // alert(registered_address);
+}
+
+function buildDlElement (k, v) {
+  '<dt>' + k + '</dt><dd class="'+ k + '">' + v + '</dd>'
 }
