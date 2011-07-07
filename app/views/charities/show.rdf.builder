@@ -15,8 +15,8 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdfs:label", @charity.title
     xml.tag! "rdf:type", "rdf:resource" => "openlylocal:Charity"
     xml.tag! "foaf:homepage", @charity.website if @charity.website?
-    xml.tag! "foaf:phone", @charity.foaf_telephone unless @charity.foaf_telephone.blank?
-    unless @charity.address_in_full.blank?
+    xml.tag! "foaf:phone", @charity.foaf_telephone unless @charity.foaf_telephone.blank? || @charity.date_removed?
+    unless @charity.address_in_full.blank? || @charity.date_removed?
       xml.tag! "vCard:ADR", "rdf:parseType" => "Resource" do
         xml.tag! "vCard:Extadd", @charity.address_in_full
       end

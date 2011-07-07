@@ -29,6 +29,19 @@ class CharitiesControllerTest < ActionController::TestCase
       end
     end
     
+    context "when charity is dissolved" do
+      setup do
+        @charity.update_attributes(:telephone => '1234 5678', :date_removed => 5.days.ago)
+        get :show, :id => @charity.id
+      end
+
+      should respond_with :success
+
+      should "not show telephone" do
+        assert_select ".telephone", false
+      end
+    end
+
     context "when charity has supplying relationships" do
       setup do
         @supplier = Factory(:supplier, :payee => @charity)
@@ -174,10 +187,14 @@ class CharitiesControllerTest < ActionController::TestCase
       should assign_to :charity
       should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
       should_set_the_flash_to "Successfully updated charity"
+      
+      should "not set the manually_updated flag for the charity" do
+        assert_in_delta @charity.reload.manually_updated, Time.now, 2
+      end
     
     end
     
-    context "with asked to Update from CC website" do
+    context "with asked to update from CC website" do
       setup do
         stub_authentication
         Charity.any_instance.stubs(:update_from_charity_register)
@@ -193,7 +210,11 @@ class CharitiesControllerTest < ActionController::TestCase
         Charity.any_instance.expects(:update_from_charity_register)
         put :update, :id => @charity.id, :commit => "Update from CC website"
       end
-    
+      
+      should "not set the manually_updated flag for the charity" do
+        assert_nil @charity.manually_updated
+      end
+      
     end
     
     context "with invalid params" do

@@ -7,7 +7,9 @@ class CharitiesController < ApplicationController
     @title = "#{@charity.title} :: Charities"
     @resource_uri = @charity.resource_uri
     respond_to do |format|
-      includes = {:except => [:email, :accounts, :financial_information, :trustees, :other_names], :methods => [:openlylocal_url]}
+      excepts = [:email, :accounts, :financial_information, :trustees, :other_names]
+      excepts += [:telephone] if @charity.date_removed?
+      includes = {:except => excepts, :methods => [:openlylocal_url]}
       format.html
       format.xml { render :xml => @charity.to_xml(includes) }
       format.rdf 
@@ -26,6 +28,7 @@ class CharitiesController < ApplicationController
       flash[:notice] = "Successfully updated charity from Charity Commission website"
     else
       @charity.update_attributes!(params[:charity])
+      @charity.update_attribute(:manually_updated, Time.now)
       flash[:notice] = "Successfully updated charity"
     end
     redirect_to charity_url(@charity)
