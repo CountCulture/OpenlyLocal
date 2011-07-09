@@ -5,6 +5,7 @@
 PARTIES = [
   [ [ "Conservative", "Con", "Conservatives", "Cons", "CONSERVATIVE" ], "0281AA", "Conservative_Party_(UK)" ],
   [ [ "Labour", "Lab", "LABOUR"], "AA0000", "Labour_Party_(UK)" ],
+  [ [ "Labour & Cooperative", "Labour Co-operative", "Labour Co-op", "Lab Co-op"], "AA0000", "Labour_Co-operative" ],
   [ [ "Liberal Democrat", "LibDem", "Liberal Democrats", "Liberal democrats", "LDem", "Lib Dem", "Lib", "LIBERAL DEMOCRATS" ], "F3A63C", "Liberal_Democrats" ],
   [ [ "Plaid Cymru", "PLAID CYMRU" ], "FDC00F", "Plaid_Cymru" ],
   [ [ "Scottish National", "SNP" ], "FAE93E", "Scottish_National_Party" ],
