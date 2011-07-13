@@ -45,8 +45,8 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"
     xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@committee)
     xml.tag! "dct:title", "Information about #{@committee.title}"
-    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @committee.created_at
-    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @committee.updated_at
+    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @committee.created_at.xmlschema
+    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @committee.updated_at.xmlschema
     # show alt representations for committee
     ResourceRepresentations.keys.each do |format|
       xml.tag! "dct:hasFormat", "rdf:resource" => committee_url(:id => @committee.id, :format => format)

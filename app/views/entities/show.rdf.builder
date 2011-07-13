@@ -32,8 +32,8 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"
     xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@entity)
     xml.tag! "dct:title", "Information about #{@entity.title}"
-    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @entity.created_at
-    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @entity.updated_at
+    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @entity.created_at.xmlschema
+    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @entity.updated_at.xmlschema
     # show alt representations for entity
     ResourceRepresentations.keys.each do |format|
       xml.tag! "dct:hasFormat", "rdf:resource" => entity_url(:id => @entity.id, :format => format)

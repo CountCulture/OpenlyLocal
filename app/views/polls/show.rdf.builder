@@ -31,8 +31,8 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"
     xml.tag! "foaf:primaryTopic", "rdf:resource" => @poll.resource_uri
     xml.tag! "dct:title", "Electoral Poll for #{@poll.extended_title}"
-    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @poll.created_at
-    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @poll.updated_at
+    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @poll.created_at.xmlschema
+    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @poll.updated_at.xmlschema
     # show alt representations for ward
     ResourceRepresentations.keys.each do |format|
       xml.tag! "dct:hasFormat", "rdf:resource" => poll_url(:id => @poll.id, :format => format)

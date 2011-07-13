@@ -104,7 +104,7 @@ class CharitiesControllerTest < ActionController::TestCase
         assert_match /rdf:Description.+rdfs:label>#{@charity.title}/m, @response.body
         assert_match /foaf:phone.+#{Regexp.escape(@charity.foaf_telephone)}/, @response.body
         assert_match /foaf:homepage>#{Regexp.escape(@charity.website)}/m, @response.body
-        # assert_match /vCard:Extadd.+#{Regexp.escape(@charity.address_in_full)}/, @response.body
+        assert_match /dct:modified.+#{Regexp.escape(@charity.updated_at.xmlschema)}/m, @response.body
       end
 
       should "show alternative representations" do

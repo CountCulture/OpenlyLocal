@@ -2,7 +2,10 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 require 'test_models/test_models'
-
+require 'factory_girl'
+Dir.glob(File.dirname(__FILE__) + "/factories/*").each do |factory|
+  require factory
+end
 class ActiveSupport::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
   # in a transaction that's rolled back on completion.  This ensures that the

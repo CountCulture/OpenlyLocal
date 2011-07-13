@@ -576,7 +576,7 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_match /owl:sameAs.+rdf:resource.+#{Regexp.escape(@council.dbpedia_resource)}/, @response.body
       end
       
-      should "show council has geogrphic area of OS resource" do
+      should "show council has geographic area of OS resource" do
         assert_match /administrative-geography:coverage.+rdf:resource.+data.ordnancesurvey.co.uk\/id\/#{@council.os_id}/, @response.body
       end
       
@@ -584,6 +584,7 @@ class CouncilsControllerTest < ActionController::TestCase
         assert_match /foaf:phone.+#{Regexp.escape(@council.foaf_telephone)}/, @response.body
         assert_match /foaf:homepage.+#{Regexp.escape(@council.url)}/, @response.body
         assert_match /vCard:Extadd.+#{Regexp.escape(@council.address)}/, @response.body
+        assert_match /dct:modified.+#{Regexp.escape(@council.updated_at.xmlschema)}/m, @response.body
       end
       
       should "show address for member as vCard" do

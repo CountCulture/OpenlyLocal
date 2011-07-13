@@ -99,8 +99,8 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"
     xml.tag! "foaf:primaryTopic", "rdf:resource" => resource_uri_for(@council)
     xml.tag! "dct:title", "Information about #{@council.name}"
-    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @council.created_at
-    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @council.updated_at
+    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @council.created_at.xmlschema
+    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @council.updated_at.xmlschema
     # show alt representations for council
     ResourceRepresentations.keys.each do |format|
       xml.tag! "dct:hasFormat", "rdf:resource" => council_url(:id => @council.id, :format => format)

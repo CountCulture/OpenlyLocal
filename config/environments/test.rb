@@ -22,7 +22,7 @@ config.action_controller.allow_forgery_protection    = false
 config.action_mailer.delivery_method = :test
 
 config.gem "shoulda"
-config.gem "factory_girl", :version => '1.2.4'
+config.gem "factory_girl"#, :version => '1.2.4'
 
 # rotate logs before they get too big
 config.logger = Logger.new("#{RAILS_ROOT}/log/#{ENV['RAILS_ENV']}.log", 20, 1048576)

@@ -29,8 +29,8 @@ xml.tag! "rdf:RDF",
     xml.tag! "rdf:type", "rdf:resource" => "http://xmlns.com/foaf/0.1/Document"
     xml.tag! "foaf:primaryTopic", "rdf:resource" => @company.resource_uri
     xml.tag! "dct:title", "Information about #{@company.title}"
-    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @company.created_at
-    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @company.updated_at
+    xml.tag! "dct:created", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @company.created_at.xmlschema
+    xml.tag! "dct:modified", {"rdf:datatype" => "http://www.w3.org/2001/XMLSchema#dateTime"}, @company.updated_at.xmlschema
     # show alt representations for company
     ResourceRepresentations.keys.each do |format|
       xml.tag! "dct:hasFormat", "rdf:resource" => company_url(:id => @company.id, :format => format)
