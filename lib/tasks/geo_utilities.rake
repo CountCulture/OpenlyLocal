@@ -25,15 +25,16 @@ task :import_postcodes_from_csv => :environment do
     puts "About to start importing postcodes beginning #{postcode_base}"
     FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/postcodes/#{postcode_file}"), :headers => false) do |row|
       postcode = Postcode.find_or_initialize_by_code(row[0].sub(/\s/,'').upcase)
-      county = row[7] == '00' ? nil : Council.find_by_snac_id(row[7])
-      district = Council.find_by_snac_id(row[7]+row[8])
-      ward = Ward.find_by_snac_id(row[7]+row[8]+row[9])
+      county = row[15] == '00' ? nil : Council.find_by_snac_id(row[15])
+      district = Council.find_by_snac_id(row[15]+row[16])
+      ward = Ward.find_by_snac_id(row[15]+row[16]+row[17])
+      lat,lng = OsCoordsUtilities.convert_os_to_wgs84(row[10], row[11])
       postcode.update_attributes( :quality => row[1],
-                                  :lat => row[2],
-                                  :lng => row[3],
-                                  :country => row[4],
-                                  :nhs_region => row[5],
-                                  :nhs_health_authority => row[6],
+                                  :lat => lat,
+                                  :lng => lng,
+                                  :country => row[12],
+                                  :nhs_region => row[13],
+                                  :nhs_health_authority => row[14],
                                   :county_id => county&&county.id,
                                   :council_id => district&&district.id,
                                   :ward_id => ward&&ward.id)
