@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :planning_applications
+
 
   map.resources :charities
 

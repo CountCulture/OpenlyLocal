@@ -394,3 +394,9 @@ Factory.define :parish_council do |f|
   f.os_id '70012345'
 end
 
+Factory.define :planning_application do |f|
+  f.association :council, :factory => :generic_council
+  f.sequence( :council_reference) {|n| "AB#{n}"}
+  f.address '32 Acacia Ave, Footown'
+end
+

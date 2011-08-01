@@ -53,6 +53,7 @@ class CouncilTest < ActiveSupport::TestCase
     should have_db_column :open_data_licence
     should have_db_column :normalised_title
     should have_db_column :vat_number
+    should have_db_column :planning_email
 
     should "mixin PartyBreakdownSummary module" do
       assert Council.new.respond_to?(:party_breakdown)

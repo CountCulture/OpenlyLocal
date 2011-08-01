@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110703142948) do
+ActiveRecord::Schema.define(:version => 20110730160459) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -40,6 +40,19 @@ ActiveRecord::Schema.define(:version => 20110703142948) do
 
   add_index "addresses", ["addressee_id", "addressee_type"], :name => "index_addresses_on_addressee_id_and_addressee_type"
   add_index "addresses", ["lat", "lng"], :name => "index_addresses_on_lat_and_lng"
+
+  create_table "authority", :primary_key => "authority_id", :options=>'ENGINE=MyISAM', :force => true do |t|
+    t.column "full_name", :string, :limit => 200, :null => false
+    t.column "short_name", :string, :limit => 100, :null => false
+    t.column "planning_email", :string, :limit => 100, :null => false
+    t.column "feed_url", :string
+    t.column "external", :boolean
+    t.column "disabled", :boolean
+    t.column "notes", :text
+  end
+
+  add_index "authority", ["short_name"], :name => "short_name"
+  add_index "authority", ["short_name", "authority_id", "full_name"], :name => "search"
 
   create_table "boundaries", :force => true do |t|
     t.column "area_type", :string
@@ -300,6 +313,7 @@ ActiveRecord::Schema.define(:version => 20110703142948) do
     t.column "normalised_title", :string
     t.column "wdtk_id", :integer
     t.column "vat_number", :string
+    t.column "planning_email", :string
   end
 
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
@@ -735,6 +749,73 @@ ActiveRecord::Schema.define(:version => 20110703142948) do
     t.column "wdtk_id", :integer
   end
 
+  create_table "planning_alert_subscribers", :force => true do |t|
+    t.column "email", :string, :limit => 120, :null => false
+    t.column "postcode", :string, :limit => 10, :null => false
+    t.column "digest_mode", :boolean, :default => false, :null => false
+    t.column "last_sent", :datetime
+    t.column "bottom_left_x", :integer
+    t.column "bottom_left_y", :integer
+    t.column "top_right_x", :integer
+    t.column "top_right_y", :integer
+    t.column "confirm_id", :string, :limit => 20
+    t.column "confirmed", :boolean
+    t.column "alert_area_size", :string, :limit => 1
+  end
+
+  create_table "planning_applications", :force => true do |t|
+    t.column "council_reference", :string, :limit => 50, :null => false
+    t.column "address", :text, :default => "", :null => false
+    t.column "postcode", :string, :limit => 10, :null => false
+    t.column "description", :text
+    t.column "info_url", :string, :limit => 1024
+    t.column "info_tinyurl", :string, :limit => 50
+    t.column "comment_url", :string, :limit => 1024
+    t.column "comment_tinyurl", :string, :limit => 50
+    t.column "authority_id", :integer, :null => false
+    t.column "x", :integer, :null => false
+    t.column "y", :integer, :null => false
+    t.column "date_scraped", :timestamp, :null => false
+    t.column "date_received", :date
+    t.column "map_url", :string, :limit => 150
+    t.column "lat", :float
+    t.column "lng", :float
+    t.column "council_id", :integer
+    t.column "applicant_name", :string
+    t.column "applicant_address", :text
+  end
+
+  add_index "planning_applications", ["authority_id"], :name => "authority_id"
+  add_index "planning_applications", ["x", "y"], :name => "coord"
+  add_index "planning_applications", ["date_scraped"], :name => "datescr"
+  add_index "planning_applications", ["date_received"], :name => "dateapp"
+  add_index "planning_applications", ["council_id"], :name => "index_planning_applications_on_council_id"
+  add_index "planning_applications", ["lat", "lng"], :name => "index_planning_applications_on_lat_and_lng"
+
+  create_table "planning_applications_copy", :force => true do |t|
+    t.column "council_reference", :string, :limit => 50, :null => false
+    t.column "address", :text, :default => "", :null => false
+    t.column "postcode", :string, :limit => 10, :null => false
+    t.column "description", :text
+    t.column "info_url", :string, :limit => 1024
+    t.column "info_tinyurl", :string, :limit => 50
+    t.column "comment_url", :string, :limit => 1024
+    t.column "comment_tinyurl", :string, :limit => 50
+    t.column "authority_id", :integer, :null => false
+    t.column "x", :integer, :null => false
+    t.column "y", :integer, :null => false
+    t.column "date_scraped", :timestamp, :null => false
+    t.column "date_received", :date
+    t.column "map_url", :string, :limit => 150
+    t.column "lat", :float
+  end
+
+  add_index "planning_applications_copy", ["authority_id"], :name => "authority_id"
+  add_index "planning_applications_copy", ["x", "y"], :name => "coord"
+  add_index "planning_applications_copy", ["date_scraped"], :name => "datescr"
+  add_index "planning_applications_copy", ["date_received"], :name => "dateapp"
+  add_index "planning_applications_copy", ["date_scraped", "x", "y"], :name => "lots"
+
   create_table "police_authorities", :force => true do |t|
     t.column "name", :string
     t.column "url", :string
@@ -939,6 +1020,10 @@ ActiveRecord::Schema.define(:version => 20110703142948) do
 
   add_index "spending_stats", ["organisation_id", "organisation_type"], :name => "index_spending_stats_on_organisation"
   add_index "spending_stats", ["organisation_type", "total_spend"], :name => "index_spending_stats_on_organisation_type_and_total_spend"
+
+  create_table "stats", :primary_key => "key", :options=>'ENGINE=MyISAM', :force => true do |t|
+    t.column "value", :integer, :null => false
+  end
 
   create_table "suppliers", :force => true do |t|
     t.column "name", :string

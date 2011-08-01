@@ -1,0 +1,20 @@
+<div class="breadcrumbs"><%#= link_to "All Local Authority Pension Funds", pension_funds_path %></div>
+<h1><%= @title %></h1>
+
+<dl id="main_attributes" class="attributes">
+  <%= attribute_tag :council, link_for(@council) %>
+  <%= attribute_tag :council_reference, @planning_application.council_reference %>
+  <%= attribute_tag :address, @planning_application.address %>
+  <%= attribute_tag :application_url, link_to(@planning_application.info_url, @planning_application.info_url) if @planning_application.info_url? %>
+  <%= attribute_tag(:location, link_to("#{@planning_application.lat}, #{@planning_application.lng}", "http://maps.google.co.uk/maps?q=#{@planning_application.lat},+#{@planning_application.lng}&iwloc=A&hl=en", :target => "blank", :class => "external"), :text => "Location (from postcode)") unless @planning_application.lat.blank? %>
+
+</dl>
+
+<%- unless @planning_application.description.blank? -%>
+  <div class="extra_info">
+    <h3>Description</h3>
+    <%= simple_format(@planning_application.description) %>
+  </div>
+<%- end -%>
+
+<%#= timestamp_data_for @planning_application %>
