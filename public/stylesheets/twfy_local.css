@@ -859,6 +859,11 @@ form#foi_request {
 	text-transform:uppercase;
 	padding:1px 6px;
 }
+.opencorporates.flash {
+	width: 400px;
+	padding:3px 6px;
+	border: 1px solid #369;
+}
 
 /*admin page*/
 .admin #user_submissions {

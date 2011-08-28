@@ -10,4 +10,4 @@
 <%= attribute_tag :income, number_to_currency(attributes.income, :unit => "£", :precision => 0) if attributes.income? %>
 <%= attribute_tag :spending, number_to_currency(attributes.spending, :unit => "£", :precision => 0) if attributes.spending? %>
 <%= attribute_tag :OpenCharities_page, link_to("http://OpenCharities.org/charities/#{attributes.charity_number}", "http://OpenCharities.org/charities/#{attributes.charity_number}", :class => 'external', :title => "More info on #{attributes.title} from OpenCharities") %>
-<%= attribute_tag :OpenCorporates_page, link_to("http://OpenCorporates.com/companies/gb/#{attributes.company_number}", "http://OpenCorporates.com/companies/gb/#{attributes.company_number}", :class => 'external', :title => "More info on #{attributes.title} from OpenCorporates") if attributes.company_number? %>
+<%= attribute_tag :OpenCorporates_page, link_to("http://OpenCorporates.com/companies/gb/#{attributes.company_number}", "http://OpenCorporates.com/companies/gb/#{attributes.company_number}", :class => 'external', :title => "Free and open company data on #{attributes.title} from OpenCorporates") if attributes.company_number? %>
