@@ -57,7 +57,7 @@
   <%- end -%>
 </div>
 
-<%= content_tag(:h3, link_to("See spending data for #{@council.title}", {:controller => 'councils', :action => 'show_spending', :id => @council.to_param}), :class => 'spending alert') unless @council.spending_stat.blank? %>
+<%= content_tag(:h3, link_to("See spending data for #{@council.title}", {:controller => 'councils', :action => 'show_spending', :id => @council.to_param}), :class => 'spending alert') if !@council.spending_stat.blank? && @council.spending_stat.total_spend.to_i > 0 %>
 
 <div id="relationships">
   <div id="members" class="item_grouping">
