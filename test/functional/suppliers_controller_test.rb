@@ -223,6 +223,14 @@ class SuppliersControllerTest < ActionController::TestCase
       should "sort in date order, oldest first" do
         assert_equal @financial_transaction, assigns(:financial_transactions).first
       end
+      
+      should "show summary of spending" do
+        assert_select '#supplier_dashboard'
+      end
+      
+      should "show spend_by_month graph" do
+        assert_select "#spend_by_month"
+      end
     end
     
     context "when value order given" do

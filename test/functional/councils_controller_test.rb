@@ -1024,6 +1024,10 @@ class CouncilsControllerTest < ActionController::TestCase
       should "show payee_breakdown" do
         assert_select "div#payee_breakdown"
       end
+      
+      should "show spend_by_month graph" do
+        assert_select "#spend_by_month"
+      end
     end
     
     context "and no spending data" do

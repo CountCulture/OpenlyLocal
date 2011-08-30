@@ -20,9 +20,10 @@ module FinancialTransactionsHelper
     image_tag(Gchart.bar( :data => data, 
                           :axis_with_labels => 'x,y',
                           :axis_labels => [ x_axis_labels, y_axis_labels ], 
-                          :size => "320x200",
+                          :size => "300x200",
                           :axis_range => [nil, [0, rounded_no_above_max]], # nb we can't use max_value param as googlecharts has bug which means it calculates range wrongly
                           # :bar_colors => 'BBCCDD',
+                          :bg => "00000000",
                           :bar_width_and_spacing => { :spacing => 1, :width =>column_width }
                           ), 
               :class => "chart", :alt => "Spend By Month Chart")

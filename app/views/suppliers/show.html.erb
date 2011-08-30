@@ -11,6 +11,11 @@
   </h4>
   <div id='total_spend' class='spending_figure'><strong class=description>Total spend</strong> <span class='value'>£<%= number_with_delimiter(@supplier.total_spend.to_i) %></span></div>
   <div id='total_spend' class='spending_figure'><strong class=description>Average monthly spend</strong> <span class='value'>£<%= number_with_delimiter(@supplier.average_monthly_spend.to_i) %></span></div>
+
+	<div id="spend_by_month" class="graphed_datapoints">
+		<%= spend_by_month_graph(@supplier.spending_stat.spend_by_month) unless @supplier.spending_stat.blank? %>
+	</div>
+
 </div>
 
 <%- if @supplier.payee -%>
