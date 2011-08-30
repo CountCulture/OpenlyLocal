@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110730160459) do
+ActiveRecord::Schema.define(:version => 20110830150420) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -698,14 +698,14 @@ ActiveRecord::Schema.define(:version => 20110730160459) do
   add_index "output_areas", ["ward_id"], :name => "index_output_areas_on_ward_id"
 
   create_table "parish_councils", :force => true do |t|
-    t.column "title", :text
-    t.column "os_id", :text
+    t.column "title", :string
+    t.column "os_id", :string
     t.column "website", :text
-    t.column "gss_code", :text
+    t.column "gss_code", :string
     t.column "council_id", :integer
-    t.column "wdtk_name", :text
-    t.column "vat_number", :text
-    t.column "normalised_title", :text
+    t.column "wdtk_name", :string
+    t.column "vat_number", :string
+    t.column "normalised_title", :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
     t.column "feed_url", :string
@@ -763,19 +763,30 @@ ActiveRecord::Schema.define(:version => 20110730160459) do
     t.column "alert_area_size", :string, :limit => 1
   end
 
+  create_table "planning_alert_subscribers_copy", :options=>'ENGINE=MyISAM', :force => true do |t|
+    t.column "email", :string, :limit => 120, :null => false
+    t.column "postcode", :string, :limit => 10, :null => false
+    t.column "digest_mode", :boolean, :default => false, :null => false
+    t.column "last_sent", :datetime
+    t.column "bottom_left_x", :integer
+    t.column "bottom_left_y", :integer
+    t.column "top_right_x", :integer
+    t.column "top_right_y", :integer
+    t.column "confirm_id", :string, :limit => 20
+    t.column "confirmed", :boolean
+    t.column "alert_area_size", :string, :limit => 1
+  end
+
   create_table "planning_applications", :force => true do |t|
     t.column "council_reference", :string, :limit => 50, :null => false
     t.column "address", :text, :default => "", :null => false
-    t.column "postcode", :string, :limit => 10, :null => false
+    t.column "postcode", :string, :limit => 10, :default => ""
     t.column "description", :text
     t.column "info_url", :string, :limit => 1024
     t.column "info_tinyurl", :string, :limit => 50
     t.column "comment_url", :string, :limit => 1024
     t.column "comment_tinyurl", :string, :limit => 50
-    t.column "authority_id", :integer, :null => false
-    t.column "x", :integer, :null => false
-    t.column "y", :integer, :null => false
-    t.column "date_scraped", :timestamp, :null => false
+    t.column "date_scraped", :timestamp
     t.column "date_received", :date
     t.column "map_url", :string, :limit => 150
     t.column "lat", :float
@@ -785,8 +796,6 @@ ActiveRecord::Schema.define(:version => 20110730160459) do
     t.column "applicant_address", :text
   end
 
-  add_index "planning_applications", ["authority_id"], :name => "authority_id"
-  add_index "planning_applications", ["x", "y"], :name => "coord"
   add_index "planning_applications", ["date_scraped"], :name => "datescr"
   add_index "planning_applications", ["date_received"], :name => "dateapp"
   add_index "planning_applications", ["council_id"], :name => "index_planning_applications_on_council_id"
