@@ -543,6 +543,45 @@ class ScrapersControllerTest < ActionController::TestCase
       end
     end
     
+    context "when explicit portal system specified" do
+      setup do
+        @portal_system = Factory(:portal_system, :name => "Some Portal for Councils")
+        @portal_system.parsers << @parser = Factory(:another_parser) # add a parser to portal_system...
+        @parser = Factory(:parser, :portal_system => @portal_system)
+        stub_authentication
+        get :new, :type  => "ItemScraper", :result_model => @parser.result_model, :council_id => @council.id, :portal_system_id => @portal_system.id
+      end
+    
+      should assign_to :scraper 
+      should respond_with :success
+      should render_template :new
+      should_not set_the_flash
+      
+      should "assign appropriate parser to scraper" do
+        assert_equal @parser, assigns(:scraper).parser
+      end
+      
+      should "show text box for url" do
+        assert_select "input#scraper_url"
+      end
+  
+      should "show hidden field with parser details" do
+        assert_select "input#scraper_parser_id[type=hidden][value=#{@parser.id}]"
+      end
+      
+      should "not show parser_details form" do
+        assert_select "fieldset#parser_details", false
+      end
+      
+      should "show parser details" do
+        assert_select "div#parser_#{@parser.id}"
+      end
+      
+      should "have link to show parser form" do
+        assert_select "form a", /use dedicated parser/i
+      end
+    end
+    
     context "when scraper council has portal system but dedicated parser specified" do
       setup do
         @portal_system = Factory(:portal_system, :name => "Some Portal for Councils")

@@ -28,8 +28,8 @@ $(document).ready( function() {
 			  location.href = item.url;
 			});
 
-		$('a.show_possible_scrapers').click(function(event){
-			  $(this).parents('div.council').children('.possible_scrapers').toggle();
+		$('a.toggle_visibility').click(function(event){
+			  $(this).closest('div').children('.toggle').toggle();
 				event.preventDefault();					
 		});
 

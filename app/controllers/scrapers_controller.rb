@@ -23,8 +23,8 @@ class ScrapersController < ApplicationController
       case 
       when params[:parser_id]
         Parser.find(params[:parser_id])
-      when @council&&@council.portal_system_id
-        Parser.find_by_portal_system_id_and_result_model_and_scraper_type(@council.portal_system_id, params[:result_model], params[:type])
+      when ps_id = (@council&&@council.portal_system_id) || params[:portal_system_id]
+        Parser.find_by_portal_system_id_and_result_model_and_scraper_type(ps_id, params[:result_model], params[:type])
       else
         nil
       end
