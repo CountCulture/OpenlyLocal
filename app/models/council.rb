@@ -152,8 +152,12 @@ class Council < ActiveRecord::Base
   end
   
   def chief_executive_full_name=(ce_name)
-    chief_executive ? chief_executive.full_name=(ce_name) : build_chief_executive(:full_name => ce_name)
-    chief_executive.save!
+    if ce_name.blank?
+      chief_executive&&chief_executive.destroy
+    else
+      chief_executive ? chief_executive.full_name=(ce_name) : build_chief_executive(:full_name => ce_name)
+      chief_executive.save!
+    end
   end
   
   # convenience method to allow us to get council for an area, without having to worry whether it is a ward or a council
