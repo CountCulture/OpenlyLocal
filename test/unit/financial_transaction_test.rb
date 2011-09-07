@@ -388,6 +388,10 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       assert_equal @financial_transaction.supplier.organisation.openlylocal_url, @financial_transaction.organisation_openlylocal_url
     end
     
+    should "delegate organisation_resource_uri to supplier organisation" do
+      assert_equal @financial_transaction.supplier.organisation.resource_uri, @financial_transaction.organisation_resource_uri
+    end
+    
     should "delegate organisation_type to supplier organisation_type" do
       assert_equal @financial_transaction.supplier.organisation_type, @financial_transaction.organisation_type
     end
@@ -403,7 +407,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       @financial_transaction.supplier.update_attribute(:payee, payee)
       assert_equal payee.resource_uri, @financial_transaction.payee_resource_uri
     end
-
+    
     should "return nil for payee_resource_uri if not payee" do
       assert_nil @financial_transaction.payee_resource_uri
     end
