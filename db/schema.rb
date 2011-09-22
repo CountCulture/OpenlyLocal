@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110830150420) do
+ActiveRecord::Schema.define(:version => 20110914214708) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -778,7 +778,7 @@ ActiveRecord::Schema.define(:version => 20110830150420) do
   end
 
   create_table "planning_applications", :force => true do |t|
-    t.column "council_reference", :string, :limit => 50, :null => false
+    t.column "uid", :string, :limit => 50, :null => false
     t.column "address", :text, :default => "", :null => false
     t.column "postcode", :string, :limit => 10, :default => ""
     t.column "description", :text
@@ -794,6 +794,11 @@ ActiveRecord::Schema.define(:version => 20110830150420) do
     t.column "council_id", :integer
     t.column "applicant_name", :string
     t.column "applicant_address", :text
+    t.column "status", :string, :limit => 64
+    t.column "on_notice_from", :date
+    t.column "on_notice_to", :date
+    t.column "decision", :string, :limit => 64
+    t.column "other_attributes", :text
   end
 
   add_index "planning_applications", ["date_scraped"], :name => "datescr"

@@ -34,7 +34,7 @@ $(document).ready( function() {
 		});
 
 		$('a.add_new_scraper').click(function(event){
-			var resultModels = ['Committee', 'Member', 'Meeting', 'Ward'];
+			var resultModels = ['Committee', 'Member', 'Meeting', 'Ward', 'PlanningApplication'];
 			var scraperList = '';
 			var cDiv = $(this).parents('div.council')[0];
 			var cId = cDiv.id.replace('council_','');

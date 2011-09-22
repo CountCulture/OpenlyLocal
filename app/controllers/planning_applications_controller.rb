@@ -1,7 +1,7 @@
 class PlanningApplicationsController < ApplicationController
   
   def overview
-    
+    @title = 'UK Planning Applications'
   end
   
   def show

@@ -245,7 +245,7 @@ body {
 	text-align:right;}
 
 /*Front page formatting*/
-body.main .intro {
+body.main .intro, body.planning_applications .intro {
 	font-size:120%;
 	font-weight:normal;
 }
