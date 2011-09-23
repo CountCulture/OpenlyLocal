@@ -186,21 +186,26 @@ body {
 #content {
 	min-height: 600px; }
 #header {
-	padding: 6px 0 0;
+/*  padding: 6px 0 0;*/
 /*	border-bottom: #036 solid 3px;*/
 	background: #EFF7FF url(../images/header_bg.gif) repeat-y scroll 0 0;
 	margin-bottom: 9px;}
 #header h2 {
-	margin: 3px 6px;
-	color: #036;
+	margin: 0px 6px;
 	line-height:50px;
 	border-bottom: none; }
+#header #slogan {
+  font-size:1.2em;
+	font-family:Georgia,"Times New Roman",Times,serif;
+	font-style:italic;
+	color: #666;
+}
 #header h2 a {
 	text-decoration: none;
 	color: #69b;
-	width:260px;
-	height:50px;
-	background:transparent url(../images/openlylocal_logo.gif) no-repeat center left;
+	width:320px;
+	height:60px;
+	background:transparent url(../images/openlylocal_logo.png) no-repeat center left;
 	text-indent:-9000px;
 	display: block;
 	float:left;
@@ -865,6 +870,9 @@ form#foi_request {
 	border: 1px solid #369;
 }
 
+#faq {
+  font-size: 1.2em;
+}
 /*admin page*/
 .admin #user_submissions {
 	background: #eee;
