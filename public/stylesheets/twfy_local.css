@@ -1,3 +1,12 @@
+/*Colour palette:
+Blue: #003366
+Dark grey: #333333
+Deep Red: #663333
+Medium grey: #999999
+Strong red: #993333
+See http://www.colourlovers.com/palette/1402/Starbucks_25th
+*/
+
 /*Global formats*/
 /*See also blueprint styles*/
 h1 {font-size: 2em;}
@@ -186,21 +195,26 @@ body {
 #content {
 	min-height: 600px; }
 #header {
-	padding: 6px 0 0;
+  padding: 3px 0 0;
 /*	border-bottom: #036 solid 3px;*/
-	background: #EFF7FF url(../images/header_bg.gif) repeat-y scroll 0 0;
+	background: #f7f7f7 url(../images/header_bg.png) repeat-x scroll 0 0;
 	margin-bottom: 9px;}
 #header h2 {
-	margin: 3px 6px;
-	color: #036;
-	line-height:50px;
+	margin: 0px 6px;
+	line-height:20px;
 	border-bottom: none; }
+#header #slogan {
+  font-size:1.2em;
+	font-family:Georgia,"Times New Roman",Times,serif;
+	font-style:italic;
+	color: #666;
+}
 #header h2 a {
 	text-decoration: none;
 	color: #69b;
-	width:260px;
-	height:50px;
-	background:transparent url(../images/openlylocal_logo.gif) no-repeat center left;
+	width:320px;
+	height:60px;
+	background:transparent url(../images/openlylocal_logo.png) no-repeat center left;
 	text-indent:-9000px;
 	display: block;
 	float:left;
@@ -212,13 +226,14 @@ body {
 #navigation  {
 	overflow:auto;
 	width:100%;
-	background-color:#eee;
+	background: url(../images/navigation_bg.png) repeat-x scroll 0 0;
 	border-top:1px solid #efefef;}
 #navigation * {
 	float:left;}
 #navigation a {
 	display:block;
 	height:20px;
+	text-decoration:none;
 	text-transform:uppercase;
 	padding:2px 1em;}
 #navigation form {
@@ -228,9 +243,12 @@ body {
 #navigation input {
 	margin-bottom:0;}
 #navigation a:hover {
-	color:#fff;
-	background-color:#036;
-	text-decoration:none;
+	color:#036;
+	background: #ddd;
+}
+#navigation a:active {
+	color:#036;
+	background: url(../images/navigation_bg_active.png) repeat-x scroll 0 0;
 }
 #footer {
 	margin-top:18px;
@@ -245,7 +263,7 @@ body {
 	text-align:right;}
 
 /*Front page formatting*/
-body.main .intro {
+body.main .intro, body.planning_applications .intro {
 	font-size:120%;
 	font-weight:normal;
 }
@@ -865,6 +883,9 @@ form#foi_request {
 	border: 1px solid #369;
 }
 
+#faq {
+  font-size: 1.2em;
+}
 /*admin page*/
 .admin #user_submissions {
 	background: #eee;

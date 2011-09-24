@@ -22,7 +22,7 @@
         <h3><%= basic_link_for council, :name => dom_id(council) %> <em><%= council_page_for council %> &nbsp;&nbsp;<%= link_to "edit", edit_council_path(council) %></em></h3>
         <p> 
 					<%= link_to "Add scrapers", "#", :class => "add_new_scraper" %>
-					<%= ":: <strong>Portal System</strong> #{link_for(council.portal_system)}"if council.portal_system %>
+					<%= ":: <strong>Portal System</strong> #{link_for(council.portal_system)}" if council.portal_system %>
 				</p>
 				
         <ul>

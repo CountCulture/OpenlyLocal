@@ -1,6 +1,4 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :planning_applications
-
 
   map.resources :charities
 
@@ -31,6 +29,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/1010.xml', :controller => "councils", :action => "index", :show_1010_status => true, :format => "xml"
   map.connect 'councils/1010.json', :controller => "councils", :action => "index", :show_1010_status => true, :format => "json"
   map.connect 'councils/:id/spending', :controller => "councils", :action => "show_spending"
+
+  map.connect 'councils/:id/spending', :controller => "councils", :action => "show_spending"
   
   map.connect 'entities/:id/spending', :controller => "entities", :action => "show_spending"
   # map.connect 'meetings.:format', :controller => "meetings", :action => "index"
@@ -59,9 +59,12 @@ ActionController::Routing::Routes.draw do |map|
                 :user_submissions, 
                 :wards, 
                 :feed_entries
+                
   
   map.resources :related_articles, :only => [:new, :create, :index]
   map.resources :parish_councils, :only => [:show]
+  map.resources :planning_applications, :only => [:show]
+  
 
   map.resources :councils, :collection => { :spending => :get }, :member => { :accounts => :get} do |councils|
     councils.resources :datasets, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
@@ -116,6 +119,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'id/wards/snac_id/:snac_id', :controller => "wards", :action => "show", :requirements => { :snac_id => /\w+/, :redirect_from_resource => true }
   map.connect 'parish_councils/os_id/:os_id.:format', :controller => "parish_councils", :action => "show", :requirements => { :os_id => /\d+/ }
   map.connect 'parish_councils/os_id/:os_id', :controller => "parish_councils", :action => "show", :requirements => { :os_id => /\d+/ }
+
+  map.connect 'planning', :controller => "planning_applications", :action => "overview"
 
   # The priority is based upon order of creation: first created -> highest priority.
 

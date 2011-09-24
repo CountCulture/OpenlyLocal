@@ -1,5 +1,9 @@
 class PlanningApplicationsController < ApplicationController
   
+  def overview
+    @title = 'UK Planning Applications'
+  end
+  
   def show
     @planning_application = PlanningApplication.find(params[:id])
     @council = @planning_application.council

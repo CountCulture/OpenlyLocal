@@ -567,7 +567,19 @@ class CouncilTest < ActiveSupport::TestCase
         exist_chief_exec = Factory(:officer, :position => "Chief Executive", :council => @council)
         @council.chief_executive_full_name = "Fred Blogs"
         assert_equal "Fred Blogs", exist_chief_exec.reload.full_name
-        
+      end
+      
+      context "and passed empty string" do
+        should "do nothing" do
+          @council.chief_executive_full_name = ""
+          assert_nil @council.reload.chief_executive
+        end
+
+        should "remove chief executive if already chief executive" do
+          exist_chief_exec = Factory(:officer, :position => "Chief Executive", :council => @council)
+          @council.chief_executive_full_name = ""
+          assert_nil @council.reload.chief_executive
+        end
       end
     end
     

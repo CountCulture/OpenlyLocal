@@ -2,6 +2,30 @@ require 'test_helper'
 
 class PlanningApplicationsControllerTest < ActionController::TestCase
 
+  should "route all_councils to index with include_unparsed true" do
+    assert_routing("planning", {:controller => "planning_applications", :action => "overview"})
+    assert_routing("planning_applications/1234", {:controller => "planning_applications", :action => "show", :id => '1234'})
+  end
+
+  context "on GET to :overview" do
+    setup do
+      get :overview
+    end
+
+    # should assign_to(:planning_application) { @planning_application }
+    should respond_with :success
+    should render_template :overview
+    # should assign_to(:organisation) { @organisation }
+
+    # should "show entity name in title" do
+    #   assert_select "title", /#{@planning_application.title}/
+    # end
+  
+    # should "show api block" do
+    #   assert_select "#api_info"
+    # end
+  end
+
   context "on GET to :show" do
     setup do
       @planning_application = Factory(:planning_application)

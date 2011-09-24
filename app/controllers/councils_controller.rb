@@ -64,7 +64,8 @@ class CouncilsController < ApplicationController
     @council.update_attributes!(params[:council])
     flash[:notice] = "Successfully updated council"
     redirect_to council_path(@council)
-  rescue
+  rescue Exception => e
+    logger.error "Problem saving council: #{e.inspect}\n"
     render :action => "edit"
   end
   
