@@ -235,6 +235,7 @@ body {
 	height:20px;
 	text-decoration:none;
 	text-transform:uppercase;
+	font-weight: bold;
 	padding:2px 1em;}
 #navigation form {
 	margin-left:1em;
@@ -243,7 +244,7 @@ body {
 #navigation input {
 	margin-bottom:0;}
 #navigation a:hover {
-	color:#036;
+	color:#633;
 	background: #ddd;
 }
 #navigation a:active {
