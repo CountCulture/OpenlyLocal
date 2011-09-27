@@ -68,10 +68,7 @@ $(document).ready( function() {
 				event.preventDefault();					
 		});
 		
-		$('dd.company_number a').click(function(event){
-	    $.getJSON($(this).attr("href")+'.json?callback=?', function(data) {populateCompanyData(data)});					
-			event.preventDefault();					
-		});
+		$('dd.company_number a').getCompanyData();
 		
 });
 
@@ -104,19 +101,40 @@ function getBoundaries(centrePt, radius) {
 function populateCompanyData(companyData) {
   var company = companyData.company;
   var dlData = {};
-  dlData['status'] = company.current_status;
-  dlData['registered_address'] = company.registered_address_in_full;
-  var previous_names = company.previous_names;
-  // dlData ['dissolution_date'] = company.dissolution_date
-  // var attribs = ['status','registered_address','dissolution_date']
   var dlString = '';
-  // $.each(dlData, function(k,v) { 
-  //   dlString = dlString + buildDlElement(k,v);
-  //   } )
-  // $('dl#main_attributes').append(dlString);
-  // alert(registered_address);
+  dlData['status'] = company.current_status;
+  dlData['company_type'] = company.company_type;
+  dlData['registered_address'] = company.registered_address_in_full;
+  dlData['incorporation_date'] = company.incorporation_date;
+  dlData['dissolution_date'] = company.dissolution_date;
+  if (company.previous_names) {
+    var previous_names = $.map(company.previous_names, function(pn) {
+      return pn.company_name + ' (' + pn.con_date + ')';
+    } );
+    dlData['previous_names'] = previous_names.join(', ');
+  };
+  dlData['dissolution_date'] = company.dissolution_date;
+  $.each(dlData, function(k,v) { 
+    dlString = dlString + buildDlEl(k,v);
+    } );
+  $('dd.company_number')
+  $('dl#main_attributes').append(dlString);
+  $('.ajax_fetcher').fadeOut();     
 }
 
-function buildDlElement (k, v) {
-  '<dt>' + k + '</dt><dd class="'+ k + '">' + v + '</dd>'
+function buildDlEl(k, v) {
+  return (v ? '<dt>' + toTitleCase(k) + '</dt><dd class="'+ k + '">' + v + '</dd>' : '');
+}
+function toTitleCase(str)
+{
+   return str.replace('_',' ').replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
+jQuery.fn.getCompanyData = function () {
+  var el = $(this)[0];
+  if (el) {
+	  $('dl#main_attributes').before("<div class='ajax_fetcher'>Fetching data from OpenCorporates</div>");
+	  var oc_url = $(this)[0]['href'] + '.json?callback=?';
+    $.getJSON(oc_url, function(data) { populateCompanyData(data) });
+  };
 }

@@ -887,6 +887,13 @@ form#foi_request {
 #faq {
   font-size: 1.2em;
 }
+.ajax_fetcher {
+  height: 50px;
+  background: url(../images/loading.gif) no-repeat 0 18px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #993333;
+}
 /*admin page*/
 .admin #user_submissions {
 	background: #eee;
