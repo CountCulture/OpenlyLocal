@@ -131,7 +131,10 @@ function toTitleCase(str)
 }
 
 jQuery.fn.getCompanyData = function () {
+  var el = $(this)[0];
+  if (el) {
 	  $('dl#main_attributes').before("<div class='ajax_fetcher'>Fetching data from OpenCorporates</div>");
 	  var oc_url = $(this)[0]['href'] + '.json?callback=?';
     $.getJSON(oc_url, function(data) { populateCompanyData(data) });
+  };
 }
