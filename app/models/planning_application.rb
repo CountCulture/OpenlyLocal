@@ -3,6 +3,7 @@ class PlanningApplication < ActiveRecord::Base
   belongs_to :council
   validates_presence_of :council_id, :uid
   alias_attribute :council_reference, :uid
+  serialize :other_attributes
   
   def title
     "Planning Application #{uid}" + (address.blank? ? '' : ", #{address[0..30]}...")

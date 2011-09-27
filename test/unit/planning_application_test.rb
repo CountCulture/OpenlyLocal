@@ -23,6 +23,10 @@ class PlanningApplicationTest < ActiveSupport::TestCase
 
   should belong_to :council
   
+  should "serialize other attributes" do
+    assert_equal({:foo => 'bar'}, Factory(:planning_application, :other_attributes => {:foo => 'bar'}).reload.other_attributes)
+  end
+  
   context "an instance of the PlanningApplication class" do
     context "when returning title" do
       should "use uid reference" do

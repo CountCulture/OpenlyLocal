@@ -55,7 +55,7 @@ class ScrapersHelperTest < ActionView::TestCase
     end
   end
   
-  context "changed_attributes helper method" do
+  context "changed_attributes_list helper method" do
     setup do
       @member = Factory.create(:member)
       @member.save # save again so record is not newly created
@@ -77,6 +77,12 @@ class ScrapersHelperTest < ActionView::TestCase
                                           :class => "changed_attributes"), changed_attributes_list(ScrapedObjectResult.new(@member))
      end
      
+     should "show inspect view of attributes that are hashes" do
+       expected_res = content_tag(:div, content_tag(:ul, content_tag(:li, "other_attributes <strong>{:foo=>\"bar\"}</strong> (was empty)")), 
+                                        :class => "changed_attributes")
+       assert_dom_equal expected_res, changed_attributes_list(ScrapedObjectResult.new(PlanningApplication.new(:other_attributes => {:foo => 'bar'})))      
+     end
+
   end
  
   context "scraper_links_for_council helper method" do
