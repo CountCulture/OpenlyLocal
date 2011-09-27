@@ -58,11 +58,14 @@ module ScrapedModel
         organisation = options.delete(:organisation)
         exist_records = find_all_existing(params_array.first.merge(:organisation => organisation)) # want council_id and other params (e.g. committee_id) that *might* be necessary to find all existing records
         results = [params_array].flatten.collect do |params| #make into array if it isn't one
-          if result = exist_records.detect{ |r| r.matches_params(params) }
-            result.attributes = params
+          result = exist_records.detect{ |r| r.matches_params(params) }
+          cleaned_up_attribs = cleanup_unknown_attribs(params)
+          if result
+            result.attributes = cleaned_up_attribs
             exist_records.delete(result)
+          else
+            result = record_not_found_behaviour(cleaned_up_attribs.merge(:council => organisation))
           end
-          result ||= record_not_found_behaviour(params.merge(:council => organisation))
           options[:save_results] ? result.save_without_losing_dirty : result.valid? # we want to know what's changed and keep any errors, so run save_without_losing_dirty if we're saving, run validation to add errors to item otherwise
           logger.debug { "**********result = #{result.inspect}" }
           ScrapedObjectResult.new(result)
@@ -90,6 +93,18 @@ module ScrapedModel
       # default record_not_found_behaviour. Overwrite in models that include this mixin if necessary
       def record_not_found_behaviour(params)
         self.new(params)
+      end
+      
+      private
+      # cleans up params so unknown ones get discarded, or if model has :other_attributes attribute, put in there
+      def cleanup_unknown_attribs(params)
+        example_mod = self.new
+        return params unless example_mod.respond_to?(:other_attributes)
+        native_attribs = params.dup
+        other_attribs = {}
+        params.each { |k,v|  other_attribs[k] = native_attribs.delete(k) unless example_mod.respond_to?("#{k}=")}
+        native_attribs.merge!(:other_attributes => other_attribs)
+        native_attribs
       end
 
     end

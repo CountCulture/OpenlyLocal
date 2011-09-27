@@ -16,7 +16,7 @@
   <dt>Where's the documentation?</dt>
   <dd>You're reading it. Seriously, at the moment we've been concentrating on extracting the data and making it available in a simple to use way. We've deliberately tried to use sensible naming conventions and structure to make it easy for anyone with any programming experience understand</dd>
   <dt>What's the licence?</dt>
-    <dd>Some of the information is Crown Copyright, and you'll need a <%= link_to "Click-Use Licence", "http://www.opsi.gov.uk/click-use/index", :class => "external" %> for that. Other information is nominally copyright the Local Authority concerned -- we feel that no council in their right mind could reasonably object to wider distribution of its democratic data; whether you wish to take the same attitude is, however, up to you. Still other is copyright OpenlyLocal, and while we're still looking at the exact licence we should use, we strong believe in open data and the one we choose will <em>at the minumum</em> allow full non-commercial use with attribution.</dd>
+    <dd>Some of the information is Crown Copyright, and you'll need a <%= link_to "Click-Use Licence", "http://www.opsi.gov.uk/click-use/index", :class => "external" %> for that. Other information is nominally copyright the Local Authority concerned -- we feel that no council in their right mind could reasonably object to wider distribution of its democratic data; whether you wish to take the same attitude is, however, up to you. Still other is copyright OpenlyLocal, and while we're still looking at the exact licence we should use, we strong believe in open data and the one we choose will <em>at the minimum</em> allow full non-commercial use with attribution.</dd>
     
   <dt>I need some data you're not exposing</dt>
     <dd>Email us at <%= mail_to "countculture@googlemail.com", nil, :encode => "javascript" %> and we'll see what we can do</dd>
@@ -48,7 +48,7 @@ appropriate URL for the detailed information for the item. It also returns recen
 <p>Returns all forthcoming meetings for the committee.</p>
 
 <h4>path <code>/meetings.xml?committee_id=[committee_id]&include_past=true</code></h4>
-<p>By returns all meetings for the committee, including those in the past
+<p>By default returns all meetings for the committee, including those in the past
 (returns most recent first).</p>
 
 <h3>Recent changes</h3>

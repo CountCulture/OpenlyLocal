@@ -11,6 +11,12 @@ class TestScrapedModel <ActiveRecord::Base
   allow_access_to :test_child_models, :via => [:url, :uid]
 end
 
+class TestScrapedModelWithOtherAttribs <ActiveRecord::Base
+  attr_accessor :council, :title
+  include ScrapedModel::Base
+  set_table_name "planning_applications" 
+end
+
 class TestChildModel <ActiveRecord::Base
   belongs_to :test_scraped_model, :class_name => "TestScrapedModel", :foreign_key => "committee_id"
   AssociationAttributes = [:uid, :url]
