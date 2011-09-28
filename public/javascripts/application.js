@@ -107,17 +107,29 @@ function populateCompanyData(companyData) {
   dlData['registered_address'] = company.registered_address_in_full;
   dlData['incorporation_date'] = company.incorporation_date;
   dlData['dissolution_date'] = company.dissolution_date;
+  // if (company.data&&company.data.most_recent) {
+  //   var data = $.map(company.data.most_recent, function(d) {
+  //     var cd = linkTo(d.datum.title, d.datum.opencorporates_url);
+  //     if (d.datum.description) {cd = cd + ' (' + d.datum.description + ')';};
+  //     return cd;
+  //   } );
+  //   dlData['latest_data'] = data.join(', ');
+  // };
   if (company.previous_names) {
     var previous_names = $.map(company.previous_names, function(pn) {
       return pn.company_name + ' (' + pn.con_date + ')';
     } );
     dlData['previous_names'] = previous_names.join(', ');
   };
-  dlData['dissolution_date'] = company.dissolution_date;
+  if (company.corporate_groupings) {
+    var corporate_groupings = $.map(company.corporate_groupings, function(cg) {
+      return linkTo(cg.corporate_grouping.name, cg.corporate_grouping.opencorporates_url);
+    } );
+    dlData['corporate_grouping'] = corporate_groupings.join(', ');
+  };
   $.each(dlData, function(k,v) { 
     dlString = dlString + buildDlEl(k,v);
     } );
-  $('dd.company_number')
   $('dl#main_attributes').append(dlString);
   $('.ajax_fetcher').fadeOut();     
 }
@@ -129,6 +141,9 @@ function toTitleCase(str)
 {
    return str.replace('_',' ').replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
+function linkTo(txt,url) {
+  return '<a href="'+ url + '">' + txt + '</a>'
+}
 
 jQuery.fn.getCompanyData = function () {
   var el = $(this)[0];
@@ -138,3 +153,4 @@ jQuery.fn.getCompanyData = function () {
     $.getJSON(oc_url, function(data) { populateCompanyData(data) });
   };
 }
+

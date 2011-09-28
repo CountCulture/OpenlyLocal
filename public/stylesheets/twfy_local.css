@@ -894,6 +894,11 @@ form#foi_request {
   font-weight: bold;
   color: #993333;
 }
+.corporate_grouping a {
+  background: #663333;
+  padding: 1px 3px;
+  color: #fff;
+}
 /*admin page*/
 .admin #user_submissions {
 	background: #eee;
