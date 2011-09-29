@@ -129,9 +129,9 @@ function populateCompanyData(companyData) {
   };
   if (company.filings) {
     var filings = $.map(company.filings.slice(0,2), function(f) {
-      return linkTo(f.filing.title, f.filing.opencorporates_url);
+      return '<span class="date">' + f.filing.date + '</span> ' + linkTo(f.filing.title, f.filing.opencorporates_url);
     } );
-    dlData['filings'] = filings.join(', ');
+    dlData['latest_filings'] = filings.join(', ');
   };
   $.each(dlData, function(k,v) { 
     dlString = dlString + buildDlEl(k,v);
