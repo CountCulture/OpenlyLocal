@@ -8,10 +8,7 @@
 <%- end -%>
 
 <dl id="main_attributes" class="attributes">
-  <%= attribute_tag :company_number, link_to(@company.company_number, @company.opencorporates_url, :class => 'external', :title => "Free and open company data on #{@company.title}") if @company.company_number? %>
-  <%= attribute_tag :vat_number, @company.vat_number %>
-  <%= attribute_tag :website, link_to(@company.url, @company.url) if @company.url? %>
-  <%= attribute_tag :wikipedia_url, link_to(URI.unescape(@company.wikipedia_url), @company.wikipedia_url, :class => 'external') if @company.wikipedia_url? %>
+  <%= render :partial => "attributes", :object => @company %>
 </dl>
 
 <%- unless @company.spending_stat.blank? -%>
