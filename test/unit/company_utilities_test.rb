@@ -95,6 +95,16 @@ class CompanyUtilitiesTest < ActiveSupport::TestCase
         assert_equal( {:company_number=>"02481991", :title => 'Foo PLC', :status =>"Active"}, @client.find_company_by_name('Foo Bar'))
       end
       
+      context "and company_details returns just company_type" do
+        setup do
+          @client.expects(:company_details_for).with(@exact_match.company_number).returns(:company_type => 'Industrial & Provident Society')
+        end
+
+        should "return matched company name and company number" do
+          expected_co_info = {:company_number => @exact_match.company_number, :title => @exact_match.company_name, :company_type => 'Industrial & Provident Society'}
+          assert_equal expected_co_info, @client.find_company_by_name('Foo Bar')
+        end
+      end
       
       context "and no company exactly matches" do
         setup do
@@ -200,10 +210,6 @@ class CompanyUtilitiesTest < ActiveSupport::TestCase
       end
       
       context "and company has IP prefix" do
-        setup do
-          
-        end
-
         should "not make call to CompaniesHouse api" do
           CompaniesHouse.expects(:company_details).never
           @client.company_details_for('IP123456')

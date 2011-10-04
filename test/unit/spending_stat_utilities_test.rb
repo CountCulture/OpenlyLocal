@@ -223,7 +223,7 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
     should 'have many supplying_relationships as payee' do
       supplying_relationship = Factory(:supplier, :payee => @test_model_with_spending_stat_payee)
       assert_equal [supplying_relationship], @test_model_with_spending_stat_payee.supplying_relationships
-     end
+    end
     
     should 'have many payments_received through supplying_relationships' do
       supplying_relationship = Factory(:supplier, :payee => @test_model_with_spending_stat_payee)
