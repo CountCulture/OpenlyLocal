@@ -5,7 +5,5 @@ class TweakPlanningApplications < ActiveRecord::Migration
   end
 
   def self.down
-    remove_index :planning_applications, :column_name
-    # remove_column :planning_applications, :column_name
   end
 end
