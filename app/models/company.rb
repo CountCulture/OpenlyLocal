@@ -32,7 +32,7 @@ class Company < ActiveRecord::Base
   def self.from_title(raw_title, options={})
     company = first(:conditions => {:normalised_title => normalise_title(raw_title)})
     if !company && company_info = CompanyUtilities::Client.new.find_company_by_name(raw_title)
-      company = Company.find_by_company_number(company_info[:company_number])
+      company = !company_info[:company_number].blank? && Company.find_by_company_number(company_info[:company_number])
       # return existing_company if existing_company
       company = options[:no_create] ? company_info : Company.create(company_info) unless company
       # we may be returned company that has slightly diff name  but same company_number
