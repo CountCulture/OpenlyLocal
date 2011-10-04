@@ -100,8 +100,19 @@ class CompanyUtilitiesTest < ActiveSupport::TestCase
           @client.expects(:company_details_for).with(@exact_match.company_number).returns(:company_type => 'Industrial & Provident Society')
         end
 
-        should "return matched company name and company number" do
+        should "return matched company name and company number and company_type" do
           expected_co_info = {:company_number => @exact_match.company_number, :title => @exact_match.company_name, :company_type => 'Industrial & Provident Society'}
+          assert_equal expected_co_info, @client.find_company_by_name('Foo Bar')
+        end
+      end
+      
+      context "and company_details returns nil" do
+        setup do
+          @client.expects(:company_details_for).with(@exact_match.company_number).returns(nil)
+        end
+
+        should "return matched company name and company number" do
+          expected_co_info = {:company_number => @exact_match.company_number, :title => @exact_match.company_name}
           assert_equal expected_co_info, @client.find_company_by_name('Foo Bar')
         end
       end
