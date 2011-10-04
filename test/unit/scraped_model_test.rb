@@ -115,6 +115,25 @@ class ScrapedModelTest < ActiveSupport::TestCase
  
     end
 
+    should "have stale named scope" do
+      assert TestScrapedModel.respond_to? :stale
+    end
+    
+    context "and when returning stale scope" do
+      setup do
+        TestScrapedModel.record_timestamps = false
+        @very_stale_object = TestScrapedModel.create!(:uid => 34, :council_id => 99, :title => "Bar Committee", :created_at => 1.year.ago, :updated_at => 1.year.ago)
+        TestScrapedModel.record_timestamps = true
+      end
+
+      should "include all instances" do
+        stale_instances = TestScrapedModel.stale
+        stale_instances.include?(@test_model)
+        stale_instances.include?(@another_test_model)
+        stale_instances.include?(@very_stale_object)
+      end
+    end                     
+    
     context "when finding all existing records from params by default" do
       should "find all restricted to organisation given in params" do
         org = Factory(:generic_council)

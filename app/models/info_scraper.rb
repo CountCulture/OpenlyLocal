@@ -25,7 +25,12 @@ class InfoScraper < Scraper
   end
   
   def related_objects
-    @related_objects ||= result_model.constantize.find(:all, :conditions => { :council_id => council_id })
+    case 
+    when @related_objects
+      @related_objects
+    else
+      result_model.constantize.stale.find(:all, :conditions => { :council_id => council_id })
+    end
   end
   
   def scraping_for

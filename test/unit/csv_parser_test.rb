@@ -166,7 +166,6 @@ class CsvParserTest < ActiveSupport::TestCase
             assert_equal 'foo', @processed_data.first[:an_unmapped_column]
           end
         end
-        
 
       end
       

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110914214708) do
+ActiveRecord::Schema.define(:version => 20110930112329) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -786,7 +786,7 @@ ActiveRecord::Schema.define(:version => 20110914214708) do
     t.column "info_tinyurl", :string, :limit => 50
     t.column "comment_url", :string, :limit => 1024
     t.column "comment_tinyurl", :string, :limit => 50
-    t.column "date_scraped", :timestamp
+    t.column "date_scraped", :datetime
     t.column "date_received", :date
     t.column "map_url", :string, :limit => 150
     t.column "lat", :float
@@ -798,7 +798,7 @@ ActiveRecord::Schema.define(:version => 20110914214708) do
     t.column "on_notice_from", :date
     t.column "on_notice_to", :date
     t.column "decision", :string, :limit => 64
-    t.column "other_attributes", :text
+    t.column "other_attributes", :text, :limit => 16777215
   end
 
   add_index "planning_applications", ["date_scraped"], :name => "datescr"

@@ -43,11 +43,10 @@ module ScrapedModel
       end
 
 
-
       # default find_all_existing. By default finds for instances of model associated 
       # with council as specified in params[:council_id]. Overwrite in models that need 
       # more specific behaviour, e.g. Meeting model should return only meetings 
-      # associated with given council and committe
+      # associated with given council and committee
       def find_all_existing(params)
         raise ArgumentError, "organisation is missing from submitted params" unless params[:organisation]
         find_all_by_council_id(params[:organisation].id)
@@ -81,7 +80,7 @@ module ScrapedModel
       def normalise_title(raw_title)
         TitleNormaliser.normalise_title(raw_title)
       end
-      
+        
       protected
       # stub method. Is called in build_or_update with those records that
       # are in db but that weren't returned by scraper/parser (for example old 
@@ -157,6 +156,7 @@ module ScrapedModel
       i_class.send :include, InstanceMethods
       i_class.after_save :mark_council_as_updated
       i_class.after_destroy :mark_council_as_updated
+      i_class.named_scope :stale #stub stale method, so returns all, i.e. all are considered stale. This is what we want by defult (so always update all members)
     end
   end
   
