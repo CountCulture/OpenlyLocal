@@ -898,6 +898,7 @@ form#foi_request {
   background: #663333;
   padding: 1px 3px;
   color: #fff;
+  text-transform: uppercase;
 }
 /*admin page*/
 .admin #user_submissions {

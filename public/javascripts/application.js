@@ -97,7 +97,6 @@ function getBoundaries(centrePt, radius) {
  var ne = getDestLatLng(centrePt, 45, hypotenuse);
  return new GLatLngBounds(sw, ne);
 }
-
 function populateCompanyData(companyData) {
   var company = companyData.company;
   var dlData = {};
@@ -127,13 +126,18 @@ function populateCompanyData(companyData) {
     } );
     dlData['corporate_grouping'] = corporate_groupings.join(', ');
   };
+  if (company.filings) {
+    var filings = $.map(company.filings.slice(0,2), function(f) {
+      return '<span class="date">' + f.filing.date + '</span> ' + linkTo(f.filing.title, f.filing.opencorporates_url);
+    } );
+    dlData['latest_filings'] = filings.join(', ');
+  };
   $.each(dlData, function(k,v) { 
     dlString = dlString + buildDlEl(k,v);
     } );
-  $('dl#main_attributes').append(dlString);
+  $('dl.attributes').append(dlString);
   $('.ajax_fetcher').fadeOut();     
 }
-
 function buildDlEl(k, v) {
   return (v ? '<dt>' + toTitleCase(k) + '</dt><dd class="'+ k + '">' + v + '</dd>' : '');
 }
@@ -144,11 +148,14 @@ function toTitleCase(str)
 function linkTo(txt,url) {
   return '<a href="'+ url + '">' + txt + '</a>'
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 jQuery.fn.getCompanyData = function () {
   var el = $(this)[0];
   if (el) {
-	  $('dl#main_attributes').before("<div class='ajax_fetcher'>Fetching data from OpenCorporates</div>");
+	  $('dl.attributes').before("<div class='ajax_fetcher'>Fetching data from OpenCorporates</div>");
 	  var oc_url = $(this)[0]['href'] + '.json?callback=?';
     $.getJSON(oc_url, function(data) { populateCompanyData(data) });
   };

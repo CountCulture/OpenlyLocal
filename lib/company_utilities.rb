@@ -32,7 +32,10 @@ module CompanyUtilities
       end
       return nil unless match
       sleep 1
-      company_details_for(match.company_number)
+      details = company_details_for(match.company_number)
+      # If we're dealing with Industrial & Provident Society, we won't have these in company details hash.
+      # Similarly if company details returns nil (e.g. RC company?) we still want basics returned
+      {:company_number => match.company_number, :title => match.company_name}.merge(details||{})
     end
     
     def company_details_for(company_number)

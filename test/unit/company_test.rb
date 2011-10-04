@@ -212,7 +212,7 @@ class CompanyTest < ActiveSupport::TestCase
           CompanyUtilities::Client.any_instance.stubs(:find_company_by_name).returns(@company_attribs)
         end
 
-        should "get company matching name" do
+        should "get company matching name from company_utilities" do
           CompanyUtilities::Client.any_instance.expects(:find_company_by_name).with('Foo')
           Company.from_title('Foo')
         end
@@ -244,7 +244,7 @@ class CompanyTest < ActiveSupport::TestCase
           end
         end
         
-        context "and company returned has same company_number as existing company" do
+        context "and company returned by company_utilities has same company_number as existing company" do
           setup do
             @exist_co = Factory(:company, :title => 'Foo and Bar', :company_number => '06398324') #no limited
             exist_co_attribs = {:status=>"Active", :company_number=>"06398324", :title=>"Foo and Bar", :company_type=>"Private Limited Company", :incorporation_date=>"2007-10-15"}
@@ -263,6 +263,30 @@ class CompanyTest < ActiveSupport::TestCase
           
           should "return existing company even if no_create is true" do
             assert_equal @exist_co, Company.from_title('Foo and Bar Limited', :no_create => true)
+          end
+        end
+
+        context "and company returned by company_utilities has nil for company_number" do
+          # This in part is regression test. In theory shouldn't get companies returned by company utilities with nil company_number
+          setup do
+            @exist_co = Factory(:company, :title => 'Foo and Bar', :company_number => nil, :vat_number => '123456') #no limited
+            attribs = {:status=>"Active", :company_number => nil, :title => "Another Company Limited"}
+            CompanyUtilities::Client.any_instance.expects(:find_company_by_name).with('Another Company').returns(attribs)
+          end
+          
+          should "not match to other companies with nil company number" do
+            assert_not_equal @exist_co, Company.from_title('Another Company')
+          end
+
+          should "not create company" do
+            # as no company number or VAT number
+            assert_no_difference "Company.count" do
+              Company.from_title('Another Company')
+            end
+          end
+          
+          should "return new company" do
+            assert_equal "Another Company Limited", Company.from_title('Another Company').title
           end
         end
 
