@@ -471,6 +471,12 @@ class ScraperTest < ActiveSupport::TestCase
           @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob")
           @scraper.process
         end
+        
+        should "get data from url interpolated with term" do
+          @scraper.url = 'http://www.anytown.gov.uk/members/#{Date.today}'
+          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/#{Date.today}")
+          @scraper.process
+        end        
 
         should "pass data to associated parser" do
           @parser.expects(:process).with("something", anything, anything).returns(stub_everything)
