@@ -148,10 +148,7 @@ function toTitleCase(str)
 function linkTo(txt,url) {
   return '<a href="'+ url + '">' + txt + '</a>'
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> master
 jQuery.fn.getCompanyData = function () {
   var el = $(this)[0];
   if (el) {
