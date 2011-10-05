@@ -444,6 +444,11 @@ class ScraperTest < ActiveSupport::TestCase
         assert_kind_of Hpricot::Doc, @scraper.send(:_data)
       end
       
+      should "return data as Hpricot Doc" do
+        @scraper.stubs(:_http_get).returns("something")
+        assert_kind_of Hpricot::Doc, @scraper.send(:_data)
+      end
+      
       should "raise ParsingError when problem processing page with Hpricot" do
         Hpricot.expects(:parse).raises
         assert_raise(Scraper::ParsingError) {@scraper.send(:_data)}
@@ -459,6 +464,28 @@ class ScraperTest < ActiveSupport::TestCase
           @scraper.use_post = true
           @scraper.expects(:_http_post_from_url_with_query_params).with('http://another.url', anything).returns("something")
           @scraper.send(:_data, 'http://another.url')
+        end
+      end
+      
+      context "and scraper parsing library is 'N'" do
+        setup do
+          @scraper.parsing_library = 'N'
+        end
+
+        should "parse response using Nokogiri HTML" do
+          @scraper.stubs(:_http_get).returns("something")
+          assert_kind_of Nokogiri::HTML::Document, @scraper.send(:_data)
+        end
+      end
+
+      context "and scraper parsing library is 'X'" do
+        setup do
+          @scraper.parsing_library = 'X'
+        end
+
+        should "parse response using Nokogiri XML" do
+          @scraper.stubs(:_http_get).returns("something")
+          assert_kind_of Nokogiri::XML::Document, @scraper.send(:_data)
         end
       end
     end

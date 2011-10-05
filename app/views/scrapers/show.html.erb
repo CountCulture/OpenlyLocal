@@ -19,11 +19,12 @@
   <div class="notes">
     <h4>Notes</h4>
     <%= simple_format @scraper.notes %>
-    
-    <p><strong>Referrer url</strong> <%= @scraper.referrer_url || "none" %></p>
-    <p><strong>Make POST request</strong> <%= @scraper.use_post %></p>
-    <p><strong>Cookie url</strong> <%=  @scraper.cookie_url ? link_to(@scraper.cookie_url, @scraper.cookie_url) : "none" %></p>
-    
+    <ul>
+      <li>Parsing library <strong><%= Scraper::PARSING_LIBRARIES[@scraper.parsing_library] %></strong></li>
+      <li>Referrer url <strong><%= @scraper.referrer_url? || "none" %></strong></li>
+      <li>Make POST request <strong><%= @scraper.use_post %></strong></li>
+      <li>Cookie url <strong><%=  @scraper.cookie_url? ? link_to(@scraper.cookie_url, @scraper.cookie_url) : "none" %></strong></li>
+    </ul>
   </div> 
   <p>
     <strong>Last scraped</strong> <%= @scraper.last_scraped %><br />

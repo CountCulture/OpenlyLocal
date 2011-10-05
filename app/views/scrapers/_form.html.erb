@@ -23,6 +23,10 @@
     <%- end -%>
   </p>
   <p>
+    <%= f.label :parsing_library %>
+    <%= f.select :parsing_library, Scraper::PARSING_LIBRARIES.collect{|k,v| [v,k] } %><br />
+  </p>
+  <p>
     <%= f.label :referrer_url, "Referrer url <em>Can nearly always be left blank</em>" %>
     <%= f.text_field :referrer_url %><br />
   </p>

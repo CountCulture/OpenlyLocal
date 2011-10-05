@@ -4,6 +4,10 @@ class Scraper < ActiveRecord::Base
   class ParsingError < ScraperError; end
   SCRAPER_TYPES = %w(InfoScraper ItemScraper CsvScraper)
   USER_AGENT = "Mozilla/4.0 (OpenlyLocal.com)"
+  PARSING_LIBRARIES = { 'H' => 'Hpricot', 
+                        'N' => 'Nokogiri (HTML)',
+                        'X' => 'Nokogiri (XML)'
+                      }
   belongs_to :parser
   belongs_to :council
   validates_presence_of :council_id
@@ -139,7 +143,14 @@ class Scraper < ActiveRecord::Base
     end
     
     begin
-      Hpricot.parse(page_data, :fixup_tags => true)
+      case parsing_library
+      when 'N'
+        Nokogiri.HTML(page_data)
+      when 'X'
+        Nokogiri.XML(page_data)
+      else
+        Hpricot.parse(page_data, :fixup_tags => true)
+      end
     rescue Exception => e
       logger.error { "Problem with data returned from #{target_url}: #{e.inspect}" }
       raise ParsingError
