@@ -41,8 +41,18 @@ module ScrapedModel
           end
         end
       end
-
-
+      
+      # cleans up params so unknown ones get discarded, or if model has :other_attributes attribute, put in there
+      def clean_up_raw_attributes(raw_attribs)
+        example_mod = self.new
+        return raw_attribs unless example_mod.respond_to?(:other_attributes)
+        native_attribs = raw_attribs.dup
+        other_attribs = {}
+        native_attribs.each { |k,v|  other_attribs[k] = native_attribs.delete(k) unless example_mod.respond_to?("#{k}=")}
+        native_attribs.merge!(:other_attributes => other_attribs)
+        native_attribs
+      end
+      
       # default find_all_existing. By default finds for instances of model associated 
       # with council as specified in params[:council_id]. Overwrite in models that need 
       # more specific behaviour, e.g. Meeting model should return only meetings 
@@ -58,7 +68,7 @@ module ScrapedModel
         exist_records = find_all_existing(params_array.first.merge(:organisation => organisation)) # want council_id and other params (e.g. committee_id) that *might* be necessary to find all existing records
         results = [params_array].flatten.collect do |params| #make into array if it isn't one
           result = exist_records.detect{ |r| r.matches_params(params) }
-          cleaned_up_attribs = cleanup_unknown_attribs(params)
+          cleaned_up_attribs = clean_up_raw_attributes(params)
           if result
             result.attributes = cleaned_up_attribs
             exist_records.delete(result)
@@ -94,18 +104,6 @@ module ScrapedModel
         self.new(params)
       end
       
-      private
-      # cleans up params so unknown ones get discarded, or if model has :other_attributes attribute, put in there
-      def cleanup_unknown_attribs(params)
-        example_mod = self.new
-        return params unless example_mod.respond_to?(:other_attributes)
-        native_attribs = params.dup
-        other_attribs = {}
-        params.each { |k,v|  other_attribs[k] = native_attribs.delete(k) unless example_mod.respond_to?("#{k}=")}
-        native_attribs.merge!(:other_attributes => other_attribs)
-        native_attribs
-      end
-
     end
   
     module InstanceMethods
@@ -115,6 +113,11 @@ module ScrapedModel
         success = save # this clears changed attributes
         changed_attributes.update(ch_attributes) # so merge them back in
         success # return result of saving
+      end
+      
+      # delegates to class method
+      def clean_up_raw_attributes(raw_attribs)
+        self.class.clean_up_raw_attributes(raw_attribs)
       end
       
       # override this in individual classes to define whether params from scraper parser are the same

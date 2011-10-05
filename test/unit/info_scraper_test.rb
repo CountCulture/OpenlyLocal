@@ -112,6 +112,11 @@ class InfoScraperTest < ActiveSupport::TestCase
           assert_equal "Fred Flintstone", @dummy_related_object.title
         end
         
+        should "clean up unknown attributes" do
+          @dummy_related_object.expects(:clean_up_raw_attributes).with( :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred")
+          @scraper.process(:objects => @dummy_related_object)
+        end
+        
         should "validate existing instance of result_class" do
           @scraper.process(:objects => @dummy_related_object)
           assert @dummy_related_object.errors[:uid]

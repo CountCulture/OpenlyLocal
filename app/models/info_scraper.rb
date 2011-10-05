@@ -49,7 +49,7 @@ class InfoScraper < Scraper
       sor.errors.add_to_base @parser.errors[:base]
       results << sor
     elsif !res.blank?
-      obj.attributes = res.first
+      obj.attributes = obj.clean_up_raw_attributes(res.first)
       options[:save_results] ? obj.save : obj.valid? # don't try if we've already got errors
       results << ScrapedObjectResult.new(obj)
     end

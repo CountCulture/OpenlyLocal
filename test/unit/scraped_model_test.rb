@@ -156,6 +156,26 @@ class ScrapedModelTest < ActiveSupport::TestCase
       assert TestScrapedModel.respond_to?(:orphan_records_callback)
     end
     
+    context "when cleaning up raw attributes" do
+      setup do
+        @raw_attribs = @params.merge(:unknown_attrib => 'bar')
+      end
+      
+      should "should in general return attributes" do
+        assert_equal @raw_attribs, TestScrapedModel.clean_up_raw_attributes(@raw_attribs)
+      end
+
+
+      context "and class has other_attributes attribute" do
+
+        should "move unknown attributes in other_attributes" do
+          cleaned_up_attribs = TestScrapedModelWithOtherAttribs.clean_up_raw_attributes(@raw_attribs)
+          assert_nil cleaned_up_attribs[:unknown_attrib]
+          assert_equal 'bar',  cleaned_up_attribs[:other_attributes][:unknown_attrib]
+        end
+      end
+    end
+
     context "when building_or_updating from params" do
       setup do
         @organisation = Factory(:generic_council)
@@ -518,6 +538,11 @@ class ScrapedModelTest < ActiveSupport::TestCase
    
     should "return nil for status by default" do
       assert_nil @test_model.status
+    end
+    
+    should "delegate clean_up_raw_attributes to class" do
+      @test_model.class.expects(:clean_up_raw_attributes).with(:foo => 'bar')
+      @test_model.clean_up_raw_attributes(:foo => 'bar')
     end
     
     should "calculate openlylocal_url from table name and to_param method" do
