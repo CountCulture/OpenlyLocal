@@ -131,7 +131,7 @@ class Scraper < ActiveRecord::Base
       options = { "User-Agent" => USER_AGENT, :cookie_url => cookie_url }
       (options["Referer"] = (referrer_url =~ /^http/ ? referrer_url : target_url)) unless referrer_url.blank?
       logger.debug { "Getting data from #{target_url} with options: #{options.inspect}" }
-      page_data = _http_get(target_url, options)
+      page_data = use_post ? _http_post_from_url_with_query_params(target_url, options) : _http_get(target_url, options)
     rescue Exception => e
       error_message = "**Problem getting data from #{target_url}: #{e.inspect}\n #{e.backtrace}"
       logger.error { error_message }
@@ -148,20 +148,21 @@ class Scraper < ActiveRecord::Base
   
   def _http_get(target_url, options={})
     return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
-    # response = nil 
-    # target_url = URI.parse(target_url)
-    # request = Net::HTTP.new(target_url.host, target_url.port)
-    # request.read_timeout = 5 # set timeout at 5 seconds
-    # begin
-    #   response = request.get(target_url.request_uri)
-    #   raise RequestError, "Problem retrieving info from #{target_url}." unless response.is_a? Net::HTTPSuccess
-    # rescue Timeout::Error
-    #   raise RequestError, "Timeout::Error retrieving info from #{target_url}."
-    # end
     client = HTTPClient.new
     cookie_url = options.delete(:cookie_url)
     client.get_content(cookie_url) unless cookie_url.blank? # pick up cookie if we've been passed a url
     client.get_content(target_url, nil, options)
+  end
+  
+  def _http_post_from_url_with_query_params(target_url, options={})
+    return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
+    uri = URI.parse(target_url)
+    params = CGI.parse(uri.query)
+    uri.query = nil # reset queries as we submit as post params
+    client = HTTPClient.new
+    cookie_url = options.delete(:cookie_url)
+    client.get_content(cookie_url) unless cookie_url.blank? # pick up cookie if we've been passed a url
+    client.post_content(uri, params, options)
     # open(target_url, options).read
     # logger.debug "********Scraper response = #{response.body.inspect}"
     # response.body

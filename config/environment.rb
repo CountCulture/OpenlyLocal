@@ -107,6 +107,7 @@ Date::DATE_FORMATS[:vevent] = "%Y-%m-%dT%H:%M:%S"
 Date::DATE_FORMATS[:custom_short] = "%B %e %Y" # add custom time format so we get some unity
 Time::DATE_FORMATS[:custom_short] = "%B %e %Y, %l.%M%p" # add custom time format so we get some unity
 Date::DATE_FORMATS[:month_and_year] = "%b %y" # add custom time format so we get some unity
+Date::DATE_FORMATS[:uk] = "%d/%m/%Y" # add custom date format too
 
 Pingback.save_callback do |ping|
     RelatedArticle.process_pingback(ping)

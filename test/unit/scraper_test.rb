@@ -453,6 +453,14 @@ class ScraperTest < ActiveSupport::TestCase
         @scraper.expects(:_http_get).raises(OpenURI::HTTPError, "404 Not Found")
         assert_raise(Scraper::RequestError) {@scraper.send(:_data)}
       end
+      
+      context "and use_post flag set" do
+        should "get given url" do
+          @scraper.use_post = true
+          @scraper.expects(:_http_post_from_url_with_query_params).with('http://another.url', anything).returns("something")
+          @scraper.send(:_data, 'http://another.url')
+        end
+      end
     end
         
     context "when processing" do

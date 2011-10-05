@@ -21,6 +21,7 @@
     <%= simple_format @scraper.notes %>
     
     <p><strong>Referrer url</strong> <%= @scraper.referrer_url || "none" %></p>
+    <p><strong>Make POST request</strong> <%= @scraper.use_post %></p>
     <p><strong>Cookie url</strong> <%=  @scraper.cookie_url ? link_to(@scraper.cookie_url, @scraper.cookie_url) : "none" %></p>
     
   </div> 

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110930112329) do
+ActiveRecord::Schema.define(:version => 20111005172616) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -995,6 +995,7 @@ ActiveRecord::Schema.define(:version => 20110930112329) do
     t.column "notes", :text, :limit => 16777215
     t.column "referrer_url", :string
     t.column "cookie_url", :string
+    t.column "use_post", :boolean, :default => false
   end
 
   add_index "scrapers", ["id", "type"], :name => "index_scrapers_on_id_and_type"

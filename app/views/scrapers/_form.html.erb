@@ -30,6 +30,10 @@
     <%= f.label :cookie_url, "Cookie url <em>Can nearly always be left blank</em>" %>
     <%= f.text_field :cookie_url %><br />
   </p>
+  <p>
+    <%= f.label :use_post, "Use POST request?" %>
+    <%= f.check_box :use_post %>
+  </p>
   <%- if @scraper.portal_parser? && !params[:dedicated_parser] -%>
     <%= f.hidden_field :parser_id %>
     <%= render :partial => (@scraper.is_a?(CsvScraper) ? '/parsers/csv_parser' : '/parsers/parser'), :object => @scraper.parser %>
