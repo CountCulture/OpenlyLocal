@@ -173,6 +173,11 @@ class ScrapedModelTest < ActiveSupport::TestCase
           assert_nil cleaned_up_attribs[:unknown_attrib]
           assert_equal 'bar',  cleaned_up_attribs[:other_attributes][:unknown_attrib]
         end
+        
+        should "not include other_attributes if no other attributes" do
+          cleaned_up_attribs = TestScrapedModelWithOtherAttribs.clean_up_raw_attributes(@params)
+          assert !cleaned_up_attribs.keys.include?(:other_attributes)
+        end
       end
     end
 
@@ -354,7 +359,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
 
             should "store other attributes in other_attributes" do
               result = TestScrapedModelWithOtherAttribs.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)
-              expected = {:unknown_attrib => 'bar', :url=>"http:/some.url"}
+              expected = {:unknown_attrib => 'bar'}
               assert_equal expected,  result.first.changes["other_attributes"].last
             end
           end

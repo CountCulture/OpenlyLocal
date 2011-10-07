@@ -49,7 +49,7 @@ module ScrapedModel
         native_attribs = raw_attribs.dup
         other_attribs = {}
         native_attribs.each { |k,v|  other_attribs[k] = native_attribs.delete(k) unless example_mod.respond_to?("#{k}=")}
-        native_attribs.merge!(:other_attributes => other_attribs)
+        native_attribs.merge!(:other_attributes => other_attribs) unless other_attribs.blank?
         native_attribs
       end
       
