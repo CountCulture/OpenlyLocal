@@ -10,7 +10,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     should have_db_column :address
     should have_db_column :postcode
     should have_db_column :description
-    should have_db_column :info_url
+    should have_db_column :url
     should have_db_column :info_tinyurl
     should have_db_column :comment_url
     should have_db_column :comment_tinyurl
@@ -29,14 +29,23 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     
     context "stale named scope" do
       setup do
-
+        @no_details_application = Factory(:planning_application) #retrieved_at is nil
+        @stale_application = Factory(:planning_application, :retrieved_at => 8.days.ago) 
+        @fresh_application = Factory(:planning_application, :retrieved_at => 6.days.ago)
+        @stale_applications = PlanningApplication.stale
       end
 
-      should "include recently created but not recently updated" do
-
+      should "include applications where retrieved_at is nil" do
+        assert @stale_applications.include?(@no_details_application)
       end
       
-      should "not include "
+      should "include applications where retrieved at is more than a week ago" do
+        assert @stale_applications.include?(@stale_application)
+      end
+      
+      should "not include fresh applications" do
+        assert !@stale_applications.include?(@fresh_application)
+      end
     end
   end
 
