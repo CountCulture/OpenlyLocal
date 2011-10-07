@@ -62,3 +62,48 @@ task :import_planning_alerts => :environment do
   
 end
 
+desc "Set up CAPS PlanningApplication scrapers"
+task :setup_caps_scrapers => :environment do
+  CAPS_COUNCILS = {
+  'argyll' => "http://www.argyll-bute.gov.uk/PublicAccess/tdc/",
+  'bedford' => "http://www.publicaccess.bedford.gov.uk/publicaccess/dc/",
+  'bexley' => "http://publicaccess.bexley.gov.uk/publicaccess/tdc/",
+  'bradford' => "http://www.planning4bradford.com/publicaccess/tdc/",
+  'cambridge' => "http://www.cambridge.gov.uk/publicaccess/tdc/",
+  'chester-le-street' => "http://planning.chester-le-street.gov.uk/publicaccess/tdc/",
+  'corby' => "http://publicaccess.corby.gov.uk/publicaccess/tdc/",
+  'dartford' => "http://publicaccess.dartford.gov.uk/publicaccess/tdc/",
+  'doncaster' => "http://maps.doncaster.gov.uk/publicaccess/tdc/",
+  'eastcambs' => "http://pa.eastcambs.gov.uk/publicaccess/tdc/",
+  'eastriding' => "http://www.eastriding.gov.uk/PublicAccess731c/dc/",
+  'gloucester' => "http://www.glcstrplnng11.co.uk/publicaccess/tdc/",
+  'horsham' => "http://publicaccess.horsham.gov.uk/publicaccess/tdc/",
+  'lambeth' => "http://planning.lambeth.gov.uk/publicaccess/dc/",
+  'leeds' => "http://planningapplications.leeds.gov.uk/publicaccess/tdc/",
+  'manchester' => "http://www.publicaccess.manchester.gov.uk/publicaccess/tdc/",
+  'midsussex' => "http://dc.midsussex.gov.uk/PublicAccess/tdc/",
+  'staffordshire' => "http://62.173.124.237/publicaccess/tdc/",
+  'newham' => "http://pacaps.newham.gov.uk/publicaccess/tdc/",
+  'ne-derbyshire' => "http://planapps-online.ne-derbyshire.gov.uk/publicaccess/dc/",
+  'norwich' => "http://publicaccess.norwich.gov.uk/publicaccess/tdc/",
+  'oxford' => "http://uniformpublicaccess.oxford.gov.uk/publicaccess/tdc/",
+  'reading' => "http://planning.reading.gov.uk/publicaccess/tdc/",
+  'richmondshire' => "http://publicaccess.richmondshire.gov.uk/PublicAccess/tdc/",
+  'rochford' => "http://62.173.68.168/publicaccess/dc/",
+  'salford' => "http://publicaccess.salford.gov.uk/publicaccess/dc/",
+  'sandwell' => "http://webcaps.sandwell.gov.uk/publicaccess/tdc/",
+  'borders' => "http://eplanning.scotborders.gov.uk/publicaccess/tdc/",
+  'stafford' => "http://www3.staffordbc.gov.uk/publicaccess/tdc/",
+  'swindon' => "http://194.73.99.13/publicaccess/tdc/",
+  'threerivers' => "http://www2.threerivers.gov.uk/publicaccess/tdc/",
+  'torridge' => "http://www.torridge.gov.uk/publicaccess/tdc/",
+  'tunbridgewells' => "http://secure.tunbridgewells.gov.uk/publicaccess/tdc/",
+  'whitehorse' => "http://planning.whitehorsedc.gov.uk/publicaccess/tdc/",
+  'wakefield' => "http://planning.wakefield.gov.uk/publicaccess/tdc/",
+  'westwiltshire' => "http://planning.westwiltshire.gov.uk/PublicAccess/tdc/",
+  'worthing' => "http://planning.worthing.gov.uk/publicaccess/tdc/",
+  'wycombe' => "http://planningpa.wycombe.gov.uk/publicaccess/tdc/"
+}
+  
+  
+end

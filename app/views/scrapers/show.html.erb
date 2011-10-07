@@ -20,6 +20,7 @@
     <h4>Notes</h4>
     <%= simple_format @scraper.notes %>
     <ul>
+      <li>Base URL <strong><%= @scraper.base_url %></strong> <%= '(delegated from council)' if @scraper.base_url? & @scraper[:base_url].blank? %></li>
       <li>Parsing library <strong><%= Scraper::PARSING_LIBRARIES[@scraper.parsing_library] %></strong></li>
       <li>Referrer url <strong><%= @scraper.referrer_url? || "none" %></strong></li>
       <li>Make POST request <strong><%= @scraper.use_post %></strong></li>

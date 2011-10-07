@@ -213,12 +213,49 @@ class ScraperTest < ActiveSupport::TestCase
       assert_nil @scraper.portal_system
     end
     
-    should "delegate base_url to council" do
-      @council.expects(:base_url).returns("http://some.council.com/democracy")
-      assert_equal "http://some.council.com/democracy", @scraper.base_url
-      @scraper.council = nil
-      assert_nil @scraper.base_url
+    context "when returning base_url" do
+      setup do
+        @base_url = 'http://footown.gov.uk'
+      end
+
+      context "and base_url is set" do
+        setup do
+          @scraper.base_url = @base_url
+        end
+        
+        should "return base_url" do
+          assert_equal @base_url, @scraper.base_url
+        end
+        
+        should "not in general delegate to council" do
+          @council.expects(:base_url).never
+          @scraper.base_url
+        end
+      end
+      
+      context "and base_url is nil" do
+        should "delegate to council base_url" do
+          @council.expects(:base_url).returns("http://some.council.com/democracy")
+          assert_equal "http://some.council.com/democracy", @scraper.base_url
+          @scraper.council = nil
+          assert_nil @scraper.base_url
+        end
+      end
+      
+      context "and base_url is blank" do
+        setup do
+          @scraper.base_url = ''
+        end
+        
+        should "delegate to council base_url" do
+          @council.expects(:base_url).returns("http://some.council.com/democracy")
+          assert_equal "http://some.council.com/democracy", @scraper.base_url
+          @scraper.council = nil
+          assert_nil @scraper.base_url
+        end
+      end
     end
+    
     
     should "have results accessor" do
       @scraper.instance_variable_set(:@results, "foo")
@@ -439,6 +476,12 @@ class ScraperTest < ActiveSupport::TestCase
         @scraper.send(:_data, 'http://another.url')
       end
       
+      should "interpolate cookie_url with term" do
+        @scraper.cookie_url = 'http://cookie.com/#{Date.today}'
+        @scraper.expects(:_http_get).with(anything, has_entry(:cookie_url => "http://cookie.com/#{Date.today}")).returns("something")
+        @scraper.send(:_data, 'http://another.url')
+      end
+      
       should "return data as Hpricot Doc" do
         @scraper.stubs(:_http_get).returns("something")
         assert_kind_of Hpricot::Doc, @scraper.send(:_data)
@@ -460,11 +503,21 @@ class ScraperTest < ActiveSupport::TestCase
       end
       
       context "and use_post flag set" do
-        should "get given url" do
+        setup do
           @scraper.use_post = true
+        end
+        
+        should "post with given url" do
           @scraper.expects(:_http_post_from_url_with_query_params).with('http://another.url', anything).returns("something")
           @scraper.send(:_data, 'http://another.url')
         end
+        
+        should "post to get cookie from cookie_url if given" do
+          @scraper.cookie_url = "http://cookie.com"
+          @scraper.expects(:_http_post_from_url_with_query_params).with(anything, has_entry(:cookie_url => "http://cookie.com")).returns("something")
+          @scraper.send(:_data, 'http://another.url')
+        end
+
       end
       
       context "and scraper parsing library is 'N'" do

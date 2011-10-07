@@ -20,10 +20,13 @@ class Scraper < ActiveRecord::Base
   delegate :result_model, :to => :parser, :allow_nil => true
   delegate :related_model, :to => :parser, :allow_nil => true
   delegate :portal_system, :to => :council, :allow_nil => true
-  delegate :base_url, :to => :council, :allow_nil => true
   
   def validate
     errors.add(:parser, "can't be blank") unless parser
+  end
+  
+  def base_url
+    self[:base_url].blank? ? council&&council.base_url : self[:base_url]
   end
   
   def computed_url
@@ -132,9 +135,8 @@ class Scraper < ActiveRecord::Base
   protected
   def _data(target_url=nil)
     begin
-      options = { "User-Agent" => USER_AGENT, :cookie_url => cookie_url }
+      options = { "User-Agent" => USER_AGENT, :cookie_url => cookie_url&&interpolate_url(cookie_url, self) } # submit interpolated cookie url if there is one
       (options["Referer"] = (referrer_url =~ /^http/ ? referrer_url : target_url)) unless referrer_url.blank?
-      logger.debug { "Getting data from #{target_url} with options: #{options.inspect}" }
       page_data = use_post ? _http_post_from_url_with_query_params(target_url, options) : _http_get(target_url, options)
     rescue Exception => e
       error_message = "**Problem getting data from #{target_url}: #{e.inspect}\n #{e.backtrace}"
@@ -162,21 +164,22 @@ class Scraper < ActiveRecord::Base
     client = HTTPClient.new
     cookie_url = options.delete(:cookie_url)
     client.get_content(cookie_url) unless cookie_url.blank? # pick up cookie if we've been passed a url
+    logger.debug { "Getting data using GET from #{target_url} with options: #{options.inspect}" }
     client.get_content(target_url, nil, options)
   end
   
   def _http_post_from_url_with_query_params(target_url, options={})
     return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
-    uri = URI.parse(target_url)
-    params = CGI.parse(uri.query)
-    uri.query = nil # reset queries as we submit as post params
+    uri, params = convert_url_with_query_params(target_url)
     client = HTTPClient.new
     cookie_url = options.delete(:cookie_url)
-    client.get_content(cookie_url) unless cookie_url.blank? # pick up cookie if we've been passed a url
+    unless cookie_url.blank? # pick up cookie if we've been passed a url
+      c_uri, c_params = convert_url_with_query_params(cookie_url)
+      logger.debug { "Getting cookie using POST from #{c_uri} with params #{c_params.inspect} and options: #{options.inspect}" }
+      client.post_content(c_uri, c_params)
+    end
+    logger.debug { "Getting data using POST from #{uri} with params #{params.inspect} and options: #{options.inspect}" }
     client.post_content(uri, params, options)
-    # open(target_url, options).read
-    # logger.debug "********Scraper response = #{response.body.inspect}"
-    # response.body
   end
   
   def update_with_results(parsing_results, options={})
@@ -187,6 +190,14 @@ class Scraper < ActiveRecord::Base
   end
 
   private
+  def convert_url_with_query_params(url)
+    logger.debug { "***********Converting #{url} to uri and query params" }
+    uri = URI.parse(url)
+    params = CGI.parse(uri.query)
+    uri.query = nil # reset queries as we submit as post params
+    [uri, params]
+  end
+  
   # marks as problematic without changing timestamps
   def mark_as_problematic
     self.class.update_all({ :problematic => true }, { :id => id })
@@ -202,6 +213,10 @@ class Scraper < ActiveRecord::Base
   end
   
   def target_url_for(obj=nil)
-    url.blank? ? obj.url : obj.instance_eval("\"" + url + "\"") # if we have url evaluate it AS A STRING in context of related object (which allows us to interpolate uid etc), otherwise just use related object's url
+    url.blank? ? obj.url : interpolate_url(url, obj) # if we have url evaluate it AS A STRING in context of related object (which allows us to interpolate uid etc), otherwise just use related object's url
+  end
+  
+  def interpolate_url(url, obj)
+    obj.instance_eval("\"" + url + "\"")
   end
 end

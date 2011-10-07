@@ -27,6 +27,10 @@
     <%= f.select :parsing_library, Scraper::PARSING_LIBRARIES.collect{|k,v| [v,k] } %><br />
   </p>
   <p>
+    <%= f.label :base_url, "Base URL for this scraper <em>(will delegate to council if not set)</em>" %>
+    <%= f.text_field :base_url %><br />
+  </p>
+  <p>
     <%= f.label :referrer_url, "Referrer url <em>Can nearly always be left blank</em>" %>
     <%= f.text_field :referrer_url %><br />
   </p>
