@@ -221,7 +221,22 @@ class ParserTest < Test::Unit::TestCase
                          { :foo => "another value", :foo1 => "another value" }]), @parser.process(@dummy_hpricot).results
         end
       end
-            
+      
+      # regression test      
+      context "and Nokogiri node set is returned" do
+        setup do
+          node_set = Nokogiri.HTML('<li>baz1</li><li>baz2</li>').search('li')
+          @dummy_nokogiri = stub
+          @parser.expects(:eval_parsing_code).with(@parser.item_parser, @dummy_nokogiri).returns(node_set)
+        end
+      
+        should "evaluate each node item" do
+          @parser.expects(:eval_parsing_code).twice.with(){ |code, item| (item.to_s =~ /baz1/)  }
+          @parser.expects(:eval_parsing_code).twice.with(){ |code, item| (item.to_s =~ /baz2/)  }
+          @parser.process(@dummy_nokogiri)
+        end        
+      end
+
       context "and array of items returned includes nil" do
         setup do
           @dummy_item_1 = stub
