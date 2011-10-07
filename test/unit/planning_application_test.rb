@@ -15,7 +15,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     should have_db_column :comment_url
     should have_db_column :comment_tinyurl
     should have_db_column :uid
-    should have_db_column :date_scraped
+    should have_db_column :retrieved_at
     should have_db_column :date_received
     should have_db_column :on_notice_from
     should have_db_column :on_notice_to

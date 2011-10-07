@@ -158,6 +158,18 @@ class InfoScraperTest < ActiveSupport::TestCase
           @scraper.process
           assert !@scraper.reload.problematic?
         end
+        
+        context "and object has retrieved_at attribute" do
+          setup do
+            results = [{ :description => "Some description", :uid => "AB1234" }]
+            Parser.any_instance.expects(:process).returns(stub_everything(:results => results))
+          end
+
+          should "update date_scraped" do
+            @scraper.process(:objects => @dummy_object_with_retrieved_at).results
+            assert_in_delta Time.now, @dummy_object_with_retrieved_at.retrieved_at, 2
+          end
+        end
 
       end
       
