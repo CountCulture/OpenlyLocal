@@ -7,7 +7,8 @@
     <%- if parser.scraper_type == "ItemScraper" -%>
       <strong>Related model</strong> <%= parser.related_model %><br />
     <%- end -%>
-    <strong>Path</strong> <%= parser.path %>
+    <strong>Path</strong> <%= parser.path %><br />
+    <strong>Cookie Path</strong> <%= parser.cookie_path %>
   </p>
   <h4>Item parser <em>finds items from scraped page</em></h4>
   <code class="item_parser"><%= h parser.item_parser %></code>

@@ -29,8 +29,17 @@ class Scraper < ActiveRecord::Base
     self[:base_url].blank? ? council&&council.base_url : self[:base_url]
   end
   
+  def computed_cookie_url
+    !base_url.blank?&&!parser.cookie_path.blank? ? "#{base_url}#{parser.cookie_path}" : nil
+  end
+  
   def computed_url
     !base_url.blank?&&!parser.path.blank? ? "#{base_url}#{parser.path}" : nil
+  end
+  
+  # build url from council's base_url and parsers path unless url is set
+  def cookie_url
+    self[:cookie_url].blank? ? computed_cookie_url : self[:cookie_url]
   end
   
   def expected_result_attributes
@@ -129,7 +138,7 @@ class Scraper < ActiveRecord::Base
   
   # build url from council's base_url and parsers path unless url is set
   def url
-    read_attribute(:url).blank? ? computed_url : read_attribute(:url)
+    self[:url].blank? ? computed_url : self[:url]
   end
   
   protected

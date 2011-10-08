@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111007164508) do
+ActiveRecord::Schema.define(:version => 20111007175417) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -731,6 +731,7 @@ ActiveRecord::Schema.define(:version => 20111007164508) do
     t.column "type", :string
     t.column "attribute_mapping", :text, :limit => 16777215
     t.column "skip_rows", :integer
+    t.column "cookie_path", :string
   end
 
   add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"
