@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111007175417) do
+ActiveRecord::Schema.define(:version => 20111008150647) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -800,6 +800,8 @@ ActiveRecord::Schema.define(:version => 20111007175417) do
     t.column "on_notice_to", :date
     t.column "decision", :string, :limit => 64
     t.column "other_attributes", :text, :limit => 16777215
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
   end
 
   add_index "planning_applications", ["retrieved_at"], :name => "datescr"
