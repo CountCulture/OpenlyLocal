@@ -3,7 +3,7 @@
 
 <%- if  @company.company_number? -%>
   <h3 class="opencorporates flash">
-    <%= link_to("Get free and open company data on #{@company.title}", @company.opencorporates_url, :class => 'external', :title => "Free and open company data on #{@company.title}") %> from <%= link_to("OpenCorporates", 'http://opencorporates.com', :class => 'external', :title => "Free and open company data from The Open Database Of The Corporate World") %>
+    <%= link_to("Get free and open company data on #{@company.title}", @company.opencorporates_url, :class => 'external', :title => "Free and open company data on #{@company.title}", :rel => 'canonical') %> from <%= link_to("OpenCorporates", 'http://opencorporates.com', :class => 'external', :title => "Free and open company data from The Open Database Of The Corporate World") %>
   </h3>
 <%- end -%>
 
