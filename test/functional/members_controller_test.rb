@@ -253,6 +253,11 @@ class MembersControllerTest < ActionController::TestCase
        should "show canonical url" do
          assert_select "link[rel='canonical'][href='/members/#{@member.to_param}']"
        end
+       
+       should "enable google maps" do
+         assert assigns(:enable_google_maps)
+       end
+
      end
      
      context "with member with additional details" do
