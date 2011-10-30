@@ -1,6 +1,7 @@
 class MembersController < ApplicationController
   before_filter :linked_data_available, :only => :show
   before_filter :authenticate, :except => [:show, :index]
+  before_filter :enable_google_maps, :only => :show
   
   def index
     @title = params[:include_ex_members] ? "Current and former members" : "Current members"

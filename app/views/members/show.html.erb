@@ -14,6 +14,9 @@
     <%= attribute_tag(:date_left, "#{@member.date_left.to_s(:custom_short)} (approx)") unless @member.date_left.blank? %>
     <%= attribute_tag :declarations, link_to('Register of interests', @member.register_of_interests, :class => "external") if @member.register_of_interests? %>
   </dl>
+  
+  <%= render :partial => 'wards/ward_boundary', :object => @member.ward.boundary if @member.ward %>
+
 
   <div id="relationships">
     <div id="committees" class="item_grouping">

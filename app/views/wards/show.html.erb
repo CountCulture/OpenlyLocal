@@ -1,45 +1,8 @@
 <%- div_for @ward do -%>
-<%- if @ward.boundary -%>
-	<script type="text/javascript" charset="utf-8">
-	  function initMap() {
-	    if (GBrowserIsCompatible()) {
-	      var map = new GMap2(document.getElementById("map_canvas"));
-
-	      map.addControl(new GSmallMapControl());
-	      map.addControl(new GMapTypeControl());
-	
-      	var boundary_line_coords = <%= @ward.boundary.boundary_line_coordinates.to_json %>;
-      	var envelope = <%= @ward.boundary.boundary_line.envelope.to_json %>;
-				var polygons = [];
-				for (var i = boundary_line_coords.length - 1; i >= 0; i--){
-					var polygon_points = [];
-					for (var j = boundary_line_coords[i].length - 1; j >= 0; j--){
-						polygon_points.push(new GLatLng(boundary_line_coords[i][j][0], boundary_line_coords[i][j][1]));
-					};
-	        var polygon = new GPolygon(polygon_points, "#f33f00", 2, 1, "#ff0000", 0.2);
-					polygons.push(polygon);
-					map.addOverlay(polygon);    
-				};
-				var map_bounds = new GLatLngBounds(new GLatLng(envelope.lower_corner.y, envelope.lower_corner.x), new GLatLng(envelope.upper_corner.y, envelope.upper_corner.x))
-				map.setCenter(map_bounds.getCenter(), map.getBoundsZoomLevel(map_bounds));
-      
-	    }
-	  }
-  
-	</script>
-<%- end -%>
-
-
-
-
-
   <h1><%= basic_link_for @council %>: <%= @title %> <em><%= council_page_for @ward %></em></h1>
 
-	<%- if @ward.boundary -%>
-	<div id="ward_map" class="map_outer">
-	  <div id="map_canvas"></div>
-	</div>
-	<%- end -%>
+  <%= render :partial => 'ward_boundary', :object => @ward.boundary %>
+
   <dl id="main_attributes" class="attributes">
     <%= attribute_tag :output_area_classification, "#{link_to(@ward.output_area_classification.title, output_area_classification_wards_url(@ward.output_area_classification))} #{help_link_to('http://www.statistics.gov.uk/about/methodology_by_theme/area_classification/')}" if @ward.output_area_classification %>
     <%= attribute_tag :size, "#{@ward.hectares} hectares" unless @ward.hectares.blank? %>
