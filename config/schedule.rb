@@ -8,7 +8,7 @@
 # set :cron_log, "/path/to/my/cron_log.log"
 #
 every 2.hours, :at => 30 do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'FeedEntry.perform' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
+  command "cd /home/cculture/sites/twfy_local/current && RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /opt/ruby-enterprise-1.8/bin/rake update_feed_entries >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 
 # every 30.minutes do
