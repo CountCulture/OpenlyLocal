@@ -11,7 +11,7 @@ class Scraper < ActiveRecord::Base
   belongs_to :parser
   belongs_to :council
   validates_presence_of :council_id
-  named_scope :stale, lambda { { :conditions => ["(type != 'CsvScraper') AND ((last_scraped IS NULL) OR (last_scraped < ?))", 7.days.ago], :order => "last_scraped" } }
+  named_scope :stale, lambda { { :conditions => ["(type != 'CsvScraper') AND ((next_due IS NULL) OR (next_due < ?))", Time.now], :order => "next_due" } }
   named_scope :problematic, { :conditions => { :problematic => true } }
   named_scope :unproblematic, { :conditions => { :problematic => false } }
   # accepts_nested_attributes_for :parser
@@ -126,7 +126,7 @@ class Scraper < ActiveRecord::Base
   end
   
   def stale?
-    !last_scraped||(last_scraped < 7.days.ago)
+    !next_due||(next_due < Time.now)
   end
   
   # Returns status as string (for use in css_class)
@@ -218,6 +218,7 @@ class Scraper < ActiveRecord::Base
   end
   
   def update_last_scraped
+    self.class.update_all({ :next_due => (Time.zone.now + frequency.days) }, { :id => id })
     self.class.update_all({ :last_scraped => Time.zone.now }, { :id => id })
   end
   

@@ -25,6 +25,10 @@
   <p>
     <%= f.label :parsing_library %>
     <%= f.select :parsing_library, Scraper::PARSING_LIBRARIES.collect{|k,v| [v,k] } %><br />
+    <%= f.label :use_post, "Use POST request?" %>
+    <%= f.check_box :use_post %><br />
+    <%= f.label :frequency, "Run every (days)" %>
+    <%= f.text_field :frequency, :size => 2 %>
   </p>
   <p>
     <%= f.label :base_url, "Base URL for this scraper <em>(will delegate to council if not set)</em>" %>
@@ -37,10 +41,6 @@
   <p>
     <%= f.label :cookie_url, "Cookie url <em>Can nearly always be left blank</em>" %>
     <%= f.text_field :cookie_url %><br />
-  </p>
-  <p>
-    <%= f.label :use_post, "Use POST request?" %>
-    <%= f.check_box :use_post %>
   </p>
   <%- if @scraper.portal_parser? && !params[:dedicated_parser] -%>
     <%= f.hidden_field :parser_id %>

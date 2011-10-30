@@ -35,7 +35,7 @@ class ScraperTest < ActiveSupport::TestCase
     end
     
     should "have stale named_scope" do
-      expected_options = { :conditions => ["(type != 'CsvScraper') AND ((last_scraped IS NULL) OR (last_scraped < ?))", 7.days.ago], :order => "last_scraped" }
+      expected_options = { :conditions => ["(type != 'CsvScraper') AND ((next_due IS NULL) OR (next_due < ?))", Time.now], :order => "next_due" }
       actual_options = Scraper.stale.proxy_options
       assert_equal expected_options[:conditions].first, actual_options[:conditions].first
       assert_in_delta expected_options[:conditions].last, actual_options[:conditions].last, 2
@@ -44,14 +44,14 @@ class ScraperTest < ActiveSupport::TestCase
     
     should "return stale scrapers" do
       # just checking...
-      @scraper.update_attribute(:last_scraped, 6.days.ago)
-      stale_scraper = Factory(:item_scraper, :last_scraped => 8.days.ago)
+      @scraper.update_attribute(:next_due, 1.day.from_now)
+      stale_scraper = Factory(:item_scraper, :next_due => 1.day.ago)
       never_used_scraper = Factory(:info_scraper)
       assert_equal [never_used_scraper, stale_scraper], Scraper.stale
     end
     
     should "not include CsvScrapers in stale scrapers" do
-      csv_scraper = Factory(:csv_scraper, :last_scraped => 8.days.ago)
+      csv_scraper = Factory(:csv_scraper, :next_due => 1.day.ago)
       assert !Scraper.stale.include?(csv_scraper)
     end
     
@@ -94,17 +94,17 @@ class ScraperTest < ActiveSupport::TestCase
       assert s.save
     end
     
-    should "be stale if last_scraped more than 1 week ago" do
-      @scraper.update_attribute(:last_scraped, 8.days.ago)
+    should "be stale if next_due in past" do
+      @scraper.update_attribute(:next_due, 5.minutes.ago)
       assert @scraper.stale?
     end
     
-    should "not be stale if last_scraped less than 1 week ago" do
-      @scraper.update_attribute(:last_scraped, 6.days.ago)
+    should "not be stale if next_due in future" do
+      @scraper.update_attribute(:next_due, 5.minutes.from_now)
       assert !@scraper.stale?
     end
     
-    should "be stale if last_scraped nil" do
+    should "be stale if next_due nil" do
       assert @scraper.stale?
     end
     
@@ -176,7 +176,7 @@ class ScraperTest < ActiveSupport::TestCase
 
       should "return 'problematic' if problematic" do
         @scraper.problematic = true
-        @scraper.last_scraped = 6.days.ago
+        @scraper.next_due = 1.day.from_now
         assert_equal 'problematic', @scraper.status
       end
       
@@ -305,6 +305,15 @@ class ScraperTest < ActiveSupport::TestCase
       @scraper.send(:update_last_scraped)
       assert_in_delta 2.days.ago, @scraper.reload.updated_at, 2 # check timestamp hasn't changed...
       assert_in_delta Time.now, @scraper.last_scraped, 2 #...but last_scraped has
+    end
+    
+    should "update next_due attribute based on current time and frequency without changing updated_at timestamp" do
+      ItemScraper.record_timestamps = false # update timestamp without triggering callbacks
+      @scraper.update_attributes(:updated_at => 2.days.ago) #... though thought from Rails 2.3 you could do this turning off timestamps
+      ItemScraper.record_timestamps = true
+      @scraper.send(:update_last_scraped)
+      assert_in_delta 2.days.ago, @scraper.reload.updated_at, 2 # check timestamp hasn't changed...
+      assert_in_delta (Time.now+7.days), @scraper.next_due, 2 #...but last_scraped has
     end
     
     should "mark as problematic without changing updated_at timestamp" do

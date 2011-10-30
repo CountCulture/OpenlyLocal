@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111008150647) do
+ActiveRecord::Schema.define(:version => 20111030195858) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -977,11 +977,14 @@ ActiveRecord::Schema.define(:version => 20111008150647) do
     t.column "use_post", :boolean, :default => false
     t.column "parsing_library", :string, :limit => 1, :default => "H"
     t.column "base_url", :string
+    t.column "next_due", :datetime
+    t.column "frequency", :integer, :limit => 1, :default => 7
   end
 
   add_index "scrapers", ["id", "type"], :name => "index_scrapers_on_id_and_type"
   add_index "scrapers", ["parser_id"], :name => "index_scrapers_on_parser_id"
   add_index "scrapers", ["council_id"], :name => "index_scrapers_on_council_id"
+  add_index "scrapers", ["next_due"], :name => "index_scrapers_on_next_due"
 
   create_table "services", :force => true do |t|
     t.column "title", :string

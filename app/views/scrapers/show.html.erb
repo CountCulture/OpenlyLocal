@@ -24,11 +24,12 @@
       <li>Parsing library <strong><%= Scraper::PARSING_LIBRARIES[@scraper.parsing_library] %></strong></li>
       <li>Referrer url <strong><%= @scraper.referrer_url? || "none" %></strong></li>
       <li>Make POST request <strong><%= @scraper.use_post %></strong></li>
+      <li>Run every <strong><%= @scraper.frequency %> days</strong></li>
       <li>Cookie url <strong><%=  @scraper.cookie_url? ? link_to(@scraper.cookie_url, @scraper.cookie_url) : "none" %></strong></li>
     </ul>
   </div> 
   <p>
-    <strong>Last scraped</strong> <%= @scraper.last_scraped %><br />
+    <strong>Next due</strong> <%= @scraper.next_due %><br />
     <strong>Last updated</strong> <%= @scraper.updated_at %></p>
   <div>
     <%= link_to "edit", edit_scraper_path(@scraper), :class => "button" %> 
