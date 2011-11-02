@@ -30,7 +30,7 @@ module ScrapersHelper
     Parser::ALLOWED_RESULT_CLASSES.each do |r|
       Scraper::SCRAPER_TYPES.each do |st|
         if es = scrapers.detect{ |s| s.type == st && s.result_model == r }
-          existing_scraper_links << link_for(es, :class => es.status)
+          existing_scraper_links << link_for(es)
         else
           new_scraper_links << link_to("Add #{r} #{st.sub('Scraper', '').downcase} scraper for #{council.name} council", new_scraper_path(:council_id => council.id, :result_model => r, :type => st), :class => "new_scraper_link")
         end
@@ -40,7 +40,7 @@ module ScrapersHelper
   end
   
   def existing_scraper_links(council)
-    council.scrapers.collect{ |s| link_for(s, :class => s.status) }
+    council.scrapers.collect{ |s| link_for(s) }
   end
   
 end

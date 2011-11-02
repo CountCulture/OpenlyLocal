@@ -49,7 +49,7 @@ class InfoScraper < Scraper
       sor.errors.add_to_base @parser.errors[:base]
       results << sor
     elsif !res.blank?
-      first_res = res.first # results are returned as an array containing just on object. I think.
+      first_res = res.first # results are returned as an array containing just one object. I think.
       first_res.merge!(:retrieved_at => Time.now) if obj.attribute_names.include?('retrieved_at') # update timestamp if model has one
       obj.attributes = obj.clean_up_raw_attributes(first_res)
       options[:save_results] ? obj.save : obj.valid? # don't try if we've already got errors

@@ -17,6 +17,12 @@ class TestScrapedModelWithOtherAttribs <ActiveRecord::Base
   set_table_name "planning_applications" 
 end
 
+class TestScrapedModelWithRetrievedAt <ActiveRecord::Base
+  attr_accessor :council
+  include ScrapedModel::Base
+  set_table_name "planning_applications"
+end
+
 class TestChildModel <ActiveRecord::Base
   belongs_to :test_scraped_model, :class_name => "TestScrapedModel", :foreign_key => "committee_id"
   AssociationAttributes = [:uid, :url]

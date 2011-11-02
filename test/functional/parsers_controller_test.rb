@@ -368,6 +368,7 @@ class ParsersControllerTest < ActionController::TestCase
         should_not_change ('The number of parsers') { Parser.count }
         
         should 'update parser' do
+          p @csv_parser.reload, @csv_parser.attribute_mapping, @csv_parser.attribute_mapping[:new_foo]
           assert_equal "new bar", @csv_parser.reload.attribute_mapping[:new_foo]
         end
 

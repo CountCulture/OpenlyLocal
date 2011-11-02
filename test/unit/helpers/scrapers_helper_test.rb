@@ -87,7 +87,7 @@ class ScrapersHelperTest < ActionView::TestCase
  
   context "scraper_links_for_council helper method" do
     setup do
-      @scraper = Factory(:scraper, :last_scraped => 2.days.ago)
+      @scraper = Factory(:scraper, :next_due => 1.day.from_now)
       @council = @scraper.council
     end
 

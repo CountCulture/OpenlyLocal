@@ -10,7 +10,7 @@ module ResourceMethods
   end
   
   def to_param
-    id ? "#{id}-#{title.gsub(/[^a-z0-9]+/i, '-')}" : nil
+    id ? "#{id}-#{title&&title.gsub(/[^a-z0-9]+/i, '-')}" : nil
   end
   
 end

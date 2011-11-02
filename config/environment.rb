@@ -29,7 +29,7 @@ Rails::Initializer.run do |config|
   config.gem 'fastercsv'
   config.gem 'googlecharts', :lib => "gchart"
   config.gem "newrelic_rpm"
-  config.gem "twitter"
+  config.gem "twitter", :version => '~> 0.9'
   config.gem "httpclient"
   config.gem 'crack'
   config.gem "pauldix-feedzirra", :lib => "feedzirra", :source => 'http://gems.github.com'
@@ -91,6 +91,31 @@ require 'open-uri'
 require 'company_utilities' #phusion passenger seems to require this
 
 Dir.glob(RAILS_ROOT + '/app/models/user_submission_types/*') {|file| require File.basename(file, '.rb')} #YAML serialisation requires this in order to instantiate objects properly on deserialisation
+
+# THIS IS HACK TO ENSURE SERIALISATION WORKS. See http://itsignals.cascadia.com.au/?p=10
+# 
+# 
+
+YAML.add_domain_type("ActiveRecord,2007", "") do |type, val|
+  klass = type.split(':').last.constantize
+  YAML.object_maker(klass, val)
+end
+
+class ActiveRecord::Base
+  def to_yaml_type
+    "!ActiveRecord,2007/#{self.class}"
+  end
+end
+
+class ActiveRecord::Base
+  def to_yaml_properties
+    ['@attributes']
+  end
+end
+
+require 'attrib_object'
+# 
+# HACK ENDS
 
 # require 'twitter/console'
 

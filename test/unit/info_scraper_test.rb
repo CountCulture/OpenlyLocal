@@ -161,13 +161,14 @@ class InfoScraperTest < ActiveSupport::TestCase
         
         context "and object has retrieved_at attribute" do
           setup do
-            results = [{ :description => "Some description", :uid => "AB1234" }]
+            @dummy_object_with_retrieved_at = TestScrapedModelWithRetrievedAt.create!(:uid => '1234', :url => "http://www.anytown.gov.uk/members/fred", :council => @council)
+            results = [{ :url => "http://new.url" }]
             Parser.any_instance.expects(:process).returns(stub_everything(:results => results))
           end
 
-          should "update date_scraped" do
-            @scraper.process(:objects => @dummy_object_with_retrieved_at).results
-            assert_in_delta Time.now, @dummy_object_with_retrieved_at.retrieved_at, 2
+          should "update retrieved_at" do
+            @scraper.process(:save_results => true, :objects => @dummy_object_with_retrieved_at).results
+            assert_in_delta Time.now, @dummy_object_with_retrieved_at.reload.retrieved_at, 2
           end
         end
 
