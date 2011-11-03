@@ -115,6 +115,25 @@ class ScrapedModelTest < ActiveSupport::TestCase
  
     end
 
+    should "have stale named scope" do
+      assert TestScrapedModel.respond_to? :stale
+    end
+    
+    context "and when returning stale scope" do
+      setup do
+        TestScrapedModel.record_timestamps = false
+        @very_stale_object = TestScrapedModel.create!(:uid => 34, :council_id => 99, :title => "Bar Committee", :created_at => 1.year.ago, :updated_at => 1.year.ago)
+        TestScrapedModel.record_timestamps = true
+      end
+
+      should "include all instances" do
+        stale_instances = TestScrapedModel.stale
+        stale_instances.include?(@test_model)
+        stale_instances.include?(@another_test_model)
+        stale_instances.include?(@very_stale_object)
+      end
+    end                     
+    
     context "when finding all existing records from params by default" do
       should "find all restricted to organisation given in params" do
         org = Factory(:generic_council)
@@ -137,6 +156,31 @@ class ScrapedModelTest < ActiveSupport::TestCase
       assert TestScrapedModel.respond_to?(:orphan_records_callback)
     end
     
+    context "when cleaning up raw attributes" do
+      setup do
+        @raw_attribs = @params.merge(:unknown_attrib => 'bar')
+      end
+      
+      should "should in general return attributes" do
+        assert_equal @raw_attribs, TestScrapedModel.clean_up_raw_attributes(@raw_attribs)
+      end
+
+
+      context "and class has other_attributes attribute" do
+
+        should "move unknown attributes in other_attributes" do
+          cleaned_up_attribs = TestScrapedModelWithOtherAttribs.clean_up_raw_attributes(@raw_attribs)
+          assert_nil cleaned_up_attribs[:unknown_attrib]
+          assert_equal 'bar',  cleaned_up_attribs[:other_attributes][:unknown_attrib]
+        end
+        
+        should "not include other_attributes if no other attributes" do
+          cleaned_up_attribs = TestScrapedModelWithOtherAttribs.clean_up_raw_attributes(@params)
+          assert !cleaned_up_attribs.keys.include?(:other_attributes)
+        end
+      end
+    end
+
     context "when building_or_updating from params" do
       setup do
         @organisation = Factory(:generic_council)
@@ -144,123 +188,183 @@ class ScrapedModelTest < ActiveSupport::TestCase
         TestScrapedModel.stubs(:find_all_existing).returns([@test_model, @another_test_model])
       end
       
-      should "find all existing records using given council_id and first params in array" do
-        TestScrapedModel.expects(:find_all_existing).with(@params.merge(:organisation => @organisation)).returns([])
-        TestScrapedModel.build_or_update([@params], :organisation => @organisation)
+      context "in general" do
+        should "find all existing records using given council_id and first params in array" do
+          TestScrapedModel.expects(:find_all_existing).with(@params.merge(:organisation => @organisation)).returns([])
+          TestScrapedModel.build_or_update([@params], :organisation => @organisation)
+        end
+
+        should "match params against existing records" do
+          @test_model.expects(:matches_params).with(@params) # @params[:uid] == 2
+          @another_test_model.expects(:matches_params).with(@params) #first existing one didn't match so tries next one
+          TestScrapedModel.build_or_update([@params], :organisation => @organisation)
+        end
       end
       
-      should "match params against existing records" do
-        @test_model.expects(:matches_params).with(@params) # @params[:uid] == 2
-        @another_test_model.expects(:matches_params).with(@params) #first existing one didn't match so tries next one
-        TestScrapedModel.build_or_update([@params], :organisation => @organisation)
+      context "and matched record found" do
+        should "use matched record to be updated" do
+          @test_model.expects(:matches_params).returns(true)
+          @another_test_model.expects(:matches_params).never # @test_model is matched so never tests @another_test_model
+          TestScrapedModel.build_or_update([@params], :organisation => @organisation)
+        end
+
+        should "update matched record" do
+          @test_model.expects(:matches_params).returns(true)
+          TestScrapedModel.build_or_update([@params], :organisation => @organisation)
+          assert_equal "http:/some.url", @test_model.url
+        end
+        # should "update existing record" do
+        #   rekord = TestScrapedModel.build_or_update([@params], {:organisation => @organisation}).first
+        #   assert_equal "http:/some.url", rekord.url
+        # end
+
+        context "and params contains attributes that matched record doesn't have" do
+          
+          should "raise ActiveRecord::UnknownAttributeError" do
+            @test_model.expects(:matches_params).returns(true)
+            assert_raise(ActiveRecord::UnknownAttributeError) { TestScrapedModel.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)   }          
+          end
+
+          context "and class has other_attributes attribute" do
+            setup do
+              @test_model_with_other_attribs = TestScrapedModelWithOtherAttribs.create!(:uid => 33, :council_id => 99)
+
+              TestScrapedModelWithOtherAttribs.expects(:find_all_existing).returns([@test_model_with_other_attribs])
+              @test_model_with_other_attribs.expects(:matches_params).returns(true)
+            end
+
+            should "not raise exception" do
+              assert_nothing_raised(ActiveRecord::UnknownAttributeError) { TestScrapedModelWithOtherAttribs.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)   }          
+            end
+
+            should "store other attributes in other_attributes" do
+              TestScrapedModelWithOtherAttribs.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)
+              assert_equal 'bar',  @test_model_with_other_attribs.other_attributes[:unknown_attrib]
+            end
+          end
+        end
+
       end
-      
-      should "use matched record to be updated" do
-        @test_model.expects(:matches_params).returns(true)
-        @another_test_model.expects(:matches_params).never # @test_model is matched so never tests @another_test_model
-        TestScrapedModel.build_or_update([@params], :organisation => @organisation)
-      end
-      
-      should "update matched record" do
-        @test_model.expects(:matches_params).returns(true)
-        TestScrapedModel.build_or_update([@params], :organisation => @organisation)
-        assert_equal "http:/some.url", @test_model.url
-      end
-      
+            
+      # context "and params contains attributes that matched record doesn't have" do
+      #   should "raise ActiveRecord::UnknownAttributeError" do
+      #     @test_model.expects(:matches_params).returns(true)
+      #     assert_raise(ActiveRecord::UnknownAttributeError) { TestScrapedModel.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)   }          
+      #   end
+      #   
+      #   context "and class has other_attributes attribute" do
+      #     setup do
+      #       @test_model_with_other_attribs = TestScrapedModelWithOtherAttribs.create!(:uid => 33, :council_id => 99)
+      #       
+      #       TestScrapedModelWithOtherAttribs.expects(:find_all_existing).returns([@test_model_with_other_attribs])
+      #       @test_model_with_other_attribs.expects(:matches_params).returns(true)
+      #     end
+      # 
+      #     should "not raise exception" do
+      #       assert_nothing_raised(ActiveRecord::UnknownAttributeError) { TestScrapedModelWithOtherAttribs.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)   }          
+      #     end
+      # 
+      #     should "store other attributes in other_attributes" do
+      #       TestScrapedModelWithOtherAttribs.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)
+      #       assert_equal 'bar',  @test_model_with_other_attribs.other_attributes[:unknown_attrib]
+      #     end
+      #   end
+      # end
+      # 
       should "return ScrapedObjectResult for matched record" do
         @test_model.expects(:matches_params).returns(true)
         
         assert_equal [ScrapedObjectResult.new(@test_model)], TestScrapedModel.build_or_update([@params], :organisation => @organisation)
       end
       
-      should "update existing record" do
-        rekord = TestScrapedModel.build_or_update([@params], {:organisation => @organisation}).first
-        assert_equal "http:/some.url", rekord.url
-      end
+      context "and existing record not found" do      
       
-      should "build with attributes for new member when existing not found" do
-        TestScrapedModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
-        TestScrapedModel.expects(:new).with(@params.merge(:council => @organisation)).returns(@dummy_new_record)
-        
-        TestScrapedModel.build_or_update([@params], :organisation => @organisation)
-      end
-      
-      should "return new record when existing not found" do
-        TestScrapedModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
-        TestScrapedModel.stubs(:new).returns(@dummy_new_record)
-        
-        assert_equal [ScrapedObjectResult.new(@dummy_new_record)], TestScrapedModel.build_or_update([@params], :organisation => @organisation)
-      end
-      
-      should "use params and council_id to create new record" do
-        TestScrapedModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
-        TestScrapedModel.expects(:new).with(@params.merge(:council => @organisation)).returns(@dummy_new_record)
-        TestScrapedModel.build_or_update([@params], {:organisation => @organisation})
-      end
-      
-      should "validate new records by default" do
-        assert_equal "can't be blank", TestScrapedModel.build_or_update([{:uid => ""}], :organisation => @organisation).first.errors[:uid]
-      end
-      
-      should "validate existing records by default" do
-        @test_model.stubs(:matches_params).returns(true).then.returns(:false)
-        assert_equal ScrapedObjectResult.new(@test_model), result = TestScrapedModel.build_or_update([{:uid => ""}], :organisation => @organisation).first
-        assert_equal "can't be blank", @test_model.errors[:uid]
-      end
-      
-      should "save existing records if requested" do
-        @test_model.expects(:matches_params).returns(true)
-        
-        TestScrapedModel.build_or_update([{:title => "new title"}], {:save_results => true, :organisation => @organisation})
-        assert_equal "new title", @test_model.reload.title
-      end
-      
-      should "save new records if requested" do
-        TestScrapedModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
-        new_rec = nil
-        assert_difference "TestScrapedModel.count", 1 do 
-          new_rec = TestScrapedModel.build_or_update([@params], {:save_results => true, :organisation => @organisation}).first
+        should "validate existing records by default" do
+          @test_model.stubs(:matches_params).returns(true).then.returns(:false)
+          assert_equal ScrapedObjectResult.new(@test_model), result = TestScrapedModel.build_or_update([{:uid => ""}], :organisation => @organisation).first
+          assert_equal "can't be blank", @test_model.errors[:uid]
         end
-        assert "new", new_rec.status
-        assert_equal "http:/some.url", new_rec.url
-      end
       
-      should "save new records using save_without_losing_dirty" do
-        TestScrapedModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
-        TestScrapedModel.any_instance.expects(:save_without_losing_dirty)
-        new_record = TestScrapedModel.build_or_update([@params], {:save_results => true, :council_id=>99})
-      end
+        should "save existing records if requested" do
+          @test_model.expects(:matches_params).returns(true)
+        
+          TestScrapedModel.build_or_update([{:title => "new title"}], {:save_results => true, :organisation => @organisation})
+          assert_equal "new title", @test_model.reload.title
+        end
+      
+        should "save new records if requested" do
+          TestScrapedModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
+          new_rec = nil
+          assert_difference "TestScrapedModel.count", 1 do 
+            new_rec = TestScrapedModel.build_or_update([@params], {:save_results => true, :organisation => @organisation}).first
+          end
+          assert "new", new_rec.status
+          assert_equal "http:/some.url", new_rec.url
+        end
+      
+        should "save new records using save_without_losing_dirty" do
+          TestScrapedModel.any_instance.expects(:matches_params).twice # overrides stubbing and returns nil
+          TestScrapedModel.any_instance.expects(:save_without_losing_dirty)
+          new_record = TestScrapedModel.build_or_update([@params], {:save_results => true, :council_id=>99})
+        end
 
-      should "execute orphan_records_callback on all records not matched by parsed params" do
-        TestScrapedModel.any_instance.stubs(:matches_params) # => returns nil
-        TestScrapedModel.expects(:orphan_records_callback).with([@test_model, @another_test_model], anything)
-        TestScrapedModel.build_or_update([@params], :organisation =>@organisation)
-      end
+        should "execute orphan_records_callback on all records not matched by parsed params" do
+          TestScrapedModel.any_instance.stubs(:matches_params) # => returns nil
+          TestScrapedModel.expects(:orphan_records_callback).with([@test_model, @another_test_model], anything)
+          TestScrapedModel.build_or_update([@params], :organisation =>@organisation)
+        end
       
-      should "not execute orphan_records_callback on records matched by parsed params" do
-        @test_model.stubs(:matches_params).returns(true)
-        @another_test_model.stubs(:matches_params)
-        TestScrapedModel.expects(:orphan_records_callback).with([@another_test_model], anything)
-        TestScrapedModel.build_or_update([@params], :organisation => @organisation)
-      end
+        should "not execute orphan_records_callback on records matched by parsed params" do
+          @test_model.stubs(:matches_params).returns(true)
+          @another_test_model.stubs(:matches_params)
+          TestScrapedModel.expects(:orphan_records_callback).with([@another_test_model], anything)
+          TestScrapedModel.build_or_update([@params], :organisation => @organisation)
+        end
             
-      should "not execute orphan_records_callback on if no parsed params" do
-        TestScrapedModel.expects(:orphan_records_callback).never
-        TestScrapedModel.build_or_update([], :organisation => @organisation)
-      end
+        should "not execute orphan_records_callback on if no parsed params" do
+          TestScrapedModel.expects(:orphan_records_callback).never
+          TestScrapedModel.build_or_update([], :organisation => @organisation)
+        end
             
-      should "pass save_results flag to orphan_records_callback when true" do
-        TestScrapedModel.any_instance.stubs(:matches_params) # => returns nil
-        TestScrapedModel.expects(:orphan_records_callback).with(anything, {:save_results => true})
-        TestScrapedModel.build_or_update([@params], :organisation => @organisation, :save_results => true)
-      end
+        should "pass save_results flag to orphan_records_callback when true" do
+          TestScrapedModel.any_instance.stubs(:matches_params) # => returns nil
+          TestScrapedModel.expects(:orphan_records_callback).with(anything, {:save_results => true})
+          TestScrapedModel.build_or_update([@params], :organisation => @organisation, :save_results => true)
+        end
       
-      should "pass save_results flag as nil to orphan_records_callback when not set" do
-        TestScrapedModel.any_instance.stubs(:matches_params) # => returns nil
-        TestScrapedModel.expects(:orphan_records_callback).with(anything, {:save_results => nil})
-        TestScrapedModel.build_or_update([@params], :organisation => @organisation)
+        should "pass save_results flag as nil to orphan_records_callback when not set" do
+          TestScrapedModel.any_instance.stubs(:matches_params) # => returns nil
+          TestScrapedModel.expects(:orphan_records_callback).with(anything, {:save_results => nil})
+          TestScrapedModel.build_or_update([@params], :organisation => @organisation)
+        end
+
+        context "and params contains attributes that matched record doesn't have" do
+          
+          should "raise ActiveRecord::UnknownAttributeError" do
+            @test_model.expects(:matches_params)# no matches
+            assert_raise(ActiveRecord::UnknownAttributeError) { TestScrapedModel.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)   }          
+          end
+
+          context "and class has other_attributes attribute" do
+            setup do
+              @test_model_with_other_attribs = TestScrapedModelWithOtherAttribs.create!(:uid => 33, :council_id => 99)
+
+              TestScrapedModelWithOtherAttribs.expects(:find_all_existing).returns([@test_model_with_other_attribs])
+              @test_model_with_other_attribs.expects(:matches_params)# no matches
+            end
+
+            should "not raise exception" do
+              assert_nothing_raised(ActiveRecord::UnknownAttributeError) { TestScrapedModelWithOtherAttribs.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)   }          
+            end
+
+            should "store other attributes in other_attributes" do
+              result = TestScrapedModelWithOtherAttribs.build_or_update([@params.merge(:unknown_attrib => 'bar')], :organisation => @organisation)
+              expected = {:unknown_attrib => 'bar'}
+              assert_equal expected,  result.first.changes["other_attributes"].last
+            end
+          end
+        end
       end
-      
     end
     
     context "when building_or_updating from several params" do
@@ -295,6 +399,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
       
       should "should build with attributes for new member when no existing found" do
         TestScrapedModel.any_instance.stubs(:matches_params)
+        TestScrapedModel.stubs(:new)
         TestScrapedModel.expects(:new).with(@params.merge(:council => @organisation)).returns(@dummy_new_record)
         TestScrapedModel.expects(:new).with(@other_params.merge(:council => @organisation)).returns(@dummy_new_record)
         
@@ -304,6 +409,7 @@ class ScrapedModelTest < ActiveSupport::TestCase
       should "should build with attributes for new member when some existing not found" do
         @test_model.stubs(:matches_params).returns(true).then.returns(false)
         @another_test_model.expects(:matches_params) # => false
+        TestScrapedModel.stubs(:new)
         TestScrapedModel.expects(:new).with(@params.merge(:council => @organisation)).never
         TestScrapedModel.expects(:new).with(@other_params.merge(:council => @organisation)).returns(@dummy_new_record)
         
@@ -312,12 +418,12 @@ class ScrapedModelTest < ActiveSupport::TestCase
       
       should "should return ScrapedObjectResult for new records when no existing found" do
         dummy_new_record1, dummy_new_record2 = valid_test_model, valid_test_model
-        TestScrapedModel.stubs(:new).returns(dummy_new_record1).then.returns(dummy_new_record2)
+        TestScrapedModel.stubs(:new).returns(@dummy_new_record).returns(dummy_new_record1).then.returns(dummy_new_record2) # first call to new is to test if it has other_attributes attrib
         
         assert_equal [ScrapedObjectResult.new(dummy_new_record1), ScrapedObjectResult.new(dummy_new_record2)], TestScrapedModel.build_or_update([@params, @other_params], :organisation => @organisation)
       end
       
-      should "should return ScrapedObjectResult for new record when some existing not found" do
+      should "should return ScrapedObjectResult for new record" do
         @test_model.expects(:matches_params).twice.returns(false).then.returns(true)
         dummy_new_record1, dummy_new_record2 = valid_test_model, valid_test_model
         TestScrapedModel.stubs(:new).returns(dummy_new_record1)
@@ -437,6 +543,11 @@ class ScrapedModelTest < ActiveSupport::TestCase
    
     should "return nil for status by default" do
       assert_nil @test_model.status
+    end
+    
+    should "delegate clean_up_raw_attributes to class" do
+      @test_model.class.expects(:clean_up_raw_attributes).with(:foo => 'bar')
+      @test_model.clean_up_raw_attributes(:foo => 'bar')
     end
     
     should "calculate openlylocal_url from table name and to_param method" do

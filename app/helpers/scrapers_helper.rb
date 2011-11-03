@@ -15,7 +15,7 @@ module ScrapersHelper
   
   def changed_attributes_list(record)
     return content_tag(:div, "Record is unchanged") if record.status == "unchanged" || record.changes.blank?
-    attrib_list = record.changes.collect{ |attrib_name, changes| content_tag(:li, "#{attrib_name} <strong>#{changes.last}</strong> (was #{changes.first || 'empty'})") }
+    attrib_list = record.changes.collect{ |attrib_name, changes| content_tag(:li, "#{attrib_name} <strong>#{changes.last.is_a?(Hash) ? changes.last.inspect : changes.last}</strong> (was #{changes.first || 'empty'})") }
     content_tag(:div, content_tag(:ul, attrib_list), :class => "changed_attributes")
   end
   
@@ -30,7 +30,7 @@ module ScrapersHelper
     Parser::ALLOWED_RESULT_CLASSES.each do |r|
       Scraper::SCRAPER_TYPES.each do |st|
         if es = scrapers.detect{ |s| s.type == st && s.result_model == r }
-          existing_scraper_links << link_for(es, :class => es.status)
+          existing_scraper_links << link_for(es)
         else
           new_scraper_links << link_to("Add #{r} #{st.sub('Scraper', '').downcase} scraper for #{council.name} council", new_scraper_path(:council_id => council.id, :result_model => r, :type => st), :class => "new_scraper_link")
         end
@@ -40,7 +40,7 @@ module ScrapersHelper
   end
   
   def existing_scraper_links(council)
-    council.scrapers.collect{ |s| link_for(s, :class => s.status) }
+    council.scrapers.collect{ |s| link_for(s) }
   end
   
 end

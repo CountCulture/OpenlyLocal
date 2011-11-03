@@ -1,7 +1,9 @@
 class CsvParser < Parser
   attr_reader :results
   serialize :attribute_mapping
-  HeaderNormaliser = proc{ |h| h&&h.downcase.squish }
+  HeaderNormaliser = proc{ |h| h&&h.downcase.gsub(/[^\w\d_\s]/,'').squish.gsub(/\s/,'_') }
+  # HeaderNormaliser = proc{ |h| h&&h.downcase.gsub(/[^\w\d_\s]/,'').squish.gsub(/\s/,'_') }
+  # HeaderNormaliser = proc{ |h| h&&h.downcase.squish.gsub(/\s/,'_') }
   
   def attribute_mapping_object
     return [MappingObject.new] if attribute_mapping.blank?
@@ -33,16 +35,9 @@ class CsvParser < Parser
         logger.debug { "**Doing line #{csv_file.lineno}" }
         break if dry_run && data_row_number == 10
         next if row.all?{ |k,v| v.blank? } # skip blank rows
-        res_hash = {}
-        attribute_mapping.each do |k,v|
-          if k.to_s.match(/^value_for_(.+)/) 
-            res_hash[$1.to_sym] =  v
-          else
-            res_hash[k] =  row[v]
-          end
-        end
+        row_hash = process_row(row)
         data_row_number +=1
-        result_array << {:csv_line_number => skip_rows.to_i + csv_file.lineno, :source_url => scraper&&scraper.url}.merge(res_hash) # allow results to override source_url
+        result_array << {:csv_line_number => skip_rows.to_i + csv_file.lineno, :source_url => scraper&&scraper.url}.merge(row_hash) # allow results to override source_url
       end
     rescue Exception => e
       logger.debug { "Exception raised iterating through CSV rows: #{e.inspect}\n#{e.backtrace}" }
@@ -56,5 +51,23 @@ class CsvParser < Parser
     logger.debug { "Backtrace:\n#{e.backtrace}" }
     errors.add_to_base(message.gsub(/(\.)(?=\.)/, '. ')) # NB split consecutive points because of error in Rails
     self
+  end
+  
+  private
+  def process_row(row)
+    res_hash = {}
+    other_attribs = row.to_hash
+    attribute_mapping.each do |attrib_name,header|
+      if attrib_name.to_s.match(/^value_for_(.+)/) 
+        res_hash[$1.to_sym] =  header
+      else
+        res_hash[attrib_name] =  other_attribs.delete(header)
+      end
+    end
+    result_model_has_other_attribs? ? other_attribs.symbolize_keys.merge(res_hash) : res_hash
+  end
+  
+  def result_model_has_other_attribs?
+    result_model.constantize.new.attribute_names.include?('other_attributes')
   end
 end

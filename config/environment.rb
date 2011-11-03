@@ -29,7 +29,7 @@ Rails::Initializer.run do |config|
   config.gem 'fastercsv'
   config.gem 'googlecharts', :lib => "gchart"
   config.gem "newrelic_rpm"
-  config.gem "twitter"
+  config.gem "twitter", :version => '~> 0.9'
   config.gem "httpclient"
   config.gem 'crack'
   config.gem "pauldix-feedzirra", :lib => "feedzirra", :source => 'http://gems.github.com'
@@ -92,6 +92,31 @@ require 'company_utilities' #phusion passenger seems to require this
 
 Dir.glob(RAILS_ROOT + '/app/models/user_submission_types/*') {|file| require File.basename(file, '.rb')} #YAML serialisation requires this in order to instantiate objects properly on deserialisation
 
+# THIS IS HACK TO ENSURE SERIALISATION WORKS. See http://itsignals.cascadia.com.au/?p=10
+# 
+# 
+
+YAML.add_domain_type("ActiveRecord,2007", "") do |type, val|
+  klass = type.split(':').last.constantize
+  YAML.object_maker(klass, val)
+end
+
+class ActiveRecord::Base
+  def to_yaml_type
+    "!ActiveRecord,2007/#{self.class}"
+  end
+end
+
+class ActiveRecord::Base
+  def to_yaml_properties
+    ['@attributes']
+  end
+end
+
+require 'attrib_object'
+# 
+# HACK ENDS
+
 # require 'twitter/console'
 
 # set default host for Action mailer so can have urls in emails
@@ -107,6 +132,7 @@ Date::DATE_FORMATS[:vevent] = "%Y-%m-%dT%H:%M:%S"
 Date::DATE_FORMATS[:custom_short] = "%B %e %Y" # add custom time format so we get some unity
 Time::DATE_FORMATS[:custom_short] = "%B %e %Y, %l.%M%p" # add custom time format so we get some unity
 Date::DATE_FORMATS[:month_and_year] = "%b %y" # add custom time format so we get some unity
+Date::DATE_FORMATS[:uk] = "%d/%m/%Y" # add custom date format too
 
 Pingback.save_callback do |ping|
     RelatedArticle.process_pingback(ping)

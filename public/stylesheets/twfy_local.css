@@ -4,7 +4,6 @@ Dark grey: #333333
 Deep Red: #663333
 Medium grey: #999999
 Strong red: #993333
-See http://www.colourlovers.com/palette/1402/Starbucks_25th
 */
 
 /*Global formats*/
@@ -235,6 +234,7 @@ body {
 	height:20px;
 	text-decoration:none;
 	text-transform:uppercase;
+	font-weight: bold;
 	padding:2px 1em;}
 #navigation form {
 	margin-left:1em;
@@ -243,7 +243,7 @@ body {
 #navigation input {
 	margin-bottom:0;}
 #navigation a:hover {
-	color:#036;
+	color:#633;
 	background: #ddd;
 }
 #navigation a:active {

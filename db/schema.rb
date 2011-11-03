@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110914214708) do
+ActiveRecord::Schema.define(:version => 20111030195858) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -731,6 +731,7 @@ ActiveRecord::Schema.define(:version => 20110914214708) do
     t.column "type", :string
     t.column "attribute_mapping", :text, :limit => 16777215
     t.column "skip_rows", :integer
+    t.column "cookie_path", :string
   end
 
   add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"
@@ -782,11 +783,11 @@ ActiveRecord::Schema.define(:version => 20110914214708) do
     t.column "address", :text, :default => "", :null => false
     t.column "postcode", :string, :limit => 10, :default => ""
     t.column "description", :text
-    t.column "info_url", :string, :limit => 1024
+    t.column "url", :string, :limit => 1024
     t.column "info_tinyurl", :string, :limit => 50
     t.column "comment_url", :string, :limit => 1024
     t.column "comment_tinyurl", :string, :limit => 50
-    t.column "date_scraped", :timestamp
+    t.column "retrieved_at", :datetime
     t.column "date_received", :date
     t.column "map_url", :string, :limit => 150
     t.column "lat", :float
@@ -798,37 +799,15 @@ ActiveRecord::Schema.define(:version => 20110914214708) do
     t.column "on_notice_from", :date
     t.column "on_notice_to", :date
     t.column "decision", :string, :limit => 64
-    t.column "other_attributes", :text
+    t.column "other_attributes", :text, :limit => 16777215
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
   end
 
-  add_index "planning_applications", ["date_scraped"], :name => "datescr"
+  add_index "planning_applications", ["retrieved_at"], :name => "datescr"
   add_index "planning_applications", ["date_received"], :name => "dateapp"
   add_index "planning_applications", ["council_id"], :name => "index_planning_applications_on_council_id"
   add_index "planning_applications", ["lat", "lng"], :name => "index_planning_applications_on_lat_and_lng"
-
-  create_table "planning_applications_copy", :force => true do |t|
-    t.column "council_reference", :string, :limit => 50, :null => false
-    t.column "address", :text, :default => "", :null => false
-    t.column "postcode", :string, :limit => 10, :null => false
-    t.column "description", :text
-    t.column "info_url", :string, :limit => 1024
-    t.column "info_tinyurl", :string, :limit => 50
-    t.column "comment_url", :string, :limit => 1024
-    t.column "comment_tinyurl", :string, :limit => 50
-    t.column "authority_id", :integer, :null => false
-    t.column "x", :integer, :null => false
-    t.column "y", :integer, :null => false
-    t.column "date_scraped", :timestamp, :null => false
-    t.column "date_received", :date
-    t.column "map_url", :string, :limit => 150
-    t.column "lat", :float
-  end
-
-  add_index "planning_applications_copy", ["authority_id"], :name => "authority_id"
-  add_index "planning_applications_copy", ["x", "y"], :name => "coord"
-  add_index "planning_applications_copy", ["date_scraped"], :name => "datescr"
-  add_index "planning_applications_copy", ["date_received"], :name => "dateapp"
-  add_index "planning_applications_copy", ["date_scraped", "x", "y"], :name => "lots"
 
   create_table "police_authorities", :force => true do |t|
     t.column "name", :string
@@ -995,11 +974,17 @@ ActiveRecord::Schema.define(:version => 20110914214708) do
     t.column "notes", :text, :limit => 16777215
     t.column "referrer_url", :string
     t.column "cookie_url", :string
+    t.column "use_post", :boolean, :default => false
+    t.column "parsing_library", :string, :limit => 1, :default => "H"
+    t.column "base_url", :string
+    t.column "next_due", :datetime
+    t.column "frequency", :integer, :limit => 1, :default => 7
   end
 
   add_index "scrapers", ["id", "type"], :name => "index_scrapers_on_id_and_type"
   add_index "scrapers", ["parser_id"], :name => "index_scrapers_on_parser_id"
   add_index "scrapers", ["council_id"], :name => "index_scrapers_on_council_id"
+  add_index "scrapers", ["next_due"], :name => "index_scrapers_on_next_due"
 
   create_table "services", :force => true do |t|
     t.column "title", :string

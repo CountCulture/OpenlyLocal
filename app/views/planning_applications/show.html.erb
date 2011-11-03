@@ -5,7 +5,7 @@
   <%= attribute_tag :council, link_for(@council) %>
   <%= attribute_tag :council_reference, @planning_application.council_reference %>
   <%= attribute_tag :address, @planning_application.address %>
-  <%= attribute_tag :application_url, link_to(@planning_application.info_url, @planning_application.info_url) if @planning_application.info_url? %>
+  <%= attribute_tag :application_url, link_to(@planning_application.url, @planning_application.url) if @planning_application.url? %>
   <%= attribute_tag(:location, link_to("#{@planning_application.lat}, #{@planning_application.lng}", "http://maps.google.co.uk/maps?q=#{@planning_application.lat},+#{@planning_application.lng}&iwloc=A&hl=en", :target => "blank", :class => "external"), :text => "Location (from postcode)") unless @planning_application.lat.blank? %>
 
 </dl>

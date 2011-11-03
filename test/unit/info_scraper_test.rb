@@ -32,15 +32,24 @@ class InfoScraperTest < ActiveSupport::TestCase
       assert_equal "info on TestScrapedModels from <a href='http://foo.com/something'>http://foo.com/something</a>", @scraper.scraping_for
     end
     
-    should "search result model for related_objects when none exist" do
-      TestScrapedModel.expects(:find).with(:all, :conditions => {:council_id => @scraper.council_id}).returns("related_objects")
-      assert_equal "related_objects", @scraper.related_objects
-    end
+    context "when getting related_objects" do
+      should "search result model for related_objects when none exist" do
+        stale_scope = mock('stale_scope')
+        stale_scope.expects(:find).with(:all, :conditions => {:council_id => @scraper.council_id}).returns("related_objects")
+        TestScrapedModel.expects(:stale).returns(stale_scope)
+        assert_equal "related_objects", @scraper.related_objects
+      end
+      
+      context "and related_objects instance variable set" do
+        setup do
+          @scraper.instance_variable_set(:@related_objects, "foo")
+        end
     
-    should "not search result model for related_objects when already exist" do
-      @scraper.instance_variable_set(:@related_objects, "foo")
-      TestScrapedModel.expects(:find).never
-      assert_equal "foo", @scraper.related_objects
+        should "not search result model for related_objects when already exist" do
+          TestScrapedModel.expects(:find).never
+          assert_equal "foo", @scraper.related_objects
+        end
+      end
     end
     
     context "when processing" do
@@ -103,6 +112,11 @@ class InfoScraperTest < ActiveSupport::TestCase
           assert_equal "Fred Flintstone", @dummy_related_object.title
         end
         
+        should "clean up unknown attributes" do
+          @dummy_related_object.expects(:clean_up_raw_attributes).with( :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred")
+          @scraper.process(:objects => @dummy_related_object)
+        end
+        
         should "validate existing instance of result_class" do
           @scraper.process(:objects => @dummy_related_object)
           assert @dummy_related_object.errors[:uid]
@@ -143,6 +157,19 @@ class InfoScraperTest < ActiveSupport::TestCase
           @scraper.update_attribute(:problematic, true)
           @scraper.process
           assert !@scraper.reload.problematic?
+        end
+        
+        context "and object has retrieved_at attribute" do
+          setup do
+            @dummy_object_with_retrieved_at = TestScrapedModelWithRetrievedAt.create!(:uid => '1234', :url => "http://www.anytown.gov.uk/members/fred", :council => @council)
+            results = [{ :url => "http://new.url" }]
+            Parser.any_instance.expects(:process).returns(stub_everything(:results => results))
+          end
+
+          should "update retrieved_at" do
+            @scraper.process(:save_results => true, :objects => @dummy_object_with_retrieved_at).results
+            assert_in_delta Time.now, @dummy_object_with_retrieved_at.reload.retrieved_at, 2
+          end
         end
 
       end

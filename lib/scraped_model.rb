@@ -41,13 +41,22 @@ module ScrapedModel
           end
         end
       end
-
-
-
+      
+      # cleans up params so unknown ones get discarded, or if model has :other_attributes attribute, put in there
+      def clean_up_raw_attributes(raw_attribs)
+        example_mod = self.new
+        return raw_attribs unless example_mod.respond_to?(:other_attributes)
+        native_attribs = raw_attribs.dup
+        other_attribs = {}
+        native_attribs.each { |k,v|  other_attribs[k] = native_attribs.delete(k) unless example_mod.respond_to?("#{k}=")}
+        native_attribs.merge!(:other_attributes => other_attribs) unless other_attribs.blank?
+        native_attribs
+      end
+      
       # default find_all_existing. By default finds for instances of model associated 
       # with council as specified in params[:council_id]. Overwrite in models that need 
       # more specific behaviour, e.g. Meeting model should return only meetings 
-      # associated with given council and committe
+      # associated with given council and committee
       def find_all_existing(params)
         raise ArgumentError, "organisation is missing from submitted params" unless params[:organisation]
         find_all_by_council_id(params[:organisation].id)
@@ -58,11 +67,14 @@ module ScrapedModel
         organisation = options.delete(:organisation)
         exist_records = find_all_existing(params_array.first.merge(:organisation => organisation)) # want council_id and other params (e.g. committee_id) that *might* be necessary to find all existing records
         results = [params_array].flatten.collect do |params| #make into array if it isn't one
-          if result = exist_records.detect{ |r| r.matches_params(params) }
-            result.attributes = params
+          result = exist_records.detect{ |r| r.matches_params(params) }
+          cleaned_up_attribs = clean_up_raw_attributes(params)
+          if result
+            result.attributes = cleaned_up_attribs
             exist_records.delete(result)
+          else
+            result = record_not_found_behaviour(cleaned_up_attribs.merge(:council => organisation))
           end
-          result ||= record_not_found_behaviour(params.merge(:council => organisation))
           options[:save_results] ? result.save_without_losing_dirty : result.valid? # we want to know what's changed and keep any errors, so run save_without_losing_dirty if we're saving, run validation to add errors to item otherwise
           logger.debug { "**********result = #{result.inspect}" }
           ScrapedObjectResult.new(result)
@@ -78,7 +90,7 @@ module ScrapedModel
       def normalise_title(raw_title)
         TitleNormaliser.normalise_title(raw_title)
       end
-      
+        
       protected
       # stub method. Is called in build_or_update with those records that
       # are in db but that weren't returned by scraper/parser (for example old 
@@ -91,7 +103,7 @@ module ScrapedModel
       def record_not_found_behaviour(params)
         self.new(params)
       end
-
+      
     end
   
     module InstanceMethods
@@ -101,6 +113,11 @@ module ScrapedModel
         success = save # this clears changed attributes
         changed_attributes.update(ch_attributes) # so merge them back in
         success # return result of saving
+      end
+      
+      # delegates to class method
+      def clean_up_raw_attributes(raw_attribs)
+        self.class.clean_up_raw_attributes(raw_attribs)
       end
       
       # override this in individual classes to define whether params from scraper parser are the same
@@ -142,6 +159,7 @@ module ScrapedModel
       i_class.send :include, InstanceMethods
       i_class.after_save :mark_council_as_updated
       i_class.after_destroy :mark_council_as_updated
+      i_class.named_scope :stale #stub stale method, so returns all, i.e. all are considered stale. This is what we want by defult (so always update all members)
     end
   end
   

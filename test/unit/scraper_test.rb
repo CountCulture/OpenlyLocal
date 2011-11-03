@@ -35,7 +35,7 @@ class ScraperTest < ActiveSupport::TestCase
     end
     
     should "have stale named_scope" do
-      expected_options = { :conditions => ["(type != 'CsvScraper') AND ((last_scraped IS NULL) OR (last_scraped < ?))", 7.days.ago], :order => "last_scraped" }
+      expected_options = { :conditions => ["(type != 'CsvScraper') AND ((next_due IS NULL) OR (next_due < ?))", Time.now], :order => "next_due" }
       actual_options = Scraper.stale.proxy_options
       assert_equal expected_options[:conditions].first, actual_options[:conditions].first
       assert_in_delta expected_options[:conditions].last, actual_options[:conditions].last, 2
@@ -44,14 +44,14 @@ class ScraperTest < ActiveSupport::TestCase
     
     should "return stale scrapers" do
       # just checking...
-      @scraper.update_attribute(:last_scraped, 6.days.ago)
-      stale_scraper = Factory(:item_scraper, :last_scraped => 8.days.ago)
+      @scraper.update_attribute(:next_due, 1.day.from_now)
+      stale_scraper = Factory(:item_scraper, :next_due => 1.day.ago)
       never_used_scraper = Factory(:info_scraper)
       assert_equal [never_used_scraper, stale_scraper], Scraper.stale
     end
     
     should "not include CsvScrapers in stale scrapers" do
-      csv_scraper = Factory(:csv_scraper, :last_scraped => 8.days.ago)
+      csv_scraper = Factory(:csv_scraper, :next_due => 1.day.ago)
       assert !Scraper.stale.include?(csv_scraper)
     end
     
@@ -94,17 +94,17 @@ class ScraperTest < ActiveSupport::TestCase
       assert s.save
     end
     
-    should "be stale if last_scraped more than 1 week ago" do
-      @scraper.update_attribute(:last_scraped, 8.days.ago)
+    should "be stale if next_due in past" do
+      @scraper.update_attribute(:next_due, 5.minutes.ago)
       assert @scraper.stale?
     end
     
-    should "not be stale if last_scraped less than 1 week ago" do
-      @scraper.update_attribute(:last_scraped, 6.days.ago)
+    should "not be stale if next_due in future" do
+      @scraper.update_attribute(:next_due, 5.minutes.from_now)
       assert !@scraper.stale?
     end
     
-    should "be stale if last_scraped nil" do
+    should "be stale if next_due nil" do
       assert @scraper.stale?
     end
     
@@ -176,7 +176,7 @@ class ScraperTest < ActiveSupport::TestCase
 
       should "return 'problematic' if problematic" do
         @scraper.problematic = true
-        @scraper.last_scraped = 6.days.ago
+        @scraper.next_due = 1.day.from_now
         assert_equal 'problematic', @scraper.status
       end
       
@@ -213,12 +213,49 @@ class ScraperTest < ActiveSupport::TestCase
       assert_nil @scraper.portal_system
     end
     
-    should "delegate base_url to council" do
-      @council.expects(:base_url).returns("http://some.council.com/democracy")
-      assert_equal "http://some.council.com/democracy", @scraper.base_url
-      @scraper.council = nil
-      assert_nil @scraper.base_url
+    context "when returning base_url" do
+      setup do
+        @base_url = 'http://footown.gov.uk'
+      end
+
+      context "and base_url is set" do
+        setup do
+          @scraper.base_url = @base_url
+        end
+        
+        should "return base_url" do
+          assert_equal @base_url, @scraper.base_url
+        end
+        
+        should "not in general delegate to council" do
+          @council.expects(:base_url).never
+          @scraper.base_url
+        end
+      end
+      
+      context "and base_url is nil" do
+        should "delegate to council base_url" do
+          @council.expects(:base_url).returns("http://some.council.com/democracy")
+          assert_equal "http://some.council.com/democracy", @scraper.base_url
+          @scraper.council = nil
+          assert_nil @scraper.base_url
+        end
+      end
+      
+      context "and base_url is blank" do
+        setup do
+          @scraper.base_url = ''
+        end
+        
+        should "delegate to council base_url" do
+          @council.expects(:base_url).returns("http://some.council.com/democracy")
+          assert_equal "http://some.council.com/democracy", @scraper.base_url
+          @scraper.council = nil
+          assert_nil @scraper.base_url
+        end
+      end
     end
+    
     
     should "have results accessor" do
       @scraper.instance_variable_set(:@results, "foo")
@@ -270,6 +307,15 @@ class ScraperTest < ActiveSupport::TestCase
       assert_in_delta Time.now, @scraper.last_scraped, 2 #...but last_scraped has
     end
     
+    should "update next_due attribute based on current time and frequency without changing updated_at timestamp" do
+      ItemScraper.record_timestamps = false # update timestamp without triggering callbacks
+      @scraper.update_attributes(:updated_at => 2.days.ago) #... though thought from Rails 2.3 you could do this turning off timestamps
+      ItemScraper.record_timestamps = true
+      @scraper.send(:update_last_scraped)
+      assert_in_delta 2.days.ago, @scraper.reload.updated_at, 2 # check timestamp hasn't changed...
+      assert_in_delta (Time.now+7.days), @scraper.next_due, 2 #...but last_scraped has
+    end
+    
     should "mark as problematic without changing updated_at timestamp" do
       ItemScraper.record_timestamps = false # update timestamp without triggering callbacks
       @scraper.update_attributes(:updated_at => 2.days.ago) #... though thought from Rails 2.3 you could do this without turning off timestamps
@@ -317,43 +363,45 @@ class ScraperTest < ActiveSupport::TestCase
       
     end
     
-    
-    context "if scraper has url attribute" do
-      setup do
-        @scraper.url = 'http://www.anytown.gov.uk/members/bob'
+    context "when returning url" do
+      context "and scraper has url attribute" do
+        setup do
+          @scraper.url = 'http://www.anytown.gov.uk/members/bob'
+        end
+
+        should "return url attribute as url" do
+          assert_equal 'http://www.anytown.gov.uk/members/bob', @scraper.url
+        end
+
+        should "ignore base_url and parser path when returning url" do
+          @scraper.parser.expects(:path).never
+          @scraper.expects(:base_url).never
+          assert_equal 'http://www.anytown.gov.uk/members/bob', @scraper.url
+        end
       end
-      
-      should "return url attribute as url" do
-        assert_equal 'http://www.anytown.gov.uk/members/bob', @scraper.url
+
+      context "and url attribute is nil" do
+        setup do
+          @scraper.url = nil
+        end
+
+        should "use computed_url for url" do
+          @scraper.expects(:computed_url).returns("http://council.gov.uk/computed_url/")
+          assert_equal "http://council.gov.uk/computed_url/", @scraper.url
+        end
       end
-      
-      should "ignore base_url and parser path when returning url" do
-        @scraper.parser.expects(:path).never
-        @scraper.expects(:base_url).never
-        assert_equal 'http://www.anytown.gov.uk/members/bob', @scraper.url
+
+      context "and url attribute is blank" do
+        setup do
+          @scraper.url = ""
+        end
+
+        should "use computed_url for url" do
+          @scraper.expects(:computed_url).returns("http://council.gov.uk/computed_url/")
+          assert_equal "http://council.gov.uk/computed_url/", @scraper.url
+        end
       end
-    end
-    
-    context "if url attribute is nil" do
-      setup do
-        @scraper.url = nil
-      end
-      
-      should "use computed_url for url" do
-        @scraper.expects(:computed_url).returns("http://council.gov.uk/computed_url/")
-        assert_equal "http://council.gov.uk/computed_url/", @scraper.url
-      end
-    end
-    
-    context "if url attribute is blank" do
-      setup do
-        @scraper.url = ""
-      end
-      
-      should "use computed_url for url" do
-        @scraper.expects(:computed_url).returns("http://council.gov.uk/computed_url/")
-        assert_equal "http://council.gov.uk/computed_url/", @scraper.url
-      end
+
     end
     
     context "for computed url" do
@@ -374,6 +422,68 @@ class ScraperTest < ActiveSupport::TestCase
         @scraper.stubs(:base_url).returns("http://council.gov.uk/democracy/")
         @scraper.parser.stubs(:path) # => nil
         assert_nil @scraper.computed_url
+      end
+    end
+        
+    context "when returning cookie_url" do
+      context "and scraper has cookie_url attribute" do
+        setup do
+          @scraper.cookie_url = 'http://www.anytown.gov.uk/members/bob'
+        end
+
+        should "return cookie_url attribute as cookie_url" do
+          assert_equal 'http://www.anytown.gov.uk/members/bob', @scraper.cookie_url
+        end
+
+        should "ignore base_url and parser path when returning cookie_url" do
+          @scraper.parser.expects(:cookie_path).never
+          @scraper.expects(:base_url).never
+          assert_equal 'http://www.anytown.gov.uk/members/bob', @scraper.cookie_url
+        end
+      end
+
+      context "and cookie_url attribute is nil" do
+        setup do
+          @scraper.cookie_url = nil
+        end
+
+        should "use computed_cookie_url for cookie_url" do
+          @scraper.expects(:computed_cookie_url).returns("http://council.gov.uk/computed_cookie_url/")
+          assert_equal "http://council.gov.uk/computed_cookie_url/", @scraper.cookie_url
+        end
+      end
+
+      context "and cookie_url attribute is blank" do
+        setup do
+          @scraper.cookie_url = ""
+        end
+
+        should "use computed_url for url" do
+          @scraper.expects(:computed_cookie_url).returns("http://council.gov.uk/computed_cookie_url/")
+          assert_equal "http://council.gov.uk/computed_cookie_url/", @scraper.cookie_url
+        end
+      end
+
+    end
+    
+    context "when returning computed_cookie_url" do
+
+      should "combine base_url and parser cookie_path" do
+        @scraper.stubs(:base_url).returns("http://council.gov.uk/democracy/")
+        @scraper.parser.stubs(:cookie_path).returns("path/to/councillors")
+        assert_equal 'http://council.gov.uk/democracy/path/to/councillors', @scraper.computed_cookie_url
+      end
+      
+      should "return nil if base_url is nil" do
+        @scraper.stubs(:base_url) # => nil
+        @scraper.parser.stubs(:cookie_path).returns("path/to/councillors")
+        assert_nil @scraper.computed_cookie_url 
+      end
+      
+      should "return nil if parser cookie_path is nil" do
+        @scraper.stubs(:base_url).returns("http://council.gov.uk/democracy/")
+        @scraper.parser.stubs(:cookie_path) # => nil
+        assert_nil @scraper.computed_cookie_url
       end
     end
         
@@ -439,6 +549,17 @@ class ScraperTest < ActiveSupport::TestCase
         @scraper.send(:_data, 'http://another.url')
       end
       
+      should "interpolate cookie_url with term" do
+        @scraper.cookie_url = 'http://cookie.com/#{Date.today}'
+        @scraper.expects(:_http_get).with(anything, has_entry(:cookie_url => "http://cookie.com/#{Date.today}")).returns("something")
+        @scraper.send(:_data, 'http://another.url')
+      end
+      
+      should "return data as Hpricot Doc" do
+        @scraper.stubs(:_http_get).returns("something")
+        assert_kind_of Hpricot::Doc, @scraper.send(:_data)
+      end
+      
       should "return data as Hpricot Doc" do
         @scraper.stubs(:_http_get).returns("something")
         assert_kind_of Hpricot::Doc, @scraper.send(:_data)
@@ -452,6 +573,46 @@ class ScraperTest < ActiveSupport::TestCase
       should "raise RequestError when problem getting page" do
         @scraper.expects(:_http_get).raises(OpenURI::HTTPError, "404 Not Found")
         assert_raise(Scraper::RequestError) {@scraper.send(:_data)}
+      end
+      
+      context "and use_post flag set" do
+        setup do
+          @scraper.use_post = true
+        end
+        
+        should "post with given url" do
+          @scraper.expects(:_http_post_from_url_with_query_params).with('http://another.url', anything).returns("something")
+          @scraper.send(:_data, 'http://another.url')
+        end
+        
+        should "post to get cookie from cookie_url if given" do
+          @scraper.cookie_url = "http://cookie.com"
+          @scraper.expects(:_http_post_from_url_with_query_params).with(anything, has_entry(:cookie_url => "http://cookie.com")).returns("something")
+          @scraper.send(:_data, 'http://another.url')
+        end
+
+      end
+      
+      context "and scraper parsing library is 'N'" do
+        setup do
+          @scraper.parsing_library = 'N'
+        end
+
+        should "parse response using Nokogiri HTML" do
+          @scraper.stubs(:_http_get).returns("something")
+          assert_kind_of Nokogiri::HTML::Document, @scraper.send(:_data)
+        end
+      end
+
+      context "and scraper parsing library is 'X'" do
+        setup do
+          @scraper.parsing_library = 'X'
+        end
+
+        should "parse response using Nokogiri XML" do
+          @scraper.stubs(:_http_get).returns("something")
+          assert_kind_of Nokogiri::XML::Document, @scraper.send(:_data)
+        end
       end
     end
         
@@ -471,6 +632,12 @@ class ScraperTest < ActiveSupport::TestCase
           @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob")
           @scraper.process
         end
+        
+        should "get data from url interpolated with term" do
+          @scraper.url = 'http://www.anytown.gov.uk/members/#{Date.today}'
+          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/#{Date.today}")
+          @scraper.process
+        end        
 
         should "pass data to associated parser" do
           @parser.expects(:process).with("something", anything, anything).returns(stub_everything)

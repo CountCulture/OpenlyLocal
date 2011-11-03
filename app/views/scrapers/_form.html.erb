@@ -23,6 +23,18 @@
     <%- end -%>
   </p>
   <p>
+    <%= f.label :parsing_library %>
+    <%= f.select :parsing_library, Scraper::PARSING_LIBRARIES.collect{|k,v| [v,k] } %><br />
+    <%= f.label :use_post, "Use POST request?" %>
+    <%= f.check_box :use_post %><br />
+    <%= f.label :frequency, "Run every (days)" %>
+    <%= f.text_field :frequency, :size => 2 %>
+  </p>
+  <p>
+    <%= f.label :base_url, "Base URL for this scraper <em>(will delegate to council if not set)</em>" %>
+    <%= f.text_field :base_url %><br />
+  </p>
+  <p>
     <%= f.label :referrer_url, "Referrer url <em>Can nearly always be left blank</em>" %>
     <%= f.text_field :referrer_url %><br />
   </p>
@@ -42,6 +54,15 @@
     <p class="alert">No parser written yet to parse this. 
     <%= link_to "Add new parser for #{@scraper.portal_system.name}", new_parser_path(:portal_system_id => @scraper.portal_system.id, :result_model => @scraper.result_model, :scraper_type => @scraper.class.to_s) %>
     or use dedicated parser for this council only:</p>      
+  <%- elsif !@scraper.portal_parser? -%>
+    <div class="use_portal_systems">
+      <p class="alert"><a href='#' class='toggle_visibility'>Use existing dedicated parser</a></p>
+      <ul style='display:none' class='toggle'>
+        <%- PortalSystem.all.each do |portal_system| -%>
+          <li><%= link_to portal_system.name, params.merge(:portal_system_id => portal_system.id) %></li>
+        <%- end -%>
+      </ul>
+    </div>      
   <%- end -%>
   <%- if !@scraper.portal_parser? || params[:dedicated_parser]-%>
     <fieldset id="parser_details" %>

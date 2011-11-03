@@ -16,7 +16,7 @@ class CsvParserTest < ActiveSupport::TestCase
     should "serialize attribute_mapping" do
       expected_attribs = {:value => "amount", 
                           :department_name => 'directorate', 
-                          :supplier_name => 'supplier name', 
+                          :supplier_name => 'supplier_name', 
                           :uid => 'transactionid',
                           :date => 'updated' }
       assert_equal(expected_attribs, Parser.find(@parser.id).attribute_mapping)
@@ -83,15 +83,15 @@ class CsvParserTest < ActiveSupport::TestCase
                                                "column_name" => "a title"},
                                              { "attrib_name" => "description",
                                                "column_name" => "a longer description"}]
-          assert_equal({ :title => "a title", :description => "a longer description" }, @parser.attribute_mapping)
+          assert_equal({ :title => "a_title", :description => "a_longer_description" }, @parser.attribute_mapping)
         end
 
         should "normalise column names" do
           @parser.attribute_mapping_object = [{ "attrib_name" => "title",
                                                "column_name" => "A  Title "},
                                              { "attrib_name" => "description",
-                                               "column_name" => "a LONGER description  "}]
-          assert_equal({ :title => "a title", :description => "a longer description" }, @parser.attribute_mapping)
+                                               "column_name" => "a - LONGER ** (description)  "}]
+          assert_equal({ :title => "a_title", :description => "a_longer_description" }, @parser.attribute_mapping)
         end
 
         should "set attribute_parser to empty hash if no form_params" do
@@ -147,6 +147,25 @@ class CsvParserTest < ActiveSupport::TestCase
         should "normalise row headings to attributes by downcasing and removing extra spaces" do
           assert_equal 'Idox Software Limited', @processed_data.first[:supplier_name]
         end
+        
+        should "in general discard unmapped attributes" do
+          assert_nil @processed_data.first[:type]
+        end
+        
+        context "and result_model has other_attributes attribute" do
+          setup do
+            @parser.result_model = 'TestScrapedModelWithOtherAttribs'
+            @processed_data = @parser.process(@csv_rawdata, @dummy_scraper).results
+          end
+
+          should "include unmapped attributes" do
+            assert_equal 'Capital', @processed_data.first[:type]
+          end
+          
+          should "heavily normalise unmapped csv_headings" do
+            assert_equal 'foo', @processed_data.first[:an_unmapped_column]
+          end
+        end
 
       end
       
@@ -171,7 +190,7 @@ class CsvParserTest < ActiveSupport::TestCase
       context "when processing with parser rows that includes Windows pound sign" do
         setup do
           dummy_data = dummy_csv_data(:windows_file_with_pound_signs_in_heading)
-          @parser.attribute_mapping = {:supplier_name => 'supplier name', :value => 'amount £ (excl vat)'}
+          @parser.attribute_mapping = {:supplier_name => 'supplier name', :value => 'amount_£_excl_vat'}
           @processed_data = @parser.process(dummy_data, @dummy_scraper).results
         end
 

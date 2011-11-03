@@ -4,9 +4,11 @@
 
 <% unless @scrapers.blank? %>
   <h3>Scrapers</h3>
+  <%= content_tag(:p, link_to("Create new scraper for this parser", new_scraper_path(:portal_system_id => @parser.portal_system_id, :type => @parser.scraper_type, :result_model => @parser.result_model))) if @parser.portal_system_id? %>
   <ul id="scrapers">
     <% for scraper in @scrapers %>
       <li><%= link_for scraper %></li>
     <% end %>
   </ul>
 <% end %>
+

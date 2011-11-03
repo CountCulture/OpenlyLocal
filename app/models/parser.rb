@@ -38,8 +38,8 @@ class Parser < ActiveRecord::Base
     
     items = item_parser.blank? ? doc : eval_parsing_code(item_parser, doc)
     now_parsing = "attributes"
-    items = [items] unless items.is_a?(Array)
-    @results = items.compact.collect do |item| # remove nil items
+    items = [items] unless items.is_a?(Nokogiri::XML::NodeSet) || items.is_a?(Array) # then it's an Hpricot Collection, or a Nokogiri Node Set, both of which have sum array method
+    @results = items.to_a.compact.collect do |item| # turn Hpricot Collection and Nokogiri node sets into true arrays, remove nil items
       result_hash = {}
       attribute_parser.each do |key, value|
         parsing_code = value

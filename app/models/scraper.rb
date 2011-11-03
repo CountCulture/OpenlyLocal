@@ -4,10 +4,14 @@ class Scraper < ActiveRecord::Base
   class ParsingError < ScraperError; end
   SCRAPER_TYPES = %w(InfoScraper ItemScraper CsvScraper)
   USER_AGENT = "Mozilla/4.0 (OpenlyLocal.com)"
+  PARSING_LIBRARIES = { 'H' => 'Hpricot', 
+                        'N' => 'Nokogiri (HTML)',
+                        'X' => 'Nokogiri (XML)'
+                      }
   belongs_to :parser
   belongs_to :council
   validates_presence_of :council_id
-  named_scope :stale, lambda { { :conditions => ["(type != 'CsvScraper') AND ((last_scraped IS NULL) OR (last_scraped < ?))", 7.days.ago], :order => "last_scraped" } }
+  named_scope :stale, lambda { { :conditions => ["(type != 'CsvScraper') AND ((next_due IS NULL) OR (next_due < ?))", Time.now], :order => "next_due" } }
   named_scope :problematic, { :conditions => { :problematic => true } }
   named_scope :unproblematic, { :conditions => { :problematic => false } }
   # accepts_nested_attributes_for :parser
@@ -16,14 +20,26 @@ class Scraper < ActiveRecord::Base
   delegate :result_model, :to => :parser, :allow_nil => true
   delegate :related_model, :to => :parser, :allow_nil => true
   delegate :portal_system, :to => :council, :allow_nil => true
-  delegate :base_url, :to => :council, :allow_nil => true
   
   def validate
     errors.add(:parser, "can't be blank") unless parser
   end
   
+  def base_url
+    self[:base_url].blank? ? council&&council.base_url : self[:base_url]
+  end
+  
+  def computed_cookie_url
+    !base_url.blank?&&!parser.cookie_path.blank? ? "#{base_url}#{parser.cookie_path}" : nil
+  end
+  
   def computed_url
     !base_url.blank?&&!parser.path.blank? ? "#{base_url}#{parser.path}" : nil
+  end
+  
+  # build url from council's base_url and parsers path unless url is set
+  def cookie_url
+    self[:cookie_url].blank? ? computed_cookie_url : self[:cookie_url]
   end
   
   def expected_result_attributes
@@ -58,7 +74,8 @@ class Scraper < ActiveRecord::Base
   
   def process(options={})
     mark_as_unproblematic # clear problematic flag. It will be reset if there's a prob
-    self.parsing_results = parser.process(_data(url), self, :save_results => options[:save_results]).results
+    # self.parsing_results = parser.process(_data(url), self, :save_results => options[:save_results]).results
+    self.parsing_results = parser.process(_data(target_url_for(self)), self, :save_results => options[:save_results]).results
     update_with_results(parsing_results, options)
     update_last_scraped if options[:save_results]&&parser.errors.empty?
     mark_as_problematic unless parser.errors.empty?
@@ -109,7 +126,7 @@ class Scraper < ActiveRecord::Base
   end
   
   def stale?
-    !last_scraped||(last_scraped < 7.days.ago)
+    !next_due||(next_due < Time.now)
   end
   
   # Returns status as string (for use in css_class)
@@ -121,16 +138,15 @@ class Scraper < ActiveRecord::Base
   
   # build url from council's base_url and parsers path unless url is set
   def url
-    read_attribute(:url).blank? ? computed_url : read_attribute(:url)
+    self[:url].blank? ? computed_url : self[:url]
   end
   
   protected
   def _data(target_url=nil)
     begin
-      options = { "User-Agent" => USER_AGENT, :cookie_url => cookie_url }
+      options = { "User-Agent" => USER_AGENT, :cookie_url => cookie_url&&interpolate_url(cookie_url, self) } # submit interpolated cookie url if there is one
       (options["Referer"] = (referrer_url =~ /^http/ ? referrer_url : target_url)) unless referrer_url.blank?
-      logger.debug { "Getting data from #{target_url} with options: #{options.inspect}" }
-      page_data = _http_get(target_url, options)
+      page_data = use_post ? _http_post_from_url_with_query_params(target_url, options) : _http_get(target_url, options)
     rescue Exception => e
       error_message = "**Problem getting data from #{target_url}: #{e.inspect}\n #{e.backtrace}"
       logger.error { error_message }
@@ -138,7 +154,14 @@ class Scraper < ActiveRecord::Base
     end
     
     begin
-      Hpricot.parse(page_data, :fixup_tags => true)
+      case parsing_library
+      when 'N'
+        Nokogiri.HTML(page_data)
+      when 'X'
+        Nokogiri.XML(page_data)
+      else
+        Hpricot.parse(page_data, :fixup_tags => true)
+      end
     rescue Exception => e
       logger.error { "Problem with data returned from #{target_url}: #{e.inspect}" }
       raise ParsingError
@@ -147,34 +170,43 @@ class Scraper < ActiveRecord::Base
   
   def _http_get(target_url, options={})
     return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
-    # response = nil 
-    # target_url = URI.parse(target_url)
-    # request = Net::HTTP.new(target_url.host, target_url.port)
-    # request.read_timeout = 5 # set timeout at 5 seconds
-    # begin
-    #   response = request.get(target_url.request_uri)
-    #   raise RequestError, "Problem retrieving info from #{target_url}." unless response.is_a? Net::HTTPSuccess
-    # rescue Timeout::Error
-    #   raise RequestError, "Timeout::Error retrieving info from #{target_url}."
-    # end
     client = HTTPClient.new
     cookie_url = options.delete(:cookie_url)
     client.get_content(cookie_url) unless cookie_url.blank? # pick up cookie if we've been passed a url
+    logger.debug { "Getting data using GET from #{target_url} with options: #{options.inspect}" }
     client.get_content(target_url, nil, options)
-    # open(target_url, options).read
-    # logger.debug "********Scraper response = #{response.body.inspect}"
-    # response.body
+  end
+  
+  def _http_post_from_url_with_query_params(target_url, options={})
+    return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
+    uri, params = convert_url_with_query_params(target_url)
+    client = HTTPClient.new
+    cookie_url = options.delete(:cookie_url)
+    unless cookie_url.blank? # pick up cookie if we've been passed a url
+      c_uri, c_params = convert_url_with_query_params(cookie_url)
+      logger.debug { "Getting cookie using POST from #{c_uri} with params #{c_params.inspect} and options: #{options.inspect}" }
+      client.post_content(c_uri, c_params)
+    end
+    logger.debug { "Getting data using POST from #{uri} with params #{params.inspect} and options: #{options.inspect}" }
+    client.post_content(uri, params, options)
   end
   
   def update_with_results(parsing_results, options={})
     unless parsing_results.blank?
-      # p parsing_results
-      # add result array returned from model to exising results (generated by previous call, for example when getting items assoc with related item)
+      # add result array returned from model to existing results (generated by previous call, for example when getting items assoc with related item)
       @results = results + result_model.constantize.build_or_update(parsing_results, options.merge(:organisation => council))
     end
   end
 
   private
+  def convert_url_with_query_params(url)
+    logger.debug { "***********Converting #{url} to uri and query params" }
+    uri = URI.parse(url)
+    params = CGI.parse(uri.query)
+    uri.query = nil # reset queries as we submit as post params
+    [uri, params]
+  end
+  
   # marks as problematic without changing timestamps
   def mark_as_problematic
     self.class.update_all({ :problematic => true }, { :id => id })
@@ -186,10 +218,15 @@ class Scraper < ActiveRecord::Base
   end
   
   def update_last_scraped
+    self.class.update_all({ :next_due => (Time.zone.now + frequency.days) }, { :id => id })
     self.class.update_all({ :last_scraped => Time.zone.now }, { :id => id })
   end
   
   def target_url_for(obj=nil)
-    url.blank? ? obj.url : obj.instance_eval("\"" + url + "\"") # if we have url evaluate it AS A STRING in context of related object (which allows us to interpolate uid etc), otherwise just use related object's url
+    url.blank? ? obj.url : interpolate_url(url, obj) # if we have url evaluate it AS A STRING in context of related object (which allows us to interpolate uid etc), otherwise just use related object's url
+  end
+  
+  def interpolate_url(url, obj)
+    obj.instance_eval("\"" + url + "\"")
   end
 end

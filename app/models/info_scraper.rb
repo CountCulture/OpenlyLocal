@@ -25,7 +25,12 @@ class InfoScraper < Scraper
   end
   
   def related_objects
-    @related_objects ||= result_model.constantize.find(:all, :conditions => { :council_id => council_id })
+    case 
+    when @related_objects
+      @related_objects
+    else
+      result_model.constantize.stale.find(:all, :conditions => { :council_id => council_id })
+    end
   end
   
   def scraping_for
@@ -44,7 +49,9 @@ class InfoScraper < Scraper
       sor.errors.add_to_base @parser.errors[:base]
       results << sor
     elsif !res.blank?
-      obj.attributes = res.first
+      first_res = res.first # results are returned as an array containing just one object. I think.
+      first_res.merge!(:retrieved_at => Time.now) if obj.attribute_names.include?('retrieved_at') # update timestamp if model has one
+      obj.attributes = obj.clean_up_raw_attributes(first_res)
       options[:save_results] ? obj.save : obj.valid? # don't try if we've already got errors
       results << ScrapedObjectResult.new(obj)
     end
