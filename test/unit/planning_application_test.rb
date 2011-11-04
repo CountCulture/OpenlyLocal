@@ -57,11 +57,11 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
       
       should "use address if given" do
-        assert_match /32 Acacia Avenue/, PlanningApplication.new(:address => '32 Acacia Avenue, Footown FOO1 3BAR').title
+        assert_match /32 Acacia Avenue/, PlanningApplication.new(:address => '32 Acacia Avenue, Footown FOO1 3BA').title
       end
       
       should "use council reference and address if given" do
-        application =  PlanningApplication.new(:uid => 'AB123/456', :address => '32 Acacia Avenue, Footown FOO1 3BAR')
+        application =  PlanningApplication.new(:uid => 'AB123/456', :address => '32 Acacia Avenue, Footown FOO1 3BA')
         assert_match /32 Acacia Avenue/, application.title
         assert_match /AB123\/456/, application.title
       end
@@ -72,6 +72,51 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       assert_equal pa.uid, pa.council_reference
       pa.council_reference = 'FOO1234'
       assert_equal 'FOO1234', pa.uid
+    end
+    
+    context "when assigning address" do
+      setup do
+        @dummy_address = '32 Acacia Avenue, Footown FO1 3BA'
+      end
+      
+      should "not raise exception when address is blank" do
+        assert_nothing_raised(Exception) { Factory.build(:planning_application, :address => nil) }
+        assert_nothing_raised(Exception) { Factory.build(:planning_application, :address => '') }
+      end
+
+      should "set address attribute" do
+        assert_equal @dummy_address, Factory(:planning_application, :address => @dummy_address)[:address]
+      end
+      
+      should "remove extra spaces" do
+        assert_equal @dummy_address, Factory(:planning_application, :address => "\n 32   Acacia Avenue,  Footown FO1 3BA  \n")[:address]
+      end
+      
+      should "normalise line breaks" do
+        assert_equal "32 Acacia Avenue\nFootown\nFOO1 3BA", Factory(:planning_application, :address => "32   Acacia Avenue\rFootown\rFOO1 3BA")[:address]
+      end
+      
+      should "set postcode attribute" do
+        assert_equal 'FO1 3BA', Factory(:planning_application, :address => @dummy_address)[:postcode]
+      end
+      
+      context "and postcode already set" do
+        setup do
+          @planning_application = Factory(:planning_application, :address => @dummy_address)
+          @new_address = '43 Cherry Road, Bartown BA2 5AB'
+        end
+        
+        should "not set postcode if postcode has already changed" do
+          @planning_application.postcode = 'AB1 3CD'
+          @planning_application.address = @new_address
+          assert_equal 'AB1 3CD', @planning_application.postcode
+        end
+        
+        should "set postcode if postcode has not already changed" do
+          @planning_application.address = @new_address
+          assert_equal 'BA2 5AB', @planning_application.postcode
+        end
+      end
     end
   end
   
