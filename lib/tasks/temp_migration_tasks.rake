@@ -151,7 +151,7 @@ task :setup_caps_scrapers => :environment do
     "waveney" => 'http://publicaccess.waveney.gov.uk/PASystem77/tdc',
     'west lancashire' => 'http://publicaccess.westlancs.gov.uk/PublicAccess/tdc',
     'westminster' => 'http://publicaccess.westminster.gov.uk/PublicAccess/tdc',
-    'whitehorse' => "http://planning.whitehorsedc.gov.uk/publicaccess/tdc/",
+    'vale of white horse' => "http://planning.whitehorsedc.gov.uk/publicaccess/tdc/",
     "york" => 'http://planning.york.gov.uk/PublicAccess/tdc/'
   }
   POSS_IDOX_COUNCILS = {
@@ -186,37 +186,37 @@ task :setup_caps_scrapers => :environment do
     'sevenoaks' => 'http://pa.sevenoaks.gov.uk/online-applications/',
     'shepway' => 'http://searchplanapps.shepway.gov.uk/online-applications',
     'shetland islands' => 'http://pa.shetland.gov.uk/online-applications',
-    'south buckinghamshire' => 'http://sbdc-paweb.southbucks.gov.uk/publicaccess/tdc/',
+    'south bucks' => 'http://sbdc-paweb.southbucks.gov.uk/publicaccess/tdc/',
     'south staffordshire' => 'http://www2.sstaffs.gov.uk:81/online-applications',
     'tendring' => 'http://idox.tendringdc.gov.uk/online-applications',
     "thurrock" => 'http://regs.thurrock.gov.uk/online-applications/',
     "tonbridge and malling" => 'http://publicaccess2.tmbc.gov.uk/online-applications/',
     'woking' => 'http://caps.woking.gov.uk/online-applications/',
     'wolverhampton' => 'http://planningonline.wolverhampton.gov.uk:2707/online-applications',
-    'argyll' => "http://publicaccess.argyll-bute.gov.uk/publicaccess",
+    'argyll and bute' => "http://publicaccess.argyll-bute.gov.uk/publicaccess",
     'bedford' => "http://www.publicaccess.bedford.gov.uk/online-applications",
-    'borders' => "http://eplanning.scotborders.gov.uk/online-applications",
+    'scottish borders' => "http://eplanning.scotborders.gov.uk/online-applications",
     'bradford' => "http://www.planning4bradford.com/online-applications",
     'cambridge' => "http://idox.cambridge.gov.uk/online-applications",
     'corby' => "https://publicaccess.corby.gov.uk/publicaccess",
     'dartford' => "http://publicaccess.dartford.gov.uk/online-applications",
-    'eastcambs' => "http://pa.eastcambs.gov.uk/online-applications",
-    'eastriding' => "http://www.eastriding.gov.uk/newpublicaccess",
+    'east cambridgeshire' => "http://pa.eastcambs.gov.uk/online-applications",
+    'east riding of yorkshire' => "http://www.eastriding.gov.uk/newpublicaccess",
     'gedling' => 'http://pawam.gedling.gov.uk:81/online-applications',
     'gloucester' => "http://glcstrplnng12.co.uk/online-applications",
-    'gloucetsershire' => 'http://planning.gloucestershire.gov.uk/publicaccess/',
+    'gloucestershire' => 'http://planning.gloucestershire.gov.uk/publicaccess/',
     'horsham' => "http://public-access.horsham.gov.uk/public-access",
     'leeds' => 'https://publicaccess.leeds.gov.uk/online-applications',
-    'midsussex' => "http://pa.midsussex.gov.uk/online-applications",
+    'mid sussex' => "http://pa.midsussex.gov.uk/online-applications",
     'newham' => "http://pa.newham.gov.uk/online-applications",
     'norwich' => "http://planning.norwich.gov.uk/online-applications",
     'oxford' => "http://public.oxford.gov.uk/online-applications",
     'portsmouth' => 'http://idox.portsmouth.gov.uk/online-applications/',
     'reading' => "http://planninghome.reading.gov.uk/online-applications",
     'stafford' => "http://www7.staffordbc.gov.uk/online-applications",
-    'threerivers' => "http://www3.threerivers.gov.uk/online-applications",
+    'three rivers' => "http://www3.threerivers.gov.uk/online-applications",
     'torridge' => "http://publicaccess.torridge.gov.uk/online-applications/",
-    'tunbridgewells' => "http://pa.tunbridgewells.gov.uk/online-applications",
+    'tunbridge wells' => "http://pa.tunbridgewells.gov.uk/online-applications",
     'worthing' => "http://planning.adur-worthing.gov.uk/online-applications",
     'wycombe' => "http://publicaccess.wycombe.gov.uk/idoxpa-web"
   }
@@ -230,9 +230,28 @@ task :setup_caps_scrapers => :environment do
   SWIFT_LG = {
     'redbridge' => 'http://planning.redbridge.gov.uk/swiftlg'
   }
+  caps_parser = PortalSystem.find_by_name('CAPS (Public Access)').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
+  CAPS_COUNCILS.each do |c,url|
+    unless council = Council.find_by_normalised_title(Council.normalise_title(c))
+      puts "******* Failed to match #{c} to council"
+      next
+    end
+    base_url = (url + '/').sub(/\/+$/,'/')
+    scraper = council.scrapers.find_or_initialize_by_parser_id( :parser_id => caps_parser.id)
+    scraper.update_attributes!( :parsing_library => 'N', 
+                                :use_post => true, 
+                                :frequency => 2,
+                                :base_url => base_url, 
+                                :type => 'ItemScraper')
+    puts "Added CAPS scraper for #{council.name} (#{scraper.inspect})"
+  end
   
-  POSS_IDOX_COUNCILS.each do |c,url|
-    # 'http://pa.manchester.gov.uk/online-applications/advancedSearchResults.do' 
+  idox_parser = PortalSystem.find_by_name('Idox (Public Access)').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
+  IDOX_COUNCILS.each do |c,url|
+    unless council = Council.find_by_normalised_title(Council.normalise_title(c))
+      puts "******* Failed to match #{c} to council"
+      next
+    end
     params = {"date(applicationValidatedStart)"=>["27/09/2011"], 
               "action"=>["firstPage"], 
               "date(applicationValidatedEnd)"=>["11/10/2011"], 
@@ -240,15 +259,22 @@ task :setup_caps_scrapers => :environment do
               "caseAddressType"=>["Application"] } 
     options = {"User-Agent"=>"Mozilla/4.0 (OpenlyLocal.com)"}
     client = HTTPClient.new
-    form_url = url.sub(/\/$/,'') +'/advancedSearchResults.do?'
+    base_url = url.sub(/\/$/,'')
+    form_url = base_url +'/advancedSearchResults.do?'
     begin
       resp = client.post(form_url, params, options)
       result = Nokogiri.HTML(resp.content).at('#searchResultsContainer li.searchresult')
-      puts "#{c}: successful"
+      puts "#{council.name}: successfully tested Idox URLs"
+      scraper = council.scrapers.find_or_initialize_by_parser_id( :parser_id => idox_parser.id)
+      scraper.update_attributes!( :parsing_library => 'N', 
+                                 :use_post => true, 
+                                 :frequency => 2,
+                                 :base_url => base_url, 
+                                 :type => 'ItemScraper')
+      puts "Added Idox scraper for #{council.name} (#{scraper.inspect})"
     rescue Exception => e
       puts "#{c}: Problem getting data from #{form_url}"
     end
-    
-
+  
   end
 end
