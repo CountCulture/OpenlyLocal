@@ -13,6 +13,11 @@ class PlanningApplication < ActiveRecord::Base
     self[:postcode] = parsed_postcode unless postcode_changed? # if already changed it's prob been explicitly set
   end
   
+  def inferred_lat_long
+    return unless matched_code = postcode&&Postcode.find_from_messy_code(postcode)
+    [matched_code.lat, matched_code.lng]
+  end
+  
   def title
     "Planning Application #{uid}" + (address.blank? ? '' : ", #{address[0..30]}...")
   end

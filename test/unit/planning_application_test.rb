@@ -51,6 +51,10 @@ class PlanningApplicationTest < ActiveSupport::TestCase
 
   
   context "an instance of the PlanningApplication class" do
+    setup do
+      @planning_application = Factory(:planning_application)
+    end
+    
     context "when returning title" do
       should "use uid reference" do
         assert_equal "Planning Application AB123/456", PlanningApplication.new(:uid => 'AB123/456').title
@@ -116,6 +120,26 @@ class PlanningApplicationTest < ActiveSupport::TestCase
           @planning_application.address = @new_address
           assert_equal 'BA2 5AB', @planning_application.postcode
         end
+      end
+    end
+    
+    context "when returning inferred lat long" do
+      setup do
+        @postcode = Factory(:postcode, :code => 'AB12CD')
+      end
+      
+      should "return lat_long for postcode matching normalised postcode" do
+        @planning_application.postcode = 'AB1 2CD'
+        assert_equal [@postcode.lat, @postcode.lng], @planning_application.inferred_lat_long
+      end
+
+      should "return nil if postcode is blank" do
+        assert_nil @planning_application.inferred_lat_long
+      end
+      
+      should "return nil if no such postcode" do
+        @planning_application.postcode = 'CD2 1AB'
+        assert_nil @planning_application.inferred_lat_long
       end
     end
   end
