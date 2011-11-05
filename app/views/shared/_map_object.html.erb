@@ -1,0 +1,24 @@
+<script type="text/javascript" charset="utf-8">
+  function initMap() {
+    if (GBrowserIsCompatible()) {
+      var map = new GMap2(document.getElementById("map_canvas"));
+      var lat = <%= (map_object.lat).to_f %>;
+      var lng = <%=  (map_object.lng).to_f %>;
+      var center = new GLatLng(lat, lng);
+      var first_view = true;
+      map.setCenter(center, <%= map_object.google_map_magnification %>);
+      map.addControl(new GSmallMapControl());
+      map.addControl(new GMapTypeControl());
+      
+      var marker = new GMarker(center);
+            
+      map.addOverlay(marker);
+      <%- if map_object.respond_to?(:distance_covered)  %>
+      var distance = <%= map_object.distance_covered %>;
+      
+      drawCircle(map, center, distance);
+      <%- end %>
+    }
+  }
+  
+</script>

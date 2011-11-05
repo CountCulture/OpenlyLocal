@@ -81,9 +81,12 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       pa.council_reference = 'FOO1234'
       assert_equal 'FOO1234', pa.uid
     end
+    
+    should "return 13 for google_map_magnfication" do
+      assert_equal 13, Factory(:planning_application).google_map_magnification
+    end
+    
     context "on save" do
-      setup do
-      end
 
       should "get inferred_lat_lng" do
         @planning_application.expects(:inferred_lat_lng)

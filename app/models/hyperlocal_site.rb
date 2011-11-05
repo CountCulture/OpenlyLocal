@@ -35,6 +35,10 @@ class HyperlocalSite < ActiveRecord::Base
     url =~ /\/$/ ? "#{url}*" : "#{url}/*"
   end
   
+  def google_map_magnification
+    9
+  end
+  
   def url=(raw_url)
     self[:url] = TitleNormaliser.normalise_url(raw_url)
   end

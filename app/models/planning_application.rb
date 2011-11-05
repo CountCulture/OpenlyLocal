@@ -15,6 +15,10 @@ class PlanningApplication < ActiveRecord::Base
     self[:postcode] = parsed_postcode unless postcode_changed? # if already changed it's prob been explicitly set
   end
   
+  def google_map_magnification
+    13
+  end
+  
   def inferred_lat_lng
     return unless matched_code = postcode&&Postcode.find_from_messy_code(postcode)
     [matched_code.lat, matched_code.lng]

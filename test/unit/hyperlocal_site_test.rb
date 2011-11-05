@@ -171,6 +171,10 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       assert_equal "#{@hyperlocal_site.id}-some-title-with-stuff", @hyperlocal_site.to_param
     end
     
+    should "return 9 for google_map_magnfication" do
+      assert_equal 9, Factory(:hyperlocal_site).google_map_magnification
+    end
+    
     context "when setting url" do
 
       should "clean up using url_normaliser" do

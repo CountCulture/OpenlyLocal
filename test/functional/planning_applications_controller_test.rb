@@ -45,6 +45,10 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
       should "show entity name in title" do
         assert_select "title", /#{@planning_application.title}/
       end
+
+      should "enable google maps" do
+        assert assigns(:enable_google_maps)
+      end
     
       # should "show api block" do
       #   assert_select "#api_info"

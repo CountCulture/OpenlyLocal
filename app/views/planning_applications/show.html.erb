@@ -1,5 +1,10 @@
+<%= render :partial => 'shared/map_object', :object => @planning_application %>
+
 <div class="breadcrumbs"><%#= link_to "All Local Authority Pension Funds", pension_funds_path %></div>
 <h1><%= @title %></h1>
+<div id="planning_application_map" class="map_outer">
+  <div id="map_canvas"></div>
+</div>
 
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :council, link_for(@council) %>

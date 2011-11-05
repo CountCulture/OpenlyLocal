@@ -1,4 +1,5 @@
 class PlanningApplicationsController < ApplicationController
+  before_filter :enable_google_maps, :only => [:show]
   
   def overview
     @title = 'UK Planning Applications'

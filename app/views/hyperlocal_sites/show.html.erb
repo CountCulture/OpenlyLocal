@@ -1,26 +1,5 @@
-<script type="text/javascript" charset="utf-8">
-  function initMap() {
-    if (GBrowserIsCompatible()) {
-      var map = new GMap2(document.getElementById("map_canvas"));
-      var lat = <%= (@hyperlocal_site.lat).to_f %>;
-      var lng = <%=  (@hyperlocal_site.lng).to_f %>;
-      var distance = <%= @hyperlocal_site.distance_covered %>;
-      var center = new GLatLng(lat, lng);
-      var first_view = true;
-      
-      map.setCenter(center, 9);
-      map.addControl(new GSmallMapControl());
-      map.addControl(new GMapTypeControl());
-      
-      var marker = new GMarker(center);
-            
-      map.addOverlay(marker);
-      drawCircle(map, center, distance);
-      
-    }
-  }
-  
-</script>
+<%= render :partial => 'shared/map_object', :object => @hyperlocal_site %>
+
 <p class="breadcrumbs"><%= link_to "All HyperLocal Sites", hyperlocal_sites_path %></p>
 <div id="general_location">
   <%= "#{link_to(@hyperlocal_site.region, hyperlocal_sites_url(:region => @hyperlocal_site.region), :class => 'region')}, " if @hyperlocal_site.region %>
