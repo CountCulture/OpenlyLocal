@@ -27,6 +27,10 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       assert_equal({:foo => 'bar'}, Factory(:planning_application, :other_attributes => {:foo => 'bar'}).reload.other_attributes)
     end
     
+    should "act as mappable" do
+      assert PlanningApplication.respond_to?(:find_closest)
+    end
+
     context "stale named scope" do
       setup do
         @no_details_application = Factory(:planning_application) #retrieved_at is nil
@@ -76,6 +80,30 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       assert_equal pa.uid, pa.council_reference
       pa.council_reference = 'FOO1234'
       assert_equal 'FOO1234', pa.uid
+    end
+    context "on save" do
+      setup do
+      end
+
+      should "get inferred_lat_lng" do
+        @planning_application.expects(:inferred_lat_lng)
+        @planning_application.save!
+      end
+
+      should "update lat & lng with inferred_lat_lng" do
+        @planning_application.stubs(:inferred_lat_lng).returns([12.1,23.2])
+        @planning_application.save!
+        assert_equal 12.1, @planning_application.lat
+        assert_equal 23.2, @planning_application.lng
+      end
+      
+      should "set lat, lng to nil if inferred_lat_lng is nil" do
+        @planning_application.update_attributes(:lat => 22.2, :lng => 33.3)
+        @planning_application.stubs(:inferred_lat_lng) # => nil
+        @planning_application.save!
+        assert_nil @planning_application.lat
+        assert_nil @planning_application.lng
+      end
     end
     
     context "when assigning address" do
@@ -130,16 +158,16 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       
       should "return lat_long for postcode matching normalised postcode" do
         @planning_application.postcode = 'AB1 2CD'
-        assert_equal [@postcode.lat, @postcode.lng], @planning_application.inferred_lat_long
+        assert_equal [@postcode.lat, @postcode.lng], @planning_application.inferred_lat_lng
       end
 
       should "return nil if postcode is blank" do
-        assert_nil @planning_application.inferred_lat_long
+        assert_nil @planning_application.inferred_lat_lng
       end
       
       should "return nil if no such postcode" do
         @planning_application.postcode = 'CD2 1AB'
-        assert_nil @planning_application.inferred_lat_long
+        assert_nil @planning_application.inferred_lat_lng
       end
     end
   end
