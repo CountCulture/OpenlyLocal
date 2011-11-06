@@ -107,6 +107,15 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         assert_nil @planning_application.lat
         assert_nil @planning_application.lng
       end
+      
+      should "set not lat, lng to nil when inferred_lat_lng is nil if lat,lng has just changed" do
+        @planning_application.lat = 22.2
+        @planning_application.lng = 33.3
+        @planning_application.stubs(:inferred_lat_lng) # => nil
+        @planning_application.save!
+        assert_equal 22.2, @planning_application.lat
+        assert_equal 33.3, @planning_application.lng
+      end
     end
     
     context "when assigning address" do

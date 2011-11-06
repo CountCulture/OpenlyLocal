@@ -1,4 +1,4 @@
-<%= render :partial => 'shared/map_object', :object => @planning_application %>
+<%= render :partial => 'shared/map_object', :object => @planning_application if @planning_application.lat? %>
 
 <div class="breadcrumbs"><%#= link_to "All Local Authority Pension Funds", pension_funds_path %></div>
 <h1><%= @title %></h1>

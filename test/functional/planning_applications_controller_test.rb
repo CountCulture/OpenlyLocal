@@ -49,10 +49,24 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
       should "enable google maps" do
         assert assigns(:enable_google_maps)
       end
+      
+      should "not show google map" do        
+        assert_no_match /GBrowserIsCompatible/i, @response.body
+      end
     
       # should "show api block" do
       #   assert_select "#api_info"
       # end
+    end
+    
+    context "and planning_application has lat, lng" do
+      setup do
+        get :show, :id => Factory(:planning_application_with_lat_long).id
+      end
+
+      should "show google map" do
+        assert_match /GBrowserIsCompatible/i, @response.body
+      end
     end
     
     # context "with xml request" do

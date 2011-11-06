@@ -31,6 +31,7 @@ class PlanningApplication < ActiveRecord::Base
   private
   def update_lat_lng
     i_lat_lng = [inferred_lat_lng].flatten # so gives empty array if nil
-    self[:lat],self[:lng] = i_lat_lng
+    self[:lat] = i_lat_lng[0] unless self[:lat] && self.lat_changed?
+    self[:lng] = i_lat_lng[1] unless self[:lng] && self.lng_changed?
   end
 end
