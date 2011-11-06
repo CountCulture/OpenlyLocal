@@ -1,14 +1,10 @@
-<%= render :partial => 'shared/map_object', :object => @hyperlocal_site %>
-
 <p class="breadcrumbs"><%= link_to "All HyperLocal Sites", hyperlocal_sites_path %></p>
 <div id="general_location">
   <%= "#{link_to(@hyperlocal_site.region, hyperlocal_sites_url(:region => @hyperlocal_site.region), :class => 'region')}, " if @hyperlocal_site.region %>
   <%= link_to(@hyperlocal_site.country, hyperlocal_sites_url(:country => @hyperlocal_site.country), :class => 'country') %>
 </div>
 <h1><%= @hyperlocal_site.title %></h1>
-<div id="hyperlocal_site_map" class="map_outer">
-  <div id="map_canvas"></div>
-</div>
+<%= render :partial => 'shared/map_object', :object => @hyperlocal_site %>
 
 <div id="description" class="intro">
   <%= simple_format(h(@hyperlocal_site.description)) %>
