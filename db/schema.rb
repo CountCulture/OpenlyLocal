@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111030195858) do
+ActiveRecord::Schema.define(:version => 20111107080726) do
 
   create_table "account_lines", :force => true do |t|
     t.column "value", :integer
@@ -979,12 +979,13 @@ ActiveRecord::Schema.define(:version => 20111030195858) do
     t.column "base_url", :string
     t.column "next_due", :datetime
     t.column "frequency", :integer, :limit => 1, :default => 7
+    t.column "priority", :integer, :limit => 1, :default => 4
   end
 
   add_index "scrapers", ["id", "type"], :name => "index_scrapers_on_id_and_type"
   add_index "scrapers", ["parser_id"], :name => "index_scrapers_on_parser_id"
   add_index "scrapers", ["council_id"], :name => "index_scrapers_on_council_id"
-  add_index "scrapers", ["next_due"], :name => "index_scrapers_on_next_due"
+  add_index "scrapers", ["priority", "next_due"], :name => "index_scrapers_on_priority_and_next_due"
 
   create_table "services", :force => true do |t|
     t.column "title", :string

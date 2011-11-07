@@ -1,4 +1,5 @@
 class CsvScraper < Scraper
+  before_create :set_priority
   
   def _data(target_url=nil)
     logger.debug { "Getting data from #{target_url}" }
@@ -9,4 +10,8 @@ class CsvScraper < Scraper
     raise RequestError, error_message
   end
   
+  private
+  def set_priority
+    self[:priority] = -1
+  end
 end

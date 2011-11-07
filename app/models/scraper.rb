@@ -1,3 +1,6 @@
+# Scrapers are normally run as delayed_job, determined by the priority and then by the next_due date
+# Scrapers of priority of less than 1 are never added to the delayed_job queue. These are principally CsvScrapers,
+# which we are only ever run manually. We also don't currently add problematic ones to the queue.
 class Scraper < ActiveRecord::Base
   class ScraperError < StandardError; end
   class RequestError < ScraperError; end
@@ -11,7 +14,7 @@ class Scraper < ActiveRecord::Base
   belongs_to :parser
   belongs_to :council
   validates_presence_of :council_id
-  named_scope :stale, lambda { { :conditions => ["(type != 'CsvScraper') AND ((next_due IS NULL) OR (next_due < ?))", Time.now], :order => "next_due" } }
+  named_scope :stale, { :conditions => "priority > 0", :order => "priority, next_due" }
   named_scope :problematic, { :conditions => { :problematic => true } }
   named_scope :unproblematic, { :conditions => { :problematic => false } }
   # accepts_nested_attributes_for :parser

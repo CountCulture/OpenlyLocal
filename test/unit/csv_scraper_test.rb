@@ -7,6 +7,10 @@ class CsvScraperTest < ActiveSupport::TestCase
     should "be subclass of Scraper class" do
       assert_equal Scraper, CsvScraper.superclass
     end
+    
+    should "set priority to be -1 on create" do
+      assert_equal -1, Factory(:csv_scraper).priority
+    end
   end
 
   context "a CsvScraper instance" do
