@@ -35,32 +35,39 @@ class ScraperTest < ActiveSupport::TestCase
     end
     
     should "have stale named_scope" do
-      expected_options = { :conditions => "priority > 0", :order => "priority, next_due" }
+      expected_options = { :conditions => ["priority > 0 AND (next_due IS NULL OR next_due < ?)", Time.now], :order => "priority, next_due" }
       actual_options = Scraper.stale.proxy_options
-      assert_equal expected_options[:conditions], actual_options[:conditions]
+      assert_equal expected_options[:conditions].first, actual_options[:conditions].first
+      assert_in_delta expected_options[:conditions].last, actual_options[:conditions].last, 2
       assert_equal expected_options[:order], actual_options[:order]
     end
     
-    should "return scrapers ordered by priority and date" do
-      # just checking...
-      @scraper.update_attribute(:next_due, 1.day.from_now)
-      stale_scraper = Factory(:item_scraper, :next_due => 1.day.ago)
-      never_run_scraper = Factory(:info_scraper)
-      high_priority_scraper = Factory(:item_scraper, :next_due => 2.hours.ago, :priority => 2, :council => Factory(:generic_council))
-      more_stale_high_priority_scraper = Factory(:item_scraper, :next_due => 1.day.ago, :priority => 2, :council => Factory(:generic_council))
-      assert_equal [more_stale_high_priority_scraper, high_priority_scraper, never_run_scraper, stale_scraper, @scraper], Scraper.stale
+    context "and when returning stale" do
+      setup do
+        
+      end
+
+      should "return scrapers ordered by priority and date, excluding those next due in future" do
+        # just checking...
+        @scraper.update_attribute(:next_due, 1.day.from_now) # fresh scraper
+        stale_scraper = Factory(:item_scraper, :next_due => 1.day.ago)
+        never_run_scraper = Factory(:info_scraper)
+        high_priority_scraper = Factory(:item_scraper, :next_due => 2.hours.ago, :priority => 2, :council => Factory(:generic_council))
+        more_stale_high_priority_scraper = Factory(:item_scraper, :next_due => 1.day.ago, :priority => 2, :council => Factory(:generic_council))
+        assert_equal [more_stale_high_priority_scraper, high_priority_scraper, never_run_scraper, stale_scraper], Scraper.stale
+      end
+      
+      should "not include CsvScrapers in stale scrapers" do
+        csv_scraper = Factory(:csv_scraper, :next_due => 1.day.ago)
+        assert !Scraper.stale.include?(csv_scraper)
+      end
+
+      should "not include scrapers with negative priority in stale scrapers" do
+        scraper = Factory(:item_scraper, :next_due => 1.day.ago, :priority => -1)
+        assert !Scraper.stale.include?(scraper)
+      end
     end
-    
-    should "not include CsvScrapers in stale scrapers" do
-      csv_scraper = Factory(:csv_scraper, :next_due => 1.day.ago)
-      assert !Scraper.stale.include?(csv_scraper)
-    end
-    
-    should "not include scrapers with negative priority in stale scrapers" do
-      scraper = Factory(:item_scraper, :next_due => 1.day.ago, :priority => -1)
-      assert !Scraper.stale.include?(scraper)
-    end
-    
+        
     should "have problematic named_scope" do
       expected_options = { :conditions => { :problematic => true } }
       actual_options = Scraper.problematic.proxy_options

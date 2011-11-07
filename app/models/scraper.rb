@@ -14,7 +14,7 @@ class Scraper < ActiveRecord::Base
   belongs_to :parser
   belongs_to :council
   validates_presence_of :council_id
-  named_scope :stale, { :conditions => "priority > 0", :order => "priority, next_due" }
+  named_scope :stale, lambda {{ :conditions => ["priority > 0 AND (next_due IS NULL OR next_due < ?)", Time.now], :order => "priority, next_due" }}
   named_scope :problematic, { :conditions => { :problematic => true } }
   named_scope :unproblematic, { :conditions => { :problematic => false } }
   # accepts_nested_attributes_for :parser
