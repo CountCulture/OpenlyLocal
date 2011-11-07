@@ -574,6 +574,9 @@ a.new_scraper_link {
 	margin: 0;
 }
 
+form#scraper_form .defaults {
+  float: right;
+}
 /*Ward-specific formatting*/
 /*body.wards .ward {
 	float:left;

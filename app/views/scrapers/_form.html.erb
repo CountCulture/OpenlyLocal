@@ -1,4 +1,4 @@
-<% form_for :scraper, @scraper, :url => (@scraper.new_record? ? scrapers_path : scraper_path(@scraper)), :html => { :method => (@scraper.new_record? ? :post : :put)} do |f| -%>
+<% form_for :scraper, @scraper, :url => (@scraper.new_record? ? scrapers_path : scraper_path(@scraper)), :html => { :method => (@scraper.new_record? ? :post : :put), :id => 'scraper_form'} do |f| -%>
   <%= hidden_field_tag :type, @scraper.class.to_s %>
 
 	<%- if @scraper.council -%>
@@ -22,13 +22,15 @@
       <%= content_tag(:p, "Will use #{link_to(@scraper.computed_url, @scraper.computed_url, :class => 'external')} by default", :class => "faint", :id => "scraper_default_url") if @scraper.computed_url %>
     <%- end -%>
   </p>
-  <p>
+  <p class="defaults">
     <%= f.label :parsing_library %>
     <%= f.select :parsing_library, Scraper::PARSING_LIBRARIES.collect{|k,v| [v,k] } %><br />
     <%= f.label :use_post, "Use POST request?" %>
     <%= f.check_box :use_post %><br />
     <%= f.label :frequency, "Run every (days)" %>
-    <%= f.text_field :frequency, :size => 2 %>
+    <%= f.text_field :frequency, :size => 2 %><br />
+    <%= f.label :priority, "Priority <em>(1 is highest priority, 7 lowest; set to -1 to never run automatically)</em>" %>
+    <%= f.text_field :priority, :size => 2 %>
   </p>
   <p>
     <%= f.label :base_url, "Base URL for this scraper <em>(will delegate to council if not set)</em>" %>
