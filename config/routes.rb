@@ -63,7 +63,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :related_articles, :only => [:new, :create, :index]
   map.resources :parish_councils, :only => [:show]
-  map.resources :planning_applications, :only => [:show]
+  map.resources :planning_applications, :only => [:show, :index]
   
 
   map.resources :councils, :collection => { :spending => :get }, :member => { :accounts => :get} do |councils|

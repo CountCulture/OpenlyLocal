@@ -10,6 +10,7 @@ class Postcode < ActiveRecord::Base
   
   
   def self.find_from_messy_code(raw_code)
+    return if raw_code.blank?
     find_by_code(raw_code.strip.gsub(/\s/,'').upcase)
   end
   

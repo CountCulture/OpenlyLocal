@@ -4,7 +4,7 @@ class PlanningApplication < ActiveRecord::Base
   validates_presence_of :council_id, :uid
   alias_attribute :council_reference, :uid
   serialize :other_attributes
-  acts_as_mappable
+  acts_as_mappable :default_units => :kms
   before_save :update_lat_lng
   named_scope :stale, lambda { { :conditions => ["retrieved_at IS NULL OR retrieved_at < ?", 7.days.ago] } }
   

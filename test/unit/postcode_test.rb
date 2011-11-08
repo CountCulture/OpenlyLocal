@@ -21,8 +21,15 @@ class PostcodeTest < ActiveSupport::TestCase
       assert Postcode.respond_to?(:find_closest)
     end
     
-    should 'find from raw postcode' do
-      assert_equal @postcode, Postcode.find_from_messy_code(' ab 1 3Dr ')
+    context "when finding from messy code" do
+      should 'find from  cleaned up code' do
+        assert_equal @postcode, Postcode.find_from_messy_code(' ab 1 3Dr ')
+      end
+
+      should 'return nil if code blank' do
+        assert_nil Postcode.find_from_messy_code(nil)
+        assert_nil Postcode.find_from_messy_code('')
+      end
     end
     
     should 'have many councillors through ward' do
