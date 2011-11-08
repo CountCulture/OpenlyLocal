@@ -230,51 +230,66 @@ task :setup_caps_scrapers => :environment do
   SWIFT_LG = {
     'redbridge' => 'http://planning.redbridge.gov.uk/swiftlg'
   }
-  caps_parser = PortalSystem.find_by_name('CAPS (Public Access)').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
-  CAPS_COUNCILS.each do |c,url|
-    unless council = Council.find_by_normalised_title(Council.normalise_title(c))
-      puts "******* Failed to match #{c} to council"
-      next
-    end
-    base_url = (url + '/').sub(/\/+$/,'/')
-    scraper = council.scrapers.find_or_initialize_by_parser_id( :parser_id => caps_parser.id)
-    scraper.update_attributes!( :parsing_library => 'N', 
-                                :use_post => true, 
-                                :frequency => 2,
-                                :base_url => base_url, 
-                                :type => 'ItemScraper')
-    puts "Added CAPS scraper for #{council.name} (#{scraper.inspect})"
+  # caps_parser = PortalSystem.find_by_name('CAPS (Public Access)').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
+  # CAPS_COUNCILS.each do |c,url|
+  #   unless council = Council.find_by_normalised_title(Council.normalise_title(c))
+  #     puts "******* Failed to match #{c} to council"
+  #     next
+  #   end
+  #   base_url = (url + '/').sub(/\/+$/,'/')
+  #   scraper = council.scrapers.find_or_initialize_by_parser_id( :parser_id => caps_parser.id)
+  #   scraper.update_attributes!( :parsing_library => 'N', 
+  #                               :use_post => true, 
+  #                               :frequency => 2,
+  #                               :base_url => base_url, 
+  #                               :type => 'ItemScraper')
+  #   puts "Added CAPS scraper for #{council.name} (#{scraper.inspect})"
+  # end
+  # 
+  # idox_parser = PortalSystem.find_by_name('Idox (Public Access)').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
+  # IDOX_COUNCILS.each do |c,url|
+  #   unless council = Council.find_by_normalised_title(Council.normalise_title(c))
+  #     puts "******* Failed to match #{c} to council"
+  #     next
+  #   end
+  #   params = {"date(applicationValidatedStart)"=>["27/09/2011"], 
+  #             "action"=>["firstPage"], 
+  #             "date(applicationValidatedEnd)"=>["11/10/2011"], 
+  #             "searchType"=>["Application"], 
+  #             "caseAddressType"=>["Application"] } 
+  #   options = {"User-Agent"=>"Mozilla/4.0 (OpenlyLocal.com)"}
+  #   client = HTTPClient.new
+  #   base_url = url.sub(/\/$/,'')
+  #   form_url = base_url +'/advancedSearchResults.do?'
+  #   begin
+  #     resp = client.post(form_url, params, options)
+  #     result = Nokogiri.HTML(resp.content).at('#searchResultsContainer li.searchresult')
+  #     puts "#{council.name}: successfully tested Idox URLs"
+  #     scraper = council.scrapers.find_or_initialize_by_parser_id( :parser_id => idox_parser.id)
+  #     scraper.update_attributes!( :parsing_library => 'N', 
+  #                                :use_post => true, 
+  #                                :frequency => 2,
+  #                                :base_url => base_url, 
+  #                                :type => 'ItemScraper')
+  #     puts "Added Idox scraper for #{council.name} (#{scraper.inspect})"
+  #   rescue Exception => e
+  #     puts "#{c}: Problem getting data from #{form_url}"
+  #   end
+  # 
+  # end
+end
+
+desc "Add up CAPS InfoScrapers"
+task :add_caps_info_scrapers => :environment do
+  caps_system = PortalSystem.find_by_name('CAPS (Public Access)')
+  item_parser = caps_system.parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
+  info_parser = caps_system.parsers.first(:conditions=>{:scraper_type => 'InfoScraper'})
+  item_parser.scrapers.all.each do |scraper|
+    info_scraper = InfoScraper.find_or_initialize_by_parser_id_and_council_id(info_parser.id, scraper.council_id)
+    info_scraper.update_attributes!( :parsing_library => 'N', 
+                                     :use_post => true, 
+                                     :frequency => 2,
+                                     :priority => 3)
   end
   
-  idox_parser = PortalSystem.find_by_name('Idox (Public Access)').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
-  IDOX_COUNCILS.each do |c,url|
-    unless council = Council.find_by_normalised_title(Council.normalise_title(c))
-      puts "******* Failed to match #{c} to council"
-      next
-    end
-    params = {"date(applicationValidatedStart)"=>["27/09/2011"], 
-              "action"=>["firstPage"], 
-              "date(applicationValidatedEnd)"=>["11/10/2011"], 
-              "searchType"=>["Application"], 
-              "caseAddressType"=>["Application"] } 
-    options = {"User-Agent"=>"Mozilla/4.0 (OpenlyLocal.com)"}
-    client = HTTPClient.new
-    base_url = url.sub(/\/$/,'')
-    form_url = base_url +'/advancedSearchResults.do?'
-    begin
-      resp = client.post(form_url, params, options)
-      result = Nokogiri.HTML(resp.content).at('#searchResultsContainer li.searchresult')
-      puts "#{council.name}: successfully tested Idox URLs"
-      scraper = council.scrapers.find_or_initialize_by_parser_id( :parser_id => idox_parser.id)
-      scraper.update_attributes!( :parsing_library => 'N', 
-                                 :use_post => true, 
-                                 :frequency => 2,
-                                 :base_url => base_url, 
-                                 :type => 'ItemScraper')
-      puts "Added Idox scraper for #{council.name} (#{scraper.inspect})"
-    rescue Exception => e
-      puts "#{c}: Problem getting data from #{form_url}"
-    end
-  
-  end
 end
