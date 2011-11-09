@@ -149,6 +149,26 @@ function linkTo(txt,url) {
   return '<a href="'+ url + '">' + txt + '</a>'
 }
 
+function createMarker(obj, map, caption) {
+  var icon = new GIcon(G_DEFAULT_ICON);
+  var iconUrl = "http://chart.apis.google.com/chart?cht=mm&chs=20x20&chco=6699AAFF,336699FF,336699FF&ext=.png";
+  icon.image = iconUrl;
+  icon.iconSize = new GSize(20, 20);
+  icon.shadowSize = new GSize(32, 20);
+  icon.iconAnchor = new GPoint(10, 20);
+  icon.infoWindowAnchor = new GPoint(10, 1);
+  icon.printImage = iconUrl + "&chof=gif";
+  icon.mozPrintImage = iconUrl + "&chf=bg,s,ECECD8" + "&chof=gif";
+
+  var latlng = new GLatLng(obj.lat, obj.lng);
+  var marker = new GMarker(latlng, { icon:icon });
+  GEvent.addListener(marker,"click", function() {
+    map.openInfoWindowHtml(latlng, caption, {maxWidth:200});
+  });
+  return marker;
+}
+
+
 jQuery.fn.getCompanyData = function () {
   var el = $(this)[0];
   if (el) {

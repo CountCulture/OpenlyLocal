@@ -1,4 +1,42 @@
+<script type="text/javascript" charset="utf-8">
+  var planning_apps = <%= @planning_applications.to_json %>;
+  var loc = <%= @postcode ? @postcode.to_json : false %>;
+  
+  function initMap() {
+    if (GBrowserIsCompatible()) {
+      var map = new GMap2(document.getElementById("map_canvas"));
+      var center = new GLatLng(loc.lat, loc.lng);
+      map.setCenter(center, 6); //set default centre
+      
+      var first_view = true;
+      var bounds = new GLatLngBounds(); //set bounding area
+      map.addControl(new GSmallMapControl());
+      map.addControl(new GMapTypeControl());
+      for (var i=0; i < planning_apps.length; i++) {
+        var pa = planning_apps[i].planning_application
+        var m = createMarker(pa, map, planningAppCaption(pa));
+        map.addOverlay(m);
+        bounds.extend(m.getLatLng());
+      };
+      if(loc){
+        map.setZoom(map.getBoundsZoomLevel(bounds));
+        map.setCenter(bounds.getCenter());
+      };
+    }
+  }
+  
+  function planningAppCaption (pa) {
+    var infoCaption = "<div class='caption planning_application'><h4><a href='/planning_applications/" + pa.id + "'>" + pa.uid + "</a>";
+    infoCaption += (pa.date_received ? ", <span class='date'>" + pa.date_received + "</span>" : '') + "</h4><div class='address'>" + pa.address + "</div>";
+    infoCaption += (pa.description ? ("<p>" + pa.description.slice(0,90) + "...") : '<p>');
+    infoCaption += "<a href='/planning_applications/" + pa.id + " class='more_info'>more info</a></p></div>";
+    return infoCaption;
+  }
+</script>
 <h1><%= @title %></h1>
+<div id="planning_applications_map" class="map_outer">
+  <div id="map_canvas"></div>
+</div>
 
 <%= list_all @planning_applications %>
 

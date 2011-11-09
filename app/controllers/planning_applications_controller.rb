@@ -1,5 +1,5 @@
 class PlanningApplicationsController < ApplicationController
-  before_filter :enable_google_maps, :only => [:show]
+  before_filter :enable_google_maps, :only => [:show, :index]
   
   def index
     if @postcode = Postcode.find_from_messy_code(params[:postcode])
@@ -8,7 +8,7 @@ class PlanningApplicationsController < ApplicationController
                                                               :within => distance,
                                                               :order => 'created_at DESC', 
                                                               :limit => 20)
-      @title = "Planning Applications within #{distance}km of #{params[:postcode]}"
+      @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
     end
     @message = "Sorry. No matching Planning Applications" if @planning_applications.blank?
     @message = "Sorry. Postcode not found" if @postcode.blank?

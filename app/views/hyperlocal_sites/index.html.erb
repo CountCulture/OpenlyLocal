@@ -15,7 +15,7 @@
       map.addControl(new GSmallMapControl());
       map.addControl(new GMapTypeControl());
       for (var i=0; i < sites.length; i++) {
-        var m = createMarker(sites[i].hyperlocal_site, map);
+        var m = createMarker(sites[i].hyperlocal_site, map, hyperlocalCaption(sites[i].hyperlocal_site));
         map.addOverlay(m);
         bounds.extend(m.getLatLng());
       };
@@ -26,28 +26,12 @@
     }
   }
   
-  function createMarker(site, map) {
-    var icon = new GIcon(G_DEFAULT_ICON);
-    var iconUrl = "http://chart.apis.google.com/chart?cht=mm&chs=20x20&chco=6699AAFF,336699FF,336699FF&ext=.png";
-    icon.image = iconUrl;
-    icon.iconSize = new GSize(20, 20);
-    icon.shadowSize = new GSize(32, 20);
-    icon.iconAnchor = new GPoint(10, 20);
-    icon.infoWindowAnchor = new GPoint(10, 1);
-    icon.printImage = iconUrl + "&chof=gif";
-    icon.mozPrintImage = iconUrl + "&chf=bg,s,ECECD8" + "&chof=gif";
-
-    var latlng = new GLatLng(site.lat, site.lng);
-    var marker = new GMarker(latlng, { icon:icon });
-    GEvent.addListener(marker,"click", function() {
-      var infoCaption = "<div class='area'>" + site.area_covered + "</div><h4><a href='" + site.url + "' class='external'>" + site.title + "</a></h4>";
-      infoCaption += (site.description ? ("<p>" + site.description.slice(0,90) + "...") : '<p>');
-      infoCaption += "<a href='/hyperlocal_sites/" + site.id + "'>more info</a></p>";
-      map.openInfoWindowHtml(latlng, infoCaption, {maxWidth:200});
-    });
-    return marker;
+  function hyperlocalCaption(site) {
+    var infoCaption = "<div class='caption'><div class='area'>" + site.area_covered + "</div><h4><a href='" + site.url + "' class='external'>" + site.title + "</a></h4>";
+    infoCaption += (site.description ? ("<p>" + site.description.slice(0,90) + "...") : '<p>');
+    infoCaption += "<a href='/hyperlocal_sites/" + site.id + "'>more info</a></p></div>";
+    return infoCaption;
   }
-
 </script>
 <p class="breadcrumbs"><%= link_to (params[:independent]||params[:region]||params[:country] ? "Show all sites" : "Restrict to independent sites"), hyperlocal_sites_url(:independent => !params[:independent]) %></p>
 <h1><%= h @title %></h1>

@@ -750,6 +750,24 @@ p.crime_level {
 	width:450px;
 }
 
+#map_canvas .caption .address {
+  font-style: italic;
+  color: #666;
+}
+#map_canvas .caption h4 {
+  margin-bottom: 0.25em;
+  font-weight: bold;
+}
+#map_canvas .caption .area {
+	text-transform: uppercase;
+	color: #8a1f11;
+	font-size: 0.85em;
+	display:block;
+}
+#map_canvas .caption p {
+  margin-bottom: 0.25em;
+}
+
 /*Hyperlocal formatting*/
 #new_hyperlocal_site label {
 	color:#666;
@@ -776,6 +794,10 @@ ul#hyperlocal_sites>li.country {
 ul#hyperlocal_sites li li{
 	font-weight: normal;
 	font-size: .9em;
+	text-transform: none;
+} 
+ul#hyperlocal_sites .hyperlocal_site_link{
+	text-transform: uppercase;
 } 
 #hyperlocal_sites .area {
 	text-transform: uppercase;
