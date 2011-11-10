@@ -286,9 +286,10 @@ task :add_caps_info_scrapers => :environment do
   info_parser = caps_system.parsers.first(:conditions=>{:scraper_type => 'InfoScraper'})
   item_parser.scrapers.all.each do |scraper|
     info_scraper = InfoScraper.find_or_initialize_by_parser_id_and_council_id(info_parser.id, scraper.council_id)
+    scraper.update_attribute(:base_url, scraper.base_url.sub(/\/$/,''))
     info_scraper.update_attributes!( :parsing_library => 'N', 
                                      :use_post => true, 
-                                     :frequency => 2,
+                                     :frequency => 1,
                                      :priority => 3)
   end
   
