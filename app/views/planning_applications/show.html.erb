@@ -22,11 +22,13 @@
   <div class="extra_info">
     <h3>Description</h3>
     <%= simple_format(@planning_application.description) %>
-    <dl id="other_attributes" class="attributes">
-      <%- @planning_application.other_attributes.each do |attrib_name, attrib_value| -%>
-        <%= attribute_tag attrib_name, attrib_value %>
+      <%- unless @planning_application.other_attributes.blank? -%>
+        <dl id="other_attributes" class="attributes">
+          <%- @planning_application.other_attributes.each do |attrib_name, attrib_value| -%>
+            <%= attribute_tag attrib_name, attrib_value %>
+          <%- end -%>
+        </dl>
       <%- end -%>
-    </dl>
   </div>
 <%- end -%>
 
