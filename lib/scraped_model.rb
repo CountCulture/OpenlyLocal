@@ -159,7 +159,7 @@ module ScrapedModel
       i_class.send :include, InstanceMethods
       i_class.after_save :mark_council_as_updated
       i_class.after_destroy :mark_council_as_updated
-      i_class.named_scope :stale #stub stale method, so returns all, i.e. all are considered stale. This is what we want by defult (so always update all members)
+      i_class.named_scope :stale #stub stale method, so returns all, i.e. all are considered stale. This is what we want by default (so always update all members)
     end
   end
   
