@@ -97,6 +97,34 @@ function getBoundaries(centrePt, radius) {
  var ne = getDestLatLng(centrePt, 45, hypotenuse);
  return new GLatLngBounds(sw, ne);
 }
+
+function createMarker(obj, map, caption) {
+  var icon = new GIcon(G_DEFAULT_ICON);
+  var iconUrl = "http://chart.apis.google.com/chart?cht=mm&chs=20x20&chco=6699AAFF,336699FF,336699FF&ext=.png";
+  icon.image = iconUrl;
+  icon.iconSize = new GSize(20, 20);
+  icon.shadowSize = new GSize(32, 20);
+  icon.iconAnchor = new GPoint(10, 20);
+  icon.infoWindowAnchor = new GPoint(10, 1);
+  icon.printImage = iconUrl + "&chof=gif";
+  icon.mozPrintImage = iconUrl + "&chf=bg,s,ECECD8" + "&chof=gif";
+
+  var latlng = new GLatLng(obj.lat, obj.lng);
+  var marker = new GMarker(latlng, { icon:icon });
+  GEvent.addListener(marker,"click", function() {
+    map.openInfoWindowHtml(latlng, caption, {maxWidth:200});
+  });
+  return marker;
+}
+
+function planningAppCaption (pa) {
+  var infoCaption = "<div class='caption planning_application'><h4><a href='/planning_applications/" + pa.id + "'>" + pa.uid + "</a>";
+  infoCaption += (pa.date_received ? ", <span class='date'>" + pa.date_received + "</span>" : '') + "</h4><div class='address'>" + pa.address + "</div>";
+  infoCaption += (pa.description ? ("<p>" + pa.description.slice(0,90) + "...") : '<p>');
+  infoCaption += "<a href='/planning_applications/" + pa.id + " class='more_info'>more info</a></p></div>";
+  return infoCaption;
+}
+
 function populateCompanyData(companyData) {
   var company = companyData.company;
   var dlData = {};
@@ -148,26 +176,6 @@ function toTitleCase(str)
 function linkTo(txt,url) {
   return '<a href="'+ url + '">' + txt + '</a>'
 }
-
-function createMarker(obj, map, caption) {
-  var icon = new GIcon(G_DEFAULT_ICON);
-  var iconUrl = "http://chart.apis.google.com/chart?cht=mm&chs=20x20&chco=6699AAFF,336699FF,336699FF&ext=.png";
-  icon.image = iconUrl;
-  icon.iconSize = new GSize(20, 20);
-  icon.shadowSize = new GSize(32, 20);
-  icon.iconAnchor = new GPoint(10, 20);
-  icon.infoWindowAnchor = new GPoint(10, 1);
-  icon.printImage = iconUrl + "&chof=gif";
-  icon.mozPrintImage = iconUrl + "&chf=bg,s,ECECD8" + "&chof=gif";
-
-  var latlng = new GLatLng(obj.lat, obj.lng);
-  var marker = new GMarker(latlng, { icon:icon });
-  GEvent.addListener(marker,"click", function() {
-    map.openInfoWindowHtml(latlng, caption, {maxWidth:200});
-  });
-  return marker;
-}
-
 
 jQuery.fn.getCompanyData = function () {
   var el = $(this)[0];
