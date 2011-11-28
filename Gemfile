@@ -20,6 +20,8 @@ gem 'will_paginate', '~> 2.3.11'#, :source => 'http://gemcutter.org'
 gem "acts-as-taggable-on"#, :source => 'http://gemcutter.org'
 gem 'hoptoad_notifier'
 gem 'sitemap_generator', :require => false
+gem 'capistrano'
+gem 'capistrano-ext'
 
 group :test do
   gem 'shoulda'
