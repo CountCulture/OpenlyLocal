@@ -1,6 +1,8 @@
 source :rubygems
 
 gem 'rails', '2.3.14'
+gem 'mysql2', '~> 0.2'
+gem 'spatial_adapter'
 gem 'geokit'
 gem 'georuby'
 gem 'nokogiri', '~> 1.4.1'
