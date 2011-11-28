@@ -6,7 +6,7 @@ class PlanningApplication < ActiveRecord::Base
   serialize :other_attributes
   acts_as_mappable :default_units => :kms
   before_save :update_lat_lng
-  named_scope :stale, lambda { { :conditions => ["retrieved_at IS NULL OR retrieved_at < ?", 7.days.ago], :limit => 500 } }
+  named_scope :stale, lambda { { :conditions => ["retrieved_at IS NULL OR retrieved_at < ?", 7.days.ago], :limit => 100, :order => 'retrieved_at' } }
   
   def address=(raw_address)
     cleaned_up_address = raw_address.blank? ? raw_address : raw_address.gsub("\r", "\n").gsub(/\s{2,}/,' ').strip

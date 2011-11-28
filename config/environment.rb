@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.14' unless defined? RAILS_GEM_VERSION
+# RAILS_GEM_VERSION = '2.3.14' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -23,23 +23,6 @@ Rails::Initializer.run do |config|
   # Specify gems that this application depends on. 
   # They can then be installed with "rake gems:install" on new installations.
   # You have to specify the :lib option for libraries, where the Gem name (sqlite3-ruby) differs from the file itself (sqlite3)
-  config.gem "geokit"
-  config.gem "hpricot"
-  config.gem 'whenever', :lib => false#, :source => 'http://gemcutter.org'
-  config.gem 'fastercsv'
-  config.gem 'googlecharts', :lib => "gchart"
-  config.gem "newrelic_rpm"
-  config.gem "twitter", :version => '~> 0.9'
-  config.gem "httpclient"
-  config.gem 'crack'
-  config.gem "pauldix-feedzirra", :lib => "feedzirra", :source => 'http://gems.github.com'
-  config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
-  config.gem "acts-as-taggable-on", :source => 'http://gemcutter.org'
-  config.gem 'hoptoad_notifier'
-  config.gem 'nokogiri', :version => '~> 1.4.1'
-  config.gem 'sitemap_generator', :lib => false
-  # config.gem "sqlite3-ruby", :lib => "sqlite3"
-  # config.gem "aws-s3", :lib => "aws/s3"
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
@@ -88,7 +71,7 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :financial_transaction_observer
 end
 require 'open-uri'
-require 'company_utilities' #phusion passenger seems to require this
+# require 'company_utilities' #phusion passenger seems to require this
 
 Dir.glob(RAILS_ROOT + '/app/models/user_submission_types/*') {|file| require File.basename(file, '.rb')} #YAML serialisation requires this in order to instantiate objects properly on deserialisation
 
