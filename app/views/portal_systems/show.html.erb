@@ -14,4 +14,10 @@
 <div id="parsers" class="item_grouping">
   <h4>Parsers</h4>
   <%= list_all @parsers %>
+  
+  <%= link_to "New ItemScraper parser", new_parser_path(:portal_system_id => @portal_system.id, :scraper_type => "ItemScraper") %>
+  <br />
+  <%= link_to "New InfoScraper parser", new_parser_path(:portal_system_id => @portal_system.id, :scraper_type => "InfoScraper") %>
+  <br />
+  <%= link_to "New CsvScraper parser", new_parser_path(:portal_system_id => @portal_system.id, :scraper_type => "CsvScraper") %>
 </div>
