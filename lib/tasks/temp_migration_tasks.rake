@@ -292,5 +292,145 @@ task :add_caps_info_scrapers => :environment do
                                      :frequency => 1,
                                      :priority => 3)
   end
-  
+end
+
+desc "Add FastWEB portal system"
+task :add_fastweb_portal_system => :environment do
+  begin
+    unless PortalSystem.find_by_name("FastWEB")
+      fastweb_portal = PortalSystem.create(:name => "FastWEB", :url => "http://www.innogistic.co.uk/eplanning.php")
+    end
+  rescue Exception => e
+    puts "Couldn't create FastWEB portal system: #{e}"
+  end 
+end
+
+desc "Create FastWEB item parser"
+task :add_fastweb_item_parser => :environment do
+  portal_system = PortalSystem.find_by_name("FastWEB")
+  begin
+    parser = Parser.create(
+      :portal_system => portal_system,
+      :scraper_type => 'ItemScraper',
+      :description => "FastWEB item parser",
+      :result_model => 'PlanningApplication',
+      :path =>          'results.asp?Scroll=1&DateReceivedStart=#{14.days.ago.strftime("%d-%m-%Y")}&DateReceivedEnd=#{0.days.ago.strftime("%d-%m-%Y")}&Sort1=DateReceived+DESC&Sort2=DateReceived+DESC&Submit=Search',
+      :item_parser => %{item.search("//table[@border='0' and @cellspacing='0' and @cellpadding='4' and @width='100%']")},
+      :attribute_parser => {
+        'uid' => %{item.css("a").first.inner_text},
+        'url' => %{base_url + item.css("a").first[:href].sub(/detail/, 'fulldetail')} # Don't add a / after the base_url as that always ends with a / itself
+      }
+    )
+  rescue Exception => e
+    puts "Error creating FastWEB parser: #{e}"
+  end  
+end
+
+FASTWEB_COUNCILS = {
+  'craven' =>             'http://www.planning.cravendc.gov.uk/fastweb/',
+  'eastleigh' =>          'http://www.eastleigh.gov.uk/fastweb',
+  'wyre forest' =>        'http://www.wyreforest.gov.uk/fastweb',
+  'mansfield' =>          'http://www.mansfield.gov.uk/fastweb',
+  'neath port talbot' =>  'https://planning.npt.gov.uk',
+  'newport' =>            'http://www.newport.gov.uk/fastWeb',
+  'sutton' =>             'http://213.122.180.105/FASTWEB/',
+  'south lakeland' =>     'http://www.southlakeland.gov.uk/fastweb',
+  'eden' =>               'http://eforms.eden.gov.uk/fastweb'
+}
+
+desc "Create FastWEB item scrapers for all councils"
+task :add_fastweb_item_scrapers => :environment do
+
+  parser = PortalSystem.find_by_name('FastWEB').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
+
+  FASTWEB_COUNCILS.each do |c,url|
+    unless council = Council.find_by_normalised_title(Council.normalise_title(c))
+      puts "******* Failed to match #{c} to council"
+      next
+    end
+    base_url = (url + '/').sub(/\/+$/,'/') # Ensure that there's exactly one forward slash at the end of the base_url
+    scraper = council.scrapers.find_or_initialize_by_parser_id(:parser_id => parser.id)
+    scraper.update_attributes!( :parsing_library => 'N', 
+                                :use_post => false, 
+                                :frequency => 2,
+                                :base_url => base_url, 
+                                :type => 'ItemScraper')
+    # STI 'type' column can't be mass-assigned, apparently: http://stackoverflow.com/a/1503967
+    scraper[:type] = 'ItemScraper'
+    scraper.save                                
+    puts "Added scraper for #{council.name} (#{scraper.inspect})"
+  end
+end
+
+desc "Create FastWEB info parser"
+task :add_fastweb_info_parser => :environment do
+  portal_system = PortalSystem.find_by_name("FastWEB")
+  begin
+    parser = Parser.create(
+      :portal_system => portal_system,
+      :scraper_type => 'InfoScraper',
+      :description => "FastWEB info parser",
+      :result_model => 'PlanningApplication',
+      :path =>          '',
+      :item_parser => %{item.at("body")},
+      :attribute_parser => {
+        'uid' =>      %q{item.at("//th[@class='RecordTitle' and .='Planning Application Number:']/../td").inner_text.strip},
+        'address' =>      %q{item.at("//th[@class='RecordTitle' and .='Site Address:']/../td").inner_text.strip.gsub(/\s{2,}/, ', ')},
+        'description' =>      %q{item.at("//th[@class='RecordTitle' and .='Description:']/../td").inner_text.strip},
+        'status' =>      %q{item.at("//th[@class='RecordTitle' and .='Application Status:']/../td").inner_text.strip},
+        'date_valid' =>      %q{item.at("//th[@class='RecordTitle' and .='Date Valid:']/../td").inner_text.strip},
+        'decision' =>      %q{item.at("//th[@class='RecordTitle' and .='Decision:']/../td").inner_text.strip},
+        'decision_date' =>      %q{item.at("//th[@class='RecordTitle' and .='Decision Date:']/../td").inner_text.strip},
+        'decision_level_or_committee' =>      %q{item.at("//th[@class='RecordTitle' and .='Decision Level/Committee:']/../td").inner_text.strip},
+        'appeal' =>      %q{item.at("//th[@class='RecordTitle' and .='Appeal:']/../td").inner_text.strip},
+        'case_officer_and_phone_number' =>      %q{item.at("//th[@class='RecordTitle' and .='Case Officer and Phone No.:']/../td").inner_text.strip},
+        'applicant_name' =>      %q{item.at("//th[@class='RecordTitle' and .='Applicant Name & Address:']/../td").inner_html.sub(/<br\s*\/?>.*/i, '').strip},
+        'applicant_address' =>      %q{item.at("//th[@class='RecordTitle' and .='Applicant Name & Address:']/../td").inner_html.sub(/.*<br\s*\/?>/i, '').strip.gsub(/\s{2,}/, ', ').strip},
+        'agent_name' =>      %q{item.at("//th[@class='RecordTitle' and .='Agent Name & Address:']/../td").inner_html.sub(/<br\s*\/?>.*/i, '').strip},
+        'agent_address' =>      %q{item.at("//th[@class='RecordTitle' and .='Agent Name & Address:']/../td").inner_html.sub(/.*<br\s*\/?>/i, '').strip.gsub(/\s{2,}/, ', ').strip},
+        'ward' =>      %q{item.at("//th[@class='RecordTitle' and .='Ward:']/../td").inner_text.strip},
+        'parish' =>      %q{item.at("//th[@class='RecordTitle' and .='Parish:']/../td").inner_text.strip},
+        'listed_building_grade' =>      %q{item.at("//th[@class='RecordTitle' and .='Listed Building Grade:']/../td").inner_text.strip},
+        'departure_from_local_plan' =>      %q{item.at("//th[@class='RecordTitle' and .='Departure from Local Plan:']/../td").inner_text.strip},
+        'major_development' =>      %q{item.at("//th[@class='RecordTitle' and .='Major Development:']/../td").inner_text.strip},
+        'date_received' =>      %q{item.at("//th[@class='RecordTitle' and .='Date Received:']/../td").inner_text.strip},
+        'committee_date' =>      %q{item.at("//th[@class='RecordTitle' and .='Committee Date:']/../td").inner_text.strip},
+        'deferred' =>      %q{item.at("//th[@class='RecordTitle' and .='Deferred:']/../td").inner_text.strip},
+        'deferred_date' =>      %q{item.at("//th[@class='RecordTitle' and .='Deferred Date:']/../td").inner_text.strip},
+        'temporary_expiry_date' =>      %q{item.at("//th[@class='RecordTitle' and .='Temporary Expiry Date:']/../td").inner_text.strip},
+        'site_notice_date' =>      %q{item.at("//th[@class='RecordTitle' and .='Site Notice Date:']/../td").inner_text.strip},
+        'advert_date' =>      %q{item.at("//th[@class='RecordTitle' and .='Advert Date:']/../td").inner_text.strip},
+        'consulation_period_begins' =>      %q{item.at("//th[@class='RecordTitle' and .='Consultation Period Begins:']/../td").inner_text.strip},
+        'consulation_period_ends' =>      %q{item.at("//th[@class='RecordTitle' and .='Consultation Period Ends:']/../td").inner_text.strip}
+      }
+    )
+  rescue Exception => e
+    puts "Error creating FastWEB parser: #{e}"
+  end  
+end
+
+
+desc "Create FastWEB info scrapers for all councils"
+task :add_fastweb_info_scrapers => :environment do
+
+  parser = PortalSystem.find_by_name('FastWEB').parsers.first(:conditions=>{:scraper_type => 'InfoScraper'})
+
+  FASTWEB_COUNCILS.each do |c,url|
+    unless council = Council.find_by_normalised_title(Council.normalise_title(c))
+      puts "******* Failed to match #{c} to council"
+      next
+    end
+#     base_url = (url + '/').sub(/\/+$/,'/') # Ensure that there's exactly one forward slash at the end of the base_url
+    scraper = council.scrapers.find_or_initialize_by_parser_id(:parser_id => parser.id)
+    scraper.update_attributes!( :parsing_library => 'N', 
+                                :use_post => false, 
+                                :frequency => 1,
+                                :priority => 3,
+                                :base_url => '', 
+                                :type => 'InfoScraper')
+    # STI 'type' column can't be mass-assigned, apparently: http://stackoverflow.com/a/1503967
+    scraper[:type] = 'InfoScraper'
+    scraper.save
+    puts "Added scraper for #{council.name} (#{scraper.inspect})"
+  end
 end
