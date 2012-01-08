@@ -573,7 +573,10 @@ class SpendingStatTest < ActiveSupport::TestCase
         end
 
         should "return array of single array if just one transaction" do
-          assert_equal [[@payment_4.date.beginning_of_month.to_date, @payment_4.value]], @another_supplier.create_spending_stat.calculated_spend_by_month
+          calc_sp = @another_supplier.create_spending_stat.calculated_spend_by_month
+          assert_equal @payment_4.date.beginning_of_month.to_date, calc_sp.first.first
+          assert_in_delta @payment_4.value, calc_sp.first.last, 0.01
+          # assert_equal [[@payment_4.date.beginning_of_month.to_date, @payment_4.value]], @another_supplier.create_spending_stat.calculated_spend_by_month
         end
       end
       

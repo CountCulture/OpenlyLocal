@@ -1,7 +1,8 @@
 source :rubygems
 
 gem 'rails', '2.3.14'
-gem 'mysql2', '~> 0.2'
+# gem 'mysql2', '~> 0.2'
+gem 'mysql'
 gem 'spatial_adapter'
 gem 'geokit'
 gem 'georuby'
@@ -22,8 +23,16 @@ gem 'hoptoad_notifier'
 gem 'sitemap_generator', :require => false
 gem 'capistrano'
 gem 'capistrano-ext'
+gem 'rdf', :require => false
+gem 'rdf-rdfxml', :require => false
+gem 'json'
 
 group :test do
+  # gem 'guard'
+  # gem 'minitest', '~>2.8'
+  # gem 'guard-minitest'
+  # gem 'ruby-prof'
   gem 'shoulda'
+  gem 'mocha', :require => false
   gem 'factory_girl'
 end

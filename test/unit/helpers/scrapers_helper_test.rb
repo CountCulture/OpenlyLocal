@@ -103,20 +103,25 @@ class ScrapersHelperTest < ActionView::TestCase
       assert_equal Scraper::SCRAPER_TYPES.size*Parser::ALLOWED_RESULT_CLASSES.size, scraper_links_for_council(@council).size
     end
     
-    should "class as problem if scraper is problematic" do
+    should "class as problematic if scraper is problematic" do
       @scraper.class.any_instance.stubs(:problematic?).returns(true)
-      assert_equal link_for(@scraper, :class => "problematic"), scraper_links_for_council(@council).first
+      scraper_link = Nokogiri.HTML( scraper_links_for_council(@council).first)
+      assert scraper_link.at('a.problematic')
     end
     
     should "class as stale if scraper is stale" do
       @scraper.class.any_instance.stubs(:stale?).returns(true)
-      assert_equal link_for(@scraper, :class => "stale"), scraper_links_for_council(@council).first
+      scraper_link = Nokogiri.HTML( scraper_links_for_council(@council).first)
+      assert scraper_link.at('a.stale')
     end
     
-    should "class as problem and stale if scraper is problematic and stale" do
+    should "class as problematic and stale if scraper is problematic and stale" do
+      expected_link = link_for(@scraper, :class => "stale problematic")
       @scraper.class.any_instance.stubs(:stale?).returns(true)
       @scraper.class.any_instance.stubs(:problematic?).returns(true)
-      assert_equal link_for(@scraper, :class => "stale problematic"), scraper_links_for_council(@council).first
+      scraper_link = Nokogiri.HTML( scraper_links_for_council(@council).first)
+      assert scraper_link.at('a.stale')
+      assert scraper_link.at('a.problematic')
     end
     
     should "return links for not yet created scrapers" do

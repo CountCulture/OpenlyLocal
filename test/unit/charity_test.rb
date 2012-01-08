@@ -141,19 +141,19 @@ class CharityTest < ActiveSupport::TestCase
       end
       
       context "and problem updating info on charities" do
-        setup do
-          Charity.any_instance.stubs(:update_from_charity_register).returns(true)
-        end
+        # setup do
+        #   Charity.any_instance.stubs(:update_from_charity_register).returns(true)
+        # end
 
         should "still save basic charity details" do
-          Charity.any_instance.expects(:update_social_networking_details_from_website).raises
+          Charity.any_instance.expects(:update_info).twice.raises
           assert_difference "Charity.count", 2 do
             charities = Charity.add_new_charities
           end
         end
         
         should "not raise exception if Timeout:Error" do
-          Charity.any_instance.expects(:update_social_networking_details_from_website).raises(Timeout::Error)
+          Charity.any_instance.expects(:update_info).twice.raises(Timeout::Error)
           
           assert_nothing_raised() { Charity.add_new_charities }
         end
