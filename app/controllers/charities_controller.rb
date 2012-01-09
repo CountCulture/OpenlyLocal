@@ -1,6 +1,6 @@
 class CharitiesController < ApplicationController
   before_filter :linked_data_available, :only => :show
-  before_filter :authenticate, :except => :show
+  before_filter :authenticate, :except => [:show, :refresh]
   
   def show
     @charity = Charity.find(params[:id], :include => { :supplying_relationships => :organisation })
@@ -19,6 +19,16 @@ class CharitiesController < ApplicationController
   
   def edit
     @charity = Charity.find(params[:id])
+  end
+  
+  def refresh
+    @charity = Charity.find(params[:id])
+    Delayed::Job.enqueue(@charity)
+    if request.xhr?
+      head :ok
+    else
+      redirect_to charity_url(@charity)
+    end
   end
   
   def update

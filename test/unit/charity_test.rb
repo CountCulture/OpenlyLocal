@@ -362,6 +362,13 @@ class CharityTest < ActiveSupport::TestCase
       end
     end
     
+    context "when performing" do
+      should "update_from_charity_register" do
+        @charity.expects(:update_from_charity_register)
+        @charity.perform
+      end
+    end
+    
     context "when returning possible_company?" do
       should "return true only if Governing Document begins with Mem etc" do
         assert Charity.new(:governing_document => 'Memorandum etc').possible_company?

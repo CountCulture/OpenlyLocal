@@ -361,15 +361,14 @@ class ParsersControllerTest < ActionController::TestCase
         setup do
           stub_authentication
           @new_csv_parser_params = {:result_model => "Committee",
-                                    :attribute_mapping_object => [{:attrib_name => "new_foo", :column_name => "new bar"}]}
+                                    :attribute_mapping_object => [{:attrib_name => "new_foo", :column_name => "new_bar"}]}
           put :update, :id => @csv_parser.id, :csv_parser => @new_csv_parser_params
         end
 
         should_not_change ('The number of parsers') { Parser.count }
         
         should 'update parser' do
-          p @csv_parser.reload, @csv_parser.attribute_mapping, @csv_parser.attribute_mapping[:new_foo]
-          assert_equal "new bar", @csv_parser.reload.attribute_mapping[:new_foo]
+          assert_equal "new_bar", @csv_parser.reload.attribute_mapping[:new_foo]
         end
 
         should assign_to :parser

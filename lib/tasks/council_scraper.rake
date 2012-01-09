@@ -613,3 +613,8 @@ task :import_os_parish_councils => :environment do
     end
   end
 end
+
+desc "Import NALC parish councils"
+task :import_nalc_parish_councils => :environment do
+
+end

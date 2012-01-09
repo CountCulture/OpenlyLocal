@@ -1,6 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
 
-  map.resources :charities
+  map.resources :charities, :member => { :refresh => :put }
 
   map.resources :investigations
 

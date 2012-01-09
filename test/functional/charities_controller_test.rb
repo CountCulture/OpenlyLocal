@@ -178,6 +178,7 @@ class CharitiesControllerTest < ActionController::TestCase
     
     context "with valid params" do
       setup do
+        stub_authentication
         put :update, :id => @charity.id, :charity => { :website => "http://new.name.com"}
       end
     
@@ -207,17 +208,15 @@ class CharitiesControllerTest < ActionController::TestCase
   end  
   
   context "on PUT to :refresh" do
-    context "with asked to update from CC website" do
+    context "in general" do
       setup do
-        Charity.any_instance.stubs(:update_from_charity_register)
         put :refresh, :id => @charity.id
       end
     
       should assign_to :charity
-      should respond_with :success
+      should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
       
       should "add to delayed job queue" do
-        # Charity.any_instance.expects(:update_from_charity_register)
         Delayed::Job.expects(:enqueue).with(kind_of(Charity))
         put :refresh, :id => @charity.id
       end
@@ -226,6 +225,19 @@ class CharitiesControllerTest < ActionController::TestCase
         assert_nil @charity.manually_updated
       end
       
+    end
+    
+    context "with xhr request" do
+      setup do
+        xhr :put, :refresh, :id => @charity.id
+      end
+      
+      should respond_with :success
+
+      should "add to delayed job queue" do
+        Delayed::Job.expects(:enqueue).with(kind_of(Charity))
+        xhr :put, :refresh, :id => @charity.id
+      end
     end
     
     

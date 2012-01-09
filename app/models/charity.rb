@@ -67,6 +67,10 @@ class Charity < ActiveRecord::Base
     
   end
   
+  def perform
+    update_from_charity_register
+  end
+  
   def possible_company?
     governing_document&&governing_document.match(/Mem|M&A|M & A/i)
   end
