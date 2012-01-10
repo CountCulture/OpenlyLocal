@@ -26,6 +26,7 @@ gem 'capistrano-ext'
 gem 'rdf', :require => false
 gem 'rdf-rdfxml', :require => false
 gem 'json'
+gem 'delayed_job', '~>2.0'
 
 group :test do
   # gem 'guard'

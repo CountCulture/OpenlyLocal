@@ -31,6 +31,9 @@ GEM
       nokogiri
     crack (0.3.1)
     curb (0.7.16)
+    daemons (1.1.5)
+    delayed_job (2.0.6)
+      daemons
     factory_girl (2.3.2)
       activesupport
     fastercsv (1.5.4)
@@ -114,6 +117,7 @@ DEPENDENCIES
   capistrano-ext
   companies-house
   crack
+  delayed_job (~> 2.0)
   factory_girl
   fastercsv
   feedzirra
