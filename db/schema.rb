@@ -9,490 +9,490 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111107080726) do
+ActiveRecord::Schema.define(:version => 20120109205737) do
 
   create_table "account_lines", :force => true do |t|
-    t.column "value", :integer
-    t.column "period", :string
-    t.column "sub_heading", :string
-    t.column "classification_id", :integer
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.integer  "value"
+    t.string   "period"
+    t.string   "sub_heading"
+    t.integer  "classification_id"
+    t.string   "organisation_type"
+    t.integer  "organisation_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "addresses", :force => true do |t|
-    t.column "street_address", :text, :limit => 16777215
-    t.column "locality", :string
-    t.column "postal_code", :string
-    t.column "country", :string
-    t.column "addressee_type", :string
-    t.column "addressee_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "region", :string
-    t.column "former", :boolean, :default => false
-    t.column "lat", :float
-    t.column "lng", :float
-    t.column "raw_address", :text
+    t.text     "street_address", :limit => 16777215
+    t.string   "locality"
+    t.string   "postal_code"
+    t.string   "country"
+    t.string   "addressee_type"
+    t.integer  "addressee_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "region"
+    t.boolean  "former",                             :default => false
+    t.float    "lat"
+    t.float    "lng"
+    t.text     "raw_address"
   end
 
   add_index "addresses", ["addressee_id", "addressee_type"], :name => "index_addresses_on_addressee_id_and_addressee_type"
   add_index "addresses", ["lat", "lng"], :name => "index_addresses_on_lat_and_lng"
 
   create_table "authority", :primary_key => "authority_id", :options=>'ENGINE=MyISAM', :force => true do |t|
-    t.column "full_name", :string, :limit => 200, :null => false
-    t.column "short_name", :string, :limit => 100, :null => false
-    t.column "planning_email", :string, :limit => 100, :null => false
-    t.column "feed_url", :string
-    t.column "external", :boolean
-    t.column "disabled", :boolean
-    t.column "notes", :text
+    t.string  "full_name",      :limit => 200, :null => false
+    t.string  "short_name",     :limit => 100, :null => false
+    t.string  "planning_email", :limit => 100, :null => false
+    t.string  "feed_url"
+    t.boolean "external"
+    t.boolean "disabled"
+    t.text    "notes"
   end
 
-  add_index "authority", ["short_name"], :name => "short_name"
   add_index "authority", ["short_name", "authority_id", "full_name"], :name => "search"
+  add_index "authority", ["short_name"], :name => "short_name"
 
   create_table "boundaries", :force => true do |t|
-    t.column "area_type", :string
-    t.column "area_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "boundary_line", :multi_polygon
-    t.column "hectares", :float
+    t.string        "area_type"
+    t.integer       "area_id"
+    t.datetime      "created_at"
+    t.datetime      "updated_at"
+    t.multi_polygon "boundary_line", :limit => nil
+    t.float         "hectares"
   end
 
   add_index "boundaries", ["area_id", "area_type"], :name => "index_boundaries_on_area_id_and_area_type"
 
   create_table "candidates", :force => true do |t|
-    t.column "poll_id", :integer
-    t.column "first_name", :string
-    t.column "last_name", :string
-    t.column "party", :string
-    t.column "elected", :boolean
-    t.column "votes", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "basic_address", :text, :limit => 16777215
-    t.column "political_party_id", :integer
-    t.column "member_id", :integer
+    t.integer  "poll_id"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "party"
+    t.boolean  "elected"
+    t.integer  "votes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "basic_address",      :limit => 16777215
+    t.integer  "political_party_id"
+    t.integer  "member_id"
   end
 
-  add_index "candidates", ["poll_id"], :name => "index_candidates_on_poll_id"
-  add_index "candidates", ["political_party_id"], :name => "index_candidates_on_political_party_id"
   add_index "candidates", ["member_id"], :name => "index_candidates_on_member_id"
+  add_index "candidates", ["political_party_id"], :name => "index_candidates_on_political_party_id"
+  add_index "candidates", ["poll_id"], :name => "index_candidates_on_poll_id"
 
   create_table "charities", :force => true do |t|
-    t.column "title", :string
-    t.column "activities", :text, :limit => 16777215
-    t.column "charity_number", :string
-    t.column "website", :string
-    t.column "email", :string
-    t.column "telephone", :string
-    t.column "date_registered", :date
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "vat_number", :string
-    t.column "contact_name", :string
-    t.column "accounts_date", :date
-    t.column "spending", :integer
-    t.column "income", :integer
-    t.column "date_removed", :date
-    t.column "normalised_title", :string
-    t.column "employees", :integer
-    t.column "accounts", :text, :limit => 16777215
-    t.column "financial_breakdown", :text, :limit => 16777215
-    t.column "trustees", :text, :limit => 16777215
-    t.column "other_names", :text
-    t.column "volunteers", :integer
-    t.column "last_checked", :datetime
-    t.column "facebook_account_name", :string
-    t.column "youtube_account_name", :string
-    t.column "feed_url", :string
-    t.column "governing_document", :text, :limit => 16777215
-    t.column "company_number", :string
-    t.column "housing_association_number", :string
-    t.column "fax", :string
-    t.column "subsidiary_number", :integer
-    t.column "area_of_benefit", :string
-    t.column "signed_up_for_1010", :boolean, :default => false
-    t.column "corrected_company_number", :string
-    t.column "manually_updated", :datetime
+    t.string   "title"
+    t.text     "activities",                 :limit => 16777215
+    t.string   "charity_number"
+    t.string   "website"
+    t.string   "email"
+    t.string   "telephone"
+    t.date     "date_registered"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "vat_number"
+    t.string   "contact_name"
+    t.date     "accounts_date"
+    t.integer  "spending"
+    t.integer  "income"
+    t.date     "date_removed"
+    t.string   "normalised_title"
+    t.integer  "employees"
+    t.text     "accounts",                   :limit => 16777215
+    t.text     "financial_breakdown",        :limit => 16777215
+    t.text     "trustees",                   :limit => 16777215
+    t.text     "other_names"
+    t.integer  "volunteers"
+    t.datetime "last_checked"
+    t.string   "facebook_account_name"
+    t.string   "youtube_account_name"
+    t.string   "feed_url"
+    t.text     "governing_document",         :limit => 16777215
+    t.string   "company_number"
+    t.string   "housing_association_number"
+    t.string   "fax"
+    t.integer  "subsidiary_number"
+    t.string   "area_of_benefit"
+    t.boolean  "signed_up_for_1010",                             :default => false
+    t.string   "corrected_company_number"
+    t.datetime "manually_updated"
   end
 
   add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number"
+  add_index "charities", ["corrected_company_number"], :name => "index_charities_on_normalised_company_number"
   add_index "charities", ["date_registered"], :name => "index_charities_on_date_registered"
   add_index "charities", ["income"], :name => "index_charities_on_income"
-  add_index "charities", ["spending"], :name => "index_charities_on_spending"
   add_index "charities", ["normalised_title"], :name => "index_charities_on_normalised_title"
+  add_index "charities", ["spending"], :name => "index_charities_on_spending"
   add_index "charities", ["title"], :name => "index_charities_on_title"
-  add_index "charities", ["corrected_company_number"], :name => "index_charities_on_normalised_company_number"
 
   create_table "charity_annual_reports", :force => true do |t|
-    t.column "charity_id", :integer
-    t.column "annual_return_code", :string
-    t.column "financial_year_start", :date
-    t.column "financial_year_end", :date
-    t.column "income_from_legacies", :integer
-    t.column "income_from_endowments", :integer
-    t.column "voluntary_income", :integer
-    t.column "activities_generating_funds", :integer
-    t.column "income_from_charitable_activities", :integer
-    t.column "investment_income", :integer
-    t.column "other_income", :integer
-    t.column "total_income", :integer
-    t.column "investment_gains", :integer
-    t.column "gains_from_asset_revaluations", :integer
-    t.column "gains_on_pension_fund", :integer
-    t.column "voluntary_income_costs", :integer
-    t.column "fundraising_trading_costs", :integer
-    t.column "investment_management_costs", :integer
-    t.column "grants_to_institutions", :integer
-    t.column "charitable_activities_costs", :integer
-    t.column "governance_costs", :integer
-    t.column "other_expenses", :integer
-    t.column "total_expenses", :integer
-    t.column "support_costs", :integer
-    t.column "depreciation", :integer
-    t.column "reserves", :integer
-    t.column "fixed_assets_at_start_of_year", :integer
-    t.column "fixed_assets_at_end_of_year", :integer
-    t.column "fixed_investment_assets_at_end_of_year", :integer
-    t.column "fixed_investment_assets_at_start_of_year", :integer
-    t.column "current_investment_assets", :integer
-    t.column "cash", :integer
-    t.column "total_current_assets", :integer
-    t.column "creditors_within_1_year", :integer
-    t.column "long_term_creditors_or_provisions", :integer
-    t.column "pension_assets", :integer
-    t.column "total_assets", :integer
-    t.column "endowment_funds", :integer
-    t.column "restricted_funds", :integer
-    t.column "unrestricted_funds", :integer
-    t.column "total_funds", :integer
-    t.column "employees", :integer
-    t.column "volunteers", :integer
-    t.column "consolidated_accounts", :boolean
-    t.column "charity_only_accounts", :boolean
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.integer  "charity_id"
+    t.string   "annual_return_code"
+    t.date     "financial_year_start"
+    t.date     "financial_year_end"
+    t.integer  "income_from_legacies"
+    t.integer  "income_from_endowments"
+    t.integer  "voluntary_income"
+    t.integer  "activities_generating_funds"
+    t.integer  "income_from_charitable_activities"
+    t.integer  "investment_income"
+    t.integer  "other_income"
+    t.integer  "total_income"
+    t.integer  "investment_gains"
+    t.integer  "gains_from_asset_revaluations"
+    t.integer  "gains_on_pension_fund"
+    t.integer  "voluntary_income_costs"
+    t.integer  "fundraising_trading_costs"
+    t.integer  "investment_management_costs"
+    t.integer  "grants_to_institutions"
+    t.integer  "charitable_activities_costs"
+    t.integer  "governance_costs"
+    t.integer  "other_expenses"
+    t.integer  "total_expenses"
+    t.integer  "support_costs"
+    t.integer  "depreciation"
+    t.integer  "reserves"
+    t.integer  "fixed_assets_at_start_of_year"
+    t.integer  "fixed_assets_at_end_of_year"
+    t.integer  "fixed_investment_assets_at_end_of_year"
+    t.integer  "fixed_investment_assets_at_start_of_year"
+    t.integer  "current_investment_assets"
+    t.integer  "cash"
+    t.integer  "total_current_assets"
+    t.integer  "creditors_within_1_year"
+    t.integer  "long_term_creditors_or_provisions"
+    t.integer  "pension_assets"
+    t.integer  "total_assets"
+    t.integer  "endowment_funds"
+    t.integer  "restricted_funds"
+    t.integer  "unrestricted_funds"
+    t.integer  "total_funds"
+    t.integer  "employees"
+    t.integer  "volunteers"
+    t.boolean  "consolidated_accounts"
+    t.boolean  "charity_only_accounts"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "charity_annual_reports", ["charity_id"], :name => "index_charity_annual_reports_on_charity_id"
 
   create_table "classification_links", :force => true do |t|
-    t.column "classification_id", :integer
-    t.column "classified_type", :string
-    t.column "classified_id", :integer
+    t.integer "classification_id"
+    t.string  "classified_type"
+    t.integer "classified_id"
   end
 
-  add_index "classification_links", ["classified_id", "classified_type"], :name => "index_classification_links_on_classified_id_and_classified_type"
   add_index "classification_links", ["classification_id"], :name => "index_classification_links_on_classification_id"
+  add_index "classification_links", ["classified_id", "classified_type"], :name => "index_classification_links_on_classified_id_and_classified_type"
 
   create_table "classifications", :force => true do |t|
-    t.column "grouping", :string
-    t.column "title", :string
-    t.column "extended_title", :text, :limit => 16777215
-    t.column "uid", :string
-    t.column "parent_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "grouping"
+    t.string   "title"
+    t.text     "extended_title", :limit => 16777215
+    t.string   "uid"
+    t.integer  "parent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "committees", :force => true do |t|
-    t.column "title", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "url", :string
-    t.column "council_id", :integer
-    t.column "uid", :string
-    t.column "description", :text, :limit => 16777215
-    t.column "ward_id", :integer
-    t.column "normalised_title", :string
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "url"
+    t.integer  "council_id"
+    t.string   "uid"
+    t.text     "description",      :limit => 16777215
+    t.integer  "ward_id"
+    t.string   "normalised_title"
   end
 
   add_index "committees", ["council_id"], :name => "index_committees_on_council_id"
   add_index "committees", ["ward_id"], :name => "index_committees_on_ward_id"
 
   create_table "companies", :force => true do |t|
-    t.column "title", :string
-    t.column "url", :string
-    t.column "company_number", :string
-    t.column "supplier_id", :integer
-    t.column "normalised_title", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "incorporation_date", :date
-    t.column "company_type", :string
-    t.column "wikipedia_url", :string
-    t.column "status", :string
-    t.column "vat_number", :string
-    t.column "previous_names", :text, :limit => 16777215
-    t.column "sic_codes", :text, :limit => 16777215
-    t.column "country", :string
+    t.string   "title"
+    t.string   "url"
+    t.string   "company_number"
+    t.integer  "supplier_id"
+    t.string   "normalised_title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.date     "incorporation_date"
+    t.string   "company_type"
+    t.string   "wikipedia_url"
+    t.string   "status"
+    t.string   "vat_number"
+    t.text     "previous_names",     :limit => 16777215
+    t.text     "sic_codes",          :limit => 16777215
+    t.string   "country"
   end
 
   create_table "contracts", :force => true do |t|
-    t.column "title", :string
-    t.column "description", :text, :limit => 16777215
-    t.column "uid", :string
-    t.column "source_url", :string
-    t.column "url", :string
-    t.column "organisation_id", :integer
-    t.column "organisation_type", :string
-    t.column "start_date", :date
-    t.column "end_date", :date
-    t.column "duration", :string
-    t.column "total_value", :integer
-    t.column "annual_value", :integer
-    t.column "supplier_name", :string
-    t.column "supplier_address", :text, :limit => 16777215
-    t.column "supplier_uid", :string
-    t.column "department_responsible", :string
-    t.column "person_responsible", :string
-    t.column "email", :string
-    t.column "telephone", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "title"
+    t.text     "description",            :limit => 16777215
+    t.string   "uid"
+    t.string   "source_url"
+    t.string   "url"
+    t.integer  "organisation_id"
+    t.string   "organisation_type"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "duration"
+    t.integer  "total_value"
+    t.integer  "annual_value"
+    t.string   "supplier_name"
+    t.text     "supplier_address",       :limit => 16777215
+    t.string   "supplier_uid"
+    t.string   "department_responsible"
+    t.string   "person_responsible"
+    t.string   "email"
+    t.string   "telephone"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "contracts", ["organisation_id", "organisation_type"], :name => "index_contracts_on_organisation_id_and_organisation_type"
 
   create_table "council_contacts", :force => true do |t|
-    t.column "name", :string
-    t.column "position", :string
-    t.column "email", :string
-    t.column "council_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "approved", :datetime
+    t.string   "name"
+    t.string   "position"
+    t.string   "email"
+    t.integer  "council_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "approved"
   end
 
   add_index "council_contacts", ["council_id"], :name => "index_council_contacts_on_council_id"
 
   create_table "councils", :force => true do |t|
-    t.column "name", :string
-    t.column "url", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "base_url", :string
-    t.column "telephone", :string
-    t.column "address", :text, :limit => 16777215
-    t.column "authority_type", :string
-    t.column "portal_system_id", :integer
-    t.column "notes", :text, :limit => 16777215
-    t.column "wikipedia_url", :string
-    t.column "ons_url", :string
-    t.column "egr_id", :integer
-    t.column "wdtk_name", :string
-    t.column "feed_url", :string
-    t.column "data_source_url", :string
-    t.column "data_source_name", :string
-    t.column "snac_id", :string
-    t.column "country", :string
-    t.column "population", :integer
-    t.column "ldg_id", :integer
-    t.column "os_id", :string
-    t.column "parent_authority_id", :integer
-    t.column "police_force_url", :string
-    t.column "police_force_id", :integer
-    t.column "ness_id", :string
-    t.column "lat", :float
-    t.column "lng", :float
-    t.column "cipfa_code", :string
-    t.column "region", :string
-    t.column "signed_up_for_1010", :boolean, :default => false
-    t.column "pension_fund_id", :integer
-    t.column "gss_code", :string
-    t.column "annual_audit_letter", :string
-    t.column "output_area_classification_id", :integer
-    t.column "defunkt", :boolean, :default => false
-    t.column "open_data_url", :string
-    t.column "open_data_licence", :string
-    t.column "normalised_title", :string
-    t.column "wdtk_id", :integer
-    t.column "vat_number", :string
-    t.column "planning_email", :string
+    t.string   "name"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "base_url"
+    t.string   "telephone"
+    t.text     "address",                       :limit => 16777215
+    t.string   "authority_type"
+    t.integer  "portal_system_id"
+    t.text     "notes",                         :limit => 16777215
+    t.string   "wikipedia_url"
+    t.string   "ons_url"
+    t.integer  "egr_id"
+    t.string   "wdtk_name"
+    t.string   "feed_url"
+    t.string   "data_source_url"
+    t.string   "data_source_name"
+    t.string   "snac_id"
+    t.string   "country"
+    t.integer  "population"
+    t.integer  "ldg_id"
+    t.string   "os_id"
+    t.integer  "parent_authority_id"
+    t.string   "police_force_url"
+    t.integer  "police_force_id"
+    t.string   "ness_id"
+    t.float    "lat"
+    t.float    "lng"
+    t.string   "cipfa_code"
+    t.string   "region"
+    t.boolean  "signed_up_for_1010",                                :default => false
+    t.integer  "pension_fund_id"
+    t.string   "gss_code"
+    t.string   "annual_audit_letter"
+    t.integer  "output_area_classification_id"
+    t.boolean  "defunkt",                                           :default => false
+    t.string   "open_data_url"
+    t.string   "open_data_licence"
+    t.string   "normalised_title"
+    t.integer  "wdtk_id"
+    t.string   "vat_number"
+    t.string   "planning_email"
   end
 
-  add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
-  add_index "councils", ["portal_system_id"], :name => "index_councils_on_portal_system_id"
+  add_index "councils", ["output_area_classification_id"], :name => "index_councils_on_output_area_classification_id"
   add_index "councils", ["parent_authority_id"], :name => "index_councils_on_parent_authority_id"
   add_index "councils", ["pension_fund_id"], :name => "index_councils_on_pension_fund_id"
-  add_index "councils", ["output_area_classification_id"], :name => "index_councils_on_output_area_classification_id"
+  add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
+  add_index "councils", ["portal_system_id"], :name => "index_councils_on_portal_system_id"
 
   create_table "crime_areas", :force => true do |t|
-    t.column "uid", :string
-    t.column "police_force_id", :integer
-    t.column "name", :string
-    t.column "level", :integer
-    t.column "parent_area_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "crime_mapper_url", :string
-    t.column "feed_url", :string
-    t.column "crime_level_cf_national", :string
-    t.column "crime_rates", :text, :limit => 16777215
-    t.column "total_crimes", :text, :limit => 16777215
+    t.string   "uid"
+    t.integer  "police_force_id"
+    t.string   "name"
+    t.integer  "level"
+    t.integer  "parent_area_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "crime_mapper_url"
+    t.string   "feed_url"
+    t.string   "crime_level_cf_national"
+    t.text     "crime_rates",             :limit => 16777215
+    t.text     "total_crimes",            :limit => 16777215
   end
 
   add_index "crime_areas", ["police_force_id"], :name => "index_crime_areas_on_police_force_id"
 
   create_table "crime_types", :force => true do |t|
-    t.column "uid", :string
-    t.column "name", :string
-    t.column "plural_name", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "uid"
+    t.string   "name"
+    t.string   "plural_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "data_periods", :force => true do |t|
-    t.column "start_date", :date
-    t.column "end_date", :date
+    t.date "start_date"
+    t.date "end_date"
   end
 
   create_table "data_periods_dataset_families", :id => false, :force => true do |t|
-    t.column "data_period_id", :integer
-    t.column "dataset_family_id", :integer
+    t.integer "data_period_id"
+    t.integer "dataset_family_id"
   end
 
   create_table "datapoints", :force => true do |t|
-    t.column "value", :float
-    t.column "dataset_topic_id", :integer
-    t.column "area_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "area_type", :string
-    t.column "data_period_id", :integer
+    t.float    "value"
+    t.integer  "dataset_topic_id"
+    t.integer  "area_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "area_type"
+    t.integer  "data_period_id"
   end
 
-  add_index "datapoints", ["dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
   add_index "datapoints", ["area_id", "area_type"], :name => "index_datapoints_on_area_id_and_area_type"
+  add_index "datapoints", ["dataset_topic_id"], :name => "index_ons_datapoints_on_ons_dataset_topic_id"
 
   create_table "dataset_families", :force => true do |t|
-    t.column "title", :string
-    t.column "ons_uid", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "source_type", :string
-    t.column "dataset_id", :integer
-    t.column "calculation_method", :string
+    t.string   "title"
+    t.integer  "ons_uid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "source_type"
+    t.integer  "dataset_id"
+    t.string   "calculation_method"
   end
 
   add_index "dataset_families", ["dataset_id"], :name => "index_dataset_families_on_dataset_id"
 
   create_table "dataset_families_ons_subjects", :id => false, :force => true do |t|
-    t.column "ons_subject_id", :integer
-    t.column "dataset_family_id", :integer
+    t.integer "ons_subject_id"
+    t.integer "dataset_family_id"
   end
 
-  add_index "dataset_families_ons_subjects", ["ons_subject_id", "dataset_family_id"], :name => "ons_families_subjects_join_index"
   add_index "dataset_families_ons_subjects", ["dataset_family_id", "ons_subject_id"], :name => "ons_subjects_families_join_index"
+  add_index "dataset_families_ons_subjects", ["ons_subject_id", "dataset_family_id"], :name => "ons_families_subjects_join_index"
 
   create_table "dataset_topic_groupings", :force => true do |t|
-    t.column "title", :string
-    t.column "display_as", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "sort_by", :string
+    t.string   "title"
+    t.string   "display_as"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "sort_by"
   end
 
   create_table "dataset_topics", :force => true do |t|
-    t.column "title", :string
-    t.column "ons_uid", :integer
-    t.column "dataset_family_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "muid", :integer
-    t.column "description", :text, :limit => 16777215
-    t.column "data_date", :date
-    t.column "short_title", :string
-    t.column "dataset_topic_grouping_id", :integer
+    t.string   "title"
+    t.integer  "ons_uid"
+    t.integer  "dataset_family_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "muid"
+    t.text     "description",               :limit => 16777215
+    t.date     "data_date"
+    t.string   "short_title"
+    t.integer  "dataset_topic_grouping_id"
   end
 
   add_index "dataset_topics", ["dataset_family_id"], :name => "index_ons_dataset_topics_on_ons_dataset_family_id"
   add_index "dataset_topics", ["dataset_topic_grouping_id"], :name => "index_dataset_topics_on_dataset_topic_grouping_id"
 
   create_table "datasets", :force => true do |t|
-    t.column "title", :string
-    t.column "description", :text, :limit => 16777215
-    t.column "url", :string
-    t.column "originator", :string
-    t.column "originator_url", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "dataset_topic_grouping_id", :integer
-    t.column "notes", :text, :limit => 16777215
-    t.column "licence", :string
+    t.string   "title"
+    t.text     "description",               :limit => 16777215
+    t.string   "url"
+    t.string   "originator"
+    t.string   "originator_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "dataset_topic_grouping_id"
+    t.text     "notes",                     :limit => 16777215
+    t.string   "licence"
   end
 
   add_index "datasets", ["dataset_topic_grouping_id"], :name => "index_datasets_on_dataset_topic_grouping_id"
 
   create_table "delayed_jobs", :force => true do |t|
-    t.column "priority", :integer, :default => 0
-    t.column "attempts", :integer, :default => 0
-    t.column "handler", :text, :limit => 16777215
-    t.column "last_error", :text, :limit => 16777215
-    t.column "run_at", :datetime
-    t.column "locked_at", :datetime
-    t.column "failed_at", :datetime
-    t.column "locked_by", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.integer  "priority",                       :default => 0
+    t.integer  "attempts",                       :default => 0
+    t.text     "handler",    :limit => 16777215
+    t.text     "last_error", :limit => 16777215
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "index_delayed_jobs_on_priority_and_run_at"
 
   create_table "documents", :force => true do |t|
-    t.column "title", :string
-    t.column "body", :text, :limit => 16777215
-    t.column "url", :string
-    t.column "document_owner_id", :integer
-    t.column "document_owner_type", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "raw_body", :text, :limit => 16777215
-    t.column "document_type", :string
-    t.column "precis", :text, :limit => 16777215
+    t.string   "title"
+    t.text     "body",                :limit => 16777215
+    t.string   "url"
+    t.integer  "document_owner_id"
+    t.string   "document_owner_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "raw_body",            :limit => 16777215
+    t.string   "document_type"
+    t.text     "precis",              :limit => 16777215
   end
 
   add_index "documents", ["document_owner_id", "document_owner_type"], :name => "index_documents_on_document_owner_id_and_document_owner_type"
   add_index "documents", ["url"], :name => "index_documents_on_url"
 
   create_table "entities", :force => true do |t|
-    t.column "title", :string
-    t.column "entity_type", :string
-    t.column "entity_subtype", :string
-    t.column "website", :string
-    t.column "wikipedia_url", :string
-    t.column "sponsoring_organisation", :string
-    t.column "wdtk_name", :string
-    t.column "previous_names", :text, :limit => 16777215
-    t.column "setup_on", :date
-    t.column "disbanded_on", :date
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "vat_number", :string
-    t.column "cpid_code", :string
-    t.column "normalised_title", :string
-    t.column "other_attributes", :text, :limit => 16777215
-    t.column "external_resource_uri", :string
-    t.column "telephone", :string
+    t.string   "title"
+    t.string   "entity_type"
+    t.string   "entity_subtype"
+    t.string   "website"
+    t.string   "wikipedia_url"
+    t.string   "sponsoring_organisation"
+    t.string   "wdtk_name"
+    t.text     "previous_names",          :limit => 16777215
+    t.date     "setup_on"
+    t.date     "disbanded_on"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "vat_number"
+    t.string   "cpid_code"
+    t.string   "normalised_title"
+    t.text     "other_attributes",        :limit => 16777215
+    t.string   "external_resource_uri"
+    t.string   "telephone"
   end
 
   create_table "feed_entries", :force => true do |t|
-    t.column "title", :string
-    t.column "summary", :text, :limit => 16777215
-    t.column "url", :string
-    t.column "published_at", :datetime
-    t.column "guid", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "feed_owner_type", :string
-    t.column "feed_owner_id", :integer
-    t.column "lat", :float
-    t.column "lng", :float
+    t.string   "title"
+    t.text     "summary",         :limit => 16777215
+    t.string   "url"
+    t.datetime "published_at"
+    t.string   "guid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "feed_owner_type"
+    t.integer  "feed_owner_id"
+    t.float    "lat"
+    t.float    "lng"
   end
 
   add_index "feed_entries", ["feed_owner_id", "feed_owner_type"], :name => "index_feed_entries_on_feed_owner_id_and_feed_owner_type"
@@ -500,633 +500,637 @@ ActiveRecord::Schema.define(:version => 20111107080726) do
   add_index "feed_entries", ["published_at"], :name => "index_feed_entries_on_published_at"
 
   create_table "financial_transactions", :force => true do |t|
-    t.column "description", :text, :limit => 16777215
-    t.column "uid", :string
-    t.column "supplier_id", :integer
-    t.column "date", :date
-    t.column "department_name", :string
-    t.column "service", :string
-    t.column "cost_centre", :string
-    t.column "source_url", :text, :limit => 16777215
-    t.column "value", :float
-    t.column "transaction_type", :string
-    t.column "date_fuzziness", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "invoice_number", :string
-    t.column "csv_line_number", :integer
-    t.column "classification_id", :integer
-    t.column "invoice_date", :date
+    t.text     "description",       :limit => 16777215
+    t.string   "uid"
+    t.integer  "supplier_id"
+    t.date     "date"
+    t.string   "department_name"
+    t.string   "service"
+    t.string   "cost_centre"
+    t.text     "source_url",        :limit => 16777215
+    t.float    "value"
+    t.string   "transaction_type"
+    t.integer  "date_fuzziness"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "invoice_number"
+    t.integer  "csv_line_number"
+    t.integer  "classification_id"
+    t.date     "invoice_date"
   end
 
+  add_index "financial_transactions", ["date"], :name => "index_financial_transactions_on_date"
   add_index "financial_transactions", ["supplier_id"], :name => "index_financial_transactions_on_supplier_id"
   add_index "financial_transactions", ["value"], :name => "index_financial_transactions_on_value"
-  add_index "financial_transactions", ["date"], :name => "index_financial_transactions_on_date"
 
   create_table "hyperlocal_groups", :force => true do |t|
-    t.column "title", :string
-    t.column "url", :string
-    t.column "email", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "title"
+    t.string   "url"
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "hyperlocal_sites", :force => true do |t|
-    t.column "title", :string
-    t.column "url", :string
-    t.column "email", :string
-    t.column "feed_url", :string
-    t.column "lat", :float
-    t.column "lng", :float
-    t.column "distance_covered", :float
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "hyperlocal_group_id", :integer
-    t.column "platform", :string
-    t.column "description", :text, :limit => 16777215
-    t.column "area_covered", :string
-    t.column "council_id", :integer
-    t.column "country", :string
-    t.column "approved", :boolean, :default => false
-    t.column "party_affiliation", :string
+    t.string   "title"
+    t.string   "url"
+    t.string   "email"
+    t.string   "feed_url"
+    t.float    "lat"
+    t.float    "lng"
+    t.float    "distance_covered"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "hyperlocal_group_id"
+    t.string   "platform"
+    t.text     "description",         :limit => 16777215
+    t.string   "area_covered"
+    t.integer  "council_id"
+    t.string   "country"
+    t.boolean  "approved",                                :default => false
+    t.string   "party_affiliation"
   end
 
-  add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"
   add_index "hyperlocal_sites", ["council_id"], :name => "index_hyperlocal_sites_on_council_id"
+  add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"
 
   create_table "investigation_subject_connections", :force => true do |t|
-    t.column "investigation_id", :integer
-    t.column "subject_id", :integer
-    t.column "subject_type", :string
+    t.integer "investigation_id"
+    t.integer "subject_id"
+    t.string  "subject_type"
   end
 
   add_index "investigation_subject_connections", ["investigation_id"], :name => "index_investigation_subject_connections_on_investigation_id"
   add_index "investigation_subject_connections", ["subject_id", "subject_type"], :name => "index_investigation_subject_connections_on_subject"
 
   create_table "investigations", :force => true do |t|
-    t.column "uid", :string
-    t.column "url", :string
-    t.column "related_organisation_name", :string
-    t.column "raw_html", :text, :limit => 16777215
-    t.column "standards_body", :string
-    t.column "title", :string
-    t.column "subjects", :string
-    t.column "date_received", :date
-    t.column "date_completed", :date
-    t.column "description", :text, :limit => 16777215
-    t.column "result", :text, :limit => 16777215
-    t.column "case_details", :text, :limit => 16777215
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "full_report_url", :string
-    t.column "related_organisation_type", :string
-    t.column "related_organisation_id", :integer
+    t.string   "uid"
+    t.string   "url"
+    t.string   "related_organisation_name"
+    t.text     "raw_html",                  :limit => 16777215
+    t.string   "standards_body"
+    t.string   "title"
+    t.string   "subjects"
+    t.date     "date_received"
+    t.date     "date_completed"
+    t.text     "description",               :limit => 16777215
+    t.text     "result",                    :limit => 16777215
+    t.text     "case_details",              :limit => 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "full_report_url"
+    t.string   "related_organisation_type"
+    t.integer  "related_organisation_id"
   end
 
   add_index "investigations", ["related_organisation_id", "related_organisation_type"], :name => "index_investigations_on_related_organisation"
 
   create_table "ldg_services", :force => true do |t|
-    t.column "category", :string
-    t.column "lgsl", :integer
-    t.column "lgil", :integer
-    t.column "service_name", :string
-    t.column "authority_level", :string
-    t.column "url", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "category"
+    t.integer  "lgsl"
+    t.integer  "lgil"
+    t.string   "service_name"
+    t.string   "authority_level"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "meetings", :force => true do |t|
-    t.column "date_held", :datetime
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "committee_id", :integer
-    t.column "uid", :string
-    t.column "council_id", :integer
-    t.column "url", :string
-    t.column "venue", :text, :limit => 16777215
-    t.column "status", :string
+    t.datetime "date_held"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "committee_id"
+    t.string   "uid"
+    t.integer  "council_id"
+    t.string   "url"
+    t.text     "venue",        :limit => 16777215
+    t.string   "status"
   end
 
-  add_index "meetings", ["council_id"], :name => "index_meetings_on_council_id"
   add_index "meetings", ["committee_id"], :name => "index_meetings_on_committee_id"
+  add_index "meetings", ["council_id"], :name => "index_meetings_on_council_id"
 
   create_table "members", :force => true do |t|
-    t.column "first_name", :string
-    t.column "last_name", :string
-    t.column "party", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "url", :string
-    t.column "email", :string
-    t.column "telephone", :string
-    t.column "date_elected", :date
-    t.column "date_left", :date
-    t.column "council_id", :integer
-    t.column "uid", :string
-    t.column "name_title", :string
-    t.column "qualifications", :string
-    t.column "register_of_interests", :string
-    t.column "address", :text, :limit => 16777215
-    t.column "ward_id", :integer
-    t.column "blog_url", :string
-    t.column "facebook_account_name", :string
-    t.column "linked_in_account_name", :string
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "party"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "url"
+    t.string   "email"
+    t.string   "telephone"
+    t.date     "date_elected"
+    t.date     "date_left"
+    t.integer  "council_id"
+    t.string   "uid"
+    t.string   "name_title"
+    t.string   "qualifications"
+    t.string   "register_of_interests"
+    t.text     "address",                :limit => 16777215
+    t.integer  "ward_id"
+    t.string   "blog_url"
+    t.string   "facebook_account_name"
+    t.string   "linked_in_account_name"
   end
 
   add_index "members", ["council_id"], :name => "index_members_on_council_id"
   add_index "members", ["ward_id"], :name => "index_members_on_ward_id"
 
   create_table "memberships", :force => true do |t|
-    t.column "member_id", :integer
-    t.column "committee_id", :integer
-    t.column "date_joined", :date
-    t.column "date_left", :date
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "council_id", :integer
+    t.integer  "member_id"
+    t.integer  "committee_id"
+    t.date     "date_joined"
+    t.date     "date_left"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "council_id"
   end
 
   add_index "memberships", ["committee_id", "member_id"], :name => "index_memberships_on_committee_id_and_member_id"
 
   create_table "officers", :force => true do |t|
-    t.column "first_name", :string
-    t.column "last_name", :string
-    t.column "name_title", :string
-    t.column "qualifications", :string
-    t.column "position", :string
-    t.column "council_id", :integer
-    t.column "url", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "name_title"
+    t.string   "qualifications"
+    t.string   "position"
+    t.integer  "council_id"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "officers", ["council_id"], :name => "index_officers_on_council_id"
 
   create_table "ons_datasets", :force => true do |t|
-    t.column "start_date", :date
-    t.column "end_date", :date
-    t.column "dataset_family_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.date     "start_date"
+    t.date     "end_date"
+    t.integer  "dataset_family_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "ons_datasets", ["dataset_family_id"], :name => "index_ons_datasets_on_ons_dataset_family_id"
 
   create_table "ons_subjects", :force => true do |t|
-    t.column "title", :string
-    t.column "ons_uid", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "title"
+    t.integer  "ons_uid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "output_area_classifications", :force => true do |t|
-    t.column "title", :string
-    t.column "uid", :string
-    t.column "area_type", :string
-    t.column "level", :integer
+    t.string  "title"
+    t.string  "uid"
+    t.string  "area_type"
+    t.integer "level"
   end
 
   create_table "output_areas", :force => true do |t|
-    t.column "oa_code", :string
-    t.column "lsoa_code", :string
-    t.column "lsoa_name", :string
-    t.column "ward_id", :integer
-    t.column "ward_snac_id", :string
+    t.string  "oa_code"
+    t.string  "lsoa_code"
+    t.string  "lsoa_name"
+    t.integer "ward_id"
+    t.string  "ward_snac_id"
   end
 
   add_index "output_areas", ["ward_id"], :name => "index_output_areas_on_ward_id"
 
   create_table "parish_councils", :force => true do |t|
-    t.column "title", :string
-    t.column "os_id", :string
-    t.column "website", :text
-    t.column "gss_code", :string
-    t.column "council_id", :integer
-    t.column "wdtk_name", :string
-    t.column "vat_number", :string
-    t.column "normalised_title", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "feed_url", :string
-    t.column "facebook_account_name", :string
-    t.column "youtube_account_name", :string
+    t.string   "title"
+    t.string   "os_id"
+    t.text     "website"
+    t.string   "gss_code"
+    t.integer  "council_id"
+    t.string   "wdtk_name"
+    t.string   "vat_number"
+    t.string   "normalised_title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "feed_url"
+    t.string   "facebook_account_name"
+    t.string   "youtube_account_name"
+    t.string   "council_type",          :limit => 8
   end
 
-  add_index "parish_councils", ["os_id"], :name => "index_parish_councils_on_os_id"
   add_index "parish_councils", ["council_id"], :name => "index_parish_councils_on_council_id"
+  add_index "parish_councils", ["os_id"], :name => "index_parish_councils_on_os_id"
   add_index "parish_councils", ["title"], :name => "index_parish_councils_on_title"
 
   create_table "parsers", :force => true do |t|
-    t.column "description", :string
-    t.column "item_parser", :text, :limit => 16777215
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "attribute_parser", :text, :limit => 16777215
-    t.column "portal_system_id", :integer
-    t.column "result_model", :string
-    t.column "related_model", :string
-    t.column "scraper_type", :string
-    t.column "path", :string
-    t.column "type", :string
-    t.column "attribute_mapping", :text, :limit => 16777215
-    t.column "skip_rows", :integer
-    t.column "cookie_path", :string
+    t.string   "description"
+    t.text     "item_parser",       :limit => 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "attribute_parser",  :limit => 16777215
+    t.integer  "portal_system_id"
+    t.string   "result_model"
+    t.string   "related_model"
+    t.string   "scraper_type"
+    t.string   "path"
+    t.string   "type"
+    t.text     "attribute_mapping", :limit => 16777215
+    t.integer  "skip_rows"
+    t.string   "cookie_path"
   end
 
-  add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"
   add_index "parsers", ["id", "type"], :name => "index_parsers_on_id_and_type"
+  add_index "parsers", ["portal_system_id"], :name => "index_parsers_on_portal_system_id"
 
   create_table "pension_funds", :force => true do |t|
-    t.column "name", :string
-    t.column "url", :string
-    t.column "telephone", :string
-    t.column "email", :string
-    t.column "fax", :string
-    t.column "address", :text, :limit => 16777215
-    t.column "wdtk_name", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "wdtk_id", :integer
+    t.string   "name"
+    t.string   "url"
+    t.string   "telephone"
+    t.string   "email"
+    t.string   "fax"
+    t.text     "address",    :limit => 16777215
+    t.string   "wdtk_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "wdtk_id"
   end
 
-  create_table "planning_alert_subscribers", :force => true do |t|
-    t.column "email", :string, :limit => 120, :null => false
-    t.column "postcode", :string, :limit => 10, :null => false
-    t.column "digest_mode", :boolean, :default => false, :null => false
-    t.column "last_sent", :datetime
-    t.column "bottom_left_x", :integer
-    t.column "bottom_left_y", :integer
-    t.column "top_right_x", :integer
-    t.column "top_right_y", :integer
-    t.column "confirm_id", :string, :limit => 20
-    t.column "confirmed", :boolean
-    t.column "alert_area_size", :string, :limit => 1
+  create_table "planning_alert_subscribers", :id => false, :force => true do |t|
+    t.integer  "id",                             :default => 0,     :null => false
+    t.string   "email",           :limit => 120,                    :null => false
+    t.string   "postcode",        :limit => 10,                     :null => false
+    t.boolean  "digest_mode",                    :default => false, :null => false
+    t.datetime "last_sent"
+    t.integer  "bottom_left_x"
+    t.integer  "bottom_left_y"
+    t.integer  "top_right_x"
+    t.integer  "top_right_y"
+    t.string   "confirm_id",      :limit => 20
+    t.boolean  "confirmed"
+    t.string   "alert_area_size", :limit => 1
   end
 
-  create_table "planning_alert_subscribers_copy", :options=>'ENGINE=MyISAM', :force => true do |t|
-    t.column "email", :string, :limit => 120, :null => false
-    t.column "postcode", :string, :limit => 10, :null => false
-    t.column "digest_mode", :boolean, :default => false, :null => false
-    t.column "last_sent", :datetime
-    t.column "bottom_left_x", :integer
-    t.column "bottom_left_y", :integer
-    t.column "top_right_x", :integer
-    t.column "top_right_y", :integer
-    t.column "confirm_id", :string, :limit => 20
-    t.column "confirmed", :boolean
-    t.column "alert_area_size", :string, :limit => 1
+  create_table "planning_alert_subscribers_copy", :id => false, :options=>'ENGINE=MyISAM', :force => true do |t|
+    t.integer  "id",                             :default => 0,     :null => false
+    t.string   "email",           :limit => 120,                    :null => false
+    t.string   "postcode",        :limit => 10,                     :null => false
+    t.boolean  "digest_mode",                    :default => false, :null => false
+    t.datetime "last_sent"
+    t.integer  "bottom_left_x"
+    t.integer  "bottom_left_y"
+    t.integer  "top_right_x"
+    t.integer  "top_right_y"
+    t.string   "confirm_id",      :limit => 20
+    t.boolean  "confirmed"
+    t.string   "alert_area_size", :limit => 1
   end
 
   create_table "planning_applications", :force => true do |t|
-    t.column "uid", :string, :limit => 50, :null => false
-    t.column "address", :text, :default => "", :null => false
-    t.column "postcode", :string, :limit => 10, :default => ""
-    t.column "description", :text
-    t.column "url", :string, :limit => 1024
-    t.column "info_tinyurl", :string, :limit => 50
-    t.column "comment_url", :string, :limit => 1024
-    t.column "comment_tinyurl", :string, :limit => 50
-    t.column "retrieved_at", :datetime
-    t.column "date_received", :date
-    t.column "map_url", :string, :limit => 150
-    t.column "lat", :float
-    t.column "lng", :float
-    t.column "council_id", :integer
-    t.column "applicant_name", :string
-    t.column "applicant_address", :text
-    t.column "status", :string, :limit => 64
-    t.column "on_notice_from", :date
-    t.column "on_notice_to", :date
-    t.column "decision", :string, :limit => 64
-    t.column "other_attributes", :text, :limit => 16777215
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "uid",               :limit => 50,                       :null => false
+    t.text     "address",                                               :null => false
+    t.string   "postcode",          :limit => 10,       :default => ""
+    t.text     "description"
+    t.string   "url",               :limit => 1024
+    t.string   "info_tinyurl",      :limit => 50
+    t.string   "comment_url",       :limit => 1024
+    t.string   "comment_tinyurl",   :limit => 50
+    t.datetime "retrieved_at"
+    t.date     "date_received"
+    t.string   "map_url",           :limit => 150
+    t.float    "lat"
+    t.float    "lng"
+    t.integer  "council_id"
+    t.string   "applicant_name"
+    t.text     "applicant_address"
+    t.string   "status",            :limit => 64
+    t.date     "on_notice_from"
+    t.date     "on_notice_to"
+    t.string   "decision",          :limit => 64
+    t.text     "other_attributes",  :limit => 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "planning_applications", ["retrieved_at"], :name => "datescr"
-  add_index "planning_applications", ["date_received"], :name => "dateapp"
   add_index "planning_applications", ["council_id"], :name => "index_planning_applications_on_council_id"
+  add_index "planning_applications", ["date_received"], :name => "dateapp"
+  add_index "planning_applications", ["lat", "lng", "retrieved_at"], :name => "index_planning_applications_on_lat_and_long_and_retrieved_at"
   add_index "planning_applications", ["lat", "lng"], :name => "index_planning_applications_on_lat_and_lng"
+  add_index "planning_applications", ["retrieved_at"], :name => "datescr"
 
   create_table "police_authorities", :force => true do |t|
-    t.column "name", :string
-    t.column "url", :string
-    t.column "address", :text, :limit => 16777215
-    t.column "telephone", :string
-    t.column "wdtk_name", :string
-    t.column "wikipedia_url", :string
-    t.column "police_force_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "annual_audit_letter", :string
-    t.column "vat_number", :string
-    t.column "wdtk_id", :integer
+    t.string   "name"
+    t.string   "url"
+    t.text     "address",             :limit => 16777215
+    t.string   "telephone"
+    t.string   "wdtk_name"
+    t.string   "wikipedia_url"
+    t.integer  "police_force_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "annual_audit_letter"
+    t.string   "vat_number"
+    t.integer  "wdtk_id"
   end
 
   add_index "police_authorities", ["police_force_id"], :name => "index_police_authorities_on_police_force_id"
 
   create_table "police_forces", :force => true do |t|
-    t.column "name", :string
-    t.column "url", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "wikipedia_url", :string
-    t.column "telephone", :string
-    t.column "address", :text, :limit => 16777215
-    t.column "wdtk_name", :string
-    t.column "npia_id", :string
-    t.column "youtube_account_name", :string
-    t.column "facebook_account_name", :string
-    t.column "feed_url", :string
-    t.column "crime_map", :string
-    t.column "wdtk_id", :integer
+    t.string   "name"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "wikipedia_url"
+    t.string   "telephone"
+    t.text     "address",               :limit => 16777215
+    t.string   "wdtk_name"
+    t.string   "npia_id"
+    t.string   "youtube_account_name"
+    t.string   "facebook_account_name"
+    t.string   "feed_url"
+    t.string   "crime_map"
+    t.integer  "wdtk_id"
   end
 
   create_table "police_officers", :force => true do |t|
-    t.column "name", :string
-    t.column "rank", :string
-    t.column "biography", :text, :limit => 16777215
-    t.column "police_team_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "active", :boolean, :default => true
+    t.string   "name"
+    t.string   "rank"
+    t.text     "biography",      :limit => 16777215
+    t.integer  "police_team_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                             :default => true
   end
 
   add_index "police_officers", ["police_team_id"], :name => "index_police_officers_on_police_team_id"
 
   create_table "police_teams", :force => true do |t|
-    t.column "name", :string
-    t.column "uid", :string
-    t.column "description", :text, :limit => 16777215
-    t.column "url", :string
-    t.column "police_force_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "lat", :float
-    t.column "lng", :float
-    t.column "defunkt", :boolean, :default => false
+    t.string   "name"
+    t.string   "uid"
+    t.text     "description",     :limit => 16777215
+    t.string   "url"
+    t.integer  "police_force_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "lat"
+    t.float    "lng"
+    t.boolean  "defunkt",                             :default => false
   end
 
   add_index "police_teams", ["police_force_id"], :name => "index_police_teams_on_police_force_id"
 
   create_table "political_parties", :force => true do |t|
-    t.column "name", :string
-    t.column "electoral_commission_uid", :string
-    t.column "url", :string
-    t.column "wikipedia_name", :string
-    t.column "colour", :string
-    t.column "alternative_names", :text, :limit => 16777215
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "name"
+    t.string   "electoral_commission_uid"
+    t.string   "url"
+    t.string   "wikipedia_name"
+    t.string   "colour"
+    t.text     "alternative_names",        :limit => 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "polls", :force => true do |t|
-    t.column "area_id", :integer
-    t.column "area_type", :string
-    t.column "date_held", :date
-    t.column "position", :string
-    t.column "electorate", :integer
-    t.column "ballots_issued", :integer
-    t.column "ballots_rejected", :integer
-    t.column "postal_votes", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "source", :string
-    t.column "uncontested", :boolean, :default => false
-    t.column "ballots_missing_official_mark", :integer
-    t.column "ballots_with_too_many_candidates_chosen", :integer
-    t.column "ballots_with_identifiable_voter", :integer
-    t.column "ballots_void_for_uncertainty", :integer
+    t.integer  "area_id"
+    t.string   "area_type"
+    t.date     "date_held"
+    t.string   "position"
+    t.integer  "electorate"
+    t.integer  "ballots_issued"
+    t.integer  "ballots_rejected"
+    t.integer  "postal_votes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "source"
+    t.boolean  "uncontested",                             :default => false
+    t.integer  "ballots_missing_official_mark"
+    t.integer  "ballots_with_too_many_candidates_chosen"
+    t.integer  "ballots_with_identifiable_voter"
+    t.integer  "ballots_void_for_uncertainty"
   end
 
   add_index "polls", ["area_id", "area_type"], :name => "index_polls_on_area_id_and_area_type"
 
   create_table "portal_systems", :force => true do |t|
-    t.column "name", :string
-    t.column "url", :string
-    t.column "notes", :text, :limit => 16777215
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "name"
+    t.string   "url"
+    t.text     "notes",      :limit => 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "postcodes", :force => true do |t|
-    t.column "code", :string
-    t.column "quality", :integer
-    t.column "country", :string
-    t.column "nhs_region", :string
-    t.column "nhs_health_authority", :string
-    t.column "county_id", :integer
-    t.column "council_id", :integer
-    t.column "ward_id", :integer
-    t.column "lat", :float
-    t.column "lng", :float
-    t.column "crime_area_id", :integer
+    t.string  "code"
+    t.integer "quality"
+    t.string  "country"
+    t.string  "nhs_region"
+    t.string  "nhs_health_authority"
+    t.integer "county_id"
+    t.integer "council_id"
+    t.integer "ward_id"
+    t.float   "lat"
+    t.float   "lng"
+    t.integer "crime_area_id"
   end
 
   add_index "postcodes", ["code"], :name => "index_postcodes_on_code"
-  add_index "postcodes", ["ward_id"], :name => "index_postcodes_on_ward_id"
   add_index "postcodes", ["council_id"], :name => "index_postcodes_on_council_id"
   add_index "postcodes", ["county_id"], :name => "index_postcodes_on_county_id"
+  add_index "postcodes", ["ward_id"], :name => "index_postcodes_on_ward_id"
 
   create_table "quangos", :force => true do |t|
-    t.column "title", :string
-    t.column "quango_type", :string
-    t.column "quango_subtype", :string
-    t.column "website", :string
-    t.column "wikipedia_url", :string
-    t.column "sponsoring_organisation", :string
-    t.column "wdtk_name", :string
-    t.column "previous_names", :text
-    t.column "setup_on", :date
-    t.column "disbanded_on", :date
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "title"
+    t.string   "quango_type"
+    t.string   "quango_subtype"
+    t.string   "website"
+    t.string   "wikipedia_url"
+    t.string   "sponsoring_organisation"
+    t.string   "wdtk_name"
+    t.text     "previous_names"
+    t.date     "setup_on"
+    t.date     "disbanded_on"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "related_articles", :force => true do |t|
-    t.column "title", :string
-    t.column "url", :string
-    t.column "subject_type", :string
-    t.column "subject_id", :integer
-    t.column "extract", :text, :limit => 16777215
-    t.column "hyperlocal_site_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "title"
+    t.string   "url"
+    t.string   "subject_type"
+    t.integer  "subject_id"
+    t.text     "extract",            :limit => 16777215
+    t.integer  "hyperlocal_site_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "related_articles", ["hyperlocal_site_id"], :name => "index_related_articles_on_hyperlocal_site_id"
   add_index "related_articles", ["subject_id", "subject_type"], :name => "index_related_articles_on_subject_id_and_subject_type"
 
   create_table "scrapers", :force => true do |t|
-    t.column "url", :text
-    t.column "parser_id", :integer
-    t.column "council_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "expected_result_class", :string
-    t.column "expected_result_size", :integer
-    t.column "expected_result_attributes", :text, :limit => 16777215
-    t.column "type", :string
-    t.column "related_model", :string
-    t.column "last_scraped", :datetime
-    t.column "problematic", :boolean, :default => false
-    t.column "notes", :text, :limit => 16777215
-    t.column "referrer_url", :string
-    t.column "cookie_url", :string
-    t.column "use_post", :boolean, :default => false
-    t.column "parsing_library", :string, :limit => 1, :default => "H"
-    t.column "base_url", :string
-    t.column "next_due", :datetime
-    t.column "frequency", :integer, :limit => 1, :default => 7
-    t.column "priority", :integer, :limit => 1, :default => 4
+    t.text     "url"
+    t.integer  "parser_id"
+    t.integer  "council_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "expected_result_class"
+    t.integer  "expected_result_size"
+    t.text     "expected_result_attributes", :limit => 16777215
+    t.string   "type"
+    t.string   "related_model"
+    t.datetime "last_scraped"
+    t.boolean  "problematic",                                    :default => false
+    t.text     "notes",                      :limit => 16777215
+    t.string   "referrer_url"
+    t.string   "cookie_url"
+    t.boolean  "use_post",                                       :default => false
+    t.string   "parsing_library",            :limit => 1,        :default => "H"
+    t.string   "base_url"
+    t.datetime "next_due"
+    t.integer  "frequency",                  :limit => 1,        :default => 7
+    t.integer  "priority",                   :limit => 1,        :default => 4
   end
 
+  add_index "scrapers", ["council_id"], :name => "index_scrapers_on_council_id"
   add_index "scrapers", ["id", "type"], :name => "index_scrapers_on_id_and_type"
   add_index "scrapers", ["parser_id"], :name => "index_scrapers_on_parser_id"
-  add_index "scrapers", ["council_id"], :name => "index_scrapers_on_council_id"
   add_index "scrapers", ["priority", "next_due"], :name => "index_scrapers_on_priority_and_next_due"
 
   create_table "services", :force => true do |t|
-    t.column "title", :string
-    t.column "url", :text, :limit => 16777215
-    t.column "category", :string
-    t.column "council_id", :integer
-    t.column "ldg_service_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "title"
+    t.text     "url",            :limit => 16777215
+    t.string   "category"
+    t.integer  "council_id"
+    t.integer  "ldg_service_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "services", ["council_id"], :name => "index_services_on_council_id"
   add_index "services", ["ldg_service_id"], :name => "index_services_on_ldg_service_id"
 
   create_table "spending_stats", :force => true do |t|
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "total_spend", :float
-    t.column "average_monthly_spend", :float
-    t.column "average_transaction_value", :float
-    t.column "spend_by_month", :text, :limit => 16777215
-    t.column "breakdown", :text, :limit => 16777215
-    t.column "earliest_transaction", :date
-    t.column "latest_transaction", :date
-    t.column "transaction_count", :integer, :limit => 8
-    t.column "total_received_from_councils", :integer
-    t.column "payer_breakdown", :text
-    t.column "total_received", :integer
+    t.string   "organisation_type"
+    t.integer  "organisation_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "total_spend"
+    t.float    "average_monthly_spend"
+    t.float    "average_transaction_value"
+    t.text     "spend_by_month",               :limit => 16777215
+    t.text     "breakdown",                    :limit => 16777215
+    t.date     "earliest_transaction"
+    t.date     "latest_transaction"
+    t.integer  "transaction_count",            :limit => 8
+    t.integer  "total_received_from_councils"
+    t.text     "payer_breakdown"
+    t.integer  "total_received"
   end
 
   add_index "spending_stats", ["organisation_id", "organisation_type"], :name => "index_spending_stats_on_organisation"
   add_index "spending_stats", ["organisation_type", "total_spend"], :name => "index_spending_stats_on_organisation_type_and_total_spend"
 
   create_table "stats", :primary_key => "key", :options=>'ENGINE=MyISAM', :force => true do |t|
-    t.column "value", :integer, :null => false
+    t.integer "value", :null => false
   end
 
   create_table "suppliers", :force => true do |t|
-    t.column "name", :string
-    t.column "uid", :string
-    t.column "organisation_type", :string
-    t.column "organisation_id", :integer
-    t.column "failed_payee_search", :boolean, :default => false
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "url", :string
-    t.column "payee_id", :integer
-    t.column "payee_type", :string
+    t.string   "name"
+    t.string   "uid"
+    t.string   "organisation_type"
+    t.integer  "organisation_id"
+    t.boolean  "failed_payee_search", :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "url"
+    t.integer  "payee_id"
+    t.string   "payee_type"
   end
 
   add_index "suppliers", ["organisation_id", "organisation_type"], :name => "index_suppliers_on_organisation_id_and_organisation_type"
   add_index "suppliers", ["payee_id", "payee_type"], :name => "index_suppliers_on_payee_id_and_payee_type"
 
   create_table "taggings", :force => true do |t|
-    t.column "tag_id", :integer
-    t.column "taggable_id", :integer
-    t.column "tagger_id", :integer
-    t.column "tagger_type", :string
-    t.column "taggable_type", :string
-    t.column "context", :string
-    t.column "created_at", :datetime
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.integer  "tagger_id"
+    t.string   "tagger_type"
+    t.string   "taggable_type"
+    t.string   "context"
+    t.datetime "created_at"
   end
 
   add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
   add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
 
   create_table "tags", :force => true do |t|
-    t.column "name", :string
+    t.string "name"
   end
 
   create_table "twitter_accounts", :force => true do |t|
-    t.column "name", :string
-    t.column "user_id", :integer
-    t.column "user_type", :string
-    t.column "twitter_id", :integer
-    t.column "follower_count", :integer
-    t.column "following_count", :integer
-    t.column "last_tweet", :text, :limit => 16777215
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+    t.string   "name"
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.integer  "twitter_id"
+    t.integer  "follower_count"
+    t.integer  "following_count"
+    t.text     "last_tweet",      :limit => 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "twitter_accounts", ["user_id", "user_type"], :name => "index_twitter_accounts_on_user_id_and_user_type"
 
   create_table "user_submissions", :force => true do |t|
-    t.column "twitter_account_name", :string
-    t.column "item_id", :integer
-    t.column "member_id", :integer
-    t.column "member_name", :string
-    t.column "blog_url", :string
-    t.column "facebook_account_name", :string
-    t.column "linked_in_account_name", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "approved", :boolean, :default => false
-    t.column "submission_details", :text, :limit => 16777215
-    t.column "item_type", :string
-    t.column "ip_address", :string
-    t.column "notes", :text, :limit => 16777215
+    t.string   "twitter_account_name"
+    t.integer  "item_id"
+    t.integer  "member_id"
+    t.string   "member_name"
+    t.string   "blog_url"
+    t.string   "facebook_account_name"
+    t.string   "linked_in_account_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "approved",                                   :default => false
+    t.text     "submission_details",     :limit => 16777215
+    t.string   "item_type"
+    t.string   "ip_address"
+    t.text     "notes",                  :limit => 16777215
   end
 
-  add_index "user_submissions", ["member_id"], :name => "index_user_submissions_on_member_id"
-  add_index "user_submissions", ["item_id"], :name => "index_user_submissions_on_council_id"
   add_index "user_submissions", ["item_id", "item_type"], :name => "index_user_submissions_on_item_id_and_item_type"
+  add_index "user_submissions", ["item_id"], :name => "index_user_submissions_on_council_id"
+  add_index "user_submissions", ["member_id"], :name => "index_user_submissions_on_member_id"
 
   create_table "wards", :force => true do |t|
-    t.column "name", :string
-    t.column "council_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "uid", :string
-    t.column "snac_id", :string
-    t.column "url", :string
-    t.column "os_id", :string
-    t.column "police_neighbourhood_url", :string
-    t.column "ness_id", :string
-    t.column "gss_code", :string
-    t.column "police_team_id", :integer
-    t.column "output_area_classification_id", :integer
-    t.column "defunkt", :boolean, :default => false
-    t.column "crime_area_id", :integer
+    t.string   "name"
+    t.integer  "council_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "uid"
+    t.string   "snac_id"
+    t.string   "url"
+    t.string   "os_id"
+    t.string   "police_neighbourhood_url"
+    t.string   "ness_id"
+    t.string   "gss_code"
+    t.integer  "police_team_id"
+    t.integer  "output_area_classification_id"
+    t.boolean  "defunkt",                       :default => false
+    t.integer  "crime_area_id"
   end
 
   add_index "wards", ["council_id"], :name => "index_wards_on_council_id"
-  add_index "wards", ["police_team_id"], :name => "index_wards_on_police_team_id"
   add_index "wards", ["output_area_classification_id"], :name => "index_wards_on_output_area_classification_id"
+  add_index "wards", ["police_team_id"], :name => "index_wards_on_police_team_id"
 
   create_table "wdtk_requests", :force => true do |t|
-    t.column "title", :string
-    t.column "status", :string
-    t.column "description", :text, :limit => 16777215
-    t.column "organisation_id", :integer
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "organisation_type", :string
-    t.column "uid", :integer
-    t.column "related_object_type", :string
-    t.column "related_object_id", :integer
-    t.column "request_name", :string
+    t.string   "title"
+    t.string   "status"
+    t.text     "description",         :limit => 16777215
+    t.integer  "organisation_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "organisation_type"
+    t.integer  "uid"
+    t.string   "related_object_type"
+    t.integer  "related_object_id"
+    t.string   "request_name"
   end
 
   add_index "wdtk_requests", ["organisation_id"], :name => "index_wdtk_requests_on_council_id"
