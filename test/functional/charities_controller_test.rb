@@ -215,6 +215,7 @@ class CharitiesControllerTest < ActionController::TestCase
     
       should assign_to :charity
       should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
+      should_set_the_flash_to "Queued charity for updating"
       
       should "add to delayed job queue" do
         Delayed::Job.expects(:enqueue).with(kind_of(Charity))

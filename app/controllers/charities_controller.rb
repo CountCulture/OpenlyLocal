@@ -27,20 +27,16 @@ class CharitiesController < ApplicationController
     if request.xhr?
       head :ok
     else
+      flash[:notice] = 'Queued charity for updating'
       redirect_to charity_url(@charity)
     end
   end
   
   def update
     @charity = Charity.find(params[:id])
-    if params[:commit] == 'Update from CC website'
-      @charity.update_from_charity_register
-      flash[:notice] = "Successfully updated charity from Charity Commission website"
-    else
-      @charity.update_attributes!(params[:charity])
-      @charity.update_attribute(:manually_updated, Time.now)
-      flash[:notice] = "Successfully updated charity"
-    end
+    @charity.update_attributes!(params[:charity])
+    @charity.update_attribute(:manually_updated, Time.now)
+    flash[:notice] = "Successfully updated charity"
     redirect_to charity_url(@charity)
   rescue
     render :action => "edit"
