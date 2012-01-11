@@ -616,5 +616,37 @@ end
 
 desc "Import NALC parish councils"
 task :import_nalc_parish_councils => :environment do
+  county_council_name = nil #so it's outside of iterator scope
+  FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/nalc_parish_council_list.csv"), :headers => true) do |row|
+    if county_council_name != row["County Council"]
+      if county_council = Council.find_by_normalised_title(Council.normalise_title(row["County Council"]))
+        puts "-----\nMatched county council #{county_council.name} to NALC county council #{county_council_name}"
+      else
+        puts "Failed to match county council #{county_council_name}. Please supply OpenlyLocal id of council (n to skip, q to quit):"
+        next unless council_id = get_council_id_from_stdin
+        county_council = Council.find(council_id)
+        puts "Thanks (that was #{county_council.name})"
+      end
+      county_council_name = row["County Council"]
+    end
+    pcs = ParishCouncil.find_all_by_normalised_title(ParishCouncil.normalise_title(row["Council Name"]))
+    case
+    when pc = (pcs.size == 1) && pcs.first
+      puts "Matched Parish Council (#{row["Council Name"]}) to #{pc.title}"
+    when pcs.size > 1
+      puts "Found multiple possible possible parish councils for #{row["Council Name"]}: #{pcs.collect(&:title).join(', ')}"
+      matched_pc = pcs.detect{ |c| c.council.parent_authority == county_council }
+      puts (matched_pc ? "Choosing #{matched_pc.title}" : "**** Failed to match to council")
+    else
+      puts "Found no matching parish councils for #{row["Council Name"]}"
+    end
+  end
+end
 
+
+def get_council_id_from_stdin
+  response = $stdin.gets.chomp
+  next if response == "n"
+  break if response == "q"
+  response
 end

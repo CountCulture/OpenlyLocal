@@ -3,7 +3,7 @@ class HyperlocalSitesController < ApplicationController
   before_filter :find_hyperlocal_site, :except => [:index, :new, :create, :custom_search_results, :destroy_multiple]
   before_filter :enable_google_maps, :except => [:update, :create, :destroy]
   before_filter :show_rss_link, :only => :index
-  caches_action :index, :cache_path => Proc.new { |controller| controller.params }
+  caches_action :index, :cache_path => Proc.new { |controller| controller.params }, :expires_in => 12.hours
   caches_page :show
   
   def index

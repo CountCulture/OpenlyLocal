@@ -4,8 +4,11 @@ class WardsController < ApplicationController
   before_filter :linked_data_available, :only => :show
   before_filter :enable_google_maps, :only => :show
   helper :datapoints
-  caches_action :show
-  
+
+  caches_action :show, :cache_path => Proc.new {|c| [c.instance_variable_get(:@ward).cache_key,c.params[:format]].join('.') }, 
+                       :if => Proc.new {|c| c.instance_variable_get(:@ward) }, 
+                       :expires_in  => 12.hours
+
   def index
     @council = Council.find(params[:council_id]) if params[:council_id]
     @output_area_classification = OutputAreaClassification.find(params[:output_area_classification_id]) if params[:output_area_classification_id]

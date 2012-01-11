@@ -1,7 +1,7 @@
 class DatasetTopicsController < ApplicationController
   before_filter :authenticate, :except => [:show]
   before_filter :find_dataset_topic
-  caches_action :show, :cache_path => Proc.new { |controller| controller.params }
+  caches_action :show, :cache_path => Proc.new { |controller| controller.params }, :expires_in => 1.day
 
   def show
     if params[:area_type]&&params[:area_id]
