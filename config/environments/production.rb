@@ -16,8 +16,8 @@ config.action_controller.perform_caching             = true
 config.action_controller.page_cache_directory = "#{RAILS_ROOT}/public/cache"
 
 # Use a different cache store in production
-# config.cache_store = :mem_cache_store
-ActionController::Base.cache_store = :file_store, "tmp/cache"
+config.cache_store = :mem_cache_store, "panama.openlylocal.com:11211"
+# ActionController::Base.cache_store = :file_store, "tmp/cache"
 
 # Enable serving of images, stylesheets, and javascripts from an asset server
 config.action_controller.asset_host = "http://assets.openlylocal.com"
