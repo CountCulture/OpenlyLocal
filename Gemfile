@@ -27,13 +27,14 @@ gem 'rdf', :require => false
 gem 'rdf-rdfxml', :require => false
 gem 'json'
 gem 'daemons', '1.0.10'
-gem 'delayed_job', '~>2.0'
+gem 'delayed_job', '2.0.4'
 
 group :test do
-  # gem 'guard'
+  gem 'guard'
+  gem 'guard-test'
   # gem 'minitest', '~>2.8'
   # gem 'guard-minitest'
-  # gem 'ruby-prof'
+  gem 'ruby-prof'
   gem 'shoulda'
   gem 'mocha', :require => false
   gem 'factory_girl'
