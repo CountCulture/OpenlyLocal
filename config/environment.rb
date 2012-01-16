@@ -71,6 +71,7 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :financial_transaction_observer
 end
 require 'open-uri'
+
 # require 'company_utilities' #phusion passenger seems to require this
 
 Dir.glob(RAILS_ROOT + '/app/models/user_submission_types/*') {|file| require File.basename(file, '.rb')} #YAML serialisation requires this in order to instantiate objects properly on deserialisation
