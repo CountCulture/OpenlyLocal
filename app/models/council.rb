@@ -185,8 +185,7 @@ class Council < ActiveRecord::Base
   def notify_local_hyperlocal_sites(message, options={})
     # p hyperlocal_sites, self.reload.hyperlocal_sites
     hyperlocal_sites.all(:joins => :twitter_account).each do |site|
-      # p site
-      Delayed::Job.enqueue(Tweeter.new("@#{site.twitter_account_name} #{message}", options))
+      Tweeter.new("@#{site.twitter_account_name} #{message}", options).delay.perform
     end
   end
   

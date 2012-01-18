@@ -21,7 +21,7 @@ class DatasetTopicsController < ApplicationController
   end
   
   def populate
-    Delayed::Job.enqueue @dataset_topic
+    @dataset_topic.delay.perform
     flash[:notice] = "Successfully queued Topic to be populated for all councils. You will be emailed when this has finished"
     redirect_to dataset_topic_url(@dataset_topic)
   end

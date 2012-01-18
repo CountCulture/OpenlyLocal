@@ -233,7 +233,7 @@ class DatasetTopicsControllerTest < ActionController::TestCase
     should_set_the_flash_to /Successfully queued Topic/
     
     before_should "queue up topic to be populated" do
-      Delayed::Job.expects(:enqueue).with(instance_of(DatasetTopic))
+      DatasetTopic.any_instance.expects(:delay => stub(:perform => nil))
     end
   end
 

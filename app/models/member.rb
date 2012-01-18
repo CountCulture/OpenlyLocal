@@ -99,7 +99,7 @@ class Member < ActiveRecord::Base
     if (council.members.count == 1) && (council.committees.count > 0)
       options = council.lat.blank? ? {} : {:lat => council.lat, :long => council.lng}
       message = (council.title.length > 60 ? council.short_name : council.title) + " has been added to OpenlyLocal #localgov #opendata " + (council.twitter_account_name.blank? ? '' : "@#{council.twitter_account_name}")
-      Delayed::Job.enqueue(Tweeter.new(message, {:url => "http://openlylocal.com/councils/#{council.to_param}"}.merge(options)))
+      Tweeter.new(message, {:url => "http://openlylocal.com/councils/#{council.to_param}"}.merge(options)).delay.perform
     end
     true
   end

@@ -16,13 +16,13 @@ class TwitterAccount < ActiveRecord::Base
   protected
   def add_to_twitter_list
     return unless changes['name'] && !list_name.blank?
-    Delayed::Job.enqueue(Tweeter.new(:method => :add_to_list, :user => name, :list => list_name))
+    Tweeter.new(:method => :add_to_list, :user => name, :list => list_name).delay.perform
   end
   
   def remove_from_twitter_list
     return unless (destroyed? || (name_changed?&&name_change.first) ) && !list_name.blank?
     t_name = destroyed? ? name : name_change.first
-    Delayed::Job.enqueue(Tweeter.new(:method => :remove_from_list, :user => t_name, :list => list_name))
+    Tweeter.new(:method => :remove_from_list, :user => t_name, :list => list_name).delay.perform
   end
 
 end

@@ -218,7 +218,7 @@ class CharitiesControllerTest < ActionController::TestCase
       should_set_the_flash_to "Queued charity for updating"
       
       should "add to delayed job queue" do
-        Delayed::Job.expects(:enqueue).with(kind_of(Charity))
+        Charity.any_instance.expects(:delay => stub(:update_from_charity_register => nil))
         put :refresh, :id => @charity.id
       end
       
@@ -236,7 +236,7 @@ class CharitiesControllerTest < ActionController::TestCase
       should respond_with :success
 
       should "add to delayed job queue" do
-        Delayed::Job.expects(:enqueue).with(kind_of(Charity))
+        Charity.any_instance.expects(:delay => stub(:update_from_charity_register => nil))
         xhr :put, :refresh, :id => @charity.id
       end
     end

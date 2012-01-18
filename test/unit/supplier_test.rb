@@ -253,8 +253,8 @@ class SupplierTest < ActiveSupport::TestCase
       end
       
       should "in general not queue CompanyNumberMatcher or VatMatcher" do
-        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher)).never
-        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+        SupplierUtilities::CompanyNumberMatcher.any_instance.expects(:delay).never
+        SupplierUtilities::VatMatcher.any_instance.expects(:delay).never
         @supplier.save!
       end
 
@@ -270,7 +270,7 @@ class SupplierTest < ActiveSupport::TestCase
         end
 
         should "add CompanyNumberMatcher to Delayed::Job queue" do
-          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher))
+          SupplierUtilities::CompanyNumberMatcher.any_instance.expects(:delay => stub(:perform => nil))
           @supplier.save!
         end
       end
@@ -287,7 +287,7 @@ class SupplierTest < ActiveSupport::TestCase
         end
 
         should "add CompanyNumberMatcher to Delayed::Job queue" do
-          Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
+          SupplierUtilities::VatMatcher.any_instance.expects(:delay => stub(:perform => nil))
           @supplier.save!
         end
       end

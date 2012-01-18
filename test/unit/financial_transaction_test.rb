@@ -106,7 +106,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
       
       should "queue financial transaction for delayed_job processing" do
-        Delayed::Job.expects(:enqueue).with(@financial_transaction)
+        FinancialTransaction.any_instance.expects(:delay => stub(:perform => nil))
         @financial_transaction.save!
       end
       
@@ -133,8 +133,8 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
       
       should 'in general not queue for matching supplier with vat_number' do
-        Delayed::Job.stubs(:enqueue).with(kind_of(FinancialTransaction))
-        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher)).never
+        FinancialTransaction.any_instance.expects(:delay => stub(:perform => nil))
+        SupplierUtilities::VatMatcher.any_instance.expects(:delay).never
         @financial_transaction.save!
       end
 
@@ -262,21 +262,20 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
       
       should "add VatMatcher and CompanyNumberMatcher to Delayed::Job queue" do
-        Delayed::Job.stubs(:enqueue)
-        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::VatMatcher))
-        Delayed::Job.expects(:enqueue).with(kind_of(SupplierUtilities::CompanyNumberMatcher))
+        SupplierUtilities::VatMatcher.any_instance.expects(:delay => stub(:perform => nil))
+        SupplierUtilities::CompanyNumberMatcher.any_instance.expects(:delay => stub(:perform => nil))
         @financial_transaction = FinancialTransaction.create(@params)
       end
       
       should "use vat_number when queuing VatMatcher" do
         @financial_transaction = FinancialTransaction.create(@params)
-        assert Delayed::Job.all.detect{ |j| j.payload_object.respond_to?(:vat_number)&&j.payload_object.vat_number == '123456789' }
+        assert Delayed::Job.all.detect{ |j| j.payload_object.object.is_a?(SupplierUtilities::VatMatcher)&&j.payload_object.object.vat_number == '123456789' }
       end
       
       
       should "use company_number when queuing CompanyNumberMatcher" do
         @financial_transaction = FinancialTransaction.create(@params)
-        assert Delayed::Job.all.detect{ |j| j.payload_object.respond_to?(:company_number)&&j.payload_object.company_number == '1234' }
+        assert Delayed::Job.all.detect{ |j| j.payload_object.object.is_a?(SupplierUtilities::CompanyNumberMatcher)&&j.payload_object.object.company_number == '1234' }
       end
             
     end
@@ -287,7 +286,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       end
       
       should "not queue financial transaction for delayed_job processing" do
-        Delayed::Job.expects(:enqueue).with(@financial_transaction).never
+        FinancialTransaction.any_instance.expects(:delay).never
         @financial_transaction.save!
       end
       #     
@@ -1011,7 +1010,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
  	    setup do
  	      @supplier = @financial_transaction.supplier
         # @financial_transaction.stubs(:supplier).returns(@supplier) # otherwise different instance may be returned
- 	      Delayed::Job.stubs(:enqueue)
+        # Delayed::Job.stubs(:enqueue)
  	      Supplier.any_instance.stubs(:update_spending_stat_with)
  	    end
 

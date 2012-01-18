@@ -1195,13 +1195,14 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "queue up tweets for delivery later" do
-        Delayed::Job.expects(:enqueue).with(kind_of(Tweeter)).twice
+        Tweeter.any_instance.expects(:delay => stub(:perform => nil)).twice
+        # Delayed::Job.expects(:enqueue).with(kind_of(Tweeter)).twice
         @council.notify_local_hyperlocal_sites('Hello World')
       end
       
       should "not send any tweets if no hyperlocal sites" do
         Tweeter.expects(:new).never
-        Delayed::Job.expects(:enqueue).never
+        Tweeter.any_instance.expects(:delay).never
         @another_council.notify_local_hyperlocal_sites('Hello World')
       end
       

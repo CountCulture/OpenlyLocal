@@ -171,7 +171,7 @@ class NessUtilitiesTest < ActiveSupport::TestCase
     context "when getting response" do
       
       should "build request url" do
-        @client.expects(:request_url).twice.returns(@base_url)
+        @client.expects(:request_url).at_least_once.returns(@base_url)
         @client.response
       end
       

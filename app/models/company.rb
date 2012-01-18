@@ -121,7 +121,7 @@ class Company < ActiveRecord::Base
   end
   
   def add_to_queue_for_getting_more_info
-    Delayed::Job.enqueue(self)
+    self.delay.perform
   end
   
 end

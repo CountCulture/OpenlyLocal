@@ -23,7 +23,7 @@ class CharitiesController < ApplicationController
   
   def refresh
     @charity = Charity.find(params[:id])
-    Delayed::Job.enqueue(@charity)
+    @charity.delay.update_from_charity_register
     if request.xhr?
       head :ok
     else
