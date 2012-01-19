@@ -36,7 +36,7 @@ module SpendingStatUtilities
 
       def update_spending_stat
         create_spending_stat unless spending_stat
-        Delayed::Job.enqueue(spending_stat)
+        spending_stat.delay.perform
       end
 
     end

@@ -62,7 +62,7 @@ class ScrapersController < ApplicationController
       @results = @scraper.process(:save_results => true).results
       @results_summary = @scraper.results_summary
     else
-      Delayed::Job.enqueue @scraper
+      @scraper.delay.perform
       flash.now[:notice] = "Scraper is being processed and you will be emailed with the results"
     end
     @parser = @scraper.parser

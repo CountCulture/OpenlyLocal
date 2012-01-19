@@ -946,7 +946,7 @@ task :import_gla_suppliers => :environment do
       puts "Matched GLA supplier #{s.title} with #{row['Vendor Name']}"
       next if row['VAT Registration No.'].blank? || s.payee
       puts "Adding VatMatcher to queue"
-      Delayed::Job.enqueue(SupplierUtilities::VatMatcher.new(:vat_number => row['VAT Registration No.'], :supplier => s, :title => s.title))
+      SupplierUtilities::VatMatcher.new(:vat_number => row['VAT Registration No.'], :supplier => s, :title => s.title).delay.perform
       # s.attributes = {:vat_number => row['VAT Registration No.']} unless row['VAT Registration No.'].blank? || s.vat_number
     else
       puts "Couldn't find GLA supplier: #{row['Vendor Name']} with supplier id #{row['Vendor Number']}"
