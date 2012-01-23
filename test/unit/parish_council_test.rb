@@ -41,6 +41,7 @@ class ParishCouncilTest < ActiveSupport::TestCase
       setup do
         @original_title_and_normalised_title = {
           "Foo Bar Parish Council" => "foo bar",
+          "Foo & Bar Council" => "foo and bar",
           "Foo Bar Council" => "foo bar",
           "Foo Bar Town Council" => "foo bar",
           " Foo\nBar \t Parish Council   " => "foo bar"
@@ -58,6 +59,64 @@ class ParishCouncilTest < ActiveSupport::TestCase
       assert_equal 'http://foo.com', ParishCouncil.new(:website => 'http://foo.com').url
       assert_equal 'http://foo.com', ParishCouncil.new(:url => 'http://foo.com').website
     end
+    
+    context "when reconciling parish councils" do
+      setup do
+        @parish_1 = Factory(:parish_council, :title => "Foo Bar Parish Council")
+        @parish_2 = Factory(:parish_council, :title => "Foo Baz Town Council")
+        @parish_3 = Factory(:parish_council, :title => "Bar & Baz")
+      end
+
+      should "find parish whose normalised name matches normalised term" do
+        # overall naive test of functionality
+        assert_equal [@parish_2], ParishCouncil.reconcile(:q => 'Foo Baz Council')
+        assert_equal [@parish_1], ParishCouncil.reconcile(:q => 'Foo Bar')
+        assert_equal [@parish_3], ParishCouncil.reconcile(:q => 'Bar and Baz Council')
+      end
+      
+      should "normalise term" do
+        ParishCouncil.expects(:normalise_title).with('Foo Baz Council')
+        ParishCouncil.reconcile(:q => 'Foo Baz Council')
+      end
+      
+      should "return nil if term is blank" do
+        assert_nil ParishCouncil.reconcile
+        assert_nil ParishCouncil.reconcile(:q => nil)
+        assert_nil ParishCouncil.reconcile(:q => '')
+      end
+      
+      should "find Parish Councils matching normalised term" do
+        ParishCouncil.stubs(:normalise_title).returns('foobaz')
+        ParishCouncil.expects(:find_all_by_normalised_title).with('foobaz')
+        ParishCouncil.reconcile(:q => 'Foo Baz Council')
+      end
+      
+      # should 'flunk' do
+      #   flunk
+      # end
+      
+      context "and parent council passed in" do
+        setup do
+          @county_council = Factory(:generic_council)
+          @council = Factory(:council, :parent_authority => @county_council)
+          @parish_1 = Factory(:parish_council, :title => "Foo Bar Parish Council")
+          @parish_2 = Factory(:parish_council, :title => "Foo Baz Town Council")
+          @parish_3 = Factory(:parish_council, :title => "Foo Baz Town Council", :council => @council)
+        end
+
+        should "restrict to parish with given parent council" do
+          assert_equal [@parish_3], ParishCouncil.reconcile(:q => 'Foo Baz Council', :parent_council => @council)
+        end
+
+        should "include parish when given parent council is ultimate county council" do
+          assert_equal [@parish_3], ParishCouncil.reconcile(:q => 'Foo Baz Council', :parent_council => @county_council)
+        end
+        
+        # should 
+      end
+    end
+    
+    
     
   end
   

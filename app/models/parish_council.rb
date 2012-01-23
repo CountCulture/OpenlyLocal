@@ -14,6 +14,13 @@ class ParishCouncil < ActiveRecord::Base
     TitleNormaliser.normalise_title(semi_normed_title)
   end
   
+  def self.reconcile(params={})
+    return if params[:q].blank?
+    possible_parishes = find_all_by_normalised_title(normalise_title(params[:q]))
+    possible_parishes = possible_parishes.select{ |p| (params[:parent_council] == p.council) || (params[:parent_council] == p.council.try(:parent_authority)) } if params[:parent_council]
+    possible_parishes
+  end
+  
   def extended_title
     council ? "#{title} (#{council.title})" : title
   end
