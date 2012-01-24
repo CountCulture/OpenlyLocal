@@ -8,10 +8,6 @@ class CharityWorkerTest < ActiveSupport::TestCase
       @charity_worker = CharityWorker.new(@charity, :foo_method)
     end
     
-    # teardown do
-    #   Charity.destroy_all
-    # end
-    # 
     context "on instantiation" do
 
       should "should store charity id as charity_id" do
