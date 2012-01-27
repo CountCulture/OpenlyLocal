@@ -9,6 +9,7 @@ class Scraper < ActiveRecord::Base
   USER_AGENT = "Mozilla/4.0 (OpenlyLocal.com)"
   PARSING_LIBRARIES = { 'H' => 'Hpricot', 
                         'N' => 'Nokogiri (HTML)',
+                        '8' => 'Nokogiri (HTML) force UTF-8',
                         'X' => 'Nokogiri (XML)'
                       }
   belongs_to :parser
@@ -160,6 +161,8 @@ class Scraper < ActiveRecord::Base
       case parsing_library
       when 'N'
         Nokogiri.HTML(page_data)
+      when '8'
+        Nokogiri.HTML(page_data, nil, 'UTF-8')
       when 'X'
         Nokogiri.XML(page_data)
       else

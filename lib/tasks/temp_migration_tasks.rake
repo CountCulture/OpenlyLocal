@@ -230,22 +230,43 @@ task :setup_caps_scrapers => :environment do
   SWIFT_LG = {
     'redbridge' => 'http://planning.redbridge.gov.uk/swiftlg'
   }
-  # caps_parser = PortalSystem.find_by_name('CAPS (Public Access)').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
-  # CAPS_COUNCILS.each do |c,url|
-  #   unless council = Council.find_by_normalised_title(Council.normalise_title(c))
-  #     puts "******* Failed to match #{c} to council"
-  #     next
-  #   end
-  #   base_url = (url + '/').sub(/\/+$/,'/')
-  #   scraper = council.scrapers.find_or_initialize_by_parser_id( :parser_id => caps_parser.id)
-  #   scraper.update_attributes!( :parsing_library => 'N', 
-  #                               :use_post => true, 
-  #                               :frequency => 2,
-  #                               :base_url => base_url, 
-  #                               :type => 'ItemScraper')
-  #   puts "Added CAPS scraper for #{council.name} (#{scraper.inspect})"
-  # end
-  # 
+
+  caps_portal_system = PortalSystem.find_by_name('CAPS (Public Access)')
+  
+  caps_item_parser = Parser.create(
+    :scraper_type => 'ItemScraper',
+    :result_model => "PlanningApplication",
+    :portal_system => caps_portal_system,
+    :path => %q{ DcApplication/application_searchresults.aspx?searchtype=ADV&srchDateValidStart=#{30.days.ago.to_date.strftime("%d/%m/%Y")}&srchDateValidEnd=#{Date.today.strftime("%d/%m/%Y")} },
+    :cookie_path => nil,
+    :item_parser => %q{ doc.search('table.cResultsForm tr')[1..-1] },
+    :attribute_parser => {
+      'url' => %q{ base_url + item.search('td a').last[:href].sub('publicaccess/tdc/','') },
+      'uid' => %q{ item.at('td').inner_text }
+    }
+  )
+
+  caps_parser = caps_portal_system.parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
+
+  # Destroy existing scrapers for the CAPS item parser
+  caps_parser.scrapers.destroy_all
+
+  # Create CAPS scrapers from list
+  CAPS_COUNCILS.each do |c,url|
+    unless council = Council.find_by_normalised_title(Council.normalise_title(c))
+      puts "******* Failed to match #{c} to council"
+      next
+    end
+    base_url = (url + '/').sub(/\/+$/,'/')
+    scraper = council.scrapers.find_or_initialize_by_parser_id( :parser_id => caps_parser.id)
+    scraper.update_attributes!( :parsing_library => '8', 
+                                :use_post => true, 
+                                :frequency => 2,
+                                :base_url => base_url, 
+                                :type => 'ItemScraper')
+    puts "Added CAPS scraper for #{council.name} (#{scraper.inspect})"
+  end
+  
   # idox_parser = PortalSystem.find_by_name('Idox (Public Access)').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
   # IDOX_COUNCILS.each do |c,url|
   #   unless council = Council.find_by_normalised_title(Council.normalise_title(c))
@@ -434,3 +455,22 @@ task :add_fastweb_info_scrapers => :environment do
     puts "Added scraper for #{council.name} (#{scraper.inspect})"
   end
 end
+
+# From http://onrails.org/2008/08/20/what-are-all-the-rails-date-formats
+desc "Show the date/time format strings defined and example output"
+task :date_formats => :environment do
+  now = Time.now
+  [:to_date, :to_datetime, :to_time].each do |conv_meth|
+    obj = now.send(conv_meth)
+    puts obj.class.name
+    puts "=" * obj.class.name.length
+    name_and_fmts = obj.class::DATE_FORMATS.map { |k, v| [k, %Q('#{String === v ? v : '&proc'}')] }
+    max_name_size = name_and_fmts.map { |k, _| k.to_s.length }.max + 2
+    max_fmt_size = name_and_fmts.map { |_, v| v.length }.max + 1
+    name_and_fmts.each do |format_name, format_str|
+      puts sprintf("%#{max_name_size}s:%-#{max_fmt_size}s %s", format_name, format_str, obj.to_s(format_name))
+    end
+    puts
+  end
+end
+

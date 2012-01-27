@@ -1,0 +1,120 @@
+---
+portal_system_name: FastWEB
+
+councils:
+  craven:             http://www.planning.cravendc.gov.uk/fastweb
+  eastleigh:          http://www.eastleigh.gov.uk/fastweb
+  wyre forest:        http://www.wyreforest.gov.uk/fastweb
+  mansfield:          http://www.mansfield.gov.uk/fastweb
+  neath port talbot:  https://planning.npt.gov.uk/
+  newport:            http://www.newport.gov.uk/fastWeb
+  sutton:             http://213.122.180.105/FASTWEB/
+  south lakeland:     http://www.southlakeland.gov.uk/fastweb
+  eden:               http://eforms.eden.gov.uk/fastweb
+
+#------------------------------------------------------------------------------
+
+item:  
+  path: /results.asp?Scroll=1&DateReceivedStart=#{14.days.ago.to_date.strftime("%d-%m-%Y")}&DateReceivedEnd=#{Date.today.strftime("%d-%m-%Y")}&Sort1=DateReceived+DESC&Sort2=DateReceived+DESC&Submit=Search
+  
+  http_method:      GET
+  parsing_library:  N
+  item_parser:      item.xpath("//table[@border='0' and @cellspacing='0' and @cellpadding='4' and @width='100%']")
+  
+  attributes: 
+    uid: item.css("a").first.inner_text
+    url: base_url + '/' + item.css("a").first[:href].sub(/detail/, 'fulldetail')
+  
+#------------------------------------------------------------------------------
+
+info:
+  http_method:      GET
+  parsing_library:  N
+  item_parser:      item.at("body")
+  
+  fields:
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Planning Application Number:']/../td").inner_text.strip 
+      :name: uid
+      :required: true
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Site Address:']/../td").inner_text.strip.gsub(/\\s{2,}/, ', ') 
+      :name: address
+      :required: true
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Description:']/../td").inner_text.strip 
+      :name: description
+      :required: true
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Application Status:']/../td").inner_text.strip 
+      :name: status
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Date Valid:']/../td").inner_text.strip 
+      :name: date_valid
+      :required: true
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Decision:']/../td").inner_text.strip 
+      :name: decision
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Decision Date:']/../td").inner_text.strip 
+      :name: decision_date
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Decision Level/Committee:']/../td").inner_text.strip 
+      :name: decision_level_or_committee
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Appeal:']/../td").inner_text.strip 
+      :name: appeal
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Case Officer and Phone No.:']/../td").inner_text.strip 
+      :name: case_officer_and_phone_number
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Applicant Name & Address:']/../td").inner_html.sub(/<br\s*\/?>.*/i, '').strip 
+      :name: applicant_name
+      :required: true
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Applicant Name & Address:']/../td").inner_html.sub(/.*<br\s*\/?>/i, '').strip.gsub(/\s{2,}/, ', ').strip 
+      :name: applicant_address
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Agent Name & Address:']/../td").inner_html.sub(/<br\s*\/?>.*/i, '').strip 
+      :name: agent_name
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Agent Name & Address:']/../td").inner_html.sub(/.*<br\s*\/?>/i, '').strip.gsub(/\s{2,}/, ', ').strip 
+      :name: agent_address
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Ward:']/../td").inner_text.strip 
+      :name: ward
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Parish:']/../td").inner_text.strip 
+      :name: parish
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Listed Building Grade:']/../td").inner_text.strip 
+      :name: listed_building_grade
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Departure from Local Plan:']/../td").inner_text.strip 
+      :name: departure_from_local_plan
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Major Development:']/../td").inner_text.strip 
+      :name: major_development
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Date Received:']/../td").inner_text.strip 
+      :name: date_received
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Committee Date:']/../td").inner_text.strip 
+      :name: committee_date
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Deferred:']/../td").inner_text.strip 
+      :name: deferred
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Deferred Date:']/../td").inner_text.strip 
+      :name: deferred_date
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Temporary Expiry Date:']/../td").inner_text.strip 
+      :name: temporary_expiry_date
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Site Notice Date:']/../td").inner_text.strip 
+      :name: site_notice_date
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Advert Date:']/../td").inner_text.strip 
+      :name: advert_date
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Consultation Period Begins:']/../td").inner_text.strip 
+      :name: consulation_period_begins
+      :required: false
+    - :parser:  item.at("//th[@class='RecordTitle' and .='Consultation Period Ends:']/../td").inner_text.strip 
+      :name: consulation_period_ends
+      :required: false
+  

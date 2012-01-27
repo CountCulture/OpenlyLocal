@@ -36,6 +36,7 @@ class Council < ActiveRecord::Base
   has_many :feed_entries, :as => :feed_owner
   has_many :financial_transactions, :through => :suppliers
   has_many :account_lines, :as => :organisation
+  has_many :planning_applications
   belongs_to :portal_system
   belongs_to :police_force
   belongs_to :pension_fund
