@@ -1,0 +1,106 @@
+---
+portal_system_name: Application Search Servlet (dashed dates variant) 
+
+councils:
+# These councils use the DD-MM-YYYY format on the search form
+
+  haringey:           http://www.planningservices.haringey.gov.uk/
+  allerdale:          http://planning.allerdale.gov.uk/
+  high peak:          http://planning.highpeak.gov.uk/
+  rutland:            http://planningonline.rutland.gov.uk:7777/
+  coventry:           http://planning.coventry.gov.uk/
+  st helens:          http://llpgport.oltps.sthelens.gov.uk:8080/
+  north warwickshire: http://planning.northwarks.gov.uk/
+  hartlepool:         http://eforms.hartlepool.gov.uk:7777/
+
+#  easington:     http://planning.easington.gov.uk/   # FIXME uses h2 rather than th for its table headers :rage:
+#  powys:         http://planning.powys.gov.uk/       # FIXME 400 Bad Request
+
+#---------------------------------------------------------------------------
+
+item:
+  http_method:      POST
+  parsing_library:  N
+  item_parser:      item.at("th:contains('eference')").parent.parent.search("a") # "Reference number" but capitalisation varies
+
+  path:         portal/servlets/ApplicationSearchServlet?ValidDateFrom=#{14.days.ago.strftime('%d-%m-%Y')}&ValidDateTo=#{Date.today.strftime('%d-%m-%Y')}
+  
+  attributes: 
+    uid: item.try(:inner_text)
+    url: base_url + "portal/servlets/ApplicationSearchServlet?PKID=" + item[:href].match(/\d+/).to_s
+
+#---------------------------------------------------------------------------
+
+info:
+  http_method:      GET
+  parsing_library:  N
+  item_parser:      item.at("body")
+  
+  fields:
+    - :name:      application_type
+      :parser:    item.at("//*[.='Application Type']/following-sibling::td").try(:inner_text)
+      :required:  false
+    
+    - :name:      address   
+      :parser:    item.at("//*[.='Site Address']/following-sibling::td").inner_html
+      :required:  true
+      
+    - :name:      description
+      :parser:    item.at("//*[.='Description']/following-sibling::td").try(:inner_text)
+      :required:  true
+        
+    - :name:      valid_date
+      :parser:    item.at("//*[.='Valid Date']/following-sibling::td").try(:inner_text)
+      :required:  false
+        
+    - :name:      committee_date
+      :parser:    item.at("//*[.='Committee Date']/following-sibling::td").try(:inner_text)
+      :required:  false
+      
+    - :name:      decision
+      :parser:    item.at("//*[.='Decision']/following-sibling::td").try(:inner_text)
+      :required:  false
+      
+    - :name:      decision_date  
+      :parser:    item.at("//*[.='Decision Date']/following-sibling::td").try(:inner_text)
+      :required:  false
+      
+    - :name:      consultation_start_date
+      :parser:    item.at("//*[.='Consultation Start Date']/following-sibling::td").try(:inner_text)
+      :required:  false
+      
+    - :name:      consultation_end_date  
+      :parser:    item.at("//*[.='Consultation End Date']/following-sibling::td").try(:inner_text)
+      :required:  false
+     
+    - :name:      handling_officer
+      :parser:    item.at("//*[.='Handling officer']/following-sibling::td").try(:inner_text)
+      :required:  false
+    
+    - :name:      agent_name
+      :parser:    item.at("//*[.='Agent name']/following-sibling::td").try(:inner_text)
+      :required:  false
+      
+    - :name:      applicant_name
+      :parser:    item.at("//*[.='Applicant Name']/following-sibling::td").try(:inner_text)
+      :required:  false
+    
+    - :name:      agent_telephone
+      :parser:    item.at("//*[.='Agent Telephone']/following-sibling::td").try(:inner_text)
+      :required:  false
+    
+    - :name:      applicant_company
+      :parser:    item.at("//*[.='Applicant Company']/following-sibling::td").try(:inner_text)
+      :required:  false
+    
+    - :name:      agent_company 
+      :parser:    item.at("//*[.='Agent Company']/following-sibling::td").try(:inner_text)
+      :required:  false
+      
+    - :name:      applicant_address
+      :parser:    item.at("//*[.='Applicant Address']/following-sibling::td").inner_html.gsub(/\s*<br>/, ', ')
+      :required:  false
+      
+    - :name:      agent_address
+      :parser:    item.at("//*[.='Agent Address']/following-sibling::td").inner_html.gsub(/\s*<br>/, ', ')
+      :required:  false
