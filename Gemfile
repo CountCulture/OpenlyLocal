@@ -1,7 +1,8 @@
 source :rubygems
 
 gem 'rails', '2.3.14'
-gem 'mysql2', '~>0.2'
+gem 'mysql'
+# gem 'mysql2', '0.2.7' # Note geokit requires mysql, not support yet for mysql2
 gem 'spatial_adapter'
 gem 'geokit'
 gem 'georuby'

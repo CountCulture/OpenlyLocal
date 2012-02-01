@@ -46,7 +46,8 @@ GEM
       sax-machine (>= 0.0.12)
     ffi (1.0.7)
       rake (>= 0.8.7)
-    geokit (1.6.0)
+    geokit (1.6.5)
+      multi_json
     georuby (1.9.3)
     googlecharts (1.6.8)
     guard (0.9.3)
@@ -73,6 +74,7 @@ GEM
       metaclass (~> 0.0.1)
     morph (0.3.2)
       activesupport (>= 2.0.2)
+    multi_json (1.0.4)
     mysql (2.8.1)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
