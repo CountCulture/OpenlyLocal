@@ -121,3 +121,11 @@ Date::DATE_FORMATS[:uk] = "%d/%m/%Y" # add custom date format too
 Pingback.save_callback do |ping|
     RelatedArticle.process_pingback(ping)
 end
+
+if defined?(PhusionPassenger)
+ PhusionPassenger.on_event(:starting_worker_process) do |forked|
+   if forked
+     Rails.cache.instance_variable_get(:@data).reset if Rails.cache.class == ActiveSupport::Cache::MemCacheStore
+   end
+ end
+end
