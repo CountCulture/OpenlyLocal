@@ -306,7 +306,8 @@ class CouncilTest < ActiveSupport::TestCase
           "Fenland District Council" => "fenland",
           "LB Brent" => "brent",
           "Selby Council" => "selby", #checking removing LB doesn't affect this
-          "Council of the Isles of Scilly" => "isles of scilly"
+          "Council of the Isles of Scilly" => "isles of scilly",
+          "Harborough District Council" => "harborough"
         }
       end
       
