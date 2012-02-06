@@ -275,7 +275,7 @@ class FinancialTransactionTest < ActiveSupport::TestCase
       
       should "use company_number when queuing CompanyNumberMatcher" do
         @financial_transaction = FinancialTransaction.create(@params)
-        assert Delayed::Job.all.detect{ |j| j.payload_object.object.is_a?(SupplierUtilities::CompanyNumberMatcher)&&j.payload_object.object.company_number == '1234' }
+        assert Delayed::Job.all.detect{ |j| j.payload_object.respond_to?(:object)&&j.payload_object.object.is_a?(SupplierUtilities::CompanyNumberMatcher)&&j.payload_object.object.company_number == '1234' }
       end
             
     end
