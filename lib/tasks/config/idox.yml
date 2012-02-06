@@ -1,0 +1,137 @@
+---
+portal_system_name: Idox (Public Access)
+ 
+councils:
+  adur: http://planning.adur-worthing.gov.uk/online-applications
+  argyll and bute: http://publicaccess.argyll-bute.gov.uk/publicaccess
+#   aylesbury vale: http://publicaccess.aylesburyvaledc.gov.uk/online-applications # Error: "Too many results found. Please enter some more parameters."
+  blaby: https://w3.blaby.gov.uk/online-applications
+  blackpool: http://publicaccess.blackpool.gov.uk:90/online-applications
+  bolsover: http://planning.bolsover.gov.uk/online-applications
+  bolton: http://www.planningpa.bolton.gov.uk/online-applications
+  bracknell forest: http://planlive.bracknell-forest.gov.uk/online-applications
+  bradford: http://www.planning4bradford.com/online-applications
+  brentwood: http://publicaccess.brentwood.gov.uk/online-applications
+  bristol: http://planningonline.bristol.gov.uk/online-applications
+  bromley: http://searchapplications.bromley.gov.uk/onlineapplications
+  buckinghamshire: http://publicaccess.buckscc.gov.uk/online-applications
+  caerphilly: http://publicaccess.caerphilly.gov.uk/PublicAccess
+  cardiff: http://planning.cardiff.gov.uk/online-applications
+  chelmsford: http://publicaccess.chelmsford.gov.uk/online-applications
+  cherwell: http://www.publicaccess.cherwell.gov.uk/online-applications
+  cheshire west and chester: http://pa.cheshirewestandchester.gov.uk/online-applications
+  chichester: http://pawam.chichester.gov.uk/online-applications
+  chorley: http://planning.chorley.gov.uk/online-applications
+  city of london: http://www.planning2.cityoflondon.gov.uk/online-applications
+  comhairle nan eilean siar: http://planning.cne-siar.gov.uk/PublicAccess
+  corby: https://publicaccess.corby.gov.uk/publicaccess
+  cornwall: http://planning.cornwall.gov.uk/online-applications
+  dartford: http://publicaccess.dartford.gov.uk/online-applications
+  dover: http://planning.dover.gov.uk/online-applications
+  dumfries and galloway: http://eaccess.dumgal.gov.uk/online-applications
+  east cambridgeshire: http://pa.eastcambs.gov.uk/online-applications
+  east dorset: http://planning.eastdorsetdc.gov.uk/online-applications
+  east hampshire: http://planningpublicaccess.easthants.gov.uk/online-applications
+  east lothian: http://pa.eastlothian.gov.uk/online-applications
+#   edinburgh: https://citydev-portal.edinburgh.gov.uk/idoxpa-web # returns absolute URLs from the search results list - needs its own parser
+  epsom and ewell: http://eplanning.epsom-ewell.gov.uk/online-applications
+  fife: http://planning.fife.gov.uk/online
+  forest of dean: http://publicaccess.fdean.gov.uk/online-applications
+  gateshead: http://public.gateshead.gov.uk/online-applications
+  gedling: http://pawam.gedling.gov.uk/online-applications
+  glasgow: https://publicaccess.glasgow.gov.uk/online-applications
+  gloucestershire: http://planning.gloucestershire.gov.uk/publicaccess
+  gravesham: http://plan.gravesham.gov.uk/online-applications
+  hambleton: http://planning.hambleton.gov.uk/online-applications
+  harborough: http://pa2.harborough.gov.uk/online-applications
+  harrogate: http://uniformonline.harrogate.gov.uk/online-applications
+  highland: http://wam.highland.gov.uk/wam
+  hull: https://planningpublicaccess.hullcc.gov.uk/publicaccess
+  huntingdonshire: http://publicaccess.huntsdc.gov.uk/online-applications
+  kings lynn and west norfolk: http://online.west-norfolk.gov.uk/online-applications
+  lambeth: http://planning.lambeth.gov.uk/online-applications
+  leeds: https://publicaccess.leeds.gov.uk/online-applications
+  lichfield: http://planning.lichfielddc.gov.uk/online-applications
+  mid devon: http://planning.middevon.gov.uk/online-applications
+  mid suffolk: http://planningpages.midsuffolk.gov.uk/online-applications
+  milton keynes: http://publicaccess2.milton-keynes.gov.uk/online-applications
+  moray: http://public.moray.gov.uk/eplanning
+  newcastle under lyme: http://publicaccess.newcastle-staffs.gov.uk/online-applications
+  newcastle upon tyne: http://publicaccess.newcastle.gov.uk/online-applications
+  newham: http://pa.newham.gov.uk/online-applications
+  north east derbyshire: http://planapps-online.ne-derbyshire.gov.uk/online-applications
+  north tyneside: http://idoxpublicaccess.northtyneside.gov.uk/online-applications
+  north west leicestershire: http://plans.nwleics.gov.uk/public-access
+  northumberland: http://publicaccess.northumberland.gov.uk/online-applications
+  norwich: http://planning.norwich.gov.uk/online-applications
+  oldham: http://planningpa.oldham.gov.uk/online-applications
+  oxford: http://public.oxford.gov.uk/online-applications
+  perth and kinross: http://planningapps.pkc.gov.uk/online-applications
+  poole: https://boppa.boroughofpoole.com/online-applications
+  portsmouth: http://idox.portsmouth.gov.uk/online-applications
+  reading: http://planninghome.reading.gov.uk/online-applications
+  rushmoor: http://publicaccess.rushmoor.gov.uk/online-applications
+  ryedale: http://planningregister.ryedale.gov.uk/caonline-applications
+  scar: http://planning.scarborough.gov.uk/online-applications
+  scottish borders: http://eplanning.scotborders.gov.uk/online-applications
+  sevenoaks: http://pa.sevenoaks.gov.uk/online-applications
+  shepway: http://searchplanapps.shepway.gov.uk/online-applications
+  shetland islands: http://pa.shetland.gov.uk/online-applications
+  shropshire: http://planningpa.shropshire.gov.uk/online-applications
+  south gloucestershire: http://developments.southglos.gov.uk/online-applications
+  south ribble: http://publicaccess.southribble.gov.uk/online-applications
+  south staffordshire: http://www2.sstaffs.gov.uk:81/online-applications
+  stafford: http://www7.staffordbc.gov.uk/online-applications
+  stirling: http://pabs.stirling.gov.uk/online-applications
+  stockton on tees: http://www.developmentmanagement.stockton.gov.uk/online-applications
+#   test valley: http://view-applications.testvalley.gov.uk/online-applications # Error: "Too many results found. Please enter some more parameters."
+  three rivers: http://www3.threerivers.gov.uk/online-applications
+  thurrock: http://regs.thurrock.gov.uk/online-applications
+  tonbridge and malling: http://publicaccess2.tmbc.gov.uk/online-applications
+  torridge: http://publicaccess.torridge.gov.uk/online-applications
+  tunbridge wells: http://pa.tunbridgewells.gov.uk/online-applications
+  warwick: http://planningdocuments.warwickdc.gov.uk/online-applications
+  west berkshire: http://publicaccess.westberks.gov.uk/online-applications
+  west somerset: http://www.westsomerset.gov.uk/online-applications
+  westminster: http://idoxpa.westminster.gov.uk/online-applications
+  woking: http://caps.woking.gov.uk/online-applications
+  wolverhampton: http://planningonline.wolverhampton.gov.uk:2707/online-applications
+  worthing: http://planning.adur-worthing.gov.uk/online-applications
+  wycombe: http://publicaccess.wycombe.gov.uk/idoxpa-web
+  york: http://planningaccess.york.gov.uk/online-applications
+
+#------------------------------------------------------------------------------
+
+item:
+  http_method:      POST
+  encoding:         UTF-8
+  parsing_library:  N
+  item_parser:      item.search('#searchResultsContainer li.searchresult')
+  
+  cookie_path: /advancedSearchResults.do?searchType=Application&caseAddressType=Application&action=firstPage&date(applicationValidatedStart)=#{14.days.ago.to_date.strftime("%d/%m/%Y")}&date(applicationValidatedEnd)=#{Date.today.strftime("%d/%m/%Y")}
+
+  path: /pagedSearchResults.do?searchCriteria.page=1&action=page&orderBy=DateReceived&orderByDirection=Descending&searchCriteria.resultsPerPage=100
+
+  attributes:
+    uid: "item.at('p.metaInfo').inner_text.squish.scan(/Ref\. No: ([A-Z0-9\/]+)/).flatten.first"
+    url: base_url + item.at('a')[:href].sub(/^\/[^\/]+/,'').sub(/;jsessionid=[^?]+/,'')
+
+#------------------------------------------------------------------------------
+    
+# info:
+#   http_method:      GET
+#   encoding:         UTF-8
+#   parsing_library:  8
+#   item_parser:      item.at("table#simpleDetailsTable tbody")
+#   
+# #   item.at(\"//th[@class='RecordTitle' and .='Decision:']/../td\").inner_text.strip
+#   
+#   fields:
+#     - :parser:    item.at("//th[contains(.,'Address' )]/../td").inner_text.strip
+#       :name:      address
+#       :required:  true
+#   
+#     - :parser:    item.at("//th[normalize-space(.)='Proposal']/../td").inner_text.strip
+#       :name:      description
+#       :required:  true
+      
