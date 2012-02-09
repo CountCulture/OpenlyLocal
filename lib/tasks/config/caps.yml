@@ -3,7 +3,6 @@ portal_system_name: CAPS (Public Access)
  
 councils:
   angus: http://planning.angus.gov.uk/PublicAccess/
-  barking and dagenham: http://paweb.barking-dagenham.gov.uk/publicaccess/
   basildon: http://planning.basildon.gov.uk/publicaccess/tdc/dcapplication/
   bexley: http://publicaccess.bexley.gov.uk/publicaccess/
   bromsgrove: http://appuview.bromsgrove.gov.uk/publicaccess/tdc/dcapplication/ 
@@ -17,12 +16,12 @@ councils:
   knowsley: http://publicaccess.knowsley.gov.uk/publicaccess/
   luton: http://www.eplan.luton.gov.uk/publicaccess/
   melton: http://publicaccess.melton.gov.uk/PALiveSystem77/
-  oadby and wigston: http://pa.owbc.net/PublicAccess/
+  oadby and wigston: http://pa.owbc.net/PublicAccess/ # FIXME execution expired
   redditch: http://access.redditchbc.gov.uk/PublicAccess/
   rochford: http://publicaccess.rochford.gov.uk/publicaccess/
   sandwell: http://webcaps.sandwell.gov.uk/publicaccess/
-  selby: http://publicaccess.selby.gov.uk/publicaccess/
-  sheffield: http://planning.sheffield.gov.uk/publicaccess/
+  selby: http://publicaccess.selby.gov.uk/publicaccess/ # FIXME unexpected EOF
+  sheffield: http://planning.sheffield.gov.uk/publicaccess/ # FIXME execution expired
   south bucks: http://sbdc-paweb.southbucks.gov.uk/publicaccess/
   southampton: http://publicaccess.southampton.gov.uk/publicaccess/
   southend on sea: http://planning.southend.gov.uk/publicaccess/
@@ -40,22 +39,14 @@ item:
   parsing_library:  8
   item_parser:      item.search('table.cResultsForm tr')[1..-1]
   
-  # From OpenlyLocal  
-  
-  # path: DcApplication/application_searchresults.aspx?searchtype=ADV&tpage=1&pagesize=100&srchDateValidStart=#{14.days.ago.to_date.to_s(:uk)}&srchDateValidEnd=#{Date.today.to_s(:uk)}
-  
   # Modified to use dd/mm/yyyy dates
+  cookie_path: tdc/DcApplication/application_searchresults.aspx?searchtype=ADV&srchDateValidStart=#{14.days.ago.to_date.strftime("%d/%m/%Y")}&srchDateValidEnd=#{Date.today.strftime("%d/%m/%Y")}
   
-  path: tdc/DcApplication/application_searchresults.aspx?searchtype=ADV&srchDateValidStart=#{14.days.ago.to_date.strftime("%d/%m/%Y")}&srchDateValidEnd=#{Date.today.strftime("%d/%m/%Y")}
-  
-  
-  # From Planning Alerts 1.0
-  
-  # path: DcApplication/application_searchresults.aspx?searchtype=WEEKLY&selWeeklyListRange=01/12/2011|20/12/2011&weektype=VAL
-  
+  path: tdc/DcApplication/application_searchresults.aspx?searchtype=ADV&tpage=1&pagesize=100&srchDateValidStart=#{14.days.ago.to_date.strftime("%d/%m/%Y")}&srchDateValidEnd=#{Date.today.strftime("%d/%m/%Y")}
+    
   attributes: 
-    url:  base_url + item.search('td a').last[:href].sub(/^\/\w+\//,'')
-    uid:  item.at('td').inner_text
+    url:      base_url + item.search('td a').last[:href].sub(/^\/\w+\//,'')
+    uid:      item.at('td').inner_text
 
 #------------------------------------------------------------------------------
     
