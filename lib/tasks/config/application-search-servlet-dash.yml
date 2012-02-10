@@ -4,17 +4,16 @@ portal_system_name: Application Search Servlet (dashed dates variant)
 councils:
 # These councils use the DD-MM-YYYY format on the search form
 
-  haringey:           http://www.planningservices.haringey.gov.uk/
-  allerdale:          http://planning.allerdale.gov.uk/
-  high peak:          http://planning.highpeak.gov.uk/
-  rutland:            http://planningonline.rutland.gov.uk:7777/
-  coventry:           http://planning.coventry.gov.uk/
-  st helens:          http://llpgport.oltps.sthelens.gov.uk:8080/
-  north warwickshire: http://planning.northwarks.gov.uk/
-  hartlepool:         http://eforms.hartlepool.gov.uk:7777/
-
-#  easington:     http://planning.easington.gov.uk/   # FIXME uses h2 rather than th for its table headers :rage:
-#  powys:         http://planning.powys.gov.uk/       # FIXME 400 Bad Request
+  allerdale:    http://planning.allerdale.gov.uk/
+  coventry:     http://planning.coventry.gov.uk/
+#   easington:    http://planning.easington.gov.uk/  # FIXME uses h2 rather than th for its table headers
+  haringey:     http://www.planningservices.haringey.gov.uk/
+  hartlepool:   http://eforms.hartlepool.gov.uk:7777/
+  highpeak:     http://planning.highpeak.gov.uk/
+  northwarks:   http://planning.northwarks.gov.uk/
+#   powys:        http://planning.powys.gov.uk/ # FIXME 400 Bad Request
+  rutland:      http://planningonline.rutland.gov.uk:7777/
+  st-helens:    http://llpgport.oltps.sthelens.gov.uk:8080/
 
 #---------------------------------------------------------------------------
 
