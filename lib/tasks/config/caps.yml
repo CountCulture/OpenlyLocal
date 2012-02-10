@@ -54,41 +54,70 @@ info:
   http_method:      GET
   encoding:         UTF-8
   parsing_library:  8
-  item_parser:      item.at("body")
+
+  item_parser: item.at('table.cTblLayout')
   
   fields:
-    - :parser:    item.at("textarea#address").inner_text
-      :name:      address
-      :required:  true
-  
-    - :parser:    item.at("textarea#desc").inner_text
-      :name:      description
-      :required:  true
-  
-    - :parser:    item.at("input#daterecv")["value"]
-      :name:      date_received
-      :required:  false
-  #     
-  #   - :parser:    item.at("input#dateeiareceived")["value"]
-  #     :name:      date_eia_received
-  #     :required:  false
-    
-    - :parser:    item.at("input#applicantname")["value"]
-      :name:      applicant_name
-      :required:  false  
+    - :parser: item.at('textarea#address').inner_text.gsub("\r","\n")
+      :name: address
+      :required: true
+
+    - :parser: item.at('textarea#applicantaddress').try(:inner_text).to_s.gsub("\r","\n")
+      :name: agent_address
+      :required: false
+
+    - :parser: item.search('input#agentcondetail').try(:slice, 1).try(:get_attribute, 'value')
+      :name: agent_email
+      :required: false
+
+    - :parser: item.search('input#agentcondetail').try(:slice, 2).try(:get_attribute, 'value')
+      :name: agent_fax
+      :required: false
+
+    - :parser: item.search('input#agentcondetail').try(:slice, 0).try(:get_attribute, 'value')
+      :name: agent_telephone
+      :required: false
       
-    - :parser:    item.at("textarea#applicantaddress").try(:inner_text)
-      :name:      applicant_address
-      :required:  false
-    
-    - :parser:    item.at("input#applicationstatus")["value"]
-      :name:      status
-      :required:  false
-    
-  #   - :parser:    item.at("textarea#datevalid").inner_text???????????????
-  #     :name:      on_notice_from
-  #     :required:  false
-      
-  #   - :parser:    item.at("textarea#dateexpiry").inner_text
-  #     :name:      on_notice_to
-  #     :required:  false
+    - :parser: item.at('input#agentname').try(:get_attribute, 'value')
+      :name: agent_name
+      :required: false
+
+    - :parser: item.at('textarea#applicantaddress').try(:inner_text).to_s.gsub("\r", "\n")
+      :name: applicant_address
+      :required: false
+
+    - :parser: item.at('input#applicantname').try(:get_attribute, 'value')
+      :name: applicant_name
+      :required: false
+
+    - :parser: item.at('input#daterecv').try(:get_attribute, 'value')
+      :name: application_received
+      :required: false
+
+    - :parser: item.at('input#type').try(:get_attribute, 'value')
+      :name: application_type
+      :required: false
+
+    - :parser: item.at('input#datevalid')[:value]
+      :name: application_validated
+      :required: false
+
+    - :parser: item.at('input#officer').try(:get_attribute, 'value')
+      :name: case_officer
+      :required: false
+
+    - :parser: item.at('textarea#desc').try(:inner_text)
+      :name: description
+      :required: true
+
+    - :parser: item.at('input#PPReference').try(:get_attribute, 'value')
+      :name: planning_portal_uid
+      :required: false
+
+    - :parser: item.at('input#applicationstatus')[:value]
+      :name: status
+      :required: true
+
+    - :parser: item.at('input#wardname').try(:get_attribute, 'value')
+      :name: ward_name
+      :required: false
