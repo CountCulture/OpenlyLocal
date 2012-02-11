@@ -20,5 +20,5 @@ config/deploy
 Capfile
 public/cache
 *~
-
+.bundle
 .rvmrc
