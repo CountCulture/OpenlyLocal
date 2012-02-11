@@ -118,21 +118,51 @@ item:
     url: base_url + item.at('a')[:href].sub(/^\/[^\/]+/,'').sub(/;jsessionid=[^?]+/,'')
 
 #------------------------------------------------------------------------------
+
+# http://publicaccess.blackpool.gov.uk:90/online-applications/applicationDetails.do?activeTab=#{tab_name}&keyVal=_BLCKP_DCAPR_56899
+
+# Scrape: http://publicaccess.blackpool.gov.uk:90/online-applications/applicationDetails.do?activeTab=summary&keyVal=_BLCKP_DCAPR_56899
+# Parse for: Alternative reference, application received, address, proposal, status
+# 
+# Scrape: http://publicaccess.blackpool.gov.uk:90/online-applications/applicationDetails.do?activeTab=details&keyVal=_BLCKP_DCAPR_56899
+# Parse for: application type, expected decision level, case officer, parish, ward, district reference, applicant name, agent name, agent company name, agent address, agent phone number, environmental assessment requested
+# 
+# Scrape: http://publicaccess.blackpool.gov.uk:90/online-applications/applicationDetails.do?activeTab=contacts&keyVal=_BLCKP_DCAPR_56899
+# Parse for: 
+# 
+# http://publicaccess.blackpool.gov.uk:90/online-applications/applicationDetails.do?activeTab=dates&keyVal=_BLCKP_DCAPR_56899    
     
-# info:
-#   http_method:      GET
-#   encoding:         UTF-8
-#   parsing_library:  8
-#   item_parser:      item.at("table#simpleDetailsTable tbody")
-#   
-# #   item.at(\"//th[@class='RecordTitle' and .='Decision:']/../td\").inner_text.strip
-#   
-#   fields:
-#     - :parser:    item.at("//th[contains(.,'Address' )]/../td").inner_text.strip
-#       :name:      address
-#       :required:  true
-#   
-#     - :parser:    item.at("//th[normalize-space(.)='Proposal']/../td").inner_text.strip
-#       :name:      description
-#       :required:  true
-      
+info:
+  http_method:      GET
+  encoding:         UTF-8
+  parsing_library:  8
+  item_parser:      item.at("body")
+  
+  fields:
+    - :parser:    item.at("//th[contains(., 'Address')]/../td").inner_text
+      :name:      address
+      :required:  true
+  
+    - :parser:    item.at("//th[contains(., 'Proposal')]/../td").inner_text
+      :name:      description
+      :required:  true
+
+    - :parser:    item.at("//th[contains(., 'Application Received')]/../td").try(:inner_text)
+      :name:      date_received
+      :required:  false
+
+    - :parser:    item.at("//th[contains(., 'Alternative Reference') or contains(., 'Planning Portal Reference')]/../td").try(:inner_text)
+      :name:      alternative_reference
+      :required:  false
+
+    - :parser:    item.at("//th[contains(., 'Status')]/../td").inner_text
+      :name:      status
+      :required:  false
+
+    - :parser:    item.at("//th[contains(., 'Appeal Status')]/../td").try(:inner_text)
+      :name:      appeal_status
+      :required:  false
+
+    - :parser:    item.at("//th[contains(., 'Appeal Decision')]/../td").try(:inner_text)
+      :name:      appeal_decision
+      :required:  false
