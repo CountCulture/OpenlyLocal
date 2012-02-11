@@ -35,7 +35,7 @@ namespace :planning_alerts do
     # Create item scrapers for all councils using this portal system
   
     @config["councils"].each do |council_name, base_url|
-      unless council = Council.find_by_normalised_title(council_name)
+      unless council = Council.find_by_normalised_title(council_name.gsub('_',' '))
         puts "******* Failed to match #{council_name} to council"
         next
       end

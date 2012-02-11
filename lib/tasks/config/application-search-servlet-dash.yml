@@ -9,11 +9,11 @@ councils:
 #   easington:    http://planning.easington.gov.uk/  # FIXME uses h2 rather than th for its table headers
   haringey:     http://www.planningservices.haringey.gov.uk/
   hartlepool:   http://eforms.hartlepool.gov.uk:7777/
-  highpeak:     http://planning.highpeak.gov.uk/
-  northwarks:   http://planning.northwarks.gov.uk/
+  high_peak:     http://planning.highpeak.gov.uk/
+  north_warwickshire:   http://planning.northwarks.gov.uk/
 #   powys:        http://planning.powys.gov.uk/ # FIXME 400 Bad Request
   rutland:      http://planningonline.rutland.gov.uk:7777/
-  st-helens:    http://llpgport.oltps.sthelens.gov.uk:8080/
+  st_helens:    http://llpgport.oltps.sthelens.gov.uk:8080/
 
 #---------------------------------------------------------------------------
 
