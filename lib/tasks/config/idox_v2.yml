@@ -1,0 +1,67 @@
+---
+portal_system_name: Idox v2 Plural Dates
+ 
+councils:
+  bedford: http://www.publicaccess.bedford.gov.uk/online-applications
+  cambridge: http://idox.cambridge.gov.uk/online-applications
+  clackmannanshire: https://eplanning.clacks.gov.uk/eplanning
+  derbyshire dales: https://planning.derbyshiredales.gov.uk/online-applications
+  east ayrshire: http://eplanning.east-ayrshire.gov.uk/online
+#   east devon: http://planning.eastdevon.gov.uk/online-applications # Error: "Too many results found. Please enter some more parameters."
+#   east dunbartonshire: http://opis-web.eastdunbarton.gov.uk/bumblebee-web # Returns the search form rather than the search results page
+  east renfrewshire: http://ercplanning.eastrenfrewshire.gov.uk/eplanning
+  east riding of yorkshire: http://www.eastriding.gov.uk/newpublicaccess
+  falkirk: http://eplanning.falkirk.gov.uk/online
+  gloucester: http://glcstrplnng12.co.uk/online-applications
+  hart: http://publicaccess1.hart.gov.uk/online-applications
+  horsham: http://public-access.horsham.gov.uk/public-access
+  inverclyde: http://planning.inverclyde.gov.uk/Online
+  lancaster: http://planning.lancaster.gov.uk/online-applications
+  lewes: http://planningpa.lewes.gov.uk/online-applications
+  mid sussex: http://pa.midsussex.gov.uk/online-applications
+  midlothian: https://planning-applications.midlothian.gov.uk/OnlinePlanning
+  north ayrshire: http://www.eplanning.north-ayrshire.gov.uk/OnlinePlanning
+  north kesteven: http://planningonline.n-kesteven.gov.uk/online-applications
+  north lanarkshire: https://eplanning.northlan.gov.uk/Online
+  orkney islands: http://opis.orkney.gov.uk/eplanning
+  peterborough: http://planpa.peterborough.gov.uk/online-applications # HTTP 500: Service temporarily unavailable
+  richmondshire: http://planning.richmondshire.gov.uk/online-applications
+  sunderland: http://www.sunderland.gov.uk/online-applications
+#  tendring: http://idox.tendringdc.gov.uk/online-applications # Needs own parser. Doesn't have dates(applicationValidatedStart) so use dates(applicationReceivedStart) instead.
+#   torbay: http://www.torbay.gov.uk/newpublicaccess # HTTP 412 Precondition Failed. mod_security protected. Needs referer?
+
+#------------------------------------------------------------------------------
+
+item:
+  http_method:      POST
+  encoding:         UTF-8
+  parsing_library:  N
+  item_parser:      item.search('#searchResultsContainer .searchresult')
+  
+  cookie_path: /advancedSearchResults.do?searchType=Application&caseAddressType=Application&action=firstPage&dates(applicationValidatedStart)=#{14.days.ago.to_date.strftime("%d/%m/%Y")}&dates(applicationValidatedEnd)=#{Date.today.strftime("%d/%m/%Y")}
+
+  path: /pagedSearchResults.do?searchCriteria.page=1&action=page&orderBy=DateReceived&orderByDirection=Descending&searchCriteria.resultsPerPage=50
+  
+  attributes:
+    uid: "item.at('p.metaInfo').inner_text.squish.scan(/Ref\. No: ([A-Z0-9\/]+)/).flatten.first"
+    url: base_url + item.at('a')[:href].sub(/^\/[^\/]+/,'').sub(/;jsessionid=[^?]+/,'')
+
+#------------------------------------------------------------------------------
+    
+# info:
+#   http_method:      GET
+#   encoding:         UTF-8
+#   parsing_library:  8
+#   item_parser:      item.at("table#simpleDetailsTable tbody")
+#   
+# #   item.at(\"//th[@class='RecordTitle' and .='Decision:']/../td\").inner_text.strip
+#   
+#   fields:
+#     - :parser:    item.at("//th[contains(.,'Address' )]/../td").inner_text.strip
+#       :name:      address
+#       :required:  true
+#   
+#     - :parser:    item.at("//th[normalize-space(.)='Proposal']/../td").inner_text.strip
+#       :name:      description
+#       :required:  true
+      
