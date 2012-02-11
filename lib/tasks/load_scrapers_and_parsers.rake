@@ -12,7 +12,7 @@ namespace :planning_alerts do
   task :load_item_parser => :load_config do
     portal_system = PortalSystem.find_or_create_by_name(@config["portal_system_name"])
     # Destroy the existing item parser for this portal system, if any
-    portal_system.parsers.first(:conditions=>{:scraper_type => 'ItemScraper'}).try(:destroy)
+    portal_system.parsers.first(:conditions=>{:scraper_type => 'ItemScraper', :result_model => 'PlanningApplication'}).try(:destroy)
   
     # Create a new item parser for this portal system
     begin
