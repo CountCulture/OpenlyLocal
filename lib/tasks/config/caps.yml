@@ -3,7 +3,6 @@ portal_system_name: CAPS (Public Access)
  
 councils:
   angus: http://planning.angus.gov.uk/PublicAccess/
-  barking and dagenham: http://paweb.barking-dagenham.gov.uk/publicaccess/
   basildon: http://planning.basildon.gov.uk/publicaccess/tdc/dcapplication/
   bexley: http://publicaccess.bexley.gov.uk/publicaccess/
   bromsgrove: http://appuview.bromsgrove.gov.uk/publicaccess/tdc/dcapplication/ 
@@ -17,12 +16,12 @@ councils:
   knowsley: http://publicaccess.knowsley.gov.uk/publicaccess/
   luton: http://www.eplan.luton.gov.uk/publicaccess/
   melton: http://publicaccess.melton.gov.uk/PALiveSystem77/
-  oadby and wigston: http://pa.owbc.net/PublicAccess/
+  oadby and wigston: http://pa.owbc.net/PublicAccess/ # FIXME execution expired
   redditch: http://access.redditchbc.gov.uk/PublicAccess/
   rochford: http://publicaccess.rochford.gov.uk/publicaccess/
   sandwell: http://webcaps.sandwell.gov.uk/publicaccess/
-  selby: http://publicaccess.selby.gov.uk/publicaccess/
-  sheffield: http://planning.sheffield.gov.uk/publicaccess/
+  selby: http://publicaccess.selby.gov.uk/publicaccess/ # FIXME unexpected EOF
+  sheffield: http://planning.sheffield.gov.uk/publicaccess/ # FIXME execution expired
   south bucks: http://sbdc-paweb.southbucks.gov.uk/publicaccess/
   southampton: http://publicaccess.southampton.gov.uk/publicaccess/
   southend on sea: http://planning.southend.gov.uk/publicaccess/
@@ -40,22 +39,14 @@ item:
   parsing_library:  8
   item_parser:      item.search('table.cResultsForm tr')[1..-1]
   
-  # From OpenlyLocal  
-  
-  # path: DcApplication/application_searchresults.aspx?searchtype=ADV&tpage=1&pagesize=100&srchDateValidStart=#{14.days.ago.to_date.to_s(:uk)}&srchDateValidEnd=#{Date.today.to_s(:uk)}
-  
   # Modified to use dd/mm/yyyy dates
+  cookie_path: tdc/DcApplication/application_searchresults.aspx?searchtype=ADV&srchDateValidStart=#{14.days.ago.to_date.strftime("%d/%m/%Y")}&srchDateValidEnd=#{Date.today.strftime("%d/%m/%Y")}
   
-  path: tdc/DcApplication/application_searchresults.aspx?searchtype=ADV&srchDateValidStart=#{14.days.ago.to_date.strftime("%d/%m/%Y")}&srchDateValidEnd=#{Date.today.strftime("%d/%m/%Y")}
-  
-  
-  # From Planning Alerts 1.0
-  
-  # path: DcApplication/application_searchresults.aspx?searchtype=WEEKLY&selWeeklyListRange=01/12/2011|20/12/2011&weektype=VAL
-  
+  path: tdc/DcApplication/application_searchresults.aspx?searchtype=ADV&tpage=1&pagesize=100&srchDateValidStart=#{14.days.ago.to_date.strftime("%d/%m/%Y")}&srchDateValidEnd=#{Date.today.strftime("%d/%m/%Y")}
+    
   attributes: 
-    url:  base_url + item.search('td a').last[:href].sub(/^\/\w+\//,'')
-    uid:  item.at('td').inner_text
+    url:      base_url + item.search('td a').last[:href].sub(/^\/\w+\//,'')
+    uid:      item.at('td').inner_text
 
 #------------------------------------------------------------------------------
     
@@ -63,41 +54,70 @@ info:
   http_method:      GET
   encoding:         UTF-8
   parsing_library:  8
-  item_parser:      item.at("body")
+
+  item_parser: item.at('table.cTblLayout')
   
   fields:
-    - :parser:    item.at("textarea#address").inner_text
-      :name:      address
-      :required:  true
-  
-    - :parser:    item.at("textarea#desc").inner_text
-      :name:      description
-      :required:  true
-  
-    - :parser:    item.at("input#daterecv")["value"]
-      :name:      date_received
-      :required:  false
-  #     
-  #   - :parser:    item.at("input#dateeiareceived")["value"]
-  #     :name:      date_eia_received
-  #     :required:  false
-    
-    - :parser:    item.at("input#applicantname")["value"]
-      :name:      applicant_name
-      :required:  false  
+    - :parser: item.at('textarea#address').inner_text.gsub("\r","\n")
+      :name: address
+      :required: true
+
+    - :parser: item.at('textarea#applicantaddress').try(:inner_text).to_s.gsub("\r","\n")
+      :name: agent_address
+      :required: false
+
+    - :parser: item.search('input#agentcondetail').try(:slice, 1).try(:get_attribute, 'value')
+      :name: agent_email
+      :required: false
+
+    - :parser: item.search('input#agentcondetail').try(:slice, 2).try(:get_attribute, 'value')
+      :name: agent_fax
+      :required: false
+
+    - :parser: item.search('input#agentcondetail').try(:slice, 0).try(:get_attribute, 'value')
+      :name: agent_telephone
+      :required: false
       
-    - :parser:    item.at("textarea#applicantaddress").try(:inner_text)
-      :name:      applicant_address
-      :required:  false
-    
-    - :parser:    item.at("input#applicationstatus")["value"]
-      :name:      status
-      :required:  false
-    
-  #   - :parser:    item.at("textarea#datevalid").inner_text???????????????
-  #     :name:      on_notice_from
-  #     :required:  false
-      
-  #   - :parser:    item.at("textarea#dateexpiry").inner_text
-  #     :name:      on_notice_to
-  #     :required:  false
+    - :parser: item.at('input#agentname').try(:get_attribute, 'value')
+      :name: agent_name
+      :required: false
+
+    - :parser: item.at('textarea#applicantaddress').try(:inner_text).to_s.gsub("\r", "\n")
+      :name: applicant_address
+      :required: false
+
+    - :parser: item.at('input#applicantname').try(:get_attribute, 'value')
+      :name: applicant_name
+      :required: false
+
+    - :parser: item.at('input#daterecv').try(:get_attribute, 'value')
+      :name: application_received
+      :required: false
+
+    - :parser: item.at('input#type').try(:get_attribute, 'value')
+      :name: application_type
+      :required: false
+
+    - :parser: item.at('input#datevalid')[:value]
+      :name: application_validated
+      :required: false
+
+    - :parser: item.at('input#officer').try(:get_attribute, 'value')
+      :name: case_officer
+      :required: false
+
+    - :parser: item.at('textarea#desc').try(:inner_text)
+      :name: description
+      :required: true
+
+    - :parser: item.at('input#PPReference').try(:get_attribute, 'value')
+      :name: planning_portal_uid
+      :required: false
+
+    - :parser: item.at('input#applicationstatus')[:value]
+      :name: status
+      :required: true
+
+    - :parser: item.at('input#wardname').try(:get_attribute, 'value')
+      :name: ward_name
+      :required: false

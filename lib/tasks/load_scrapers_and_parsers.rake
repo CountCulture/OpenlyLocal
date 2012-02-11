@@ -12,7 +12,7 @@ namespace :planning_alerts do
   task :load_item_parser => :load_config do
     portal_system = PortalSystem.find_or_create_by_name(@config["portal_system_name"])
     # Destroy the existing item parser for this portal system, if any
-    portal_system.parsers.first(:conditions=>{:scraper_type => 'ItemScraper'}).try(:destroy)
+    portal_system.parsers.first(:conditions=>{:scraper_type => 'ItemScraper', :result_model => 'PlanningApplication'}).try(:destroy)
   
     # Create a new item parser for this portal system
     begin
@@ -129,6 +129,25 @@ namespace :planning_alerts do
     puts "http://localhost:3000/parsers/#{@parser.id}"
   
   end
+  
+#   desc "Dump portal system to YAML"
+#   task :dump_portal_system => :environment do
+#     puts "Dumping #{ENV['portal_system']}"
+#     if @portal_system = PortalSystem.find_by_name(ENV['portal_system'])
+#       @output = {}
+#       @output['portal_system_name'] = @portal_system.name
+#       @output['councils'] = {}
+#       @portal_system.councils.each do |council|
+#         @output['councils'][council.normalised_title] = council.url
+#         puts council.normalised_title
+#         puts council.url
+#       end
+#       
+#       puts @output.to_yaml
+#     else
+#       $stderr.puts "Couldn't find portal system #{ENV['portal_system']}"
+#     end
+#   end
 
   desc "Show config"
   task :show_config => :load_config do
