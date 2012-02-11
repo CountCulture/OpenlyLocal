@@ -11,9 +11,9 @@ councils:
 #   east dunbartonshire: http://opis-web.eastdunbarton.gov.uk/bumblebee-web # Returns the search form rather than the search results page
   east renfrewshire: http://ercplanning.eastrenfrewshire.gov.uk/eplanning
   east riding of yorkshire: http://www.eastriding.gov.uk/newpublicaccess
-  falkirk: http://eplanning.falkirk.gov.uk/online
+  falkirk: http://eplanning.falkirk.gov.uk/online # Temporarily down
   gloucester: http://glcstrplnng12.co.uk/online-applications
-  hart: http://publicaccess1.hart.gov.uk/online-applications
+  hart: http://publicaccess1.hart.gov.uk/online-applications # According to their site, only works in Internet Explorer & between 7AM & 11PM http://www.hart.gov.uk/index/top-planning/planning_applications/how_can_i_view_a_planning_application.htm
   horsham: http://public-access.horsham.gov.uk/public-access
   inverclyde: http://planning.inverclyde.gov.uk/Online
   lancaster: http://planning.lancaster.gov.uk/online-applications
@@ -48,20 +48,37 @@ item:
 
 #------------------------------------------------------------------------------
     
-# info:
-#   http_method:      GET
-#   encoding:         UTF-8
-#   parsing_library:  8
-#   item_parser:      item.at("table#simpleDetailsTable tbody")
-#   
-# #   item.at(\"//th[@class='RecordTitle' and .='Decision:']/../td\").inner_text.strip
-#   
-#   fields:
-#     - :parser:    item.at("//th[contains(.,'Address' )]/../td").inner_text.strip
-#       :name:      address
-#       :required:  true
-#   
-#     - :parser:    item.at("//th[normalize-space(.)='Proposal']/../td").inner_text.strip
-#       :name:      description
-#       :required:  true
-      
+info:
+  http_method:      GET
+  encoding:         UTF-8
+  parsing_library:  8
+  item_parser:      item.at("body")
+  
+  fields:
+    - :parser:    item.at("//th[contains(., 'Address')]/../td").inner_text
+      :name:      address
+      :required:  true
+  
+    - :parser:    item.at("//th[contains(., 'Proposal')]/../td").inner_text
+      :name:      description
+      :required:  true
+
+    - :parser:    item.at("//th[contains(., 'Application Received')]/../td").try(:inner_text)
+      :name:      date_received
+      :required:  false
+
+    - :parser:    item.at("//th[contains(., 'Alternative Reference') or contains(., 'Planning Portal Reference')]/../td").try(:inner_text)
+      :name:      alternative_reference
+      :required:  false
+
+    - :parser:    item.at("//th[contains(., 'Status')]/../td").inner_text
+      :name:      status
+      :required:  false
+
+    - :parser:    item.at("//th[contains(., 'Appeal Status')]/../td").try(:inner_text)
+      :name:      appeal_status
+      :required:  false
+
+    - :parser:    item.at("//th[contains(., 'Appeal Decision')]/../td").try(:inner_text)
+      :name:      appeal_decision
+      :required:  false
