@@ -19,7 +19,7 @@ class Charity < ActiveRecord::Base
   validates_uniqueness_of :company_number, :allow_nil => true
   validates_uniqueness_of :corrected_company_number, :allow_nil => true
   before_save :normalise_title
-  after_create :update_with_company_number
+  after_create :update_external_info
   alias_attribute :url, :website  
   
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising charity titles
@@ -67,6 +67,10 @@ class Charity < ActiveRecord::Base
     
   end
   
+  def perform
+    update_from_charity_register
+  end
+  
   def possible_company?
     governing_document&&governing_document.match(/Mem|M&A|M & A/i)
   end
@@ -79,6 +83,12 @@ class Charity < ActiveRecord::Base
     'removed' if date_removed?
   end
   
+  #This is usually called from DelayedJob, which will be enqueued  by OpenCharities
+  def update_external_info
+    update_social_networking_details_from_website
+    update_with_company_number
+  end
+  
   def update_from_charity_register
     attribs = CharityUtilities::Client.new(:charity_number => charity_number).get_details
     self.last_checked = Time.now
@@ -87,10 +97,16 @@ class Charity < ActiveRecord::Base
   
   def update_info
     return unless update_from_charity_register
-    update_social_networking_details_from_website
+    update_external_info
     true
   end
   
+  def update_with_company_number
+    return if company_number? || !possible_company?
+    matched_company_number = match_company_number
+    update_attribute(:company_number, matched_company_number) if matched_company_number
+  end
+
   def website=(raw_url)
     self[:website] = TitleNormaliser.normalise_url(raw_url)
   end
@@ -100,9 +116,4 @@ class Charity < ActiveRecord::Base
     self.normalised_title = self.class.normalise_title(title)
   end
   
-  def update_with_company_number
-    return if company_number? || !possible_company?
-    matched_company_number = match_company_number
-    update_attribute(:company_number, matched_company_number) if matched_company_number
-  end
 end

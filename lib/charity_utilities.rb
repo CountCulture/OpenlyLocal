@@ -132,7 +132,6 @@ module CharityUtilities
     end
     
     def frameworks_data_from(url_or_doc)
-      p url_or_doc
       frameworks_page = url_or_doc.is_a?(String) ? Nokogiri.HTML(_http_get(url_or_doc)) : url_or_doc # use Nokogiri as Hpricot has probs with this website
       res = {}
       res[:date_registered] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish rescue nil
@@ -140,7 +139,6 @@ module CharityUtilities
       res[:governing_document] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucGovDocDisplay_lblDisplayLabel').inner_text.squish rescue nil
       other_names = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucOtherNames_lblDisplayLabel').inner_text.squish rescue nil
       res[:other_names] = other_names == 'None' ? nil : other_names
-      p res
       res
     end
     

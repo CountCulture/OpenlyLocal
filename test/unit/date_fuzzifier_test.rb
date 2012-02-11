@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class DateFuzzifierTest < Test::Unit::TestCase
+class DateFuzzifierTest < ActiveSupport::TestCase
   
   context "The DateFuzzifier module" do
     context "when returning date_with_fuzziness" do

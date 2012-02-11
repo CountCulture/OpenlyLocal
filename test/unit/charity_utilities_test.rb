@@ -320,7 +320,7 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
       end
 
       should "reconcile charity name with OpenCorporates reconciliation service" do
-        @client.expects(:_http_get).with("http://opencorporates.com/reconcile/uk?query=#{URI.escape(@charity.title)}")#.returns(@dummy_response)
+        @client.expects(:_http_get).with("http://opencorporates.com/reconcile/gb?query=#{URI.escape(@charity.title)}")#.returns(@dummy_response)
         @client.company_number_for(@charity)
       end
       

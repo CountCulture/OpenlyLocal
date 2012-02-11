@@ -161,7 +161,7 @@ class FeedEntryTest < ActiveSupport::TestCase
       end
       
       should "add tags for categories" do
-        assert_difference "Tag.count", 2 do
+        assert_difference "ActsAsTaggableOn::Tag.count", 2 do
           FeedEntry.update_from_feed("foo.com")
         end
         new_entry = FeedEntry.find_by_guid("entry_1")

@@ -1,7 +1,7 @@
 class DatasetTopicsController < ApplicationController
   before_filter :authenticate, :except => [:show]
   before_filter :find_dataset_topic
-  caches_action :show, :cache_path => Proc.new { |controller| controller.params }
+  caches_action :show, :cache_path => Proc.new { |controller| controller.params }, :expires_in => 1.day
 
   def show
     if params[:area_type]&&params[:area_id]
@@ -21,7 +21,7 @@ class DatasetTopicsController < ApplicationController
   end
   
   def populate
-    Delayed::Job.enqueue @dataset_topic
+    @dataset_topic.delay.perform
     flash[:notice] = "Successfully queued Topic to be populated for all councils. You will be emailed when this has finished"
     redirect_to dataset_topic_url(@dataset_topic)
   end

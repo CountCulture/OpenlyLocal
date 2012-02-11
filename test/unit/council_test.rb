@@ -306,7 +306,8 @@ class CouncilTest < ActiveSupport::TestCase
           "Fenland District Council" => "fenland",
           "LB Brent" => "brent",
           "Selby Council" => "selby", #checking removing LB doesn't affect this
-          "Council of the Isles of Scilly" => "isles of scilly"
+          "Council of the Isles of Scilly" => "isles of scilly",
+          "Harborough District Council" => "harborough"
         }
       end
       
@@ -1195,13 +1196,14 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "queue up tweets for delivery later" do
-        Delayed::Job.expects(:enqueue).with(kind_of(Tweeter)).twice
+        Tweeter.any_instance.expects(:delay => stub(:perform => nil)).twice
+        # Delayed::Job.expects(:enqueue).with(kind_of(Tweeter)).twice
         @council.notify_local_hyperlocal_sites('Hello World')
       end
       
       should "not send any tweets if no hyperlocal sites" do
         Tweeter.expects(:new).never
-        Delayed::Job.expects(:enqueue).never
+        Tweeter.any_instance.expects(:delay).never
         @another_council.notify_local_hyperlocal_sites('Hello World')
       end
       

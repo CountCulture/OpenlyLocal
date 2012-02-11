@@ -1,9 +1,9 @@
 class HyperlocalSitesController < ApplicationController
   before_filter :authenticate, :except => [:index, :show, :new, :create, :custom_search_results]
-  before_filter :find_hyperlocal_site, :except => [:index, :new, :create, :custom_search_results, :destroy_multiple]
+  before_filter :find_hyperlocal_site, :except => [:index, :new, :create, :custom_search_results, :destroy_multiple, :admin]
   before_filter :enable_google_maps, :except => [:update, :create, :destroy]
   before_filter :show_rss_link, :only => :index
-  caches_action :index, :cache_path => Proc.new { |controller| controller.params }
+  caches_action :index, :cache_path => Proc.new { |controller| controller.params }, :expires_in => 12.hours
   caches_page :show
   
   def index
@@ -79,6 +79,10 @@ class HyperlocalSitesController < ApplicationController
   
   def custom_search_results
     @title = "UK Hyperlocal Sites Search Results"
+  end
+  
+  def admin
+    @hyperlocal_sites = HyperlocalSite.find_all_by_approved(false)
   end
   
   private

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ParserTest < Test::Unit::TestCase
+class ParserTest < ActiveSupport::TestCase
   
   context "The Parser class" do
     should belong_to :portal_system
@@ -179,7 +179,7 @@ class ParserTest < Test::Unit::TestCase
         should "eval attribute_parser code on hpricot doc if no item_parser" do
           no_item_parser_parser = Factory.build(:parser, :item_parser => nil)
           dummy_hpricot = mock
-          no_item_parser_parser.expects(:eval_parsing_code).with(){ |code, item| (code =~ /bar/) && (item == dummy_hpricot) }
+          no_item_parser_parser.expects(:eval_parsing_code).with(){ |code, item| (code =~ /bar/) && (item == dummy_hpricot) }.at_least_once
           no_item_parser_parser.process(dummy_hpricot)
         end
         

@@ -65,7 +65,7 @@ class InfoScraperTest < ActiveSupport::TestCase
       end
       
       should "search for related_objects when passed as params" do
-        TestScrapedModel.expects(:find).returns([])
+        TestScrapedModel.expects(:find).returns([]).at_least_once
         @scraper.process
       end
       

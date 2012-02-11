@@ -1,5 +1,6 @@
 class MainController < ApplicationController
-  caches_action :index
+  caches_action :index, :expires_in => 30.minutes
+  
   def index
     @page_title           = "Openly Local :: Making Local Government More Transparent"
     @councils             = Council.parsed({}).find(:all, :order => "councils.updated_at DESC", :limit => 10)

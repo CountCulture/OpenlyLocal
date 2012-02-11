@@ -16,6 +16,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       assert_routing({ :method => 'delete', :path => '/hyperlocal_sites/destroy_multiple' }, {:controller => "hyperlocal_sites", :action => "destroy_multiple"})
     end
     
+    should "have routing for admin hyperlocal_sites" do
+      assert_routing('/hyperlocal_sites/admin', {:controller => "hyperlocal_sites", :action => "admin"})
+    end
+    
   end
 
   # index test
@@ -461,7 +465,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
        @attributes = Factory.attributes_for(:hyperlocal_site)
      end
     
-    context "with valid params" do
+     context "with valid params" do
        setup do
          post :create, :hyperlocal_site => @attributes
        end
@@ -625,6 +629,36 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     
     should_redirect_to ( "the admin page") { admin_url }
     should set_the_flash.to( /successfully destroyed 2 hyperlocal sites/i)
+  end
+  
+  context "on get to :edit a hyperlocal site without auth" do
+    setup do
+      get :edit, :id => @hyperlocal_site.id
+    end
+
+    should respond_with 401
+  end
+
+  # admin tests
+  context "on get to :admin hyperlocal_sites without auth" do
+    setup do
+      delete :admin
+    end
+
+    should respond_with 401
+  end
+
+  context "on get to :admin hyperlocal sites" do
+    setup do
+      stub_authentication
+      get :admin
+    end
+
+    should assign_to :hyperlocal_sites
+    should respond_with :success
+    should render_template :admin
+    should_not set_the_flash
+
   end
     
 end

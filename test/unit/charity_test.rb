@@ -141,19 +141,19 @@ class CharityTest < ActiveSupport::TestCase
       end
       
       context "and problem updating info on charities" do
-        setup do
-          Charity.any_instance.stubs(:update_from_charity_register).returns(true)
-        end
+        # setup do
+        #   Charity.any_instance.stubs(:update_from_charity_register).returns(true)
+        # end
 
         should "still save basic charity details" do
-          Charity.any_instance.expects(:update_social_networking_details_from_website).raises
+          Charity.any_instance.expects(:update_info).twice.raises
           assert_difference "Charity.count", 2 do
             charities = Charity.add_new_charities
           end
         end
         
         should "not raise exception if Timeout:Error" do
-          Charity.any_instance.expects(:update_social_networking_details_from_website).raises(Timeout::Error)
+          Charity.any_instance.expects(:update_info).twice.raises(Timeout::Error)
           
           assert_nothing_raised() { Charity.add_new_charities }
         end
@@ -215,47 +215,12 @@ class CharityTest < ActiveSupport::TestCase
     
     context "after creation" do
       setup do
-        @poss_company_charity = Factory.build(:charity)
+        @unsaved_charity = Factory.build(:charity)
       end
       
-      context "and charity is possible_company?" do
-        setup do
-          @poss_company_charity.stubs(:possible_company?).returns(true)
-        end
-
-        should "match company_number" do
-          @poss_company_charity.expects(:match_company_number)
-          @poss_company_charity.save!
-        end
-        
-        should "update charity with matched company number" do
-          @poss_company_charity.stubs(:match_company_number).returns('98765432')
-          @poss_company_charity.save!
-          assert @poss_company_charity.reload.company_number == '98765432'
-        end
-      end
-      
-      context "and charity is not possible_company?" do
-        setup do
-          @poss_company_charity.stubs(:possible_company?)
-        end
-
-        should "not match_company_number" do
-          @poss_company_charity.expects(:match_company_number).never
-          @poss_company_charity.save!
-        end
-      end
-      
-      context "and charity already has company_number" do
-        setup do
-          @poss_company_charity.company_number = '12345678'
-          @poss_company_charity.stubs(:possible_company?).returns(true)
-        end
-
-        should "not match_company_number" do
-          @poss_company_charity.expects(:match_company_number).never
-          @poss_company_charity.save!
-        end
+      should 'update external info' do
+        @unsaved_charity.expects(:update_external_info)
+        @unsaved_charity.save!
       end
     end
 
@@ -362,6 +327,13 @@ class CharityTest < ActiveSupport::TestCase
       end
     end
     
+    context "when performing" do
+      should "update_from_charity_register" do
+        @charity.expects(:update_from_charity_register)
+        @charity.perform
+      end
+    end
+    
     context "when returning possible_company?" do
       should "return true only if Governing Document begins with Mem etc" do
         assert Charity.new(:governing_document => 'Memorandum etc').possible_company?
@@ -416,6 +388,7 @@ class CharityTest < ActiveSupport::TestCase
       end
       
     end
+    
     context "when updating info" do
       setup do
         @charity.stubs(:update_from_charity_register).returns(true)
@@ -442,6 +415,19 @@ class CharityTest < ActiveSupport::TestCase
       end
       
     end
+    
+    context "when updating external info" do
+
+      should "update social networking info from website" do
+        @charity.expects(:update_social_networking_details_from_website)
+        @charity.update_external_info
+      end
+
+      should "update with company_number" do
+        @charity.expects(:update_with_company_number)
+        @charity.update_external_info
+      end
+   end
     
     context "when updating from register" do
       should "get info using charity utilities" do
@@ -483,6 +469,52 @@ class CharityTest < ActiveSupport::TestCase
         assert_nil @charity.reload.last_checked
       end
       
+    end
+
+    context "when updating with company number" do
+      setup do
+        @poss_company_charity = Factory(:charity)
+      end
+      
+      context "and charity is possible_company?" do
+        setup do
+          @poss_company_charity.stubs(:possible_company?).returns(true)
+        end
+
+        should "match company_number" do
+          @poss_company_charity.expects(:match_company_number)
+          @poss_company_charity.update_with_company_number
+        end
+        
+        should "update charity with matched company number" do
+          @poss_company_charity.stubs(:match_company_number).returns('98765432')
+          @poss_company_charity.update_with_company_number
+          assert @poss_company_charity.reload.company_number == '98765432'
+        end
+      end
+      
+      context "and charity is not possible_company?" do
+        setup do
+          @poss_company_charity.stubs(:possible_company?)
+        end
+
+        should "not match_company_number" do
+          @poss_company_charity.expects(:match_company_number).never
+          @poss_company_charity.update_with_company_number
+        end
+      end
+      
+      context "and charity already has company_number" do
+        setup do
+          @poss_company_charity.company_number = '12345678'
+          @poss_company_charity.stubs(:possible_company?).returns(true)
+        end
+
+        should "not match_company_number" do
+          @poss_company_charity.expects(:match_company_number).never
+          @poss_company_charity.update_with_company_number
+        end
+      end
     end
   end
 

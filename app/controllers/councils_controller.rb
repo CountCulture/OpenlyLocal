@@ -2,7 +2,10 @@ class CouncilsController < ApplicationController
   before_filter :authenticate, :except => [:index, :show, :spending, :show_spending, :accounts]
   before_filter :linked_data_available, :only => :show
   before_filter :find_council, :except => [:index, :new, :create, :spending]
-  caches_action :index, :show, :spending, :cache_path => Proc.new { |controller| controller.params }
+  caches_action :index, :spending, :expires_in => 12.hours, :cache_path => Proc.new { |controller| controller.params }
+
+  caches_action :show, :cache_path => Proc.new {|c| [c.instance_variable_get(:@council).cache_key,c.params[:format]].join('.') }, :if => Proc.new {|c| c.instance_variable_get(:@council) }
+
   caches_page :show_spending
   
   def index

@@ -22,6 +22,6 @@ class Address < ActiveRecord::Base
   
   private
   def queue_for_geocoding
-    Delayed::Job.enqueue(self) if lat.nil? #don't geocode if already got address
+    self.delay.perform if lat.nil? #don't geocode if already got address
   end
 end

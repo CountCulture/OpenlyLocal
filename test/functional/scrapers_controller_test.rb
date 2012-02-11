@@ -275,7 +275,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
       
     should "add to delayed job queue" do
-      Delayed::Job.expects(:enqueue).with(instance_of(ItemScraper))
+      ItemScraper.any_instance.expects(:delay => stub(:perform => nil))
       post :scrape, :id => @scraper.id
     end
     

@@ -613,3 +613,55 @@ task :import_os_parish_councils => :environment do
     end
   end
 end
+
+desc "Import NALC parish councils"
+task :import_nalc_parish_councils => :environment do
+  county_council_name, county_council = nil, nil #so it's outside of iterator scope
+  # new_csv_file = File.new(File.join(RAILS_ROOT, "db/data/csv_data/new_nalc_parish_council_list.csv", 'w')
+  new_csv_file = FasterCSV.new(File.new(File.join(RAILS_ROOT, "db/data/csv_data/new_nalc_parish_council_list.csv"),'w'))
+  begin
+    new_csv_file << ["CALC","Council Name","Council Type","County Council",'Parish Council Id','Council Id']
+    FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/csv_data/nalc_parish_council_list.csv"), :headers => true) do |row|
+      if county_council_name != row["County Council"]
+        if county_council = Council.find_by_normalised_title(Council.normalise_title(row["County Council"]))
+          puts "-----\nMatched county council #{county_council.name} to NALC county council #{county_council_name}"
+        else
+          puts "Failed to match county council #{ row["County Council"]}."
+          # puts "Please supply OpenlyLocal id of council (n to skip, q to quit):"
+          # council_id = get_council_id_from_stdin
+          # next if council_id == 'n'
+          # county_council = Council.find(council_id)
+          # puts "Thanks (that was #{county_council.name})"
+        end
+        county_council_name = row["County Council"]
+      end
+      # puts "About to reconcile using county council: #{county_council}"
+      pcs = ParishCouncil.reconcile(:q => row["Council Name"], :parent_council => county_council)
+      case
+      when pc = (pcs.size == 1) && pcs.first
+        # pc.update_attribute(:council_type, row["Council Type"].sub(/\scouncil/i,'').strip)
+        puts "Matched Parish Council (#{row["Council Name"]}) to #{pc.title}"
+      when pcs.size > 1
+        puts "Found multiple possible parishes for #{row["Council Name"]}: " + pcs.collect{|pc| "#{pc.title} (#{pc.council.try(:name)})\n"}.join(', ')
+      #   puts "Please choose council (1..#{pcs.size}):"
+      #   i = get_council_id_from_stdin.to_i -1
+      #   pc = pcs[i]
+      else
+        puts "*****Found no matching parish councils for #{row["Council Name"]}"
+        # puts "Please supply council_id:"
+      #   council_id = get_council_id_from_stdin
+      #   pc = ParishCouncil.find(council_id) unless council_id == 'n'
+      end
+      new_csv_file << [row["CALC"],row["Council Name"], row["Council Type"], row["County Council"], (pc&&pc.id)||nil, county_council&&county_council.id]
+    end
+  ensure
+    new_csv_file.close
+  end
+end
+
+
+def get_council_id_from_stdin
+  response = $stdin.gets.chomp
+  break if response == "q"
+  response
+end

@@ -170,7 +170,9 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       
       should "return lat_long for postcode matching normalised postcode" do
         @planning_application.postcode = 'AB1 2CD'
-        assert_equal [@postcode.lat, @postcode.lng], @planning_application.inferred_lat_lng
+        inferred_lat_lng = @planning_application.inferred_lat_lng
+        assert_in_delta @postcode.lat, inferred_lat_lng.first, 0.01
+        assert_in_delta @postcode.lng, inferred_lat_lng.last, 0.01
       end
 
       should "return nil if postcode is blank" do

@@ -51,7 +51,9 @@ class ApplicationController < ActionController::Base
   def authenticate
     authenticate_or_request_with_http_basic("TWFY_local") do |username, password|
       # AUTHENTICATED_USERS[username] || false
-      AUTHENTICATED_USERS[username] == password
+      return false unless AUTHENTICATED_USERS[username].first == password
+      p auth_level = AUTHENTICATED_USERS[username][1]
+      auth_level == :admin or auth_level.to_s == controller_name
     end
   end
   

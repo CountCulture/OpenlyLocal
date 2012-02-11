@@ -97,11 +97,11 @@ class CompanyTest < ActiveSupport::TestCase
     
     context "after creation" do
       setup do
-        Delayed::Job.stubs(:enqueue)# because spending stat also queued
+        # Delayed::Job.stubs(:enqueue)# because spending stat also queued
       end
 
       should "add company to Delayed::Job queue for processing" do
-        Delayed::Job.expects(:enqueue).with(kind_of(Company))
+        Company.any_instance.expects(:delay => stub(:perform => nil))        
         Factory(:company)
       end
     end
@@ -109,7 +109,7 @@ class CompanyTest < ActiveSupport::TestCase
     context "after saving" do
 
       should "not add company to Delayed::Job queue for processing" do
-        Delayed::Job.expects(:enqueue).never
+        Company.any_instance.expects(:delay).never
         @company.save!
       end
     end
@@ -334,7 +334,7 @@ class CompanyTest < ActiveSupport::TestCase
       end
       
       should "not add company to delayed_job queue for fetching more details" do
-        Delayed::Job.expects(:enqueue).never
+        Company.any_instance.expects(:delay).never
         Company.match_or_create(:company_number => "012345")
       end
       
@@ -373,9 +373,9 @@ class CompanyTest < ActiveSupport::TestCase
         end
         
         should 'add company to delayed_job queue for fetching more details' do
-          Delayed::Job.stubs(:enqueue)# because spending stat also queued
+          # Delayed::Job.stubs(:enqueue)# because spending stat also queued
           
-          Delayed::Job.expects(:enqueue).with(kind_of(Company))
+          Company.any_instance.expects(:delay => stub(:perform => nil))
           Company.match_or_create(:company_number => "07654321", :title => 'Foo Ltd')
         end
 

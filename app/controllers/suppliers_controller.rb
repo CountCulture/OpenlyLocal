@@ -1,5 +1,5 @@
 class SuppliersController < ApplicationController
-  caches_action :show, :cache_path => Proc.new { |controller| controller.params }
+  caches_action :show, :cache_path => Proc.new { |controller| controller.params }, :expires_in => 12.hours
   
   def index
     search_filter = params[:name_filter]

@@ -182,7 +182,6 @@ class CharitiesControllerTest < ActionController::TestCase
         put :update, :id => @charity.id, :charity => { :website => "http://new.name.com"}
       end
     
-      should_not_change("The number of entities") { Entity.count }
       should_change("The charity website", :to => "http://new.name.com") { @charity.reload.website }
       should assign_to :charity
       should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
@@ -194,36 +193,12 @@ class CharitiesControllerTest < ActionController::TestCase
     
     end
     
-    context "with asked to update from CC website" do
-      setup do
-        stub_authentication
-        Charity.any_instance.stubs(:update_from_charity_register)
-        put :update, :id => @charity.id, :commit => "Update from CC website"
-      end
-    
-      should_not_change("The number of entities") { Entity.count }
-      should assign_to :charity
-      should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
-      should_set_the_flash_to "Successfully updated charity from Charity Commission website"
-      
-      should "update from register" do
-        Charity.any_instance.expects(:update_from_charity_register)
-        put :update, :id => @charity.id, :commit => "Update from CC website"
-      end
-      
-      should "not set the manually_updated flag for the charity" do
-        assert_nil @charity.manually_updated
-      end
-      
-    end
-    
     context "with invalid params" do
       setup do
         stub_authentication
         put :update, :id => @charity.id, :charity => {:title => ""}
       end
     
-      should_not_change("The number of entities") { Entity.count }
       should_not_change("The charity name") { @charity.reload.title }
       should assign_to :charity
       should render_template :edit
@@ -232,4 +207,40 @@ class CharitiesControllerTest < ActionController::TestCase
   
   end  
   
+  context "on PUT to :refresh" do
+    context "in general" do
+      setup do
+        put :refresh, :id => @charity.id
+      end
+    
+      should assign_to :charity
+      should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
+      should_set_the_flash_to "Queued charity for updating"
+      
+      should "add to delayed job queue" do
+        Charity.any_instance.expects(:delay => stub(:update_from_charity_register => nil))
+        put :refresh, :id => @charity.id
+      end
+      
+      should "not set the manually_updated flag for the charity" do
+        assert_nil @charity.manually_updated
+      end
+      
+    end
+    
+    context "with xhr request" do
+      setup do
+        xhr :put, :refresh, :id => @charity.id
+      end
+      
+      should respond_with :success
+
+      should "add to delayed job queue" do
+        Charity.any_instance.expects(:delay => stub(:update_from_charity_register => nil))
+        xhr :put, :refresh, :id => @charity.id
+      end
+    end
+    
+    
+  end
 end

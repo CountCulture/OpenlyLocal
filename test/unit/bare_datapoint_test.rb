@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class BareDatapointTest < Test::Unit::TestCase
+class BareDatapointTest < ActiveSupport::TestCase
   
   context "A BareDatapoint instance" do
 

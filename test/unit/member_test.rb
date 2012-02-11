@@ -303,12 +303,12 @@ class MemberTest < ActiveSupport::TestCase
       
       should "Tweet about council being added" do
         Factory(:committee, :council => @council)
-        Delayed::Job.expects(:enqueue).with(kind_of(Tweeter))
+        Tweeter.any_instance.expects(:delay => stub(:perform => nil))
         Factory(:member, :council => @council)
       end
       
       should "not Tweet about council being added if councils has no committees" do
-        Delayed::Job.expects(:enqueue).never
+        Tweeter.any_instance.expects(:delay).never
         Factory(:member, :council => @council)
       end
       
@@ -362,7 +362,7 @@ class MemberTest < ActiveSupport::TestCase
     context "when creating member for council with other members" do
       should "Not Tweet about council being added" do
         member = Factory(:member)
-        Delayed::Job.expects(:enqueue).with(kind_of(Tweeter)).never
+        Tweeter.any_instance.expects(:delay).never
         Factory(:member, :council => member.council)
       end
     end

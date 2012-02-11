@@ -71,6 +71,7 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :financial_transaction_observer
 end
 require 'open-uri'
+
 # require 'company_utilities' #phusion passenger seems to require this
 
 Dir.glob(RAILS_ROOT + '/app/models/user_submission_types/*') {|file| require File.basename(file, '.rb')} #YAML serialisation requires this in order to instantiate objects properly on deserialisation
@@ -119,4 +120,12 @@ Date::DATE_FORMATS[:uk] = "%d/%m/%Y" # add custom date format too
 
 Pingback.save_callback do |ping|
     RelatedArticle.process_pingback(ping)
+end
+
+if defined?(PhusionPassenger)
+ PhusionPassenger.on_event(:starting_worker_process) do |forked|
+   if forked
+     Rails.cache.instance_variable_get(:@data).reset if Rails.cache.class == ActiveSupport::Cache::MemCacheStore
+   end
+ end
 end

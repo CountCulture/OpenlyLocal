@@ -7,7 +7,7 @@ require 'test_helper'
 # lon -1.049118 : -1:02:56.8248 lat 53.948437 : 53:56:54.3732 hgt 0.000 datum OSGB36
 #   --> lon -1.050704 : -1:03:02.5341 lat 53.948647 : 53:56:55.1288 hgt 47.758 datum WGS84
 
-class OsCoordsUtilitiesTest < Test::Unit::TestCase
+class OsCoordsUtilitiesTest < ActiveSupport::TestCase
   OriginalNameAndConvertedCoords = [ 
     [651409.903, 313177.27], [52.657570301933156, 1.717921580645096], [52.65797559953351, 1.7160665447977752]
   ]

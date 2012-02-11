@@ -129,11 +129,11 @@ class Supplier < ActiveRecord::Base
   def queue_matching_company_and_vat_info
     if self.company_number
       matcher = SupplierUtilities::CompanyNumberMatcher.new(:company_number => company_number, :supplier => self)
-      Delayed::Job.enqueue matcher
+      matcher.delay.perform
     end
     if self.vat_number
       matcher = SupplierUtilities::VatMatcher.new(:vat_number => vat_number, :supplier => self, :title => title)
-      Delayed::Job.enqueue matcher
+      matcher.delay.perform
     end
   end
   

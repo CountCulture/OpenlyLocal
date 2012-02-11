@@ -93,7 +93,7 @@ class Council < ActiveRecord::Base
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising council titles
   def self.normalise_title(raw_title)
     unless semi_normed_title = [NomaliserExceptions.detect{|k,v| raw_title =~ Regexp.new(k, true)}].flatten.last
-      semi_normed_title = TitleNormaliser.normalise_title(raw_title.gsub(/Metropolitan|Borough of|Borough|District|City of|City &|City and|City|County of|County|Royal|Council of the|London|Council|Corporation|MBC|LB\b|\([\w\s]+\)/i, ''))
+      semi_normed_title = TitleNormaliser.normalise_title(raw_title.gsub(/Metropolitan|\bBorough of|\bBorough|District|City of|City &|City and|City|County of|County|Royal|Council of the|London|Council|Corporation|MBC|LB\b|\([\w\s]+\)/i, ''))
     end
     TitleNormaliser.normalise_title(semi_normed_title)
   end
@@ -186,8 +186,7 @@ class Council < ActiveRecord::Base
   def notify_local_hyperlocal_sites(message, options={})
     # p hyperlocal_sites, self.reload.hyperlocal_sites
     hyperlocal_sites.all(:joins => :twitter_account).each do |site|
-      # p site
-      Delayed::Job.enqueue(Tweeter.new("@#{site.twitter_account_name} #{message}", options))
+      Tweeter.new("@#{site.twitter_account_name} #{message}", options).delay.perform
     end
   end
   

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TweeterTest < Test::Unit::TestCase
+class TweeterTest < ActiveSupport::TestCase
   
   context "A Tweeter instance" do
     setup do

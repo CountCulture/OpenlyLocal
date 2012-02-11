@@ -2,7 +2,7 @@ class EntitiesController < ApplicationController
   before_filter :authenticate, :except => [:index, :show, :show_spending]
   before_filter :find_entity, :except => [:index, :new, :create]
   before_filter :linked_data_available, :only => :show
-  caches_page :show
+  caches_page :show, :expires_in => 12.hours
 
   def index
     @entities = Entity.all(:order => 'title')

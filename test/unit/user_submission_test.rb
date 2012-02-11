@@ -21,8 +21,14 @@ class UserSubmissionTest < ActiveSupport::TestCase
     should 'only be valid if submission_details are valid' do
       stub_valid_submission_details = stub_everything(:valid? => true)
       stub_invalid_submission_details = stub_everything
-      assert Factory.build(:user_submission, :submission_details => stub_valid_submission_details).valid?
-      assert !Factory.build(:user_submission, :submission_details => stub_invalid_submission_details).valid?
+      submission = Factory.build(:user_submission)
+      submission.submission_details.expects(:valid?).returns(true)
+      assert submission.valid?
+      submission.submission_details.expects(:valid?).returns(false)
+      assert !submission.valid?
+      # p '******************', s.valid?, s.errors
+      # assert Factory.build(:user_submission, :submission_details => stub_valid_submission_details).valid?
+      # assert !Factory.build(:user_submission, :submission_details => stub_invalid_submission_details).valid?
     end
     
     # should "require either member_name or member_id" do

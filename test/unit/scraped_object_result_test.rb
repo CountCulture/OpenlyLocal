@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ScrapedObjectResultTest < Test::Unit::TestCase
+class ScrapedObjectResultTest < ActiveSupport::TestCase
   context "A ScrapedObjectResult" do
     
     should_have_instance_methods :base_object_klass, :id, :title, :changes, :errors, :url, :status

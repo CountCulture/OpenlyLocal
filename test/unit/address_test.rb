@@ -97,7 +97,7 @@ class AddressTest < ActiveSupport::TestCase
       context "and latitude nil" do
 
         should "should queue for performing" do
-          Delayed::Job.expects(:enqueue).with(@address)
+          @address.expects(:delay => stub(:perform => nil))
           @address.save!
         end
       end
@@ -107,8 +107,8 @@ class AddressTest < ActiveSupport::TestCase
           @address.update_attribute(:lat, 23.4)
         end
 
-        should "should queue for performing" do
-          Delayed::Job.expects(:enqueue).never
+        should "should not queue for performing" do
+          @address.expects(:delay).never
           @address.save!
         end
       end
