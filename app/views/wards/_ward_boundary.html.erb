@@ -22,7 +22,7 @@
 					polygons.push(polygon);
 					map.addOverlay(polygon);    
 				};
-				var map_bounds = new GLatLngBounds(new GLatLng(envelope.lower_corner.y, envelope.lower_corner.x), new GLatLng(envelope.upper_corner.y, envelope.upper_corner.x))
+				var map_bounds = new GLatLngBounds(new GLatLng(envelope.lower_corner.coordinates[1], envelope.lower_corner.coordinates[0]), new GLatLng(envelope.upper_corner.coordinates[1], envelope.upper_corner.coordinates[0]));
 				map.setCenter(map_bounds.getCenter(), map.getBoundsZoomLevel(map_bounds));
       
 	    }
