@@ -3,7 +3,6 @@ require 'test_helper'
 class ParserTest < Test::Unit::TestCase
   
   context "The Parser class" do
-    should have_many :scrapers
     should belong_to :portal_system
     should_validate_presence_of :result_model
     should_validate_presence_of :scraper_type
@@ -16,6 +15,15 @@ class ParserTest < Test::Unit::TestCase
     should "serialize attribute_parser" do
       parser = Parser.create!(:description => "description of parser", :item_parser => "foo", :scraper_type => "ItemScraper", :attribute_parser => {:foo => "\"bar\"", :foo2 => "nil"}, :result_model => "Member")
       assert_equal({:foo => "\"bar\"", :foo2 => "nil"}, parser.reload.attribute_parser)
+    end
+    
+    should have_many :scrapers
+    
+    should "destroy associated scrapers when parser is destroyed" do
+      scraper = Factory(:scraper)
+      parser = scraper.parser
+      parser.destroy
+      assert !Scraper.exists?(scraper.id)
     end
     
   end
