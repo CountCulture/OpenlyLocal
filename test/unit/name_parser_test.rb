@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class NameParserTest < Test::Unit::TestCase
+class NameParserTest < ActiveSupport::TestCase
   OriginalNameAndParsedName = {
     "Fred Flintstone" => {:first_name => "Fred", :last_name => "Flintstone"},
     "Fred Bob Flintstone" => {:first_name => "Fred Bob", :last_name => "Flintstone"},

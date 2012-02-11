@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class BasicDatapointTest < Test::Unit::TestCase
+class BasicDatapointTest < ActiveSupport::TestCase
   context "a BasicDatapoint instance" do
     setup do
       @bd = BasicDatapoint.new(:name => "foo", :data => 123, :source => "ABC", :source_url => "foo.com/abc", :licence => "Anyhoo")

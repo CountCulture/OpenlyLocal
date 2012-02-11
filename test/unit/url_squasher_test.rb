@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class UrlSquasherTest < Test::Unit::TestCase
+class UrlSquasherTest < ActiveSupport::TestCase
 
   context "The UrlSquasher class" do
     setup do

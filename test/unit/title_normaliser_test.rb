@@ -6,7 +6,7 @@ class TestNormalisedModel <ActiveRecord::Base
 end
 
 
-class TitleNormaliserTest < Test::Unit::TestCase
+class TitleNormaliserTest < ActiveSupport::TestCase
   
   context "The TitleNormaliser module" do
     

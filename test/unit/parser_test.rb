@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ParserTest < Test::Unit::TestCase
+class ParserTest < ActiveSupport::TestCase
   
   context "The Parser class" do
     should belong_to :portal_system

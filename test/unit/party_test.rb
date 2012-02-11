@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PartyTest < Test::Unit::TestCase
+class PartyTest < ActiveSupport::TestCase
   DUMMY_RAW_DATA = [
     [ ["Conservative", "Con", "Cons" ], "#0281AA" ],
     [ ["Labour", "Lab"], "#AA0000", "Labour_Party_(UK)" ],

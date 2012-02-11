@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'rdf_utilities'
 
-class RdfUtilitiesTest < Test::Unit::TestCase
+class RdfUtilitiesTest < ActiveSupport::TestCase
 
   context 'when getting graph from url' do
     setup do

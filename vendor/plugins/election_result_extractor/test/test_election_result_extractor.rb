@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'election_result_extractor'
 
-class ElectionResultExtractorTest < Test::Unit::TestCase
+class ElectionResultExtractorTest < ActiveSupport::TestCase
   
   context 'when calculating landing_page for council' do
     setup do
