@@ -68,13 +68,13 @@ class HyperlocalSitesController < ApplicationController
   def destroy
     @hyperlocal_site.destroy
     flash[:notice] = "Successfully destroyed HyperLocal site"
-    redirect_to admin_url
+    redirect_to admin_hyperlocal_sites_url
   end
   
   def destroy_multiple
     @hyperlocal_sites = HyperlocalSite.destroy_all(:id => params[:ids])
     flash[:notice] = "Successfully destroyed #{@hyperlocal_sites.size} HyperLocal sites"
-    redirect_to admin_url
+    redirect_to admin_hyperlocal_sites_url
   end
   
   def custom_search_results

@@ -460,38 +460,38 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
   end  
   
   # create test
-   context "on POST to :create" do
-     setup do
-       @attributes = Factory.attributes_for(:hyperlocal_site)
-     end
+  context "on POST to :create" do
+    setup do
+      @attributes = Factory.attributes_for(:hyperlocal_site)
+    end
+   
+    context "with valid params" do
+      setup do
+        post :create, :hyperlocal_site => @attributes
+      end
     
-     context "with valid params" do
-       setup do
-         post :create, :hyperlocal_site => @attributes
-       end
-     
-       should_change("The number of Hyperlocal Sites", :by => 1) {HyperlocalSite.count}
-       should assign_to :hyperlocal_site
-       should_redirect_to( "the hyperlocal_sites index page") { hyperlocal_sites_url }
-       should set_the_flash.to(/Successfully submitted/i)
-        
-       should "set approved flag to false by default" do
-         assert !HyperlocalSite.find_by_title(@attributes[:title]).approved?
-       end
-     end
-     
-     context "with invalid params" do
-       setup do
-         post :create, :hyperlocal_site => {:title => "New Hyperlocal Site"}
-       end
-     
-       should_not_change("The number of Hyperlocal Sites") { HyperlocalSite.count }
-       should assign_to :hyperlocal_site
-       should render_template :new
-       should_not set_the_flash
-     end
+      should_change("The number of Hyperlocal Sites", :by => 1) {HyperlocalSite.count}
+      should assign_to :hyperlocal_site
+      should_redirect_to( "the hyperlocal_sites index page") { hyperlocal_sites_url }
+      should set_the_flash.to(/Successfully submitted/i)
+       
+      should "set approved flag to false by default" do
+        assert !HyperlocalSite.find_by_title(@attributes[:title]).approved?
+      end
+    end
+    
+    context "with invalid params" do
+      setup do
+        post :create, :hyperlocal_site => {:title => "New Hyperlocal Site"}
+      end
+    
+      should_not_change("The number of Hyperlocal Sites") { HyperlocalSite.count }
+      should assign_to :hyperlocal_site
+      should render_template :new
+      should_not set_the_flash
+    end
   
-     context "with approved_flag set to true" do
+    context "with approved_flag set to true" do
        setup do
          post :create, :hyperlocal_site => @attributes.merge(:approved => "1")
        end
@@ -501,7 +501,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
        end
      end
   
-   end  
+  end  
   
   # edit tests
   context "on get to :edit a hyperlocal site without auth" do
@@ -611,7 +611,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     should "destroy hyperlocal_site" do
       assert_nil HyperlocalSite.find_by_id(@hyperlocal_site.id)
     end
-    should_redirect_to ( "the admin page") { admin_url }
+    should_redirect_to ( "the admin page") { admin_hyperlocal_sites_url }
     should set_the_flash.to( /Successfully destroyed/)
   end
     
@@ -627,7 +627,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       assert_nil HyperlocalSite.find_by_id(@another_hyperlocal_site.id)
     end
     
-    should_redirect_to ( "the admin page") { admin_url }
+    should_redirect_to ( "the admin page") { admin_hyperlocal_sites_url }
     should set_the_flash.to( /successfully destroyed 2 hyperlocal sites/i)
   end
   
