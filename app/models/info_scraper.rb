@@ -4,18 +4,20 @@ class InfoScraper < Scraper
     mark_as_unproblematic # clear problematic flag. It will be reset if there's a prob
     @related_objects = [options[:objects]].flatten if options[:objects]
     @objects_with_errors_count = 0
+    @timeout_errors = false
     related_objects.each do |obj|
       begin
         raw_results = parser.process(_data(target_url_for(obj)), self).results
       rescue ScraperError => e
         logger.debug { "*******#{e.message} while processing #{self.inspect}" }
+        @timeout_errors = true if e.is_a?(TimeoutError) # we just need to track whether there are any timeout errors
         obj.errors.add_to_base(e.message)
       end
       update_with_results(raw_results, obj, options)
     end
     errors.add_to_base("Problem on all items (see below for details)") if @objects_with_errors_count == related_objects.size
     update_last_scraped if options[:save_results]&&(@objects_with_errors_count != related_objects.size)
-    mark_as_problematic if options[:save_results]&&(@objects_with_errors_count == related_objects.size)
+    mark_as_problematic if options[:save_results]&&(@objects_with_errors_count == related_objects.size) && !@timeout_errors
     self
   rescue Exception => e # catch other exceptions and store them for display
     mark_as_problematic if options[:save_results] # don't mark if we're just testing

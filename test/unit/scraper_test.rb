@@ -588,6 +588,11 @@ class ScraperTest < ActiveSupport::TestCase
         assert_raise(Scraper::RequestError) {@scraper.send(:_data)}
       end
       
+      should "raise TimeoutError when timeout getting page" do
+        @scraper.expects(:_http_get).raises(HTTPClient::TimeoutError)
+        assert_raise(Scraper::TimeoutError) {@scraper.send(:_data)}
+      end
+      
       context "and use_post flag set" do
         setup do
           @scraper.use_post = true
@@ -730,7 +735,6 @@ class ScraperTest < ActiveSupport::TestCase
       end
       
       context "and problem getting data" do
-        
         setup do
           @scraper.expects(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
         end
@@ -751,6 +755,30 @@ class ScraperTest < ActiveSupport::TestCase
         should "mark as problematic when problem getting page" do
           @scraper.process
           assert @scraper.reload.problematic?
+        end
+      end
+
+      context "and timeout getting data" do
+        setup do
+          @scraper.expects(:_data).raises(Scraper::TimeoutError, "Timeout getting data from http://problem.url.com")
+        end
+        
+        should "not raise exception" do
+          assert_nothing_raised(Exception) { @scraper.process }
+        end
+        
+        should "store error in scraper" do
+          @scraper.process
+          assert_equal "Timeout getting data from http://problem.url.com", @scraper.errors[:base]
+        end
+        
+        should "return self" do
+          assert_equal @scraper, @scraper.process
+        end
+      
+        should "not mark as problematic" do
+          @scraper.process
+          assert !@scraper.reload.problematic?
         end
       end
 

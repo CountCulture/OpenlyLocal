@@ -5,6 +5,7 @@ class Scraper < ActiveRecord::Base
   class ScraperError < StandardError; end
   class RequestError < ScraperError; end
   class ParsingError < ScraperError; end
+  class TimeoutError < ScraperError; end
   SCRAPER_TYPES = %w(InfoScraper ItemScraper CsvScraper)
   USER_AGENT = "Mozilla/4.0 (OpenlyLocal.com)"
   PARSING_LIBRARIES = { 'H' => 'Hpricot', 
@@ -87,7 +88,7 @@ class Scraper < ActiveRecord::Base
   rescue ScraperError => e
     logger.debug { "*******#{e.message} while processing #{self.inspect}: #{e.backtrace}" }
     errors.add_to_base(e.message)
-    mark_as_problematic
+    mark_as_problematic unless e.is_a?(TimeoutError)
     self
   end
   
@@ -154,7 +155,8 @@ class Scraper < ActiveRecord::Base
     rescue Exception => e
       error_message = "**Problem getting data from #{target_url}: #{e.inspect}\n #{e.backtrace}"
       logger.error { error_message }
-      raise RequestError, error_message
+      exception = e.is_a?(HTTPClient::TimeoutError) ? TimeoutError.new(error_message) : RequestError.new(error_message)
+      raise exception
     end
     
     begin

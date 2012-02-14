@@ -248,7 +248,7 @@ class InfoScraperTest < ActiveSupport::TestCase
           assert_in_delta(Time.now, @scraper.reload.last_scraped, 2)
         end
         
-        context "and non-ScraperError occurs" do
+        context "and non-Scraper occurs" do
           setup do
             @parser.update_attribute(:attribute_parser, {:foobar => "\"bar\""})
             Parser.any_instance.expects(:results).twice.returns([{ :title => "Fred Flintstone", :url => "http://www.anytown.gov.uk/members/fred" }]).then.raises(ActiveRecord::UnknownAttributeError, "unknown attribute foo")
@@ -327,49 +327,61 @@ class InfoScraperTest < ActiveSupport::TestCase
         end
 
         context "and problem getting data on all of the objects" do
-          setup do
-            @scraper.expects(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found").twice
-          end
+          context "in general" do
+            setup do
+              @scraper.expects(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found").twice
+            end
 
-          should "not raise exception" do
-            assert_nothing_raised(Exception) { @scraper.process }
-          end
+            should "not raise exception" do
+              assert_nothing_raised(Exception) { @scraper.process }
+            end
 
-          should "store error in result objects" do
-            @scraper.process
-            assert_equal "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found", @scraper.results.first.errors[:base]
-            assert_equal "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found", @scraper.results.last.errors[:base]
-          end
+            should "store error in result objects" do
+              @scraper.process
+              assert_equal "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found", @scraper.results.first.errors[:base]
+              assert_equal "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found", @scraper.results.last.errors[:base]
+            end
 
-          should "not try to validate object with problem" do
-            # Poss change this test to test for saving when save results is true
-            @dummy_collection.first.expects(:valid?).never
-            @dummy_collection.last.expects(:valid?).never
-            @scraper.process
-          end
+            should "not try to validate object with problem" do
+              # Poss change this test to test for saving when save results is true
+              @dummy_collection.first.expects(:valid?).never
+              @dummy_collection.last.expects(:valid?).never
+              @scraper.process
+            end
 
-          should "return self" do
-            assert_equal @scraper, @scraper.process
-          end
+            should "return self" do
+              assert_equal @scraper, @scraper.process
+            end
 
-          should "not error to scraper" do
-            @scraper.process
-            assert_match /Problem on all items/, @scraper.errors[:base]
-          end
+            should "not error to scraper" do
+              @scraper.process
+              assert_match /Problem on all items/, @scraper.errors[:base]
+            end
 
-          should "not update last_scraped attribute when saving" do
-            @scraper.process(:save_results => true)
-            assert_nil @scraper.reload.last_scraped
-          end
+            should "not update last_scraped attribute when saving" do
+              @scraper.process(:save_results => true)
+              assert_nil @scraper.reload.last_scraped
+            end
           
-          should "mark scraper as problematic when saving" do
-            @scraper.process(:save_results => true)
-            assert @scraper.reload.problematic?
-          end
+            should "mark scraper as problematic when saving" do
+              @scraper.process(:save_results => true)
+              assert @scraper.reload.problematic?
+            end
           
-          should "mark scraper as problematic when not saving" do
-            @scraper.process
-            assert !@scraper.reload.problematic?
+            should "mark scraper as problematic when not saving" do
+              @scraper.process
+              assert !@scraper.reload.problematic?
+            end
+          end
+          context "and error is TimeoutError" do
+            setup do
+              @scraper.expects(:_data).raises(Scraper::TimeoutError, "Problem getting data from http://problem.url.com").twice
+            end
+
+            should "not mark scraper as problematic when saving if " do
+              @scraper.process(:save_results => true)
+              assert !@scraper.reload.problematic?
+            end
           end
         end
         

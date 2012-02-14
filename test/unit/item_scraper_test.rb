@@ -91,39 +91,50 @@ class ItemScraperTest < ActiveSupport::TestCase
       end
 
       context "and problem getting data" do
+        context "in general" do
+          setup do
+            @scraper.expects(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
+          end
         
-        setup do
-          @scraper.expects(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
-        end
+          should "not raise exception" do
+            assert_nothing_raised(Exception) { @scraper.process }
+          end
         
-        should "not raise exception" do
-          assert_nothing_raised(Exception) { @scraper.process }
-        end
+          should "store error in scraper" do
+            @scraper.process
+            assert_equal "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found", @scraper.errors[:base]
+          end
         
-        should "store error in scraper" do
-          @scraper.process
-          assert_equal "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found", @scraper.errors[:base]
-        end
+          should "return self" do
+            assert_equal @scraper, @scraper.process
+          end
+
+          should "not update last_scraped attribute when saving results" do
+            assert_nil @scraper.process(:save_results => true).last_scraped
+          end
+
+          should "mark scraper as problematic" do
+            @scraper.process
+            assert @scraper.reload.problematic?
+          end
         
-        should "return self" do
-          assert_equal @scraper, @scraper.process
+          should "not clear set problematic flag" do
+            @scraper.update_attribute(:problematic, true)
+            @scraper.process
+            assert @scraper.reload.problematic?
+          end
         end
 
-        should "not update last_scraped attribute when saving results" do
-          assert_nil @scraper.process(:save_results => true).last_scraped
+        context "and TimeoutError" do
+          setup do
+            @scraper.expects(:_data).raises(Scraper::TimeoutError, "Problem getting data from http://problem.url.com")
+          end
+          
+          should "not mark scraper as problematic if TimeoutError" do
+            @scraper.process
+            assert !@scraper.reload.problematic?
+          end
         end
-
-        should "mark scraper as problematic" do
-          @scraper.process
-          assert @scraper.reload.problematic?
-        end
-        
-        should "not clear set problematic flag" do
-          @scraper.update_attribute(:problematic, true)
-          @scraper.process
-          assert @scraper.reload.problematic?
-        end
-
       end
 
       context "item_scraper with related_model" do
@@ -270,41 +281,54 @@ class ItemScraperTest < ActiveSupport::TestCase
         end
         
         context "and problem getting data" do
+          context "in general" do
 
-          setup do
-            @scraper.update_attribute(:url, nil)
-            @scraper.stubs(:_data).with(@dummy_object_1.url).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
-          end
+            setup do
+              @scraper.update_attribute(:url, nil)
+              @scraper.stubs(:_data).with(@dummy_object_1.url).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
+            end
 
-          should "not raise exception" do
-            assert_nothing_raised(Exception) { @scraper.process }
-          end
+            should "not raise exception" do
+              assert_nothing_raised(Exception) { @scraper.process }
+            end
 
-          should "store error in scraper" do
-            @scraper.process
-            assert_equal "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found", @scraper.errors[:base]
-          end
+            should "store error in scraper" do
+              @scraper.process
+              assert_equal "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found", @scraper.errors[:base]
+            end
 
-          should "return self" do
-            assert_equal @scraper, @scraper.process
+            should "return self" do
+              assert_equal @scraper, @scraper.process
+            end
+          
+            should "get data from other page" do
+              @scraper.expects(:_data).with(@dummy_object_1.url)
+              @scraper.process
+            end
+
+            should "mark scraper as problematic" do
+              @scraper.process
+              assert @scraper.reload.problematic?
+            end
+          
+            should "not clear set problematic flag" do
+              @scraper.update_attribute(:problematic, true)
+              @scraper.process
+              assert @scraper.reload.problematic?
+            end
           end
           
-          should "get data from other page" do
-            @scraper.expects(:_data).with(@dummy_object_1.url)
-            @scraper.process
+          context "and TimeoutError" do
+            setup do
+              @scraper.update_attribute(:url, nil)
+              @scraper.expects(:_data).with(@dummy_object_1.url).raises(Scraper::TimeoutError, "Problem (TimeoutError) getting data from http://problem.url.com")
+            end
+            
+            should "not mark scraper as problematic" do
+              @scraper.process
+              assert !@scraper.reload.problematic?
+            end
           end
-
-          should "mark scraper as problematic" do
-            @scraper.process
-            assert @scraper.reload.problematic?
-          end
-          
-          should "not clear set problematic flag" do
-            @scraper.update_attribute(:problematic, true)
-            @scraper.process
-            assert @scraper.reload.problematic?
-          end
-
         end
       end
             
