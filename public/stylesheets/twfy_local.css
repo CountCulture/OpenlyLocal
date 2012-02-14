@@ -37,7 +37,7 @@ caption em {
 	color: #666;
 	font-style: normal;}
 input, textarea {
-	border:1px solid #515151;
+	border:1px solid #bbb;
 	margin-bottom:0.5em;
 	margin-right:0.5em; }
 fieldset {
