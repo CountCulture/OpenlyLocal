@@ -20,6 +20,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     should have_db_column :on_notice_from
     should have_db_column :on_notice_to
     should have_db_column :map_url
+    should have_db_column :application_type
 
     should belong_to :council
 
