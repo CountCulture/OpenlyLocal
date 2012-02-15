@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120109205737) do
+ActiveRecord::Schema.define(:version => 20120214232028) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -805,6 +805,8 @@ ActiveRecord::Schema.define(:version => 20120109205737) do
     t.text     "other_attributes",  :limit => 16777215
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.point    "geom",              :limit => nil
+    t.string   "application_type"
   end
 
   add_index "planning_applications", ["council_id"], :name => "index_planning_applications_on_council_id"
