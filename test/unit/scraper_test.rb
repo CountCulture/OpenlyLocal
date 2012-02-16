@@ -918,7 +918,7 @@ class ScraperTest < ActiveSupport::TestCase
       end
       
       should "not email results if there are no errors" do
-        @scraper.expects(:errors).returns([])
+        @scraper.stubs(:errors).returns([])
         ScraperMailer.expects(:deliver_scraping_report!).never
         @scraper.perform
       end
@@ -964,6 +964,11 @@ class ScraperTest < ActiveSupport::TestCase
         new_scrape = Scrape.last
         assert_equal @scraper.results_summary, new_scrape.results_summary
         assert_equal @scraper.results, new_scrape.results
+      end
+      
+      should "store errors in created scrape" do
+        @scraper.record_scrape_details
+        assert_equal @scraper.errors.full_messages, Scrape.last.scraping_errors.full_messages #diferent object ids so test full messages instead
       end
       
       should "associate created scrape with scraper" do

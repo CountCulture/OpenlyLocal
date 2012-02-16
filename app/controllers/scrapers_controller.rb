@@ -12,6 +12,7 @@ class ScrapersController < ApplicationController
   def show
     @title = @scraper.title
     @parser = @scraper.parser
+    @scrapes = @scraper.scrapes.recent.all
   end
   
   def new

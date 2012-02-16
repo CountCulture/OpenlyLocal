@@ -3,4 +3,6 @@ class Scrape < ActiveRecord::Base
   belongs_to :scraper
   serialize :results
   serialize :scraping_errors
+  named_scope :recent, :order => "created_at DESC", :limit => 3
+  
 end

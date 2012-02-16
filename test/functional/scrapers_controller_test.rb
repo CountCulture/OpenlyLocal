@@ -89,6 +89,7 @@ class ScrapersControllerTest < ActionController::TestCase
     should assign_to :scraper
     should respond_with :success
     should render_template :show
+    should assign_to :scrapes
     
     should "show scraper title in page title" do
       assert_select "title", /#{@scraper.title}/

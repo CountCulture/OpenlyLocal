@@ -100,7 +100,7 @@ class Scraper < ActiveRecord::Base
   end
   
   def record_scrape_details
-    scrapes.create(:results_summary => results_summary, :results => results&&results[0..9])
+    scrapes.create(:results_summary => results_summary, :results => results&&results[0..9], :scraping_errors => errors)
   end
   
   def results

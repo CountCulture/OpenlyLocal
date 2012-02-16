@@ -75,6 +75,7 @@ require 'open-uri'
 # require 'company_utilities' #phusion passenger seems to require this
 
 Dir.glob(RAILS_ROOT + '/app/models/user_submission_types/*') {|file| require File.basename(file, '.rb')} #YAML serialisation requires this in order to instantiate objects properly on deserialisation
+require 'scraped_object_result' #to ensure it deserializes properly
 
 # THIS IS HACK TO ENSURE SERIALISATION WORKS. See http://itsignals.cascadia.com.au/?p=10
 # 

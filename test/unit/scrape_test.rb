@@ -19,5 +19,30 @@ class ScrapeTest < ActiveSupport::TestCase
       errors = {:foo => 'bar'}
       assert_equal errors, Factory(:scrape, :scraping_errors => errors ).reload.scraping_errors
     end
+    
+    context "when returning recent" do
+      setup do
+        @scraper = Factory(:scraper)
+        @scrape_1 = Factory(:scrape, :scraper => @scraper)
+        sleep 1
+        @scrape_2 = Factory(:scrape, :scraper => @scraper)
+        sleep 1
+        @scrape_3 = Factory(:scrape, :scraper => @scraper)
+        sleep 1
+        @scrape_4 = Factory(:scrape, :scraper => @scraper)
+        @recent = Scrape.recent.all
+      end
+
+      should "include most recent 3 scrapes" do
+        assert_equal 3, @recent.size
+      end
+      
+      should "order by created_at datetime" do
+        assert_equal @scrape_4, @recent.first
+        assert_equal @scrape_2, @recent.last
+        assert !@recent.include?(@scrape_1)
+      end
+    end
+    
   end
 end

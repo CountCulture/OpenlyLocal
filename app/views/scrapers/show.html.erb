@@ -40,6 +40,35 @@
     <%= button_to "process", :action => :scrape, :id => @scraper, :process => "queue" %>
   </div>
 </div>
+<%- unless @scrapes.blank? -%>
+  <div id="scrapes">
+    <h3>Last <%= @scrapes.size %> scrapes</h3>
+    <%- @scrapes.each do |scrape| -%>
+      <%- div_for scrape do -%>
+        <p id="results_summary">
+          <strong><%= scrape.created_at.to_s(:custom_short) %></strong> <%= link_to( scrape.results_summary||'No results', '#', :class => 'toggle_visibility') %>
+        </p>
+        <div class="scraping_results toggle" style="display:none">
+          <div class="results">
+            <%- scrape.results.each do |result| -%>
+              <%= render :partial => 'scraped_object', :object => result %>
+            <%- end -%>
+          </div>
+          <div class="errors">
+            <%- unless scrape.scraping_errors.blank? -%>
+              <%- scrape.scraping_errors.full_messages.each do |error| -%>
+                <div class="error">
+                  <%= error %>
+                </div>
+              <%- end -%>
+            <%- end -%>
+          </div>
+        </div>
+      <%- end -%>
+    <%- end -%>
+  </div>
+<%- end -%>
+
 <%- if @results -%>
   <%= error_messages_for :scraper, :header_message => "Problems processing this scraper" %>
   <%= error_messages_for :parser, :header_message => "Problem parsing scraped page", :message => "The following problems occurred:" %>

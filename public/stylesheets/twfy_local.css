@@ -908,6 +908,13 @@ form#foi_request {
 	border: 1px solid #369;
 }
 
+#scrapes {
+  background-color: #f3f3f3;
+  border: 1px solid #ddd;
+  padding: 0.5em 1em;
+  margin-top: 0.5em;
+}
+
 #faq {
   font-size: 1.2em;
 }
