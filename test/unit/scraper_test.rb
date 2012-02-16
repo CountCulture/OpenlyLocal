@@ -16,6 +16,7 @@ class ScraperTest < ActiveSupport::TestCase
     should belong_to :parser
     should belong_to :council
     should validate_presence_of :council_id
+    should have_many :scrapes
     # should_accept_nested_attributes_for :parser
     
     should "should_accept_nested_attributes_for parser" do
@@ -890,9 +891,7 @@ class ScraperTest < ActiveSupport::TestCase
           @scraper.process
           assert @scraper.reload.problematic?
         end
-
-      end
-      
+      end      
     end
 
     context "when running perform" do
@@ -905,11 +904,23 @@ class ScraperTest < ActiveSupport::TestCase
         @scraper.perform
       end
       
-      should "email results" do
+      should "record_scrape_details" do
+        @scraper.expects(:record_scrape_details)
         @scraper.perform
-        assert_sent_email do |email|
-          email.subject =~ /Scraping Report/ && email.body =~ /Scraping Results/
-        end
+      end
+      
+      should "email results if there are errors" do
+        @scraper.errors.add_to_base("something went wrong")
+        errors_obj = @scraper.errors
+        @scraper.stubs(:errors => errors_obj)
+        ScraperMailer.expects(:deliver_scraping_report!)
+        @scraper.perform
+      end
+      
+      should "not email results if there are no errors" do
+        @scraper.expects(:errors).returns([])
+        ScraperMailer.expects(:deliver_scraping_report!).never
+        @scraper.perform
       end
     end
     
@@ -933,6 +944,41 @@ class ScraperTest < ActiveSupport::TestCase
       end
     end
     
+    context "when recording details of scrape" do
+      setup do
+        @scraper = Factory(:scraper, :council => Factory(:generic_council))
+        @scraped_result = [ ScrapedObjectResult.new(Member.new(:first_name => "Fred", :last_name => "Flintstone")) ]
+        @scraper.stubs(:results => @scraped_result)
+        @scraper.stubs(:results_summary).returns("2 new, 3 changes")
+        @scraper.errors.add_to_base("There is a foo problem")
+      end
+
+      should "create scrape" do
+        assert_difference "Scrape.count", 1 do
+          @scraper.record_scrape_details
+        end 
+      end
+      
+      should "store results in created scrape" do
+        @scraper.record_scrape_details
+        new_scrape = Scrape.last
+        assert_equal @scraper.results_summary, new_scrape.results_summary
+        assert_equal @scraper.results, new_scrape.results
+      end
+      
+      should "associate created scrape with scraper" do
+        @scraper.record_scrape_details
+        assert_equal @scraper, Scrape.last.scraper
+      end
+      
+      should "only store ten results in created scrape results field" do
+        @scraped_result = [ ScrapedObjectResult.new(Member.new(:first_name => "Fred", :last_name => "Flintstone")) ] * 12
+        @scraper.stubs(:results => @scraped_result)
+        @scraper.record_scrape_details
+        assert_equal 10, Scrape.last.results.size
+      end
+      
+    end
   end
   
   private

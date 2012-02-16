@@ -409,3 +409,7 @@ Factory.define :planning_application_with_lat_long, :parent => :planning_applica
   f.sequence( :lng) {|n| 0.2*n}
 end
 
+Factory.define :scrape do |f|
+  f.association :scraper
+  f.results_summary "Some results"
+end

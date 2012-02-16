@@ -15,6 +15,7 @@ class Scraper < ActiveRecord::Base
                       }
   belongs_to :parser
   belongs_to :council
+  has_many :scrapes
   validates_presence_of :council_id
   named_scope :stale, lambda {{ :conditions => ["priority > 0 AND (next_due IS NULL OR next_due < ?)", Time.now], :order => "priority, next_due" }}
   named_scope :problematic, { :conditions => { :problematic => true } }
@@ -94,7 +95,12 @@ class Scraper < ActiveRecord::Base
   
   def perform
     process(:save_results => true)
-    ScraperMailer.deliver_scraping_report!(self)
+    record_scrape_details
+    ScraperMailer.deliver_scraping_report!(self) unless errors.empty?
+  end
+  
+  def record_scrape_details
+    scrapes.create(:results_summary => results_summary, :results => results&&results[0..9])
   end
   
   def results

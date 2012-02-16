@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120214232028) do
+ActiveRecord::Schema.define(:version => 20120216102344) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -806,7 +806,7 @@ ActiveRecord::Schema.define(:version => 20120214232028) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.point    "geom",              :limit => nil
-    t.string   "application_type"
+    t.string   "application_type",  :limit => 64
   end
 
   add_index "planning_applications", ["council_id"], :name => "index_planning_applications_on_council_id"
@@ -992,6 +992,16 @@ ActiveRecord::Schema.define(:version => 20120214232028) do
   add_index "scrapers", ["id", "type"], :name => "index_scrapers_on_id_and_type"
   add_index "scrapers", ["parser_id"], :name => "index_scrapers_on_parser_id"
   add_index "scrapers", ["priority", "next_due"], :name => "index_scrapers_on_priority_and_next_due"
+
+  create_table "scrapes", :force => true do |t|
+    t.integer  "scraper_id"
+    t.string   "results_summary"
+    t.text     "results"
+    t.text     "scraping_errors"
+    t.datetime "created_at"
+  end
+
+  add_index "scrapes", ["scraper_id", "created_at"], :name => "index_scrapes_on_scraper_id_and_created_at"
 
   create_table "services", :force => true do |t|
     t.string   "title"
