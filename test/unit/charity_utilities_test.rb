@@ -20,8 +20,6 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
         HTTPClient.any_instance.stubs(:post_content)#.returns(dummy_search_results)
       end
       
-      # should ""
-
       should "post details to charities commission website" do
         post_url = CharityUtilities::Client::CharityCommissionUrl + '/ShowCharity/RegisterOfCharities/AdvancedSearch.aspx'
         
@@ -221,6 +219,11 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
         should 'get date_registered from front page' do
           info = @client.get_details
           assert_equal "29 May 1961", info[:date_registered]
+        end
+        
+        should 'get date_removed from front page' do
+          info = @client.get_details
+          assert_equal "25 June 2004", info[:date_removed]
         end
       end
     end

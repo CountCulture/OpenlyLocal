@@ -3,7 +3,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title id="ctl00_TitleTagID">Charity framework</title>
+    <title id="ctl00_PageTitleID">Charity framework</title>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <meta name="Description" content="The meta pages description" />
     <meta name="Keywords" content="" />
@@ -16,7 +16,7 @@
     <meta name="DC.Format" content="text/html" />
     <meta name="DC.Publisher" content="The Charity Commission for England and Wales" />
     <meta name="DC.Identifier" content="http://www.charitycommission.gov.uk/about_charities.asp" />
-    <meta name="DC.Rights" content="http://www.charitycommission.gov.uk/common/copyright.asp" />
+    <meta name="DC.Rights" content="http://www.charitycommission.gov.uk/misc/copyright.aspx" />
     <meta name="DC.Date.Created" content="5/6/2007" />
     <meta name="DC.Date.Modified" content="15/1/2008" />
     <meta name="DC.Date.Review" content="" />
@@ -24,36 +24,42 @@
     
     
     <link rel="stylesheet" type="text/css" media="all" href='/Showcharity/App_Themes/Main/cc.css' />
-    <link rel="alternate stylesheet" type="text/css" media="screen" href='/Showcharity/App_Themes/Main/cc.css' />
-    <link rel="alternate stylesheet" type="text/css" media="all" href='/Showcharity/App_Themes/Main/largetext.css' />
-    <link rel="stylesheet" type="text/css" media="print"  href='/Showcharity/App_Themes/Main/cc_print.css'/>
-    <link rel="stylesheet" type="text/css" media="print"  href='/Showcharity/App_Themes/Main/cc_print_ShowCharity.css'/>
+    
+    
+    
+    
     <link rel="stylesheet" type="text/css" media="screen" href='/Showcharity/App_Themes/Main/MasterPageStyles.css' />
     <link rel="stylesheet" type="text/css" media="screen" href='/Showcharity/App_Themes/Main/ShowCharity.css' />
+    <link rel="stylesheet" type="text/css" media="screen" href='/Showcharity/App_Themes/Main/ShowCharityAPI.css' />
   
   
    <!-- New style files-->
     
     <link href='/Showcharity/App_Themes/Main/styles/reset.css' rel="stylesheet" type="text/css" media="screen" />
     <link href='/Showcharity/App_Themes/Main/styles/main.css' rel="stylesheet" type="text/css" media="screen" />
-    <link href='/Showcharity/App_Themes/Main/styles/print.css' rel="stylesheet" type="text/css" media="print" />
     <link href='/Showcharity/App_Themes/Main/styles/dropdown.css' media="all" rel="stylesheet" type="text/css" />
     <link href='/Showcharity/App_Themes/Main/styles/default.ultimate.css' media="all" rel="stylesheet" type="text/css" />
-        
+    <link href='/Showcharity/App_Themes/Main/core.css?ver=2' media="all" rel="stylesheet" type="text/css" />
+   
     <!-- End New style files-->
-    <!--[if lt IE 7]>
-    <script type="text/javascript" src="/includes/Javascripts/jquery.js"></script>
-    <script type="text/javascript" src="/includes/Javascripts/jquery.dropdown.js"></script>
-    <![endif]-->
 
-    <link rel="stylesheet" type="text/css" media="screen" href='/Showcharity/App_Themes/Main/MasterPageStyles.css' />
+
+    <link rel="alternate stylesheet" type="text/css" media="screen" href='/Showcharity/App_Themes/Main/styles/white.css?foooo' title="colour white" id="white" />
+    <link rel="alternate stylesheet" type="text/css" media="screen" href='/Showcharity/App_Themes/Main/styles/black.css?foooo' title="colour black" id="black" />
+    <link rel="alternate stylesheet" type="text/css" href='/Showcharity/App_Themes/Main/styles/small.css' media="screen" id="small" title="text small" />
+    <link rel="alternate stylesheet" type="text/css" href='/Showcharity/App_Themes/Main/styles/medium.css' media="screen" id="medium" title="text medium" />
+    <link rel="alternate stylesheet" type="text/css" href='/Showcharity/App_Themes/Main/styles/large.css' media="screen" id="large" title="text large" />
     
     
     <script type="text/javascript" src='/Showcharity/Includes/Javascripts/DetectFlash.js'></script>
     <script type="text/vbscript" src='/Showcharity/Includes/VBScripts/DetectFlash.vbs'></script>
     <script type="text/javascript" src='/Showcharity/Includes/Javascripts/ChartTableVisibility.js'></script>
-    <script type="text/javascript" src='/Showcharity/Includes/2007/Javascripts/styleswitcher.js'></script>
+    <script type="text/javascript" src='/Showcharity/Includes/Javascripts/styleswitcher.js'></script>
     <script type="text/javascript" src='/Showcharity/Includes/Javascripts/togglemenu.js'></script>
+    <script type="text/javascript" src='/Showcharity/Includes/Javascripts/custom-form-elements.js'></script>
+    <script type="text/javascript" src='/Showcharity/Includes/Javascripts/jquery.js'></script>
+    <script type="text/javascript" src='/Showcharity/Includes/Javascripts/sectordata.js?ver=1'></script>
+    <script type="text/javascript" src='/Showcharity/Includes/Javascripts/FusionCharts.js'></script>
 </head>
 
 <body id="ctl00_PageBody" style="background-attachment:scroll; background-repeat:repeat-x"> 
@@ -65,7 +71,7 @@
 <div>
 <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
 <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTU5MDIzMzI5OA9kFgJmD2QWBGYPFgIeCWlubmVyaHRtbAURQ2hhcml0eSBmcmFtZXdvcmtkAgEPZBYCZg9kFgoCAQ9kFgJmD2QWCAIBDxYCHgVjbGFzcwUETG9nb2QCBQ8PFgIeBFRleHQFCSAodjMuMC43KWRkAgcPZBYEAgEPFgIeA2ZvcgUjY3RsMDBfQ29ycG9yYXRlSGVhZGVyMV9IZWFkZXJfVGV4dDJkAgUPDxYCHwIFBlNlYXJjaGRkAgkPZBYCAgEPZBYCAgcPDxYCHwIFAkdvZGQCAw8WAh8BBQpIZWFkaW5nT25lZAIFD2QWAmYPZBYKZg8WBh4EaHJlZgUrfi9SZWdpc3Rlck9mQ2hhcml0aWVzL1JlZ2lzdGVySG9tZVBhZ2UuYXNweB8ABRpSZWdpc3RlciBvZiBDaGFyaXRpZXMgaG9tZR4FdGl0bGUFGlJlZ2lzdGVyIG9mIENoYXJpdGllcyBob21lZAIBDw8WBB8CBQNPRkYeB1Rvb2xUaXAFGVN3aXRjaCBvZmYgRmxhc2ggY29udGVudHNkZAIDDw8WAh4HVmlzaWJsZWdkFgICCg8WBh8ABRVQcmludCBjaGFyaXR5IGRldGFpbHMfBQUVUHJpbnQgY2hhcml0eSBkZXRhaWxzHwQFZH4vUmVnaXN0ZXJPZkNoYXJpdGllcy9QcmludENoYXJpdHlEZXRhaWxzLmFzcHg/UmVnaXN0ZXJlZENoYXJpdHlOdW1iZXI9MjEzMzExJmFtcDtTdWJzaWRpYXJ5TnVtYmVyPTBkAgQPZBYCAgEPFgQfAAUbV2VsY29tZSB0byB0aGUgUmVnaXN0ZXIgLi4uHwRkZAIFD2QWHGYPFgYfAAUaUmVnaXN0ZXIgb2YgQ2hhcml0aWVzIGhvbWUfBQUaUmVnaXN0ZXIgb2YgQ2hhcml0aWVzIGhvbWUfBAUrfi9SZWdpc3Rlck9mQ2hhcml0aWVzL1JlZ2lzdGVySG9tZVBhZ2UuYXNweGQCAQ8WBh8ABQ9BZHZhbmNlZCBTZWFyY2gfBQUPQWR2YW5jZWQgU2VhcmNoHwQFNC9TaG93Q2hhcml0eS9SZWdpc3Rlck9mQ2hhcml0aWVzL0FkdmFuY2VkU2VhcmNoLmFzcHhkAgIPFgIfBAUpfi9SZWdpc3Rlck9mQ2hhcml0aWVzL0FkdmFuY2VkU2VhcmNoLmFzcHhkAgMPZBYEAgEPFgYfAAUiU2VhcmNoIGJ5IGNoYXJpdHkgY29udGFjdCBwb3N0Y29kZR8FBSJTZWFyY2ggYnkgY2hhcml0eSBjb250YWN0IHBvc3Rjb2RlHwQFKC9TaG93Q2hhcml0eS9yZWdpc3Rlcm9mY2hhcml0aWVzL21hcHBpbmdkAgMPFgIfBAUoL1Nob3dDaGFyaXR5L3JlZ2lzdGVyb2ZjaGFyaXRpZXMvbWFwcGluZ2QCBA8WBh8ABRZSZXBvcnRpbmcgcmVxdWlyZW1lbnRzHwUFFlJlcG9ydGluZyByZXF1aXJlbWVudHMfBAWaAWh0dHA6Ly93d3cuY2hhcml0eWNvbW1pc3Npb24uZ292LnVrL0NoYXJpdHlfcmVxdWlyZW1lbnRzX2d1aWRhbmNlL0FjY291bnRpbmdfYW5kX3JlcG9ydGluZy9QcmVwYXJpbmdfYW5ubnVhbF9yZXR1cm5zL1doZW5fdG9fc2VuZF9hbm51YWxfcmV0dXJuX2luZGV4LmFzcHhkAgUPFgYfAAUYQ2hhcml0eSBTdW1tYXJpZXMgKFNJUnMpHwUFGENoYXJpdHkgU3VtbWFyaWVzIChTSVJzKR8EBYABaHR0cDovL3d3dy5jaGFyaXR5Y29tbWlzc2lvbi5nb3YudWsvQ2hhcml0eV9yZXF1aXJlbWVudHNfZ3VpZGFuY2UvQWNjb3VudGluZ19hbmRfcmVwb3J0aW5nL1ByZXBhcmluZ19hbm5udWFsX3JldHVybnMvUGFydF9DLmFzcHhkAgYPZBYCAgEPFgQfAAURRmFjdHMgYW5kIEZpZ3VyZXMfBQURRmFjdHMgYW5kIEZpZ3VyZXNkAgcPFgYfAAUUQWJvdXQgQW5udWFsIFJldHVybnMfBQUUQWJvdXQgQW5udWFsIFJldHVybnMfBAWBAWh0dHA6Ly93d3cuY2hhcml0eWNvbW1pc3Npb24uZ292LnVrL0NoYXJpdHlfcmVxdWlyZW1lbnRzX2d1aWRhbmNlL0FjY291bnRpbmdfYW5kX3JlcG9ydGluZy9QcmVwYXJpbmdfYW5ubnVhbF9yZXR1cm5zL2RlZmF1bHQuYXNweGQCCA8WBh8ABRxBYm91dCBhY2NvdW50cyAmYW1wOyByZXBvcnRzHwUFGkFib3V0IGFjY291bnRzIGFuZCByZXBvcnRzHwQFZ2h0dHA6Ly93d3cuY2hhcml0eWNvbW1pc3Npb24uZ292LnVrL0NoYXJpdHlfcmVxdWlyZW1lbnRzX2d1aWRhbmNlL0FjY291bnRpbmdfYW5kX3JlcG9ydGluZy9kZWZhdWx0LmFzcHhkAgkPFgYfAAUbQ29tcGxldGUgeW91ciBBbm51YWwgUmV0dXJuHwUFG0NvbXBsZXRlIHlvdXIgQW5udWFsIFJldHVybh8EBUJodHRwOi8vd3d3LmNoYXJpdHljb21taXNzaW9uLmdvdi51ay9vbmxpbmVzZXJ2aWNlc3JlZGlyZWN0aW9uLmFzcHhkAgoPFgYfAAUdVXBkYXRlIHlvdXIgY2hhcml0eSdzIGRldGFpbHMfBQUdVXBkYXRlIHlvdXIgY2hhcml0eSdzIGRldGFpbHMfBAVCaHR0cDovL3d3dy5jaGFyaXR5Y29tbWlzc2lvbi5nb3YudWsvb25saW5lc2VydmljZXNyZWRpcmVjdGlvbi5hc3B4ZAILDxYCHwEFCkhlYWRpbmdUd29kAgwPFgIfAQUHSXRlbU9uZRYCZg8WAh8EBTRodHRwOi8vd3d3LmNoYXJpdHljb21taXNzaW9uLmdvdi51ay9yc3MvZGVmYXVsdC5hc3B4ZAINDxYCHwEFB0l0ZW1Ud28WAmYPFgIfBAVCaHR0cDovL3d3dy5jaGFyaXR5Y29tbWlzc2lvbi5nb3YudWsvcnNzL01vcmVfbmV3c19hbmRfdXBkYXRlcy5hc3B4ZAIHDxYCHwEFI1R3b0NvbHVtblNob3dDaGFyaXR5MTAwUGVyY2VudFBhbmVsFgICAQ8WAh8BBRlUd29Db2x1bW5UaHJlZVBhbmVsSG9sZGVyFgYCAQ8WBB4Fc3R5bGUFJndpZHRoOjEzcHg7ZmxvYXQ6bGVmdDtvdmVyZmxvdzpoaWRkZW47HwdnZAIDDxYCHwEFGlR3b0NvbHVtbkNlbnRlclBhbmVsSG9sZGVyFgICAQ9kFgICAQ9kFgQCAQ8PFgIfB2dkFghmDxYCHwIFHzxkaXYgaWQ9J1N0YXR1c0NvbnRhaW5lckdyZWVuJz5kAgIPFgIfCAUOaGVpZ2h0OjUuMmVtOztkAgMPFgIfCAUOaGVpZ2h0OjUuMmVtOzsWAgIBD2QWBAIBDxYCHwAFEzIxMzMxMSZuYnNwOy0mbmJzcDtkAgMPFgIfAAWWAVRIRSBXRVNUIE1JRExBTkQgQklSRCBDTFVCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGQCBA8WAh8IBQ5oZWlnaHQ6NS4yZW07OxYEAgEPFgIfAgUWRFVFIERPQ1VNRU5UUyBSRUNFSVZFRGQCAw8WBB8EBXMvU2hvd2NoYXJpdHkvU2hvd0NoYXJpdHlfSGVscF9QYWdlLmFzcHg/Q29udGVudFR5cGU9U3RhdHVzX0hlbHBfRHVlX0RvY3VtZW50c19SZWNlaXZlZCZhbXA7U2VsZWN0ZWRMYW5ndWFnZT1FbmdsaXNoHwUFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93LhYCAgEPDxYGHghJbWFnZVVybAURfi9JbWFnZXMvSW5mby5naWYfBgUtSGVscCBmb3IgdGhpcyBzZWN0aW9uLiBPcGVucyBpbiBhIG5ldyB3aW5kb3cuHg1BbHRlcm5hdGVUZXh0BS1IZWxwIGZvciB0aGlzIHNlY3Rpb24uIE9wZW5zIGluIGEgbmV3IHdpbmRvdy5kZAIDD2QWAgIDD2QWBAICD2QWCmYPZBYEAgEPZBYIZg8PFgIfAgULT3RoZXIgbmFtZXNkZAIBDxYEHwUFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8EBWAvU2hvd2NoYXJpdHkvU2hvd0NoYXJpdHlfSGVscF9QYWdlLmFzcHg/Q29udGVudFR5cGU9SGVscF9PdGhlck5hbWVzJmFtcDtTZWxlY3RlZExhbmd1YWdlPUVuZ2xpc2gWAmYPDxYEHwoFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8JBRF+L0ltYWdlcy9JbmZvLmdpZmRkAgIPDxYCHwkFGX4vSW1hZ2VzL1JlZ2lzdGVySWNvbi5naWZkZAIDDw8WAh8JBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZmRkAgMPDxYCHwIFBE5vbmVkZAICD2QWBAIBD2QWCGYPDxYCHwIFEkdvdmVybmluZyBkb2N1bWVudGRkAgEPFgQfBQUtSGVscCBmb3IgdGhpcyBzZWN0aW9uLiBPcGVucyBpbiBhIG5ldyB3aW5kb3cuHwQFZy9TaG93Y2hhcml0eS9TaG93Q2hhcml0eV9IZWxwX1BhZ2UuYXNweD9Db250ZW50VHlwZT1IZWxwX0dvdmVybmluZ0RvY3VtZW50JmFtcDtTZWxlY3RlZExhbmd1YWdlPUVuZ2xpc2gWAmYPDxYEHwoFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8JBRF+L0ltYWdlcy9JbmZvLmdpZmRkAgIPDxYCHwkFGX4vSW1hZ2VzL1JlZ2lzdGVySWNvbi5naWZkZAIDDw8WAh8JBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZmRkAgMPDxYCHwIF+gFSVUxFUyBBRE9QVEVEIDZUSCBNQVJDSCAxOTYyIEFTIEFNRU5ERUQgSkFOVUFSWSAxOTgxICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGQCBA9kFgQCAQ9kFghmDw8WAh8CBQ9BcmVhIG9mIGJlbmVmaXRkZAIBDxYEHwUFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8EBWMvU2hvd2NoYXJpdHkvU2hvd0NoYXJpdHlfSGVscF9QYWdlLmFzcHg/Q29udGVudFR5cGU9SGVscF9BcmVhT2ZCZW5lZml0JmFtcDtTZWxlY3RlZExhbmd1YWdlPUVuZ2xpc2gWAmYPDxYEHwoFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8JBRF+L0ltYWdlcy9JbmZvLmdpZmRkAgIPDxYCHwkFGX4vSW1hZ2VzL1JlZ2lzdGVySWNvbi5naWZkZAIDDw8WAh8JBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZmRkAgMPDxYCHwIFrwFOT1QgREVGSU5FRCBJTiBQUkFDVElDRSwgIFdBUldJQ0tTSElSRSwgV09DRVNURVJTSElSRSwgU1RBRkZPUkRTSElSRSBBTkQgV0VTVCBNSURMQU5EUy4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGQCBQ8PFgIfB2hkFgICAQ9kFgYCAQ8WAh8FBS1IZWxwIGZvciB0aGlzIHNlY3Rpb24uIE9wZW5zIGluIGEgbmV3IHdpbmRvdy4WAmYPDxYEHwoFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8JBRF+L0ltYWdlcy9JbmZvLmdpZmRkAgIPDxYCHwkFGX4vSW1hZ2VzL1JlZ2lzdGVySWNvbi5naWZkZAIDDw8WAh8JBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZmRkAgcPZBYEAgEPZBYIZg8PFgIfAgUSQ2hhcml0YWJsZSBvYmplY3RzZGQCAQ8WBB8FBS1IZWxwIGZvciB0aGlzIHNlY3Rpb24uIE9wZW5zIGluIGEgbmV3IHdpbmRvdy4fBAVnL1Nob3djaGFyaXR5L1Nob3dDaGFyaXR5X0hlbHBfUGFnZS5hc3B4P0NvbnRlbnRUeXBlPUhlbHBfQ2hhcml0YWJsZU9iamVjdHMmYW1wO1NlbGVjdGVkTGFuZ3VhZ2U9RW5nbGlzaBYCZg8PFgQfCgUtSGVscCBmb3IgdGhpcyBzZWN0aW9uLiBPcGVucyBpbiBhIG5ldyB3aW5kb3cuHwkFEX4vSW1hZ2VzL0luZm8uZ2lmZGQCAg8PFgIfCQUZfi9JbWFnZXMvUmVnaXN0ZXJJY29uLmdpZmRkAgMPDxYCHwkFGn4vSW1hZ2VzL01hbmRhdG9yeUljb24uZ2lmZGQCAw8PFgIfAgX7AVRPIEVOQ09VUkFHRSBBTkQgT1JHQU5JU0UgVEhFIFNUVURZIE9GIFdJTEQgQklSRFMgQU5EIFBST01PVEUgVEhFIFBST1RFQ1RJT04gT0YgV0lMRCBCSVJEUyBBTkQgUFJFU0VSVkFUSU9OIE9GIFRIRUlSIEhBQklUQVRTICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGQCBA9kFgRmD2QWBAIBD2QWCGYPDxYGHghDc3NDbGFzcwUHdWNUaXRsZR8CBQ9EYXRlIHJlZ2lzdGVyZWQeBF8hU0ICAmRkAgEPFgQfBQUtSGVscCBmb3IgdGhpcyBzZWN0aW9uLiBPcGVucyBpbiBhIG5ldyB3aW5kb3cuHwQFZC9TaG93Y2hhcml0eS9TaG93Q2hhcml0eV9IZWxwX1BhZ2UuYXNweD9Db250ZW50VHlwZT1IZWxwX0RhdGVSZWdpc3RlcmVkJmFtcDtTZWxlY3RlZExhbmd1YWdlPUVuZ2xpc2gWAmYPDxYEHwoFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8JBRF+L0ltYWdlcy9JbmZvLmdpZmRkAgIPDxYEHwkFGX4vSW1hZ2VzL1JlZ2lzdGVySWNvbi5naWYfB2hkZAIDDw8WBB8JBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZh8HaGRkAgMPZBYGZg9kFgICAQ9kFgJmD2QWAgIBDw8WAh8JBRl+L0ltYWdlcy9SZWdpc3Rlckljb24uZ2lmZGQCAQ9kFgQCBQ8PFgQeBVdpZHRoGwAAAAAAAFlABwAAAB8MAoACZGQCBw8PFgYfCwUSU2luZ2xlTGluZU5vU2Nyb2xsHwIFCzE5IE1heSAxOTY3HwwCAmRkAgIPZBYCAgEPDxYCHwkFGn4vSW1hZ2VzL01hbmRhdG9yeUljb24uZ2lmZGQCAQ9kFg4CAQ9kFghmDw8WBh8LBQd1Y1RpdGxlHwIFDkNsYXNzaWZpY2F0aW9uHwwCAmRkAgEPFgQfBQUtSGVscCBmb3IgdGhpcyBzZWN0aW9uLiBPcGVucyBpbiBhIG5ldyB3aW5kb3cuHwQFZC9TaG93Y2hhcml0eS9TaG93Q2hhcml0eV9IZWxwX1BhZ2UuYXNweD9Db250ZW50VHlwZT1IZWxwX0NsYXNzaWZpY2F0aW9uJmFtcDtTZWxlY3RlZExhbmd1YWdlPUVuZ2xpc2gWAmYPDxYEHwoFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8JBRF+L0ltYWdlcy9JbmZvLmdpZmRkAgIPDxYEHwkFGX4vSW1hZ2VzL1JlZ2lzdGVySWNvbi5naWYfB2hkZAIDDw8WBB8JBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZh8HaGRkAgMPDxYCHwIFBFdoYXRkZAIFDw8WAh8CBbICJmJ1bGw7IEdlbmVyYWwgQ2hhcml0YWJsZSBQdXJwb3NlcyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxiciAgLyA+JmJ1bGw7IEVkdWNhdGlvbiAvIFRyYWluaW5nICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGJyICAvID4mYnVsbDsgQW5pbWFscyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGJyICAvID4mYnVsbDsgRW52aXJvbm1lbnQgLyBDb25zZXJ2YXRpb24gLyBIZXJpdGFnZSAgICAgICAgICAgICAgICAgICAgICAgICAgIDxiciAgLyA+ZGQCBw8PFgIfAgUDV2hvZGQCCQ8PFgIfAgVNJmJ1bGw7IEdlbmVyYWwgcHVibGljIC8gTWFua2luZCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGJyICAvID5kZAILDw8WAh8CBQNIb3dkZAINDw8WAh8CBZYBJmJ1bGw7IFByb3ZpZGVzIGh1bWFuIHJlc291cmNlcyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxiciAgLyA+JmJ1bGw7IFNwb25zb3JzIG9yIHVuZGVydGFrZXMgcmVzZWFyY2ggICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxiciAgLyA+ZGQCBw8WAh8BBRlUd29Db2x1bW5SaWdodFBhbmVsSG9sZGVyZAIJD2QWAgIHDw8WAh8CBYUEPHNjcmlwdCBzcmM9Ii9pbmNsdWRlcy9qYXZhc2NyaXB0cy90YWdsaW5rcy5qcyIgdHlwZT0idGV4dC9qYXZhc2NyaXB0Ij4NCjwvc2NyaXB0PiANCg0KPHNjcmlwdCB0eXBlPSJ0ZXh0L2phdmFzY3JpcHQiPg0KdmFyIGdhSnNIb3N0ID0gKCgiaHR0cHM6IiA9PSBkb2N1bWVudC5sb2NhdGlvbi5wcm90b2NvbCkgPyAiaHR0cHM6Ly9zc2wuIiA6ICJodHRwOi8vd3d3LiIpOw0KZG9jdW1lbnQud3JpdGUodW5lc2NhcGUoIiUzQ3NjcmlwdCBzcmM9JyIgKyBnYUpzSG9zdCArICJnb29nbGUtYW5hbHl0aWNzLmNvbS9nYS5qcycgdHlwZT0ndGV4dC9qYXZhc2NyaXB0JyUzRSUzQy9zY3JpcHQlM0UiKSk7DQo8L3NjcmlwdD4NCg0KPHNjcmlwdCB0eXBlPSJ0ZXh0L2phdmFzY3JpcHQiPg0KdmFyIHBhZ2VUcmFja2VyID0gX2dhdC5fZ2V0VHJhY2tlcigiVUEtMjAwODIyNi0xIik7DQp0cnkNCnsNCnBhZ2VUcmFja2VyLl90cmFja1BhZ2V2aWV3KCk7DQp9DQpjYXRjaChlcnIpDQp7DQoNCn0NCg0KPC9zY3JpcHQ+DQoNCmRkGAEFHl9fQ29udHJvbHNSZXF1aXJlUG9zdEJhY2tLZXlfXxYDBTBjdGwwMCRDb3Jwb3JhdGVIZWFkZXIxJEhlYWRlciRCYXNpY1NlYXJjaCRyZE5hbWUFM2N0bDAwJENvcnBvcmF0ZUhlYWRlcjEkSGVhZGVyJEJhc2ljU2VhcmNoJHJkS2V5d29yZAUzY3RsMDAkQ29ycG9yYXRlSGVhZGVyMSRIZWFkZXIkQmFzaWNTZWFyY2gkcmRLZXl3b3JkaMTQ4yvXaLxPWCC2XDj6qCk4nwI=" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTM4MzM1MDcyOQ9kFgJmD2QWBGYPFgIeCWlubmVyaHRtbAURQ2hhcml0eSBmcmFtZXdvcmtkAgEPZBYCZg9kFgoCAQ9kFgJmD2QWCAIBDxYCHgVjbGFzcwUETG9nbxYCAgEPFgQfAAUSQ2hhcml0eSBDb21taXNzaW9uHgV0aXRsZQUSQ2hhcml0eSBDb21taXNzaW9uZAINDw8WAh4EVGV4dAUKICh2My4yLjEyKWRkAg8PDxYEHgxCYWNrSW1hZ2VVcmwFK34vQXBwX1RoZW1lcy9NYWluL3NpdGUtaW1hZ2VzL1NlYXJjaFR3by5naWYeBF8hU0ICgIAEZBYCAgEPZBYIAgEPFgIfAAUOU2VhcmNoIFdlYnNpdGVkAgMPFgIeA2ZvcgUjY3RsMDBfQ29ycG9yYXRlSGVhZGVyMV9IZWFkZXJfVGV4dDJkAgUPFgIfAQUJU2VhcmNoVHdvZAIHDw8WBh4IQ3NzQ2xhc3MFD1NlYXJjaFR3b1N1Ym1pdB8DBQZTZWFyY2gfBQICZGQCEQ9kFgICAQ8PFgQfBAUrfi9BcHBfVGhlbWVzL01haW4vc2l0ZS1pbWFnZXMvU2VhcmNoT25lLmdpZh8FAoCABGQWCgIBDxYEHwEFCU1haW5MYWJlbB8ABRRTZWFyY2ggZm9yIGEgY2hhcml0eWQCAw8PFgYfBwUJQnlLZXl3b3JkHwMFCmJ5IGtleXdvcmQfBQICZGQCBw8PFgYfBwUGQnlOYW1lHwMFB2J5IG5hbWUfBQICZGQCCw8PZBYCHgZvbmJsdXIFXnNldERlZmF1bHQoJ2N0bDAwX0NvcnBvcmF0ZUhlYWRlcjFfSGVhZGVyX0Jhc2ljU2VhcmNoX3RleHRCb3hTZWFyY2gnLCAnRW50ZXIgbmFtZSBvciBudW1iZXInKTtkAg0PDxYGHwMFBlNlYXJjaB8HBQ9TZWFyY2hPbmVTdWJtaXQfBQICZGQCAw8WBB8BBQpIZWFkaW5nT25lHwAFEkluIHRoaXMgc2VjdGlvbi4uLmQCBQ9kFgJmD2QWDGYPFgYeBGhyZWYFK34vUmVnaXN0ZXJPZkNoYXJpdGllcy9SZWdpc3RlckhvbWVQYWdlLmFzcHgfAAUaUmVnaXN0ZXIgb2YgQ2hhcml0aWVzIGhvbWUfAgUaUmVnaXN0ZXIgb2YgQ2hhcml0aWVzIGhvbWVkAgEPDxYCHgdWaXNpYmxlaGRkAgIPDxYEHwMFAk9OHgdUb29sVGlwBRhTd2l0Y2ggb24gRmxhc2ggY29udGVudHNkZAIEDw8WAh8KZ2QWAgILDxYGHwAFFVByaW50IGNoYXJpdHkgZGV0YWlscx8CBRVQcmludCBjaGFyaXR5IGRldGFpbHMfCQVkfi9SZWdpc3Rlck9mQ2hhcml0aWVzL1ByaW50Q2hhcml0eURldGFpbHMuYXNweD9SZWdpc3RlcmVkQ2hhcml0eU51bWJlcj0yMTMzMTEmYW1wO1N1YnNpZGlhcnlOdW1iZXI9MGQCBQ9kFgICAQ8WBB8ABRtXZWxjb21lIHRvIHRoZSBSZWdpc3RlciAuLi4fCWRkAgYPZBYcZg8WBh8ABRpSZWdpc3RlciBvZiBDaGFyaXRpZXMgaG9tZR8CBRpSZWdpc3RlciBvZiBDaGFyaXRpZXMgaG9tZR8JBSt+L1JlZ2lzdGVyT2ZDaGFyaXRpZXMvUmVnaXN0ZXJIb21lUGFnZS5hc3B4ZAIBDxYGHwAFD0FkdmFuY2VkIFNlYXJjaB8CBQ9BZHZhbmNlZCBTZWFyY2gfCQU0L1Nob3dDaGFyaXR5L1JlZ2lzdGVyT2ZDaGFyaXRpZXMvQWR2YW5jZWRTZWFyY2guYXNweGQCAg8WAh8JBSl+L1JlZ2lzdGVyT2ZDaGFyaXRpZXMvQWR2YW5jZWRTZWFyY2guYXNweGQCAw9kFgQCAQ8WBh8ABSJTZWFyY2ggYnkgY2hhcml0eSBjb250YWN0IHBvc3Rjb2RlHwIFIlNlYXJjaCBieSBjaGFyaXR5IGNvbnRhY3QgcG9zdGNvZGUfCQUoL1Nob3dDaGFyaXR5L3JlZ2lzdGVyb2ZjaGFyaXRpZXMvbWFwcGluZ2QCAw8WAh8JBSgvU2hvd0NoYXJpdHkvcmVnaXN0ZXJvZmNoYXJpdGllcy9tYXBwaW5nZAIEDxYGHwAFFlJlcG9ydGluZyByZXF1aXJlbWVudHMfAgUWUmVwb3J0aW5nIHJlcXVpcmVtZW50cx8JBZoBaHR0cDovL3d3dy5jaGFyaXR5Y29tbWlzc2lvbi5nb3YudWsvQ2hhcml0eV9yZXF1aXJlbWVudHNfZ3VpZGFuY2UvQWNjb3VudGluZ19hbmRfcmVwb3J0aW5nL1ByZXBhcmluZ19hbm5udWFsX3JldHVybnMvV2hlbl90b19zZW5kX2FubnVhbF9yZXR1cm5faW5kZXguYXNweGQCBQ8WBh8ABRhDaGFyaXR5IFN1bW1hcmllcyAoU0lScykfAgUYQ2hhcml0eSBTdW1tYXJpZXMgKFNJUnMpHwkFgAFodHRwOi8vd3d3LmNoYXJpdHljb21taXNzaW9uLmdvdi51ay9DaGFyaXR5X3JlcXVpcmVtZW50c19ndWlkYW5jZS9BY2NvdW50aW5nX2FuZF9yZXBvcnRpbmcvUHJlcGFyaW5nX2Fubm51YWxfcmV0dXJucy9QYXJ0X0MuYXNweGQCBg9kFgICAQ8WBB8ABRFGYWN0cyBhbmQgRmlndXJlcx8CBRFGYWN0cyBhbmQgRmlndXJlc2QCBw8WBh8ABRRBYm91dCBBbm51YWwgUmV0dXJucx8CBRRBYm91dCBBbm51YWwgUmV0dXJucx8JBYEBaHR0cDovL3d3dy5jaGFyaXR5Y29tbWlzc2lvbi5nb3YudWsvQ2hhcml0eV9yZXF1aXJlbWVudHNfZ3VpZGFuY2UvQWNjb3VudGluZ19hbmRfcmVwb3J0aW5nL1ByZXBhcmluZ19hbm5udWFsX3JldHVybnMvZGVmYXVsdC5hc3B4ZAIIDxYGHwAFHEFib3V0IGFjY291bnRzICZhbXA7IHJlcG9ydHMfAgUaQWJvdXQgYWNjb3VudHMgYW5kIHJlcG9ydHMfCQVnaHR0cDovL3d3dy5jaGFyaXR5Y29tbWlzc2lvbi5nb3YudWsvQ2hhcml0eV9yZXF1aXJlbWVudHNfZ3VpZGFuY2UvQWNjb3VudGluZ19hbmRfcmVwb3J0aW5nL2RlZmF1bHQuYXNweGQCCQ8WBh8ABRtDb21wbGV0ZSB5b3VyIEFubnVhbCBSZXR1cm4fAgUbQ29tcGxldGUgeW91ciBBbm51YWwgUmV0dXJuHwkFQmh0dHA6Ly93d3cuY2hhcml0eWNvbW1pc3Npb24uZ292LnVrL29ubGluZXNlcnZpY2VzcmVkaXJlY3Rpb24uYXNweGQCCg8WBh8ABR1VcGRhdGUgeW91ciBjaGFyaXR5J3MgZGV0YWlscx8CBR1VcGRhdGUgeW91ciBjaGFyaXR5J3MgZGV0YWlscx8JBUJodHRwOi8vd3d3LmNoYXJpdHljb21taXNzaW9uLmdvdi51ay9vbmxpbmVzZXJ2aWNlc3JlZGlyZWN0aW9uLmFzcHhkAgsPFgQfAQUKSGVhZGluZ1R3bx8ABQpXaGF0J3MgTmV3ZAIMDxYCHwEFB0l0ZW1PbmUWAmYPFgYfCQU0aHR0cDovL3d3dy5jaGFyaXR5Y29tbWlzc2lvbi5nb3YudWsvcnNzL2RlZmF1bHQuYXNweB8ABQ5SZWNlbnQgVXBkYXRlcx8CBQ5SZWNlbnQgVXBkYXRlc2QCDQ8WAh8BBQdJdGVtVHdvFgJmDxYGHwkFQmh0dHA6Ly93d3cuY2hhcml0eWNvbW1pc3Npb24uZ292LnVrL3Jzcy9Nb3JlX25ld3NfYW5kX3VwZGF0ZXMuYXNweB8ABQROZXdzHwIFBE5ld3NkAgcPFgIfAQUjVHdvQ29sdW1uU2hvd0NoYXJpdHkxMDBQZXJjZW50UGFuZWwWAgIBDxYCHwEFGVR3b0NvbHVtblRocmVlUGFuZWxIb2xkZXIWBgIBDxYEHgVzdHlsZQUmd2lkdGg6MTNweDtmbG9hdDpsZWZ0O292ZXJmbG93OmhpZGRlbjsfCmdkAgMPFgIfAQUaVHdvQ29sdW1uQ2VudGVyUGFuZWxIb2xkZXIWAgIBD2QWAgIBD2QWBAIBDw8WAh8KZ2QWCGYPFgIfAwUfPGRpdiBpZD0nU3RhdHVzQ29udGFpbmVyR3JlZW4nPmQCAg8WAh8MBQ5oZWlnaHQ6NC41ZW07O2QCAw8WAh8MBQ5oZWlnaHQ6NC41ZW07OxYCAgEPZBYEAgEPFgIfAAUTMjEzMzExJm5ic3A7LSZuYnNwO2QCAw8WAh8ABZYBVEhFIFdFU1QgTUlETEFORCBCSVJEIENMVUIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZAIEDxYCHwwFDmhlaWdodDo0LjVlbTs7FgQCAQ8WAh8DBRZEVUUgRE9DVU1FTlRTIFJFQ0VJVkVEZAIDDxYGHwEFCUluZm9DbGFzcx8CBS1IZWxwIGZvciB0aGlzIHNlY3Rpb24uIE9wZW5zIGluIGEgbmV3IHdpbmRvdy4fCQVzL1Nob3djaGFyaXR5L1Nob3dDaGFyaXR5X0hlbHBfUGFnZS5hc3B4P0NvbnRlbnRUeXBlPVN0YXR1c19IZWxwX0R1ZV9Eb2N1bWVudHNfUmVjZWl2ZWQmYW1wO1NlbGVjdGVkTGFuZ3VhZ2U9RW5nbGlzaGQCAw9kFgICBQ9kFgICAg9kFgYCAQ9kFgQCAQ9kFgpmD2QWBAIBD2QWCGYPDxYCHwMFC090aGVyIG5hbWVzZGQCAQ8WBh8CBS1IZWxwIGZvciB0aGlzIHNlY3Rpb24uIE9wZW5zIGluIGEgbmV3IHdpbmRvdy4fAQUJSW5mb0NsYXNzHwkFYC9TaG93Y2hhcml0eS9TaG93Q2hhcml0eV9IZWxwX1BhZ2UuYXNweD9Db250ZW50VHlwZT1IZWxwX090aGVyTmFtZXMmYW1wO1NlbGVjdGVkTGFuZ3VhZ2U9RW5nbGlzaGQCAg8PFgIeCEltYWdlVXJsBRl+L0ltYWdlcy9SZWdpc3Rlckljb24uZ2lmZGQCAw8PFgIfDQUafi9JbWFnZXMvTWFuZGF0b3J5SWNvbi5naWZkZAIDDw8WAh8DBQROb25lZGQCAQ9kFgQCAQ9kFghmDw8WAh8DBRJHb3Zlcm5pbmcgZG9jdW1lbnRkZAIBDxYGHwIFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8BBQlJbmZvQ2xhc3MfCQVnL1Nob3djaGFyaXR5L1Nob3dDaGFyaXR5X0hlbHBfUGFnZS5hc3B4P0NvbnRlbnRUeXBlPUhlbHBfR292ZXJuaW5nRG9jdW1lbnQmYW1wO1NlbGVjdGVkTGFuZ3VhZ2U9RW5nbGlzaGQCAg8PFgIfDQUZfi9JbWFnZXMvUmVnaXN0ZXJJY29uLmdpZmRkAgMPDxYCHw0FGn4vSW1hZ2VzL01hbmRhdG9yeUljb24uZ2lmZGQCAw8PFgIfAwU0UlVMRVMgQURPUFRFRCA2VEggTUFSQ0ggMTk2MiBBUyBBTUVOREVEIEpBTlVBUlkgMTk4MWRkAgIPZBYEAgEPZBYIZg8PFgIfAwUPQXJlYSBvZiBiZW5lZml0ZGQCAQ8WBh8CBS1IZWxwIGZvciB0aGlzIHNlY3Rpb24uIE9wZW5zIGluIGEgbmV3IHdpbmRvdy4fAQUJSW5mb0NsYXNzHwkFYy9TaG93Y2hhcml0eS9TaG93Q2hhcml0eV9IZWxwX1BhZ2UuYXNweD9Db250ZW50VHlwZT1IZWxwX0FyZWFPZkJlbmVmaXQmYW1wO1NlbGVjdGVkTGFuZ3VhZ2U9RW5nbGlzaGQCAg8PFgIfDQUZfi9JbWFnZXMvUmVnaXN0ZXJJY29uLmdpZmRkAgMPDxYCHw0FGn4vSW1hZ2VzL01hbmRhdG9yeUljb24uZ2lmZGQCAw8PFgIfAwVXTk9UIERFRklORUQgSU4gUFJBQ1RJQ0UsICBXQVJXSUNLU0hJUkUsIFdPQ0VTVEVSU0hJUkUsIFNUQUZGT1JEU0hJUkUgQU5EIFdFU1QgTUlETEFORFMuZGQCAw8PFgIfCmhkFgICAQ9kFgYCAQ8WBB8CBS1IZWxwIGZvciB0aGlzIHNlY3Rpb24uIE9wZW5zIGluIGEgbmV3IHdpbmRvdy4fAQUJSW5mb0NsYXNzZAICDw8WAh8NBRl+L0ltYWdlcy9SZWdpc3Rlckljb24uZ2lmZGQCAw8PFgIfDQUafi9JbWFnZXMvTWFuZGF0b3J5SWNvbi5naWZkZAIED2QWBAIBD2QWCGYPDxYCHwMFEU9yZ2FuaXNhdGlvbiB0eXBlZGQCAQ8WBh8CBS1IZWxwIGZvciB0aGlzIHNlY3Rpb24uIE9wZW5zIGluIGEgbmV3IHdpbmRvdy4fAQUJSW5mb0NsYXNzHwkFcC9TaG93Y2hhcml0eS9TaG93Q2hhcml0eV9IZWxwX1BhZ2UuYXNweD9Db250ZW50VHlwZT1DaGFyaXR5X0ZyYW1ld29ya19PcmdfVHlwZV9IZWxwJmFtcDtTZWxlY3RlZExhbmd1YWdlPUVuZ2xpc2hkAgIPDxYCHw0FGX4vSW1hZ2VzL1JlZ2lzdGVySWNvbi5naWZkZAIDDw8WAh8NBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZmRkAgMPDxYCHwMFFVNUQU5EQVJEIFJFR0lTVFJBVElPTmRkAgMPZBYCZg9kFgQCAQ9kFghmDw8WBh8HBQd1Y1RpdGxlHwMFEVdoZXJlIGl0IG9wZXJhdGVzHwUCAmRkAgEPFgYfAgUtSGVscCBmb3IgdGhpcyBzZWN0aW9uLiBPcGVucyBpbiBhIG5ldyB3aW5kb3cuHwEFCUluZm9DbGFzcx8JBWMvU2hvd2NoYXJpdHkvU2hvd0NoYXJpdHlfSGVscF9QYWdlLmFzcHg/Q29udGVudFR5cGU9SGVscF9XaGVyZU9wZXJhdGVzJmFtcDtTZWxlY3RlZExhbmd1YWdlPUVuZ2xpc2hkAgIPDxYEHw0FGX4vSW1hZ2VzL1JlZ2lzdGVySWNvbi5naWYfCmhkZAIDDw8WBB8NBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZh8KaGRkAgUPZBYGZg9kFgICAQ9kFgJmD2QWAgIBDw8WAh8NBRl+L0ltYWdlcy9SZWdpc3Rlckljb24uZ2lmZGQCAg9kFgICAQ8PFgoeCFJlYWRPbmx5Zx8HBT1NdWx0aUxpbmVTY3JvbGxXaGVyZU9wZXJhdGVzIE11bHRpTGluZVNjcm9sbFdoZXJlT3BlcmF0ZXNBdXRvHwMFgQFCSVJNSU5HSEFNIENJVFkNCkNPVkVOVFJZIENJVFkNCkRVRExFWQ0KU0FORFdFTEwNClNPTElIVUxMDQpTVEFGRk9SRFNISVJFDQpXQUxTQUxMDQpXQVJXSUNLU0hJUkUNCldPTFZFUkhBTVBUT04NCldPUkNFU1RFUlNISVJFDQoeBVdpZHRoHB8FAoICFgIfDAUSZmxvYXQ6bGVmdDt3aWR0aDo7ZAIDD2QWAgIBDw8WAh8NBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZmRkAgMPZBYCAgEPFgIfCmcWAgIBD2QWBAIBD2QWCGYPDxYCHwMFFFJlZ2lzdHJhdGlvbiBoaXN0b3J5ZGQCAQ8WBh8CBS1IZWxwIGZvciB0aGlzIHNlY3Rpb24uIE9wZW5zIGluIGEgbmV3IHdpbmRvdy4fAQUJSW5mb0NsYXNzHwkFcy9TaG93Y2hhcml0eS9TaG93Q2hhcml0eV9IZWxwX1BhZ2UuYXNweD9Db250ZW50VHlwZT1DaGFyaXR5X0ZyYW1ld29ya19SZWdfSGlzdG9yeV9IZWxwJmFtcDtTZWxlY3RlZExhbmd1YWdlPUVuZ2xpc2hkAgIPDxYCHw0FGX4vSW1hZ2VzL1JlZ2lzdGVySWNvbi5naWZkZAIDDw8WAh8NBRp+L0ltYWdlcy9NYW5kYXRvcnlJY29uLmdpZmRkAgMPDxYCHwMFhAE8dGFibGUgY2xhc3M9J1JlZ0hpc3RvcnlUYWJsZSc+PHRyPjx0ZCBjbGFzcz0nRGF0ZUNvbHVtbic+MTkgTWF5IDE5Njc8L3RkPjx0ZCBjbGFzcz0nRGVzY3JpcHRpb25Db2x1bW4nPlJlZ2lzdGVyZWQ8L3RkPjwvdHI+PC90YWJsZT5kZAIFD2QWBAIBDxYCHwpnFgJmD2QWBAIBD2QWCGYPDxYCHwMFEkNoYXJpdGFibGUgb2JqZWN0c2RkAgEPFgYfAgUtSGVscCBmb3IgdGhpcyBzZWN0aW9uLiBPcGVucyBpbiBhIG5ldyB3aW5kb3cuHwEFCUluZm9DbGFzcx8JBWcvU2hvd2NoYXJpdHkvU2hvd0NoYXJpdHlfSGVscF9QYWdlLmFzcHg/Q29udGVudFR5cGU9SGVscF9DaGFyaXRhYmxlT2JqZWN0cyZhbXA7U2VsZWN0ZWRMYW5ndWFnZT1FbmdsaXNoZAICDw8WAh8NBRl+L0ltYWdlcy9SZWdpc3Rlckljb24uZ2lmZGQCAw8PFgIfDQUafi9JbWFnZXMvTWFuZGF0b3J5SWNvbi5naWZkZAIDDw8WAh8DBX1UTyBFTkNPVVJBR0UgQU5EIE9SR0FOSVNFIFRIRSBTVFVEWSBPRiBXSUxEIEJJUkRTIEFORCBQUk9NT1RFIFRIRSBQUk9URUNUSU9OIE9GIFdJTEQgQklSRFMgQU5EIFBSRVNFUlZBVElPTiBPRiBUSEVJUiBIQUJJVEFUU2RkAgMPFgIfCmcWAmYPZBYOAgEPZBYIZg8PFgYfBwUHdWNUaXRsZR8DBQ5DbGFzc2lmaWNhdGlvbh8FAgJkZAIBDxYGHwIFLUhlbHAgZm9yIHRoaXMgc2VjdGlvbi4gT3BlbnMgaW4gYSBuZXcgd2luZG93Lh8BBQlJbmZvQ2xhc3MfCQVkL1Nob3djaGFyaXR5L1Nob3dDaGFyaXR5X0hlbHBfUGFnZS5hc3B4P0NvbnRlbnRUeXBlPUhlbHBfQ2xhc3NpZmljYXRpb24mYW1wO1NlbGVjdGVkTGFuZ3VhZ2U9RW5nbGlzaGQCAg8PFgQfDQUZfi9JbWFnZXMvUmVnaXN0ZXJJY29uLmdpZh8KaGRkAgMPDxYEHw0FGn4vSW1hZ2VzL01hbmRhdG9yeUljb24uZ2lmHwpoZGQCAw8PFgIfAwUEV2hhdGRkAgUPDxYCHwMFxgImYnVsbDsgR0VORVJBTCBDSEFSSVRBQkxFIFBVUlBPU0VTICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8YnIgIC8gPiZidWxsOyBFRFVDQVRJT04gLyBUUkFJTklORyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGJyICAvID4mYnVsbDsgQU5JTUFMUyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8YnIgIC8gPiZidWxsOyBFTlZJUk9OTUVOVCAvIENPTlNFUlZBVElPTiAvIEhFUklUQUdFICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8YnIgIC8gPmRkAgcPDxYCHwMFA1dob2RkAgkPDxYCHwMFUiZidWxsOyBUSEUgR0VORVJBTCBQVUJMSUMgLyBNQU5LSU5EICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGJyICAvID5kZAILDw8WAh8DBQNIb3dkZAINDw8WAh8DBaABJmJ1bGw7IFBST1ZJREVTIEhVTUFOIFJFU09VUkNFUyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGJyICAvID4mYnVsbDsgU1BPTlNPUlMgT1IgVU5ERVJUQUtFUyBSRVNFQVJDSCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8YnIgIC8gPmRkAgcPFgIfAQUZVHdvQ29sdW1uUmlnaHRQYW5lbEhvbGRlcmQCCQ9kFgQCAw8WAh8KZxYEAgEPZBYCZg8PFgIfAwUXwqkgQ3Jvd24gQ29weXJpZ2h0IDIwMTJkZAIDDw8WAh8DBTJDb3B5cmlnaHQgTm90aWNlLCBEaXNjbGFpbWVyIGFuZCBQcml2YWN5IFN0YXRlbWVudGRkAgcPDxYCHwMFrwQ8c2NyaXB0IHNyYz0iL2luY2x1ZGVzL2phdmFzY3JpcHRzL3RhZ2xpbmtzLmpzIiB0eXBlPSJ0ZXh0L2phdmFzY3JpcHQiPg0KPC9zY3JpcHQ+IA0KDQo8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCI+DQp2YXIgZ2FKc0hvc3QgPSAoKCJodHRwczoiID09IGRvY3VtZW50LmxvY2F0aW9uLnByb3RvY29sKSA/ICJodHRwczovL3NzbC4iIDogImh0dHA6Ly93d3cuIik7DQpkb2N1bWVudC53cml0ZSh1bmVzY2FwZSgiJTNDc2NyaXB0IHNyYz0nIiArIGdhSnNIb3N0ICsgImdvb2dsZS1hbmFseXRpY3MuY29tL2dhLmpzJyB0eXBlPSd0ZXh0L2phdmFzY3JpcHQnJTNFJTNDL3NjcmlwdCUzRSIpKTsNCjwvc2NyaXB0Pg0KDQo8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCI+DQp2YXIgcGFnZVRyYWNrZXIgPSBfZ2F0Ll9nZXRUcmFja2VyKCJVQS0yMDA4MjI2LTEiKTsNCnRyeQ0Kew0KcGFnZVRyYWNrZXIuX3NldExvY2FsUmVtb3RlU2VydmVyTW9kZSgpOw0KcGFnZVRyYWNrZXIuX3RyYWNrUGFnZXZpZXcoKTsNCn0NCmNhdGNoKGVycikNCnsNCg0KfQ0KDQo8L3NjcmlwdD4NCg0KZGQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgUFJmN0bDAwJENvcnBvcmF0ZUhlYWRlcjEkSGVhZGVyJGltZ0NvbG9yBSZjdGwwMCRDb3Jwb3JhdGVIZWFkZXIxJEhlYWRlciRpbWdCbGFjawUmY3RsMDAkQ29ycG9yYXRlSGVhZGVyMSRIZWFkZXIkaW1nV2hpdGUFM2N0bDAwJENvcnBvcmF0ZUhlYWRlcjEkSGVhZGVyJEJhc2ljU2VhcmNoJHJkS2V5d29yZAUwY3RsMDAkQ29ycG9yYXRlSGVhZGVyMSRIZWFkZXIkQmFzaWNTZWFyY2gkcmROYW1labgSMri/EcTdiqb02kOOrVJM/1o=" />
 </div>
 
 <script type="text/javascript">
@@ -85,10 +91,22 @@ function __doPostBack(eventTarget, eventArgument) {
 </script>
 
 
-<script src="/Showcharity/WebResource.axd?d=l6EAWVUz2LQhDvlR9-EOgw2&amp;t=634164243928267582" type="text/javascript"></script>
+<script src="/Showcharity/WebResource.axd?d=hJMVX4Wr2gjBRp-nhfF3EwQTMg894uyuLYmtuUx-8E_ba2bBLxZX_qWSHk1ProVR0-Kz5HAQQ5aZLkV7G9RtEwFz7sE1&amp;t=634605235982615616" type="text/javascript"></script>
 
 
-<script src="/Showcharity/WebResource.axd?d=fhK_8hVTTzdihT1hAOKSXAWlwR58R2HmdrZmpk2coGw1&amp;t=634164243928267582" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+	var h = ($("#classificationContainer").height() - 65) + "px";
+	$(".MultiLineScrollObjects").height(h);
+	h = ($(".phL1").height()) + "px";
+	h2 = ($(".phL1").height() - 50) + "px";
+	$(".phR1").height(h);
+	$(".MultiLineScrollWhereOperatesAuto").height(h2);
+});//]]>
+</script>
+<script type='text/javascript' language='javascript'>function UnderMaxLength(txt,maxLen){ try{   if(event.keyCode==13||event.keyCode==10) return true;  if(txt.value.replace(new RegExp("\\n", "g"),"").replace(new RegExp("\\r", "g"),"").length > (maxLen-1))  {     return false;  } }catch(e){}}</script>
+<script src="/Showcharity/WebResource.axd?d=P5E7qHcVI0FbSic5y_aHKOYSMX9kj4L4VE3hhxXuwYxblW8eL8eJeeLINrfvw0Dooue8-5VwnwN5g79iFgCYDK9j42E1&amp;t=634605235982615616" type="text/javascript"></script>
 <script type="text/javascript">
 //<![CDATA[
 function WebForm_OnSubmit() {
@@ -100,73 +118,87 @@ return true;
 
 <div>
 
-	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWCAKjh52nDALSxu/yCgLy5eGtCQK3++uHBgKY3t6QAwKu8oijAgLG+aWSCwKQgfDrAg/U+2FjDBLVnMs9ar/ayvs2Fl2c" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWCwL4/areDQKCo+DvAQKZjPrnCwK857bVDQLSxu/yCgLy5eGtCQKbt+3jCAK0ktj0DQKu8oijAgLG+aWSCwLU3IXMDlPAOQC4qDlqDyIjfVTfKkne6Q9S" />
 </div>
    <div id="MainWrap">
         
-
 <div id="Header">
-    <h1 id="ctl00_CorporateHeader1_Header_HeaderLogo" class="Logo"><a href="/index.aspx">Charity Commission</a></h1>
-    
-        <ul id="TopMenu"><li class="NoDivide"><a href="/showcharity/registerofcharities/charityframework.aspx?RegisteredCharityNumber=213311&amp;SubsidiaryNumber=0&amp;DocType=#SkipToContent" title="Skip straight to the pages main content" name="s"><span>Skip to content</span></a></li><li class="Hide"></li><li><a href="http://www.charitycommission.gov.uk/listen_to_our_website.aspx" title="Listen to our website"><span>Listen to our website</span></a></li><li><a href="http://www.charitycommission.gov.uk/AccessibilityOptions.aspx" title="Accessibility Statement and options"><span>Accessibility</span></a></li><li><a href="/Showcharity/SwitchLanguage.aspx?CurrentLanguage=Cymraeg&amp;id=/showcharity/registerofcharities/charityframework.aspx?RegisteredCharityNumber=213311&amp;SubsidiaryNumber=0&amp;DocType="><span>Cymraeg</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/default.aspx" title="Contact us" name="9"><span>Contact us</span></a></li><li><a href="http://www.charitycommission.gov.uk/site-map.aspx" title="Our site map shows all pages available on our website" name="3"><span>Site map</span></a></li></ul>
+    <h1 id="ctl00_CorporateHeader1_Header_HeaderLogo" class="Logo">
+        <a href="/index.aspx" id="ctl00_CorporateHeader1_Header_lnkLogo" title="Charity Commission">Charity Commission</a></h1>
+    <ul id="TopMenu"><li><a href="/showcharity/registerofcharities/charityframework.aspx?RegisteredCharityNumber=213311&amp;SubsidiaryNumber=0&amp;DocType=#SkipToContent" title="Skip straight to the pages main content" name="s" class="TopMenuItem"><span>Skip to content</span></a></li><li class="Hide"></li><li><a href="http://www.charitycommission.gov.uk/listen_to_our_website.aspx" title="Listen to our website" class="TopMenuItem"><span>Listen to our website</span></a></li><li><a href="http://www.charitycommission.gov.uk/AccessibilityOptions.aspx" title="Accessibility Statement and options" class="TopMenuItem"><span>Accessibility</span></a></li><li><a href="/Showcharity/SwitchLanguage.aspx?CurrentLanguage=Cymraeg&amp;id=/showcharity/registerofcharities/charityframework.aspx?RegisteredCharityNumber=213311&amp;SubsidiaryNumber=0&amp;DocType=" class="TopMenuItem"><span>Cymraeg</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/default.aspx" title="Contact us" name="9" class="TopMenuItem"><span>Contact us</span></a></li><li><a href="http://www.charitycommission.gov.uk/site-map.aspx" title="Our site map shows all pages available on our website" name="3" class="TopMenuItem"><span>Site map</span></a></li></ul>
 
 
 
-        
+    <div class="ColorPicker">
+        <input type="image" name="ctl00$CorporateHeader1$Header$imgColor" id="ctl00_CorporateHeader1_Header_imgColor" class="OptionColor" src="../App_Themes/Main/site-images/Color.gif" onclick="setActiveStyleSheet('colour','default'); ;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$CorporateHeader1$Header$imgColor&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" style="border-width:0px;" />
+        <input type="image" name="ctl00$CorporateHeader1$Header$imgBlack" id="ctl00_CorporateHeader1_Header_imgBlack" class="OptionBlack" src="../App_Themes/Main/site-images/Black.gif" onclick="setActiveStyleSheet('colour','black'); ;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$CorporateHeader1$Header$imgBlack&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" style="border-width:0px;" />
+        <input type="image" name="ctl00$CorporateHeader1$Header$imgWhite" id="ctl00_CorporateHeader1_Header_imgWhite" class="OptionWhite" src="../App_Themes/Main/site-images/White.gif" onclick="setActiveStyleSheet('colour','white'); ;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$CorporateHeader1$Header$imgWhite&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" style="border-width:0px;" />
+    </div>
+    <ul id="TopMenuTextSize"><li class="no-border"><a href="http://www.charitycommission.gov.uk#" title="Select small text size" class="Small" onclick="setActiveStyleSheet('text','small'); return false;"><span>(change text size to small)</span></a></li><li class="no-border"><a href="http://www.charitycommission.gov.uk#" title="Select medium text size" class="Medium" onclick="setActiveStyleSheet('text','medium'); return false;"><span>(change text size to medium</span></a></li><li class="no-border"><a href="http://www.charitycommission.gov.uk#" title="Select large text size" class="Large" onclick="setActiveStyleSheet('text','large'); return false;"><span>(change text size to large</span></a></li></ul>
+
+
+
     
     <div id="SearchBoxes">
-        <div id="SearchTwo">
+        <div id="ctl00_CorporateHeader1_Header_SearchTwo" style="background-image:url(../App_Themes/Main/site-images/SearchTwo.gif);">
+	  
             <div id="ctl00_CorporateHeader1_Header_pnlSiteSearch" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'ctl00_CorporateHeader1_Header_SubmitQuickSearch')">
-	
-                
-                <label for="Text2" class="Radio">Search our site</label>
-                <label id="ctl00_CorporateHeader1_Header_lblSearchLabel" class="Hide" title="Search Website" for="ctl00_CorporateHeader1_Header_Text2">Search Website</label>
+		
+                <label id="ctl00_CorporateHeader1_Header_text2label" for="Text2" class="Radio">Search Website</label>
+                <label id="ctl00_CorporateHeader1_Header_lblSearchLabel" class="Hide" title="Search Website" for="ctl00_CorporateHeader1_Header_Text2">
+                    Search Website</label>
                 <input name="ctl00$CorporateHeader1$Header$Text2" type="text" id="ctl00_CorporateHeader1_Header_Text2" size="18" maxlength="256" class="SearchTwo" accesskey="4" />
                 <input class="Hide" type="hidden" name="site" value="default_collection" id="Hidden6" />
                 <input class="Hide" type="hidden" name="client" value="my_frontend" id="Hidden7" />
                 <input class="Hide" type="hidden" name="proxystylesheet" value="my_frontend" id="Hidden8" />
                 <input class="Hide" type="hidden" name="output" value="xml_no_dtd" id="Hidden9" />
-                
-                
                 <input type="submit" name="ctl00$CorporateHeader1$Header$SubmitQuickSearch" value="Search" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$CorporateHeader1$Header$SubmitQuickSearch&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="ctl00_CorporateHeader1_Header_SubmitQuickSearch" class="SearchTwoSubmit" />
             
+	</div>
+        
 </div>
-        </div>
         
 
 <script type="text/javascript" language="javascript">
-    function searchFocus(e)
+    function setDefault(id, msg)
     {
-        if (e.value.toLowerCase() == "enter name or number")
-            e.value = "";
-            
-        if (e.value.toLowerCase() == "rhouch rif new enw")
-            e.value = "";
+        var c = document.getElementById(id);             
+        if(c.value == '')
+        {
+            c.value = msg;
+        }
     }
-    
+  
+    function enablePostBack(c)
+    {       
+       __doPostBack(c.id,"");
+    }      
 </script>
 
-<div id="SearchOne">
-    <div id="ctl00_CorporateHeader1_Header_BasicSearch_pnlSiteSearch" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'ctl00_CorporateHeader1_Header_BasicSearch_buttonSearch')">
+
+<div id="ctl00_CorporateHeader1_Header_BasicSearch_SearchOne" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'ctl00_CorporateHeader1_Header_BasicSearch_buttonSearch')" style="background-image:url(../App_Themes/Main/site-images/SearchOne.gif);">
 	
-        <label for="textBoxSearch" class="Radio">Search for a charity</label>
-        <!--<div id="SearchRadios">
-            <span style="display:inline-block;width:20px;"><input id="ctl00_CorporateHeader1_Header_BasicSearch_rdName" type="radio" name="ctl00$CorporateHeader1$Header$BasicSearch$SearchRadios" value="rdName" checked="checked" /><label for="ctl00_CorporateHeader1_Header_BasicSearch_rdName">N</label></span>
-            <span style="display:inline-block;width:20px;"><input id="ctl00_CorporateHeader1_Header_BasicSearch_rdKeyword" type="radio" name="ctl00$CorporateHeader1$Header$BasicSearch$SearchRadios" value="rdKeyword" /><label for="ctl00_CorporateHeader1_Header_BasicSearch_rdKeyword">k</label></span>
-        </div>-->
-        <input name="ctl00$CorporateHeader1$Header$BasicSearch$textBoxSearch" type="text" value="Enter name or number" id="ctl00_CorporateHeader1_Header_BasicSearch_textBoxSearch" class="SearchOne" onfocus="searchFocus(this)" />
-        <input type="submit" name="ctl00$CorporateHeader1$Header$BasicSearch$buttonSearch" value="Go" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$CorporateHeader1$Header$BasicSearch$buttonSearch&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="ctl00_CorporateHeader1_Header_BasicSearch_buttonSearch" class="SearchOneSubmit" />
-    
-</div>
+        
+        <label id="ctl00_CorporateHeader1_Header_BasicSearch_lblMain" for="textBoxSearch" class="MainLabel">Search for a charity</label>     
+        <div class="RadioWrap">
+            <span id="ctl00_CorporateHeader1_Header_BasicSearch_lblKeyword" class="ByKeyword">by keyword</span>
+            <input value="rdKeyword" name="ctl00$CorporateHeader1$Header$BasicSearch$radio" type="radio" id="ctl00_CorporateHeader1_Header_BasicSearch_rdKeyword" onclick="enablePostBack(this);" class="styled" />
+            <span id="ctl00_CorporateHeader1_Header_BasicSearch_lblName" class="ByName">by name</span>
+            <input value="rdName" name="ctl00$CorporateHeader1$Header$BasicSearch$radio" type="radio" id="ctl00_CorporateHeader1_Header_BasicSearch_rdName" onclick="enablePostBack(this);" checked="checked" class="styled" />             
+        </div>
+        <input name="ctl00$CorporateHeader1$Header$BasicSearch$textBoxSearch" type="text" value="Enter name or number" id="ctl00_CorporateHeader1_Header_BasicSearch_textBoxSearch" class="SearchOne" onfocus="this.value=''" onblur="setDefault('ctl00_CorporateHeader1_Header_BasicSearch_textBoxSearch', 'Enter name or number');" />     
+        <input type="submit" name="ctl00$CorporateHeader1$Header$BasicSearch$buttonSearch" value="Search" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$CorporateHeader1$Header$BasicSearch$buttonSearch&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="ctl00_CorporateHeader1_Header_BasicSearch_buttonSearch" class="SearchOneSubmit" />
+
 </div>
 
 
 
-    </div>    
+    </div>
 </div>
+
 
   <div id="MainMenu">
-      <ul id="nav" class="dropdown dropdown-horizontal"><li class="Hide"><a href="http://www.charitycommission.gov.uk#SecondaryNav" title="Skip to secondary navigation links"><span>Skip to secondary navigation links</span></a></li><li id="Bar1"><a href="http://www.charitycommission.gov.uk/index.aspx" class="Bar1"><span>New Homepage</span></a></li><li id="Bar2" class="dir"><a href="http://www.charitycommission.gov.uk/About_us/default.aspx" class="On Bar2"><span>About us</span></a><ul><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/default.aspx" class="On"><span>About the Charity Commission</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Our_vision_index.aspx"><span>Our vision, mission and values</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Our_status_index.aspx"><span>Our status</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Our_Board_index.aspx"><span>Our Board of Commissioners and Directors’ Group</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Public_meetings_index.aspx"><span>Public meetings of the Commission</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Work_with_regulators_index.aspx"><span>Our work with other regulators and organisations</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Reports_consultations_newsletter_index.aspx"><span>Reports, consultations and newsletter</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/About_charities_index.aspx" class="On"><span>About charities</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/About_charities/Trusteeship_index.aspx"><span>Trusteeship</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_charities/Fact_figures_index.aspx"><span>Sector facts and figures</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_charities/Our_research_index.aspx"><span>Our research</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/How_we_regulate_charities_index.aspx" class="On"><span>How we regulate charities</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/Regulation/Registering_charities_index.aspx"><span>Registering charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Regulation/Providing_information_index.aspx"><span>Providing information and advice</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Regulation/Taking_action_index.aspx"><span>Taking action if things go wrong</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/Making_a_complaint_index.aspx" class="On"><span>Making a complaint</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/Complaining/Complaint_about_a_charity_index.aspx"><span>Making a complaint about a charity</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Complaining/Complaining_about_our_decision_index.aspx"><span>Complaining about a decision we have made</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Complaining/Complaint_about_our_service_index.aspx"><span>Complaint about a service we have provided</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/default.aspx" class="On"><span>Contacting us</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/default.aspx"><span>Contacting us</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/Press_office_index.aspx"><span>Press office</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/Public_Affairs_index.aspx"><span>Public Affairs</span></a></li></ul></li><li><a href="http://www.charitycommission.gov.uk/About_us/Careers/default.aspx"><span>Careers</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/OGs/default.aspx"><span>Operational Guidance</span></a></li></ul></li><li id="Bar3" class="dir"><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/default.aspx" class="On Bar3"><span>Our regulatory activity</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Our_approach/default.aspx"><span>Our approach</span></a></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Reporting_issues/default.aspx" class="On"><span>How and when to report an issue to us</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Reporting_issues/Trustee_employee_and_volunteer_guidance_index.aspx"><span>Guidance for trustees, employees and volunteers</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Reporting_issues/Auditors_and_independent_examiners_index.aspx"><span>Guidance for auditors and independent examiners</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Reporting_issues/General_public/default.aspx"><span>Guidance for the general public</span></a></li></ul></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Where_we_provide_legal_consents.aspx"><span>Where we provide legal consents</span></a></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/default.aspx" class="On"><span>How we ensure charities comply with their legal requirements</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Where_we_investigate_charities_index.aspx"><span>Where we investigate charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Where_we_take_enforcement_action_index.aspx"><span>Where we take enforcement action</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Counter_terrorism_work/default.aspx"><span>Our counter-terrorism work</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Where_we_monitor_charities_index.aspx"><span>Where we monitor charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Appoint_interim_managers_index.aspx"><span>Where we appoint interim managers</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Resolve_internal_conflicts_index.aspx"><span>Where we can help resolve internal conflicts</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/default.aspx" class="On"><span>Results of our legal compliance work</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/Alerts/default.aspx"><span>Alerts and warnings</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/inquiry_reports/default.aspx"><span>Inquiry Reports</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/RC_reports/default.aspx"><span>Regulatory Case Reports</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/Recent_Decisions_index.aspx"><span>Final Decisions</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/Back_on_Track_index.aspx"><span>Themes and lessons learnt from our compliance work</span></a></li></ul></li></ul></li><li id="Bar4" class="dir"><a href="http://www.charitycommission.gov.uk/Manage_your_charity/default.aspx" class="On Bar4"><span>Manage your charity</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Submit_Annual_Return_index.aspx"><span>Submit Annual Return/Accounts</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Change_details_index.aspx"><span>Update your charity's details</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Change_Governing_Document_index.aspx"><span>Change your charity's name or Governing Document</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Merge_or_close_index.aspx"><span>Close or merge a charity</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Buy_sell_or_vest_land_index.aspx"><span>Buy, sell or vest land</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/forgotten_password_index.aspx"><span>Forgotten your password?</span></a></li></ul></li><li id="Bar5" class="dir"><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/default.aspx" class="On Bar5"><span>Start up a charity</span></a><ul><li class="dir"><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Set_up/default.aspx"><span> Is setting up a charity the right thing to do?</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Set_up/Things_to_think_about.aspx"><span>Things to think about before setting up a charity</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/default.aspx"><span>Do I need to register?</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/Types_of_charity_index.aspx"><span>Types of Charity that do not have to register</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/Resources_for_very_small_charities.aspx"><span>Resources for very small charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/Charitable_Incorporated_Organisations_index.aspx"><span>Charitable Incorporated Organisations</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/Excepted_charities_index.aspx"><span>Excepted charities</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/default.aspx" class="On"><span>Guidance on registering a new charity</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/The_registration_process_index.aspx"><span>The registration process</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/Finding_trustees_and_volunteers_index.aspx"><span>Finding trustees and volunteers</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/Demonstrating_public_benefit_index.aspx"><span>Demonstrating public benefit</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/Choosing_your_governing_document_index.aspx"><span>Choosing your charity's purposes and governing document</span></a></li></ul></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Register_a_new_charity/default.aspx"><span>Register a new charity</span></a></li></ul></li><li id="Bar6" class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_and_guidance.aspx" class="On Bar6"><span>Charity requirements & guidance</span></a><ul><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_information_must_trustees_send_index.aspx"><span>What information must trustees send us this year?</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_5k_less_than_10k_index.aspx"><span>Over £5,000 but less than £10,000</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_10k_less_than_25k_index.aspx"><span>Over £10,000 but less than £250,000</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_25k_less_than_500k_index.aspx"><span>Over £25,000 but less than £500,000</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_500k_less_than_1million_index.aspx"><span>Over £500,000 but less than £1,000,000</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_1million_index.aspx"><span>Over £1 million</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_essentials/default.aspx" class="On"><span>Charity essentials</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_essentials/The_essential_trustee.aspx"><span>The essential trustee</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_essentials/Hallmarks.aspx"><span>Hallmarks of an effective charity</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_essentials/Public_benefit/default.aspx"><span>Charitable purposes and Public Benefit</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/default.aspx" class="On"><span>Charity accounting and reporting</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Notifying_of_changes/default.aspx"><span>Notifying us of changes to your charity</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Preparing_annnual_returns/default.aspx"><span>Preparing your Annual Return</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Preparing_annual_reports/default.aspx"><span>Preparing your Trustees' Annual Report</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Preparing_charity_accounts/default.aspx"><span>Preparing your Charity Accounts</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Auditing_accounts/default.aspx"><span>Auditing and examining your accounts</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/default.aspx"><span>Charity governance</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/Good_governance/default.aspx"><span>Good governance</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/Managing_resources/default.aspx"><span>Managing charity resources</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/Managing_risk/default.aspx"><span>Managing risk</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/Environmental_responsibility/default.aspx"><span>Environmental responsibility</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/default.aspx"><span>Charity activities</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Working_with_others/default.aspx"><span>Working with other charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Fundraising/default.aspx"><span>Fundraising</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Campaigning/default.aspx"><span>Campaigning and political activity</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Delivering_services/default.aspx"><span>Charities delivering public services</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Working_internationally/default.aspx"><span>Charities working outside England and Wales</span></a></li></ul></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/default.aspx" class="On"><span>Specialist guidance</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/ccpubs3.aspx" class="On"><span>View all guidance</span></a></li></ul></li></ul>
+      <ul id="nav" class="dropdown dropdown-horizontal"><li class="Hide"><a href="http://www.charitycommission.gov.uk#SecondaryNav" title="Skip to secondary navigation links"><span>Skip to secondary navigation links</span></a></li><li id="Bar1"><a href="http://www.charitycommission.gov.uk/index.aspx" class="Bar1"><span>Home</span></a></li><li id="Bar2" class="dir"><a href="http://www.charitycommission.gov.uk/About_us/default.aspx" class="On Bar2"><span>About us</span></a><ul><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/default.aspx" class="On"><span>About the Charity Commission</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Our_vision_index.aspx"><span>Our vision, mission and values</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Our_status_index.aspx"><span>Our status</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Our_Board_index.aspx"><span>Our Board of Commissioners and Directors’ Group</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Public_meetings_index.aspx"><span>Public meetings of the Commission</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Speeches/default.aspx"><span>Speeches</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Transparency_index.aspx"><span>Our commitment to transparency and openness</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Work_with_regulators_index.aspx"><span>Our work with other regulators and organisations</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Reports_consultations_newsletter_index.aspx"><span>Reports, consultations and newsletter</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_the_Commission/Welsh_language_scheme.aspx"><span>Welsh Language Scheme</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/About_charities_index.aspx" class="On"><span>About charities</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/About_charities/Trusteeship_index.aspx"><span>Trusteeship</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_charities/Fact_figures_index.aspx"><span>Sector facts and figures</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/About_charities/Our_research_index.aspx"><span>Our research</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/How_we_regulate_charities_index.aspx" class="On"><span>How we regulate charities</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/Regulation/Registering_charities_index.aspx"><span>Registering charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Regulation/Providing_information_index.aspx"><span>Providing information and advice</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Regulation/Taking_action_index.aspx"><span>Taking action if things go wrong</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/Making_a_complaint_index.aspx" class="On"><span>Making a complaint</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/Complaining/Complaint_about_a_charity_index.aspx"><span>Making a complaint about a charity</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Complaining/Complaining_about_our_decision_index.aspx"><span>Complaining about a decision we have made</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Complaining/Complaint_about_our_service_index.aspx"><span>Complaint about a service we have provided</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/default.aspx" class="On"><span>Contacting us</span></a><ul><li><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/default.aspx"><span>Contacting us</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/Press_office_index.aspx"><span>Press office</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/Public_Affairs_index.aspx"><span>Public Affairs</span></a></li></ul></li><li><a href="http://www.charitycommission.gov.uk/About_us/Careers/default.aspx"><span>Careers</span></a></li><li><a href="http://www.charitycommission.gov.uk/About_us/OGs/default.aspx"><span>Operational Guidance</span></a></li></ul></li><li id="Bar3" class="dir"><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/default.aspx" class="On Bar3"><span>Our regulatory activity</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Our_approach/default.aspx"><span>Our approach</span></a></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Reporting_issues/default.aspx" class="On"><span>How and when to report an issue to us</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Reporting_issues/Trustee_employee_and_volunteer_guidance_index.aspx"><span>Guidance for trustees, employees and volunteers</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Reporting_issues/Auditors_and_independent_examiners_index.aspx"><span>Guidance for auditors and independent examiners</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Reporting_issues/General_public/default.aspx"><span>Guidance for the general public</span></a></li></ul></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Where_we_provide_legal_consents.aspx"><span>Where we provide legal consents</span></a></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/default.aspx" class="On"><span>How we ensure charities comply with their legal requirements</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Where_we_investigate_charities_index.aspx"><span>Where we investigate charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Where_we_take_enforcement_action_index.aspx"><span>Where we take enforcement action</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Counter_terrorism_work/default.aspx"><span>Our counter-terrorism work</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Where_we_monitor_charities_index.aspx"><span>Where we monitor charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Appoint_interim_managers_index.aspx"><span>Where we appoint interim managers</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_work/Resolve_internal_conflicts_index.aspx"><span>Where we can help resolve internal conflicts</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/default.aspx" class="On"><span>Results of our legal compliance work</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/Alerts/default.aspx"><span>Alerts and warnings</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/inquiry_reports/default.aspx"><span>Inquiry Reports</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/RC_reports/default.aspx"><span>Regulatory Case Reports</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/Recent_Decisions_index.aspx"><span>Final Decisions</span></a></li><li><a href="http://www.charitycommission.gov.uk/Our_regulatory_activity/Compliance_reports/Back_on_Track_index.aspx"><span>Themes and lessons learnt from our compliance work</span></a></li></ul></li></ul></li><li id="Bar4" class="dir"><a href="http://www.charitycommission.gov.uk/Manage_your_charity/default.aspx" class="On Bar4"><span>Manage your charity</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Submit_Annual_Return_index.aspx"><span>Submit Annual Return/Accounts</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Change_details_index.aspx"><span>Update your charity's details</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Change_Governing_Document_index.aspx"><span>Change your charity's name or Governing Document</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Merge_or_close_index.aspx"><span>Close or merge a charity</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/Buy_sell_or_vest_land_index.aspx"><span>Buy, sell or vest land</span></a></li><li><a href="http://www.charitycommission.gov.uk/Manage_your_charity/forgotten_password_index.aspx"><span>Forgotten your password?</span></a></li></ul></li><li id="Bar5" class="dir"><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/default.aspx" class="On Bar5"><span>Start up a charity</span></a><ul><li class="dir"><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Set_up/default.aspx"><span> Is setting up a charity the right thing to do?</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Set_up/Things_to_think_about.aspx"><span>Things to think about before setting up a charity</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/default.aspx"><span>Do I need to register?</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/Types_of_charity_index.aspx"><span>Types of Charity that do not have to register</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/Resources_for_very_small_charities.aspx"><span>Resources for very small charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/CIOs/default.aspx"><span>Charitable Incorporated Organisations (CIO)</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Do_I_need_to_register/Excepted_charities_index.aspx"><span>Excepted and Exempt charities</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/default.aspx" class="On"><span>Guidance on registering a new charity</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/Help_setting_up.aspx"><span>Help in setting up a charity</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/The_registration_process_index.aspx"><span>The registration process</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/Finding_trustees_and_volunteers_index.aspx"><span>Finding trustees and volunteers</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/Demonstrating_public_benefit_index.aspx"><span>Demonstrating public benefit</span></a></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Guidance_on_registering/Choosing_your_governing_document_index.aspx"><span>Choosing your charity's purposes and governing document</span></a></li></ul></li><li><a href="http://www.charitycommission.gov.uk/Start_up_a_charity/Register_a_new_charity/default.aspx"><span>Register a new charity</span></a></li></ul></li><li id="Bar6" class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/default.aspx" class="On Bar6"><span>Charity requirements & guidance</span></a><ul><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_information_must_trustees_send_index.aspx"><span>What information must trustees send us this year?</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_5k_less_than_10k_index.aspx"><span>Annual income £10,000 or less</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_10k_less_than_25k_index.aspx"><span>Annual income over £10,000 and up to £25,000</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_25k_less_than_500k_index.aspx"><span>Annual income over £25,000 and up to £500,000</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_500k_less_than_1million_index.aspx"><span>Annual income over £500,000 and up to £1,000,000</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/What_to_send/Over_1million_index.aspx"><span>Annual income over £1 million</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_essentials/default.aspx" class="On"><span>Charity essentials</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_essentials/The_essential_trustee.aspx"><span>The essential trustee</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_essentials/Hallmarks.aspx"><span>Hallmarks of an effective charity</span></a></li><li><a href="http://www.charitycommission.gov.uk/Publications/cc25.aspx"><span>Managing charity assets and resources</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_essentials/Public_benefit/default.aspx"><span>Charitable purposes and Public Benefit</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/default.aspx" class="On"><span>Charity accounting and reporting</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Notifying_of_changes/default.aspx"><span>Notifying us of changes to your charity</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Preparing_annnual_returns/default.aspx"><span>Preparing your Annual Return</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Preparing_annual_reports/default.aspx"><span>Preparing your Trustees' Annual Report</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Preparing_charity_accounts/default.aspx"><span>Preparing your Charity Accounts</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Accounting_and_reporting/Auditing_accounts/default.aspx"><span>Auditing and examining your accounts</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/default.aspx"><span>Charity governance</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/Good_governance/default.aspx"><span>Good governance</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/Managing_resources/default.aspx"><span>Managing charity resources</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/Managing_risk/default.aspx"><span>Managing risk</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Charity_governance/Environmental_responsibility/default.aspx"><span>Environmental responsibility</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/default.aspx"><span>Charity activities</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Working_with_others/default.aspx"><span>Working with other charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Fundraising/default.aspx"><span>Fundraising</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Campaigning/default.aspx"><span>Campaigning and political activity</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Delivering_services/default.aspx"><span>Charities delivering public services</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Your_charitys_activities/Working_internationally/default.aspx"><span>Charities working outside England and Wales</span></a></li></ul></li><li class="dir"><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/default.aspx" class="On"><span>Specialist guidance</span></a><ul><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/Small_charities/default.aspx"><span>Small charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/Arts/default.aspx"><span>Arts charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/Corporate_foundations/default.aspx"><span>Corporate Foundations</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/Faith/default.aspx"><span>Faith-based charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/Education/default.aspx"><span>Schools and Higher Education Institutions</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/Housing/default.aspx"><span>Charities providing housing</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/Local_authorities/default.aspx"><span>Charities and local authorities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/NHS_charities/default.aspx"><span>NHS charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/Recreation/default.aspx"><span>Recreation ground charities</span></a></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/Specialist_guidance/Royal_charter/default.aspx"><span>Royal Charter charities</span></a></li></ul></li><li><a href="http://www.charitycommission.gov.uk/Charity_requirements_guidance/ccpubs3.aspx" class="On"><span>View all guidance</span></a></li></ul></li></ul>
 
 
 
@@ -185,7 +217,7 @@ return true;
                 <a id="SkipToContent" name="SkipToContent"></a>
                 <div id="LeftCol">                    
                        
-                   <h2 id="ctl00_SectionHeader" class="HeadingOne"></h2>                    
+                   <h2 id="ctl00_SectionHeader" class="HeadingOne">In this section...</h2>                    
                         <div id="ctl00_LeftPanel">
 <!-- $$Workfile: LeftNavigationPanelBase.ascx $ -->
 <!-- $$Revision: 11 $ -->
@@ -195,6 +227,7 @@ return true;
     
         <ul id="LeftColMenuOne">
             <li><a href="RegisterHomePage.aspx" id="ctl00_ctl00_lbtnCharitiesHome" title="Register of Charities home">Register of Charities home</a>
+            
             <!--<li>Flash Contents:--><!--</li>-->
         
         <!--<hr id="HomeUL" class="SidePanel_Footer_Bottom" />-->
@@ -222,6 +255,7 @@ return true;
             
             
                 <li><a href="DocumentList.aspx?RegisteredCharityNumber=213311&amp;SubsidiaryNumber=0&amp;DocType=AccountList" id="ctl00_ctl00_CharityDetailsLinks_lbtnViewAccounts" title="View accounts">View accounts</a></li>
+            
             
             
             
@@ -261,8 +295,8 @@ return true;
     
     <h2 id="ctl00_ctl00_RegisterLinks_WhatsNewHeader" class="HeadingTwo">What's New</h2>
     <ul id="LeftColMenuTwo">                            
-        <li id="ctl00_ctl00_RegisterLinks_RecentUpdates" class="ItemOne"><a href="http://www.charitycommission.gov.uk/rss/default.aspx" id="ctl00_ctl00_RegisterLinks_lbtnRecentUpdates"></a></li>
-        <li id="ctl00_ctl00_RegisterLinks_News" class="ItemTwo"><a href="http://www.charitycommission.gov.uk/rss/More_news_and_updates.aspx" id="ctl00_ctl00_RegisterLinks_lbtnNews"></a></li>
+        <li id="ctl00_ctl00_RegisterLinks_RecentUpdates" class="ItemOne"><a href="http://www.charitycommission.gov.uk/rss/default.aspx" id="ctl00_ctl00_RegisterLinks_lbtnRecentUpdates" title="Recent Updates">Recent Updates</a></li>
+        <li id="ctl00_ctl00_RegisterLinks_News" class="ItemTwo"><a href="http://www.charitycommission.gov.uk/rss/More_news_and_updates.aspx" id="ctl00_ctl00_RegisterLinks_lbtnNews" title="News">News</a></li>
     </ul>
     
 
@@ -284,43 +318,62 @@ return true;
 <!-- $$Workfile: CharityStatus.ascx $ -->
 <!-- $$Revision: 23 $ -->
 <div id='StatusContainerGreen'>
-    <div id="ctl00_charityStatus_divRoundedCornerContainer" class="RoundedCornerContainer">
-      <div class="RoundedCorner1">&nbsp;</div>
-      <div class="RoundedCorner2">&nbsp;</div>
-      <div class="RoundedCorner3">&nbsp;</div>
-      <div class="RoundedCorner4">&nbsp;</div>
-    </div>
-    
-    <div class="StatusTextContainer">
-        <!--<div style="background-color:Red;float:left;height:3.3em;padding:0px;">&nbsp;</div>-->
-        <div id="ctl00_charityStatus_divPadding" class="LeftBarPadder" style="height:5.2em;;">&nbsp;</div>
-        <div id="ctl00_charityStatus_divCharityNameNo" class="Charity" style="height:5.2em;;">
-            <div id="ctl00_charityStatus_divMargin" style="margin-top:5px;margin-bottom:3px">
-                <div id="ctl00_charityStatus_spnCharityNo" class="StatusCharityNo">213311&nbsp;-&nbsp;</div> 
-                <div id="ctl00_charityStatus_spnCharityName" class="StatusCharityName">THE WEST MIDLAND BIRD CLUB                                                                                                                            </div>
-            </div>
-        </div>
-        <div id="ctl00_charityStatus_divLegend" class="Legend" style="height:5.2em;;">
-            DUE DOCUMENTS RECEIVED&nbsp;
-            <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Status_Help_Due_Documents_Received&amp;SelectedLanguage=English" id="ctl00_charityStatus_helpLink" target="_blank" title="Help for this section. Opens in a new window.">
-                <img id="ctl00_charityStatus_ibtnInfoStatus" title="Help for this section. Opens in a new window." src="../Images/Info.gif" alt="Help for this section. Opens in a new window." style="border-width:0px;" /></a>
+<div id="ctl00_charityStatus_divRoundedCornerContainer" class="RoundedCornerContainer">
+    <div class="RoundedCorner1">
+        &nbsp;</div>
+    <div class="RoundedCorner2">
+        &nbsp;</div>
+    <div class="RoundedCorner3">
+        &nbsp;</div>
+    <div class="RoundedCorner4">
+        &nbsp;</div>
+</div>
+<div class="StatusTextContainer">
+    <!--<div style="background-color:Red;float:left;height:3.3em;padding:0px;">&nbsp;</div>-->
+    <div id="ctl00_charityStatus_divPadding" class="LeftBarPadder" style="height:4.5em;;">
+        &nbsp;</div>
+    <div id="ctl00_charityStatus_divCharityNameNo" class="Charity" style="height:4.5em;;">
+        <div id="ctl00_charityStatus_divMargin" style="margin-top: 5px; margin-bottom: 3px">
+            <div id="ctl00_charityStatus_spnCharityNo" class="StatusCharityNo">213311&nbsp;-&nbsp;</div>
+            <div id="ctl00_charityStatus_spnCharityName" class="StatusCharityName">THE WEST MIDLAND BIRD CLUB                                                                                                                            </div>
         </div>
     </div>
-    <div id="ctl00_charityStatus_divRoundedCornerContainer2" class="RoundedCornerContainer">
-      <div class="RoundedCorner4">&nbsp;</div>
-      <div class="RoundedCorner3">&nbsp;</div>
-      <div class="RoundedCorner2">&nbsp;</div>
-      <div class="RoundedCorner1">&nbsp;</div>
+    <div id="ctl00_charityStatus_divLegend" class="Legend" style="height:4.5em;;">
+        DUE DOCUMENTS RECEIVED&nbsp; <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Status_Help_Due_Documents_Received&amp;SelectedLanguage=English" id="ctl00_charityStatus_helpLink" target="_blank" class="InfoClass" title="Help for this section. Opens in a new window.">
+            
+        </a>
+        <br />
     </div>
+</div>
+<div id="ctl00_charityStatus_divRoundedCornerContainer2" class="RoundedCornerContainer">
+    <div class="RoundedCorner4" style="margin:0px 1px 0px 0px">
+        &nbsp;</div>
+    <div class="RoundedCorner3" style="margin:0px 1px 0px 0px">
+        &nbsp;</div>
+    <div class="RoundedCorner2" style="margin:0px 1px 0px 0px">
+        &nbsp;</div>
+    <div class="RoundedCorner1" style="margin:0px 1px 0px 0px">
+        &nbsp;</div>
+</div>
 </div>
 
 </div>
                                         
-    
-    
+    <div id="ctl00_MainContent_DisplayAndStatusMessageContainer" class="DisplayAndStatusMessageContainer">
+        <div class="MessageContainer">
+            
+<!-- $$Workfile: CharityStatusMessage.ascx $ -->
+<!-- $$Revision: 2 $ -->
 
-    <div style="padding-top:8px; width:99%">
-        <div style="float:left;	width: 64%;	vertical-align:top; margin-bottom:20px;">
+        </div>
+    </div>
+    
+    <div>
+        
+
+<div style="padding-top:8px; width:auto">
+    <div class="GovernanceDisplayRow">
+        <div class="phL1 GovernanceDisplayLeftColumn">
             
 <div class="holderWithPadding">
     
@@ -330,7 +383,9 @@ return true;
 
 <div style="padding-bottom:5px;padding-top:5px;">
     <span id="ctl00_MainContent_ucDisplay_ucOtherNames_ucLabelSectionHeading_LabelHeadingText" class="ucTitle">Other names</span>&nbsp;
-    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_OtherNames&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucOtherNames_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank"><img id="ctl00_MainContent_ucDisplay_ucOtherNames_ucLabelSectionHeading_ImageHelp" src="../Images/Info.gif" alt="Help for this section. Opens in a new window." style="border-width:0px;" /></a>
+    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_OtherNames&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucOtherNames_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank" class="InfoClass">
+   
+    </a>
     
     
     <span id="ctl00_MainContent_ucDisplay_ucOtherNames_ucLabelSectionHeading_cvalHeader" style="color:Red;font-weight:bold;VERTICAL-ALIGN:text-top;visibility:hidden;">!</span>
@@ -342,8 +397,6 @@ return true;
 </div>
 
 
-                <br /><br />
-                
 <div class="holderWithPadding">
     
  
@@ -352,7 +405,9 @@ return true;
 
 <div style="padding-bottom:5px;padding-top:5px;">
     <span id="ctl00_MainContent_ucDisplay_ucGovDocDisplay_ucLabelSectionHeading_LabelHeadingText" class="ucTitle">Governing document</span>&nbsp;
-    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_GoverningDocument&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucGovDocDisplay_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank"><img id="ctl00_MainContent_ucDisplay_ucGovDocDisplay_ucLabelSectionHeading_ImageHelp" src="../Images/Info.gif" alt="Help for this section. Opens in a new window." style="border-width:0px;" /></a>
+    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_GoverningDocument&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucGovDocDisplay_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank" class="InfoClass">
+   
+    </a>
     
     
     <span id="ctl00_MainContent_ucDisplay_ucGovDocDisplay_ucLabelSectionHeading_cvalHeader" style="color:Red;font-weight:bold;VERTICAL-ALIGN:text-top;visibility:hidden;">!</span>
@@ -360,12 +415,10 @@ return true;
 </div>
 </div>
 <div class="DisplayLabelHolder">
-    <span id="ctl00_MainContent_ucDisplay_ucGovDocDisplay_lblDisplayLabel">RULES ADOPTED 6TH MARCH 1962 AS AMENDED JANUARY 1981                                                                                                                                                                                                      </span>
+    <span id="ctl00_MainContent_ucDisplay_ucGovDocDisplay_lblDisplayLabel">RULES ADOPTED 6TH MARCH 1962 AS AMENDED JANUARY 1981</span>
 </div>
 
 
-                <br /><br />
-                
 <div class="holderWithPadding">
     
  
@@ -374,7 +427,9 @@ return true;
 
 <div style="padding-bottom:5px;padding-top:5px;">
     <span id="ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_LabelHeadingText" class="ucTitle">Area of benefit</span>&nbsp;
-    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_AreaOfBenefit&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank"><img id="ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_ImageHelp" src="../Images/Info.gif" alt="Help for this section. Opens in a new window." style="border-width:0px;" /></a>
+    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_AreaOfBenefit&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank" class="InfoClass">
+   
+    </a>
     
     
     <span id="ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_cvalHeader" style="color:Red;font-weight:bold;VERTICAL-ALIGN:text-top;visibility:hidden;">!</span>
@@ -382,11 +437,89 @@ return true;
 </div>
 </div>
 <div class="DisplayLabelHolder">
-    <span id="ctl00_MainContent_ucDisplay_ucBenefitsDisplay_lblDisplayLabel">NOT DEFINED IN PRACTICE,  WARWICKSHIRE, WOCESTERSHIRE, STAFFORDSHIRE AND WEST MIDLANDS.                                                                                        </span>
+    <span id="ctl00_MainContent_ucDisplay_ucBenefitsDisplay_lblDisplayLabel">NOT DEFINED IN PRACTICE,  WARWICKSHIRE, WOCESTERSHIRE, STAFFORDSHIRE AND WEST MIDLANDS.</span>
 </div>
 
 
-                <br /><br />
+<div class="holderWithPadding">
+    
+ 
+<!-- $$Workfile: SectionHeading.ascx $ -->
+<!-- $$Revision: 9 $ -->
+
+<div style="padding-bottom:5px;padding-top:5px;">
+    <span id="ctl00_MainContent_ucDisplay_ucOrganisationType_ucLabelSectionHeading_LabelHeadingText" class="ucTitle">Organisation type</span>&nbsp;
+    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Charity_Framework_Org_Type_Help&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucOrganisationType_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank" class="InfoClass">
+   
+    </a>
+    
+    
+    <span id="ctl00_MainContent_ucDisplay_ucOrganisationType_ucLabelSectionHeading_cvalHeader" style="color:Red;font-weight:bold;VERTICAL-ALIGN:text-top;visibility:hidden;">!</span>
+<!--    <hr class="fullwidth" /> -->
+</div>
+</div>
+<div class="DisplayLabelHolder">
+    <span id="ctl00_MainContent_ucDisplay_ucOrganisationType_lblDisplayLabel">STANDARD REGISTRATION</span>
+</div>
+
+   
+        </div> 
+          
+        <div class="phR1 GovernanceDisplayRightColumn">
+            
+<div>
+    
+ 
+<!-- $$Workfile: SectionHeading.ascx $ -->
+<!-- $$Revision: 9 $ -->
+
+<div style="padding-bottom:5px;padding-top:5px;">
+    <span id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucHeading_LabelHeadingText" class="ucTitle">Where it operates</span>&nbsp;
+    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_WhereOperates&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank" class="InfoClass">
+   
+    </a>
+    
+    
+    <span id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucHeading_cvalHeader" style="color:Red;font-weight:bold;VERTICAL-ALIGN:text-top;visibility:hidden;">!</span>
+<!--    <hr class="fullwidth" /> -->
+</div>
+    
+    
+
+<!-- $$Workfile: TextAreaInput.ascx $ -->
+<!-- $$Revision: 8 $ -->
+
+<div class="holder">
+    <span id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_showlabel" class="widelabel">    
+        <label for="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_txtTextEntry" id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_lblTextEntry"><span id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_lblDisplayText" class="besideRedAsterisk"></span></label>                
+    </span>
+    <span id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_hidelabel" class="Offscreen">
+       <label for="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_txtTextEntry" id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_lblOffscreen"><span id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_lblOffscreenText" class="besideRedAsterisk"></span></label>
+    </span>
+    <span id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_textAreaHolder" style="float:left" class="contenttext1">
+        <span><textarea name="ctl00$MainContent$ucDisplay$ucWhereOperated$ucTextAreaInput$txtTextEntry" rows="2" cols="20" readonly="readonly" id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_txtTextEntry" class="MultiLineScrollWhereOperates MultiLineScrollWhereOperatesAuto" style="float:left;width:;">BIRMINGHAM CITY
+COVENTRY CITY
+DUDLEY
+SANDWELL
+SOLIHULL
+STAFFORDSHIRE
+WALSALL
+WARWICKSHIRE
+WOLVERHAMPTON
+WORCESTERSHIRE
+</textarea></span>
+    </span>    
+    <span style="float:left">
+        
+         <span id="ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_cvalTextInput" style="color:Red;font-size:Large;font-weight:bold;vertical-align:text-top;visibility:hidden;">!</span>
+     </span>
+</div>
+</div>
+        </div>
+    </div>
+    <div class="GovernanceDisplayRow">
+        
+            <div style="padding-bottom:15px;">
                 
 <div class="holderWithPadding">
     
@@ -395,8 +528,38 @@ return true;
 <!-- $$Revision: 9 $ -->
 
 <div style="padding-bottom:5px;padding-top:5px;">
+    <span id="ctl00_MainContent_ucDisplay_ucRegHistory_ucLabelSectionHeading_LabelHeadingText" class="ucTitle">Registration history</span>&nbsp;
+    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Charity_Framework_Reg_History_Help&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucRegHistory_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank" class="InfoClass">
+   
+    </a>
+    
+    
+    <span id="ctl00_MainContent_ucDisplay_ucRegHistory_ucLabelSectionHeading_cvalHeader" style="color:Red;font-weight:bold;VERTICAL-ALIGN:text-top;visibility:hidden;">!</span>
+<!--    <hr class="fullwidth" /> -->
+</div>
+</div>
+<div class="DisplayLabelHolder">
+    <span id="ctl00_MainContent_ucDisplay_ucRegHistory_lblDisplayLabel"><table class='RegHistoryTable'><tr><td class='DateColumn'>19 May 1967</td><td class='DescriptionColumn'>Registered</td></tr></table></span>
+</div>
+
+
+            </div>
+        
+    </div>
+    <div class="GovernanceDisplayRow">
+        <div class="GovernanceDisplayLeftColumn" id="objectsContainer">
+            
+<div class="holderWithPadding">
+    
+ 
+<!-- $$Workfile: SectionHeading.ascx $ -->
+<!-- $$Revision: 9 $ -->
+
+<div style="padding-bottom:5px;padding-top:5px;">
     <span id="ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_LabelHeadingText" class="ucTitle">Charitable objects</span>&nbsp;
-    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_CharitableObjects&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank"><img id="ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_ImageHelp" src="../Images/Info.gif" alt="Help for this section. Opens in a new window." style="border-width:0px;" /></a>
+    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_CharitableObjects&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank" class="InfoClass">
+   
+    </a>
     
     
     <span id="ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_cvalHeader" style="color:Red;font-weight:bold;VERTICAL-ALIGN:text-top;visibility:hidden;">!</span>
@@ -404,13 +567,13 @@ return true;
 </div>
 </div>
 <div class="DisplayLabelHolder">
-    <span id="ctl00_MainContent_ucDisplay_ucObjectsDisplay_lblDisplayLabel">TO ENCOURAGE AND ORGANISE THE STUDY OF WILD BIRDS AND PROMOTE THE PROTECTION OF WILD BIRDS AND PRESERVATION OF THEIR HABITATS                                                                                                                              </span>
+    <span id="ctl00_MainContent_ucDisplay_ucObjectsDisplay_lblDisplayLabel" class="MultiLineScrollObjects">TO ENCOURAGE AND ORGANISE THE STUDY OF WILD BIRDS AND PROMOTE THE PROTECTION OF WILD BIRDS AND PRESERVATION OF THEIR HABITATS</span>
 </div>
 
    
         </div> 
           
-        <div style="float:left;	width: 33%;	padding-left:15px;vertical-align:top; margin-bottom:20px;">
+        <div class="GovernanceDisplayRightColumn" id="classificationContainer">
             
 <div>
 
@@ -419,81 +582,51 @@ return true;
 <!-- $$Revision: 9 $ -->
 
 <div style="padding-bottom:5px;padding-top:5px;">
-    <span id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucHeading_LabelHeadingText" class="ucTitle">Date registered</span>&nbsp;
-    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_DateRegistered&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucHeading_helpLink" title="Help for this section. Opens in a new window." target="_blank"><img id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucHeading_ImageHelp" src="../Images/Info.gif" alt="Help for this section. Opens in a new window." style="border-width:0px;" /></a>
-    
-    
-    <span id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucHeading_cvalHeader" style="color:Red;font-weight:bold;VERTICAL-ALIGN:text-top;visibility:hidden;">!</span>
-<!--    <hr class="fullwidth" /> -->
-</div>
-
-<!-- $$Workfile: TextInput.ascx $ -->
-<!-- $$Revision: 5 $ -->
-
-<span class="holderWithPadding">
-    <span id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_labelHolder" class="widelabel">    
-        <label for="ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtTextEntry" id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_lblTextEntry"><span id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_lblDisplayText"></span></label>
-    </span>
-    <span id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtHolder" style="float:left;width:95%;">
-        
-        
-        <!--<input name="ctl00$MainContent$ucDisplay$ucDateRegistered$ucTextInput$txtTextEntry" type="text" readonly="readonly" id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtTextEntry" class="stdInputbox" style="width:100%;" />-->
-        <span id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData" class="SingleLineNoScroll">19 May 1967</span>
-    </span>
-    <span style="float:left">
-        
-        <span id="ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_cvalTextInput" style="color:Red;font-size:Large;font-weight:bold;visibility:hidden;">!</span>
-    </span>
-</span>
-</div>
-
-<div>
-
- 
-<!-- $$Workfile: SectionHeading.ascx $ -->
-<!-- $$Revision: 9 $ -->
-
-<div style="padding-bottom:5px;padding-top:5px;">
     <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_LabelHeadingText" class="ucTitle">Classification</span>&nbsp;
-    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_Classification&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_helpLink" title="Help for this section. Opens in a new window." target="_blank"><img id="ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_ImageHelp" src="../Images/Info.gif" alt="Help for this section. Opens in a new window." style="border-width:0px;" /></a>
+    <a href="/Showcharity/ShowCharity_Help_Page.aspx?ContentType=Help_Classification&amp;SelectedLanguage=English" id="ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_helpLink" title="Help for this section. Opens in a new window." target="_blank" class="InfoClass">
+   
+    </a>
     
     
     <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_cvalHeader" style="color:Red;font-weight:bold;VERTICAL-ALIGN:text-top;visibility:hidden;">!</span>
 <!--    <hr class="fullwidth" /> -->
 </div>
 <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_lblWhat" class="WhatWhoHowLabel">What</span><br />
-    <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_lblWhatText" class="MultiLineNoScroll" style="word-wrap:break-word;">&bull; General Charitable Purposes                                 <br  / >&bull; Education / Training                                          <br  / >&bull; Animals                                                     <br  / >&bull; Environment / Conservation / Heritage                           <br  / ></span>&nbsp;<br />
+    <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_lblWhatText" class="MultiLineNoScroll" style="word-wrap:break-word;">&bull; GENERAL CHARITABLE PURPOSES                                      <br  / >&bull; EDUCATION / TRAINING                                               <br  / >&bull; ANIMALS                                                          <br  / >&bull; ENVIRONMENT / CONSERVATION / HERITAGE                                <br  / ></span>&nbsp;<br />
 <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_lblWho" class="WhatWhoHowLabel">Who</span><br />
-    <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_lblWhoText" class="MultiLineNoScroll" style="word-wrap:break-word;">&bull; General public / Mankind                                      <br  / ></span><br />
+    <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_lblWhoText" class="MultiLineNoScroll" style="word-wrap:break-word;">&bull; THE GENERAL PUBLIC / MANKIND                                       <br  / ></span><br />
 <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_lblHow" class="WhatWhoHowLabel">How</span><br />
-    <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_lblHowText" class="MultiLineNoScroll" style="word-wrap:break-word;">&bull; Provides human resources                                    <br  / >&bull; Sponsors or undertakes research                             <br  / ></span><br /><br />
+    <span id="ctl00_MainContent_ucDisplay_ucClassificationDetails_lblHowText" class="MultiLineNoScroll" style="word-wrap:break-word;">&bull; PROVIDES HUMAN RESOURCES                                         <br  / >&bull; SPONSORS OR UNDERTAKES RESEARCH                                  <br  / ></span><br /><br />
 </div>
         </div>
-    
-  </div>  
-    
+    </div>
+</div>  
+  
   
 
+    </div>
 
                                     </div>
-                                    
                                 </div>
                            </div>
                             
                            <div id="ctl00_RightPanelHolder" class="TwoColumnRightPanelHolder">
-                                <div id="ctl00_RightPanel" style="padding-left:15px;padding-top:10px;padding-bottom:15px;width:90%"></div>
+                                <div id="ctl00_RightPanel" class="CentrePanelContent" style="padding-left:15px;padding-top:10px;padding-bottom:15px;width:90%"></div>
+                                
                            </div>
                         </div>
                     </div>
                </div>
                
     <div id="CCFooter">
-    <ul><li class="ItemOne"><a href="http://www.charitycommission.gov.uk/useful-websites.aspx"><span>Useful websites</span></a></li><li class="ItemTwo"><a href="http://www.charitycommission.gov.uk/press-office.aspx"><span>Press office</span></a></li><li class="ItemThree"><a href="http://www.charitycommission.gov.uk/public-affairs.aspx"><span>Public Affairs</span></a></li><li class="ItemFour"><a href="http://www.charitycommission.gov.uk/events-and-seminars.aspx"><span>Events & seminars</span></a></li><li class="ItemFive"><a href="http://www.charitycommission.gov.uk/About_us/Careers_index.aspx"><span>Careers</span></a></li><li class="ItemSix"><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us_index.aspx"><span>Contact us</span></a></li></ul>
+    <ul><li class="ItemOne"><a href="http://www.charitycommission.gov.uk/misc/useful-websites.aspx"><span>Useful websites</span></a></li><li class="ItemTwo"><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/Press_office/default.aspx"><span>Press office</span></a></li><li class="ItemThree"><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/Public_Affairs_index.aspx"><span>Public Affairs</span></a></li><li class="ItemFour"><a href="http://www.charitycommission.gov.uk/misc/events-and-seminars.aspx"><span>Events & seminars</span></a></li><li class="ItemFive"><a href="http://www.charitycommission.gov.uk/About_us/Careers/default.aspx"><span>Careers</span></a></li><li class="ItemSix"><a href="http://www.charitycommission.gov.uk/About_us/Contacting_us/default.aspx"><span>Contact us</span></a></li></ul>
 
 
 
     </div>
-
+<div id="ctl00_PageFooter1_divEnglish">
+    <p class="ExtraInfo"><label id="ctl00_PageFooter1_lblCopyright"><span id="ctl00_PageFooter1_lCopyRight">© Crown Copyright 2012</span></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/misc/copyright.aspx" accesskey="8"><span id="ctl00_PageFooter1_CopyRightText">Copyright Notice, Disclaimer and Privacy Statement</span></a></p>
+</div>
 
 <span id="ctl00_PageFooter1_lblGoogleAnalyticsInclude"><script src="/includes/javascripts/taglinks.js" type="text/javascript">
 </script> 
@@ -507,6 +640,7 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 var pageTracker = _gat._getTracker("UA-2008226-1");
 try
 {
+pageTracker._setLocalRemoteServerMode();
 pageTracker._trackPageview();
 }
 catch(err)
@@ -522,7 +656,7 @@ catch(err)
 
 <script type="text/javascript">
 //<![CDATA[
-var Page_Validators =  new Array(document.getElementById("ctl00_MainContent_ucDisplay_ucOtherNames_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucGovDocDisplay_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucDateRegistered_ucHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_cvalTextInput"), document.getElementById("ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_cvalHeader"));
+var Page_Validators =  new Array(document.getElementById("ctl00_MainContent_ucDisplay_ucOtherNames_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucGovDocDisplay_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucOrganisationType_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucWhereOperated_ucHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_cvalTextInput"), document.getElementById("ctl00_MainContent_ucDisplay_ucRegHistory_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_cvalHeader"), document.getElementById("ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_cvalHeader"));
 //]]>
 </script>
 
@@ -534,12 +668,17 @@ var ctl00_MainContent_ucDisplay_ucGovDocDisplay_ucLabelSectionHeading_cvalHeader
 ctl00_MainContent_ucDisplay_ucGovDocDisplay_ucLabelSectionHeading_cvalHeader.evaluationfunction = "CustomValidatorEvaluateIsValid";
 var ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_cvalHeader = document.all ? document.all["ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_cvalHeader"] : document.getElementById("ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_cvalHeader");
 ctl00_MainContent_ucDisplay_ucBenefitsDisplay_ucLabelSectionHeading_cvalHeader.evaluationfunction = "CustomValidatorEvaluateIsValid";
+var ctl00_MainContent_ucDisplay_ucOrganisationType_ucLabelSectionHeading_cvalHeader = document.all ? document.all["ctl00_MainContent_ucDisplay_ucOrganisationType_ucLabelSectionHeading_cvalHeader"] : document.getElementById("ctl00_MainContent_ucDisplay_ucOrganisationType_ucLabelSectionHeading_cvalHeader");
+ctl00_MainContent_ucDisplay_ucOrganisationType_ucLabelSectionHeading_cvalHeader.evaluationfunction = "CustomValidatorEvaluateIsValid";
+var ctl00_MainContent_ucDisplay_ucWhereOperated_ucHeading_cvalHeader = document.all ? document.all["ctl00_MainContent_ucDisplay_ucWhereOperated_ucHeading_cvalHeader"] : document.getElementById("ctl00_MainContent_ucDisplay_ucWhereOperated_ucHeading_cvalHeader");
+ctl00_MainContent_ucDisplay_ucWhereOperated_ucHeading_cvalHeader.evaluationfunction = "CustomValidatorEvaluateIsValid";
+var ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_cvalTextInput = document.all ? document.all["ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_cvalTextInput"] : document.getElementById("ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_cvalTextInput");
+ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_cvalTextInput.controltovalidate = "ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_txtTextEntry";
+ctl00_MainContent_ucDisplay_ucWhereOperated_ucTextAreaInput_cvalTextInput.evaluationfunction = "CustomValidatorEvaluateIsValid";
+var ctl00_MainContent_ucDisplay_ucRegHistory_ucLabelSectionHeading_cvalHeader = document.all ? document.all["ctl00_MainContent_ucDisplay_ucRegHistory_ucLabelSectionHeading_cvalHeader"] : document.getElementById("ctl00_MainContent_ucDisplay_ucRegHistory_ucLabelSectionHeading_cvalHeader");
+ctl00_MainContent_ucDisplay_ucRegHistory_ucLabelSectionHeading_cvalHeader.evaluationfunction = "CustomValidatorEvaluateIsValid";
 var ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_cvalHeader = document.all ? document.all["ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_cvalHeader"] : document.getElementById("ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_cvalHeader");
 ctl00_MainContent_ucDisplay_ucObjectsDisplay_ucLabelSectionHeading_cvalHeader.evaluationfunction = "CustomValidatorEvaluateIsValid";
-var ctl00_MainContent_ucDisplay_ucDateRegistered_ucHeading_cvalHeader = document.all ? document.all["ctl00_MainContent_ucDisplay_ucDateRegistered_ucHeading_cvalHeader"] : document.getElementById("ctl00_MainContent_ucDisplay_ucDateRegistered_ucHeading_cvalHeader");
-ctl00_MainContent_ucDisplay_ucDateRegistered_ucHeading_cvalHeader.evaluationfunction = "CustomValidatorEvaluateIsValid";
-var ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_cvalTextInput = document.all ? document.all["ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_cvalTextInput"] : document.getElementById("ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_cvalTextInput");
-ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_cvalTextInput.evaluationfunction = "CustomValidatorEvaluateIsValid";
 var ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_cvalHeader = document.all ? document.all["ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_cvalHeader"] : document.getElementById("ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_cvalHeader");
 ctl00_MainContent_ucDisplay_ucClassificationDetails_shClassification_cvalHeader.evaluationfunction = "CustomValidatorEvaluateIsValid";
 //]]>

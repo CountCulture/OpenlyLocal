@@ -134,8 +134,10 @@ module CharityUtilities
     def frameworks_data_from(url_or_doc)
       frameworks_page = url_or_doc.is_a?(String) ? Nokogiri.HTML(_http_get(url_or_doc)) : url_or_doc # use Nokogiri as Hpricot has probs with this website
       res = {}
-      res[:date_registered] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucDateRegistered_ucTextInput_txtData').inner_text.squish rescue nil
-      res[:date_removed] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucDateRemoved_ucTextInput_txtData').inner_text.squish rescue nil
+      date_registered = reg_or_rem_date("Registered", frameworks_page)
+      date_removed = reg_or_rem_date("Removed", frameworks_page)
+      res[:date_registered] = date_registered if date_registered
+      res[:date_removed] = date_removed if date_removed
       res[:governing_document] = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucGovDocDisplay_lblDisplayLabel').inner_text.squish rescue nil
       other_names = frameworks_page.at('#ctl00_MainContent_ucDisplay_ucOtherNames_lblDisplayLabel').inner_text.squish rescue nil
       res[:other_names] = other_names == 'None' ? nil : other_names
@@ -196,6 +198,10 @@ module CharityUtilities
       # page.search('#ctl00_MainContent_gridView tr[td[@valign="top"]]').collect{ |row| {:charity_number => row.at('a').inner_text, :title => row.search('a')[1].inner_text.squish } }
       page.search('//table/tr[count(td)>2]').collect{ |row| {:charity_number => row.at('a').inner_text, :title => row.search('a')[1].inner_text.squish } }
 
+    end
+    
+    def reg_or_rem_date(type, doc)
+      doc.at("//table[@class='RegHistoryTable']//td[@class='DateColumn' and following-sibling::td[@class='DescriptionColumn' and contains(text(), '#{type}')]]").inner_text.squish rescue nil
     end
 
   end
