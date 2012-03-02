@@ -7,14 +7,14 @@ class Scraper < ActiveRecord::Base
   class ParsingError < ScraperError; end
   SCRAPER_TYPES = %w(InfoScraper ItemScraper CsvScraper)
   USER_AGENT = "Mozilla/4.0 (OpenlyLocal.com)"
-  PARSING_LIBRARIES = { 'H' => 'Hpricot', 
-                        'N' => 'Nokogiri (HTML)',
+  PARSING_LIBRARIES = { 'N' => 'Nokogiri (HTML)',
                         '8' => 'Nokogiri (HTML) force UTF-8',
-                        'X' => 'Nokogiri (XML)'
+                        'X' => 'Nokogiri (XML)',
+                        'H' => 'Hpricot'
                       }
-  belongs_to :parser
+  belongs_to :parser, :inverse_of  => :scrapers
   belongs_to :council
-  validates_presence_of :council_id, :parser_id
+  validates_presence_of :council_id, :parser
   named_scope :stale, lambda {{ :conditions => ["priority > 0 AND (next_due IS NULL OR next_due < ?)", Time.now], :order => "priority, next_due" }}
   named_scope :problematic, { :conditions => { :problematic => true } }
   named_scope :unproblematic, { :conditions => { :problematic => false } }
@@ -51,7 +51,7 @@ class Scraper < ActiveRecord::Base
   end
   
   def title
-    "#{result_model} #{self.class.to_s.underscore.humanize}" + (council ? " for #{council.short_name}" : '')
+    "#{result_model} #{self.class.to_s.underscore.humanize}" + (council ? " for #{council.short_name}" : '') + (parser&&parser.portal_system ? " (#{parser.portal_system.name})" : '' )
   end
   
   def parser_attributes=(attribs={})

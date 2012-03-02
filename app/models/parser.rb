@@ -7,7 +7,7 @@ class Parser < ActiveRecord::Base
   validates_presence_of :scraper_type
   validates_inclusion_of :result_model, :in => ALLOWED_RESULT_CLASSES, :message => "is invalid"
   validates_inclusion_of :scraper_type, :in => Scraper::SCRAPER_TYPES, :message => "is invalid"
-  has_many :scrapers, :dependent => :destroy
+  has_many :scrapers, :dependent => :destroy, :inverse_of  => :parser
   belongs_to :portal_system
   serialize :attribute_parser
   attr_reader :results
