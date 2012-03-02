@@ -79,7 +79,8 @@ class Scraper < ActiveRecord::Base
   def process(options={})
     mark_as_unproblematic # clear problematic flag. It will be reset if there's a prob
     # self.parsing_results = parser.process(_data(url), self, :save_results => options[:save_results]).results
-    self.parsing_results = parser.process(_data(target_url_for(self)), self, :save_results => options[:save_results]).results
+    target_url = options.delete(:target_url) || target_url_for(self)
+    self.parsing_results = parser.process(_data(target_url), self, :save_results => options[:save_results]).results
     update_with_results(parsing_results, options)
     update_last_scraped if options[:save_results]&&parser.errors.empty?
     mark_as_problematic unless parser.errors.empty?

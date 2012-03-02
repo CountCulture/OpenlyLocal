@@ -659,6 +659,12 @@ class ScraperTest < ActiveSupport::TestCase
           @scraper.process
         end        
 
+        should "get data from given target url rather than scraper url" do
+          @scraper.url = 'http://www.anytown.gov.uk/members/#{Date.today}'
+          @scraper.expects(:_data).with('http://foo.com/bar')
+          @scraper.process(:target_url => 'http://foo.com/bar')
+        end        
+
         should "pass data to associated parser" do
           @parser.expects(:process).with("something", anything, anything).returns(stub_everything)
           @scraper.process
