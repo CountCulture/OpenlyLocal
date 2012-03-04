@@ -26,6 +26,11 @@ class Parser < ActiveRecord::Base
     self.attribute_parser = result_hash
   end
   
+  #convenience method for returning attribute_parser bitwise flag, if set
+  def bitwise_flag
+    attribute_parser && attribute_parser[:bitwise_flag] && attribute_parser[:bitwise_flag].to_i
+  end
+  
   def process(doc, scraper=nil, options={})
     @raw_response = doc
     @current_scraper = scraper
@@ -65,7 +70,8 @@ class Parser < ActiveRecord::Base
   
   def title
     "#{result_model} #{scraper_type&&scraper_type.sub('Scraper','').downcase} parser for " +
-    (portal_system ? portal_system.name : 'single scraper only')
+    (portal_system ? portal_system.name : 'single scraper only') +
+    (description.blank? ? '' : " (#{description})")
   end
   
   protected

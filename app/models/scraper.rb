@@ -127,7 +127,7 @@ class Scraper < ActiveRecord::Base
   end
     
   def sibling_scrapers
-    council.scrapers - [self]
+    council.scrapers.all(:include => :parser) - [self]
   end
   
   def stale?

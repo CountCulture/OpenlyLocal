@@ -13,9 +13,9 @@ class InfoScraper < Scraper
       end
       update_with_results(raw_results, obj, options)
     end
-    errors.add_to_base("Problem on all items (see below for details)") if @objects_with_errors_count == related_objects.size
+    errors.add_to_base("Problem on all items (see below for details)") if (related_objects.size > 0)&&(@objects_with_errors_count == related_objects.size)
     update_last_scraped if options[:save_results]&&(@objects_with_errors_count != related_objects.size)
-    mark_as_problematic if options[:save_results]&&(@objects_with_errors_count == related_objects.size)
+    mark_as_problematic if options[:save_results]&&(related_objects.size > 0)&&(@objects_with_errors_count == related_objects.size)
     self
   rescue Exception => e # catch other exceptions and store them for display
     mark_as_problematic if options[:save_results] # don't mark if we're just testing
@@ -29,7 +29,11 @@ class InfoScraper < Scraper
     when @related_objects
       @related_objects
     else
-      result_model.constantize.stale.find(:all, :conditions => { :council_id => council_id })
+      if parser.bitwise_flag 
+        result_model.constantize.stale.find(:all, :conditions => ["council_id = ? AND bitwise_flag & ? = 0", council_id, parser.bitwise_flag])
+      else
+        result_model.constantize.stale.find(:all, :conditions => { :council_id => council_id })
+      end
     end
   end
   

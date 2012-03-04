@@ -20,7 +20,6 @@ Factory.define :csv_scraper, :class => :csv_scraper do |s|
 end
 
 Factory.define :parser do |f|
-  f.description 'description of dummy parser'
   f.item_parser  'foo="bar"'
   f.result_model 'TestScrapedModel'
   f.scraper_type 'ItemScraper'
@@ -28,7 +27,7 @@ Factory.define :parser do |f|
 end
 
 Factory.define :another_parser, :parent => :parser do |f|
-  f.description 'another dummy parser'
+  # f.description 'another dummy parser'
   f.scraper_type 'InfoScraper'
 end
 
