@@ -53,7 +53,7 @@ class CsvScraperTest < ActiveSupport::TestCase
 
         should "get data from url" do
           @scraper.url = 'http://www.anytown.gov.uk/members/bob'
-          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob")
+          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob", anything)
           @scraper.process
         end
 

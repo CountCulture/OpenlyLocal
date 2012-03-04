@@ -9,7 +9,7 @@ class BoundaryTest < ActiveSupport::TestCase
     end
     
     should_validate_presence_of :area_id, :area_type, :boundary_line
-    should_have_db_columns :hectares
+    should have_db_column :hectares
     
     should "have associated polymorphic area" do
       @area = Factory(:council, :name => "Council with boundary")

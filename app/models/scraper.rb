@@ -82,7 +82,7 @@ class Scraper < ActiveRecord::Base
     mark_as_unproblematic # clear problematic flag. It will be reset if there's a prob
     # self.parsing_results = parser.process(_data(url), self, :save_results => options[:save_results]).results
     target_url = options.delete(:target_url) || target_url_for(self)
-    self.parsing_results = parser.process(_data(target_url), self, :save_results => options[:save_results]).results
+    self.parsing_results = parser.process(_data(target_url, {:cookie_url => options.delete(:cookie_url)}), self, :save_results => options[:save_results]).results
     update_with_results(parsing_results, options)
     update_last_scraped if options[:save_results]&&parser.errors.empty?
     mark_as_problematic unless parser.errors.empty?
@@ -154,9 +154,10 @@ class Scraper < ActiveRecord::Base
   end
   
   protected
-  def _data(target_url=nil)
+  def _data(target_url=nil, options={})
     begin
-      options = { "User-Agent" => USER_AGENT, :cookie_url => cookie_url&&interpolate_url(cookie_url, self) } # submit interpolated cookie url if there is one
+      final_cookie_url = options.delete(:cookie_url) || (cookie_url&&interpolate_url(cookie_url, self)) # submit interpolated cookie url if there is one
+      options = { "User-Agent" => USER_AGENT, :cookie_url => final_cookie_url } 
       (options["Referer"] = (referrer_url =~ /^http/ ? referrer_url : target_url)) unless referrer_url.blank?
       page_data = use_post ? _http_post_from_url_with_query_params(target_url, options) : _http_get(target_url, options)
     rescue Exception => e

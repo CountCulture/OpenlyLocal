@@ -17,8 +17,8 @@ class MeetingTest < ActiveSupport::TestCase
     should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
     should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
     should have_many :related_articles
-    should_have_db_columns :venue
-    should_have_db_columns :status
+    should have_db_column :venue
+    should have_db_column :status
     should_validate_uniqueness_of :date_held, :scoped_to => [:council_id, :committee_id]
     should "validate uniqueness of uid scoped to council_id" do
       #shoulda macros can't allow for nil values

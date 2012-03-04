@@ -1,9 +1,16 @@
 require 'test_helper'
 
 class PlanningApplicationTest < ActiveSupport::TestCase
+  subject { @planning_application }
+  
   context "the PlanningApplication class" do
+    setup do
+      @planning_application = Factory(:planning_application)
+    end
+    
     should validate_presence_of :council_id
     should validate_presence_of :uid
+    should_validate_uniqueness_of :uid, :scoped_to => :council_id
     should have_db_column :council_id
     should have_db_column :applicant_name
     should have_db_column :applicant_address

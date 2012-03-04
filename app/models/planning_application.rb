@@ -2,6 +2,7 @@ class PlanningApplication < ActiveRecord::Base
   include ScrapedModel::Base
   belongs_to :council
   validates_presence_of :council_id, :uid
+  validates_uniqueness_of :uid, :scope => :council_id
   alias_attribute :council_reference, :uid
   serialize :other_attributes
   acts_as_mappable :default_units => :kms

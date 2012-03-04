@@ -16,7 +16,6 @@ class ScraperTest < ActiveSupport::TestCase
     should belong_to :parser
     should belong_to :council
     should validate_presence_of :council_id
-    should have_many :scrapes
     # should_accept_nested_attributes_for :parser
     
     should "should_accept_nested_attributes_for parser" do
@@ -566,8 +565,21 @@ class ScraperTest < ActiveSupport::TestCase
       
       should "get cookie from cookie_url if given" do
         @scraper.cookie_url = "http://cookie.com"
+        @scraper.expects(:_http_get).with(anything, has_entry(:cookie_url => "http://new_cookie.com")).returns("something")
+        @scraper.send(:_data, 'http://another.url', {:cookie_url => "http://new_cookie.com"})
+      end
+      
+      should "use explicitly given cookie_url instead of implicit one" do
+        @scraper.cookie_url = "http://cookie.com"
         @scraper.expects(:_http_get).with(anything, has_entry(:cookie_url => "http://cookie.com")).returns("something")
         @scraper.send(:_data, 'http://another.url')
+      end
+      
+      should "use scraper cookie_url even if nil passed" do
+        #regression text
+        @scraper.cookie_url = "http://cookie.com"
+        @scraper.expects(:_http_get).with(anything, has_entry(:cookie_url => "http://cookie.com")).returns("something")
+        @scraper.send(:_data, 'http://another.url', :cookie_url => nil)
       end
       
       should "interpolate cookie_url with term" do
@@ -594,11 +606,6 @@ class ScraperTest < ActiveSupport::TestCase
       should "raise RequestError when problem getting page" do
         @scraper.expects(:_http_get).raises(OpenURI::HTTPError, "404 Not Found")
         assert_raise(Scraper::RequestError) {@scraper.send(:_data)}
-      end
-      
-      should "raise TimeoutError when timeout getting page" do
-        @scraper.expects(:_http_get).raises(HTTPClient::TimeoutError)
-        assert_raise(Scraper::TimeoutError) {@scraper.send(:_data)}
       end
       
       context "and use_post flag set" do
@@ -655,20 +662,26 @@ class ScraperTest < ActiveSupport::TestCase
 
         should "get data from url" do
           @scraper.url = 'http://www.anytown.gov.uk/members/bob'
-          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob")
+          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob", anything)
           @scraper.process
         end
         
         should "get data from url interpolated with term" do
           @scraper.url = 'http://www.anytown.gov.uk/members/#{Date.today}'
-          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/#{Date.today}")
+          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/#{Date.today}", anything)
           @scraper.process
         end        
 
         should "get data from given target url rather than scraper url" do
           @scraper.url = 'http://www.anytown.gov.uk/members/#{Date.today}'
-          @scraper.expects(:_data).with('http://foo.com/bar')
+          @scraper.expects(:_data).with('http://foo.com/bar', anything)
           @scraper.process(:target_url => 'http://foo.com/bar')
+        end        
+
+        should "get data from given cookie_url rather than scraper cookie url" do
+          @scraper.cookie_url = 'http://www.anytown.gov.uk/cookie/#{Date.today}'
+          @scraper.expects(:_data).with(anything, {:cookie_url => 'http://foo.com/cookie'})
+          @scraper.process(:cookie_url => 'http://foo.com/cookie')
         end        
 
         should "pass data to associated parser" do
@@ -749,6 +762,7 @@ class ScraperTest < ActiveSupport::TestCase
       end
       
       context "and problem getting data" do
+        
         setup do
           @scraper.expects(:_data).raises(Scraper::RequestError, "Problem getting data from http://problem.url.com: OpenURI::HTTPError: 404 Not Found")
         end
@@ -769,30 +783,6 @@ class ScraperTest < ActiveSupport::TestCase
         should "mark as problematic when problem getting page" do
           @scraper.process
           assert @scraper.reload.problematic?
-        end
-      end
-
-      context "and timeout getting data" do
-        setup do
-          @scraper.expects(:_data).raises(Scraper::TimeoutError, "Timeout getting data from http://problem.url.com")
-        end
-        
-        should "not raise exception" do
-          assert_nothing_raised(Exception) { @scraper.process }
-        end
-        
-        should "store error in scraper" do
-          @scraper.process
-          assert_equal "Timeout getting data from http://problem.url.com", @scraper.errors[:base]
-        end
-        
-        should "return self" do
-          assert_equal @scraper, @scraper.process
-        end
-      
-        should "not mark as problematic" do
-          @scraper.process
-          assert !@scraper.reload.problematic?
         end
       end
 
@@ -860,7 +850,7 @@ class ScraperTest < ActiveSupport::TestCase
       
       should "get data from url" do
         @scraper.url = 'http://www.anytown.gov.uk/members/bob'
-        @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob")
+        @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/bob", anything)
         @scraper.process
       end
       
@@ -904,7 +894,9 @@ class ScraperTest < ActiveSupport::TestCase
           @scraper.process
           assert @scraper.reload.problematic?
         end
-      end      
+
+      end
+      
     end
 
     context "when running perform" do
@@ -917,23 +909,24 @@ class ScraperTest < ActiveSupport::TestCase
         @scraper.perform
       end
       
-      should "record_scrape_details" do
-        @scraper.expects(:record_scrape_details)
-        @scraper.perform
-      end
+      # should "not email results if no errors" do
+      #   # @scraper.errors.clear
+      #   @scraper.perform
+      #   assert_did_not_send_email do |email| 
+      #     p @scraper.errors
+      #     p email.subject, email.body
+      #     email.subject =~ /Scraping Report/ && email.body =~ /Scraping Results/
+      #   end
+      #   flunk
+      # end
       
-      should "email results if there are errors" do
-        @scraper.errors.add_to_base("something went wrong")
-        errors_obj = @scraper.errors
-        @scraper.stubs(:errors => errors_obj)
-        ScraperMailer.expects(:deliver_scraping_report!)
+      should "email results if errors" do
+        @scraper.errors.add_to_base('some error')
+        @scraper.expects(:process).returns(@scraper)
         @scraper.perform
-      end
-      
-      should "not email results if there are no errors" do
-        @scraper.stubs(:errors).returns([])
-        ScraperMailer.expects(:deliver_scraping_report!).never
-        @scraper.perform
+        assert_sent_email do |email|
+          email.subject =~ /Scraping Report/ && email.body =~ /Scraping Results/
+        end
       end
     end
     
@@ -957,46 +950,6 @@ class ScraperTest < ActiveSupport::TestCase
       end
     end
     
-    context "when recording details of scrape" do
-      setup do
-        @scraper = Factory(:scraper, :council => Factory(:generic_council))
-        @scraped_result = [ ScrapedObjectResult.new(Member.new(:first_name => "Fred", :last_name => "Flintstone")) ]
-        @scraper.stubs(:results => @scraped_result)
-        @scraper.stubs(:results_summary).returns("2 new, 3 changes")
-        @scraper.errors.add_to_base("There is a foo problem")
-      end
-
-      should "create scrape" do
-        assert_difference "Scrape.count", 1 do
-          @scraper.record_scrape_details
-        end 
-      end
-      
-      should "store results in created scrape" do
-        @scraper.record_scrape_details
-        new_scrape = Scrape.last
-        assert_equal @scraper.results_summary, new_scrape.results_summary
-        assert_equal @scraper.results, new_scrape.results
-      end
-      
-      should "store errors in created scrape" do
-        @scraper.record_scrape_details
-        assert_equal @scraper.errors.full_messages, Scrape.last.scraping_errors.full_messages #diferent object ids so test full messages instead
-      end
-      
-      should "associate created scrape with scraper" do
-        @scraper.record_scrape_details
-        assert_equal @scraper, Scrape.last.scraper
-      end
-      
-      should "only store ten results in created scrape results field" do
-        @scraped_result = [ ScrapedObjectResult.new(Member.new(:first_name => "Fred", :last_name => "Flintstone")) ] * 12
-        @scraper.stubs(:results => @scraped_result)
-        @scraper.record_scrape_details
-        assert_equal 10, Scrape.last.results.size
-      end
-      
-    end
   end
   
   private

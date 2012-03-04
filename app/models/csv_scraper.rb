@@ -1,7 +1,7 @@
 class CsvScraper < Scraper
   before_create :set_priority
   
-  def _data(target_url=nil)
+  def _data(target_url=nil, options={})
     logger.debug { "Getting data from #{target_url}" }
     page_data = _http_get(target_url)
   rescue Exception => e

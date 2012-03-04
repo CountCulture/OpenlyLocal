@@ -53,7 +53,7 @@ class ItemScraperTest < ActiveSupport::TestCase
       
         should "get data from url" do
           # This behaviour is inherited from parent Scraper class, so this is (poss unnecessary) sanity check
-          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members")
+          @scraper.expects(:_data).with("http://www.anytown.gov.uk/members", anything)
           @scraper.process
         end
       
