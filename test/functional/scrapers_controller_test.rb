@@ -779,14 +779,15 @@ class ScrapersControllerTest < ActionController::TestCase
       @council = Factory(:council)
       @portal_system = Factory(:portal_system, :name => "Another portal system")
       @existing_parser = Factory(:parser, :portal_system => @portal_system, :description => "existing parser")
+      @parser_attributes = { :description => "new parser", 
+                              :result_model => "Committee", 
+                              :scraper_type => "InfoScraper", 
+                              :item_parser => "some code",
+                              :attribute_parser_object => [{:attrib_name => "foo", :parsing_code => "bar"}] }
       
       @scraper_params = { :council_id => @council.id, 
                           :url => "http://anytown.com/committees", 
-                          :parser_attributes => { :description => "new parser", 
-                                                  :result_model => "Committee", 
-                                                  :scraper_type => "InfoScraper", 
-                                                  :item_parser => "some code",
-                                                  :attribute_parser_object => [{:attrib_name => "foo", :parsing_code => "bar"}] }}
+                          :parser_attributes => @parser_attributes }
       @exist_scraper_params = { :council_id => @council.id, 
                                 :url => "http://anytown.com/committees", 
                                 :parser_id => @existing_parser.id }

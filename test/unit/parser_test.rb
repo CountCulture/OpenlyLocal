@@ -4,13 +4,13 @@ class ParserTest < ActiveSupport::TestCase
   
   context "The Parser class" do
     should belong_to :portal_system
-    should_validate_presence_of :result_model
-    should_validate_presence_of :scraper_type
+    should validate_presence_of :result_model
+    should validate_presence_of :scraper_type
     should_allow_values_for :result_model, "Member", "Committee", "Meeting", "Ward"
     should_not_allow_values_for :result_model, "foo", "User"
     should_allow_values_for :scraper_type, "InfoScraper", "ItemScraper"
     should_not_allow_values_for :scraper_type, "foo", "OtherScraper"
-    should_have_db_column :path
+    should have_db_column :path
     
     should "serialize attribute_parser" do
       parser = Parser.create!(:description => "description of parser", :item_parser => "foo", :scraper_type => "ItemScraper", :attribute_parser => {:foo => "\"bar\"", :foo2 => "nil"}, :result_model => "Member")
@@ -40,13 +40,18 @@ class ParserTest < ActiveSupport::TestCase
         @parser.instance_variable_set(:@results, "foo")
         assert_equal "foo", @parser.results
       end
-
+      
       should "return details as title" do
         assert_equal "TestScrapedModel item parser for single scraper only", @parser.title
       end
       
       should "return details as title when new parser" do
         assert_equal "Committee item parser for single scraper only", Parser.new(:result_model => "Committee", :scraper_type => "ItemScraper").title
+      end
+      
+      should "include description in brackets" do
+        @parser.description = 'some description'
+        assert_equal "TestScrapedModel item parser for single scraper only (some description)", @parser.title
       end
     end
     
@@ -328,6 +333,23 @@ class ParserTest < ActiveSupport::TestCase
         end
       end
     end 
+
+    context "when returning bitwise_flag" do
+
+      should "return nil if attribute_parser nil" do
+        @parser.attribute_parser = nil
+        assert_nil @parser.bitwise_flag
+      end
+
+      should "return nil if attribute_parser non-nil but no bitwise_flag key" do
+        assert_nil @parser.bitwise_flag
+      end
+
+      should "return bitwise_flag as integer set in attribute_parser" do
+        @parser.attribute_parser = {:foo => 'bar', :bitwise_flag => '4'}
+        assert_equal 4, @parser.bitwise_flag
+      end
+    end
   end
   
 

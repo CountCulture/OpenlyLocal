@@ -7,7 +7,7 @@ class Parser < ActiveRecord::Base
   validates_presence_of :scraper_type
   validates_inclusion_of :result_model, :in => ALLOWED_RESULT_CLASSES, :message => "is invalid"
   validates_inclusion_of :scraper_type, :in => Scraper::SCRAPER_TYPES, :message => "is invalid"
-  has_many :scrapers, :dependent => :destroy
+  has_many :scrapers, :dependent => :destroy, :inverse_of  => :parser
   belongs_to :portal_system
   serialize :attribute_parser
   attr_reader :results
@@ -24,6 +24,11 @@ class Parser < ActiveRecord::Base
       result_hash[a["attrib_name"].to_sym] = a["parsing_code"]
     end
     self.attribute_parser = result_hash
+  end
+  
+  #convenience method for returning attribute_parser bitwise flag, if set
+  def bitwise_flag
+    attribute_parser && attribute_parser[:bitwise_flag] && attribute_parser[:bitwise_flag].to_i
   end
   
   def process(doc, scraper=nil, options={})
@@ -65,7 +70,8 @@ class Parser < ActiveRecord::Base
   
   def title
     "#{result_model} #{scraper_type&&scraper_type.sub('Scraper','').downcase} parser for " +
-    (portal_system ? portal_system.name : 'single scraper only')
+    (portal_system ? portal_system.name : 'single scraper only') +
+    (description.blank? ? '' : " (#{description})")
   end
   
   protected

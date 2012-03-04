@@ -11,25 +11,26 @@ namespace :planning_alerts do
   desc "Load item parser"
   task :load_item_parser => :load_config do
     portal_system = PortalSystem.find_or_create_by_name(@config["portal_system_name"])
-    # Destroy the existing item parser for this portal system, if any
-    portal_system.parsers.first(:conditions=>{:scraper_type => 'ItemScraper', :result_model => 'PlanningApplication'}).try(:destroy)
   
-    # Create a new item parser for this portal system
+    # Create or update the planning item parser for this portal system
     begin
-      @parser = Parser.create(
-        :scraper_type =>      "ItemScraper",
-        :result_model =>      "PlanningApplication",
-        :portal_system =>     portal_system,
-        :path =>              @config["item"]["path"],
-        :cookie_path =>       @config["item"]["cookie_path"],
-        :item_parser =>       @config["item"]["item_parser"],
-        :attribute_parser =>  @config["item"]["attributes"]
+      @parser = Parser.find_or_create_by_portal_system_id_and_result_model_and_scraper_type(
+        :scraper_type =>        "ItemScraper",
+        :result_model =>        "PlanningApplication",
+        :portal_system_id =>    portal_system.id
       )
+
+      @parser.update_attributes(
+        :path =>                @config["item"]["path"],
+        :cookie_path =>         @config["item"]["cookie_path"],
+        :item_parser =>         @config["item"]["item_parser"],
+        :attribute_parser =>    @config["item"]["attributes"]
+      )
+
     rescue Exception => e
       puts "Error creating parser: #{e}"
     end 
 
-  #   pp @parser
     puts "Created item parser for #{portal_system.name}"
   
     # Create item scrapers for all councils using this portal system
@@ -41,9 +42,9 @@ namespace :planning_alerts do
       end
     
       begin
-        scraper = ItemScraper.create(
-          :council =>           council,
-          :parser =>            @parser,
+        scraper = ItemScraper.find_or_create_by_council_id_and_parser_id(council.id, @parser.id)
+         
+        scraper.update_attributes( 
           :parsing_library =>   @config["item"]["parsing_library"],
           :use_post =>          @config["item"]["http_method"].upcase == "POST" ? true : false,
           :frequency =>         2,
@@ -62,12 +63,6 @@ namespace :planning_alerts do
   desc "Load info parser"
   task :load_info_parser => :load_config do
     portal_system = PortalSystem.find_or_create_by_name(@config["portal_system_name"])
-  #   pp portal_system
-  
-    # Destroy the existing info parser for this portal system, if any
-    portal_system.parsers.first(:conditions=>{:scraper_type => 'InfoScraper'}).try(:destroy)
-  
-  #   pp @config["info"]["fields"]
   
     @attributes = {}
   
@@ -78,10 +73,13 @@ namespace :planning_alerts do
   
     # Create a new info parser for this portal system
     begin
-      @parser = Parser.create(
-        :scraper_type =>      "InfoScraper",
-        :result_model =>      "PlanningApplication",
-        :portal_system =>     portal_system,
+      @parser = Parser.find_or_create_by_portal_system_id_and_result_model_and_scraper_type(
+        :scraper_type =>        "InfoScraper",
+        :result_model =>        "PlanningApplication",
+        :portal_system_id =>    portal_system.id
+      )
+    
+      @parser.update_attributes(
         :path =>              '',
         :cookie_path =>       '',
         :item_parser =>       @config["info"]["item_parser"],
@@ -90,6 +88,7 @@ namespace :planning_alerts do
       puts "Created info parser for #{portal_system.name}"
     rescue Exception => e
       puts "Error creating parser: #{e}"
+      next # end this rake task
     end 
   
     # Create info scrapers for all councils using this portal system
@@ -101,24 +100,16 @@ namespace :planning_alerts do
       end
     
       begin
-        scraper = InfoScraper.create(
-          :council =>           @council,
-          :parser =>            @parser,
+        scraper = InfoScraper.find_or_create_by_council_id_and_parser_id(@council.id, @parser.id)
+
+        scraper.update_attributes(
           :parsing_library =>   @config["info"]["parsing_library"],
           :use_post =>          @config["info"]["http_method"].upcase == "POST" ? true : false,
           :frequency =>         2,
           :base_url =>          base_url
         )
       
-  #       pp scraper
-  #       
-  #       scraper.errors.each_full { |msg| puts msg }
-      
-        if scraper.id.nil?
-          puts "ERROR: Didn't create info scraper for #{council_name}"
-        else
-          puts "Created info scraper for #{council_name}"
-        end
+        puts "Created or updated info scraper for #{council_name}"
 
       rescue Exception => e
         puts "Error creating scraper for #{council_name}: #{e}"
@@ -127,7 +118,6 @@ namespace :planning_alerts do
     end
   
     puts "http://localhost:3000/parsers/#{@parser.id}"
-  
   end
   
 #   desc "Dump portal system to YAML"

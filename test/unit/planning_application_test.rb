@@ -21,6 +21,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     should have_db_column :on_notice_to
     should have_db_column :map_url
     should have_db_column :application_type
+    should have_db_column :bitwise_flag
 
     should belong_to :council
 
@@ -28,6 +29,11 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       assert_equal({:foo => 'bar'}, Factory(:planning_application, :other_attributes => {:foo => 'bar'}).reload.other_attributes)
     end
     
+    should "set bitwise_flag to be zero if not set on creation" do
+      assert_equal 0, Factory(:planning_application).bitwise_flag
+      assert_equal 0, Factory(:planning_application, :bitwise_flag => nil).bitwise_flag
+    end
+
     should "act as mappable" do
       assert PlanningApplication.respond_to?(:find_closest)
     end
@@ -35,8 +41,8 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     context "stale named scope" do
       setup do
         @no_details_application = Factory(:planning_application) #retrieved_at is nil
-        @stale_application = Factory(:planning_application, :retrieved_at => 8.days.ago) 
-        @fresh_application = Factory(:planning_application, :retrieved_at => 6.days.ago)
+        @stale_application = Factory(:planning_application, :retrieved_at => 2.months.ago) 
+        @too_old_to_be_stale_application = Factory(:planning_application, :retrieved_at => 4.months.ago)
         @stale_applications = PlanningApplication.stale
       end
 
@@ -48,8 +54,8 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         assert @stale_applications.include?(@stale_application)
       end
       
-      should "not include fresh applications" do
-        assert !@stale_applications.include?(@fresh_application)
+      should "not include applications too old to be stale" do
+        assert !@stale_applications.include?(@too_old_to_be_stale_application)
       end
     end
   end
@@ -161,6 +167,32 @@ class PlanningApplicationTest < ActiveSupport::TestCase
           @planning_application.address = @new_address
           assert_equal 'BA2 5AB', @planning_application.postcode
         end
+      end
+    end
+    
+    context "when setting bitwise flag" do
+
+      should "do nothing if if nil given" do
+        @planning_application[:bitwise_flag] = 0b0101
+        @planning_application.bitwise_flag = nil
+        assert_equal 0b0101, @planning_application.bitwise_flag
+      end
+      
+      should "perform bitwise OR from given number" do
+        @planning_application[:bitwise_flag] = 0b0101
+        @planning_application.bitwise_flag = 0b0011
+        assert_equal 0b0111, @planning_application.bitwise_flag
+      end
+      
+      should "set to given number if currently nil" do
+        @planning_application.bitwise_flag = 0b0010
+        assert_equal 0b0010, @planning_application.bitwise_flag
+      end
+      
+      should "set to zero if full count" do
+        @planning_application[:bitwise_flag] = 0b1101
+        @planning_application.bitwise_flag = 0b0010
+        assert_equal 0, @planning_application.bitwise_flag
       end
     end
     

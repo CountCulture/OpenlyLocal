@@ -33,13 +33,6 @@ class InfoScraperTest < ActiveSupport::TestCase
     end
     
     context "when getting related_objects" do
-      should "search result model for related_objects when none exist" do
-        stale_scope = mock('stale_scope')
-        stale_scope.expects(:find).with(:all, :conditions => {:council_id => @scraper.council_id}).returns("related_objects")
-        TestScrapedModel.expects(:stale).returns(stale_scope)
-        assert_equal "related_objects", @scraper.related_objects
-      end
-      
       context "and related_objects instance variable set" do
         setup do
           @scraper.instance_variable_set(:@related_objects, "foo")
@@ -50,6 +43,27 @@ class InfoScraperTest < ActiveSupport::TestCase
           assert_equal "foo", @scraper.related_objects
         end
       end
+
+      should "search result model for related_objects when none exist" do
+        stale_scope = mock('stale_scope')
+        stale_scope.expects(:find).with(:all, :conditions => {:council_id => @scraper.council_id}).returns("related_objects")
+        TestScrapedModel.expects(:stale).returns(stale_scope)
+        assert_equal "related_objects", @scraper.related_objects
+      end
+      
+      context "and info_scraper parser has bitwise_flag as attribute value" do
+        setup do
+          @scraper.parser.attribute_parser = @scraper.parser.attribute_parser.merge(:bitwise_flag => '4')
+        end
+        
+        should "filter by objects where bitwise_flag value not set for given bit" do
+          stale_scope = mock('stale_scope')
+          stale_scope.expects(:find).with(:all, :conditions => ["council_id = ? AND bitwise_flag & ? = 0", @scraper.council_id, @scraper.parser.bitwise_flag])
+          TestScrapedModel.expects(:stale).returns(stale_scope)
+          @scraper.related_objects
+        end
+      end
+      
     end
     
     context "when processing" do
@@ -408,6 +422,23 @@ class InfoScraperTest < ActiveSupport::TestCase
           end
         end
         
+        context "and no objects to get data for" do
+          # regression test. Sometimes we may have no stale objects
+          setup do
+            @scraper.stubs(:related_objects).returns([])
+          end
+
+          should "not mark as problematic" do
+            @scraper.process(:save_results => true)
+            assert !@scraper.reload.problematic?
+          end
+          
+          should "not add error to scraper" do
+            @scraper.process
+            assert_nil @scraper.errors[:base]
+          end
+
+        end
       end
     end
   end

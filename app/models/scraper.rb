@@ -8,15 +8,15 @@ class Scraper < ActiveRecord::Base
   class TimeoutError < ScraperError; end
   SCRAPER_TYPES = %w(InfoScraper ItemScraper CsvScraper)
   USER_AGENT = "Mozilla/4.0 (OpenlyLocal.com)"
-  PARSING_LIBRARIES = { 'H' => 'Hpricot', 
-                        'N' => 'Nokogiri (HTML)',
+  PARSING_LIBRARIES = { 'N' => 'Nokogiri (HTML)',
                         '8' => 'Nokogiri (HTML) force UTF-8',
-                        'X' => 'Nokogiri (XML)'
+                        'X' => 'Nokogiri (XML)',
+                        'H' => 'Hpricot'
                       }
-  belongs_to :parser
+  belongs_to :parser, :inverse_of  => :scrapers
   belongs_to :council
   has_many :scrapes
-  validates_presence_of :council_id
+  validates_presence_of :council_id, :parser
   named_scope :stale, lambda {{ :conditions => ["priority > 0 AND (next_due IS NULL OR next_due < ?)", Time.now], :order => "priority, next_due" }}
   named_scope :problematic, { :conditions => { :problematic => true } }
   named_scope :unproblematic, { :conditions => { :problematic => false } }
@@ -53,7 +53,7 @@ class Scraper < ActiveRecord::Base
   end
   
   def title
-    "#{result_model} #{self.class.to_s.underscore.humanize}" + (council ? " for #{council.short_name}" : '')
+    "#{result_model} #{self.class.to_s.underscore.humanize}" + (council ? " for #{council.short_name}" : '') + (parser&&parser.portal_system ? " (#{parser.portal_system.name})" : '' )
   end
   
   def parser_attributes=(attribs={})
@@ -81,7 +81,8 @@ class Scraper < ActiveRecord::Base
   def process(options={})
     mark_as_unproblematic # clear problematic flag. It will be reset if there's a prob
     # self.parsing_results = parser.process(_data(url), self, :save_results => options[:save_results]).results
-    self.parsing_results = parser.process(_data(target_url_for(self)), self, :save_results => options[:save_results]).results
+    target_url = options.delete(:target_url) || target_url_for(self)
+    self.parsing_results = parser.process(_data(target_url), self, :save_results => options[:save_results]).results
     update_with_results(parsing_results, options)
     update_last_scraped if options[:save_results]&&parser.errors.empty?
     mark_as_problematic unless parser.errors.empty?
@@ -133,7 +134,7 @@ class Scraper < ActiveRecord::Base
   end
     
   def sibling_scrapers
-    council.scrapers - [self]
+    council.scrapers.all(:include => :parser) - [self]
   end
   
   def stale?

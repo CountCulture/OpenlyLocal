@@ -99,7 +99,7 @@ class ScraperTest < ActiveSupport::TestCase
     should "not save unless there is an associated parser" do
       s = Scraper.new(:council => @council)
       assert !s.save
-      assert_equal "can't be blank", s.errors[:parser]
+      assert s.errors[:parser].include?("can't be blank") 
     end
     
     should "save if there is an associated parser set via parser_id" do
@@ -305,6 +305,13 @@ class ScraperTest < ActiveSupport::TestCase
     should "build title from result class and scraper type when no council" do
       @scraper.council = nil
       assert_equal "TestScrapedModel Item scraper", @scraper.title
+    end
+    
+    should "include portal system in title if parser is associated with one" do
+      portal_system = Factory(:portal_system)
+      @parser.portal_system = portal_system
+      @scraper.council.name = "Anytown Council"
+      assert_equal "TestScrapedModel Item scraper for Anytown (#{portal_system.name})", @scraper.title
     end
     
     should "return errors in parser as parsing errors" do
@@ -656,6 +663,12 @@ class ScraperTest < ActiveSupport::TestCase
           @scraper.url = 'http://www.anytown.gov.uk/members/#{Date.today}'
           @scraper.expects(:_data).with("http://www.anytown.gov.uk/members/#{Date.today}")
           @scraper.process
+        end        
+
+        should "get data from given target url rather than scraper url" do
+          @scraper.url = 'http://www.anytown.gov.uk/members/#{Date.today}'
+          @scraper.expects(:_data).with('http://foo.com/bar')
+          @scraper.process(:target_url => 'http://foo.com/bar')
         end        
 
         should "pass data to associated parser" do
