@@ -807,10 +807,7 @@ ActiveRecord::Schema.define(:version => 20120303175740) do
     t.datetime "updated_at"
     t.point    "geom",              :limit => nil
     t.string   "application_type",  :limit => 64
-<<<<<<< HEAD
-=======
     t.integer  "bitwise_flag",      :limit => 1,        :default => 0
->>>>>>> planning_applications
   end
 
   add_index "planning_applications", ["council_id"], :name => "index_planning_applications_on_council_id"
