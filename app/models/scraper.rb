@@ -188,6 +188,7 @@ class Scraper < ActiveRecord::Base
     return false if RAILS_ENV=="test"  # make sure we don't call make calls to external services in test environment. Mock this method to simulate response instead
     client = HTTPClient.new
     cookie_url = options.delete(:cookie_url)
+    logger.debug { "Getting cookie from #{cookie_url}" }
     client.get_content(cookie_url) unless cookie_url.blank? # pick up cookie if we've been passed a url
     logger.debug { "Getting data using GET from #{target_url} with options: #{options.inspect}" }
     client.get_content(target_url, nil, options)

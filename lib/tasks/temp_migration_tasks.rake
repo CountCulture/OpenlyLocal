@@ -474,3 +474,31 @@ task :date_formats => :environment do
   end
 end
 
+desc "Import last four years planning applications for Idox scrapers"
+task :import_last_four_years_planning_applications => :environment do
+  idox_parser = PortalSystem.find_by_name('Idox (Public Access)').parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
+  scrapers = idox_parser.scrapers.all(:limit => 1)
+  scrapers.each do |scraper|
+    puts "About to get past planning applications for #{scraper.council.name}"
+    204.times do |i|
+      start_date, end_date = (7*i + 21).days.ago.strftime("%d/%m/%Y"), (7*i + 14).days.ago.strftime("%d/%m/%Y") 
+      cookie_url = scraper.cookie_url.sub(/\#\{[^{]+\}/, start_date) # replace start date
+      cookie_url = cookie_url.sub(/\#\{[^{]+\}/, end_date) # replace end date
+      puts "About to process scraper from #{start_date} to #{end_date} (from #{cookie_url})"
+      scraper.process(:cookie_url => cookie_url, :save_results => true)
+    end
+  end
+end
+
+task :remove_duplicate_planning_applications => :environment do
+  Council.all[0..5].each do |council|
+    next if council.planning_applications.count == 0
+    sql= "SELECT `planning_applications`.uid, count(id) AS uid_count FROM `planning_applications` WHERE (`planning_applications`.`council_id` = #{council.id}) GROUP BY uid HAVING uid_count > 1"
+    dup_uids = PlanningApplication.connection.select_rows(sql).collect{|row| row.first}
+    destroy_count = 0
+    dup_uids.each do |uid|
+      destroy_count += PlanningApplication.find_all_by_council_id_and_uid(council.id, uid)[1..-1].each(&:destroy).size
+    end
+    puts "Destroyed #{destroy_count} duplicate planning_applications for #{council.name}"
+  end
+end
