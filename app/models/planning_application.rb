@@ -36,6 +36,11 @@ class PlanningApplication < ActiveRecord::Base
     self[:bitwise_flag] = new_bitwise_flag == 15 ? 0 : new_bitwise_flag
   end
   
+  # overwrite default behaviour
+  def self.find_all_existing(params={})
+    []
+  end
+  
   def google_map_magnification
     13
   end
@@ -48,6 +53,15 @@ class PlanningApplication < ActiveRecord::Base
   def title
     "Planning Application #{uid}" + (address.blank? ? '' : ", #{address[0..30]}...")
   end
+  
+  protected
+  # overwrite default behaviour
+  def self.record_not_found_behaviour(params)
+    pa = params[:council].planning_applications.find_or_initialize_by_uid(params['uid']) #NB params seems to not be indifferent access
+    pa.attributes = params
+    pa
+  end
+  
   
   private
   def update_lat_lng

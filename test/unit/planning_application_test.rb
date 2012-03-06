@@ -65,6 +65,28 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         assert !@stale_applications.include?(@too_old_to_be_stale_application)
       end
     end
+    
+    context "should overwrite find_all_existing and" do
+      should "return empty array" do
+        assert_equal [], PlanningApplication.find_all_existing(:organisation => @planning_application.council)
+      end
+    end
+    
+    context "should overwrite record_not_found_behvaiour" do
+      should "instantiate new instance from params" do
+        record_not_found_object = PlanningApplication.send(:record_not_found_behaviour, 'uid' => 'AB12345', :council => @planning_application.council)
+        assert_equal PlanningApplication.new('uid' => "AB12345", :council => @planning_application.council).attributes, record_not_found_object.attributes
+        assert record_not_found_object.new_record?
+      end
+      
+      should "assign new attributes to existing record if it exists" do
+        record_not_found_object = PlanningApplication.send(:record_not_found_behaviour, 'description' => 'Some new description', 'uid' => @planning_application.uid, :council => @planning_application.council)
+        assert_equal 'Some new description', record_not_found_object.description
+        assert !record_not_found_object.new_record?
+        assert_equal @planning_application.id, record_not_found_object.id
+      end
+    end
+    
   end
 
   

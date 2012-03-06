@@ -146,9 +146,11 @@ class ScrapedModelTest < ActiveSupport::TestCase
       end
     end
     
-    context "record_not_found_behaviour" do
-      should "by default create new instance from params" do
-        assert_equal TestScrapedModel.new(:title => "bar").attributes, TestScrapedModel.send(:record_not_found_behaviour, :title => "bar").attributes
+    context "record_not_found_behaviour by default" do
+      should "instantiate new instance from params" do
+        record_not_found_object = TestScrapedModel.send(:record_not_found_behaviour, :title => "bar")
+        assert_equal TestScrapedModel.new(:title => "bar").attributes, record_not_found_object.attributes
+        assert record_not_found_object.new_record?
       end
     end
     
