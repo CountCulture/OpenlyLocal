@@ -23,7 +23,7 @@ class CharitiesController < ApplicationController
   
   def refresh
     @charity = Charity.find(params[:id])
-    @charity.delay.update_from_charity_register
+    @charity.delay(:priority => 1).update_from_charity_register # give it highest priorit because user has requested it
     if request.xhr?
       head :ok
     else
