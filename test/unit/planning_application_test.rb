@@ -208,9 +208,9 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
       
       should "perform bitwise OR from given number" do
-        @planning_application[:bitwise_flag] = 0b0101
-        @planning_application.bitwise_flag = 0b0011
-        assert_equal 0b0111, @planning_application.bitwise_flag
+        @planning_application[:bitwise_flag] = 0b001
+        @planning_application.bitwise_flag = 0b011
+        assert_equal 0b011, @planning_application.bitwise_flag
       end
       
       should "set to given number if currently nil" do
@@ -219,8 +219,8 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
       
       should "set to zero if full count" do
-        @planning_application[:bitwise_flag] = 0b1101
-        @planning_application.bitwise_flag = 0b0010
+        @planning_application[:bitwise_flag] = 0b101
+        @planning_application.bitwise_flag = 0b010
         assert_equal 0, @planning_application.bitwise_flag
       end
     end

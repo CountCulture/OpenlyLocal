@@ -491,7 +491,7 @@ task :import_last_four_years_planning_applications => :environment do
 end
 
 task :remove_duplicate_planning_applications => :environment do
-  Council.all[0..5].each do |council|
+  Council.all.each do |council|
     next if council.planning_applications.count == 0
     sql= "SELECT `planning_applications`.uid, count(id) AS uid_count FROM `planning_applications` WHERE (`planning_applications`.`council_id` = #{council.id}) GROUP BY uid HAVING uid_count > 1"
     dup_uids = PlanningApplication.connection.select_rows(sql).collect{|row| row.first}

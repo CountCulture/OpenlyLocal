@@ -53,7 +53,7 @@ class Scraper < ActiveRecord::Base
   end
   
   def title
-    "#{result_model} #{self.class.to_s.underscore.humanize}" + (council ? " for #{council.short_name}" : '') + (parser&&parser.portal_system ? " (#{parser.portal_system.name})" : '' )
+    "#{result_model} #{self.class.to_s.underscore.humanize}" + (council ? " for #{council.short_name}" : '') + (parser&&parser.portal_system ? " (#{[parser.portal_system.name, parser.description].compact.join(', ')})" : '' )
   end
   
   def parser_attributes=(attribs={})

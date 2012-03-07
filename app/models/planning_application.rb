@@ -33,7 +33,7 @@ class PlanningApplication < ActiveRecord::Base
   def bitwise_flag=(bw_int)
     return unless bw_int
     new_bitwise_flag = (bitwise_flag||0) | bw_int
-    self[:bitwise_flag] = new_bitwise_flag == 15 ? 0 : new_bitwise_flag
+    self[:bitwise_flag] = new_bitwise_flag == 7 ? 0 : new_bitwise_flag
   end
   
   # overwrite default behaviour
@@ -57,8 +57,10 @@ class PlanningApplication < ActiveRecord::Base
   protected
   # overwrite default behaviour
   def self.record_not_found_behaviour(params)
+    logger.debug "****** record_not_found: params[:uid] = #{params[:uid]}, params[:council]= #{params[:council]}"
     pa = params[:council].planning_applications.find_or_initialize_by_uid(params['uid']) #NB params seems to not be indifferent access
     pa.attributes = params
+    logger.debug "****** record_not_found: Planning Application: #{pa.inspect}"
     pa
   end
   

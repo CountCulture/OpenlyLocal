@@ -110,7 +110,7 @@ class MeetingTest < ActiveSupport::TestCase
         assert Meeting.find_by_id(@future_meeting.id)
       end
 
-      should "not fail if the are no orphan records" do
+      should "not fail if there are no orphan records" do
         assert_nothing_raised(Exception) { Meeting.send(:orphan_records_callback, [], :save_results => true) }
       end   
 
