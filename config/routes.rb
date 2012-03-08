@@ -31,8 +31,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'councils/:id/spending', :controller => "councils", :action => "show_spending"
 
   map.connect 'councils/:id/spending', :controller => "councils", :action => "show_spending"
-  
   map.connect 'entities/:id/spending', :controller => "entities", :action => "show_spending"
+  
+  # map.connect 'councils/:council_id/planning_applications', :controller => "planning_applications", :action => "index"
   # map.connect 'meetings.:format', :controller => "meetings", :action => "index"
   # map.connect 'meetings', :controller => "meetings", :action => "index"
   
@@ -71,6 +72,7 @@ ActionController::Routing::Routes.draw do |map|
     councils.resources :dataset_families, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
     councils.resources :dataset_topics, :path_prefix => 'councils/:area_id', :requirements => {:area_type => "Council"}, :only => [:show]
     councils.resources :meetings, :shallow => true
+    councils.resources :planning_applications, :path_prefix => 'councils/:council_id', :only => [:index]
   end
   
   # Important: these need to go after nested resources for caching to work

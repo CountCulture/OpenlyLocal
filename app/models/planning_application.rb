@@ -22,6 +22,9 @@ class PlanningApplication < ActiveRecord::Base
                                  :limit => 100, 
                                  :order => 'retrieved_at' } }
   
+  named_scope :with_details, { :conditions => "retrieved_at IS NOT NULL" } 
+
+
   def address=(raw_address)
     cleaned_up_address = raw_address.blank? ? raw_address : raw_address.gsub("\r", "\n").gsub(/\s{2,}/,' ').strip
     self[:address] = cleaned_up_address

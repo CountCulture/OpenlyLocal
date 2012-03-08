@@ -66,6 +66,26 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
     
+    context "with_data named scope" do
+      setup do
+        @no_details_application = Factory(:planning_application) #retrieved_at is nil
+        @with_details_application = Factory(:planning_application, :retrieved_at => 2.months.ago) 
+        @with_details_applications = PlanningApplication.with_details
+      end
+
+      should "include applications where retrieved_at is not nil" do
+        assert @with_details_applications.include?(@with_details_application)
+      end
+      
+      should "not include applications where retrieved at is nil" do
+        assert !@with_details_applications.include?(@no_details_application)
+      end
+      
+      # should "not include applications too old to be stale" do
+      #   assert !@with_details_applications.include?(@too_old_to_be_stale_application)
+      # end
+    end
+    
     context "should overwrite find_all_existing and" do
       should "return empty array" do
         assert_equal [], PlanningApplication.find_all_existing(:organisation => @planning_application.council)
