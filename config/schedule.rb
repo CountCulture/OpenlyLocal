@@ -17,7 +17,7 @@ end
 # end
 
 every 15.minutes do
-  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Scraper.unproblematic.stale.find(:all, :limit => 30).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count < 100' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
+  command "/opt/ruby-enterprise-1.8/bin/ruby /home/cculture/sites/twfy_local/current/script/runner -e production 'Scraper.unproblematic.stale.find(:all, :limit => 100).each{|scraper| Delayed::Job.enqueue scraper} if Delayed::Job.count < 100' >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
 end
 every 2.hours, :at => 15 do
   command "cd /home/cculture/sites/twfy_local/current && RAILS_ENV=production /opt/ruby-enterprise-1.8/bin/ruby /opt/ruby-enterprise-1.8/bin/rake cache_and_transfer_spending_data_summaries >> /home/cculture/sites/twfy_local/current/log/cron_log.log 2>&1"
