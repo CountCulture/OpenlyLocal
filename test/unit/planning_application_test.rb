@@ -27,6 +27,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     should have_db_column :on_notice_from
     should have_db_column :on_notice_to
     should have_db_column :map_url
+    should have_db_column :status
     should have_db_column :application_type
     should have_db_column :bitwise_flag
 
@@ -264,6 +265,31 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       should "return nil if no such postcode" do
         @planning_application.postcode = 'CD2 1AB'
         assert_nil @planning_application.inferred_lat_lng
+      end
+    end
+
+    context "when returning normalised_application_status" do
+      
+      should "return nil if status attribute blank" do
+        assert_nil PlanningApplication.new.normalised_application_status
+        assert_nil PlanningApplication.new(:status => '').normalised_application_status
+      end
+      
+      should "normalise status to be one of standard types" do
+        raw_and_normalised_statuses = { 'Application PENDING  ' => 'pending',
+                                        'Decision PENDING  ' => 'pending',
+                                        'PENDING  CONSIDERATION ' => 'pending',
+                                        'APPLICATION  approved ' => 'approved',
+                                        'Application Withdrawn by Applicant' => 'withdrawn',
+                                        'Application Permitted' => 'approved',
+                                        'rejected '  => 'refused',
+                                        'Withdrawn by Applicant' => 'withdrawn',
+                                        'Invalid application - Unacceptable-invalid' => 'invalid',
+                                        'Refusal of planning permission - Decided' => 'refused'
+          }
+        raw_and_normalised_statuses.each do |raw_status, expected_normalised_status|
+          assert_equal expected_normalised_status, PlanningApplication.new(:status => raw_status).normalised_application_status, "'#{raw_status}' failed to be normalised to '#{expected_normalised_status}'"
+        end
       end
     end
   end

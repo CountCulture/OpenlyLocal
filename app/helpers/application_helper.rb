@@ -181,6 +181,14 @@ module ApplicationHelper
     content_tag(:table, :class => 'datapoints statistics') { content.flatten.compact } +
       content_tag(:div, "<strong>Source</strong> #{breadcrumbs(options[:source])}", :class => "source attribution")
   end
+  
+  # displays status text in background box, with class based on underscored version of text
+  def status_flash(text, options={})
+    return if text.blank?
+    clean_text = text.squish.strip
+    css_class = options[:class] || clean_text.downcase.gsub(/\s/,'_')
+    content_tag(:span, clean_text, :class => "status_flash #{css_class}")
+  end
 
   def timestamp_data_for(obj)
     content_tag(:p, "Last updated #{obj.updated_at.to_s(:short)} (#{time_ago_in_words(obj.updated_at)} ago)", :class => "attribution")
@@ -199,7 +207,7 @@ module ApplicationHelper
   def help_link_to(url)
     return if url.blank?
     link_to(image_tag("help.png", :alt => "help"), url, :class => "help")
-  end  
+  end 
 
   def wikipedia_link_for(subject, options={})
     return if subject.blank?

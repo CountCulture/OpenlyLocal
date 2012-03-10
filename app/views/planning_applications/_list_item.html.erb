@@ -1,0 +1,6 @@
+<li><%= status_flash(list_item.application_status, :class => list_item.normalised_application_status) %>
+  <strong><%= link_for list_item, list_options.merge(:text => "#{list_item.address[0..30]}...") %></strong> 
+  <%= truncate(list_item.description, :length => 100) %>
+  <%= link_to list_item.url, list_item.url, :class => :external %>
+    
+</li>

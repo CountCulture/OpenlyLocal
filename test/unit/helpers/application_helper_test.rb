@@ -695,6 +695,25 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_equal "#{twitter_link_for(@member.twitter_account_name)} #{facebook_link_for(@member.facebook_account_name)}", social_networking_links_for(@member)
     end
   end
+  
+  context "status_flash helper method" do
+
+    should "return empty string by default" do
+      assert_nil status_flash(nil)
+      assert_nil status_flash('')
+    end
+    
+    should "return given status in span with class of status class and underscored version of text" do
+      assert_dom_equal "<span class='status_flash foo_bar'>Foo BAR</span>", status_flash('Foo  BAR ')
+    end
+        
+    should "overide computed class if explicitly given" do
+      assert_dom_equal "<span class='status_flash baz'>Foo BAR</span>", status_flash('Foo  BAR ', :class => 'baz')
+    end
+        
+  end
+  
+  
 
   private
   def stale_factory_object(name, options={})

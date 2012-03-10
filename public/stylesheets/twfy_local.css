@@ -4,6 +4,7 @@ Dark grey: #333333
 Deep Red: #663333
 Medium grey: #999999
 Strong red: #993333
+Pale version of strong red: #f9cccc
 */
 
 /*Global formats*/
@@ -868,6 +869,22 @@ ul#hyperlocal_sites .hyperlocal_site_link{
 #api_info a {
 	font-weight: bold;
 }
+span.status_flash {
+	background-color: #ddd;
+	color:#333;
+	padding: 1px 3px;
+	text-transform: uppercase;
+	font-weight:bold;
+}
+span.status_flash.refused {
+	background-color: #f9cccc;
+	color:#933;
+}
+span.status_flash.approved {
+	background-color: #bbddaa;
+	color:#127700;
+}
+
 #categories {
 	float: right;
 	width: 300px;

@@ -8,7 +8,13 @@ class PlanningApplication < ActiveRecord::Base
   acts_as_mappable :default_units => :kms
   before_save :update_lat_lng
   before_create :set_default_value_for_bitwise_flag
-  
+  STATUS_TYPES_AND_ALIASES = [
+                              ['approved', 'permitted'],
+                              ['pending'],
+                              ['refused', 'refusal', 'rejected'],
+                              ['invalid'],
+                              ['withdrawn']
+                              ]
   
   # The stale strategy for planning_applications is quite complex, due to the way planning applications change over time:
   # First of all planning_applications that have no retrieved_at timestamp are considered stale, as we've not got any 
@@ -32,6 +38,11 @@ class PlanningApplication < ActiveRecord::Base
     self[:postcode] = parsed_postcode unless postcode_changed? # if already changed it's prob been explicitly set
   end
   
+  # status is used by ScrapedModel mixin to show status of AR record so we make :status attribute available through this method
+  def application_status
+    self[:status]
+  end
+  
   # overload normal attribute setter. This sets the bitwise_flag attribute using 
   def bitwise_flag=(bw_int)
     return unless bw_int
@@ -51,6 +62,12 @@ class PlanningApplication < ActiveRecord::Base
   def inferred_lat_lng
     return unless matched_code = postcode&&Postcode.find_from_messy_code(postcode)
     [matched_code.lat, matched_code.lng]
+  end
+  
+  # cleean up so we can get consistency across councils
+  def normalised_application_status
+    return if application_status.blank?
+    STATUS_TYPES_AND_ALIASES.detect{ |s_and_a| s_and_a.any?{ |matcher| application_status.match(Regexp.new(matcher, true)) } }.try(:first)
   end
   
   def title
