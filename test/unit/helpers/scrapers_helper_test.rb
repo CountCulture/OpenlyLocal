@@ -46,6 +46,10 @@ class ScrapersHelperTest < ActionView::TestCase
       assert_nil flash_for_result(stub_everything(:status => "unchanged"))
     end
     
+    should "return nil if status nil" do
+      assert_nil flash_for_result(stub_everything(:status => nil))
+    end
+
     should "return status of result" do
       assert_dom_equal "<span class='foo flash'>foo</span>", flash_for_result(stub_everything(:status => "foo"))
     end
@@ -53,6 +57,8 @@ class ScrapersHelperTest < ActionView::TestCase
     should "return mutiple class but error text when record is new and has errors" do
       assert_dom_equal "<span class='foo errors flash'>errors</span>", flash_for_result(stub_everything(:status => "foo errors"))
     end
+    
+    
   end
   
   context "changed_attributes_list helper method" do

@@ -20,7 +20,7 @@ module ScrapersHelper
   end
   
   def flash_for_result(res)
-    "<span class='#{res.status} flash'>#{res.status.split.last}</span>" unless res.blank? || res.status == "unchanged"
+    "<span class='#{res.status} flash'>#{res.status.split.last}</span>" unless res.blank? || res.status.nil? || res.status == "unchanged"
   end
   
   def scraper_links_for_council(council)
