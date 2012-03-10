@@ -5,7 +5,7 @@
     <meta name="google-site-verification" content="9XII3nN1ykBoLLtNqzHftjYkiHHK5-JlaTDjdHd6xy8" />
     <meta name="y_key" content="90bc22c73e05184d" />
     <meta name="msvalidate.01" content="361A1C55B1AEB52E675B3AA6C23ED810" />
-    <title><%= @page_title %><%= "#{h @title} :: " if @title %><%= "#{@council.title} :: " if @council %><%= "Openly Local" unless @page_title %></title>
+    <title><%= "#{h @page_title||@title} :: " if @title||@page_title %><%= "#{@council.title} :: " if @council %><%= "Openly Local" unless @page_title %></title>
     <meta content="<%= @page_description || (@title&&@title.gsub(/[^A-Za-z0-9\s]/,'').split.join(" ") + (@council ? " for #{@council.title}" : '')) || 'Opening Up Local Government Data' %>" name="description" />
     <%= canonical_link_tag %>
     <%= auto_discovery_link_tag(:rss, params.merge(:format => "rss")) if @show_rss_link %>

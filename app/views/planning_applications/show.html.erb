@@ -10,7 +10,6 @@
   <%= attribute_tag(:location, link_to("#{@planning_application.lat}, #{@planning_application.lng}", "http://maps.google.co.uk/maps?q=#{@planning_application.lat},+#{@planning_application.lng}&iwloc=A&hl=en", :target => "blank", :class => "external"), :text => "Location (from postcode)") unless @planning_application.lat.blank? %>
   <%= attribute_tag :status, @planning_application.status %>
   <%= attribute_tag :decision, @planning_application.decision %>
-  <%= attribute_tag :decision, @planning_application.decision %>
   <%= attribute_tag :applicant_name, @planning_application.applicant_name %>
   <%= attribute_tag :applicant_address, @planning_application.applicant_address %>
   <%= attribute_tag :date_received, @planning_application.date_received %>
@@ -32,4 +31,4 @@
   </div>
 <%- end -%>
 
-<%#= timestamp_data_for @planning_application %>
+<%= timestamp_data_for @planning_application %>
