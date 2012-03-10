@@ -17,6 +17,7 @@ config.logger = Logger.new("#{RAILS_ROOT}/log/#{ENV['RAILS_ENV']}.log", 20, 1048
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false
 config.action_controller.perform_caching             = true
+config.log_level = :debug
 
 # Use a different cache store in production
 # config.cache_store = :mem_cache_store
