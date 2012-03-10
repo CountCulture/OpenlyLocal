@@ -3,6 +3,8 @@
   <h1><%= @title %></h1>
   <%= render :partial => 'shared/map_object', :object => @planning_application if @planning_application.lat? %>
 
+  <div id='description'><%= simple_format(@planning_application.description) %></div>
+
   <dl id="main_attributes" class="attributes">
     <%= attribute_tag :council, link_for(@council) %>
     <%= attribute_tag :council_reference, @planning_application.council_reference %>
@@ -18,17 +20,16 @@
 
   </dl>
 
-  <div class="extra_info">
-    <h3>Description</h3>
-    <div class='description'><%= simple_format(@planning_application.description) %></div>
-      <%- unless @planning_application.other_attributes.blank? -%>
+  <%- unless @planning_application.other_attributes.blank? || @planning_application.other_attributes.all?{ |k,v| v.blank? }-%>
+    <div class="extra_info">
+      <h3>Further details</h3>
         <dl id="other_attributes" class="attributes">
           <%- @planning_application.other_attributes.each do |attrib_name, attrib_value| -%>
             <%= attribute_tag attrib_name, attrib_value %>
           <%- end -%>
         </dl>
-      <%- end -%>
-  </div>
+      </div>
+  <%- end -%>
 
   <%= timestamp_data_for @planning_application %>
 <%- end -%>

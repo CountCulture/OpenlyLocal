@@ -53,7 +53,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
       end
 
       should "list planning_applications" do
-        assert_select "li a.planning_application_link"
+        assert_select "#planning_applications .planning_application"
       end
 
       should "show share block" do

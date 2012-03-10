@@ -894,6 +894,11 @@ span.status_flash.approved {
 #planning_applications .planning_application .address {
   font-style: italic;
 }
+.planning_application #description {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
 #categories {
 	float: right;
 	width: 300px;

@@ -1,6 +1,10 @@
 class PlanningApplicationsController < ApplicationController
   before_filter :enable_google_maps, :only => [:show, :index]
   before_filter :show_rss_link, :only => :index
+  before_filter :find_planning_application, :only => :show
+  caches_action :show, :cache_path => Proc.new {|c| [c.instance_variable_get(:@planning_application).cache_key,c.params[:format]].join('.') }, 
+                       :if => Proc.new {|c| c.instance_variable_get(:@planning_application) }, 
+                       :expires_in  => 12.hours
   
   def index
     if @council = Council.find_by_id(params[:council_id])
@@ -31,7 +35,6 @@ class PlanningApplicationsController < ApplicationController
   end
   
   def show
-    @planning_application = PlanningApplication.find(params[:id])
     @council = @planning_application.council
     @title = @planning_application.title
     respond_to do |format|
@@ -39,5 +42,10 @@ class PlanningApplicationsController < ApplicationController
       format.xml { render :xml => @planning_application.to_xml }
       format.json { render :json => @planning_application.to_json }
     end
+  end
+  
+  protected
+  def find_planning_application
+    @planning_application = PlanningApplication.find(params[:id])
   end
 end
