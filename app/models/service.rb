@@ -28,13 +28,13 @@ class Service < ActiveRecord::Base
     sp2 = sp1.select{ |g| (g[0]=~/contact/i || g[1].first[:title]=~/contact/i) && g[1].size>1}
     contact_us_pages = sp2.collect{ |g| g[1] }.flatten
     service_pages -= contact_us_pages 
-    puts "adding #{service_pages.size} service urls for #{council.name}"
+    puts "adding #{service_pages.size} service urls for #{council.name}" unless RAILS_ENV == 'test'
     service_pages.each do |page|
       url, title, ldg_service = page[:url], page[:title], page[:ldg_service]
       existing_service = council.services.find_by_ldg_service_id(page[:ldg_service].id)
       existing_service ? existing_service.update_attributes(:url => url, :title => ldg_service.title, :category => ldg_service.category) : Service.create!(:url => url, :title => ldg_service.title, :category => ldg_service.category, :ldg_service => ldg_service, :council => council)
     end
-    puts "About to destroy #{council.services.stale.size} stale services for #{council.name}"
+    puts "About to destroy #{council.services.stale.size} stale services for #{council.name}" unless RAILS_ENV == 'test'
     council.services.stale.each(&:destroy) # get rid of stale pages
   end
   
