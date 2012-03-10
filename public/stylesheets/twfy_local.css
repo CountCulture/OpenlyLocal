@@ -357,7 +357,7 @@ margin-bottom:3px;
 body.councils .council h4 a.parsed {
 font-weight:bold;
 }
-body.councils .area, .feed_entry .dateline {
+body.councils .area, .feed_entry .dateline, .planning_application .date {
 	text-transform: uppercase;
 	color: #8a1f11;
 	font-size: 0.85em;
@@ -884,7 +884,16 @@ span.status_flash.approved {
 	background-color: #bbddaa;
 	color:#127700;
 }
-
+#planning_applications .planning_application {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 3px;
+}
+#planning_applications .planning_application .description {
+  font-size: 1.2em;
+}
+#planning_applications .planning_application .address {
+  font-style: italic;
+}
 #categories {
 	float: right;
 	width: 300px;

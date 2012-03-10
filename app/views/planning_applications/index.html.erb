@@ -36,7 +36,9 @@
   <div id="map_canvas"></div>
 </div>
 
-<%= list_all @planning_applications %>
+<div id="planning_applications">
+  <%= render :partial => "planning_application", :collection => @planning_applications %>
+</div>
 
 
 <%= render :partial => '/shared/api_info' %>

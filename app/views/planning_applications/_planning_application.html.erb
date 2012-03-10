@@ -1,0 +1,9 @@
+<%- div_for planning_application do -%>
+<div>
+  <%= status_flash(planning_application.application_status, :class => planning_application.normalised_application_status) %>
+  <span class='date'><%= planning_application.date_received&&planning_application.date_received.to_s(:custom_short) %></span>
+</div>
+  <strong class='description'><%= link_for planning_application, :text => truncate(planning_application.description, :length => 200) %></strong> 
+  <span class="address"><%= planning_application.address %></span>
+  <%= council_page_for(planning_application) %>
+<%- end -%>
