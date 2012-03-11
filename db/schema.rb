@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120303175740) do
+ActiveRecord::Schema.define(:version => 20120310154532) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -807,14 +807,12 @@ ActiveRecord::Schema.define(:version => 20120303175740) do
     t.datetime "updated_at"
     t.point    "geom",              :limit => nil
     t.string   "application_type",  :limit => 64
-    t.integer  "bitwise_flag",      :limit => 1,        :default => 0
+    t.integer  "bitwise_flag",      :limit => 1
   end
 
-  add_index "planning_applications", ["council_id"], :name => "index_planning_applications_on_council_id"
-  add_index "planning_applications", ["date_received"], :name => "dateapp"
-  add_index "planning_applications", ["lat", "lng", "retrieved_at"], :name => "index_planning_applications_on_lat_and_long_and_retrieved_at"
+  add_index "planning_applications", ["council_id", "date_received"], :name => "index_planning_applications_on_council_id_and_date_received"
+  add_index "planning_applications", ["council_id", "uid"], :name => "index_planning_applications_on_council_id_and_uid", :unique => true
   add_index "planning_applications", ["lat", "lng"], :name => "index_planning_applications_on_lat_and_lng"
-  add_index "planning_applications", ["retrieved_at"], :name => "datescr"
 
   create_table "police_authorities", :force => true do |t|
     t.string   "name"
