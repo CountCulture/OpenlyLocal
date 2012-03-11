@@ -1,4 +1,4 @@
-<h1>Scraper details</h1>
+<h1><%= link_to 'Scraper details', scraper_path(@scraper) %></h1>
 <div id="other_scrapers">
   <h4>Other scrapers for this council</h4>
   <%= list_all @scraper.sibling_scrapers %>

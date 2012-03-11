@@ -78,8 +78,8 @@ class PlanningApplication < ActiveRecord::Base
   # overwrite default behaviour
   def self.record_not_found_behaviour(params)
     logger.debug "****** record_not_found: params[:uid] = #{params[:uid]}, params[:council]= #{params[:council]}"
-    pa = params[:council].planning_applications.find_or_initialize_by_uid(params['uid']) #NB params seems to not be indifferent access
-    pa.attributes = params
+    # HACK ALERT!! Not sure why but params['uid'] not found on prodcution server, params[:uid] not found on development!
+    pa = params[:council].planning_applications.find_or_initialize_by_uid(params['uid']||params[:uid])
     logger.debug "****** record_not_found: Planning Application: #{pa.inspect}"
     pa
   end
