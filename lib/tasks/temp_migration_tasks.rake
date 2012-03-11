@@ -490,6 +490,27 @@ task :import_last_four_years_planning_applications => :environment do
   end
 end
 
+task :import_last_four_years_pas_for_lichfield => :environment do
+  c = Council.find(156)
+  1000.times.do |i|
+    date_query = i.days.ago.strftime("day=%d&month=%m&year=%Y")
+    puts "Getting applications for #{i.days.ago} from http://www2.lichfielddc.gov.uk/planning/alerts.php?#{date_query}"
+    doc = Nokogiri.XML(open "http://www2.lichfielddc.gov.uk/planning/alerts.php?#{date_query}")
+    doc.search('applications>application').each do |application|
+      print '.'
+      pa = PlanningApplication.find_or_initialize_by_council_id_and_uid(c.id, application.at('council_reference').inner_text.strip)
+      pa.update_attributes( :url => application.at('info_url').inner_text.strip,
+                            :comment_url => application.at('comment_url').inner_text.strip,
+                            :address => application.at('address').inner_text.strip,
+                            :postcode => application.at('postcode').inner_text.strip,
+                            :description => application.at('description>').inner_text.strip,
+                            :date_received => application.at('date_recieved>').inner_text.strip,
+                            :postcode => application.at('postcode').inner_text.strip,
+                          )
+    end
+  end
+end
+
 task :remove_duplicate_planning_applications => :environment do
   Council.all.each do |council|
     next if council.planning_applications.count == 0
