@@ -80,6 +80,7 @@ class PlanningApplication < ActiveRecord::Base
     logger.debug "****** record_not_found: params[:uid] = #{params[:uid]}, params[:council]= #{params[:council]}"
     # HACK ALERT!! Not sure why but params['uid'] not found on prodcution server, params[:uid] not found on development!
     pa = params[:council].planning_applications.find_or_initialize_by_uid(params['uid']||params[:uid])
+    pa.attributes = params
     logger.debug "****** record_not_found: Planning Application: #{pa.inspect}"
     pa
   end
