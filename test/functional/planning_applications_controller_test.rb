@@ -33,44 +33,52 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
       @postcode = Factory(:postcode, :code => 'AB12CD')
       @non_matching_application = Factory(:planning_application)
       @council = Factory(:generic_council)
-      @matching_application = Factory(:planning_application_with_lat_long, :postcode => 'AB1 2CD', :council => @council, :retrieved_at => 10.days.ago)
+      @matching_application = Factory(:planning_application_with_lat_long, :postcode => 'AB1 2CD', :council => @council, :retrieved_at => 5.days.ago, :date_received => 1.month.ago)
       PlanningApplication.record_timestamps = false # update timestamp without triggering callbacks
-      @another_matching_application = Factory(:planning_application_with_lat_long, :postcode => 'AB2 2CD', :updated_at => 5.days.ago, :created_at => 5.days.ago, :council => @council, :retrieved_at =>  5.days.ago)
+      @matching_application_without_details = Factory(:planning_application_with_lat_long, :postcode => 'AB3 2CD', :updated_at => 5.days.ago, :created_at => 5.days.ago, :council => @council)
+      @another_matching_application = Factory(:planning_application_with_lat_long, :postcode => 'AB2 2CD', :updated_at => 5.days.ago, :created_at => 5.days.ago, :council => @council, :retrieved_at =>  5.days.ago, :date_received => 1.week.ago)
       PlanningApplication.record_timestamps = true # update timestamp without triggering callbacks
     end
     
     context "and council_id given" do
-      setup do
-        get :index, :council_id => @council.id
-      end
-      
-      should assign_to(:planning_applications)
-      should respond_with :success
-      should render_template :index
-        
-      should "list most recently updated planning applications first" do
-        assert_equal [@matching_application, @another_matching_application], assigns(:planning_applications)
-      end
+      context "in general" do
+        setup do
+          get :index, :council_id => @council.id
+        end
 
-      should "list planning_applications" do
-        assert_select "#planning_applications .planning_application"
-      end
+        should assign_to(:planning_applications)
+        should respond_with :success
+        should render_template :index
 
-      should "show share block" do
-        assert_select "#share_block"
-      end
+        should "not include applications without detils most recently updated planning applications first" do
+          assert !assigns(:planning_applications).include?(@matching_application_without_details)
+          assert_equal 2, assigns(:planning_applications).size
+        end
 
-      should "show api block" do
-        assert_select "#api_info"
-      end
+        should "list most planning applications with most recent date_received first" do
+          assert_equal @another_matching_application, assigns(:planning_applications).first
+        end
 
-      should 'show title' do
-        assert_select "title", /planning applications/i
-        assert_select "title", /#{@council.name}/i
-      end
-      
-      should "include rss feed link" do
-        assert_select "link[rel='alternate'][type='application/rss+xml'][href='http://test.host/councils/#{@council.id}/planning_applications.rss']"
+        should "list planning_applications" do
+          assert_select "#planning_applications .planning_application"
+        end
+
+        should "show share block" do
+          assert_select "#share_block"
+        end
+
+        should "show api block" do
+          assert_select "#api_info"
+        end
+
+        should 'show title' do
+          assert_select "title", /planning applications/i
+          assert_select "title", /#{@council.name}/i
+        end
+
+        should "include rss feed link" do
+          assert_select "link[rel='alternate'][type='application/rss+xml'][href='http://test.host/councils/#{@council.id}/planning_applications.rss']"
+        end
       end
     
       context "with rss requested" do
@@ -83,8 +91,8 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
         # should_not render_with_layout
         should respond_with_content_type 'application/rss+xml'
         
-        should "assign to planning_applications instance variable" do
-          assert_equal [@matching_application, @another_matching_application], assigns(:planning_applications)
+        should "list most planning applications with most recent updated_at first" do
+          assert_equal @matching_application, assigns(:planning_applications).first
         end
         
         should "have title " do
@@ -100,7 +108,15 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
         end
       end
 
-      
+      context "when updated order requested" do
+        setup do
+          get :index, :council_id => @council.id, :order => 'updated'
+        end
+
+        should "list most planning applications with most recent updated_at first" do
+          assert_equal @matching_application, assigns(:planning_applications).first
+        end
+      end
       context "with xml request" do
         setup do
           get :index, :council_id => @council.id, :format => "xml"

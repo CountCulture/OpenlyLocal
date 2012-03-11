@@ -8,7 +8,8 @@ class PlanningApplicationsController < ApplicationController
   
   def index
     if @council = Council.find_by_id(params[:council_id])
-      @planning_applications = @council.planning_applications.with_details.all(:limit => 30, :order => 'updated_at DESC')
+      order = (params[:order]||params[:format]) ? 'updated_at DESC' : 'date_received DESC'
+      @planning_applications = @council.planning_applications.with_details.all(:limit => 30, :order => order)
       @page_title = "Latest Planning Applications"
       @title = "Latest Planning Applications in #{@council.title}"
     # elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
