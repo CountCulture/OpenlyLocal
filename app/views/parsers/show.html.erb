@@ -8,6 +8,7 @@
 </p>
 
 <% unless @scrapers.blank? %>
+  <h3><%= @scrapers.size %> existing scrapers</h3>
   <ul id="scrapers">
     <% for scraper in @scrapers %>
       <li><%= link_for scraper %></li>

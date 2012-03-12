@@ -12,16 +12,16 @@ class PlanningApplicationsController < ApplicationController
       @planning_applications = @council.planning_applications.with_details.all(:limit => 30, :order => order)
       @page_title = "Latest Planning Applications"
       @title = "Latest Planning Applications in #{@council.title}"
-    # elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
-    #   distance = 0.2
-    #   @planning_applications = PlanningApplication.find(:all, :origin => [@postcode.lat, @postcode.lng], 
-    #                                                           :within => distance,
-    #                                                           :order => 'created_at DESC', 
-    #                                                           :limit => 20)
-    #   @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
+    elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
+      distance = 0.2
+      @planning_applications = PlanningApplication.find(:all, :origin => [@postcode.lat, @postcode.lng], 
+                                                              :within => distance)
+                                                              # :order => 'created_at DESC', 
+                                                              # :limit => 20)
+      @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
     end
     @message = "Sorry. No matching Planning Applications" if @planning_applications.blank?
-    # @message = "Sorry. Postcode not found" if @postcode.blank? && params[:postcode]
+    @message = "Sorry. Postcode not found" if @postcode.blank? && params[:postcode]
 
     respond_to do |format|
       format.html
