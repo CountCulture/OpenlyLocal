@@ -243,6 +243,8 @@ body {
 }
 #navigation input {
 	margin-bottom:0;}
+#navigation input#postcode {
+	width:10em;}
 #navigation a:hover {
 	color:#633;
 	background: #ddd;

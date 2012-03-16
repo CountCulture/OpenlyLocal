@@ -173,6 +173,42 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         assert_equal 22.2, @planning_application.lat
         assert_equal 33.3, @planning_application.lng
       end
+      
+      should "not queue for emailing" do
+        @planning_application.expects(:queue_for_sending_alerts).never
+        @planning_application.save!
+      end
+      
+      context "and planning_application has lat & long" do
+        setup do
+          @planning_application.lat = 22.2
+          @planning_application.lng = 33.3
+        end
+        
+        context "and didn't previously have lat long" do
+
+          should "queue for emailing" do
+            @planning_application.changes
+            @planning_application.expects(:queue_for_sending_alerts)
+            @planning_application.save!
+          end
+        end
+        
+        context "and did previously have lat long" do
+          setup do
+            @planning_application.save!
+          end
+
+          should "not queue for sending alerts" do
+            @planning_application.changes
+            @planning_application.save!
+            @planning_application.changes
+            @planning_application.expects(:queue_for_sending_alerts).never
+            @planning_application.save!
+          end
+        end
+        
+      end
     end
     
     context "when assigning address" do
@@ -290,6 +326,48 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         raw_and_normalised_statuses.each do |raw_status, expected_normalised_status|
           assert_equal expected_normalised_status, PlanningApplication.new(:status => raw_status).normalised_application_status, "'#{raw_status}' failed to be normalised to '#{expected_normalised_status}'"
         end
+      end
+    end
+
+    context "when queueing for sending alerts" do
+      should "queue as delayed job for sending alerts" do
+        dummy_dj = mock('dummy_delayed_job')
+        dummy_dj.expects(:send_alerts)
+        @planning_application.expects(:delay => dummy_dj)
+        @planning_application.queue_for_sending_alerts
+      end
+    end
+
+    # context "when returning matching subscribers" do
+    #   setup do
+    #     
+    #   end
+    # 
+    #   should "find all subscribers where planning application lat long is within bounding box" do
+    #     
+    #   end
+    #   
+    #   context "and lat long is nil" do
+    #     should "not find subscribers" do
+    #       
+    #     end
+    #   end
+    # end
+    # 
+    context "when sending alerts" do
+      setup do
+        @alert_subscriber = Factory(:alert_subscriber)
+        @planning_application.stubs(:matching_subscribers).returns([@alert_subscriber])
+      end
+    
+      should "find all matching subscribers" do
+        @planning_application.expects(:matching_subscribers).returns([])
+        @planning_application.send_alerts
+      end
+      
+      should "send planning alert to matching subscribers with planning application" do
+        @alert_subscriber.expects(:send_planning_alert).with(@planning_application)
+        @planning_application.send_alerts
       end
     end
   end

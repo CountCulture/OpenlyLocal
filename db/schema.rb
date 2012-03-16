@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120311135527) do
+ActiveRecord::Schema.define(:version => 20120312192832) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -40,6 +40,16 @@ ActiveRecord::Schema.define(:version => 20120311135527) do
 
   add_index "addresses", ["addressee_id", "addressee_type"], :name => "index_addresses_on_addressee_id_and_addressee_type"
   add_index "addresses", ["lat", "lng"], :name => "index_addresses_on_lat_and_lng"
+
+  create_table "alert_subscribers", :force => true do |t|
+    t.string   "email",             :limit => 128
+    t.string   "postcode",          :limit => 8
+    t.datetime "last_sent"
+    t.boolean  "confirmed"
+    t.string   "confirmation_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "authority", :primary_key => "authority_id", :options=>'ENGINE=MyISAM', :force => true do |t|
     t.string  "full_name",      :limit => 200, :null => false

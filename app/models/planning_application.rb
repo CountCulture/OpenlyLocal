@@ -7,6 +7,7 @@ class PlanningApplication < ActiveRecord::Base
   serialize :other_attributes
   acts_as_mappable :default_units => :kms
   before_save :update_lat_lng
+  after_save :queue_for_sending_alerts_if_relevant
   before_create :set_default_value_for_bitwise_flag
   STATUS_TYPES_AND_ALIASES = [
                               ['approved', 'permitted'],
@@ -64,10 +65,22 @@ class PlanningApplication < ActiveRecord::Base
     [matched_code.lat, matched_code.lng]
   end
   
+  def matching_subscribers
+    []
+  end
+  
   # cleean up so we can get consistency across councils
   def normalised_application_status
     return if application_status.blank?
     STATUS_TYPES_AND_ALIASES.detect{ |s_and_a| s_and_a.any?{ |matcher| application_status.match(Regexp.new(matcher, true)) } }.try(:first)
+  end
+  
+  def queue_for_sending_alerts
+    self.delay.send_alerts
+  end
+  
+  def send_alerts
+    matching_subscribers.each{ |subscriber| subscriber.send_planning_alert(self) }
   end
   
   def title
@@ -87,6 +100,10 @@ class PlanningApplication < ActiveRecord::Base
   
   
   private
+  def queue_for_sending_alerts_if_relevant
+    queue_for_sending_alerts unless self.changes["lat"].blank? || self.changes["lng"].blank?
+  end
+  
   def update_lat_lng
     i_lat_lng = [inferred_lat_lng].flatten # so gives empty array if nil
     self[:lat] = i_lat_lng[0] unless self[:lat] && self.lat_changed?

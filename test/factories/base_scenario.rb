@@ -412,3 +412,9 @@ Factory.define :scrape do |f|
   f.association :scraper
   f.results_summary "Some results"
 end
+
+Factory.define :alert_subscriber do |f|
+  f.sequence( :email) {|n| "email#{n}@test.com"}
+  f.postcode "AB1 2BC"
+end
+
