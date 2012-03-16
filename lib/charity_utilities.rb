@@ -91,7 +91,7 @@ module CharityUtilities
       # Get first page
       RAILS_DEFAULT_LOGGER.debug("About to get info from #{post_url} with params:\n#{post_params.inspect}")
       if resp = client.post(post_url, post_params)
-        resp = client.get_content(CharityCommissionUrl+resp.header['Location'].first)
+        resp = client.get_content(CharityCommissionUrl + resp.header['Location'].first)
         results_page = Nokogiri.HTML(resp)
         new_charities = extract_charities_from_search_page(results_page)
         additional_pages = (results_page.search('input.PageNumbers')[-2][:value].to_i - 1) rescue nil

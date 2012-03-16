@@ -18,7 +18,7 @@ class CharityUtilitiesTest < ActiveSupport::TestCase
         dummy_search_page = dummy_html_response(:charities_advanced_search_page)
         HTTPClient.any_instance.stubs(:get_content).returns(dummy_search_page).then.returns(dummy_search_results)
         HTTPClient.any_instance.stubs(:post_content)#.returns(dummy_search_results)
-        HTTPClient.any_instance.stubs(:post).returns(true)
+        HTTPClient.any_instance.stubs(:post).returns(stub(:header => {'Location' => ['foo.com']}))
       end
       
       should "post details to charities commission website" do

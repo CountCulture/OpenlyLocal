@@ -142,7 +142,7 @@ class FeedEntriesControllerTest < ActionController::TestCase
         should respond_with_content_type 'application/json'
 
         should 'include pagination info' do
-          assert_match %r(total_entries.+33), @response.body
+          assert_match %r(total_entries.+32), @response.body
           assert_match %r(per_page), @response.body
           assert_match %r(page.+1), @response.body
         end
