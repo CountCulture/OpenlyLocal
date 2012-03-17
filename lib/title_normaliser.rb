@@ -22,6 +22,15 @@ module TitleNormaliser
     end
   end
   
+  def normalise_uk_date(raw_date)
+    return if raw_date.blank?
+    if raw_date.is_a?(String)
+      cleaned_up_date = raw_date.squish.match(/^\d+\/[\d\w]+\/\d+$/) ? raw_date.gsub('/','-') : raw_date
+      raw_date = cleaned_up_date.sub(/^(\d{1,2}-)([\w\d]+-)([01]\d)$/,'\1\220\3').sub(/^(\d{1,2}-)([\w\d]+-)([9]\d)$/,'\1\219\3').to_date
+    end
+    raw_date.to_s
+  end
+
   def normalise_url(raw_url)
     return if raw_url.blank?
     raw_url.match(/(http:\/\/|https:\/\/)+/) ? raw_url.sub(/(^.+http)+/, 'http').gsub(/(http:\/\/|https:\/\/)+/, '\1') : "http://#{raw_url}"

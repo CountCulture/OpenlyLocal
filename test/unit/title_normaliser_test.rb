@@ -73,7 +73,6 @@ class TitleNormaliserTest < ActiveSupport::TestCase
       end
     end
 
-
     context "when normalising financial_sum" do
       
       should "return nil if nil given" do
@@ -130,6 +129,34 @@ class TitleNormaliserTest < ActiveSupport::TestCase
         end
       end
     end
+
+    context "when normalising uk date" do
+      should "return nil if blank" do
+        assert_nil TitleNormaliser.normalise_uk_date(nil)
+        assert_nil TitleNormaliser.normalise_uk_date('')
+      end
+
+      should "convert date to string" do
+        date = 30.days.ago.to_date
+        assert_equal date.to_s, TitleNormaliser.normalise_uk_date(date)
+      end
+
+      should "convert UK date if in slash format" do
+        assert_equal '2006-04-01', TitleNormaliser.normalise_uk_date('01/04/2006').to_s
+      end
+
+      should "convert two digit year" do
+        assert_equal '2010-08-23', TitleNormaliser.normalise_uk_date('23-Aug-10').to_s
+        assert_equal '1998-08-23', TitleNormaliser.normalise_uk_date('23-Aug-98').to_s
+        assert_equal '2010-10-05', TitleNormaliser.normalise_uk_date('05/Oct/10').to_s
+        assert_equal '2010-10-05', TitleNormaliser.normalise_uk_date('05/10/10').to_s
+      end
+
+      should "not convert date if not in slash format" do
+        assert_equal '2006-01-04', TitleNormaliser.normalise_uk_date('2006-01-04').to_s
+      end
+    end
+    
   end
   
   context "A class which mixes in the TitleNormaliser::Base module" do
