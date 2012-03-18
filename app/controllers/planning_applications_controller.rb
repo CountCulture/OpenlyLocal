@@ -7,17 +7,16 @@ class PlanningApplicationsController < ApplicationController
                        :expires_in  => 12.hours
   
   def index
-    if @council = Council.find_by_id(params[:council_id])
-      order = (params[:order]||params[:format]) ? 'updated_at DESC' : 'date_received DESC'
-      @planning_applications = @council.planning_applications.with_details.all(:limit => 30, :order => order)
+    if @council = params[:council_id]&&Council.find_by_id(params[:council_id])
+      order = params[:order]||(params[:format].to_s == 'rss') ? 'updated_at DESC' : 'date_received DESC'
+      page = params[:page] || 1
+      @planning_applications = @council.planning_applications.with_details.paginate(:order => order, :page => page.to_i )
       @page_title = "Latest Planning Applications"
       @title = "Latest Planning Applications in #{@council.title}"
     elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
       distance = 0.2
       @planning_applications = PlanningApplication.find(:all, :origin => [@postcode.lat, @postcode.lng], 
                                                               :within => distance)
-                                                              # :order => 'created_at DESC', 
-                                                              # :limit => 20)
       @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
     end
     @message = "Sorry. No matching Planning Applications" if @planning_applications.blank?

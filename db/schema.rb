@@ -47,6 +47,11 @@ ActiveRecord::Schema.define(:version => 20120312192832) do
     t.datetime "last_sent"
     t.boolean  "confirmed"
     t.string   "confirmation_code"
+    t.float    "distance"
+    t.float    "bottom_left_lat"
+    t.float    "bottom_left_lng"
+    t.float    "top_right_lat"
+    t.float    "top_right_lng"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -775,6 +780,8 @@ ActiveRecord::Schema.define(:version => 20120312192832) do
     t.boolean  "confirmed"
     t.string   "alert_area_size", :limit => 1
   end
+
+  add_index "planning_alert_subscribers", ["bottom_left_x", "top_right_x", "bottom_left_y", "top_right_y"], :name => "bottom_left_x"
 
   create_table "planning_alert_subscribers_copy", :id => false, :options=>'ENGINE=MyISAM', :force => true do |t|
     t.integer  "id",                             :default => 0,     :null => false

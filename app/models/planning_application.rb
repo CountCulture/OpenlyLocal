@@ -51,6 +51,10 @@ class PlanningApplication < ActiveRecord::Base
     self[:bitwise_flag] = new_bitwise_flag == 7 ? 0 : new_bitwise_flag
   end
   
+  def date_received=(raw_date)
+    self[:date_received] = TitleNormaliser.normalise_uk_date(raw_date)
+  end
+  
   # overwrite default behaviour
   def self.find_all_existing(params={})
     []

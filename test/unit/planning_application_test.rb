@@ -328,7 +328,14 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         end
       end
     end
+    
+    context "when assigning date_received" do
 
+      should "treat as UK formatted date" do
+        @planning_application.date_received = '3/5/2001'
+        assert_equal '2001-05-03', @planning_application.date_received.to_s
+      end
+    end
     context "when queueing for sending alerts" do
       should "queue as delayed job for sending alerts" do
         dummy_dj = mock('dummy_delayed_job')
