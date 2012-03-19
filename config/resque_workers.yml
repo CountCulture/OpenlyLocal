@@ -1,0 +1,8 @@
+scrapers_1:
+  queues: 'scrapers_high,scrapers'
+scrapers_2:
+  queues: 'scrapers_high,scrapers'
+general_1:
+  queues: 'high,planning_applications,medium,low'
+general_2:
+  queues: 'high,planning_applications,medium,low'
