@@ -108,6 +108,11 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning queue" do
+      should "return :planning_applications" do
+        assert_equal :planning_applications, PlanningApplication.instance_variable_get(:@queue)
+      end
+    end
   end
 
   
@@ -144,6 +149,9 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     end
     
     context "on save" do
+      setup do
+        Resque.stubs(:enqueue)
+      end
 
       should "get inferred_lat_lng" do
         @planning_application.expects(:inferred_lat_lng)
@@ -336,11 +344,10 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         assert_equal '2001-05-03', @planning_application.date_received.to_s
       end
     end
+    
     context "when queueing for sending alerts" do
-      should "queue as delayed job for sending alerts" do
-        dummy_dj = mock('dummy_delayed_job')
-        dummy_dj.expects(:send_alerts)
-        @planning_application.expects(:delay => dummy_dj)
+      should "queue as Resque job" do
+        Resque.expects(:enqueue).with(PlanningApplication, @planning_application.id)
         @planning_application.queue_for_sending_alerts
       end
     end

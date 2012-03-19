@@ -16,7 +16,7 @@ class PlanningApplication < ActiveRecord::Base
                               ['invalid'],
                               ['withdrawn']
                               ]
-  
+  @queue = :planning_applications
   # The stale strategy for planning_applications is quite complex, due to the way planning applications change over time:
   # First of all planning_applications that have no retrieved_at timestamp are considered stale, as we've not got any 
   # details about them.
@@ -80,7 +80,7 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def queue_for_sending_alerts
-    self.delay.send_alerts
+    Resque.enqueue(PlanningApplication, self.id)
   end
   
   def send_alerts
