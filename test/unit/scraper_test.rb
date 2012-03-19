@@ -81,7 +81,6 @@ class ScraperTest < ActiveSupport::TestCase
     end
     
     context "when returning queue" do
-
       should "return :scrapers" do
         assert_equal :scrapers, Scraper.instance_variable_get(:@queue)
       end
