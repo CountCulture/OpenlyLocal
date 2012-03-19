@@ -31,6 +31,6 @@ GOOGLE_AJAX_API_KEY = "ABQIAAAAYhi-TEPJXOrUvUXuOYmKvBT2yXp_ZAY8_ufC3CFXhHIE1Nvwk
 config.middleware.use "Rack::Bug",
                       :secret_key => "Sysar9OsD+OAsolAIXLxtBV/vdJ4NXs6w9+k9sFULPPpI8ibpjdm8kAfSo3ZfwbF5LhYvNEHbqyaZqhthRZ7IQ==",
                       :password   => "trib4L9"
-HoptoadNotifier.configure do |config|
+Airbrake.configure do |config|
    config.environment_filters << 'rack-bug.*'
  end

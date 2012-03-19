@@ -26,6 +26,7 @@ class Scraper < ActiveRecord::Base
   delegate :result_model, :to => :parser, :allow_nil => true
   delegate :related_model, :to => :parser, :allow_nil => true
   delegate :portal_system, :to => :council, :allow_nil => true
+  @queue = :scrapers
   
   def validate
     errors.add(:parser, "can't be blank") unless parser
@@ -46,6 +47,10 @@ class Scraper < ActiveRecord::Base
   # build url from council's base_url and parsers path unless url is set
   def cookie_url
     self[:cookie_url].blank? ? computed_cookie_url : self[:cookie_url]
+  end
+  
+  def enqueue
+    Resque.enqueue(Scraper, self.id)
   end
   
   def expected_result_attributes
@@ -92,6 +97,10 @@ class Scraper < ActiveRecord::Base
     errors.add_to_base(e.message)
     mark_as_problematic unless e.is_a?(TimeoutError)
     self
+  end
+  
+  def self.perform(scraper_id)
+    Scraper.find(scraper_id).perform
   end
   
   def perform
