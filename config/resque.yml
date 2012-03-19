@@ -1,0 +1,15 @@
+development: 
+  username: ChrisTaggart
+  password: 325c8f3a4e6c992dc23cccf5e0be5a45
+  port: 9273
+  host: tetra.redistogo.com
+test: 
+  port: 6379
+production:
+  port: 6379
+  host: turks.openlylocal.com
+staging:
+  username: ChrisTaggart
+  password: 325c8f3a4e6c992dc23cccf5e0be5a45
+  port: 9273
+  host: tetra.redistogo.com

@@ -87,7 +87,7 @@ class Member < ActiveRecord::Base
     logger.debug { "**** #{recs.size} orphan Member records: #{recs.inspect}" }
     recs.delete_if{ |r| (r.full_name =~ /vacancy|vacant/i)&&r.destroy}
     recs.each { |r| r.mark_as_ex_member }
-    HoptoadNotifier.notify(
+    Airbrake.notify(
       :error_class => "OrphanRecords",
       :error_message => "#{recs.size} orphan Member records found for : #{recs.first.council.name}.\n#{recs.inspect}",
       :request => { :params => options }

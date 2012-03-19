@@ -19,7 +19,7 @@ gem 'crack'
 gem "feedzirra"#, :lib => "feedzirra", :source => 'http://gems.github.com'
 gem 'will_paginate', '~> 2.3.11'#, :source => 'http://gemcutter.org'
 gem "acts-as-taggable-on"#, :source => 'http://gemcutter.org'
-gem 'hoptoad_notifier'
+gem 'airbrake'
 gem 'sitemap_generator', :require => false
 gem 'capistrano'
 gem 'capistrano-ext'
@@ -28,6 +28,8 @@ gem 'rdf-rdfxml', :require => false
 gem 'json'
 gem 'daemons', '1.0.10'
 gem 'delayed_job', '2.0.4'
+gem 'SystemTimer'
+gem 'resque', :require => "resque/server"
 
 group :test do
   gem 'guard'

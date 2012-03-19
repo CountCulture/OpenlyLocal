@@ -73,13 +73,13 @@ class MemberTest < ActiveSupport::TestCase
         @vacancy = Factory.create(:member, :full_name => "Vacancy", :council => @existing_member.council)
       end
       
-      should "notify Hoptoad of orphan records" do
-        HoptoadNotifier.expects(:notify).with(has_entries(:error_class => "OrphanRecords", :error_message => regexp_matches(/2 orphan Member records/)))
+      should "notify Airbrake of orphan records" do
+        Airbrake.expects(:notify).with(has_entries(:error_class => "OrphanRecords", :error_message => regexp_matches(/2 orphan Member records/)))
         Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
       end       
 
-      should "not notify Hoptoad of orphan records if not saving results" do
-        HoptoadNotifier.expects(:notify).never
+      should "not notify Airbrake of orphan records if not saving results" do
+        Airbrake.expects(:notify).never
         Member.send(:orphan_records_callback, [@existing_member, @another_member])
       end       
 
@@ -95,22 +95,22 @@ class MemberTest < ActiveSupport::TestCase
         assert Member.find_by_id(@vacancy.id)
       end
       
-      should "not notify Hoptoad of orphan records if there are none" do
-        HoptoadNotifier.expects(:notify).never
+      should "not notify Airbrake of orphan records if there are none" do
+        Airbrake.expects(:notify).never
         Member.send(:orphan_records_callback, [], :save_results => true)
       end   
 
-      should "not notify Hoptoad of orphan records if members already marked as ex_members" do
+      should "not notify Airbrake of orphan records if members already marked as ex_members" do
         @existing_member.update_attribute(:date_left, 3.days.ago)
         @another_member.update_attribute(:date_left, 5.days.ago)
-        HoptoadNotifier.expects(:notify).never
+        Airbrake.expects(:notify).never
         Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
       end  
            
-      should "notify Hoptoad of orphan records if some members not marked as ex_member" do
+      should "notify Airbrake of orphan records if some members not marked as ex_member" do
         @existing_member.update_attribute(:date_left, 3.days.ago)
         
-        HoptoadNotifier.expects(:notify).with(has_entries(:error_message => regexp_matches(/1 orphan Member records/)))
+        Airbrake.expects(:notify).with(has_entries(:error_message => regexp_matches(/1 orphan Member records/)))
         Member.send(:orphan_records_callback, [@existing_member, @another_member], :save_results => true)
       end   
           

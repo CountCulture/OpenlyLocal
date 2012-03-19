@@ -80,6 +80,23 @@ class ScraperTest < ActiveSupport::TestCase
       assert_equal expected_options, actual_options
     end
     
+    context "when returning queue" do
+
+      should "return :scrapers" do
+        assert_equal :scrapers, Scraper.instance_variable_get(:@queue)
+      end
+    end
+    
+    context "when running perform given scraper id" do
+
+      should "should perform scraper with given id" do
+        dummy_scraper = mock('scraper')
+        Scraper.expects(:find).with(@scraper.id).returns(dummy_scraper)
+        dummy_scraper.expects(:perform)
+        Scraper.perform(@scraper.id)
+      end      
+    end
+    
   end
   
   context "A Scraper instance" do
@@ -269,6 +286,12 @@ class ScraperTest < ActiveSupport::TestCase
       end
     end
     
+    context "when enqueueing" do
+      should "add to Resque queue" do
+        Resque.expects(:enqueue).with(Scraper, @scraper.id)
+        @scraper.enqueue
+      end
+    end
     
     should "have results accessor" do
       @scraper.instance_variable_set(:@results, "foo")

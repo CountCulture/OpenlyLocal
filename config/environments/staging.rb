@@ -35,6 +35,6 @@ config.middleware.use "Rack::Bug",
                       :secret_key => "Sysar9OsD+OAsolAIXLxtBV/vdJ4NXs6w9+k9sFULPPpI8ibpjdm8kAfSo3ZfwbF5LhYvNEHbqyaZqhthRZ7IQ==",
                       :ip_masks   => [IPAddr.new("127.0.0.1"), IPAddr.new("192.168.1.65")],
                       :password   => "trib4L9"
-HoptoadNotifier.configure do |config|
+Airbrake.configure do |config|
   config.environment_filters << 'rack-bug.*'
 end
