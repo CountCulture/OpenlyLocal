@@ -1,5 +1,6 @@
 class PlanningApplication < ActiveRecord::Base
   include ScrapedModel::Base
+  extend Resque::Plugins::LockTimeout
   belongs_to :council
   validates_presence_of :council_id, :uid
   validates_uniqueness_of :uid, :scope => :council_id
