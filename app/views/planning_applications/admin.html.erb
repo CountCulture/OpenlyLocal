@@ -1,0 +1,50 @@
+<h1>Planning Applications :: Admin </h1>
+
+
+
+<div id="scrapers">
+  <div id="useful_links">
+    <h3>Useful links</h3>
+    <ul>
+      <li><%= link_to 'Planning Applications Google doc', 'https://docs.google.com/spreadsheet/ccc?key=0AhOqra7su40fdGdVbDRWYkxGbnhsTkFMTjBBSi1oTHc' %></li>
+      <li><%= link_to 'Queue status', '/admin/resque' %></li>
+    </ul>
+  </div>
+
+  <div id="problematic">
+    <h3><%= @councils_with_problem_scrapers.size %> councils with problem scrapers/importers</h3>
+
+    <%- for council in @councils_with_problem_scrapers -%>
+      <%- div_for council do -%>
+        <h4>
+          <%= basic_link_for council, :name => dom_id(council) %> 
+          <em><%= council_page_for council %> <%= link_to "Add scrapers", "#", :class => "add_new_scraper" %></em> 
+        </h4>
+        <ul>
+          <%- for scraper_link in existing_scraper_links(council) -%>
+            <li><%= scraper_link %></li>
+          <%- end -%>
+        </ul>
+      <%- end -%>
+    <%- end -%>
+  </div>
+
+
+  <div id="good">
+    <h3><%= @councils_with_good_scrapers.size %> councils with problem-free scrapers/importers</h3>
+
+    <%- for council in @councils_with_good_scrapers -%>
+      <%- div_for council do -%>
+        <h4>
+          <%= basic_link_for council, :name => dom_id(council) %> 
+          <em><%= council_page_for council %> <%= link_to "Add scrapers", "#", :class => "add_new_scraper" %></em> 
+        </h4>
+        <ul>
+          <%- for scraper_link in existing_scraper_links(council) -%>
+            <li><%= scraper_link %></li>
+          <%- end -%>
+        </ul>
+      <%- end -%>
+    <%- end -%>
+  </div>
+</div>
