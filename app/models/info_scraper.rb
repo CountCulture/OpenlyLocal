@@ -7,7 +7,9 @@ class InfoScraper < Scraper
     @timeout_errors = false
     related_objects.each do |obj|
       begin
-        raw_results = parser.process(_data(target_url_for(obj)), self).results
+        html = _data(target_url_for(obj))
+        logger.debug "HTML = #{html}"
+        raw_results = parser.process(html, self).results
       rescue ScraperError => e
         logger.debug { "*******#{e.message} while processing #{self.inspect}" }
         @timeout_errors = true if e.is_a?(TimeoutError) # we just need to track whether there are any timeout errors
