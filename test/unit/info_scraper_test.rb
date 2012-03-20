@@ -53,12 +53,14 @@ class InfoScraperTest < ActiveSupport::TestCase
       
       context "and info_scraper parser has bitwise_flag as attribute value" do
         setup do
-          @scraper.parser.attribute_parser = @scraper.parser.attribute_parser.merge(:bitwise_flag => '4')
+          @scraper.parser.attribute_parser = @scraper.parser.attribute_parser.merge(:bitwise_flag => 4)
         end
         
         should "filter by objects where bitwise_flag value not set for given bit" do
           stale_scope = mock('stale_scope')
-          stale_scope.expects(:find).with(:all, :conditions => ["council_id = ? AND bitwise_flag & ? = 0", @scraper.council_id, @scraper.parser.bitwise_flag])
+          bitwise_flag_scope = mock('bitwise_flag_scope')
+          stale_scope.expects(:with_clear_bitwise_flag).with(4).returns(bitwise_flag_scope)
+          bitwise_flag_scope.expects(:find).with(:all, :conditions => {:council_id => @scraper.council_id})
           TestScrapedModel.expects(:stale).returns(stale_scope)
           @scraper.related_objects
         end

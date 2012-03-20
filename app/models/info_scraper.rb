@@ -32,7 +32,7 @@ class InfoScraper < Scraper
       @related_objects
     else
       if parser.bitwise_flag 
-        result_model.constantize.stale.find(:all, :conditions => ["council_id = ? AND bitwise_flag & ? = 0", council_id, parser.bitwise_flag])
+        result_model.constantize.stale.with_clear_bitwise_flag(parser.bitwise_flag).find(:all, :conditions => { :council_id => council_id })
       else
         result_model.constantize.stale.find(:all, :conditions => { :council_id => council_id })
       end

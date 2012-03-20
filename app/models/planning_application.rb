@@ -31,6 +31,7 @@ class PlanningApplication < ActiveRecord::Base
   
   named_scope :with_details, { :conditions => "retrieved_at IS NOT NULL" } 
 
+  named_scope :with_clear_bitwise_flag, lambda { |bitwise_number| { :conditions => ["bitwise_flag & ? = 0", bitwise_number]}}
 
   def address=(raw_address)
     cleaned_up_address = raw_address.blank? ? raw_address : raw_address.gsub("\r", "\n").gsub(/\s{2,}/,' ').strip
