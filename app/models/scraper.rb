@@ -13,6 +13,7 @@ class Scraper < ActiveRecord::Base
                         'X' => 'Nokogiri (XML)',
                         'H' => 'Hpricot'
                       }
+  extend Resque::Plugins::LockTimeout
   belongs_to :parser, :inverse_of  => :scrapers
   belongs_to :council
   has_many :scrapes
