@@ -7,5 +7,5 @@ Council: <%= @planning_application.council.title %>, <%= @planning_application.c
 <%- if @planning_application.url? -%>
 Council page for application: <%= @planning_application.url %>
 <%- end -%>
-Date received: <%= @planning_application.date_received %>
+Date received: <%= @planning_application.start_date %>
 Status: <%= @planning_application.status %>

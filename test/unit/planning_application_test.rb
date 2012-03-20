@@ -23,7 +23,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     should have_db_column :comment_tinyurl
     should have_db_column :uid
     should have_db_column :retrieved_at
-    should have_db_column :date_received
+    should have_db_column :start_date
     should have_db_column :on_notice_from
     should have_db_column :on_notice_to
     should have_db_column :map_url
@@ -238,6 +238,31 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         end
         
       end
+      
+      should "set the start_date to be earliest of date_received and date_validated" do
+        
+        @planning_application.other_attributes = {:date_received => '2010-11-22', :date_validated => '2010-12-03'}
+        @planning_application.save!
+        assert_equal '2010-11-22'.to_date.to_s, @planning_application.start_date.to_s
+        @planning_application.other_attributes = {:date_validated => '2010-11-22', :date_received => '2010-12-03'}
+        assert_equal '2010-11-22'.to_date.to_s, @planning_application.start_date.to_s
+      end
+      
+      should "not set the start_date if date_received and date_validated blank" do
+        @planning_application.other_attributes = {:date_received => '', :date_validated => ''}
+        assert_nil @planning_application.start_date
+      end
+      
+      should "not override explicitly set start date" do
+        @planning_application.start_date = '2010-12-03'
+        @planning_application.other_attributes = {:date_validated => '', :date_received => ''}
+        assert_equal '2010-12-03'.to_date.to_s, @planning_application.start_date.to_s
+      end
+      
+      should "not set the start_date if date_received and date_validated not valid dates" do
+        @planning_application.other_attributes = {:date_received => 'foo', :date_validated => '234 March 201111'}
+        assert_nil @planning_application.start_date
+      end
     end
     
     context "when assigning address" do
@@ -358,11 +383,11 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
     
-    context "when assigning date_received" do
+    context "when assigning start_date" do
 
       should "treat as UK formatted date" do
-        @planning_application.date_received = '3/5/2001'
-        assert_equal '2001-05-03', @planning_application.date_received.to_s
+        @planning_application.start_date = '3/5/2001'
+        assert_equal '2001-05-03', @planning_application.start_date.to_s
       end
     end
     

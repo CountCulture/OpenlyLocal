@@ -7,6 +7,7 @@ class PlanningApplication < ActiveRecord::Base
   serialize :other_attributes
   acts_as_mappable :default_units => :kms
   before_save :update_lat_lng
+  before_save :update_start_date
   after_save :queue_for_sending_alerts_if_relevant
   before_create :set_default_value_for_bitwise_flag
   STATUS_TYPES_AND_ALIASES = [
@@ -52,8 +53,8 @@ class PlanningApplication < ActiveRecord::Base
     self[:bitwise_flag] = new_bitwise_flag == 7 ? 0 : new_bitwise_flag
   end
   
-  def date_received=(raw_date)
-    self[:date_received] = TitleNormaliser.normalise_uk_date(raw_date)
+  def start_date=(raw_date)
+    self[:start_date] = TitleNormaliser.normalise_uk_date(raw_date)
   end
   
   # overwrite default behaviour
@@ -113,6 +114,20 @@ class PlanningApplication < ActiveRecord::Base
     i_lat_lng = [inferred_lat_lng].flatten # so gives empty array if nil
     self[:lat] = i_lat_lng[0] unless self[:lat] && self.lat_changed?
     self[:lng] = i_lat_lng[1] unless self[:lng] && self.lng_changed?
+  end
+  
+  def update_start_date
+    date_received = other_attributes && !other_attributes[:date_received].blank? && other_attributes[:date_received].to_date
+    date_validated = other_attributes && !other_attributes[:date_validated].blank? && other_attributes[:date_validated].to_date
+    
+    case date_received
+    when nil
+      self[:start_date] ||= date_validated if date_validated
+    else
+      self[:start_date] ||= date_received
+    end
+    true
+    # self[:start_date] = date_received
   end
   
   def set_default_value_for_bitwise_flag

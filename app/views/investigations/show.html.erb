@@ -3,7 +3,7 @@
 <dl id="main_attributes" class="attributes">
   <%= attribute_tag :organisation, @investigation.related_organisation_name %>
   <%= attribute_tag :subjects, @investigation.subjects %>
-  <%= attribute_tag :date_received, @investigation.date_received %>
+  <%= attribute_tag :start_date, @investigation.start_date %>
   <%= attribute_tag :date_completed, @investigation.date_completed %>
   <%= attribute_tag :report_url, link_to(@investigation.url, @investigation.url, :class => 'external') if @investigation.url? %>
 </dl>
