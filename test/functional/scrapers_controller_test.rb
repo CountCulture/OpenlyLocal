@@ -31,7 +31,7 @@ class ScrapersControllerTest < ActionController::TestCase
     should_not set_the_flash
     
     should "list all councils with scrapers" do
-      assert_select "#councils #with_scrapers" do
+      assert_select "#with_scrapers" do
         assert_select ".council", 2 do
           assert_select "h3 a", @scraper1.council.name
         end
@@ -39,7 +39,7 @@ class ScrapersControllerTest < ActionController::TestCase
     end
     
     should "list all councils without scrapers" do
-      assert_select "#councils #without_scrapers" do
+      assert_select "#without_scrapers" do
         assert_select ".council", 1 do
           assert_select "h4 a", @council3.name
         end

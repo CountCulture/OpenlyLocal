@@ -559,7 +559,7 @@ a.new_scraper_link {
 	background-color: #f3f3f3;
 	padding: 1em;
 }
-#councils #without_scrapers {
+#scrapers #without_scrapers {
 	float:right;
 	width: 250px;
 	border: 1px solid #ddd;
@@ -567,14 +567,14 @@ a.new_scraper_link {
 	margin: 0 2em;
 	padding:.5em;
 }
-#councils #without_scrapers .council {
+#scrapers #without_scrapers .council {
 	border-bottom: 1px solid #ddd;
 	margin-bottom: 1em;
 }
-#councils #without_scrapers h4{
+#scrapers #without_scrapers h4{
 	margin-bottom: 0.5em;
 }
-#councils #without_scrapers .council p{
+#scrapers #without_scrapers .council p{
 	margin: 0;
 }
 
