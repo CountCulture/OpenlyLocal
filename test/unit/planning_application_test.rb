@@ -67,6 +67,27 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
     
+    context "stale with_clear_bitwise_flag scope" do
+      setup do
+        @clear_bitwise_flag = Factory(:planning_application, :bitwise_flag => 0)
+        @set_bitwise_flag = Factory(:planning_application, :bitwise_flag => 3) 
+        @clear_bitwise_flag_for_given_number = Factory(:planning_application, :bitwise_flag => 5)
+        @with_clear_bitwise_flags = PlanningApplication.with_clear_bitwise_flag(2)
+      end
+
+      should "include applications where bitwise_flag is clear for all given numbers" do
+        assert @with_clear_bitwise_flags.include?(@clear_bitwise_flag)
+      end
+      
+      should "include applications where bitwise_flag is clear for particular given number" do
+        assert @with_clear_bitwise_flags.include?(@clear_bitwise_flag_for_given_number)
+      end
+      
+      should "not include applications where bitwise_flag is set for particular given number" do
+        assert !@with_clear_bitwise_flags.include?(@set_bitwise_flag)
+      end
+    end
+    
     context "with_data named scope" do
       setup do
         @no_details_application = Factory(:planning_application) #retrieved_at is nil
