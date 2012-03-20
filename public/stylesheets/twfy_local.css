@@ -31,8 +31,9 @@ label.radio {
 }
 h1 em, h2 em, h3 em, h4 em, label em {
 	color: #9e9e9e;
-	font-size: .6em;
+	font-size: .7em;
 	vertical-align:top;
+	font-weight: normal;
 	font-style: normal; }
 caption em {
 	color: #666;
@@ -579,6 +580,33 @@ a.new_scraper_link {
 
 form#scraper_form .defaults {
   float: right;
+}
+
+#scrapers div.council {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 6px;
+  padding-bottom: 3px;
+}
+#scrapers #problematic {
+  margin-bottom: 1em;
+}
+#scrapers #problematic div.council {
+  border-bottom: 1px solid #933;
+}
+#scrapers div.council h4, #scrapers h3 {
+  font-weight: bold;
+}
+#scrapers div.council ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+#scrapers #useful_links {
+  float: right;
+  width: 20em;
+  padding:6px;
+	overflow:auto;
+	border: 1px solid #ddd;
+	background: #eee;
 }
 /*Ward-specific formatting*/
 /*body.wards .ward {

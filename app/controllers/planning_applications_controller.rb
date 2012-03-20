@@ -2,9 +2,17 @@ class PlanningApplicationsController < ApplicationController
   before_filter :enable_google_maps, :only => [:show, :index]
   before_filter :show_rss_link, :only => :index
   before_filter :find_planning_application, :only => :show
+  before_filter :authenticate, :only => [:admin]
   caches_action :show, :cache_path => Proc.new {|c| [c.instance_variable_get(:@planning_application).cache_key,c.params[:format]].join('.') }, 
                        :if => Proc.new {|c| c.instance_variable_get(:@planning_application) }, 
                        :expires_in  => 12.hours
+  
+  def admin
+    @councils = Council.find(:all, :include => { :scrapers => { :parser => :portal_system, :council => {} } }, 
+                                   :order => "councils.name", 
+                                   :conditions=> 'parsers.result_model = "PlanningApplication"')
+    @councils_with_problem_scrapers, @councils_with_good_scrapers = @councils.partition{ |c| c.scrapers.any?{ |s| s.problematic? } }
+  end
   
   def index
     if @council = params[:council_id]&&Council.find_by_id(params[:council_id])

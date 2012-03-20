@@ -233,8 +233,6 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
     end
   end
   
-  
-
   context "on GET to :show" do
     setup do
       Resque.stubs(:enqueue)
@@ -308,4 +306,26 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
 
   end
   
+  # admin tests
+  context "on get to :admin hyperlocal_sites without auth" do
+    setup do
+      delete :admin
+    end
+
+    should respond_with 401
+  end
+
+  context "on get to :admin hyperlocal sites" do
+    setup do
+      stub_authentication
+      get :admin
+    end
+
+    should assign_to :councils
+    should respond_with :success
+    should render_template :admin
+    should_not set_the_flash
+
+  end
+    
 end
