@@ -15,7 +15,7 @@
     <%= attribute_tag :decision, @planning_application.decision %>
     <%= attribute_tag :applicant_name, @planning_application.applicant_name %>
     <%= attribute_tag :applicant_address, @planning_application.applicant_address %>
-    <%= attribute_tag :date_received, @planning_application.date_received %>
+    <%= attribute_tag :start_date, @planning_application.start_date %>
     <%= attribute_tag :comment_url, link_to(@planning_application.comment_url, @planning_application.comment_url, :class => 'external') if @planning_application.comment_url? %>
 
   </dl>

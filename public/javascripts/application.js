@@ -73,7 +73,7 @@ $(document).ready( function() {
 });
 
 // Map Geography Utility functions - see http://www.movable-type.co.uk/scripts/latlong.html#destPoint  
-function getDestLatLng(latLng, bearing, distance) {
+function getDestlatLng(latLng, bearing, distance) {
  var lat1 = latLng.latRadians();
  var lng1 = latLng.lngRadians();
  var brng = bearing*Math.PI/180;
@@ -93,8 +93,8 @@ function drawCircle(curr_map, centrePt, rangeValue) {
 
 function getBoundaries(centrePt, radius) {
  var hypotenuse = Math.sqrt(2 * radius * radius);
- var sw = getDestLatLng(centrePt, 225, hypotenuse);
- var ne = getDestLatLng(centrePt, 45, hypotenuse);
+ var sw = getDestlatLng(centrePt, 225, hypotenuse);
+ var ne = getDestlatLng(centrePt, 45, hypotenuse);
  return new GLatLngBounds(sw, ne);
 }
 
@@ -119,7 +119,7 @@ function createMarker(obj, map, caption) {
 
 function planningAppCaption (pa) {
   var infoCaption = "<div class='caption planning_application'><h4><a href='/planning_applications/" + pa.id + "'>" + pa.uid + "</a>";
-  infoCaption += (pa.date_received ? ", <span class='date'>" + pa.date_received + "</span>" : '') + "</h4><div class='address'>" + pa.address + "</div>";
+  infoCaption += (pa.start_date ? ", <span class='date'>" + pa.start_date + "</span>" : '') + "</h4><div class='address'>" + pa.address + "</div>";
   infoCaption += (pa.description ? ("<p>" + pa.description.slice(0,90) + "...") : '<p>');
   infoCaption += "<a href='/planning_applications/" + pa.id + " class='more_info'>more info</a></p></div>";
   return infoCaption;

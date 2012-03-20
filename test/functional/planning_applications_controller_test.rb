@@ -34,10 +34,10 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
       @postcode = Factory(:postcode, :code => 'AB12CD')
       @non_matching_application = Factory(:planning_application)
       @council = Factory(:generic_council)
-      @matching_application = Factory(:planning_application_with_lat_long, :postcode => 'AB1 2CD', :council => @council, :retrieved_at => 5.days.ago, :date_received => 1.month.ago)
+      @matching_application = Factory(:planning_application_with_lat_long, :postcode => 'AB1 2CD', :council => @council, :retrieved_at => 5.days.ago, :start_date => 1.month.ago)
       PlanningApplication.record_timestamps = false # update timestamp without triggering callbacks
       @matching_application_without_details = Factory(:planning_application_with_lat_long, :postcode => 'AB3 2CD', :updated_at => 5.days.ago, :created_at => 5.days.ago, :council => @council)
-      @another_matching_application = Factory(:planning_application_with_lat_long, :postcode => 'AB2 2CD', :updated_at => 5.days.ago, :created_at => 5.days.ago, :council => @council, :retrieved_at =>  5.days.ago, :date_received => 1.week.ago)
+      @another_matching_application = Factory(:planning_application_with_lat_long, :postcode => 'AB2 2CD', :updated_at => 5.days.ago, :created_at => 5.days.ago, :council => @council, :retrieved_at =>  5.days.ago, :start_date => 1.week.ago)
       PlanningApplication.record_timestamps = true # update timestamp without triggering callbacks
     end
     
@@ -56,7 +56,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
           assert_equal 2, assigns(:planning_applications).size
         end
 
-        should "list most planning applications with most recent date_received first" do
+        should "list most planning applications with most recent start_date first" do
           assert_equal @another_matching_application, assigns(:planning_applications).first
         end
 

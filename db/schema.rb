@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120312192832) do
+ActiveRecord::Schema.define(:version => 20120320112541) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -808,7 +808,7 @@ ActiveRecord::Schema.define(:version => 20120312192832) do
     t.string   "comment_url",       :limit => 1024
     t.string   "comment_tinyurl",   :limit => 50
     t.datetime "retrieved_at"
-    t.date     "date_received"
+    t.date     "start_date"
     t.string   "map_url",           :limit => 150
     t.float    "lat"
     t.float    "lng"
@@ -827,7 +827,7 @@ ActiveRecord::Schema.define(:version => 20120312192832) do
     t.integer  "bitwise_flag",      :limit => 1
   end
 
-  add_index "planning_applications", ["council_id", "date_received"], :name => "index_planning_applications_on_council_id_and_date_received"
+  add_index "planning_applications", ["council_id", "start_date"], :name => "index_planning_applications_on_council_id_and_date_received"
   add_index "planning_applications", ["council_id", "uid"], :name => "index_planning_applications_on_council_id_and_uid", :unique => true
   add_index "planning_applications", ["council_id", "updated_at"], :name => "index_planning_applications_on_council_id_and_updated_at"
   add_index "planning_applications", ["lat", "lng"], :name => "index_planning_applications_on_lat_and_lng"
