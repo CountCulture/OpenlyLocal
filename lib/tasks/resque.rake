@@ -19,15 +19,15 @@ namespace :resque do
     workers_config.each do |worker, config| 
       sh "./script/monit_rake stop resque_#{worker} -s QUIT" 
     end
-    puts "Stopped all background resque daemons. Now clearing all restricted_performer locks..."
-    Rake::Task["resque:clear_performer_locks"].invoke
+    # puts "Stopped all background resque daemons. Now clearing all restricted_performer locks..."
+    # Rake::Task["resque:clear_performer_locks"].invoke
     puts "Done."
   end 
   
-  desc 'clear all restricted_performer locks' 
-  task :clear_performer_locks => :environment do 
-    Resque.redis.keys.select{ |k| k.match /performer_lock/ }.each{ |k| Resque.redis.del(k) }
-  end
+  # desc 'clear all restricted_performer locks' 
+  # task :clear_performer_locks => :environment do 
+  #   Resque.redis.keys.select{ |k| k.match /performer_lock/ }.each{ |k| Resque.redis.del(k) }
+  # end
   
   desc 'move queued items to new queue'
   task :move_queued_items => :environment do
