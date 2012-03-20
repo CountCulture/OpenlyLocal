@@ -212,6 +212,11 @@ class ParserTest < ActiveSupport::TestCase
           @parser.expects(:eval_parsing_code).twice.with(){ |code, item| (code =~ /bar/)&&(item == @dummy_item) }.returns("some value")
           assert_equal ([{:foo => "some value", :foo1 => "some value"}]), @parser.process(@dummy_hpricot).results
         end
+        
+        should "strip leading and trailing spaces" do
+          @parser.expects(:eval_parsing_code).twice.with(){ |code, item| (code =~ /bar/)&&(item == @dummy_item) }.returns("   \n   some value \n  \n")
+          assert_equal ([{:foo => "some value", :foo1 => "some value"}]), @parser.process(@dummy_hpricot).results
+        end
       end
             
       context "and array of items is returned" do
@@ -230,6 +235,13 @@ class ParserTest < ActiveSupport::TestCase
         should "store result of attribute_parser as hash using attribute_parser keys" do
           @parser.stubs(:eval_parsing_code).with(){ |code, item| (code =~ /bar/)&&(item == @dummy_item_1) }.returns("some value")
           @parser.stubs(:eval_parsing_code).with(){ |code, item| (code =~ /bar/)&&(item == @dummy_item_2) }.returns("another value")
+          assert_equal ([{ :foo => "some value", :foo1 => "some value" },
+                         { :foo => "another value", :foo1 => "another value" }]), @parser.process(@dummy_hpricot).results
+        end
+        
+        should "strip leading and trailing spaces" do
+          @parser.stubs(:eval_parsing_code).with(){ |code, item| (code =~ /bar/)&&(item == @dummy_item_1) }.returns("some value")
+          @parser.stubs(:eval_parsing_code).with(){ |code, item| (code =~ /bar/)&&(item == @dummy_item_2) }.returns("   \n   another value \n  \n")
           assert_equal ([{ :foo => "some value", :foo1 => "some value" },
                          { :foo => "another value", :foo1 => "another value" }]), @parser.process(@dummy_hpricot).results
         end
