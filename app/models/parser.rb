@@ -50,7 +50,8 @@ class Parser < ActiveRecord::Base
         parsing_code = value
         object_to_be_parsed = item
         logger.debug { "********About to use parsing code: #{parsing_code} to parse:\n#{object_to_be_parsed.inspect}" }
-        result_hash[key] = eval_parsing_code(value, item)
+        eval_result = eval_parsing_code(value, item)
+        result_hash[key] = eval_result.respond_to?(:strip) ? eval_result.strip : eval_result
       end
       result_hash
     end
