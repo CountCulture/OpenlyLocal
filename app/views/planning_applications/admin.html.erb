@@ -9,12 +9,19 @@
       <li><%= link_to 'Planning Applications Google doc', 'https://docs.google.com/spreadsheet/ccc?key=0AhOqra7su40fdGdVbDRWYkxGbnhsTkFMTjBBSi1oTHc' %></li>
       <li><%= link_to 'Queue status', '/admin/resque' %></li>
     </ul>
+    
+    <h3>Planning Parsers</h3>
+    <ul>
+      <%- @planning_parsers.each do |parser| -%>
+        <li><%= link_for parser %></li>
+      <%- end -%>
+     </ul>
   </div>
 
   <div id="problematic">
     <h3><%= @councils_with_problem_scrapers.size %> councils with problem scrapers/importers</h3>
 
-    <%- for council in @councils_with_problem_scrapers -%>
+    <%- @councils_with_problem_scrapers.each do |council| -%>
       <%- div_for council do -%>
         <h4>
           <%= basic_link_for council, :name => dom_id(council) %> 
@@ -33,7 +40,7 @@
   <div id="good">
     <h3><%= @councils_with_good_scrapers.size %> councils with problem-free scrapers/importers</h3>
 
-    <%- for council in @councils_with_good_scrapers -%>
+    <%- @councils_with_good_scrapers.each do |council| -%>
       <%- div_for council do -%>
         <h4>
           <%= basic_link_for council, :name => dom_id(council) %> 
