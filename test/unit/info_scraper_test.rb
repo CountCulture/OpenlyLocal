@@ -336,6 +336,11 @@ class InfoScraperTest < ActiveSupport::TestCase
             assert_in_delta(Time.now, @scraper.reload.last_scraped, 2)
           end
           
+          should "not update last_scraped attribute when saving but dont_update_last_scraped is true" do
+            @scraper.process(:save_results => true, :dont_update_last_scraped => true)
+            assert_nil @scraper.reload.last_scraped
+          end
+
           should "not mark scraper as problematic" do
             @scraper.process(:save_results => true)
             assert !@scraper.reload.problematic?

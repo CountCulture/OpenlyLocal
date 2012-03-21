@@ -120,6 +120,12 @@ module ScrapedModel
         self.class.clean_up_raw_attributes(raw_attribs)
       end
       
+      # returns all info scrapers connected with given model, i.e. those that get info on it and populate details.
+      # Usually this is only a signle scraper, but sometimes (e.g. with some planning applications) it can be multiple scrapers
+      def info_scrapers
+        council.scrapers.all(:conditions => ['scrapers.type = "InfoScraper" AND parsers.result_model = ?', self.class.to_s], :joins => :parser)
+      end
+      
       # override this in individual classes to define whether params from scraper parser are the same
       # record as current one. By default this is if the uid is the same (we should only be matching 
       # against records from the correct council so don't need to check council_id)
@@ -145,6 +151,12 @@ module ScrapedModel
 
       def resource_uri
         "http://#{DefaultDomain}/id/#{self.class.table_name}/#{id}"
+      end
+      
+      # updates info for object by processessing each info_scraper that is associated with the object, and explicitly
+      # supplying the object
+      def update_info
+        info_scrapers.each{ |scraper| scraper.process(:save_results => true, :objects => self, :dont_update_last_scraped => true) }
       end
 
       protected

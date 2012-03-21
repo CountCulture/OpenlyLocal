@@ -5,6 +5,7 @@ class InfoScraper < Scraper
     @related_objects = [options[:objects]].flatten if options[:objects]
     @objects_with_errors_count = 0
     @timeout_errors = false
+    dont_update_last_scraped = options.delete(:dont_update_last_scraped)
     related_objects.each do |obj|
       begin
         html = _data(target_url_for(obj))
@@ -18,7 +19,7 @@ class InfoScraper < Scraper
       update_with_results(raw_results, obj, options)
     end
     errors.add_to_base("Problem on all items (see below for details)") if (related_objects.size > 0)&&(@objects_with_errors_count == related_objects.size)
-    update_last_scraped if options[:save_results]&&(@objects_with_errors_count != related_objects.size)
+    update_last_scraped if options[:save_results]&&(@objects_with_errors_count != related_objects.size) && !dont_update_last_scraped
     mark_as_problematic if options[:save_results]&&(related_objects.size > 0)&&(@objects_with_errors_count == related_objects.size) && !@timeout_errors
     self
   rescue Exception => e # catch other exceptions and store them for display

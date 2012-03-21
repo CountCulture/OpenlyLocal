@@ -456,6 +456,40 @@ class ScrapedModelTest < ActiveSupport::TestCase
             
     end
     
+    context "when returning info_scrapers" do
+      setup do
+        @council = Factory(:generic_council)
+        @parser = Factory(:parser, :result_model => 'TestScrapedModel')
+        @info_scraper_1 = Factory(:info_scraper, :council => @council, :parser => @parser)
+        @info_scraper_2 = Factory(:info_scraper, :parser => @parser) # diff council
+        @info_scraper_3 = Factory(:info_scraper, :council => @council, :parser => @parser)
+        @info_scraper_4 = Factory(:info_scraper, :council => @council, :parser => Factory(:parser, :result_model => 'Member')) # diff parser
+      end
+
+      should "return scrapers with same council and same result model" do
+        @test_model.stubs(:council).returns(@council)
+        info_scrapers = @test_model.info_scrapers
+        assert_equal 2, info_scrapers.size
+        assert info_scrapers.include?(@info_scraper_1)
+        assert info_scrapers.include?(@info_scraper_3)
+      end
+    end
+    
+    context "when updating_info" do
+      setup do
+        @council = Factory(:generic_council)
+        @parser = Factory(:parser, :result_model => 'TestScrapedModel')
+        @info_scraper_1 = Factory(:info_scraper, :council => @council, :parser => @parser)
+        @info_scraper_2 = Factory(:info_scraper, :council => @council, :parser => @parser)
+        @test_model.stubs(:info_scrapers).returns([@info_scraper_1, @info_scraper_2])
+      end
+
+      should "process each info_scraper with object" do
+        @info_scraper_1.expects(:process).with(:save_results => true, :objects => @test_model, :dont_update_last_scraped => true)
+        @info_scraper_2.expects(:process).with(:save_results => true, :objects => @test_model, :dont_update_last_scraped => true)
+        @test_model.update_info
+      end
+    end
     # context "when creating_or_update_and_saving from params" do
     # 
     #   context "with existing record" do
