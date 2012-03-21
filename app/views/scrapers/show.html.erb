@@ -51,7 +51,7 @@
         <div class="scraping_results toggle" style="display:none">
           <div class="results">
             <%- scrape.results.each do |result| -%>
-              <%= render :partial => 'scraped_object', :object => result %>
+              <%= render :partial => 'scraped_object', :object => result if result.is_a?(ScrapedObjectResult)%>
             <%- end -%>
           </div>
           <div class="errors">
