@@ -118,9 +118,9 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def update_start_date
-    date_received = other_attributes && !other_attributes[:date_received].blank? && other_attributes[:date_received].to_date
-    date_validated = other_attributes && !other_attributes[:date_validated].blank? && other_attributes[:date_validated].to_date
-    
+    date_received = other_attributes && !other_attributes[:date_received].blank? && TitleNormaliser.normalise_uk_date(other_attributes[:date_received]).to_date rescue nil
+    date_validated = other_attributes && !other_attributes[:date_validated].blank? && TitleNormaliser.normalise_uk_date(other_attributes[:date_validated]).to_date rescue nil
+    # p (other_attributes && other_attributes[:date_received]&&TitleNormaliser.normalise_uk_date(other_attributes[:date_received])), date_received, date_validated
     case date_received
     when nil
       self[:start_date] ||= date_validated if date_validated

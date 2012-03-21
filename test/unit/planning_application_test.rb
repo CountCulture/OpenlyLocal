@@ -240,28 +240,37 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
       
       should "set the start_date to be earliest of date_received and date_validated" do
-        
         @planning_application.other_attributes = {:date_received => '2010-11-22', :date_validated => '2010-12-03'}
         @planning_application.save!
         assert_equal '2010-11-22'.to_date.to_s, @planning_application.start_date.to_s
         @planning_application.other_attributes = {:date_validated => '2010-11-22', :date_received => '2010-12-03'}
+        @planning_application.save!
         assert_equal '2010-11-22'.to_date.to_s, @planning_application.start_date.to_s
       end
       
       should "not set the start_date if date_received and date_validated blank" do
         @planning_application.other_attributes = {:date_received => '', :date_validated => ''}
-        assert_nil @planning_application.start_date
+        @planning_application.save!
+        assert_nil @planning_application.reload.start_date
       end
       
       should "not override explicitly set start date" do
         @planning_application.start_date = '2010-12-03'
         @planning_application.other_attributes = {:date_validated => '', :date_received => ''}
+        @planning_application.save!
         assert_equal '2010-12-03'.to_date.to_s, @planning_application.start_date.to_s
       end
       
       should "not set the start_date if date_received and date_validated not valid dates" do
-        @planning_application.other_attributes = {:date_received => 'foo', :date_validated => '234 March 201111'}
+        @planning_application.other_attributes = {:date_received => '00/03/2012', :date_validated => 'foo'}
+        @planning_application.save!
         assert_nil @planning_application.start_date
+      end
+      
+      should "convert US dates to UK format start_date if date_received and date_validated not valid dates" do
+        @planning_application.other_attributes = {:date_received => '20/03/2012', :date_validated => 'foo'}
+        @planning_application.save!
+        assert_equal '2012-03-20', @planning_application.start_date.to_s
       end
     end
     
