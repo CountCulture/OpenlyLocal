@@ -14,7 +14,7 @@
     <%= attribute_tag(:location, link_to("#{@planning_application.lat}, #{@planning_application.lng}", "http://maps.google.co.uk/maps?q=#{@planning_application.lat},+#{@planning_application.lng}&iwloc=A&hl=en", :target => "blank", :class => "external"), :text => "Location (from postcode)") unless @planning_application.lat.blank? %>
     <%= attribute_tag :status, @planning_application.status %>
     <%= attribute_tag :decision, @planning_application.decision %>
-    <%= attribute_tag :applicant_name, javascript_obfuscate(@planning_application.applicant_name) if @planning_application.applicant_name %>
+    <%= attribute_tag :applicant_name, javascript_obfuscate(@planning_application.applicant_name) %>
     <%= attribute_tag :applicant_address, @planning_application.applicant_address %>
     <%= attribute_tag :start_date, @planning_application.start_date %>
     <%= attribute_tag :comment_url, link_to(@planning_application.comment_url, @planning_application.comment_url, :class => 'external') if @planning_application.comment_url? %>
