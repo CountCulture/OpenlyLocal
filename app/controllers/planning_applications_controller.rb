@@ -6,7 +6,7 @@ class PlanningApplicationsController < ApplicationController
   caches_action :show, :cache_path => Proc.new {|c| [c.instance_variable_get(:@planning_application).cache_key,c.params[:format]].join('.') }, 
                        :if => Proc.new {|c| c.instance_variable_get(:@planning_application) }, 
                        :expires_in  => 12.hours
-  caches_action :index, :expires_in => 12.hours, :cache_path => Proc.new { |controller| controller.params }
+  caches_action :index, :expires_in => 4.hours, :cache_path => Proc.new { |controller| controller.params }
 
   def admin
     @councils = Council.find(:all, :include => { :scrapers => { :parser => :portal_system, :council => {} } }, 
