@@ -11,6 +11,7 @@ class PlanningApplication < ActiveRecord::Base
   before_save :update_start_date
   after_save :queue_for_sending_alerts_if_relevant
   before_create :set_default_value_for_bitwise_flag
+  alias_method :old_to_xml, :to_xml
   STATUS_TYPES_AND_ALIASES = [
                               ['approved', 'permitted'],
                               ['pending'],
@@ -94,6 +95,18 @@ class PlanningApplication < ActiveRecord::Base
     "Planning Application #{uid}" + (address.blank? ? '' : ", #{address[0..30]}...")
   end
   
+  def to_xml(options={}, &block)
+    old_to_xml({:only => [:id, :uid, :address, :lat, :lng, :postcode, :updated_at, :retrieved_at, :description, :decision, :status, :url, :application_type, :comment_url], :methods => [:openlylocal_url]}.merge(options), &block)
+  end
+  
+  def to_detailed_xml(options={})
+    # includes = {:members => {:only => [:id, :first_name, :last_name, :party, :url]}, :wards => {}, :twitter_account => {}}
+    to_xml({:include => [:council]}.merge(options)) do |builder|
+      builder<<council.to_xml(:skip_instruct => true, :root => "council", :only => [ :id, :title, :url ], :methods => [:openlylocal_url])
+      builder<<other_attributes.to_xml(:skip_instruct => true, :root => "other_attributes") if other_attributes?
+    end
+  end
+
   protected
   # overwrite default behaviour
   def self.record_not_found_behaviour(params)
