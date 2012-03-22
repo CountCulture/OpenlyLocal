@@ -67,6 +67,33 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
     
+    context "recent named scope" do
+      setup do
+        @no_date_started_application = Factory(:planning_application) #retrieved_at is nil
+        @old_date_started_application = Factory(:planning_application, :start_date => 3.weeks.ago) 
+        @recent_date_started_application = Factory(:planning_application, :start_date => 2.days.ago)
+        4.times { |i| Factory(:planning_application, :start_date => (i+3).days.ago) }
+        @recent_applications = PlanningApplication.recent
+      end
+
+      should "include only applications where date_started is set and less than 2 weeks ago" do
+        assert_equal 5, @recent_applications
+        assert !@recent_applications.include?(@no_date_started_application)
+        assert !@recent_applications.include?(@old_date_started_application)
+        assert @recent_applications.include?(@recent_date_started_application)
+      end
+      
+      should "order by date_started with most recent first" do
+        assert_equal @recent_date_started_application, @recent_applications.first
+      end
+      
+      should "limit to 5 results by default" do
+        Factory(:planning_application, :start_date => 1.days.ago)
+        assert_equal 5, PlanningApplication.recent
+      end
+      
+    end
+    
     context "stale with_clear_bitwise_flag scope" do
       setup do
         @clear_bitwise_flag = Factory(:planning_application, :bitwise_flag => 0)
