@@ -544,6 +544,33 @@ task :convert_old_confirmed_planning_alert_subscribers => :environment do
   end
 end
 
+task :convert_caps_urls_to_idox_urls => :environment do
+  puts "Please enter name of Council:"
+  break unless council = Council.find_by_normalised_title(Council.normalise_title($stdin.gets.chomp))
+  base_url = council.scrapers.first(:conditions => 'scrapers.type = "ItemScraper" AND parsers.result_model = "PlanningApplication"', 
+                                    :joins => :parser).base_url
+  
+  puts "About to rework old CAPS urls to new Idox ones for #{council.title} and base_url #{base_url}"
+  ok_to_update = 'N'
+  council.planning_applications.find_each do |pa|
+    # p "OLD url = #{pa.url}"
+    next unless pa.url.match(/PublicAccess\/tdc/i)
+    old_url = pa.url
+    uid = pa.url.scan(/\w+$/).first
+    new_url = base_url + "/applicationDetails.do?activeTab=summary&keyVal=" + uid
+    case ok_to_update
+    when 'A'
+      # do nothing
+    else 
+      puts "About to update planning application with new url #{new_url} (was #{old_url}). Continue [Y/N/A]"
+      ok_to_update = $stdin.gets.chomp
+      next if $stdin.gets.chomp == 'N'
+    end
+    pa.update_attribute(:url, new_url)
+    puts "Updated planning application with new url #{new_url} (was #{old_url})"
+  end
+end
+
 def row_converted_to_lat_lng(row, headers)
   row_hash = [headers,row].transpose.inject({}){ |hsh,a| hsh[a.first] = a.last; hsh }
   sw_lat_lng = OsCoordsUtilities.convert_os_to_wgs84(row_hash.delete('bottom_left_x'), row_hash.delete('bottom_left_y'))
