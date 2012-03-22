@@ -272,6 +272,14 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         @planning_application.save!
         assert_equal '2012-03-20', @planning_application.start_date.to_s
       end
+      
+      should "use date_received or date_validated if start_date explicitly set to blank" do
+        # regression test
+        @planning_application.start_date = ''
+        @planning_application.other_attributes = {:date_received => '2010-11-22', :date_validated => '2010-12-03'}
+        @planning_application.save!
+        assert_equal '2010-11-22'.to_date.to_s, @planning_application.start_date.to_s
+      end
     end
     
     context "when assigning address" do
@@ -404,6 +412,68 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       should "queue as Resque job" do
         Resque.expects(:enqueue).with(PlanningApplication, @planning_application.id)
         @planning_application.queue_for_sending_alerts
+      end
+    end
+    
+    context "when converting planning_application to_xml" do
+      setup do
+        @planning_application.update_attributes(:other_attributes => {:agent_name => 'Fred Flintstone'})
+        @xml_representation = Nokogiri.XML(@planning_application.to_xml)
+      end
+      
+      should "include openlylocal_url" do
+        assert @xml_representation.at('openlylocal-url')
+      end
+      
+      should "exclude bitwise_flag" do
+        assert_nil @xml_representation.at('bitwise-flag')
+      end
+      
+      should "exclude applicant name" do
+        assert_nil @xml_representation.at('applicant-name')
+      end
+      
+      should "exclude other_attributes" do
+        assert_nil @xml_representation.at('other-attributes')
+      end
+      
+      should "exclude applicant address" do
+        assert_nil @xml_representation.at('applicant-address')
+      end
+      
+      should "exclude council" do
+        assert_nil @xml_representation.at('council')
+      end
+    end
+
+    context "when converting planning_application to_detailed_xml" do
+      setup do
+        @planning_application.update_attributes(:other_attributes => {:agent_name => 'Fred Flintstone'})
+        @xml_representation = Nokogiri.XML(@planning_application.to_detailed_xml)
+      end
+      
+      should "include openlylocal_url" do
+        assert @xml_representation.at('openlylocal-url')
+      end
+      
+      should "exclude bitwise_flag" do
+        assert_nil @xml_representation.at('bitwise-flag')
+      end
+      
+      should "exclude applicant name" do
+        assert_nil @xml_representation.at('applicant-name')
+      end
+      
+      should "exclude applicant address" do
+        assert_nil @xml_representation.at('applicant-address')
+      end
+      
+      should "include council" do
+        assert_equal @planning_application.council_id.to_s, @xml_representation.at('council>id').inner_text
+      end
+      
+      should "include other attributes" do
+        assert_equal 'Fred Flintstone', @xml_representation.at('other-attributes>agent-name').content
       end
     end
 

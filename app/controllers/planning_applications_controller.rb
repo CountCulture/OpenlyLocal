@@ -38,7 +38,7 @@ class PlanningApplicationsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml { render :xml => @planning_applications.to_xml }
-      format.json { render :json => @planning_applications.to_json }
+      format.json { render :as_json =>  @planning_applications.to_xml }
       format.rss { render :layout => false }
     end
   end
@@ -52,8 +52,8 @@ class PlanningApplicationsController < ApplicationController
     @title = @planning_application.title
     respond_to do |format|
       format.html
-      format.xml { render :xml => @planning_application.to_xml }
-      format.json { render :json => @planning_application.to_json }
+      format.xml { render :xml => @planning_application.to_detailed_xml }
+      format.json { render :as_json => @planning_application.to_detailed_xml }
     end
   end
   

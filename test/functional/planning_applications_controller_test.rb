@@ -127,6 +127,18 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
         should respond_with :success
         # should_not render_with_layout
         should respond_with_content_type 'application/xml'
+
+        should "include planning applications" do
+          assert_select "planning-applications>planning-application>id"
+        end
+
+        should "not include council" do
+          assert_select "planning-applications>planning-application>council>id", false
+        end
+
+        # should 'include pagination info' do
+        #   assert_select "planning-applications>total-entries"
+        # end
       end
   
       context "with json requested" do
@@ -229,6 +241,12 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
         should respond_with :success
         should_not render_with_layout
         should respond_with_content_type 'application/json'
+
+        # should 'include pagination info' do
+        #   assert_match %r(total_entries), @response.body
+        #   assert_match %r(per_page), @response.body
+        #   assert_match %r(page.+1), @response.body
+        # end
       end
     end
   end
@@ -283,10 +301,14 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
         get :show, :id => @planning_application.id, :format => "xml"
       end
     
-      should assign_to(:planning_application) { @planning_application}
+      should assign_to(:planning_application) { @planning_application }
       should respond_with :success
       should_not render_with_layout
-      should respond_with_content_type 'application/xml'    
+      should respond_with_content_type 'application/xml'
+      
+      should "include council" do
+        assert_select "planning-application>council>id", "#{@planning_application.council.id}"
+      end
     end
     
     context "with json requested" do
@@ -300,14 +322,16 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
       should respond_with :success
       should_not render_with_layout
       should respond_with_content_type 'application/json'
-      should "include supplying organisations" do
+      
+      should "include council" do
+        assert_match /planning_application\":.+council\":.+id\":#{@planning_application.council.id}/, @response.body
       end
     end
 
   end
   
   # admin tests
-  context "on get to :admin hyperlocal_sites without auth" do
+  context "on get to :admin planning_applications without auth" do
     setup do
       delete :admin
     end
@@ -315,7 +339,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
     should respond_with 401
   end
 
-  context "on get to :admin hyperlocal sites" do
+  context "on get to :admin planning_applications" do
     setup do
       stub_authentication
       get :admin
