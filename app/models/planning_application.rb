@@ -33,6 +33,10 @@ class PlanningApplication < ActiveRecord::Base
                                  :order => 'retrieved_at' } }
   
   named_scope :with_details, { :conditions => "retrieved_at IS NOT NULL" } 
+  named_scope :recent, lambda { { :conditions => [ "start_date > ?", 2.weeks.ago],
+                                  :limit => 5, 
+                                  :order => 'start_date DESC' } }
+  
 
   named_scope :with_clear_bitwise_flag, lambda { |bitwise_number| { :conditions => ["bitwise_flag & ? = 0", bitwise_number]}}
 
