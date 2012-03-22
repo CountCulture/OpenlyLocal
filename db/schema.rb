@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120320112541) do
+ActiveRecord::Schema.define(:version => 20120322092218) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -804,20 +804,15 @@ ActiveRecord::Schema.define(:version => 20120320112541) do
     t.string   "postcode",          :limit => 10,       :default => ""
     t.text     "description"
     t.string   "url",               :limit => 1024
-    t.string   "info_tinyurl",      :limit => 50
     t.string   "comment_url",       :limit => 1024
-    t.string   "comment_tinyurl",   :limit => 50
     t.datetime "retrieved_at"
     t.date     "start_date"
-    t.string   "map_url",           :limit => 150
     t.float    "lat"
     t.float    "lng"
     t.integer  "council_id"
     t.string   "applicant_name"
     t.text     "applicant_address"
     t.string   "status",            :limit => 64
-    t.date     "on_notice_from"
-    t.date     "on_notice_to"
     t.string   "decision",          :limit => 64
     t.text     "other_attributes",  :limit => 16777215
     t.datetime "created_at"

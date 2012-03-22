@@ -77,7 +77,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
 
       should "include only applications where date_started is set and less than 2 weeks ago" do
-        assert_equal 5, @recent_applications
+        assert_equal 5, @recent_applications.size
         assert !@recent_applications.include?(@no_date_started_application)
         assert !@recent_applications.include?(@old_date_started_application)
         assert @recent_applications.include?(@recent_date_started_application)
@@ -89,7 +89,8 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       
       should "limit to 5 results by default" do
         Factory(:planning_application, :start_date => 1.days.ago)
-        assert_equal 5, PlanningApplication.recent
+        recent_applications = PlanningApplication.recent
+        assert_equal 5, recent_applications.size
       end
       
     end
@@ -300,6 +301,12 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         assert_equal '2012-03-20', @planning_application.start_date.to_s
       end
       
+      should "convert text dates to date" do
+        @planning_application.other_attributes = {:date_received => 'Thu 08 Mar 2012', :date_validated => 'foo'}
+        @planning_application.save!
+        assert_equal '2012-03-08', @planning_application.start_date.to_s
+      end
+      
       should "use date_received or date_validated if start_date explicitly set to blank" do
         # regression test
         @planning_application.start_date = ''
@@ -400,6 +407,50 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         @planning_application.postcode = 'CD2 1AB'
         assert_nil @planning_application.inferred_lat_lng
       end
+    end
+
+    context "when returning date_received" do
+      
+      should "return nil if no other attributes" do
+        assert_nil @planning_application.date_received
+      end
+
+      should "return nil if no date_received in other attributes" do
+        @planning_application.other_attributes = {:foo => 'bar'}
+        assert_nil @planning_application.date_received
+      end
+
+      should "return normalised date_received if date_received in other attributes" do
+        @planning_application.other_attributes = {:foo => 'bar', :date_received => '2012-03-22'}
+        assert_equal '2012-03-22', @planning_application.date_received
+        @planning_application.other_attributes = {:foo => 'bar', :date_received => "Thu 08 Mar 2012"}
+        assert_equal '2012-03-08', @planning_application.date_received
+        @planning_application.other_attributes = {:foo => 'bar', :date_received => "foo bar"}
+        assert_nil @planning_application.date_received
+      end
+
+    end
+
+    context "when returning date_validated" do
+      
+      should "return nil if no other attributes" do
+        assert_nil @planning_application.date_validated
+      end
+
+      should "return nil if no date_received in other attributes" do
+        @planning_application.other_attributes = {:foo => 'bar'}
+        assert_nil @planning_application.date_validated
+      end
+
+      should "return normalised date_received if date_received in other attributes" do
+        @planning_application.other_attributes = {:foo => 'bar', :date_validated => '2012-03-22'}
+        assert_equal '2012-03-22', @planning_application.date_validated
+        @planning_application.other_attributes = {:foo => 'bar', :date_validated => "Thu 08 Mar 2012"}
+        assert_equal '2012-03-08', @planning_application.date_validated
+        @planning_application.other_attributes = {:foo => 'bar', :date_validated => "foo bar"}
+        assert_nil @planning_application.date_validated
+      end
+
     end
 
     context "when returning normalised_application_status" do

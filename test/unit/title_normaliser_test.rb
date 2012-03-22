@@ -136,6 +136,12 @@ class TitleNormaliserTest < ActiveSupport::TestCase
         assert_nil TitleNormaliser.normalise_uk_date('')
       end
 
+      should "return nil if unable to parse date" do
+        assert_nil TitleNormaliser.normalise_uk_date('foo')
+        assert_nil TitleNormaliser.normalise_uk_date('123 March 2009')
+        assert_nil TitleNormaliser.normalise_uk_date('123 March')
+      end
+
       should "convert date to string" do
         date = 30.days.ago.to_date
         assert_equal date.to_s, TitleNormaliser.normalise_uk_date(date)

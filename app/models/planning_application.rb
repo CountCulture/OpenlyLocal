@@ -59,6 +59,16 @@ class PlanningApplication < ActiveRecord::Base
     self[:bitwise_flag] = new_bitwise_flag == 7 ? 0 : new_bitwise_flag
   end
   
+  def date_received
+    date = TitleNormaliser.normalise_uk_date(other_attributes && other_attributes[:date_received])
+    date ? date : nil
+  end
+  
+  def date_validated
+    date = TitleNormaliser.normalise_uk_date(other_attributes && other_attributes[:date_validated])
+    date ? date : nil
+  end
+  
   def start_date=(raw_date)
     self[:start_date] = TitleNormaliser.normalise_uk_date(raw_date)
   end
@@ -135,9 +145,6 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def update_start_date
-    date_received = other_attributes && !other_attributes[:date_received].blank? && TitleNormaliser.normalise_uk_date(other_attributes[:date_received]).to_date rescue nil
-    date_validated = other_attributes && !other_attributes[:date_validated].blank? && TitleNormaliser.normalise_uk_date(other_attributes[:date_validated]).to_date rescue nil
-    # p (other_attributes && other_attributes[:date_received]&&TitleNormaliser.normalise_uk_date(other_attributes[:date_received])), date_received, date_validated
     case date_received
     when nil
       self[:start_date] ||= date_validated if date_validated
@@ -145,7 +152,6 @@ class PlanningApplication < ActiveRecord::Base
       self[:start_date] ||= date_received
     end
     true
-    # self[:start_date] = date_received
   end
   
   def set_default_value_for_bitwise_flag
