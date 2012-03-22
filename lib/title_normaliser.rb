@@ -29,6 +29,9 @@ module TitleNormaliser
       raw_date = cleaned_up_date.sub(/^(\d{1,2}-)([\w\d]+-)([01]\d)$/,'\1\220\3').sub(/^(\d{1,2}-)([\w\d]+-)([9]\d)$/,'\1\219\3').to_date
     end
     raw_date.to_s
+  rescue
+    Rails.logger.debug "Failed to normalise possible UK date: #{raw_date}"
+    nil
   end
 
   def normalise_url(raw_url)
