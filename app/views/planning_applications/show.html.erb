@@ -1,5 +1,5 @@
 <%- div_for @planning_application, :class => 'vcard' do -%>
-  <div class="breadcrumbs"><%= link_to "#{@council.name} planning applications", planning_applications_path(:council_id => @council.id) %></div>
+  <div class="breadcrumbs"><%= link_to "#{@council.name} planning applications", { :action => 'index', :council_id => @council.id } %></div>
   <h1><%= @title %></h1>
   <%= render :partial => 'shared/map_object', :object => @planning_application if @planning_application.lat? %>
 
@@ -31,6 +31,8 @@
         </dl>
       </div>
   <%- end -%>
+  
+  <%= render :partial => 'shared/api_info' %>
 
   <%= timestamp_data_for @planning_application %>
 <%- end -%>
