@@ -50,8 +50,9 @@ class Scraper < ActiveRecord::Base
     self[:cookie_url].blank? ? computed_cookie_url : self[:cookie_url]
   end
   
-  def enqueue
-    Resque.enqueue(Scraper, self.id)
+  def enqueue(priority=nil)
+    priority ||= self.priority
+    Resque.enqueue_to("scrapers_#{priority}", Scraper, self.id)
   end
   
   def expected_result_attributes
