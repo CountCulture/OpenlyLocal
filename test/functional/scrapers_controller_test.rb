@@ -271,12 +271,13 @@ class ScrapersControllerTest < ActionController::TestCase
   
   context "POST to :scrape" do
     setup do
+      Resque.stubs(:enqueue_to)
       @scraper = Factory(:scraper)
       stub_authentication
     end
       
-    should "add to delayed job queue" do
-      ItemScraper.any_instance.expects(:delay => stub(:perform => nil))
+    should "add to queue with priority of 2" do
+      ItemScraper.any_instance.expects(:enqueue).with(2)
       post :scrape, :id => @scraper.id
     end
     

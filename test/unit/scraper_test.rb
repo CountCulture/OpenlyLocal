@@ -286,9 +286,14 @@ class ScraperTest < ActiveSupport::TestCase
     end
     
     context "when enqueueing" do
-      should "add to Resque queue" do
-        Resque.expects(:enqueue).with(Scraper, @scraper.id)
+      should "create to Resque job with scraper's priority if not given" do
+        Resque.expects(:enqueue_to).with("scrapers_#{@scraper.priority}", Scraper, @scraper.id)
         @scraper.enqueue
+      end
+      
+      should "override scraper priority if priority explicitly given" do
+        Resque.expects(:enqueue_to).with('scrapers_2', Scraper, @scraper.id)
+        @scraper.enqueue(2)
       end
     end
     
