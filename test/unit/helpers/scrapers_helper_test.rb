@@ -146,8 +146,9 @@ class ScrapersHelperTest < ActionView::TestCase
       assert_kind_of Array, existing_scraper_links(@council)
     end
     
-    should "return array of links for council's scrapers" do
-      assert_equal link_for(@scraper), existing_scraper_links(@council).first
+    should "return array of links for council's scrapers and links to process them" do
+      expected_result = link_for(@scraper) + ' ' +  link_to('process', scrape_scraper_url(@scraper), :class => 'button process_scraper') 
+      assert_equal expected_result, existing_scraper_links(@council).first
     end
     
     should "return links for all existing scrapers" do

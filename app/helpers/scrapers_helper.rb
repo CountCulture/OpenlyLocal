@@ -40,7 +40,7 @@ module ScrapersHelper
   end
   
   def existing_scraper_links(council)
-    council.scrapers.collect{ |s| link_for(s) }
+    council.scrapers.collect{ |s| link_for(s) + ' ' + link_to('process', scrape_scraper_url(s), :class => 'button process_scraper') }
   end
   
 end
