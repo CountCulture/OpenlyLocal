@@ -70,6 +70,24 @@ $(document).ready( function() {
 		
 		$('dd.company_number a').getCompanyData();
 		
+		$('a.process_scraper.button').click(function(event){
+		  var link = $(this);
+		  $.post(this.href, function(data) {
+		    var parent = link.parent();
+        link.replaceWith("<span class='alert button'>queued for processing</span>")
+        parent.children('.alert.button').fadeOut(5000);
+      });
+			event.preventDefault();					
+		});
+		$('input.process_scraper').parents('form').submit(function() {
+		  event.preventDefault();
+		  form = $( this );
+		  $.post(form.attr('action') + '/scrape', function(data) {
+       form.html("<span class='alert button'>queued for processing</span>")
+       form.fadeOut(5000);
+      });
+    });
+  		
 });
 
 // Map Geography Utility functions - see http://www.movable-type.co.uk/scripts/latlong.html#destPoint  

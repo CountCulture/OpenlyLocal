@@ -285,6 +285,23 @@ class ScrapersControllerTest < ActionController::TestCase
       post :scrape, :id => @scraper.id
       assert_match /being processed/, flash[:notice]
     end
+    
+    context "and xhr request" do
+      should "add to queue with priority of 2" do
+        ItemScraper.any_instance.expects(:enqueue).with(2)
+        xhr :post, :scrape, :id => @scraper.id
+      end
+      
+      context "and" do
+        setup do
+          xhr :post, :scrape, :id => @scraper.id
+        end
+
+        should respond_with :success
+      end
+
+
+    end
      
   end
   
