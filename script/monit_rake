@@ -1,5 +1,6 @@
 #!/bin/sh 
 # wrapper to daemonize rake tasks: see also http://mmonit.com/wiki/Monit/FAQ#pidfile 
+# used to start/stop resque workers
 usage() { 
   echo "usage: ${0} [start|stop] name target [arguments]" 
   echo "\tname is used to create or read the log and pid file names" 
@@ -35,3 +36,4 @@ case $cmd in
     rm -f ${pid_file} ;; 
   *) usage ;; 
 esac
+
