@@ -1,0 +1,2 @@
+module AlertSubscribersHelper
+end

@@ -1,0 +1,11 @@
+<%= error_messages_for :alert_subscriber %>
+<%- form_for :alert_subscriber do |f| %>
+  <p class='required'>
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </p>
+  <p class='required'>
+    <%= f.label :postcode %>
+    <%= f.text_field :postcode %>
+  </p>
+<%- end -%>

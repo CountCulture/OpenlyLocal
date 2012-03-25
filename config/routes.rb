@@ -80,7 +80,8 @@ ActionController::Routing::Routes.draw do |map|
   # Important: these need to go after nested resources for caching to work
   map.resources :datasets, :dataset_families, :meetings
   map.resources :dataset_topics, :except => [:new, :destroy, :index], :member => { :populate => :post }
-  
+
+  map.resources :alert_subscribers, :only => [:new, :create], :collection => [:unsubscribe, :confirm]  
   
   map.resources :wards do |wards|
     wards.resources :dataset_topics, :path_prefix => '/wards/:area_id', :requirements => {:area_type => "Ward"}, :only => [:show]
