@@ -1,0 +1,10 @@
+<h1>Planning Application alerts</h1>
+
+<p class="alert">
+  <%- if @unsubscribed -%>
+    Your alert subscription has been successfully cancelled and we have removed your email from our database
+  <%- else -%>
+    Your alert subscription failed to be cancelled. Perhaps you had already cancelled it? If you think this is our error, email us at 
+    <%= mail_to 'planning@openlylocal.com', 'planning@openlylocal.com', :encode => :javascript %>
+  <%- end -%>
+</p>
