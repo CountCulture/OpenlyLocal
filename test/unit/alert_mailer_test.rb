@@ -27,4 +27,27 @@ class AlertMailerTest < ActionMailer::TestCase
     end
   end
   
+  context "A AlertMailer confirmation email" do
+    setup do
+      Resque.stubs(:enqueue)
+      @alert_subscriber = Factory(:alert_subscriber)
+      @report = AlertMailer.create_confirmation(@alert_subscriber)
+    end
+
+    should "be sent from alerts@openlylocal.com" do
+      assert_equal "alerts@openlylocal.com", @report.from[0]
+    end
+    
+    should "be sent to alert_subscriber email address" do
+      assert_equal @alert_subscriber.email, @report.to[0]
+    end
+    
+    should "include appropriate subject" do
+      assert_match /confirm/, @report.subject
+    end
+    
+    should "include confirmation_link in body" do
+      assert_match /#{@alert_subscriber.confirmation_code}/, @report.body
+    end
+  end
 end
