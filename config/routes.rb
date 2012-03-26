@@ -1,6 +1,4 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :alert_subscribers
-
 
   map.resources :charities, :member => { :refresh => :put }
 
@@ -80,8 +78,6 @@ ActionController::Routing::Routes.draw do |map|
   # Important: these need to go after nested resources for caching to work
   map.resources :datasets, :dataset_families, :meetings
   map.resources :dataset_topics, :except => [:new, :destroy, :index], :member => { :populate => :post }
-
-  map.resources :alert_subscribers, :only => [:new, :create], :collection => [:unsubscribe, :confirm]  
   
   map.resources :wards do |wards|
     wards.resources :dataset_topics, :path_prefix => '/wards/:area_id', :requirements => {:area_type => "Ward"}, :only => [:show]
@@ -126,6 +122,11 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'parish_councils/os_id/:os_id', :controller => "parish_councils", :action => "show", :requirements => { :os_id => /\d+/ }
 
   map.connect 'planning', :controller => "planning_applications", :action => "overview"
+  
+  map.connect 'alert_subscribers/confirm', :controller => 'alert_subscribers', :action => 'confirm', :method => :get
+  map.connect 'alert_subscribers/unsubscribe', :controller => 'alert_subscribers', :action => 'unsubscribe', :method => :get
+  map.connect 'alert_subscribers/new', :controller => 'alert_subscribers', :action => 'new', :method => :get
+  map.connect 'alert_subscribers', :controller => 'alert_subscribers', :action => 'create', :method => :post
 
   # The priority is based upon order of creation: first created -> highest priority.
 
