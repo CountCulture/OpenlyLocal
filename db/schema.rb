@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120322092218) do
+ActiveRecord::Schema.define(:version => 20120325194122) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(:version => 20120322092218) do
 
   create_table "alert_subscribers", :force => true do |t|
     t.string   "email",             :limit => 128
-    t.string   "postcode",          :limit => 8
+    t.string   "postcode_text",     :limit => 8
     t.datetime "last_sent"
     t.boolean  "confirmed"
     t.string   "confirmation_code"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(:version => 20120322092218) do
     t.float    "top_right_lng"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "postcode_id"
   end
 
   create_table "authority", :primary_key => "authority_id", :options=>'ENGINE=MyISAM', :force => true do |t|

@@ -415,6 +415,7 @@ end
 
 Factory.define :alert_subscriber do |f|
   f.sequence( :email) {|n| "email#{n}@test.com"}
-  f.postcode "AB1 2BC"
+  f.postcode_text "AB1 2BC"
+  f.distance 0.2
 end
 

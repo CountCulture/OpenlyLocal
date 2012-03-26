@@ -101,7 +101,7 @@ class AlertSubscribersControllerTest < ActionController::TestCase
     context "in email is OK" do
       setup do
         @postcode = Factory(:postcode, :code => 'AB12CD')
-        post :create, :email => 'new_user@test.com', :postcode => 'ab12cd'
+        post :create, :alert_subscriber => {:email => 'new_user@test.com', :postcode_text => 'ab1 2cd'}
       end
 
       should assign_to :alert_subscriber
@@ -113,7 +113,7 @@ class AlertSubscribersControllerTest < ActionController::TestCase
       end
       
       should "associate user with postcode" do
-        assert AlertSubscriber.find_by_email_and_postcode('new_user@test.com', 'ab12cd')
+        assert AlertSubscriber.find_by_email_and_postcode_id('new_user@test.com', @postcode.id)
       end
       
       should "not show errors" do
@@ -125,7 +125,7 @@ class AlertSubscribersControllerTest < ActionController::TestCase
       setup do
         @existing_subscriber = Factory(:alert_subscriber, :email => 'foo@test.com')
         @old_subscriber_count = AlertSubscriber.count
-        post :create, :email => 'foo@test.com', :postcode => 'ab12cd'
+        post :create, :alert_subscriber => {:email => 'foo@test.com', :postcode_text => 'ab12cd'}
       end
 
       should "not create subscriber" do

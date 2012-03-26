@@ -11,7 +11,8 @@ class AlertSubscribersController < ApplicationController
   end
   
   def create
-    @alert_subscriber = AlertSubscriber.new(:email => params[:email], :postcode => params[:postcode])
+    distance = 0.2
+    @alert_subscriber = AlertSubscriber.new(:email => params[:alert_subscriber][:email], :postcode_text => params[:alert_subscriber][:postcode_text], :distance => distance)
     if @alert_subscriber.save
       render :template => 'alert_subscribers/subscribed'
     else

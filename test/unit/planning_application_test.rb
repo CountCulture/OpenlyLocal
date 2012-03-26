@@ -18,15 +18,10 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     should have_db_column :postcode
     should have_db_column :description
     should have_db_column :url
-    should have_db_column :info_tinyurl
     should have_db_column :comment_url
-    should have_db_column :comment_tinyurl
     should have_db_column :uid
     should have_db_column :retrieved_at
     should have_db_column :start_date
-    should have_db_column :on_notice_from
-    should have_db_column :on_notice_to
-    should have_db_column :map_url
     should have_db_column :status
     should have_db_column :application_type
     should have_db_column :bitwise_flag

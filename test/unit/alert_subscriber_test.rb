@@ -10,8 +10,10 @@ class AlertSubscriberTest < ActiveSupport::TestCase
   
     should validate_presence_of :email
     should_validate_uniqueness_of :email
-    should validate_presence_of :postcode
-
+    should validate_presence_of :postcode_text
+    should validate_presence_of :distance
+    should belong_to :postcode
+    
     context "when confirming from email and confirmation code" do
       context "and email and confirmation code match" do
 
@@ -39,6 +41,7 @@ class AlertSubscriberTest < ActiveSupport::TestCase
     
     context "on creation" do
       setup do
+        @postcode = Factory(:postcode)
         @alert_subscriber = Factory.build(:alert_subscriber)
       end
 
@@ -46,6 +49,40 @@ class AlertSubscriberTest < ActiveSupport::TestCase
         assert_nil @alert_subscriber.confirmation_code
         @alert_subscriber.save!
         assert @alert_subscriber.reload.confirmation_code
+      end
+      
+      should "get postcode from postcode_text" do
+        Postcode.expects(:find_from_messy_code).with(@alert_subscriber.postcode_text)
+        @alert_subscriber.save!
+      end
+      
+      should "set postcode from postcode_text" do
+        Postcode.stubs(:find_from_messy_code).returns(@postcode)
+        @alert_subscriber.save!
+        assert_equal @postcode, @alert_subscriber.reload.postcode
+      end
+      
+      should "not fail if no postcode from postcode_text" do
+        Postcode.stubs(:find_from_messy_code) # => nil
+        @alert_subscriber.save!
+        assert_nil @alert_subscriber.reload.postcode
+      end
+      
+      should "set lat lng bounds from postcode and distance" do
+        bounding_box = Geokit::Bounds.from_point_and_radius([12.3456, 54.321], 0.25)
+        Postcode.stubs(:find_from_messy_code).returns(@postcode)
+        AlertSubscriber.expects(:bounding_box_from_postcode_and_distance).with(@postcode, @alert_subscriber.distance).returns(bounding_box)
+        @alert_subscriber.save!
+        assert_equal bounding_box.sw.lat, @alert_subscriber.bottom_left_lat
+        assert_equal bounding_box.sw.lng, @alert_subscriber.bottom_left_lng
+        assert_equal bounding_box.ne.lat, @alert_subscriber.top_right_lat
+        assert_equal bounding_box.ne.lng, @alert_subscriber.top_right_lng
+      end
+      
+      should "send confirmation email" do
+        stub_email= stub("confirmation_email")
+        AlertMailer.expects(:deliver_confirmation!).with(@alert_subscriber)
+        @alert_subscriber.save!
       end
     end
     
@@ -102,6 +139,32 @@ class AlertSubscriberTest < ActiveSupport::TestCase
         assert_equal expected_token, AlertSubscriber.unsubscribe_token('foo@test.com')
       end
     end
+    
+    context "when calculating bounding box from postcode and distance" do
+      setup do
+        @postcode = Factory(:postcode, :lat => 12.3456, :lng => 54.321)
+      end
+
+      should "return nil if postcode is nil" do
+        assert_nil AlertSubscriber.bounding_box_from_postcode_and_distance(nil, 0.2)
+      end
+      
+      should "return bounding box for given distance from postcode's lat/lng" do
+        expected_bounding_box = Geokit::Bounds.from_point_and_radius([12.3456, 54.321], 0.25)
+        assert_equal expected_bounding_box, AlertSubscriber.bounding_box_from_postcode_and_distance(@postcode, 0.25)
+      end
+    end
+    
+    context "when getting postcode from postcode text" do
+      setup do
+        
+      end
+
+      should "description" do
+        
+      end
+    end
+    
   end
   
   context "an instance of the AlertSubscriber class" do
