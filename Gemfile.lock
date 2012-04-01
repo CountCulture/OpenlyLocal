@@ -109,6 +109,7 @@ GEM
       redis-namespace (~> 1.0.2)
       sinatra (>= 0.9.2)
       vegas (~> 0.1.2)
+    resque-lock (1.0.0)
     resque-lock-timeout (0.3.3)
       resque (>= 1.8.0)
     ruby-prof (0.10.8)
@@ -170,6 +171,7 @@ DEPENDENCIES
   rdf
   rdf-rdfxml
   resque
+  resque-lock
   resque-lock-timeout
   ruby-prof
   shoulda

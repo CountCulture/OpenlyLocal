@@ -30,6 +30,7 @@ gem 'daemons', '1.0.10'
 gem 'delayed_job', '2.0.4'
 gem 'SystemTimer'
 gem 'resque', :require => "resque/server"
+gem "resque-lock"
 gem "resque-lock-timeout"
 
 group :test do

@@ -1,3 +1,4 @@
+require 'resque/plugins/lock'
 # Scrapers are normally run as delayed_job, determined by the priority and then by the next_due date
 # Scrapers of priority of less than 1 are never added to the delayed_job queue. These are principally CsvScrapers,
 # which we are only ever run manually. We also don't currently add problematic ones to the queue.
@@ -14,6 +15,7 @@ class Scraper < ActiveRecord::Base
                         'H' => 'Hpricot'
                       }
   extend Resque::Plugins::LockTimeout
+  extend Resque::Plugins::Lock
   belongs_to :parser, :inverse_of  => :scrapers
   belongs_to :council
   has_many :scrapes
@@ -57,6 +59,10 @@ class Scraper < ActiveRecord::Base
   
   def expected_result_attributes
     read_attribute(:expected_result_attributes) ? Hash.new.instance_eval("merge(#{read_attribute(:expected_result_attributes)})") : {}
+  end
+  
+  def self.redis_lock_key(scraper_id)
+    "perform_lock:scraper:council_#{Scraper.find(scraper_id).council_id}"
   end
   
   def title
