@@ -194,7 +194,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     
     context "on save" do
       setup do
-        Resque.stubs(:enqueue)
+        Resque.stubs(:enqueue_to)
       end
 
       should "get inferred_lat_lng" do
@@ -482,8 +482,8 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     end
     
     context "when queueing for sending alerts" do
-      should "queue as Resque job" do
-        Resque.expects(:enqueue).with(PlanningApplication, @planning_application.id)
+      should "queue as Resque job to alert queue" do
+        Resque.expects(:enqueue_to).with('planning_application_alerts', PlanningApplication, @planning_application.id)
         @planning_application.queue_for_sending_alerts
       end
     end
