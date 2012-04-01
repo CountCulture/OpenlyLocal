@@ -123,11 +123,10 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'planning', :controller => "planning_applications", :action => "overview"
   
-  map.connect 'alert_subscribers/confirm', :controller => 'alert_subscribers', :action => 'confirm', :method => :get
+  map.confirm_alert_subscribers 'alert_subscribers/confirm', :controller => 'alert_subscribers', :action => 'confirm', :method => :get
   map.connect 'alert_subscribers/unsubscribe', :controller => 'alert_subscribers', :action => 'unsubscribe', :method => :get
   map.connect 'alert_subscribers/new', :controller => 'alert_subscribers', :action => 'new', :method => :get
   map.connect 'alert_subscribers', :controller => 'alert_subscribers', :action => 'create', :method => :post
-
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
