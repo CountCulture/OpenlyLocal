@@ -96,6 +96,11 @@ class ScraperTest < ActiveSupport::TestCase
       end      
     end
     
+    context "when returning redis_lock_key given scraper id" do
+      should "return key based on scraper council_id" do
+        assert_equal "perform_lock:scraper:council_#{@scraper.council_id}", Scraper.redis_lock_key(@scraper.id)
+      end
+    end
   end
   
   context "A Scraper instance" do
