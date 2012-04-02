@@ -1,7 +1,29 @@
 require 'test_helper'
 
 class AlertSubscribersControllerTest < ActionController::TestCase
-  # Replace this with your real tests.
+
+  context "when routing to alert_subscribers" do
+    should "have routing for confirm" do
+      assert_routing("alert_subscribers/confirm", {:controller => "alert_subscribers", :action => "confirm"})
+    end
+    
+    should "have routing for unsubscribing" do
+      assert_routing("alert_subscribers/unsubscribe", {:controller => "alert_subscribers", :action => "unsubscribe"})
+    end
+    
+    should "have routing for new" do
+      assert_routing("alert_subscribers/new", {:controller => "alert_subscribers", :action => "new"})
+    end
+    
+    should "have routing for creating" do
+      assert_routing({ :method => 'post', :path => "alert_subscribers"}, {:controller => "alert_subscribers", :action => "create"})
+    end
+    # should "have routing for admin hyperlocal_sites" do
+    #   assert_routing('/hyperlocal_sites/admin', {:controller => "hyperlocal_sites", :action => "admin"})
+    # end
+    
+  end
+
   context "on GET to new" do
     setup do
       get :new
