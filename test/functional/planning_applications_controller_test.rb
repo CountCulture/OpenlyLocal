@@ -1,6 +1,9 @@
 require 'test_helper'
 
 class PlanningApplicationsControllerTest < ActionController::TestCase
+  setup do
+    Resque.stubs(:enqueue_to)
+  end
 
   should "route planning applications correctly to index with  true" do
     assert_routing("planning", {:controller => "planning_applications", :action => "overview"})
@@ -30,7 +33,6 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
   
   context "on GET to :index" do
     setup do
-      Resque.stubs(:enqueue)
       @postcode = Factory(:postcode, :code => 'AB12CD')
       @non_matching_application = Factory(:planning_application)
       @council = Factory(:generic_council)
@@ -253,7 +255,6 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
   
   context "on GET to :show" do
     setup do
-      Resque.stubs(:enqueue)
       @planning_application = Factory(:planning_application)
       @another_planning_application = Factory(:planning_application)      
     end

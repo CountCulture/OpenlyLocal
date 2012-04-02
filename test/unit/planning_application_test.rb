@@ -483,7 +483,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     
     context "when queueing for sending alerts" do
       should "queue as Resque job to alert queue" do
-        Resque.expects(:enqueue_to).with('planning_application_alerts', PlanningApplication, @planning_application.id)
+        Resque.expects(:enqueue_to).with(:planning_application_alerts, PlanningApplication, @planning_application.id)
         @planning_application.queue_for_sending_alerts
       end
     end

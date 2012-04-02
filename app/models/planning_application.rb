@@ -98,7 +98,7 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def queue_for_sending_alerts
-    Resque.enqueue(PlanningApplication, self.id)
+    Resque.enqueue_to(:planning_application_alerts, PlanningApplication, self.id)
   end
   
   def send_alerts
