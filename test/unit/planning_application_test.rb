@@ -5,6 +5,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
   
   context "the PlanningApplication class" do
     setup do
+      Resque.stubs(:enqueue_to)
       @planning_application = Factory(:planning_application)
     end
     
@@ -32,9 +33,17 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       assert_equal({:foo => 'bar'}, Factory(:planning_application, :other_attributes => {:foo => 'bar'}).reload.other_attributes)
     end
     
-    should "set bitwise_flag to be zero if not set on creation" do
-      assert_equal 0, Factory(:planning_application).bitwise_flag
-      assert_equal 0, Factory(:planning_application, :bitwise_flag => nil).bitwise_flag
+    context "on creation" do
+      should "set bitwise_flag to be zero if not set on creation" do
+        assert_equal 0, Factory(:planning_application).bitwise_flag
+        assert_equal 0, Factory(:planning_application, :bitwise_flag => nil).bitwise_flag
+      end
+      
+      should "enqueue to planning_applications_after_create queue" do
+        pa = Factory.build(:planning_application)
+        Resque.expects(:enqueue_to).with(:planning_applications_after_create, PlanningApplication, anything)
+        pa.save!
+      end
     end
 
     should "act as mappable" do
@@ -157,11 +166,34 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         assert_equal :planning_applications, PlanningApplication.instance_variable_get(:@queue)
       end
     end
+
+    context "when performing" do
+      setup do
+        PlanningApplication.stubs(:find).with(@planning_application.id).returns(@planning_application)
+      end
+
+      should "update_info for planning_application with given id" do
+        @planning_application.expects(:update_info)
+        PlanningApplication.perform(@planning_application.id)
+      end
+      
+      context "and problem updating info" do
+        setup do
+          @planning_application.expects(:update_info).raises(Scraper::RequestError)
+        end
+
+        should "put back on queue" do
+          Resque.expects(:enqueue_to).with(:planning_application_exceptions, PlanningApplication, @planning_application.id)
+          PlanningApplication.perform(@planning_application.id)
+        end
+      end
+    end
   end
 
   
   context "an instance of the PlanningApplication class" do
     setup do
+      Resque.stubs(:enqueue_to)
       @planning_application = Factory(:planning_application)
     end
     
@@ -224,6 +256,11 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         @planning_application.save!
         assert_equal 22.2, @planning_application.lat
         assert_equal 33.3, @planning_application.lng
+      end
+      
+      should "not queue for planning_applications_after_create" do
+        Resque.expects(:enqueue_to).with(:planning_applications_after_create, anything, anything).never
+        @planning_application.save!
       end
       
       should "not queue for emailing" do
@@ -483,7 +520,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     
     context "when queueing for sending alerts" do
       should "queue as Resque job to alert queue" do
-        Resque.expects(:enqueue_to).with(:planning_application_alerts, PlanningApplication, @planning_application.id)
+        Resque.expects(:enqueue_to).with(:planning_application_alerts, PlanningApplication, @planning_application.id, :send_alerts)
         @planning_application.queue_for_sending_alerts
       end
     end

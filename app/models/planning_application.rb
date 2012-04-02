@@ -11,6 +11,7 @@ class PlanningApplication < ActiveRecord::Base
   before_save :update_start_date
   after_save :queue_for_sending_alerts_if_relevant
   before_create :set_default_value_for_bitwise_flag
+  after_create :queue_for_updating_info
   alias_method :old_to_xml, :to_xml
   STATUS_TYPES_AND_ALIASES = [
                               ['approved', 'permitted'],
@@ -40,6 +41,13 @@ class PlanningApplication < ActiveRecord::Base
 
   named_scope :with_clear_bitwise_flag, lambda { |bitwise_number| { :conditions => ["bitwise_flag & ? = 0", bitwise_number]}}
 
+  def self.perform(pa_id, method = nil)
+    find(pa_id).update_info
+  rescue Scraper::ScraperError => e
+    logger.error "Exception (#{e.inspect}) updating info for PlanningApplication with id #{pa_id}"
+    Resque.enqueue_to(:planning_application_exceptions, PlanningApplication, pa_id)
+  end
+  
   def address=(raw_address)
     cleaned_up_address = raw_address.blank? ? raw_address : raw_address.gsub("\r", "\n").gsub(/\s{2,}/,' ').strip
     self[:address] = cleaned_up_address
@@ -98,7 +106,7 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def queue_for_sending_alerts
-    Resque.enqueue_to(:planning_application_alerts, PlanningApplication, self.id)
+    Resque.enqueue_to(:planning_application_alerts, PlanningApplication, self.id, :send_alerts)
   end
   
   def send_alerts
@@ -136,6 +144,10 @@ class PlanningApplication < ActiveRecord::Base
   private
   def queue_for_sending_alerts_if_relevant
     queue_for_sending_alerts unless self.changes["lat"].blank? || self.changes["lng"].blank?
+  end
+  
+  def queue_for_updating_info
+    Resque.enqueue_to(:planning_applications_after_create, PlanningApplication, self.id)
   end
   
   def update_lat_lng
