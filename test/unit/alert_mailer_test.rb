@@ -3,7 +3,7 @@ require 'test_helper'
 class AlertMailerTest < ActionMailer::TestCase
   context "A AlertMailer planning_alert email" do
     setup do
-      Resque.stubs(:enqueue)
+      Resque.stubs(:enqueue_to)
       @planning_application = Factory(:planning_application_with_lat_long, :address => '22 Foo St, Bartown BT1 1TB', :postcode => 'BT1 1TB', :description => 'Some new development here')
       @alert_subscriber = Factory(:alert_subscriber)
       @report = AlertMailer.create_planning_alert(:subscriber => @alert_subscriber, :planning_application => @planning_application)
@@ -29,7 +29,7 @@ class AlertMailerTest < ActionMailer::TestCase
   
   context "A AlertMailer confirmation email" do
     setup do
-      Resque.stubs(:enqueue)
+      Resque.stubs(:enqueue_to)
       @alert_subscriber = Factory(:alert_subscriber)
       @report = AlertMailer.create_confirmation(@alert_subscriber)
     end
