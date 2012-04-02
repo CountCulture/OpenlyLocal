@@ -30,6 +30,10 @@ class ScraperTest < ActiveSupport::TestCase
       assert_equal Scraper::ScraperError, Scraper::RequestError.superclass
     end
     
+    should "define TimeoutError as child of ScraperError" do
+      assert_equal Scraper::ScraperError, Scraper::TimeoutError.superclass
+    end
+    
     should "define ParsingError as child of ScraperError" do
       assert_equal Scraper::ScraperError, Scraper::ParsingError.superclass
     end
@@ -635,11 +639,23 @@ class ScraperTest < ActiveSupport::TestCase
         assert_raise(Scraper::ParsingError) {@scraper.send(:_data)}
       end
       
-      should "raise RequestError when problem getting page" do
-        @scraper.expects(:_http_get).raises(OpenURI::HTTPError, "404 Not Found")
-        assert_raise(Scraper::RequestError) {@scraper.send(:_data)}
+      context "and problem getting data" do
+
+        should "in general raise Scraper::RequestError" do
+          @scraper.expects(:_http_get).raises(OpenURI::HTTPError, "404 Not Found")
+          assert_raise(Scraper::RequestError) {@scraper.send(:_data)}
+        end
+        
+        should "raise Scraper::TimeoutError if Errno::ETIMEDOUT" do
+          @scraper.expects(:_http_get).raises(Errno::ETIMEDOUT, "no response")
+          assert_raise(Scraper::TimeoutError) {@scraper.send(:_data)}
+        end
+        
+        should "raise Scraper::TimeoutError if HTTPClient::TimeoutError" do
+          @scraper.expects(:_http_get).raises(HTTPClient::TimeoutError, "no response")
+          assert_raise(Scraper::TimeoutError) {@scraper.send(:_data)}
+        end
       end
-      
       context "and use_post flag set" do
         setup do
           @scraper.use_post = true
