@@ -177,11 +177,14 @@ class Scraper < ActiveRecord::Base
       options = { "User-Agent" => USER_AGENT, :cookie_url => final_cookie_url } 
       (options["Referer"] = (referrer_url =~ /^http/ ? referrer_url : target_url)) unless referrer_url.blank?
       page_data = use_post ? _http_post_from_url_with_query_params(target_url, options) : _http_get(target_url, options)
+    rescue HTTPClient::TimeoutError, HTTPClient::ReceiveTimeoutError, Errno::ETIMEDOUT => e
+      error_message = "**Problem getting data from #{target_url}: #{e.message}\n #{e.backtrace}"
+      logger.error { error_message }
+      raise TimeoutError.new(error_message)
     rescue Exception => e
       error_message = "**Problem getting data from #{target_url}: #{e.message}\n #{e.backtrace}"
       logger.error { error_message }
-      exception = (e.is_a?(HTTPClient::TimeoutError) || e.is_a?(Errno::ETIMEDOUT)) ? TimeoutError.new(error_message) : RequestError.new(error_message)
-      raise exception
+      raise RequestError.new(error_message)
     end
     
     begin
