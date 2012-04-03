@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120325194122) do
+ActiveRecord::Schema.define(:version => 20120403081938) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(:version => 20120325194122) do
     t.datetime "manually_updated"
   end
 
-  add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number"
+  add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number", :unique => true
   add_index "charities", ["corrected_company_number"], :name => "index_charities_on_normalised_company_number"
   add_index "charities", ["date_registered"], :name => "index_charities_on_date_registered"
   add_index "charities", ["income"], :name => "index_charities_on_income"
