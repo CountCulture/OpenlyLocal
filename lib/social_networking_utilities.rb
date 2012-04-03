@@ -1,5 +1,5 @@
 module SocialNetworkingUtilities
-  TwitterRegexp = /twitter\.com\/([^\/\s]+)\/?$/ #there may be links to timeline
+  TwitterRegexp = /twitter\.com\/!?\/?([\w_]+)\/?$/ #there may be links to timeline
   FacebookRegexp = /facebook\.com\/([^\/\s\.]+)\/?$/
   YoutubeRegexp = /youtube\.com\/(?:user\/)?([^\/\s]+)\/?$/ 
   
@@ -48,7 +48,7 @@ module SocialNetworkingUtilities
     
     def process
       host_domain_regexp = Regexp.new(Regexp.escape(URI.parse(url).host))
-      doc = Hpricot.parse(_http_get(url))
+      doc = Nokogiri.HTML(_http_get(url))
       result = {}
       twitter_account_link = doc.search('a[@href*="twitter.com/"]').detect{ |l| l[:href].match(TwitterRegexp) }
       facebook_account_link = doc.search('a[@href*="facebook.com/"]').detect{ |l| l[:href].match(FacebookRegexp) }

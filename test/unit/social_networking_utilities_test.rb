@@ -152,9 +152,9 @@ class SocialNetworkingUtilitiesTest < ActiveSupport::TestCase
         @finder.process
       end
       
-      should "process page with Hpricot" do
-        dummy_hpricot_resp = Hpricot("foo")
-        Hpricot.expects(:parse).with(@council_home_page).returns(dummy_hpricot_resp)
+      should "process page with Nokogiri" do
+        dummy_nokogiri_resp = Nokogiri.HTML("foo")
+        Nokogiri.expects(:HTML).with(@council_home_page).returns(dummy_nokogiri_resp)
         @finder.process
       end
       
@@ -206,7 +206,10 @@ class SocialNetworkingUtilitiesTest < ActiveSupport::TestCase
       should "return twitter name from twitter URLs" do
         expect_result = {:twitter_account_name => "foo123"}
         assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("http://twitter.com/foo123")
+        assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("http://twitter.com/!/foo123")
         assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("twitter.com/foo123")
+        assert_equal expect_result, SocialNetworkingUtilities::IdExtractor.extract_from("twitter.com/!/foo123")
+        assert_equal({}, SocialNetworkingUtilities::IdExtractor.extract_from("http://twitter.com/share?text=Welcome%20to%20the%20Buckinghamshire%20Mind%20website&url=http%3A%2F%2Fwww.bucksmind.org.uk%2Fjoomla%2F"))
       end
       
       should "extract facebook name from Facebook URL" do
