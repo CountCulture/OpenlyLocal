@@ -50,11 +50,18 @@ class ApplicationController < ActionController::Base
   private
   def authenticate
     authenticate_or_request_with_http_basic("TWFY_local") do |username, password|
-      # AUTHENTICATED_USERS[username] || false
-      return false unless AUTHENTICATED_USERS[username].first == password
-      p auth_level = AUTHENTICATED_USERS[username][1]
-      auth_level == :admin or auth_level.to_s == controller_name
+      return false unless authenticated_users[username].first == password
+      permitted_auth_level = authenticated_users[username][1]
+      (permitted_auth_level == :admin) or auth_level.match(permitted_auth_level.to_s)
     end
+  end
+  
+  def authenticated_users
+    AUTHENTICATED_USERS
+  end
+  
+  def auth_level
+    controller_name
   end
   
   def enable_google_maps

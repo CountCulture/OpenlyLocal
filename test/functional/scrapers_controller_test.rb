@@ -2,6 +2,45 @@ require 'test_helper'
 
 class ScrapersControllerTest < ActionController::TestCase
   
+  context "when returning auth_level" do
+    setup do
+      @scraper_controller = ScrapersController.new
+    end
+    
+    should "return 'scrapers' by default" do
+      @scraper_controller.stubs(:params).returns({})
+      assert_equal 'scrapers', @scraper_controller.send(:auth_level)
+    end
+    
+    context "and scraper instance variable set" do
+      setup do
+        @scraper = Factory(:scraper)
+        @scraper_controller.instance_variable_set(:@scraper, @scraper)
+      end
+
+      should "return underscored version of result_model for scraper parser" do
+        @scraper_controller.stubs(:params).returns({})
+        assert_equal @scraper.parser.result_model.underscore.pluralize, @scraper_controller.send(:auth_level)
+      end
+      
+      should "ignore result_model in params" do
+        @scraper_controller.stubs(:params).returns({:result_model => 'FooBar'})
+        assert_equal @scraper.parser.result_model.underscore.pluralize, @scraper_controller.send(:auth_level)
+      end
+    end
+    
+    context "and scraper instance variable not set" do
+      setup do
+        @scraper_controller.stubs(:params).returns({})
+      end
+
+      should "return underscored version of result_model in params" do
+        @scraper_controller.expects(:params).returns({:result_model => 'FooBar'})
+        assert_equal 'foo_bars', @scraper_controller.send(:auth_level)
+      end
+    end
+    
+  end
   # index test
   context "on GET to :index without auth" do
     setup do
@@ -77,6 +116,33 @@ class ScrapersControllerTest < ActionController::TestCase
     should respond_with 401
   end
   
+  context "on GET to :new without correct auth" do
+    setup do
+      stub_authentication_with_user_auth_level(:hyperlocal_sites)
+      @scraper = Factory(:scraper)
+      get :show, :id => @scraper.id
+    end
+    should respond_with 401
+  end
+
+  context "on GET to :new with correct auth" do
+    setup do
+      stub_authentication_with_user_auth_level(:planning_applications)
+      @scraper = Factory(:scraper)
+      get :show, :id => @scraper.id
+    end
+    should respond_with 200
+  end
+
+  context "on GET to :new with admin auth" do
+    setup do
+      stub_authentication_with_user_auth_level(:admin)
+      @scraper = Factory(:scraper)
+      get :show, :id => @scraper.id
+    end
+    should respond_with 200
+  end
+
   context "on GET to :show for scraper" do
     setup do
       @scraper = Factory(:scraper)
@@ -392,6 +458,43 @@ class ScrapersControllerTest < ActionController::TestCase
     should respond_with 401
   end
   
+  context "on GET to :new without correct auth" do
+    setup do
+      stub_authentication_with_user_auth_level(:hyperlocal_sites)
+      @council = Factory(:council)
+      get :new, :type  => "InfoScraper", :council_id => @council.id
+    end
+    should respond_with 401
+  end
+
+  context "on GET to :new with correct auth" do
+    setup do
+      stub_authentication_with_user_auth_level(:planning_applications)
+      @council = Factory(:council)
+      get :new, :type  => "InfoScraper", :council_id => @council.id, :result_model => "PlanningApplication"
+    end
+    should respond_with 200
+  end
+
+  context "on GET to :new with admin auth" do
+    setup do
+      stub_authentication_with_user_auth_level(:admin)
+      @council = Factory(:council)
+      get :new, :type  => "InfoScraper", :council_id => @council.id
+    end
+    should respond_with 200
+  end
+
+  # new test
+  context "on GET to :new with scrapers auth" do
+    setup do
+      stub_authentication_with_user_auth_level(:scrapers)
+      @council = Factory(:council)
+      get :new, :type  => "InfoScraper", :council_id => @council.id
+    end
+    should respond_with 200
+  end
+
   context "on GET to :new with no scraper type given" do
     should "raise exception" do
       stub_authentication
