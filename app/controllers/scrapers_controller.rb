@@ -1,6 +1,7 @@
 class ScrapersController < ApplicationController
-  before_filter :authenticate
   before_filter :find_scraper, :except => [:index, :new, :create]
+  before_filter :create_stub_scraper, :only => [:create]
+  before_filter :authenticate
   skip_before_filter :share_this
   newrelic_ignore
   
@@ -34,8 +35,6 @@ class ScrapersController < ApplicationController
   end
   
   def create
-    raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type])
-    @scraper = params[:type].constantize.new(params[:scraper])
     @scraper.save!
     flash[:notice] = "Successfully created scraper"
     redirect_to scraper_url(@scraper)
@@ -72,6 +71,24 @@ class ScrapersController < ApplicationController
   end
   
   private
+  
+  def auth_level
+    case 
+    when @scraper
+      @scraper.result_model.underscore.pluralize
+    when result_model = params[:result_model]
+      result_model.underscore.pluralize
+    else
+      'scrapers'
+    end
+  end
+  
+  # This creates an unsaved scraper, as needed by :create (and helps us to have more granular authentication)
+  def create_stub_scraper
+    raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type])
+    @scraper = params[:type].constantize.new(params[:scraper])
+  end
+  
   def find_scraper
     @scraper = Scraper.find(params[:id])
   end

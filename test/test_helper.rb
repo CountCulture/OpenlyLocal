@@ -46,6 +46,11 @@ class ActiveSupport::TestCase
     @controller.stubs(:authenticate).returns(true)
   end
 
+  def stub_authentication_with_user_auth_level(user_auth_level)
+    @controller.stubs(:authenticated_users).returns({"dummy_user" => ["password1", user_auth_level.to_sym]})
+    @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("dummy_user:password1")
+  end
+
   def dummy_html_response(response_name)
     IO.read(File.join([RAILS_ROOT + "/test/fixtures/dummy_responses/#{response_name}.html"]))
   end
