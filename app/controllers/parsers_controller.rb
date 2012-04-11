@@ -39,4 +39,18 @@ class ParsersController < ApplicationController
     render :action => "edit"
   end
   
+  private
+  # Override default auth_level to allow more granular authentication. Allows people with access to 
+  def auth_level
+    case 
+    when @parser
+      @parser.result_model.underscore.pluralize
+    when result_model = params[:result_model]
+      result_model.underscore.pluralize
+    else
+      'parsers'
+    end
+  end
+  
+  
 end
