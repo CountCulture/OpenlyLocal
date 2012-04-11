@@ -14,7 +14,11 @@
     <h3>Planning Parsers</h3>
     <ul>
       <%- @planning_parsers.each do |parser| -%>
-        <li><%= link_for parser %></li>
+        <li>
+          <%= link_for parser %> 
+          <%= link_to("Add scraper", new_scraper_path(:parser_id => parser.id, :type => parser.scraper_type, :result_model => parser.result_model), :class => 'button') %>
+          
+        </li>
       <%- end -%>
      </ul>
   </div>
