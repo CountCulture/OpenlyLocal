@@ -72,6 +72,8 @@ class ScrapersController < ApplicationController
   
   private
   
+  # Override default auth_level to allow more granular authentication. Allows people with access to 
+  # :planning_applications, for example, to see and edit planning_application scrapers
   def auth_level
     case 
     when @scraper

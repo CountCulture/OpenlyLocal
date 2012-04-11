@@ -2,6 +2,47 @@ require 'test_helper'
 
 class ParsersControllerTest < ActionController::TestCase
   
+  context "when returning auth_level" do
+    setup do
+      @parser = Factory(:parser)
+      @parser_controller = ParsersController.new
+    end
+    
+    should "return 'parsers' by default" do
+      @parser_controller.stubs(:params).returns({})
+      assert_equal 'parsers', @parser_controller.send(:auth_level)
+    end
+    
+    context "and parser instance variable set" do
+      setup do
+        @parser = Factory(:parser)
+        @parser_controller.instance_variable_set(:@parser, @parser)
+      end
+
+      should "return underscored version of result_model for parser" do
+        @parser_controller.stubs(:params).returns({})
+        assert_equal @parser.result_model.underscore.pluralize, @parser_controller.send(:auth_level)
+      end
+      
+      should "ignore result_model in params" do
+        @parser_controller.stubs(:params).returns({:result_model => 'FooBar'})
+        assert_equal @parser.result_model.underscore.pluralize, @parser_controller.send(:auth_level)
+      end
+    end
+    
+    context "and parser instance variable not set" do
+      setup do
+        @parser_controller.stubs(:params).returns({})
+      end
+
+      should "return underscored version of result_model in params" do
+        @parser_controller.expects(:params).returns({:result_model => 'FooBar'})
+        assert_equal 'foo_bars', @parser_controller.send(:auth_level)
+      end
+    end
+    
+  end
+
   # show tests
   context "on GET to :show without auth" do
     setup do
