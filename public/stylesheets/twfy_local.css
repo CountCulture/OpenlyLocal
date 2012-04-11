@@ -112,6 +112,10 @@ a.button:hover, .button-to input:hover {
 	border:1px solid #a11;
 	cursor: pointer;
 }
+#useful_links a.button {
+	border:1px solid #aaa;
+	background-color:#ccc;
+}
 .request_for_help a.button {
 	font-size:1.6em;
 	padding: 2px 6px;
