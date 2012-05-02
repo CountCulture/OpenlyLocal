@@ -1,5 +1,5 @@
 class HyperlocalSite < ActiveRecord::Base
-  PossiblePlatforms = %w(Blogger/Blogspot Ning Posterous Wordpress Drupal)
+  PossiblePlatforms = %w(Blogger/Blogspot Ning Posterous Wordpress Drupal JournalLocal)
   include TwitterAccountMethods
   attr_protected :approved
   belongs_to :hyperlocal_group
