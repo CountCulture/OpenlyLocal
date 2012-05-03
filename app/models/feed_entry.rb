@@ -9,6 +9,7 @@ class FeedEntry < ActiveRecord::Base
   def self.update_from_feed(owner_or_url)
     url = owner_or_url.is_a?(String) ? owner_or_url : owner_or_url.feed_url
     feed_owner = owner_or_url.is_a?(String) ? nil : owner_or_url
+    Feedzirra::Feed.add_common_feed_entry_element('georss:point', :as => :point)
     feed = Feedzirra::Feed.fetch_and_parse(url)
     add_entries(feed.entries, :feed_owner => feed_owner)
   end
