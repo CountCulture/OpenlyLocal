@@ -51,7 +51,6 @@ class FeedEntryTest < ActiveSupport::TestCase
     end
     
     context "when returning entries for blog" do
-      
       should "return entries with no feed_owner" do
         assert_equal [@feed_entry], FeedEntry.for_blog
       end
