@@ -1,10 +1,10 @@
 class ParsersController < ApplicationController
+  before_filter :find_parser, :except => [:index, :new, :create]
   before_filter :authenticate
   skip_before_filter :share_this
   newrelic_ignore
 
   def show
-    @parser = Parser.find(params[:id])
     @scrapers = @parser.scrapers
   end
   
@@ -16,7 +16,6 @@ class ParsersController < ApplicationController
   end
   
   def edit
-    @parser = Parser.find(params[:id])
   end
   
   def create
@@ -29,7 +28,6 @@ class ParsersController < ApplicationController
   end
   
   def update
-    @parser = Parser.find(params[:id])
     @parser.update_attributes!(@parser.is_a?(CsvParser) ? params[:csv_parser] : params[:parser])
     flash[:notice] = "Successfully updated parser"
     redirect_to parser_url(@parser)
@@ -52,5 +50,9 @@ class ParsersController < ApplicationController
     end
   end
   
+  def find_parser
+    @parser = Parser.find(params[:id])
+    
+  end
   
 end
