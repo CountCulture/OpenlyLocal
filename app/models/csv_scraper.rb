@@ -12,6 +12,6 @@ class CsvScraper < Scraper
   
   private
   def set_priority
-    self[:priority] = -1
+    self.priority = (self.changes["priority"] ? self.priority : -1)
   end
 end
