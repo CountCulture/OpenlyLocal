@@ -155,21 +155,12 @@ class AlertSubscriberTest < ActiveSupport::TestCase
       end
     end
     
-    context "when getting postcode from postcode text" do
-      setup do
-        
-      end
-
-      should "description" do
-        
-      end
-    end
-    
   end
   
   context "an instance of the AlertSubscriber class" do
     setup do
       @alert_subscriber = Factory(:alert_subscriber)
+      @planning_application = stub('planning_application')
     end
 
     context "when generating unsubscribe token for email" do
@@ -180,6 +171,16 @@ class AlertSubscriberTest < ActiveSupport::TestCase
         assert_equal '123456qwert', @alert_subscriber.unsubscribe_token()
       end
     end
+
+    
+    context "when sending planning alert" do
+
+      should "send planning_application AlertMailer" do
+        AdminMailer.expects(:deliver_planning_alert!).with(:subscriber => @alert_subscriber, :planning_application => @planning_application)
+        @alert_subscriber.send_planning_alert(@planning_application)
+      end
+    end
+
   end
     
 end
