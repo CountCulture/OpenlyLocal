@@ -30,7 +30,7 @@ class AlertSubscriber < ActiveRecord::Base
   end
   
   def send_planning_alert(planning_application)
-
+    AlertSubscriber.deliver_planning_alert!(:planning_application => planning_application, :subscriber => self)
   end
   
   def unsubscribe_token
