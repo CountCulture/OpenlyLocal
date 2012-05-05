@@ -8,7 +8,11 @@ class CsvScraperTest < ActiveSupport::TestCase
       assert_equal Scraper, CsvScraper.superclass
     end
     
-    should "set priority to be -1 on create" do
+    should "set priority to be given priority" do
+      assert_equal 3, Factory(:csv_scraper, :priority => 3).priority
+    end
+    
+    should "set priority to be -1 on create if not set" do
       assert_equal -1, Factory(:csv_scraper).priority
     end
   end
