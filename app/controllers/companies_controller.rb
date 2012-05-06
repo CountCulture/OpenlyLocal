@@ -1,6 +1,6 @@
 class CompaniesController < ApplicationController
   before_filter :linked_data_available, :only => :show
-  before_filter :find_company
+  before_filter :find_company, :only => :show
 
   def show
     @title = "#{@company.title} :: Companies"
