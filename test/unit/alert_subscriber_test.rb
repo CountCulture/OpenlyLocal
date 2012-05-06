@@ -176,7 +176,7 @@ class AlertSubscriberTest < ActiveSupport::TestCase
     context "when sending planning alert" do
 
       should "send planning_application AlertMailer" do
-        AdminMailer.expects(:deliver_planning_alert!).with(:subscriber => @alert_subscriber, :planning_application => @planning_application)
+        AlertMailer.expects(:deliver_planning_alert!).with(:subscriber => @alert_subscriber, :planning_application => @planning_application)
         @alert_subscriber.send_planning_alert(@planning_application)
       end
     end
