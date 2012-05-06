@@ -57,6 +57,8 @@ ActiveRecord::Schema.define(:version => 20120506131921) do
     t.integer  "postcode_id"
   end
 
+  add_index "alert_subscribers", ["bottom_left_lat", "top_right_lat", "bottom_left_lng", "top_right_lng"], :name => "bounding_box_index"
+  add_index "alert_subscribers", ["bottom_left_lng", "top_right_lng", "bottom_left_lat", "top_right_lat"], :name => "bottom_left_lng"
   add_index "alert_subscribers", ["created_at"], :name => "index_alert_subscribers_on_created_at"
   add_index "alert_subscribers", ["email"], :name => "index_alert_subscribers_on_email"
 
