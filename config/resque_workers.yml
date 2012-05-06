@@ -3,7 +3,7 @@ scrapers_1:
 scrapers_2:
   queues: 'scrapers_1,scrapers_2,scrapers_3,scrapers_4,scrapers_5,scrapers_6'
 scrapers_3:
-  queues: 'planning_applications_after_create'
+  queues: 'planning_applications_after_create, planning_application_alerts'
 # general_1:
 #   queues: 'high,planning_applications,medium,low'
 # general_2:
