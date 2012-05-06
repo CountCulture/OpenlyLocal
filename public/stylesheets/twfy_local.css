@@ -88,7 +88,7 @@ a.stale {
 a.problematic {
 	color: #a11;
 }
-a.problematic:before, a.stale:before {
+a.problematic:before, a.stale:before, .confirmed:before {
 	text-transform: uppercase;
 	color:#fff;
 	font-size:.8em;
@@ -102,6 +102,10 @@ a.stale:before {
 a.problematic:before {
 	content: "Problem";
 	background-color:#a11;
+}
+.confirmed:before {
+	content: "confirmed";
+	background-color:#999;
 }
 a.button, .button-to input {
 	border:1px solid #ddd;

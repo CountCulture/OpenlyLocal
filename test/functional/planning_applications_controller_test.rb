@@ -347,6 +347,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
     end
 
     should assign_to :councils
+    should assign_to :latest_alert_subscribers
     should respond_with :success
     should render_template :admin
     should_not set_the_flash
