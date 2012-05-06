@@ -7,6 +7,21 @@ class CompaniesControllerTest < ActionController::TestCase
   end
   
   
+  context "when routing to companies" do
+    should "have routing spending" do
+      assert_routing("companies/spending", {:controller => "companies", :action => "spending"})
+    end
+    
+    should "have routing for show" do
+      assert_routing("companies/1234", {:controller => "companies", :action => "show", :id => '1234'})
+    end
+    
+    should "have routing for company_number and jurisdiction_code" do
+      assert_routing("companies/gb/2345", {:controller => "companies", :action => "show", :company_number => '2345', :jurisdiction_code => 'gb'})
+    end
+        
+  end
+
   context "on GET to :spending" do
 
     setup do
@@ -188,6 +203,24 @@ class CompaniesControllerTest < ActionController::TestCase
         assert_match /vCard:Extadd.+#{Regexp.escape(@company.address_in_full)}/, @response.body
       end
 
+    end
+    
+    context "when company_number and jurisdiction_code passed in" do
+      setup do
+        
+      end
+
+      setup do
+        get :show, :company_number => @company.company_number, :jurisdiction_code => 'gb'
+      end
+
+      should assign_to(:company) { @company}
+      should respond_with :success
+      should render_template :show
+
+      should "show company name in title" do
+        assert_select "title", /#{@company.title}/
+      end
     end
   end
 end

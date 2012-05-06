@@ -8,6 +8,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :financial_transactions
 
+  map.connect 'companies/:jurisdiction_code/:company_number', :controller => "companies", :action => "show", :requirements => { :jurisdiction_code => /[a-z_]+/ }
   map.resources :companies, :collection => { :spending => :get }
 
   map.resources :suppliers
