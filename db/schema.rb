@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120403081938) do
+ActiveRecord::Schema.define(:version => 20120506131921) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -56,6 +56,9 @@ ActiveRecord::Schema.define(:version => 20120403081938) do
     t.datetime "updated_at"
     t.integer  "postcode_id"
   end
+
+  add_index "alert_subscribers", ["created_at"], :name => "index_alert_subscribers_on_created_at"
+  add_index "alert_subscribers", ["email"], :name => "index_alert_subscribers_on_email"
 
   create_table "authority", :primary_key => "authority_id", :options=>'ENGINE=MyISAM', :force => true do |t|
     t.string  "full_name",      :limit => 200, :null => false
