@@ -20,7 +20,20 @@
           
         </li>
       <%- end -%>
-     </ul>
+    </ul>
+
+    <h3>Latest Subscribers</h3>
+    <ul>
+      <%- @latest_alert_subscribers.each do |subscriber| -%>
+        <li>
+          <span class="<%= subscriber.confirmed? && 'confirmed' %>">
+            <%= subscriber.email %> 
+            <%= link_to("#{subscriber.postcode_text}", "http://maps.google.co.uk/maps?q=#{subscriber.postcode_text}", :target => "blank", :class => "external") %>
+          </span>
+        </li>
+      <%- end -%>
+    </ul>
+
   </div>
 
   <div id="problematic">
