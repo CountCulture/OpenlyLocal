@@ -1,8 +1,8 @@
 class CompaniesController < ApplicationController
   before_filter :linked_data_available, :only => :show
+  before_filter :find_company
 
   def show
-    @company = Company.find(params[:id], :include => { :supplying_relationships => [:organisation, :spending_stat] })
     @title = "#{@company.title} :: Companies"
     @resource_uri = @company.resource_uri
     respond_to do |format|
@@ -17,5 +17,14 @@ class CompaniesController < ApplicationController
     @title = "Companies supplying Councils"
     @council_spending_data = Council.cached_spending_data
     # @biggest_companies = Company.all(:limit => 10, :joins => :spending_stat, :order => 'spending_stats.total_spend DESC')
+  end
+  
+  private
+  def find_company
+    if params[:company_number]
+      @company = Company.find_by_company_number(params[:company_number], :include => { :supplying_relationships => [:organisation, :spending_stat] })
+    else
+      @company = Company.find(params[:id], :include => { :supplying_relationships => [:organisation, :spending_stat] })
+    end
   end
 end
