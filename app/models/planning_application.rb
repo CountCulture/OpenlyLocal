@@ -86,6 +86,10 @@ class PlanningApplication < ActiveRecord::Base
     []
   end
   
+  def formatted_address
+    address.gsub(/\n+/, ', ')
+  end
+  
   def google_map_magnification
     13
   end

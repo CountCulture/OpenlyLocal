@@ -1,6 +1,6 @@
 A new planning application has been found within your alert area:
 ================================
-Address: <%= @planning_application.address %>
+Address: <%= @planning_application.formatted_address %>
 Description: <%= simple_format(@planning_application.description) %>
 More details (including map): <%= @planning_application.openlylocal_url %>
 Council: <%= @planning_application.council.title %>, <%= @planning_application.council.openlylocal_url %>

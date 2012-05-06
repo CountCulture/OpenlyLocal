@@ -518,6 +518,25 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
     
+    context "when returning formatted address" do
+
+      should "return address if no line breaks" do
+        @planning_application.address = "123 foo st, bar town, fooshire, FOO1 2BA"
+        assert_equal "123 foo st, bar town, fooshire, FOO1 2BA", @planning_application.formatted_address
+      end
+      
+      should "return nil if address is blank" do
+        @planning_application.address = ""
+        assert_nil @planning_application.formatted_address
+        @planning_application.address = nil
+        assert_nil @planning_application.formatted_address
+      end
+      
+      should 'replace line breaks with commas' do
+        @planning_application.address = "123 foo st\nbar town\nfooshire\nFOO1 2BA"
+        assert_equal "123 foo st, bar town, fooshire, FOO1 2BA", @planning_application.formatted_address
+      end
+    end
     context "when queueing for sending alerts" do
       should "queue as Resque job to alert queue" do
         Resque.expects(:enqueue_to).with(:planning_application_alerts, PlanningApplication, @planning_application.id, :send_alerts)
