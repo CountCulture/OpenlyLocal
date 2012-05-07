@@ -32,6 +32,7 @@ gem 'SystemTimer'
 gem 'resque', :require => "resque/server"
 gem "resque-lock"
 gem "resque-lock-timeout"
+gem 'rubyzip', :require => false
 
 group :test do
   gem 'guard'

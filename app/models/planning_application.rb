@@ -13,6 +13,8 @@ class PlanningApplication < ActiveRecord::Base
   before_create :set_default_value_for_bitwise_flag
   after_create :queue_for_updating_info
   alias_method :old_to_xml, :to_xml
+  delegate :openlylocal_url, :to => :council, :prefix => true
+  delegate :name, :to => :council, :prefix => true
   STATUS_TYPES_AND_ALIASES = [
                               ['approved', 'permitted'],
                               ['pending'],
@@ -21,6 +23,26 @@ class PlanningApplication < ActiveRecord::Base
                               ['withdrawn']
                               ]
   @queue = :planning_applications
+
+  CSV_MAPPINGS = [[:openlylocal_id, :id],
+                 [:openlylocal_url],
+                 [:address, :formatted_address],
+                 [:postcode],
+                 [:lat],
+                 [:lng],
+                 [:updated_at],
+                 [:retrieved_at],
+                 [:description],
+                 [:decision],
+                 [:status],
+                 [:date_received],
+                 [:date_validated],
+                 [:start_date],
+                 [:council_name],
+                 [:council_openlylocal_url],
+                 [:url],
+                 [:uid]]
+
   # The stale strategy for planning_applications is quite complex, due to the way planning applications change over time:
   # First of all planning_applications that have no retrieved_at timestamp are considered stale, as we've not got any 
   # details about them.
@@ -67,6 +89,28 @@ class PlanningApplication < ActiveRecord::Base
     self[:bitwise_flag] = new_bitwise_flag == 7 ? 0 : new_bitwise_flag
   end
   
+  def company_name
+    
+  end
+  
+  def self.csv_headings
+    CSV_MAPPINGS.map(&:first)
+  end
+
+  def csv_data
+    CSV_MAPPINGS.collect do |m|
+      val = self.send(m.last)
+      case val
+      when Time
+        val.iso8601
+      when Date
+        val.to_s(:db)
+      else
+        val
+      end
+    end
+  end
+  
   def date_received
     date = TitleNormaliser.normalise_uk_date(other_attributes && other_attributes[:date_received])
     date ? date : nil
@@ -87,7 +131,7 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def formatted_address
-    address.gsub(/\n+/, ', ')
+    address.blank? ? nil : address.gsub(/\n+/, ', ')
   end
   
   def google_map_magnification

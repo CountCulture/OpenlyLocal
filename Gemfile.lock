@@ -113,6 +113,7 @@ GEM
     resque-lock-timeout (0.3.3)
       resque (>= 1.8.0)
     ruby-prof (0.10.8)
+    rubyzip (0.9.4)
     sax-machine (0.1.0)
       nokogiri (> 0.0.0)
     shoulda (2.11.3)
@@ -174,6 +175,7 @@ DEPENDENCIES
   resque-lock
   resque-lock-timeout
   ruby-prof
+  rubyzip
   shoulda
   sitemap_generator
   spatial_adapter
