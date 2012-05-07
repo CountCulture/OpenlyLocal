@@ -1,5 +1,6 @@
 A new planning application has been found within your alert area:
 ================================
+
 Address: <%= @planning_application.formatted_address %>
 Description: <%= simple_format(@planning_application.description) %>
 More details (including map): <%= @planning_application.openlylocal_url %>
@@ -9,3 +10,6 @@ Council page for application: <%= @planning_application.url %>
 <%- end -%>
 Date received: <%= @planning_application.start_date %>
 Status: <%= @planning_application.status %>
+
+================================
+Unsubscribe? Click here: http://openlylocal.com/alert_subscribers?email=<%= @subscriber.email %>&token=<%= @subscriber.unsubscribe_token %>

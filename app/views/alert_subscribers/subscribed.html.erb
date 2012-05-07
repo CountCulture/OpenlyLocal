@@ -4,3 +4,7 @@
   Thank you for subscribing for planning application alerts. You will be shortly sent an email containing a confirmation link.
   Please click on that to confirm your subscription.
 </p>
+
+<p>
+  Why not check out what other information we have about <%= link_to @alert_subscriber.postcode_text, {:controller => 'areas', :action => 'search', :postcode => @alert_subscriber.postcode_text } %>
+</p>

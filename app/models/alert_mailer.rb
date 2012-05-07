@@ -15,6 +15,7 @@ class AlertMailer < ActionMailer::Base
     @subject      = "OpenlyLocal Alert :: New Planning Application: #{params[:planning_application].address}"
     @sent_on      = Time.now
     @body[:planning_application] = params[:planning_application]
+    @body[:subscriber] = params[:subscriber]
     @headers      = {}
   end
   

@@ -120,7 +120,7 @@ class AlertSubscribersControllerTest < ActionController::TestCase
   end
   
   context "on POST to create" do
-    context "in email is OK" do
+    context "and email is OK" do
       setup do
         @postcode = Factory(:postcode, :code => 'AB12CD')
         post :create, :alert_subscriber => {:email => 'new_user@test.com', :postcode_text => 'ab1 2cd'}
