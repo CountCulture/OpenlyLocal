@@ -167,6 +167,14 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
 
+    should "delegate council_openlylocal_url to council" do
+      assert_equal @planning_application.council.openlylocal_url, @planning_application.council_openlylocal_url
+    end
+    
+    should "delegate council_name to council" do
+      assert_equal @planning_application.council.name, @planning_application.council_name
+    end
+    
     context "when performing" do
       setup do
         PlanningApplication.stubs(:find).with(@planning_application.id).returns(@planning_application)
@@ -537,6 +545,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         assert_equal "123 foo st, bar town, fooshire, FOO1 2BA", @planning_application.formatted_address
       end
     end
+    
     context "when queueing for sending alerts" do
       should "queue as Resque job to alert queue" do
         Resque.expects(:enqueue_to).with(:planning_application_alerts, PlanningApplication, @planning_application.id, :send_alerts)
@@ -638,6 +647,71 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         @planning_application.send_alerts
       end
     end
+    
+    context "when returning company name" do
+      context "and applicant_name is blank" do
+
+        should "return nil" do
+          assert_nil PlanningApplication.new.company_name
+          assert_nil PlanningApplication.new(:applicant_name => ' ').company_name
+        end
+      end
+      
+      context "and applicant_name is not blank" do
+
+        should "return nil if applicant_name is not company-like" do
+          assert_nil PlanningApplication.new(:applicant_name => 'Mrs E Thribbs').company_name
+          assert_nil PlanningApplication.new(:applicant_name => 'Bob Ajob').company_name
+        end
+        
+        should "return applicant_name if it is company-like" do
+          assert_equal 'Tesco PLC', PlanningApplication.new(:applicant_name => 'Tesco PLC').company_name
+        end
+      end
+
+    end
+
+    context "when returning csv data" do
+      setup do
+        @planning_application.update_attributes(:start_date => 3.days.ago)
+      end
+      
+      should "return array" do
+        assert_kind_of Array, @planning_application.csv_data
+      end
+      
+      should "return same number of elements as CSV_MAPPINGS" do
+        assert_equal PlanningApplication::CSV_MAPPINGS.size, @planning_application.csv_data.size
+      end
+      
+      should "map attributes to csv heading" do
+        expected_position = PlanningApplication.csv_headings.index(:uid)
+        assert_equal @planning_application.uid, @planning_application.csv_data[expected_position]
+      end
+      
+      should "map aliased attributes to csv heading" do
+        expected_position = PlanningApplication.csv_headings.index(:address)
+        assert_equal @planning_application.formatted_address, @planning_application.csv_data[expected_position]
+      end
+      
+      should "map non-attributes to csv heading" do
+        expected_position = PlanningApplication.csv_headings.index(:council_openlylocal_url)
+        assert_equal @planning_application.council.openlylocal_url, @planning_application.csv_data[expected_position]
+      end
+      
+      should "output date as ISO 8601" do
+        expected_position = PlanningApplication.csv_headings.index(:start_date)
+        p @planning_application.start_date
+        assert_equal @planning_application.start_date.to_s(:db), @planning_application.csv_data[expected_position]
+      end
+      
+      should "output datetime as ISO 8601" do
+        expected_position = PlanningApplication.csv_headings.index(:updated_at)
+        assert_equal @planning_application.updated_at.iso8601, @planning_application.csv_data[expected_position]
+      end
+    end
+
+    
   end
   
 end
