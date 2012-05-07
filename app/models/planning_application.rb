@@ -154,6 +154,7 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def queue_for_sending_alerts
+    return unless start_date && (start_date > 1.month.ago.to_date)
     Resque.enqueue_to(:planning_application_alerts, PlanningApplication, self.id, :send_alerts)
   end
   

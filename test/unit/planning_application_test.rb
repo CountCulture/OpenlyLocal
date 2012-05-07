@@ -5,7 +5,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
   
   context "the PlanningApplication class" do
     setup do
-      Resque.stubs(:enqueue_to)
+      Resque.stubs(:enqueue_to).with(:planning_applications_after_create, anything, anything)
       @planning_application = Factory(:planning_application)
     end
     
@@ -201,7 +201,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
   
   context "an instance of the PlanningApplication class" do
     setup do
-      Resque.stubs(:enqueue_to)
+      Resque.stubs(:enqueue_to).with(:planning_applications_after_create, anything, anything)
       @planning_application = Factory(:planning_application)
     end
     
@@ -548,7 +548,20 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     
     context "when queueing for sending alerts" do
       should "queue as Resque job to alert queue" do
+        @planning_application.start_date = 5.days.ago
         Resque.expects(:enqueue_to).with(:planning_application_alerts, PlanningApplication, @planning_application.id, :send_alerts)
+        @planning_application.queue_for_sending_alerts
+      end
+      
+      should "not queue as Resque job if start_date is nil" do
+        @planning_application.start_date = nil
+        Resque.expects(:enqueue_to).never
+        @planning_application.queue_for_sending_alerts
+      end
+      
+      should "not queue as Resque job if start_date over 1 month ago" do
+        @planning_application.start_date = 35.days.ago
+        Resque.expects(:enqueue_to).never
         @planning_application.queue_for_sending_alerts
       end
     end
@@ -701,7 +714,6 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       
       should "output date as ISO 8601" do
         expected_position = PlanningApplication.csv_headings.index(:start_date)
-        p @planning_application.start_date
         assert_equal @planning_application.start_date.to_s(:db), @planning_application.csv_data[expected_position]
       end
       
