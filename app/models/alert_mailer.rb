@@ -1,4 +1,10 @@
 class AlertMailer < ActionMailer::Base
+  config_file = "#{RAILS_ROOT}/config/smtp_gmail.yml"
+  config_options = YAML.load_file(config_file)
+  config_options['alerts'].symbolize_keys.each do |k,v|
+    @@smtp_settings[k] = v
+  end
+  # self.override_smtp_settings
 
   def confirmation(subscriber)
     @recipients   = subscriber.email
@@ -17,6 +23,15 @@ class AlertMailer < ActionMailer::Base
     @body[:planning_application] = params[:planning_application]
     @body[:subscriber] = params[:subscriber]
     @headers      = {}
+  end
+  
+  private
+  def self.override_smtp_settings
+    config_file = "#{RAILS_ROOT}/config/smtp_gmail.yml"
+    config_options = YAML.load_file(config_file)
+    config_options['alerts'].symbolize_keys.each do |k,v|
+      @@smtp_settings[k] = v
+    end
   end
   
 end

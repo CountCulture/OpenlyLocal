@@ -1,6 +1,17 @@
 require 'test_helper'
 
 class AlertMailerTest < ActionMailer::TestCase
+  context "AlertMailer class" do
+    setup do
+      
+    end
+
+    should "override default smtp_settings" do
+      p AlertMailer.smtp_settings
+      assert_equal "alerts@openlylocal.com", AlertMailer.smtp_settings[:user_name]
+    end
+  end
+  
   context "A AlertMailer planning_alert email" do
     setup do
       Resque.stubs(:enqueue_to)
