@@ -1,7 +1,6 @@
 class Address < ActiveRecord::Base
   belongs_to :addressee, :polymorphic => true
   validates_presence_of :addressee_type, :addressee_id
-  UKPostcodeRegex = /[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][A-Z]{2}/
   after_save :queue_for_geocoding
 
 

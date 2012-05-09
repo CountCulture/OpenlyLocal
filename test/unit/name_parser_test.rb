@@ -81,6 +81,27 @@ class NameParserTest < ActiveSupport::TestCase
       assert_nil NameParser.strip_all_spaces(nil)
     end
 
+    context "when extracting uk postcode" do
+
+      should "return nil if blank" do
+        assert_nil NameParser.extract_uk_postcode(nil)
+        assert_nil NameParser.extract_uk_postcode(' ')
+      end
+      
+      should "extract UK postcode" do
+        text_and_expect_postcode = {
+          'The quick brown house, HA1 3LH, Footown, UK' => 'HA1 3LH',
+          "34 St Mary Street\nCardigan\nCeredigion \nSa43 1dh" => 'SA43 1DH'
+        }
+        text_and_expect_postcode.each do |text, ep|
+          assert_equal( ep, NameParser.extract_uk_postcode(text), "failed for #{text}")
+        end
+      end
+      
+      should "return nil if no valid postcode" do
+        assert_nil NameParser.extract_uk_postcode('The qwuick brown fox AA1 jumps')
+      end
+    end
   end
   
 end
