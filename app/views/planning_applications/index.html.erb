@@ -1,9 +1,10 @@
 <script type="text/javascript" charset="utf-8">
-  var planning_apps = <%= !@planning_applications.blank? && @planning_applications.select{|pa| pa.lat&&pa.lng}.to_json %>;
+  <%- @lat_lon_pas = @planning_applications&&@planning_applications.select{|pa| pa.lat&&pa.lng} -%>
+  var planning_apps = <%= !@lat_lon_pas.blank? && @lat_lon_pas.to_json %>;
   var loc = <%= @postcode ? @postcode.to_json : false %>;
   
   function initMap() {
-    if (GBrowserIsCompatible()) {
+    if (planning_apps&&GBrowserIsCompatible()) {
       var map = new GMap2(document.getElementById("map_canvas"));
       // var center = new GLatLng(loc.lat, loc.lng);
       // map.setCenter(center, 6); //set default centre
@@ -32,10 +33,11 @@
   
 </script>
 <h1><%= @title %></h1>
+<%- unless @lat_lon_pas.blank? -%>
 <div id="planning_applications_map" class="map_outer">
   <div id="map_canvas"></div>
 </div>
-
+<%- end -%>
 <div id="planning_applications">
   <%= render :partial => "planning_application", :collection => @planning_applications %>
 </div>
