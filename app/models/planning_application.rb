@@ -73,7 +73,7 @@ class PlanningApplication < ActiveRecord::Base
   def address=(raw_address)
     cleaned_up_address = raw_address.blank? ? raw_address : raw_address.gsub("\r", "\n").gsub(/\s{2,}/,' ').strip
     self[:address] = cleaned_up_address
-    parsed_postcode = cleaned_up_address&&cleaned_up_address.scan(Address::UKPostcodeRegex).first
+    parsed_postcode = NameParser.extract_uk_postcode(cleaned_up_address)
     self[:postcode] = parsed_postcode unless postcode_changed? # if already changed it's prob been explicitly set
   end
   

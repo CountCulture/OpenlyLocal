@@ -62,3 +62,5 @@ Licences = {'CC0' => ['Creative Commons CC0 Universal', 'http://creativecommons.
             'ADHOCNC' => ['Ad Hoc Attribution-Noncommercial', nil, 'semi_open'],
             'ADHOCBY' => ['Ad Hoc Attribution only', nil, 'open']
             }
+            
+UKPostcodeRegex = /[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][A-Z]{2}/

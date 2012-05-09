@@ -42,7 +42,7 @@ module AddressUtilities
   end
   
   module Parser 
-    UKPostcodeRegex = /[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][A-Z]{2}/
+    # UKPostcodeRegex = /[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][A-Z]{2}/
     CountryRegex = [ [/\bUnited Kingdom\s*$|\bUK\s*$|\bU\.K\.\s*$/i, 'United Kingdom'],
                      [/\bGuernsey,?\s+Channel Islands\s*$/i, "Guernsey"],
                      [/\bJersey,?\s+Channel Islands\s*$/i, "Jersey"],

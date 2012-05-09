@@ -27,4 +27,9 @@ module NameParser
   def strip_all_spaces(text)
     text&&text.gsub(/&nbsp;|\xC2\xA0|\xA0/, ' ').strip
   end
+  
+  def extract_uk_postcode(text)
+    return if text.blank?
+    text[UKPostcodeRegex, 0] || text.upcase[UKPostcodeRegex, 0] 
+  end
 end
