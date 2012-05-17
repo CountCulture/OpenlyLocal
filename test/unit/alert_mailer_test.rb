@@ -12,7 +12,7 @@ class AlertMailerTest < ActionMailer::TestCase
     end
   end
   
-  context "A AlertMailer planning_alert email" do
+  context "An AlertMailer planning_alert email" do
     setup do
       Resque.stubs(:enqueue_to)
       @planning_application = Factory(:planning_application_with_lat_long, :address => '22 Foo St, Bartown BT1 1TB', :postcode => 'BT1 1TB', :description => 'Some new development here')
