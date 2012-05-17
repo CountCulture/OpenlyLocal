@@ -8,7 +8,7 @@
 	    <div class='in_words'>
 	      <span class='value open'><%= [councils_with_status['open_data']].flatten.nitems.to_i + [councils_with_status['semi_open_data']].flatten.nitems.to_i %></span> out of 
 				<span class='value not_open'><%= @councils.size %></span> <span class='description'> are open data councils
-					<em>(but only <%= [councils_with_status['open_data']].flatten.nitems %> are are <%= link_to "truly open", :anchor => "definitions" %>)</em>
+					<em>(but only <%= [councils_with_status['open_data']].flatten.nitems %> are <%= link_to "truly open", :anchor => "definitions" %>)</em>
 				</span>
 	    </div>
 	  </div>
