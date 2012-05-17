@@ -4,3 +4,8 @@ default:
   port: 587
   authentication: :plain
   enable_starttls_auto: true
+alerts:
+  address: smtp.gmail.com
+  port: 587
+  authentication: :plain
+  enable_starttls_auto: true
