@@ -1,10 +1,12 @@
 --- 
 default: 
+  user_name: admin@openlylocal.com
   address: smtp.gmail.com
   port: 587
   authentication: :plain
   enable_starttls_auto: true
 alerts:
+  user_name: alerts@openlylocal.com
   address: smtp.gmail.com
   port: 587
   authentication: :plain
