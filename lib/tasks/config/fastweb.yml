@@ -11,11 +11,11 @@ councils:
   sutton: http://213.122.180.105/FASTWEB/
   south lakeland: http://www.southlakeland.gov.uk/fastweb/
   eden: http://eforms.eden.gov.uk/fastweb/
-  eastbourne: http://planningapps.eastbourne.gov.uk/
+#  eastbourne: http://planningapps.eastbourne.gov.uk/
   welwyn hatfield: https://fastweb.welhat.gov.uk/
   north devon: http://planning.northdevon.gov.uk/
-  plymouth: http://www.plymouth.gov.uk/planningapplications2/
-  rugby: http://www.planningportal.rugby.gov.uk/
+#  plymouth: http://www.plymouth.gov.uk/planningapplications2/
+#  rugby: http://www.planningportal.rugby.gov.uk/
 
 #------------------------------------------------------------------------------
 
