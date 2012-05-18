@@ -23,8 +23,11 @@ class AlertMailer < ActionMailer::Base
   
   private
 
+  # This is a copy of the perform_delivery_smtp method from ActionMailer::Base,
+  # the only difference being that +auth_smtp_settings+ has been substituted for
+  # +smtp_settings+. Alternatives that modify smtp_settings to change this
+  # method's behavior can provoke a race condition.
   # @see lib/action_mailer/base.rb
-  # Replaces +smtp_settings+ with +auth_smtp_settings+.
   def perform_delivery_smtp(mail)
     destinations = mail.destinations
     mail.ready_to_send
