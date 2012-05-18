@@ -12,4 +12,4 @@ Date received: <%= @planning_application.start_date %>
 Status: <%= @planning_application.status %>
 
 ================================
-Unsubscribe? Click here: http://openlylocal.com/alert_subscribers?email=<%= @subscriber.email %>&token=<%= @subscriber.unsubscribe_token %>
+Unsubscribe? Click here: <%= unsubscribe_alert_subscribers_url(:email => @subscriber.email, :token => @subscriber.unsubscribe_token) %>
