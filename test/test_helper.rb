@@ -1,7 +1,7 @@
 ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+require File.expand_path('../../config/environment', __FILE__)
 require 'test_help'
-require 'test_models/test_models'
+require File.expand_path('../test_models/test_models', __FILE__)
 require 'factory_girl'
 require 'mocha'
 # Dir.glob(File.dirname(__FILE__) + "/factories/*").each do |factory|

@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class OutputAreaClassificationTest < ActiveSupport::TestCase
   subject { @output_area_classification }
