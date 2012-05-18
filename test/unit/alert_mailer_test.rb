@@ -1,16 +1,9 @@
 require 'test_helper'
 
 class AlertMailerTest < ActionMailer::TestCase
-  context "AlertMailer class" do
-    setup do
-      
-    end
-
-    should "override default smtp_settings" do
-      p AlertMailer.smtp_settings
-      assert_equal "alerts@openlylocal.com", AlertMailer.smtp_settings[:user_name]
-    end
-  end
+  # AlertMailer will call +perform_delivery_test+ to deliver mail in the test
+  # environment. We can't test its +perform_delivery_smtp+ method without
+  # delivering mail while running tests (a bad idea).
   
   context "An AlertMailer planning_alert email" do
     setup do
