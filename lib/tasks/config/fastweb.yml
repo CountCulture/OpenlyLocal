@@ -17,6 +17,15 @@ councils:
 #  plymouth: http://www.plymouth.gov.uk/planningapplications2/
 #  rugby: http://www.planningportal.rugby.gov.uk/
 
+# note config differences for 3 authorities as follows
+# Plymouth
+#config['item']['item_parser'] = %q! item.xpath("//table[@border='0' and @cellspacing='0' and @cellpadding='4' and @width='95%']") !
+#config['item']['attributes']['url'] = %q! item.css("a").first[:href] !
+# Eastbourne needs cookie URL
+# http://planningapps.eastbourne.gov.uk/search.asp?validated=true
+# Rugby
+#config['item']['attributes']['url'] = %q! base_url + '/' + item.css("a").first[:href] !
+
 #------------------------------------------------------------------------------
 
 item:  
@@ -25,9 +34,7 @@ item:
   http_method:      GET
   parsing_library:  N
   item_parser:      item.xpath("//table[@border='0' and @cellspacing='0' and @cellpadding='4' and @width='100%']")
-# for plymouth this needs to be as follows
-# item_parser:      item.xpath("//table[@border='0' and @cellspacing='0' and @cellpadding='4' and @width='95%']")
-  
+
   attributes: 
     uid: item.css("a").first.inner_text
     url: base_url + '/' + item.css("a").first[:href].sub(/detail/, 'fulldetail')
