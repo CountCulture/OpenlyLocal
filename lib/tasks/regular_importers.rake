@@ -8,8 +8,7 @@ task :update_feed_entries => :environment do
   end
 end
 
-
-
+# TODO: Will always return true if task is run with Rake.
 def already_running_process(process_string)
   cmd = %Q[ps alx | grep #{process_string} | grep -v grep | grep -v '/bin/bash'] # l instead of u gives long output
   puts "Checking to see if running #{process_string} : #{cmd}"
