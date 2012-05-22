@@ -2,8 +2,12 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class ScrapedObjectResultTest < ActiveSupport::TestCase
   context "A ScrapedObjectResult" do
-    
-    should_have_instance_methods :base_object_klass, :id, :title, :changes, :errors, :url, :status
+
+    [:base_object_klass, :id, :title, :changes, :errors, :url, :status].each do |method|
+      should "respond to instance method ##{method}" do
+        assert_respond_to ScrapedObjectResult.new, method, "ScrapedObjectResult does not have instance method #{method}"
+      end
+    end
     
     context "when initializing from base object" do
       setup do

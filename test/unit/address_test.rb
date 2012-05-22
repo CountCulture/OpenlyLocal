@@ -7,16 +7,10 @@ class AddressTest < ActiveSupport::TestCase
     setup do
       @address = Factory(:address)
     end
-    
-    should have_db_column :street_address    
-    should have_db_column :locality    
-    should have_db_column :postal_code    
-    should have_db_column :country    
-    should have_db_column :region    
-    should have_db_column :former
-    should have_db_column :lat
-    should have_db_column :lng
-    should have_db_column :raw_address    
+
+    [:street_address, :locality, :postal_code, :country, :region, :former, :lat, :lng, :raw_address].each do |column|
+      should have_db_column column
+    end
     should validate_presence_of :addressee_id
     should validate_presence_of :addressee_type
     

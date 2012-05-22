@@ -8,25 +8,18 @@ class ContractTest < ActiveSupport::TestCase
       @contract = Factory(:contract)
     end
     
-    should_validate_presence_of :organisation_type, :organisation_id
-    
-    should have_db_column  :title
-    should have_db_column  :description
-    should have_db_column  :uid
-    should have_db_column  :url
-    should have_db_column  :start_date
-    should have_db_column  :end_date
-    should have_db_column  :duration
-    should have_db_column  :total_value
-    should have_db_column  :annual_value
-    should have_db_column  :supplier_name
-    should have_db_column  :supplier_uid
-    should have_db_column  :department_responsible
-    should have_db_column  :person_responsible
-    should have_db_column  :email
-    should have_db_column  :telephone
-    should have_db_column  :source_url
-    
+    [:organisation_type, :organisation_id].each do |attribute|
+      should validate_presence_of attribute
+    end
+
+    [ :title, :description, :uid, :url, :start_date, :end_date, :duration,
+      :total_value, :annual_value, :supplier_name, :supplier_uid,
+      :department_responsible, :person_responsible, :email, :telephone,
+      :source_url,
+    ].each do |column|
+      should have_db_column column
+    end
+
     should 'belong to organisation polymorphically' do
       organisation = Factory(:council)
       assert_equal organisation, Factory(:contract, :organisation => organisation).organisation

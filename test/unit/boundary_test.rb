@@ -8,7 +8,9 @@ class BoundaryTest < ActiveSupport::TestCase
       @boundary = Factory(:boundary)
     end
     
-    should_validate_presence_of :area_id, :area_type, :boundary_line
+    [:area_id, :area_type, :boundary_line].each do |attribute|
+      should validate_presence_of attribute
+    end
     should have_db_column :hectares
     
     should "have associated polymorphic area" do

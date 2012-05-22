@@ -13,11 +13,13 @@ class PoliceTeamTest < ActiveSupport::TestCase
     should belong_to :police_force
     should have_many :police_officers
     should have_many :wards
-    should_validate_presence_of :uid
-    should_validate_presence_of :name
-    should_validate_presence_of :police_force_id
+    should validate_presence_of :uid
+    should validate_presence_of :name
+    should validate_presence_of :police_force_id
     
-    should_have_db_columns :url, :description, :lat, :lng
+    [:url, :description, :lat, :lng].each do |column|
+      should have_db_column column
+    end
     
     context 'should have defunkt named scope which' do
       

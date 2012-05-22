@@ -11,15 +11,15 @@ class MeetingTest < ActiveSupport::TestCase
 
     should belong_to :committee
     should belong_to :council # think about meeting should belong to council through committee
-    should_validate_presence_of :date_held
-    should_validate_presence_of :committee_id
-    should_validate_presence_of :council_id
-    should_have_one :minutes # no shoulda macro for polymorphic stuff so tested below
-    should_have_one :agenda # no shoulda macro for polymorphic stuff so tested below
+    should validate_presence_of :date_held
+    should validate_presence_of :committee_id
+    should validate_presence_of :council_id
+    should have_one :minutes # no shoulda macro for polymorphic stuff so tested below
+    should have_one :agenda # no shoulda macro for polymorphic stuff so tested below
     should have_many :related_articles
     should have_db_column :venue
     should have_db_column :status
-    should_validate_uniqueness_of :date_held, :scoped_to => [:council_id, :committee_id]
+    should validate_uniqueness_of(:date_held).scoped_to [:council_id, :committee_id]
     should "validate uniqueness of uid scoped to council_id" do
       #shoulda macros can't allow for nil values
       @meeting.update_attribute(:uid, 42)

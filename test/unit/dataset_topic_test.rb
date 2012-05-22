@@ -6,13 +6,15 @@ class DatasetTopicTest < ActiveSupport::TestCase
     setup do
       @dataset_topic = Factory(:dataset_topic)
     end
-    should_validate_presence_of :title
-    # should_validate_presence_of :ons_uid
-    should_validate_presence_of :dataset_family_id
+    should validate_presence_of :title
+    # should validate_presence_of :ons_uid
+    should validate_presence_of :dataset_family_id
     should belong_to :dataset_family
     should belong_to :dataset_topic_grouping
     should have_many :datapoints
-    should_have_db_column :muid, :description, :data_date, :short_title
+    [:muid, :description, :data_date, :short_title].each do |column|
+      should have_db_column column
+    end
     
   end
 
@@ -272,11 +274,12 @@ class DatasetTopicTest < ActiveSupport::TestCase
         @dataset_topic.perform
       end
 
-      should "email results" do
-        @dataset_topic.perform
-        assert_sent_email do |email|
-          email.subject =~ /ONS Dataset Topic updated/ && email.body =~ /#{@dataset_topic.title}/m
+      context "when sending email" do
+        setup do
+          @dataset_topic.perform
         end
+
+        should have_sent_email.with_subject(/ONS Dataset Topic updated/).with_body{ /#{@dataset_topic.title}/m }
       end
     end
   end

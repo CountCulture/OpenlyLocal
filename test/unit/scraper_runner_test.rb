@@ -1,4 +1,4 @@
-require "test_helper"
+require File.expand_path('../../test_helper', __FILE__)
 
 class ScraperRunnerTest < ActiveSupport::TestCase
   context "A ScraperRunner instance" do
@@ -54,26 +54,31 @@ class ScraperRunnerTest < ActiveSupport::TestCase
         @runner.refresh_stale
         assert_equal "3 scrapers processed, 1 problem(s)", @runner.instance_variable_get(:@summary)
       end
-      
-      should "email results if email_results is true" do
-        @runner.result_output = "some output"
-        @runner.refresh_stale
-        assert_sent_email do |email|
-          email.subject =~ /Auto Scraping Report/ && email.body =~ /some output/
+
+      context "when email_results is true" do
+        setup do
+          @runner.result_output = "some output"
+          @runner.refresh_stale
         end
+
+        should have_sent_email.with_subject(/Auto Scraping Report/).with_body(/some output/)
       end
       
-      should "use summary in email subject" do
-        @scraper.stubs(:process).returns(stub(:results => stub_everything))
-        @runner.refresh_stale
-        assert_sent_email do |email|
-          email.subject =~ /1 scrapers processed/
+      context "when sending email" do
+        setup do
+          @scraper.stubs(:process).returns(stub(:results => stub_everything))
+          @runner.refresh_stale
         end
+
+        should have_sent_email.with_subject(/1 scrapers processed/)
       end
       
-      should "not email results if email_results is not true" do
-        ScraperRunner.new.refresh_stale
-        assert_did_not_send_email
+      context "when email_results is not true" do
+        setup do
+          ScraperRunner.new.refresh_stale
+        end
+
+        should_not have_sent_email
       end
     end
     
