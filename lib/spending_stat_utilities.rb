@@ -1,16 +1,23 @@
+require 'fileutils'
+
 module SpendingStatUtilities
   module Base
     module ClassMethods
       def cache_spending_data
         data = calculated_spending_data
+        FileUtils.mkdir_p cached_spending_data_directory
         File.open(cached_spending_data_location, "w") do |f|
           f.write(data.to_yaml)
         end
         cached_spending_data_location
       end
-      
+
+      def cached_spending_data_directory
+        File.join(RAILS_ROOT, 'db', 'data', 'cache')
+      end
+
       def cached_spending_data_location
-        File.join(RAILS_ROOT, 'db', 'data', 'cache', "#{self.to_s.underscore}_spending")
+        File.join(cached_spending_data_directory, "#{self.to_s.underscore}_spending")
       end
       
       def cached_spending_data
