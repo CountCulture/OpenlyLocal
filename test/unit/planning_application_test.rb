@@ -11,21 +11,13 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     
     should validate_presence_of :council_id
     should validate_presence_of :uid
-    should_validate_uniqueness_of :uid, :scoped_to => :council_id
-    should have_db_column :council_id
-    should have_db_column :applicant_name
-    should have_db_column :applicant_address
-    should have_db_column :address
-    should have_db_column :postcode
-    should have_db_column :description
-    should have_db_column :url
-    should have_db_column :comment_url
-    should have_db_column :uid
-    should have_db_column :retrieved_at
-    should have_db_column :start_date
-    should have_db_column :status
-    should have_db_column :application_type
-    should have_db_column :bitwise_flag
+    should validate_uniqueness_of(:uid).scoped_to :council_id
+    [ :council_id, :applicant_name, :applicant_address, :address, :postcode,
+      :description, :url, :comment_url, :uid, :retrieved_at, :start_date,
+      :status, :application_type, :bitwise_flag,
+    ].each do |column|
+      should have_db_column column
+    end
 
     should belong_to :council
 
@@ -93,7 +85,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       
       should "limit to 5 results by default" do
         Factory(:planning_application, :start_date => 1.days.ago)
-        recent_applications = PlanningApplication.recent
+        recent_applications = PlanningApplication.recent.all
         assert_equal 5, recent_applications.size
       end
       

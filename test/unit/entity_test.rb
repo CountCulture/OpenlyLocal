@@ -27,23 +27,15 @@ class EntityTest < ActiveSupport::TestCase
     end
         
     should validate_presence_of :title
-    
-    should have_db_column :title
-    should have_db_column :entity_type
-    should have_db_column :entity_subtype
-    should have_db_column :website
-    should have_db_column :wikipedia_url
-    should have_db_column :previous_names
-    should have_db_column :sponsoring_organisation
-    should have_db_column :setup_on
-    should have_db_column :disbanded_on
-    should have_db_column :wdtk_name
-    should have_db_column :vat_number
-    should have_db_column :cpid_code
-    should have_db_column :normalised_title
-    should have_db_column :external_resource_uri
-    should have_db_column :other_attributes
-    
+
+    [ :title, :entity_type, :entity_subtype, :website, :wikipedia_url,
+      :previous_names, :sponsoring_organisation, :setup_on, :disbanded_on,
+      :wdtk_name, :vat_number, :cpid_code, :normalised_title,
+      :external_resource_uri, :other_attributes,
+    ].each do |column|
+      should have_db_column column
+    end
+
     should 'serialize other attributes' do
       assert_equal %w(foo bar), Factory(:entity, :other_attributes => %w(foo bar)).reload.other_attributes
     end

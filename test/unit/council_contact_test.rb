@@ -10,11 +10,11 @@ class CouncilContactTest < ActiveSupport::TestCase
     end
     
     should belong_to :council 
-    should_validate_presence_of :name
-    should_validate_presence_of :position
-    should_validate_presence_of :email
-    should_validate_presence_of :council_id
-    should_not_allow_mass_assignment_of :approved
+    should validate_presence_of :name
+    should validate_presence_of :position
+    should validate_presence_of :email
+    should validate_presence_of :council_id
+    should_not allow_mass_assignment_of :approved
     
     context 'when returning approved entries' do
       should 'only return approved contacts' do

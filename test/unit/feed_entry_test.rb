@@ -245,23 +245,22 @@ class FeedEntryTest < ActiveSupport::TestCase
         AdminMailer.expects(:deliver_admin_alert!)
         FeedEntry.perform
       end
-      
-      should "list number of items updated in email" do
-        FeedEntry.perform
-        assert_sent_email do |email|
-          email.subject =~ /Feed Updating Report/i && email.body =~ /updated feeds for 2 items/m
+
+      context "when sending email" do
+        setup do
+          FeedEntry.perform
         end
+
+        should have_sent_email.with_subject(/Feed Updating Report/i).with_body(/updated feeds for 2 items/m)
       end
-      
-      should "list problems incurred when updating" do
+
+      context "when sending email with problems" do
+        setup do
         FeedEntry.stubs(:update_from_feed).returns(nil).then.raises
         FeedEntry.perform
-        assert_sent_email do |email|
-          email.subject =~ /1 problems/m &&
-          email.subject =~ /1 successes/m &&
-          email.body =~ /1 problems/m &&
-          email.body =~ /Error> raised.+ #{BlogFeedUrl}/m
         end
+
+        should have_sent_email.with_subject(/1 problems/m).with_subject(/1 successes/m).with_body(/1 problems/m).with_body(/Error> raised.+ #{BlogFeedUrl}/m)
       end
     end
   end

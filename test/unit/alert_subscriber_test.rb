@@ -9,7 +9,7 @@ class AlertSubscriberTest < ActiveSupport::TestCase
     end
   
     should validate_presence_of :email
-    should_validate_uniqueness_of :email
+    should validate_uniqueness_of :email
     should validate_presence_of :postcode_text
     should validate_presence_of :distance
     should belong_to :postcode

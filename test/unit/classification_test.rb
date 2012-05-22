@@ -8,7 +8,7 @@ class ClassificationTest < ActiveSupport::TestCase
 
     should validate_presence_of :title
     should validate_presence_of :grouping
-    # should_validate_uniqueness_of :uid, :scoped_to => :area_type
+    # should validate_uniqueness_of(:uid).scoped_to :area_type
     should have_db_column :grouping
     should have_db_column :extended_title
     should have_db_column :parent_id
