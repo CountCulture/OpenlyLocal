@@ -629,11 +629,6 @@ class ScraperTest < ActiveSupport::TestCase
         assert_kind_of Hpricot::Doc, @scraper.send(:_data)
       end
       
-      should "return data as Hpricot Doc" do
-        @scraper.stubs(:_http_get).returns("something")
-        assert_kind_of Hpricot::Doc, @scraper.send(:_data)
-      end
-      
       should "raise ParsingError when problem processing page with Hpricot" do
         Hpricot.expects(:parse).raises
         assert_raise(Scraper::ParsingError) {@scraper.send(:_data)}

@@ -32,14 +32,6 @@ class TweeterTest < ActiveSupport::TestCase
       assert_equal "do_something", Tweeter.new(:method => "do_something").twitter_method
     end
         
-    should "extract url from options" do
-      assert_equal "http://foo.com", Tweeter.new("foo tweet", :url => "http://foo.com").instance_variable_get(:@url)
-    end
-    
-    should "store other options as instance_variable" do
-      assert_equal( {:foo => "bar"}, Tweeter.new("foo tweet", :url => "http://foo.com", :foo => "bar").options )
-    end
-    
     context "when creating client" do
       setup do
         @tweeter = Tweeter.new("some message")
