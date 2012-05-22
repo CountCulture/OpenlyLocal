@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 # http://www-users.cs.york.ac.uk/~fisher/software/coco/
 # 462400.0000 E 450700.0000 N

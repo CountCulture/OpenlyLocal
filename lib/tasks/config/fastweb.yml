@@ -2,15 +2,29 @@
 portal_system_name: FastWEB
 
 councils:
-  craven:             http://www.planning.cravendc.gov.uk/fastweb
-  eastleigh:          http://www.eastleigh.gov.uk/fastweb
-  wyre forest:        http://www.wyreforest.gov.uk/fastweb
-  mansfield:          http://www.mansfield.gov.uk/fastweb
-  neath port talbot:  https://planning.npt.gov.uk/
-  newport:            http://www.newport.gov.uk/fastWeb
-  sutton:             http://213.122.180.105/FASTWEB/
-  south lakeland:     http://www.southlakeland.gov.uk/fastweb
-  eden:               http://eforms.eden.gov.uk/fastweb
+  craven: http://www.planning.cravendc.gov.uk/fastweb/
+  eastleigh: http://www.eastleigh.gov.uk/fastweb/
+  wyre forest: http://www.wyreforest.gov.uk/fastweb/
+  mansfield: http://www.mansfield.gov.uk/Fastweb/
+  neath port talbot: https://planning.npt.gov.uk/
+  newport: http://www.newport.gov.uk/fastWeb/
+  sutton: http://213.122.180.105/FASTWEB/
+  south lakeland: http://www.southlakeland.gov.uk/fastweb/
+  eden: http://eforms.eden.gov.uk/fastweb/
+#  eastbourne: http://planningapps.eastbourne.gov.uk/
+  welwyn hatfield: https://fastweb.welhat.gov.uk/
+  north devon: http://planning.northdevon.gov.uk/
+#  plymouth: http://www.plymouth.gov.uk/planningapplications2/
+#  rugby: http://www.planningportal.rugby.gov.uk/
+
+# note config differences for 3 authorities as follows
+# Plymouth
+#config['item']['item_parser'] = %q! item.xpath("//table[@border='0' and @cellspacing='0' and @cellpadding='4' and @width='95%']") !
+#config['item']['attributes']['url'] = %q! item.css("a").first[:href] !
+# Eastbourne needs cookie URL
+# http://planningapps.eastbourne.gov.uk/search.asp?validated=true
+# Rugby
+#config['item']['attributes']['url'] = %q! base_url + '/' + item.css("a").first[:href] !
 
 #------------------------------------------------------------------------------
 
@@ -20,7 +34,7 @@ item:
   http_method:      GET
   parsing_library:  N
   item_parser:      item.xpath("//table[@border='0' and @cellspacing='0' and @cellpadding='4' and @width='100%']")
-  
+
   attributes: 
     uid: item.css("a").first.inner_text
     url: base_url + '/' + item.css("a").first[:href].sub(/detail/, 'fulldetail')

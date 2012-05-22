@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class AlertMailerTest < ActionMailer::TestCase
   # AlertMailer will call +perform_delivery_test+ to deliver mail in the test
