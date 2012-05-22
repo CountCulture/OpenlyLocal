@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 #  TO DO: Sort out testing and behavious of #process method. At the 
 # moment Scraper#process method is never called directly, only via 

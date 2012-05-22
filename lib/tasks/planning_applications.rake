@@ -10,7 +10,7 @@ task :export_csv_planning_applications  => :environment do
       begin
         csv << pa.csv_data
       rescue Exception => e
-        puts "Problem converting #{financial_transaction.inspect} to csv: #{e.inspect}"
+        puts "Problem converting #{pa.inspect} to csv: #{e.inspect}"
       end
       
     end

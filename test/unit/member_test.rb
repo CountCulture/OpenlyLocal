@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class MemberTest < ActiveSupport::TestCase
   should validate_presence_of :last_name
