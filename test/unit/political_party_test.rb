@@ -8,10 +8,12 @@ class PoliticalPartyTest < ActiveSupport::TestCase
       @political_party = Factory(:political_party)
     end
 
-    should_validate_presence_of :name
-    should_validate_presence_of :electoral_commission_uid
+    should validate_presence_of :name
+    should validate_presence_of :electoral_commission_uid
     
-    should_have_db_columns :alternative_names, :wikipedia_name, :colour, :url
+    [:alternative_names, :wikipedia_name, :colour, :url].each do |column|
+      should have_db_column column
+    end
 
     should "serialize alternative_names" do
       party = Factory(:political_party, :alternative_names => ["foo", "bar"])

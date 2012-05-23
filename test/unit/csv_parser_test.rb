@@ -110,7 +110,7 @@ class CsvParserTest < ActiveSupport::TestCase
         @dummy_scraper = stub_everything(:council => @dummy_org, :url => "http://foo.gov.uk/bar.csv")
       end
 	        
-	    should "return self" do
+	    should "return self when scraper is set" do
         assert_equal @parser, @parser.process(@csv_rawdata,@dummy_scraper)
       end
     
@@ -119,7 +119,7 @@ class CsvParserTest < ActiveSupport::TestCase
         assert_equal scraper, @parser.process(@csv_rawdata, scraper).instance_variable_get(:@current_scraper)
       end
       
-      should "return self" do
+      should "return self when scraper is not set" do
         assert_equal @parser, @parser.process(@csv_rawdata)
       end
       

@@ -808,7 +808,7 @@ class CouncilsControllerTest < ActionController::TestCase
          post :create, :council => @council_params
        end
      
-       should_create :council
+       should_change_record_count_of :council, 1, 'create'
        should assign_to :council
        should redirect_to( "the show page for council") { council_path(assigns(:council)) }
        should set_the_flash.to "Successfully created council"

@@ -22,10 +22,6 @@ class UserSubmissionDetailsTest < ActiveSupport::TestCase
       assert @user_submission_details.respond_to?(:attributes)
     end
     
-    should 'have attributes method' do
-      assert @user_submission_details.respond_to?(:attributes)
-    end
-    
     should 'have valid? method' do
       assert @user_submission_details.respond_to?(:valid?)
     end

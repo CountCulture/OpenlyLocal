@@ -6,10 +6,18 @@ class ParserTest < ActiveSupport::TestCase
     should belong_to :portal_system
     should validate_presence_of :result_model
     should validate_presence_of :scraper_type
-    should_allow_values_for :result_model, "Member", "Committee", "Meeting", "Ward"
-    should_not_allow_values_for :result_model, "foo", "User"
-    should_allow_values_for :scraper_type, "InfoScraper", "ItemScraper"
-    should_not_allow_values_for :scraper_type, "foo", "OtherScraper"
+    ["Member", "Committee", "Meeting", "Ward"].each do |value|
+      should allow_value(value).for :result_model
+    end
+    ["foo", "User"].each do |value|
+      should_not allow_value(value).for :result_model
+    end
+    ["InfoScraper", "ItemScraper"].each do |value|
+      should allow_value(value).for :scraper_type
+    end
+    ["foo", "OtherScraper"].each do |value|
+      should_not allow_value(value).for :scraper_type
+    end
     should have_db_column :path
     
     should "serialize attribute_parser" do

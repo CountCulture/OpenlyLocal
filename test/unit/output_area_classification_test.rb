@@ -7,8 +7,10 @@ class OutputAreaClassificationTest < ActiveSupport::TestCase
       @output_area_classification = Factory(:output_area_classification)
     end
 
-    should_validate_presence_of :title, :uid, :level, :area_type
-    should_validate_uniqueness_of :uid, :scoped_to => :area_type
+    [:title, :uid, :level, :area_type].each do |attribute|
+      should validate_presence_of attribute
+    end
+    should validate_uniqueness_of(:uid).scoped_to :area_type
   end
 
   context "A OutputAreaClassification instance" do

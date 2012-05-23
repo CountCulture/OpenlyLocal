@@ -7,7 +7,9 @@ class MembershipTest < ActiveSupport::TestCase
       # @membership = Membership.create!(:title => "Some Committee", :url => "some.url", :uid => 44, :council_id => 1)
     end
 
-    should_validate_presence_of :member_id, :committee_id
+    [:member_id, :committee_id].each do |attribute|
+      should validate_presence_of attribute
+    end
     should belong_to :committee
     # should belong_to :council
     should belong_to :member

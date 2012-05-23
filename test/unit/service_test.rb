@@ -15,12 +15,12 @@ class ServiceTest < ActiveSupport::TestCase
     
     should belong_to :council
     should belong_to :ldg_service
-    should_validate_presence_of :council_id 
-    should_validate_presence_of :title 
-    should_validate_presence_of :url
-    should_validate_presence_of :category
-    should_validate_presence_of :ldg_service_id
-    should_validate_uniqueness_of :ldg_service_id, :scoped_to => :council_id
+    should validate_presence_of :council_id 
+    should validate_presence_of :title 
+    should validate_presence_of :url
+    should validate_presence_of :category
+    should validate_presence_of :ldg_service_id
+    should validate_uniqueness_of(:ldg_service_id).scoped_to :council_id
     
     should "return order by title by default" do
       assert_equal [@another_service, @service], Service.all

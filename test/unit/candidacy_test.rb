@@ -12,14 +12,12 @@ class CandidacyTest < ActiveSupport::TestCase
     should belong_to :poll
     should belong_to :political_party
     should belong_to :member
-    should have_db_column :first_name
-    should have_db_column :last_name
-    should have_db_column :party
-    should have_db_column :elected
-    should have_db_column :votes
-    should have_db_column :basic_address
-    should_validate_presence_of :poll_id
-    should_validate_presence_of :last_name
+    [:first_name, :last_name, :party, :elected, :votes, :basic_address].each do |column|
+      should have_db_column column
+    end
+    [:poll_id, :last_name].each do |attribute|
+      should validate_presence_of attribute
+    end
     
     should "delegate area to poll" do
       assert_equal @poll.area, @candidacy.area
