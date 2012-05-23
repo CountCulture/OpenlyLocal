@@ -1,4 +1,4 @@
-require "test_helper"
+require File.expand_path('../../test_helper', __FILE__)
 
 class TestAreaModel <ActiveRecord::Base
   set_table_name "councils"
@@ -15,7 +15,7 @@ class AreaMethodsTest < ActiveSupport::TestCase
     end
     
     should belong_to :output_area_classification
-    should_have_one :boundary
+    should have_one :boundary
      
     context 'and boundary association' do
       setup do

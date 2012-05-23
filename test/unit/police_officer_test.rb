@@ -9,10 +9,12 @@ class PoliceOfficerTest < ActiveSupport::TestCase
     end
     
     should belong_to :police_team
-    should_validate_presence_of :name
-    should_validate_presence_of :police_team_id
+    should validate_presence_of :name
+    should validate_presence_of :police_team_id
     
-    should_have_db_columns :rank, :biography, :active
+    [:rank, :biography, :active].each do |column|
+      should have_db_column column
+    end
     
     context "with active named scope" do
       setup do

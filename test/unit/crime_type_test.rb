@@ -8,6 +8,8 @@ class CrimeTypeTest < ActiveSupport::TestCase
       @crime_type = Factory(:crime_type)
     end
     
-    should_validate_presence_of :name, :uid
+    [:name, :uid].each do |attribute|
+      should validate_presence_of attribute
+    end
   end
 end

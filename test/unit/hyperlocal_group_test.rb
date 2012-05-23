@@ -8,11 +8,11 @@ class HyperlocalGroupTest < ActiveSupport::TestCase
       @hyperlocal_group = Factory(:hyperlocal_group)
     end
     
-    should_validate_uniqueness_of :title
-    should_validate_presence_of :title
+    should validate_uniqueness_of :title
+    should validate_presence_of :title
     
-    should_have_db_column :email
-    should_have_db_column :url
+    should have_db_column :email
+    should have_db_column :url
     
     should "have many hyperlocal sites" do
       approved_site = Factory(:approved_hyperlocal_site, :hyperlocal_group => @hyperlocal_group)

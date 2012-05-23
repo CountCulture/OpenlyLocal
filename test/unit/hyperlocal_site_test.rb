@@ -8,28 +8,22 @@ class HyperlocalSiteTest < ActiveSupport::TestCase
       @hyperlocal_site = Factory(:hyperlocal_site)
     end
     
-    should_validate_presence_of :title
-    should_validate_presence_of :url
-    should_validate_presence_of :email
+    should validate_presence_of :title
+    should validate_presence_of :url
+    should validate_presence_of :email
     should validate_uniqueness_of(:url)
     should belong_to :hyperlocal_group
     should belong_to :council
     should have_many :feed_entries
-    should_allow_values_for :platform, "Ning"
-    should_not_allow_values_for :platform, "foo"
-    should_not_allow_mass_assignment_of :approved
-    
-    should have_db_column :email
-    should have_db_column :description
-    should have_db_column :lat
-    should have_db_column :lng
-    should have_db_column :distance_covered
-    should have_db_column :feed_url
-    should have_db_column :platform
-    should have_db_column :area_covered
-    should have_db_column :country
-    should have_db_column :approved
-    should have_db_column :party_affiliation
+    should allow_value("Ning").for :platform
+    should_not allow_value("foo").for :platform
+    should_not allow_mass_assignment_of :approved
+
+    [ :email, :description, :lat, :lng, :distance_covered, :feed_url, :platform,
+      :area_covered, :country, :approved, :party_affiliation,
+    ].each do |column|
+      should have_db_column column
+    end
     
     should "act as mappable" do
       assert HyperlocalSite.respond_to?(:find_closest)

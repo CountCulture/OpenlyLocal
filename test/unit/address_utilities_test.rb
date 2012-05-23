@@ -1,4 +1,4 @@
-require "test_helper"
+require File.expand_path('../../test_helper', __FILE__)
 
 class TestAddresseeModel <ActiveRecord::Base
   set_table_name "candidates"
@@ -16,7 +16,7 @@ class AddressUtilitiesTest < ActiveSupport::TestCase
       @former_address = Factory(:address, :addressee => @test_model_with_address, :street_address => '2 Heath St', :locality => 'Sometown', :former => true)
     end
     
-    should_have_one :full_address, :dependent => :destroy
+    should have_one(:full_address).dependent :destroy
     
     context 'and full_address association' do
       should 'not return former addresses' do
@@ -67,7 +67,7 @@ class AddressUtilitiesTest < ActiveSupport::TestCase
             @test_model_without_address.address = @unsaved_address
           end
 
-          should_create :address
+          should_change_record_count_of :address, 1, 'create'
           
           should 'assign address to addressee' do
             assert_equal @unsaved_address, @test_model_without_address.address.reload
@@ -89,7 +89,7 @@ class AddressUtilitiesTest < ActiveSupport::TestCase
             @test_model_without_address.address = { :street_address => '1 Acacia Ave', :locality => 'Anytown' }
           end
 
-          should_create :address
+          should_change_record_count_of :address, 1, 'create'
 
           should 'assign address to addressee' do
             assert_kind_of Address, @test_model_without_address.address
@@ -110,7 +110,7 @@ class AddressUtilitiesTest < ActiveSupport::TestCase
             @test_model_with_address.address = @unsaved_address
           end
           
-          should_create :address
+          should_change_record_count_of :address, 1, 'create'
           
           should 'assign new address to addressee' do
             assert_equal @unsaved_address, @test_model_with_address.address
@@ -148,7 +148,7 @@ class AddressUtilitiesTest < ActiveSupport::TestCase
             @test_model_with_address.address = { :street_address => '1 Acacia Ave', :locality => 'Anytown' }
           end
 
-          should_create :address
+          should_change_record_count_of :address, 1, 'create'
 
           should 'assign address to addressee' do
             assert_kind_of Address, @test_model_with_address.address

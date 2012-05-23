@@ -7,17 +7,14 @@ class PensionFundTest < ActiveSupport::TestCase
     setup do
       @pension_fund = Factory(:pension_fund)
     end
-    
-    should_have_db_column :telephone
-    should_have_db_column :fax
-    should_have_db_column :email
-    should_have_db_column :address
-    should_have_db_column :wdtk_name
-    should have_db_column :wdtk_id
+
+    [:telephone, :fax, :email, :address, :wdtk_name, :wdtk_id].each do |column|
+      should have_db_column column
+    end
 
     should have_many :councils 
-    should_validate_presence_of :name
-    should_validate_uniqueness_of :name
+    should validate_presence_of :name
+    should validate_uniqueness_of :name
     
     should "mixin SpendingStat::Base module" do
       assert PensionFund.new.respond_to?(:spending_stat)

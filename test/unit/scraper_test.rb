@@ -629,11 +629,6 @@ class ScraperTest < ActiveSupport::TestCase
         assert_kind_of Hpricot::Doc, @scraper.send(:_data)
       end
       
-      should "return data as Hpricot Doc" do
-        @scraper.stubs(:_http_get).returns("something")
-        assert_kind_of Hpricot::Doc, @scraper.send(:_data)
-      end
-      
       should "raise ParsingError when problem processing page with Hpricot" do
         Hpricot.expects(:parse).raises
         assert_raise(Scraper::ParsingError) {@scraper.send(:_data)}
@@ -960,7 +955,7 @@ class ScraperTest < ActiveSupport::TestCase
       # should "not email results if no errors" do
       #   # @scraper.errors.clear
       #   @scraper.perform
-      #   assert_did_not_send_email do |email| 
+      #   should_not have_sent_email do |email| 
       #     p @scraper.errors
       #     p email.subject, email.body
       #     email.subject =~ /Scraping Report/ && email.body =~ /Scraping Results/
@@ -968,13 +963,14 @@ class ScraperTest < ActiveSupport::TestCase
       #   flunk
       # end
       
-      should "email results if errors" do
-        @scraper.errors.add_to_base('some error')
-        @scraper.expects(:process).returns(@scraper)
-        @scraper.perform
-        assert_sent_email do |email|
-          email.subject =~ /Scraping Report/ && email.body =~ /Scraping Results/
+      context "when sending email" do
+        setup do
+          @scraper.errors.add_to_base('some error')
+          @scraper.expects(:process).returns(@scraper)
+          @scraper.perform
         end
+
+        should have_sent_email.with_subject(/Scraping Report/).with_body(/Scraping Results/)
       end
     end
     

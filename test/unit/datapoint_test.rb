@@ -7,10 +7,10 @@ class DatapointTest < ActiveSupport::TestCase
       @datapoint = Factory(:datapoint)
     end
 
-    should_validate_presence_of :value
-    should_validate_presence_of :dataset_topic_id
-    should_validate_presence_of :area_id
-    should_validate_presence_of :area_type
+    should validate_presence_of :value
+    should validate_presence_of :dataset_topic_id
+    should validate_presence_of :area_id
+    should validate_presence_of :area_type
     should belong_to :dataset_topic
     should belong_to :area
     should "belong_to dataset_family through dataset_topic" do

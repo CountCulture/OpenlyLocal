@@ -1,10 +1,6 @@
 class AlertMailer < ActionMailer::Base
-  config_file = "#{RAILS_ROOT}/config/smtp_gmail.yml"
-  config_options = YAML.load_file(config_file)
-  config_options['alerts'].symbolize_keys.each do |k,v|
-    @@smtp_settings[k] = v
-  end
-  # self.override_smtp_settings
+  @@auth_smtp_settings = YAML.load_file(File.join(Rails.root, 'config', 'smtp_gmail.yml'))['alerts'].symbolize_keys
+  cattr_accessor :auth_smtp_settings
 
   def confirmation(subscriber)
     @recipients   = subscriber.email
@@ -26,11 +22,22 @@ class AlertMailer < ActionMailer::Base
   end
   
   private
-  def self.override_smtp_settings
-    config_file = "#{RAILS_ROOT}/config/smtp_gmail.yml"
-    config_options = YAML.load_file(config_file)
-    config_options['alerts'].symbolize_keys.each do |k,v|
-      @@smtp_settings[k] = v
+
+  # This is a copy of the perform_delivery_smtp method from ActionMailer::Base,
+  # the only difference being that +auth_smtp_settings+ has been substituted for
+  # +smtp_settings+. Alternatives that modify smtp_settings to change this
+  # method's behavior can provoke a race condition.
+  # @see lib/action_mailer/base.rb
+  def perform_delivery_smtp(mail)
+    destinations = mail.destinations
+    mail.ready_to_send
+    sender = (mail['return-path'] && mail['return-path'].spec) || Array(mail.from).first
+
+    smtp = Net::SMTP.new(auth_smtp_settings[:address], auth_smtp_settings[:port])
+    smtp.enable_starttls_auto if auth_smtp_settings[:enable_starttls_auto] && smtp.respond_to?(:enable_starttls_auto)
+    smtp.start(auth_smtp_settings[:domain], auth_smtp_settings[:user_name], auth_smtp_settings[:password],
+               auth_smtp_settings[:authentication]) do |smtp|
+      smtp.sendmail(mail.encoded, sender, destinations)
     end
   end
   
