@@ -4,7 +4,18 @@ class AlertSubscriber < ActiveRecord::Base
   validates_uniqueness_of :email
   before_create :set_confirmation_code, :set_geo_data_from_postcode_text
   after_create :send_confirmation_email
-  
+
+  named_scope :confirmed, :conditions => {:confirmed => true}
+  named_scope :geocoded, :conditions => 'bottom_left_lat IS NOT NULL'
+  named_scope :contains, lambda { |lat,lng|
+    {
+      :conditions => [
+        'bottom_left_lat <= ? AND bottom_left_lng <= ? AND top_right_lat >= ? AND top_right_lng >= ?',
+        lat, lng, lat, lng,
+      ],
+    }
+  }
+
   def self.confirm_from_email_and_code(email_address, conf_code)
     if subscriber = find_by_email_and_confirmation_code(email_address, conf_code)
       subscriber.update_attribute(:confirmed, true)
