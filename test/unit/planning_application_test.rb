@@ -264,6 +264,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
       
       should "not queue for emailing" do
+        assert_blank @planning_application.changes
         @planning_application.expects(:queue_for_sending_alerts).never
         @planning_application.save!
       end
@@ -277,7 +278,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         context "and didn't previously have lat long" do
 
           should "queue for emailing" do
-            @planning_application.changes
+            assert_present @planning_application.changes
             @planning_application.expects(:queue_for_sending_alerts)
             @planning_application.save!
           end
@@ -285,13 +286,15 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         
         context "and did previously have lat long" do
           setup do
+            assert_present @planning_application.changes
+            @planning_application.expects(:queue_for_sending_alerts)
             @planning_application.save!
           end
 
           should "not queue for sending alerts" do
-            @planning_application.changes
-            @planning_application.save!
-            @planning_application.changes
+            # @todo This test will only pass if we save a second time before
+            # running the test, although changes is empty after just one save.
+            assert_blank @planning_application.changes
             @planning_application.expects(:queue_for_sending_alerts).never
             @planning_application.save!
           end
@@ -620,22 +623,45 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
 
-    # context "when returning matching subscribers" do
-    #   setup do
-    #     
-    #   end
-    # 
-    #   should "find all subscribers where planning application lat long is within bounding box" do
-    #     
-    #   end
-    #   
-    #   context "and lat long is nil" do
-    #     should "not find subscribers" do
-    #       
-    #     end
-    #   end
-    # end
-    # 
+    context "when returning matching subscribers" do
+      setup do
+        planning_application = Factory(:planning_application_with_lat_long, :lat => 0.1, :lng => 0.1)
+
+        @without_lat_lng = Factory(:alert_subscriber_with_confirmation)
+        @without_confirmation = Factory(:alert_subscriber_with_lat_long)
+        5.times do
+          Factory(:alert_subscriber_with_confirmation_and_lat_long)
+        end
+        5.times do
+          Factory(:alert_subscriber_with_confirmation_and_lat_long,
+            :bottom_left_lat => -1,
+            :bottom_left_lng => -1,
+            :top_right_lat => 0,
+            :top_right_lng => 0)
+        end
+
+        @matching_subscribers = planning_application.matching_subscribers
+      end
+
+      should "find only confirmed subscribers" do
+        assert !@matching_subscribers.include?(@without_confirmation)
+      end
+
+      should "find only geocoded subscribers" do
+        assert !@matching_subscribers.include?(@without_lat_lng)
+      end
+
+      should "find subscribers where planning application latlng is within bounding box" do
+        assert_equal 5, @matching_subscribers.size
+      end
+
+      context "and lat long is nil" do
+        should "not find subscribers" do
+          assert_blank @planning_application.matching_subscribers
+        end
+      end
+    end
+
     context "when sending alerts" do
       setup do
         @alert_subscriber = Factory(:alert_subscriber)
