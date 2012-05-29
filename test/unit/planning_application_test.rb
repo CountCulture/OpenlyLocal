@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class PlanningApplicationTest < ActiveSupport::TestCase
   subject { @planning_application }
@@ -12,21 +12,13 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     should validate_presence_of :council_id
     should validate_presence_of :uid
     should validate_presence_of :address
-    should_validate_uniqueness_of :uid, :scoped_to => :council_id
-    should have_db_column :council_id
-    should have_db_column :applicant_name
-    should have_db_column :applicant_address
-    should have_db_column :address
-    should have_db_column :postcode
-    should have_db_column :description
-    should have_db_column :url
-    should have_db_column :comment_url
-    should have_db_column :uid
-    should have_db_column :retrieved_at
-    should have_db_column :start_date
-    should have_db_column :status
-    should have_db_column :application_type
-    should have_db_column :bitwise_flag
+    should validate_uniqueness_of(:uid).scoped_to :council_id
+    [ :council_id, :applicant_name, :applicant_address, :address, :postcode,
+      :description, :url, :comment_url, :uid, :retrieved_at, :start_date,
+      :status, :application_type, :bitwise_flag,
+    ].each do |column|
+      should have_db_column column
+    end
 
     should belong_to :council
 
@@ -94,7 +86,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       
       should "limit to 5 results by default" do
         Factory(:planning_application, :start_date => 1.days.ago)
-        recent_applications = PlanningApplication.recent
+        recent_applications = PlanningApplication.recent.all
         assert_equal 5, recent_applications.size
       end
       
@@ -273,6 +265,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
       
       should "not queue for emailing" do
+        assert_blank @planning_application.changes
         @planning_application.expects(:queue_for_sending_alerts).never
         @planning_application.save!
       end
@@ -286,7 +279,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         context "and didn't previously have lat long" do
 
           should "queue for emailing" do
-            @planning_application.changes
+            assert_present @planning_application.changes
             @planning_application.expects(:queue_for_sending_alerts)
             @planning_application.save!
           end
@@ -294,13 +287,15 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         
         context "and did previously have lat long" do
           setup do
+            assert_present @planning_application.changes
+            @planning_application.expects(:queue_for_sending_alerts)
             @planning_application.save!
           end
 
           should "not queue for sending alerts" do
-            @planning_application.changes
-            @planning_application.save!
-            @planning_application.changes
+            # @todo This test will only pass if we save a second time before
+            # running the test, although changes is empty after just one save.
+            assert_blank @planning_application.changes
             @planning_application.expects(:queue_for_sending_alerts).never
             @planning_application.save!
           end
@@ -629,22 +624,45 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
 
-    # context "when returning matching subscribers" do
-    #   setup do
-    #     
-    #   end
-    # 
-    #   should "find all subscribers where planning application lat long is within bounding box" do
-    #     
-    #   end
-    #   
-    #   context "and lat long is nil" do
-    #     should "not find subscribers" do
-    #       
-    #     end
-    #   end
-    # end
-    # 
+    context "when returning matching subscribers" do
+      setup do
+        planning_application = Factory(:planning_application_with_lat_long, :lat => 0.1, :lng => 0.1)
+
+        @without_lat_lng = Factory(:alert_subscriber_with_confirmation)
+        @without_confirmation = Factory(:alert_subscriber_with_lat_long)
+        5.times do
+          Factory(:alert_subscriber_with_confirmation_and_lat_long)
+        end
+        5.times do
+          Factory(:alert_subscriber_with_confirmation_and_lat_long,
+            :bottom_left_lat => -1,
+            :bottom_left_lng => -1,
+            :top_right_lat => 0,
+            :top_right_lng => 0)
+        end
+
+        @matching_subscribers = planning_application.matching_subscribers
+      end
+
+      should "find only confirmed subscribers" do
+        assert !@matching_subscribers.include?(@without_confirmation)
+      end
+
+      should "find only geocoded subscribers" do
+        assert !@matching_subscribers.include?(@without_lat_lng)
+      end
+
+      should "find subscribers where planning application latlng is within bounding box" do
+        assert_equal 5, @matching_subscribers.size
+      end
+
+      context "and lat long is nil" do
+        should "not find subscribers" do
+          assert_blank @planning_application.matching_subscribers
+        end
+      end
+    end
+
     context "when sending alerts" do
       setup do
         @alert_subscriber = Factory(:alert_subscriber)

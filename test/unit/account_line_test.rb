@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class AccountLineTest < ActiveSupport::TestCase
   context "The AccountLine class" do
@@ -6,15 +6,14 @@ class AccountLineTest < ActiveSupport::TestCase
       @account_line = Factory(:account_line)
     end
 
-    should have_db_column :value
-    should have_db_column :period
-    should have_db_column :sub_heading
+    [:value, :period, :sub_heading].each do |column|
+      should have_db_column column
+    end
 
     should belong_to :classification
-    should validate_presence_of :classification_id
-    should validate_presence_of :organisation_type
-    should validate_presence_of :organisation_id
-    should validate_presence_of :period
+    [:classification_id, :organisation_type, :organisation_id, :period].each do |attribute|
+      should validate_presence_of attribute
+    end
     
     should 'belong to organisation polymorphically' do
       organisation = Factory(:council)

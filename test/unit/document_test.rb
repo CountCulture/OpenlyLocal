@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class DocumentTest < ActiveSupport::TestCase
   subject { @document }
@@ -134,7 +134,7 @@ class DocumentTest < ActiveSupport::TestCase
         assert_match %r(<title), @document.to_xml
       end
       
-      should "include title" do
+      should "include status" do
         assert_match %r(<status), @document.to_xml
       end
     end

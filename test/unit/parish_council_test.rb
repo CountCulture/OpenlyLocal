@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class ParishCouncilTest < ActiveSupport::TestCase
 
@@ -6,18 +6,12 @@ class ParishCouncilTest < ActiveSupport::TestCase
     should validate_presence_of :title
     should validate_presence_of :os_id
 
-    should have_db_column :title
-    should have_db_column :website
-    should have_db_column :os_id
-    should have_db_column :council_id
-    should have_db_column :gss_code
-    should have_db_column :council_type
-    should have_db_column :wdtk_name
-    should have_db_column :vat_number
-    should have_db_column :youtube_account_name
-    should have_db_column :facebook_account_name
-    should have_db_column :feed_url
-    should have_db_column :normalised_title
+    [ :title, :website, :os_id, :council_id, :gss_code, :council_type,
+      :wdtk_name, :vat_number, :youtube_account_name, :facebook_account_name,
+      :feed_url, :normalised_title,
+    ].each do |column|
+      should have_db_column column
+    end
     should belong_to :council
 
 

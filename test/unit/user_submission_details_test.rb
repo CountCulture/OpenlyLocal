@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class ChildSubmissionDetails < UserSubmissionDetails
   attr_accessor :dummy, :another_dummy
@@ -16,10 +16,6 @@ class UserSubmissionDetailsTest < ActiveSupport::TestCase
     
     should 'have attribute_names method' do
       assert @user_submission_details.respond_to?(:attribute_names)
-    end
-    
-    should 'have attributes method' do
-      assert @user_submission_details.respond_to?(:attributes)
     end
     
     should 'have attributes method' do

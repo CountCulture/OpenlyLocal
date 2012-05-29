@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class SpendingStatTest < ActiveSupport::TestCase
   def setup
@@ -24,17 +24,13 @@ class SpendingStatTest < ActiveSupport::TestCase
     should validate_presence_of :organisation_type
     should validate_presence_of :organisation_id
 
-    should have_db_column :total_spend
-    should have_db_column :average_monthly_spend
-    should have_db_column :average_transaction_value
-    should have_db_column :spend_by_month
-    should have_db_column :breakdown
-    should have_db_column :earliest_transaction
-    should have_db_column :latest_transaction
-    should have_db_column :transaction_count
-    should have_db_column :total_received
-    should have_db_column :total_received_from_councils
-    should have_db_column :payer_breakdown
+    [ :total_spend, :average_monthly_spend, :average_transaction_value,
+      :spend_by_month, :breakdown, :earliest_transaction, :latest_transaction,
+      :transaction_count, :total_received, :total_received_from_councils,
+      :payer_breakdown,
+    ].each do |column|
+      should have_db_column column
+    end
     
     should 'serialize spend_by_month' do
       assert_equal ['foo', 'bar'], Factory(:spending_stat, :spend_by_month => ['foo', 'bar']).reload.spend_by_month 
@@ -81,12 +77,12 @@ class SpendingStatTest < ActiveSupport::TestCase
         assert_equal 432.1, @spending_stat.reload.total_spend
       end
 
-      should "should calculate total_receivedd" do
+      should "should calculate total_received" do
         @spending_stat.expects(:calculated_total_received).at_least(1)
         @spending_stat.perform
       end
       
-      should "should update with calculated_total_spend" do
+      should "should update with calculated_total_received" do
         @spending_stat.stubs(:calculated_total_received).returns(432)
         @spending_stat.perform
         assert_equal 432, @spending_stat.reload.total_received

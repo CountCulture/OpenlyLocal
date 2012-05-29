@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class LdgServiceTest < ActiveSupport::TestCase
   subject { @ldg_service }
@@ -7,12 +7,12 @@ class LdgServiceTest < ActiveSupport::TestCase
       @ldg_service = Factory(:ldg_service) # category 'Foo 1'
       @council = Factory(:council, :ldg_id => 42)
     end
-    should_validate_presence_of :category 
-    should_validate_presence_of :lgsl
-    should_validate_presence_of :lgil
-    should_validate_presence_of :service_name
-    should_validate_presence_of :authority_level
-    should_validate_presence_of :url
+    should validate_presence_of :category 
+    should validate_presence_of :lgsl
+    should validate_presence_of :lgil
+    should validate_presence_of :service_name
+    should validate_presence_of :authority_level
+    should validate_presence_of :url
     should have_many :services
     
     should "alias service_name as title" do

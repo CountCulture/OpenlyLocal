@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class PoliceForceTest < ActiveSupport::TestCase
   subject { @police_force }
@@ -16,17 +16,13 @@ class PoliceForceTest < ActiveSupport::TestCase
     should validate_uniqueness_of :name
     should validate_presence_of :url
     should validate_uniqueness_of :url
-    
-    should have_db_column :wikipedia_url
-    should have_db_column :telephone
-    should have_db_column :address
-    should have_db_column :wdtk_name
-    should have_db_column :npia_id
-    should have_db_column :facebook_account_name
-    should have_db_column :youtube_account_name
-    should have_db_column :feed_url
-    should have_db_column :crime_map
-    should have_db_column :wdtk_id
+
+    [ :wikipedia_url, :telephone, :address, :wdtk_name, :npia_id,
+      :facebook_account_name, :youtube_account_name, :feed_url, :crime_map,
+      :wdtk_id,
+    ].each do |column|
+      should have_db_column column
+    end
     
     should "include TwitterAccountMethods mixin" do
       assert @police_force.respond_to?(:twitter_account_name)

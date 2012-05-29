@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class CouncilTest < ActiveSupport::TestCase
   subject { @council }
@@ -8,8 +8,8 @@ class CouncilTest < ActiveSupport::TestCase
       @council = Factory(:council)
     end
     
-    should_validate_presence_of :name
-    should_validate_uniqueness_of :name
+    should validate_presence_of :name
+    should validate_uniqueness_of :name
     should have_many :members
     should have_many :committees
     should have_many :memberships
@@ -19,41 +19,28 @@ class CouncilTest < ActiveSupport::TestCase
     should have_many :officers
     should have_many :services
     should have_many :child_authorities
-    should_have_many :meeting_documents, :through => :meetings
-    should_have_many :past_meeting_documents, :through => :held_meetings
+    should have_many(:meeting_documents).through :meetings
+    should have_many(:past_meeting_documents).through :held_meetings
     should have_many :feed_entries
     should have_many :polls
-    should_have_one :police_authority, :through => :police_force
+    should have_one(:police_authority).through :police_force
     should have_one :chief_executive
     should belong_to :parent_authority
     should belong_to :portal_system
     should belong_to :police_force
     should belong_to :pension_fund
     should have_many :datapoints
-    should_have_many :dataset_topics, :through => :datapoints
-    should_have_many :financial_transactions, :through => :suppliers
+    should have_many(:dataset_topics).through :datapoints
+    should have_many(:financial_transactions).through :suppliers
     should have_many :account_lines
-    should have_db_column :notes
-    should have_db_column :wikipedia_url
-    should have_db_column :ons_url
-    should have_db_column :egr_id
-    should have_db_column :wdtk_name
-    should have_db_column :feed_url
-    should have_db_column :data_source_url
-    should have_db_column :data_source_name
-    should have_db_column :snac_id
-    should have_db_column :country
-    should have_db_column :population
-    should have_db_column :ldg_id
-    should have_db_column :police_force_url
-    should have_db_column :region
-    should have_db_column :signed_up_for_1010
-    should have_db_column :annual_audit_letter
-    should have_db_column :open_data_url
-    should have_db_column :open_data_licence
-    should have_db_column :normalised_title
-    should have_db_column :vat_number
-    should have_db_column :planning_email
+    [ :notes, :wikipedia_url, :ons_url, :egr_id, :wdtk_name, :feed_url,
+      :data_source_url, :data_source_name, :snac_id, :country, :population,
+      :ldg_id, :police_force_url, :region, :signed_up_for_1010,
+      :annual_audit_letter, :open_data_url, :open_data_licence,
+      :normalised_title, :vat_number, :planning_email,
+    ].each do |column|
+      should have_db_column column
+    end
 
     should "mixin PartyBreakdownSummary module" do
       assert Council.new.respond_to?(:party_breakdown)
@@ -1023,12 +1010,13 @@ class CouncilTest < ActiveSupport::TestCase
         Council.update_social_networking_info
       end
       
-      should "include exceptions raised in email admin report" do
-        @council.stubs(:update_social_networking_info).raises(StandardError, "OpenURI Error")
-        Council.update_social_networking_info
-        assert_sent_email do |email|
-          email.body =~ /Exception raised.+#{@council.title}.+OpenURI Error/i
+      context "and when raising exception" do
+        setup do
+          @council.stubs(:update_social_networking_info).raises(StandardError, "OpenURI Error")
+          Council.update_social_networking_info
         end
+
+        should have_sent_email.with_body{ /Exception raised.+#{@council.title}.+OpenURI Error/i }
       end
       
       context "and when emailing admin report" do
@@ -1039,30 +1027,7 @@ class CouncilTest < ActiveSupport::TestCase
           Council.update_social_networking_info
         end
         
-        should "have subject" do
-          assert_sent_email do |email|
-            email.subject =~ /Council Social Networking Info Report/i
-          end
-        end
-        
-        should "include number of errors in subject" do
-          assert_sent_email do |email|
-            email.subject =~ /1 errors/i
-          end
-        end
-        
-        should "include number of updates in subject" do
-          assert_sent_email do |email|
-            email.subject =~ /2 updates/i
-          end
-        end
-        
-        should "list council and errors in report" do
-          assert_sent_email do |email|
-            email.body =~ /#{@council.title}.+#{Regexp.escape(@error_message)}/m
-          end
-        end
-        
+        should have_sent_email.with_subject(/Council Social Networking Info Report/i).with_subject(/1 errors/i).with_subject(/2 updates/i).with_body{ /#{@council.title}.+#{Regexp.escape(@error_message)}/m }
       end
     end
     

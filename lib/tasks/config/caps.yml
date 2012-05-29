@@ -30,6 +30,8 @@ councils:
   swindon: http://195.89.201.121/PublicAccess77/
   waveney: http://publicaccess.waveney.gov.uk/pasystem77/
   west lancashire: http://publicaccess.westlancs.gov.uk/publicaccess/
+# worcestershire: http://www.worcestershire.gov.uk/PublicAccess/
+# item_parser:      item.search('table.whubTable tr')[1..-1]
 
 #------------------------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class PostcodeTest < ActiveSupport::TestCase
   subject { @postcode }
@@ -9,9 +9,13 @@ class PostcodeTest < ActiveSupport::TestCase
   
   context "The Postcode class" do
     
-    should_validate_presence_of :code, :lat, :lng
-    should_validate_uniqueness_of :code
-    should_have_db_columns :quality, :lat, :lng, :country, :nhs_region, :nhs_health_authority, :county_id, :council_id, :ward_id
+    [:code, :lat, :lng].each do |attribute|
+      should validate_presence_of attribute
+    end
+    should validate_uniqueness_of :code
+    [:quality, :lat, :lng, :country, :nhs_region, :nhs_health_authority, :county_id, :council_id, :ward_id].each do |column|
+      should have_db_column column
+    end
     should belong_to :ward
     should belong_to :council
     should belong_to :county

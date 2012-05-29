@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class OfficerTest < ActiveSupport::TestCase
   subject { @officer }
@@ -10,9 +10,9 @@ class OfficerTest < ActiveSupport::TestCase
     end
     
     should belong_to :council 
-    should_validate_presence_of :last_name
-    should_validate_presence_of :position
-    should_validate_presence_of :council_id
+    should validate_presence_of :last_name
+    should validate_presence_of :position
+    should validate_presence_of :council_id
 
     should "validate uniqueness of chief executive for council" do
       ceo = Factory(:officer, :council => @council, :position => "Chief Executive")

@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class CompanyTest < ActiveSupport::TestCase
   context "The Company class" do
@@ -6,18 +6,12 @@ class CompanyTest < ActiveSupport::TestCase
       @company = Factory(:company)
     end
     
-    should have_db_column :title
-    should have_db_column :company_number
-    should have_db_column :url
-    should have_db_column :normalised_title
-    should have_db_column :status
-    should have_db_column :wikipedia_url
-    should have_db_column :company_type
-    should have_db_column :incorporation_date
-    should have_db_column :vat_number
-    should have_db_column :previous_names
-    should have_db_column :sic_codes
-    should have_db_column :country
+    [ :title, :company_number, :url, :normalised_title, :status, :wikipedia_url,
+      :company_type, :incorporation_date, :vat_number, :previous_names,
+      :sic_codes, :country,
+    ].each do |column|
+      should have_db_column column
+    end
     should have_one :charity
     
     should 'serialize previous_names' do
@@ -91,8 +85,8 @@ class CompanyTest < ActiveSupport::TestCase
         assert_equal 'has already been taken', another_dup_company.errors[:vat_number]
       end
       
-      # should_validate_uniqueness_of :company_number
-      # should_validate_uniqueness_of(:vat_number).case_insensitive
+      # should validate_uniqueness_of :company_number
+      # should validate_uniqueness_of(:vat_number).case_insensitive
     end
     
     context "after creation" do

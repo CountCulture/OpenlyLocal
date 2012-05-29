@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class PortalSystemTest < ActiveSupport::TestCase
   
@@ -7,8 +7,8 @@ class PortalSystemTest < ActiveSupport::TestCase
       @existing_portal = Factory.create(:portal_system)
     end
     
-    should_validate_presence_of :name
-    should_validate_uniqueness_of :name
+    should validate_presence_of :name
+    should validate_uniqueness_of :name
     should have_many :councils
     should have_many :parsers
   end

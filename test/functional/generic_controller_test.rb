@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 # Way of testing application controller stuff (though some of this can be 
 # tested in unit test) and application layout stuff

@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class CrimeAreaTest < ActiveSupport::TestCase
   subject { @crime_area }
@@ -9,9 +9,13 @@ class CrimeAreaTest < ActiveSupport::TestCase
     end
     
     should belong_to :police_force
-    should_validate_presence_of :name, :uid, :police_force_id, :level
-    should_validate_uniqueness_of :uid, :scoped_to => :police_force_id
-    should_have_db_columns :crime_mapper_url, :feed_url, :crime_level_cf_national, :crime_rates, :total_crimes
+    [:name, :uid, :police_force_id, :level].each do |attribute|
+      should validate_presence_of attribute
+    end
+    should validate_uniqueness_of(:uid).scoped_to :police_force_id
+    [:crime_mapper_url, :feed_url, :crime_level_cf_national, :crime_rates, :total_crimes].each do |column|
+      should have_db_column column
+    end
     
     should 'serialize crime_rates' do
       crime_rates = [{:foo => 'bar'}]
