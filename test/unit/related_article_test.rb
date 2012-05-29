@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 # require 'pingback_engine'
 
 class RelatedArticleTest < ActiveSupport::TestCase
@@ -9,13 +9,15 @@ class RelatedArticleTest < ActiveSupport::TestCase
       @related_article = Factory(:related_article)
     end
     
-    should_validate_presence_of :url
-    should_validate_presence_of :title
-    should_validate_presence_of :hyperlocal_site_id
-    should_validate_presence_of :subject_type, :subject_id
-    should_validate_uniqueness_of :url
+    should validate_presence_of :url
+    should validate_presence_of :title
+    should validate_presence_of :hyperlocal_site_id
+    [:subject_type, :subject_id].each do |attribute|
+      should validate_presence_of attribute
+    end
+    should validate_uniqueness_of :url
     should belong_to :hyperlocal_site
-    should_have_db_columns :extract
+    should have_db_column :extract
     
     should 'belong to subject polymorphically' do
       subject = Factory(:member, :council => Factory(:another_council))
@@ -41,7 +43,7 @@ class RelatedArticleTest < ActiveSupport::TestCase
           @new_related_article = RelatedArticle.find_by_title('A new article')
         end
         
-        should_create :related_article
+        should_change_record_count_of :related_article, 1, 'create'
         
         should 'assign info from ping to new related_article' do
           assert_equal 'http://foo.com/referring/article.html', @new_related_article.url

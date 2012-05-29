@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class InvestigationTest < ActiveSupport::TestCase
   def setup
@@ -11,20 +11,13 @@ class InvestigationTest < ActiveSupport::TestCase
     should have_many(:member_subjects).through(:investigation_subject_connections)
     
     should validate_presence_of :standards_body
-    
-    should have_db_column :uid
-    should have_db_column :url
-    should have_db_column :related_organisation_name
-    should have_db_column :raw_html
-    should have_db_column :standards_body
-    should have_db_column :title
-    should have_db_column :subjects
-    should have_db_column :date_received
-    should have_db_column :date_completed
-    should have_db_column :description
-    should have_db_column :result
-    should have_db_column :case_details
-    should have_db_column :full_report_url
+
+    [ :uid, :url, :related_organisation_name, :raw_html, :standards_body,
+      :title, :subjects, :date_received, :date_completed, :description, :result,
+      :case_details, :full_report_url,
+    ].each do |column|
+      should have_db_column column
+    end
     
     should 'belong to related_organisation polymorphically' do
       organisation = Factory(:council)

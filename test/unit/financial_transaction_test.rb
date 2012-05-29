@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class FinancialTransactionTest < ActiveSupport::TestCase
   subject { @financial_transaction }
@@ -16,21 +16,13 @@ class FinancialTransactionTest < ActiveSupport::TestCase
     should belong_to :supplier
     should belong_to :classification
     should have_many :wdtk_requests
-    
-    should have_db_column :value 
-    should have_db_column :uid 
-    should have_db_column :description 
-    should have_db_column :date
-    should have_db_column :department_name 
-    should have_db_column :source_url
-    should have_db_column :cost_centre 
-    should have_db_column :service
-    should have_db_column :transaction_type
-    should have_db_column :invoice_number
-    should have_db_column :csv_line_number
-    should have_db_column :date_fuzziness
-    should have_db_column :classification_id
-    should have_db_column :invoice_date
+
+    [ :value , :uid , :description , :date, :department_name , :source_url,
+      :cost_centre , :service, :transaction_type, :invoice_number,
+      :csv_line_number, :date_fuzziness, :classification_id, :invoice_date,
+    ].each do |column|
+      should have_db_column column
+    end
     
     should 'validate presence of supplier_id' do
       # NB Shoulda macro not working for some reason

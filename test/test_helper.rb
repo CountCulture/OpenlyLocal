@@ -1,7 +1,7 @@
 ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+require File.expand_path('../../config/environment', __FILE__)
 require 'test_help'
-require 'test_models/test_models'
+require File.expand_path('../test_models/test_models', __FILE__)
 require 'factory_girl'
 require 'mocha'
 # Dir.glob(File.dirname(__FILE__) + "/factories/*").each do |factory|
@@ -77,4 +77,75 @@ class ActiveSupport::TestCase
     assert_select(*args, &block)
   end
   
+end
+
+# To avoid deprecation warnings from using assert_sent_email, we must switch to
+# the have_sent_email matcher. However, the have_sent_email matcher in Shoulda 2
+# cannot refer to instance variables. Unfortunately, we can't upgrade Shoulda 3
+# because we use the obsolete should_change_record_count_of, should_change and
+# should_not_change methods. We therefore apply the following patch.
+# @see https://github.com/thoughtbot/shoulda-matchers/pull/13
+module Shoulda
+  module ActionMailer
+    module Matchers
+      def have_sent_email
+        HaveSentEmailMatcher.new(self)
+      end
+
+      class HaveSentEmailMatcher
+        def initialize(context)
+          @context = context
+        end
+
+        def in_context(context)
+          @context = context
+          self
+        end
+
+        def with_subject(email_subject = nil, &block)
+          @email_subject = email_subject
+          @email_subject_block = block
+          self
+        end
+
+        def from(sender = nil, &block)
+          @sender = sender
+          @sender_block = block
+          self
+        end
+
+        def with_body(body = nil, &block)
+          @body = body
+          @body_block = block
+          self
+        end
+
+        def to(recipient = nil, &block)
+          @recipient = recipient
+          @recipient_block = block
+          self
+        end
+
+        def matches?(subject)
+          normalize_blocks
+          ::ActionMailer::Base.deliveries.each do |mail|
+            @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
+            @body_failed = !regexp_or_string_match(mail.body, @body) if @body
+            @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
+            @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
+            return true unless anything_failed?
+          end
+
+          false
+        end
+
+        def normalize_blocks
+          @email_subject = @context.instance_eval(&@email_subject_block) if @email_subject_block
+          @sender = @context.instance_eval(&@sender_block) if @sender_block
+          @body = @context.instance_eval(&@body_block) if @body_block
+          @recipient = @context.instance_eval(&@recipient_block) if @recipient_block
+        end
+      end
+    end
+  end
 end

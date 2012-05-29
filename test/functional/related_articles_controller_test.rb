@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class RelatedArticlesControllerTest < ActionController::TestCase
   
@@ -39,7 +39,7 @@ class RelatedArticlesControllerTest < ActionController::TestCase
         post :create, :related_article => { :url => 'http://foo.com', :openlylocal_url => 'http://bar.com' }
       end
       
-      should_create :related_article
+      should_change_record_count_of :related_article, 1, 'create'
 
       should_redirect_to('the new page') { new_related_article_url }
     

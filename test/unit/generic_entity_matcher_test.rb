@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class GenericEntityMatcherTest < ActiveSupport::TestCase
   
@@ -154,7 +154,7 @@ class GenericEntityMatcherTest < ActiveSupport::TestCase
           assert_equal 42, @result.instance_variable_get(:@score)
         end
         
-        should "store score in base_object instance variable " do
+        should "store match in base_object instance variable " do
           assert_equal 'bar', @result.instance_variable_get(:@match)
         end
       end

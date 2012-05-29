@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class PollTest < ActiveSupport::TestCase
   subject { @poll }
@@ -15,11 +15,15 @@ class PollTest < ActiveSupport::TestCase
   
   context "The Poll class" do
     
-    should_validate_presence_of :date_held
-    should_validate_presence_of :area_id, :area_type
-    should_validate_presence_of :position
-    should_have_db_columns :electorate, :ballots_issued, :ballots_rejected, :postal_votes, :uncontested, :source, :ballots_missing_official_mark, :ballots_with_too_many_candidates_chosen, :ballots_with_identifiable_voter, :ballots_void_for_uncertainty
-    should have_many :candidacies#, :dependent => :destroy
+    should validate_presence_of :date_held
+    [:area_id, :area_type].each do |attribute|
+      should validate_presence_of attribute
+    end
+    should validate_presence_of :position
+    [:electorate, :ballots_issued, :ballots_rejected, :postal_votes, :uncontested, :source, :ballots_missing_official_mark, :ballots_with_too_many_candidates_chosen, :ballots_with_identifiable_voter, :ballots_void_for_uncertainty].each do |column|
+      should have_db_column column
+    end
+    should have_many(:candidacies).dependent :destroy
     should have_many :related_articles
                                                           
     should "have associated polymorphic area" do
@@ -206,8 +210,8 @@ class PollTest < ActiveSupport::TestCase
             @new_candidacy = Candidacy.first(:order => 'id DESC', :limit => 1)
           end
           
-          should_create :candidacy
-          should_create :address
+          should_change_record_count_of :candidacy, 1, 'create'
+          should_change_record_count_of :address, 1, 'create'
           
           should 'associate address with candidacy' do
             assert address = @new_candidacy.address

@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../../test_helper', __FILE__)
 
 class FinancialTransactionsHelperTest < ActionView::TestCase
   context "date_with_fuzziness_for helper method" do

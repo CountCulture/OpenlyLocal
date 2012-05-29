@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../../test_helper', __FILE__)
 
 class AreasHelperTest < ActionView::TestCase
   context "crime_stats_graph helper method" do

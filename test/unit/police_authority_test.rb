@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class PoliceAuthorityTest < ActiveSupport::TestCase
   subject { @police_authority }
@@ -8,20 +8,19 @@ class PoliceAuthorityTest < ActiveSupport::TestCase
       @police_authority = Factory(:police_authority)
     end
     
-    should_validate_presence_of :name
-    should_validate_presence_of :police_force_id
-    should_validate_uniqueness_of :name, :police_force_id
+    should validate_presence_of :name
+    should validate_presence_of :police_force_id
+    [:name, :police_force_id].each do |attribute|
+      should validate_uniqueness_of attribute
+    end
     should belong_to :police_force
-    should have_many :councils#, :through => :police_force
-    
-    should have_db_column :url
-    should have_db_column :wikipedia_url
-    should have_db_column :telephone
-    should have_db_column :address
-    should have_db_column :wdtk_name
-    should have_db_column :annual_audit_letter
-    should have_db_column :vat_number
-    should have_db_column :wdtk_id
+    should have_many(:councils).through :police_force
+
+    [ :url, :wikipedia_url, :telephone, :address, :wdtk_name,
+      :annual_audit_letter, :vat_number, :wdtk_id,
+    ].each do |column|
+      should have_db_column column
+    end
         
     should "mixin SpendingStat::Base module" do
       assert PoliceAuthority.new.respond_to?(:spending_stat)

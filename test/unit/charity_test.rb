@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class CharityTest < ActiveSupport::TestCase
 
@@ -8,45 +8,23 @@ class CharityTest < ActiveSupport::TestCase
     end
     
     should have_many :classification_links
-    should_have_many :classifications, :through => :classification_links
+    should have_many(:classifications).through :classification_links
     should have_many :charity_annual_reports
 
-    should have_db_column :title
-    should have_db_column :activities
-    should have_db_column :charity_number
-    should have_db_column :website
-    should have_db_column :email
-    should have_db_column :telephone
-    should have_db_column :date_registered
     should validate_presence_of :charity_number
     should validate_presence_of :title
     should validate_uniqueness_of :charity_number
-    should have_db_column :vat_number
-    should have_db_column :contact_name
-    should have_db_column :accounts_date
-    should have_db_column :spending
-    should have_db_column :income
-    should have_db_column :date_removed
-    should have_db_column :normalised_title
-    should have_db_column :accounts
-    should have_db_column :employees
-    should have_db_column :volunteers
-    should have_db_column :financial_breakdown
-    should have_db_column :trustees
-    should have_db_column :other_names
-    should have_db_column :last_checked
-    should have_db_column :facebook_account_name
-    should have_db_column :youtube_account_name
-    should have_db_column :feed_url
-    should have_db_column :governing_document
-    should have_db_column :company_number
-    should have_db_column :housing_association_number
-    should have_db_column :subsidiary_number
-    should have_db_column :fax
-    should have_db_column :area_of_benefit
-    should have_db_column :signed_up_for_1010
-    should have_db_column :corrected_company_number
-    should have_db_column :manually_updated
+    [ :title, :activities, :charity_number, :website, :email, :telephone,
+      :date_registered, :vat_number, :contact_name, :accounts_date, :spending,
+      :income, :date_removed, :normalised_title, :accounts, :employees,
+      :volunteers, :financial_breakdown, :trustees, :other_names, :last_checked,
+      :facebook_account_name, :youtube_account_name, :feed_url,
+      :governing_document, :company_number, :housing_association_number,
+      :subsidiary_number, :fax, :area_of_benefit, :signed_up_for_1010,
+      :corrected_company_number, :manually_updated,
+    ].each do |column|
+      should have_db_column column
+    end
     
     should "serialize mixed data columns" do
       %w(financial_breakdown other_names trustees accounts).each do |attrib|

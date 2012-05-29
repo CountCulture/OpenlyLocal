@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class CharityAnnualReportTest < ActiveSupport::TestCase
   
@@ -7,52 +7,25 @@ class CharityAnnualReportTest < ActiveSupport::TestCase
       @charity_annual_report = Factory(:charity_annual_report)
     end
     
-    should have_db_column :charity_id
-    should have_db_column :annual_return_code
-    should have_db_column :financial_year_start
-    should have_db_column :financial_year_end
-    should have_db_column :income_from_legacies
-    should have_db_column :income_from_endowments
-    should have_db_column :voluntary_income
-    should have_db_column :activities_generating_funds
-    should have_db_column :income_from_charitable_activities
-    should have_db_column :investment_income
-    should have_db_column :other_income
-    should have_db_column :total_income
-    should have_db_column :investment_gains
-    should have_db_column :gains_from_asset_revaluations
-    should have_db_column :gains_on_pension_fund
-    should have_db_column :voluntary_income_costs
-    should have_db_column :fundraising_trading_costs
-    should have_db_column :investment_management_costs
-    should have_db_column :grants_to_institutions
-    should have_db_column :charitable_activities_costs
-    should have_db_column :governance_costs
-    should have_db_column :other_expenses
-    should have_db_column :total_expenses
-    should have_db_column :support_costs
-    should have_db_column :depreciation
-    should have_db_column :reserves
-    should have_db_column :fixed_assets_at_start_of_year
-    should have_db_column :fixed_assets_at_end_of_year
-    should have_db_column :fixed_investment_assets_at_end_of_year
-    should have_db_column :fixed_investment_assets_at_start_of_year
-    should have_db_column :current_investment_assets
-    should have_db_column :cash
-    should have_db_column :total_current_assets
-    should have_db_column :creditors_within_1_year
-    should have_db_column :long_term_creditors_or_provisions
-    should have_db_column :pension_assets
-    should have_db_column :total_assets
-    should have_db_column :endowment_funds
-    should have_db_column :restricted_funds
-    should have_db_column :unrestricted_funds
-    should have_db_column :total_funds
-    should have_db_column :employees
-    should have_db_column :volunteers
-    should have_db_column :consolidated_accounts
-    should have_db_column :charity_only_accounts
-    
+    [ :charity_id, :annual_return_code, :financial_year_start,
+      :financial_year_end, :income_from_legacies, :income_from_endowments,
+      :voluntary_income, :activities_generating_funds,
+      :income_from_charitable_activities, :investment_income, :other_income,
+      :total_income, :investment_gains, :gains_from_asset_revaluations,
+      :gains_on_pension_fund, :voluntary_income_costs,
+      :fundraising_trading_costs, :investment_management_costs,
+      :grants_to_institutions, :charitable_activities_costs,
+      :governance_costs, :other_expenses, :total_expenses, :support_costs,
+      :depreciation, :reserves, :fixed_assets_at_start_of_year,
+      :fixed_assets_at_end_of_year, :fixed_investment_assets_at_end_of_year,
+      :fixed_investment_assets_at_start_of_year, :current_investment_assets,
+      :cash, :total_current_assets, :creditors_within_1_year,
+      :long_term_creditors_or_provisions, :pension_assets, :total_assets,
+      :endowment_funds, :restricted_funds, :unrestricted_funds, :total_funds,
+      :employees, :volunteers, :consolidated_accounts, :charity_only_accounts,
+    ].each do |column|
+      should have_db_column column
+    end
     should belong_to :charity
   end
 

@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class MemberTest < ActiveSupport::TestCase
   should validate_presence_of :last_name
@@ -8,9 +8,11 @@ class MemberTest < ActiveSupport::TestCase
   should belong_to :ward
   should have_many :memberships
   should have_many :candidacies
-  should have_many :committees#, :through => :memberships
+  should have_many(:committees).through :memberships
   should have_many :related_articles
-  should_have_db_columns :address, :blog_url, :facebook_account_name, :linked_in_account_name
+  [:address, :blog_url, :facebook_account_name, :linked_in_account_name].each do |column|
+    should have_db_column column
+  end
   
   context "The Member class" do
     setup do
@@ -18,8 +20,8 @@ class MemberTest < ActiveSupport::TestCase
       @params = {:full_name => "Fred Wilson", :uid => 2, :council_id => 2, :party => "Independent", :url => "http:/some.url"} # uid and council_id can be anything as we stub finding of existing member
     end
     
-    should_validate_uniqueness_of :uid, :scoped_to => :council_id
-    should_validate_presence_of :uid
+    should validate_uniqueness_of(:uid).scoped_to :council_id
+    should validate_presence_of :uid
     
     should 'not validate presence of :url if member is ex-member' do
       ex_member = Factory.build(:member, :full_name => "Fred Flintstone", :url => nil, :date_left => 3.days.ago, :council => @existing_member.council)

@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class SupplierTest < ActiveSupport::TestCase
   subject { @supplier }
@@ -17,11 +17,10 @@ class SupplierTest < ActiveSupport::TestCase
     # should belong_to :company
     should validate_presence_of :organisation_type
     should validate_presence_of :organisation_id
-    
-    should have_db_column :uid
-    should have_db_column :url
-    should have_db_column :name
-    should have_db_column :failed_payee_search
+
+    [:uid, :url, :name, :failed_payee_search].each do |column|
+      should have_db_column column
+    end
     
     should "have vat_number accessor" do
       assert @supplier.respond_to?(:vat_number)

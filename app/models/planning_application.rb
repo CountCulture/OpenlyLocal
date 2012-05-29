@@ -90,7 +90,7 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def company_name
-    
+    # @todo
   end
   
   def self.csv_headings
@@ -144,7 +144,11 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def matching_subscribers
-    []
+    if lat.nil? or lng.nil?
+      []
+    else
+      AlertSubscriber.confirmed.geocoded.contains(lat, lng)
+    end
   end
   
   # cleean up so we can get consistency across councils
@@ -192,7 +196,7 @@ class PlanningApplication < ActiveRecord::Base
   
   private
   def queue_for_sending_alerts_if_relevant
-    queue_for_sending_alerts unless self.changes["lat"].blank? || self.changes["lng"].blank?
+    queue_for_sending_alerts unless self.changes["lat"].blank? && self.changes["lng"].blank?
   end
   
   def queue_for_updating_info

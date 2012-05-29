@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class WardTest < ActiveSupport::TestCase
   subject { @ward }
@@ -7,25 +7,23 @@ class WardTest < ActiveSupport::TestCase
       @ward = Factory(:ward)
     end
 
-    should_validate_presence_of :name
-    # should_validate_uniqueness_of :name, :scoped_to => [:council_id, :defunkt] #note doesn't seem to take any notice of defunkt_scope so tested properly below
-    # should_validate_uniqueness_of :snac_id#, :allow_nil => true
+    should validate_presence_of :name
+    # should validate_uniqueness_of(:name).scoped_to [:council_id, :defunkt] #note doesn't seem to take any notice of defunkt_scope so tested properly below
+    # should validate_uniqueness_of :snac_id#, :allow_nil => true
     should belong_to :council
     should belong_to :police_team
-    should_validate_presence_of :council_id
+    should validate_presence_of :council_id
     should have_many :members
     should have_many :committees
-    should have_many :meetings#, :through => :committees
+    should have_many(:meetings).through :committees
     should have_many :datapoints
     should have_many :polls
-    should have_many :dataset_topics#, :through => :datapoints
-    should_have_one  :boundary
+    should have_many(:dataset_topics).through :datapoints
+    should have_one  :boundary
     # should belong_to :crime_area
-    should have_db_column :uid
-    should have_db_column :snac_id
-    should have_db_column :url
-    should have_db_column :police_neighbourhood_url
-    should have_db_column :crime_area_id
+    [:uid, :snac_id, :url, :police_neighbourhood_url, :crime_area_id].each do |column|
+      should have_db_column column
+    end
 
     should "include ScraperModel mixin" do
       assert Ward.respond_to?(:find_all_existing)

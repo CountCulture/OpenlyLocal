@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class OnsDatasetTest < ActiveSupport::TestCase
   subject { @ons_dataset }
@@ -7,10 +7,10 @@ class OnsDatasetTest < ActiveSupport::TestCase
     setup do
       @ons_dataset = Factory(:ons_dataset) 
     end
-    should_validate_presence_of :start_date 
-    should_validate_presence_of :end_date
-    should_validate_presence_of :dataset_family_id
-    should_validate_uniqueness_of :start_date, :scoped_to => :dataset_family_id
+    should validate_presence_of :start_date 
+    should validate_presence_of :end_date
+    should validate_presence_of :dataset_family_id
+    should validate_uniqueness_of(:start_date).scoped_to :dataset_family_id
 
     should belong_to :dataset_family
     
