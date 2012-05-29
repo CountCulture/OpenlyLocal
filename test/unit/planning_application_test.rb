@@ -11,6 +11,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     
     should validate_presence_of :council_id
     should validate_presence_of :uid
+    should validate_presence_of :address
     should_validate_uniqueness_of :uid, :scoped_to => :council_id
     should have_db_column :council_id
     should have_db_column :applicant_name
