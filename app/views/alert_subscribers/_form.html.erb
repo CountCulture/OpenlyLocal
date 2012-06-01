@@ -6,12 +6,21 @@
     <%= error_messages_for :alert_subscriber %>
     <%- form_for @alert_subscriber do |f| %>
       <p class="required">
-        <%= f.label :postcode, 'Enter your postcode' %>
+        <%= f.label :postcode, 'Enter a postcode' %>
         <%= f.text_field :postcode_text %>
       </p>
       <p class="required">
         <%= f.label :email, 'Enter your email address' %>
         <%= f.text_field :email %>
+      </p>
+      <p>What size area would you like to receive alerts for?</p>
+      <div class="radio">
+        <%= f.radio_button :distance, 0.2 %>
+        <%= f.label 'distance_02', 'My street (about 200 m)', :class => 'radio' %>
+      </p>
+      <div class="radio">
+        <%= f.radio_button :distance, 0.8 %>
+        <%= f.label 'distance_08', 'My neighborhood (about 800 m)', :class => 'radio' %>
       </p>
       <p>
         <%= f.submit 'Create alert' %>
