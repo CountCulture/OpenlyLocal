@@ -262,7 +262,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
     
       should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
       should assign_to :user_submission
-      should_redirect_to( "the page for the council") { council_url(@item) }
+      should redirect_to( "the page for the council") { council_url(@item) }
       should set_the_flash.to /Successfully submitted/i
        
     end
@@ -278,7 +278,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
     
       should_change("The number of user_submissions", :by => 1) { UserSubmission.count }
       should assign_to :user_submission
-      should_redirect_to( "the page for the council") { council_url(@item) }
+      should redirect_to( "the page for the council") { council_url(@item) }
       should set_the_flash.to /Successfully submitted/i
     
     end
@@ -382,7 +382,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
                        :approve => "true" }
       end
     
-      should_redirect_to( "the admin page") { admin_url }
+      should redirect_to( "the admin page") { admin_url }
       should set_the_flash.to /Successfully updated/i
     
       should "update member details" do
@@ -401,7 +401,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
                          :approve => "true" }
         end
   
-        should_redirect_to( "the edit page for the user submission") { edit_user_submission_url(@user_submission) }
+        should redirect_to( "the edit page for the user submission") { edit_user_submission_url(@user_submission) }
         should set_the_flash.to /Problem updating/i
   
         should "keep user_submission as unapproved" do
@@ -435,7 +435,7 @@ class UserSubmissionsControllerTest < ActionController::TestCase
       should "destroy submission" do
         assert_nil UserSubmission.find_by_id(@user_submission.id)
       end
-      should_redirect_to ( "the admin page") { admin_url }
+      should redirect_to( "the admin page") { admin_url }
       should set_the_flash.to "Successfully destroyed submission"
     end
   

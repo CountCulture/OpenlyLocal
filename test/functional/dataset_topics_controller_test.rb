@@ -205,8 +205,8 @@ class DatasetTopicsControllerTest < ActionController::TestCase
     end
 
     should assign_to :dataset_topic
-    should_redirect_to( "the show page for dataset_topic") { dataset_topic_path(@dataset_topic.reload) }
-    should_set_the_flash_to "Successfully updated DatasetTopic"
+    should redirect_to( "the show page for dataset_topic") { dataset_topic_path(@dataset_topic.reload) }
+    should set_the_flash.to("Successfully updated DatasetTopic")
 
     should "update dataset_topic" do
       assert_equal "New title", @dataset_topic.reload.short_title
@@ -229,8 +229,8 @@ class DatasetTopicsControllerTest < ActionController::TestCase
     end
   
     should assign_to :dataset_topic
-    should_redirect_to( "the show page for dataset_topic") { dataset_topic_path(@dataset_topic) }
-    should_set_the_flash_to /Successfully queued Topic/
+    should redirect_to( "the show page for dataset_topic") { dataset_topic_path(@dataset_topic) }
+    should set_the_flash.to(/Successfully queued Topic/)
     
     before_should "queue up topic to be populated" do
       DatasetTopic.any_instance.expects(:delay => stub(:perform => nil))

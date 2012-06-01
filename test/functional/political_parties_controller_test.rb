@@ -70,8 +70,8 @@ class PoliticalPartiesControllerTest < ActionController::TestCase
       should_change( "The name of the political party", :to => "New Name") { @political_party.reload.name }
       should_change( "The url of the political party", :to => "http://new.name.com") { @political_party.reload.url }
       should assign_to :political_party
-      should_redirect_to( "the index page for political parties") { political_parties_path }
-      should_set_the_flash_to "Successfully updated political party"
+      should redirect_to( "the index page for political parties") { political_parties_path }
+      should set_the_flash.to("Successfully updated political party")
     
     end
     

@@ -345,7 +345,7 @@ class MembersControllerTest < ActionController::TestCase
          should respond_with_content_type 'application/rdf+xml'
 
          should "show rdf headers" do
-           assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+           assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
            assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
            assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
          end
@@ -470,7 +470,7 @@ class MembersControllerTest < ActionController::TestCase
 
      should assign_to :member
      should redirect_to( "the show page for member") { member_path(@member.reload) }
-     should_set_the_flash_to "Successfully updated member"
+     should set_the_flash.to("Successfully updated member")
 
      should "update member" do
        assert_equal "New name", @member.reload.full_name
@@ -496,7 +496,7 @@ class MembersControllerTest < ActionController::TestCase
      should "destroy member" do
        assert_nil Member.find_by_id(@member.id)
      end
-     should redirect_to ( "the council page") { council_url(@council) }
-     should_set_the_flash_to "Successfully destroyed member"
+     should redirect_to( "the council page") { council_url(@council) }
+     should set_the_flash.to("Successfully destroyed member")
    end
 end

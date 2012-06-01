@@ -134,7 +134,7 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
     should respond_with_content_type 'application/rdf+xml'
    
     should "show rdf headers" do
-      assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+      assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
       assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
       assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
     end
@@ -239,8 +239,8 @@ class PoliceAuthoritiesControllerTest < ActionController::TestCase
      end
 
      should assign_to :police_authority
-     should_redirect_to( "the show page for police_authority") { police_authority_path(@police_authority.reload) }
-     should_set_the_flash_to "Successfully updated police authority"
+     should redirect_to( "the show page for police_authority") { police_authority_path(@police_authority.reload) }
+     should set_the_flash.to("Successfully updated police authority")
 
      should "update police_authority" do
        assert_equal "New name", @police_authority.reload.name
