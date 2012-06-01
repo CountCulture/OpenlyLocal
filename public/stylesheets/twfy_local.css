@@ -1121,3 +1121,14 @@ clear: both;}
 	color: #ddd;
 }
 
+/* Planning alerts */
+.blueprint-container {
+	width: 950px;
+	margin: 0 auto;
+}
+#planning-alerts-preview h2 {
+	border: none;
+}
+.notes {
+	color: #999;
+}
