@@ -1129,6 +1129,9 @@ clear: both;}
 #planning-alerts-preview h2 {
 	border: none;
 }
+.radio .fieldWithErrors {
+	display: inline;
+}
 .notes {
 	color: #999;
 }

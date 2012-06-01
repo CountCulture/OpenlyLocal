@@ -89,32 +89,42 @@ $(document).ready( function() {
     });
 
     /* Planning alerts */
-    $('#alert_subscriber_postcode_text').change(function (event) {
+    $('#alert_subscriber_postcode_text,#new_alert_subscriber input:radio').change(function (event) {
       var $header = $('#planning-alerts-preview h2'),
-          $list = $('#planning_applications');
+          $list = $('#planning_applications'),
+          postcode = $('#alert_subscriber_postcode_text').val(),
+          distance = $('#new_alert_subscriber input:radio:checked').val();
+
       $header.empty();
       $list.empty();
-      $.ajax({
-        url: '/planning_applications.json?postcode=' + encodeURIComponent(event.target.value),
-        dataType: 'json',
-        success: function (data) {
-          $header.text('Recent applications within 200 m of ' + event.target.value);
-          $.each(data.planning_applications, function (i, x) {
-            $list.append(
-              '<div class="planning_application">' +
-                '<strong class="description">' +
-                  '<a href="' + x.openlylocal_url + '" class="planning_application_link">' + x.description + '</a>' +
-                '</strong> ' +
-                '<span class="address">' + x.address + '</span> ' +
-                '<a href="' + x.url + '" class="official_page external url">official page</a>' +
-              '</div>'
-            );
-          });
-        },
-        error: function (jqXHR) {
-          $header.text(jqXHR.responseText);
+
+      if (postcode) {
+        if (distance === undefined) {
+          distance = 0.2;
         }
-      });
+
+        $.ajax({
+          url: '/planning_applications.json?postcode=' + encodeURIComponent(postcode) + '&distance=' + distance,
+          dataType: 'json',
+          success: function (data) {
+            $header.text('Recent applications within ' + (distance * 1000) + ' m of ' + postcode);
+            $.each(data.planning_applications, function (i, x) {
+              $list.append(
+                '<div class="planning_application">' +
+                  '<strong class="description">' +
+                    '<a href="' + x.openlylocal_url + '" class="planning_application_link">' + x.description + '</a>' +
+                  '</strong> ' +
+                  '<span class="address">' + x.address + '</span> ' +
+                  '<a href="' + x.url + '" class="official_page external url">official page</a>' +
+                '</div>'
+              );
+            });
+          },
+          error: function (jqXHR) {
+            $header.text('Recent applications within ' + (distance * 1000) + ' m of ' + postcode);
+          }
+        });
+      }
     });
 });
 

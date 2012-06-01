@@ -25,7 +25,11 @@ class PlanningApplicationsController < ApplicationController
       @page_title = "Latest Planning Applications"
       @title = "Latest Planning Applications in #{@council.title}"
     elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
-      distance = 0.2
+      distance = if %w(0.2 0.8).include? params[:distance]
+        params[:distance].to_f
+      else
+        0.2
+      end
       # bounds=Geokit::Bounds.from_point_and_radius(@postcode, distance)
       # @planning_applications = PlanningApplication.find(:all, :bounds => bounds)
       

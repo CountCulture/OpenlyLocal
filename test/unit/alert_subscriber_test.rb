@@ -12,7 +12,17 @@ class AlertSubscriberTest < ActiveSupport::TestCase
     should validate_uniqueness_of :email
     should validate_presence_of :postcode_text
     should validate_presence_of :distance
+    [0.2, 0.8].each do |value|
+      should allow_value(value).for :distance
+    end
+    [0.0, 1.0].each do |value|
+      should_not allow_value(value).for :distance
+    end
     should belong_to :postcode
+    %w(last_sent confirmed confirmation_code bottom_left_lat bottom_left_lng
+      top_right_lat top_right_lng created_at updated_at postcode_id).each do |attribute|
+      should_not allow_mass_assignment_of attribute
+    end
     
     context "when confirming from email and confirmation code" do
       context "and email and confirmation code match" do
