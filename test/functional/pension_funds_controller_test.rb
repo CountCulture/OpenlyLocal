@@ -122,8 +122,8 @@ class PensionFundsControllerTest < ActionController::TestCase
     end
 
     should assign_to :pension_fund
-    should_redirect_to( "the show page for pension_fund") { pension_fund_path(@pension_fund.reload) }
-    should_set_the_flash_to "Successfully updated pension fund"
+    should redirect_to( "the show page for pension_fund") { pension_fund_path(@pension_fund.reload) }
+    should set_the_flash.to("Successfully updated pension fund")
 
     should "update pension_fund" do
       assert_equal "New name", @pension_fund.reload.name

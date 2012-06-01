@@ -135,8 +135,8 @@ class PortalSystemsControllerTest < ActionController::TestCase
      
        should_change("The number of portal_systems", :by => 1) { PortalSystem.count }
        should assign_to :portal_system
-       should_redirect_to( "the show page for portal_system") { portal_system_path(assigns(:portal_system)) }
-       should_set_the_flash_to "Successfully created portal system"
+       should redirect_to( "the show page for portal_system") { portal_system_path(assigns(:portal_system)) }
+       should set_the_flash.to("Successfully created portal system")
      
      end
      
@@ -198,8 +198,8 @@ class PortalSystemsControllerTest < ActionController::TestCase
       should_change("The portal_system name", :to => "New Name") { @portal.reload.name }
       should_change("The portal_system url", :to => "http://new.name.com") { @portal.reload.url }
       should assign_to :portal_system
-      should_redirect_to( "the show page for portal system") { portal_system_path(assigns(:portal_system)) }
-      should_set_the_flash_to "Successfully updated portal system"
+      should redirect_to( "the show page for portal system") { portal_system_path(assigns(:portal_system)) }
+      should set_the_flash.to("Successfully updated portal system")
     
     end
     

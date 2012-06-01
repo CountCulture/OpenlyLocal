@@ -192,8 +192,8 @@ class DatasetsControllerTest < ActionController::TestCase
     end
 
     should assign_to :dataset
-    should_redirect_to( "the show page for dataset") { dataset_url(@dataset.reload) }
-    should_set_the_flash_to /Successfully updated/
+    should redirect_to( "the show page for dataset") { dataset_url(@dataset.reload) }
+    should set_the_flash.to(/Successfully updated/)
 
     should "update dataset" do
       assert_equal "New title", @dataset.reload.title

@@ -31,7 +31,7 @@ class PoliceTeamsControllerTest < ActionController::TestCase
       assert_select ".attributes a", @ward.title
     end
         
-    should 'show associated wards' do
+    should 'show associated police team' do
       assert_select ".attributes a", @police_team.police_force.name
     end
     
