@@ -18,7 +18,7 @@ class PlanningApplicationsController < ApplicationController
   end
   
   def index
-    if @council = params[:council_id]&&Council.find_by_id(params[:council_id])
+    if @council = params[:council_id] && Council.find_by_id(params[:council_id])
       order = params[:order]||(params[:format].to_s == 'rss') ? 'updated_at DESC' : 'start_date DESC'
       page = params[:page] || 1
       @planning_applications = @council.planning_applications.with_details.paginate(:order => order, :page => page.to_i )
@@ -33,13 +33,30 @@ class PlanningApplicationsController < ApplicationController
                                                               :within => distance)
       @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
     end
-    @message = "Sorry. No matching Planning Applications" if @planning_applications.blank?
-    @message = "Sorry. Postcode not found" if @postcode.blank? && params[:postcode]
+    if @planning_applications.blank?
+      @message = if @postcode.blank? && params[:postcode]
+        "Sorry. Postcode not found."
+      else
+        "Sorry. No matching planning applications."
+      end
+    end
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => @planning_applications.to_xml }
-      format.json { render :as_json =>  @planning_applications.to_xml }
+      format.xml do
+        if @planning_applications.blank?
+          render :xml => @message, :status => :unprocessable_entity
+        else
+          render :xml => @planning_applications.to_xml
+        end
+      end
+      format.json do
+        if @planning_applications.blank?
+          render :json => @message, :status => :unprocessable_entity
+        else
+          render :as_json => @planning_applications.to_xml
+        end
+      end
       format.rss { render :layout => false }
     end
   end

@@ -87,7 +87,35 @@ $(document).ready( function() {
        form.fadeOut(5000);
       });
     });
-  		
+
+    /* Planning alerts */
+    $('#alert_subscriber_postcode_text').change(function (event) {
+      var $header = $('#planning-alerts-preview h2'),
+          $list = $('#planning_applications');
+      $header.empty();
+      $list.empty();
+      $.ajax({
+        url: '/planning_applications.json?postcode=' + encodeURIComponent(event.target.value),
+        dataType: 'json',
+        success: function (data) {
+          $header.text('Recent applications within 200 m of ' + event.target.value);
+          $.each(data.planning_applications, function (i, x) {
+            $list.append(
+              '<div class="planning_application">' +
+                '<strong class="description">' +
+                  '<a href="' + x.openlylocal_url + '" class="planning_application_link">' + x.description + '</a>' +
+                '</strong> ' +
+                '<span class="address">' + x.address + '</span> ' +
+                '<a href="' + x.url + '" class="official_page external url">official page</a>' +
+              '</div>'
+            );
+          });
+        },
+        error: function (jqXHR) {
+          $header.text(jqXHR.responseText);
+        }
+      });
+    });
 });
 
 // Map Geography Utility functions - see http://www.movable-type.co.uk/scripts/latlong.html#destPoint  
