@@ -9,6 +9,10 @@ class TwitterAccount < ActiveRecord::Base
     self.user.twitter_list_name
   end
   
+  def name=(raw_name)
+    self[:name] = raw_name && raw_name.sub(/^@/,'')
+  end
+  
   def url
     "http://twitter.com/#{name}"
   end
