@@ -111,7 +111,11 @@ class TwitterAccountTest < ActiveSupport::TestCase
 
     end
     
-    
+    context "when assigning name" do
+      should "remove leading @" do
+        assert_equal 'foo_bar', TwitterAccount.new(:name => '@foo_bar').name
+      end
+    end
     context "when updating" do
       should_eventually "get twitter details" do
         
