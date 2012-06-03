@@ -12,4 +12,6 @@ Date received: <%= @planning_application.start_date %>
 Status: <%= @planning_application.status %>
 
 ================================
+Did someone else forward this email to you? Subscribe to receive your own alerts of new planning applications: <%= new_alert_subscriber_url(:postcode => @subscriber.postcode_text, :distance => @subscriber.distance) %>
+
 Unsubscribe? Click here: <%= unsubscribe_alert_subscribers_url(:email => @subscriber.email, :token => @subscriber.unsubscribe_token) %>
