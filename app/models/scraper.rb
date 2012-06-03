@@ -6,7 +6,8 @@ class Scraper < ActiveRecord::Base
   class ScraperError < StandardError; end
   class RequestError < ScraperError; end
   class ParsingError < ScraperError; end
-  class TimeoutError < ScraperError; end
+  class WebsiteUnavailable < ScraperError; end
+  class TimeoutError < WebsiteUnavailable; end
   SCRAPER_TYPES = %w(InfoScraper ItemScraper CsvScraper)
   USER_AGENT = "Mozilla/4.0 (OpenlyLocal.com)"
   PARSING_LIBRARIES = { 'N' => 'Nokogiri (HTML)',
@@ -181,6 +182,11 @@ class Scraper < ActiveRecord::Base
       error_message = "**Problem getting data from #{target_url}: #{e.message}\n #{e.backtrace}"
       logger.error { error_message }
       raise TimeoutError.new(error_message)
+    rescue HTTPClient::BadResponseError => e
+      error_message = "**Problem getting data from #{target_url}: #{e.message}\n #{e.backtrace}"
+      logger.error { error_message }
+      error = e.message.match(/status_code=503/) ? WebsiteUnavailable.new(error_message) : RequestError.new(error_message)
+      raise error
     rescue Exception => e
       error_message = "**Problem getting data from #{target_url}: #{e.message}\n #{e.backtrace}"
       logger.error { error_message }

@@ -31,7 +31,11 @@ class ScraperTest < ActiveSupport::TestCase
     end
     
     should "define TimeoutError as child of ScraperError" do
-      assert_equal Scraper::ScraperError, Scraper::TimeoutError.superclass
+      assert_equal Scraper::WebsiteUnavailable, Scraper::TimeoutError.superclass
+    end
+    
+    should "define WebsiteUnavailable as child of ScraperError" do
+      assert_equal Scraper::ScraperError, Scraper::WebsiteUnavailable.superclass
     end
     
     should "define ParsingError as child of ScraperError" do
@@ -650,7 +654,20 @@ class ScraperTest < ActiveSupport::TestCase
           @scraper.expects(:_http_get).raises(HTTPClient::TimeoutError, "no response")
           assert_raise(Scraper::TimeoutError) {@scraper.send(:_data)}
         end
+        
+        should "raise Scraper::Unavailable if BadResponseError and 503 status code" do
+          error_message = %Q{unexpected response: #<HTTP::Message::Headers:0x1055a7d90 @request_absolute_uri=nil, @is_request=false, @body_size=0, @http_version="1.1", @body_type=nil, @request_query=nil, @body_encoding=nil, @reason_phrase="Service Temporarily Unavailable", @dumped=false, @request_uri=nil, @chunked=false, @body_date=nil, @status_code=503, @header_item}
+          @scraper.expects(:_http_get).raises(HTTPClient::BadResponseError, error_message)
+          assert_raise(Scraper::WebsiteUnavailable) {@scraper.send(:_data)}
+        end
+        
+        should "raise Scraper::RequestError if BadResponseError and not 503 status code" do
+          error_message = %Q{unexpected response: #<HTTP::Message::Headers:0x1055a7d90 @request_absolute_uri=nil, @is_request=false, @body_size=0, @http_version="1.1", @body_type=nil, @request_query=nil, @body_encoding=nil, @reason_phrase="Service Unavailable", @dumped=false, @request_uri=nil, @chunked=false, @body_date=nil, @status_code=500, @header_item}
+          @scraper.expects(:_http_get).raises(HTTPClient::BadResponseError, error_message)
+          assert_raise(Scraper::RequestError) {@scraper.send(:_data)}
+        end
       end
+      
       context "and use_post flag set" do
         setup do
           @scraper.use_post = true
