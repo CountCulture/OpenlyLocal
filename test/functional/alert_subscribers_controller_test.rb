@@ -25,13 +25,35 @@ class AlertSubscribersControllerTest < ActionController::TestCase
   end
 
   context "on GET to new" do
-    setup do
-      get :new
+    context "when no defaults provided" do
+      setup do
+        get :new
+      end
+
+      should respond_with :success
+      should render_template :new
+      should_not set_the_flash
     end
 
-    should respond_with :success
-    should render_template :new
-    should_not set_the_flash
+    context "when default postcode provided" do
+      setup do
+        get :new, :postcode => 'foo'
+      end
+
+      should "set default postcode" do
+        assert_select '#alert_subscriber_postcode_text[value=?]', 'foo'
+      end
+    end
+
+    context "when default distance provided" do
+      setup do
+        get :new, :distance => 0.2
+      end
+
+      should "set default postcode" do
+        assert_select '#alert_subscriber_distance_02[checked="checked"]'
+      end
+    end
   end
 
   context "on GET to confirm" do
