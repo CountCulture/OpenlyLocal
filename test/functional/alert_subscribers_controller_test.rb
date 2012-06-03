@@ -155,6 +155,33 @@ class AlertSubscribersControllerTest < ActionController::TestCase
       should "create user" do
         assert AlertSubscriber.find_by_email('new_user@test.com')
       end
+
+      should "associate user with postcode" do
+        assert AlertSubscriber.find_by_email_and_postcode_id('new_user@test.com', @postcode.id)
+      end
+
+      should "not show errors" do
+        assert_select "div.errorExplanation", false
+      end
+
+      should "set default distance" do
+        assert_equal 0.2, AlertSubscriber.find_by_email('new_user@test.com').distance
+      end
+    end
+
+    context "and distance is valid" do
+      setup do
+        @postcode = Factory(:postcode, :code => 'AB12CD')
+        post :create, :alert_subscriber => {:email => 'new_user@test.com', :postcode_text => 'ab1 2cd', :distance => 0.8}
+      end
+
+      should assign_to :alert_subscriber
+      should respond_with :success
+      should render_template :subscribed
+
+      should "create user" do
+        assert AlertSubscriber.find_by_email('new_user@test.com')
+      end
       
       should "associate user with postcode" do
         assert AlertSubscriber.find_by_email_and_postcode_id('new_user@test.com', @postcode.id)
@@ -163,8 +190,30 @@ class AlertSubscribersControllerTest < ActionController::TestCase
       should "not show errors" do
         assert_select "div.errorExplanation", false
       end
+
+      should "set given distance" do
+        assert_equal 0.8, AlertSubscriber.find_by_email('new_user@test.com').distance
+      end
     end
-    
+
+    context "and distance is invalid" do
+      setup do
+        @old_subscriber_count = AlertSubscriber.count
+        post :create, :alert_subscriber => {:email => 'new_user@test.com', :postcode_text => 'ab1 2cd', :distance => 200}
+      end
+
+      should "not create subscriber" do
+        assert_equal @old_subscriber_count, AlertSubscriber.count
+      end
+
+      should assign_to :alert_subscriber
+      should render_template :new
+
+      should "show errors" do
+        assert_select "div.errorExplanation"
+      end
+    end
+
     context "and subscriber with email already exists" do
       setup do
         @existing_subscriber = Factory(:alert_subscriber, :email => 'foo@test.com')

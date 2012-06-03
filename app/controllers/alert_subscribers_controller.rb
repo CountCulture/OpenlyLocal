@@ -11,7 +11,7 @@ class AlertSubscribersController < ApplicationController
   end
   
   def create
-    @alert_subscriber = AlertSubscriber.new({:distance => 0.2}.merge(params[:alert_subscriber]))
+    @alert_subscriber = AlertSubscriber.new({'distance' => 0.2}.merge(params[:alert_subscriber]))
     if @alert_subscriber.save
       render :template => 'alert_subscribers/subscribed'
     else
