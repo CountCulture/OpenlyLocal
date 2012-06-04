@@ -89,6 +89,8 @@ $(document).ready( function() {
     });
 
     /* Planning alerts */
+    /*
+    // @todo uncomment after switch to PostGIS
     $('#alert_subscriber_postcode_text,#new_alert_subscriber input:radio').change(function (event) {
       var $header = $('#planning-alerts-preview h2'),
           $list = $('#planning_applications'),
@@ -121,11 +123,12 @@ $(document).ready( function() {
             });
           },
           error: function (jqXHR) {
-            $header.text('Recent applications within ' + (distance * 1000) + ' m of ' + postcode);
+            $header.text(jqXHR.responseText);
           }
         });
       }
     });
+    */
 });
 
 // Map Geography Utility functions - see http://www.movable-type.co.uk/scripts/latlong.html#destPoint  
