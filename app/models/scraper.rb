@@ -104,7 +104,7 @@ class Scraper < ActiveRecord::Base
   rescue ScraperError => e
     logger.debug { "*******#{e.message} while processing #{self.inspect}: #{e.backtrace}" }
     errors.add_to_base(e.message)
-    mark_as_problematic unless e.is_a?(TimeoutError)
+    mark_as_problematic unless e.is_a?(WebsiteUnavailable)
     self
   end
   
@@ -185,7 +185,7 @@ class Scraper < ActiveRecord::Base
     rescue HTTPClient::BadResponseError => e
       error_message = "**Problem getting data from #{target_url}: #{e.message}\n #{e.backtrace}"
       logger.error { error_message }
-      error = e.message.match(/status_code=503/) ? WebsiteUnavailable.new(error_message) : RequestError.new(error_message)
+      error = e.message.match(/status_code\=503/) ? WebsiteUnavailable.new(error_message) : RequestError.new(error_message)
       raise error
     rescue Exception => e
       error_message = "**Problem getting data from #{target_url}: #{e.message}\n #{e.backtrace}"

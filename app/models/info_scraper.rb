@@ -13,7 +13,7 @@ class InfoScraper < Scraper
         raw_results = parser.process(html, self).results
       rescue ScraperError => e
         logger.debug { "*******#{e.message} while processing #{self.inspect}" }
-        @timeout_errors = true if e.is_a?(TimeoutError) # we just need to track whether there are any timeout errors
+        @timeout_errors = true if e.is_a?(WebsiteUnavailable) # we just need to track whether there are any timeout/503 errors
         obj.errors.add_to_base(e.message)
       end
       update_with_results(raw_results, obj, options)
