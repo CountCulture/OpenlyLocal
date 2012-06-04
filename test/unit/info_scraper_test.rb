@@ -394,9 +394,21 @@ class InfoScraperTest < ActiveSupport::TestCase
               assert !@scraper.reload.problematic?
             end
           end
+
           context "and error is TimeoutError" do
             setup do
               @scraper.expects(:_data).raises(Scraper::TimeoutError, "Problem getting data from http://problem.url.com").twice
+            end
+
+            should "not mark scraper as problematic when saving if " do
+              @scraper.process(:save_results => true)
+              assert !@scraper.reload.problematic?
+            end
+          end
+
+          context "and error is WebsiteUnavailable" do
+            setup do
+              @scraper.expects(:_data).raises(Scraper::WebsiteUnavailable, "Problem getting data from http://problem.url.com").twice
             end
 
             should "not mark scraper as problematic when saving if " do

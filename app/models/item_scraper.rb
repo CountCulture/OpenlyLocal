@@ -16,8 +16,8 @@ class ItemScraper < Scraper
           update_with_results(raw_results.collect{ |r| r.merge(assoc_foreign_key => obj.id) }, options) unless raw_results.blank?
         rescue Exception => e
           logger.debug { "*******#{e.message} while processing #{self.inspect}:\n#{e.backtrace}" }
-          errors.add_to_base(e.message)          
-          mark_as_problematic unless e.is_a?(TimeoutError)
+          errors.add_to_base(e.message)
+          mark_as_problematic unless e.is_a?(Scraper::WebsiteUnavailable)
           nil
         end
       end

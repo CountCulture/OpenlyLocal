@@ -655,7 +655,7 @@ class ScraperTest < ActiveSupport::TestCase
           assert_raise(Scraper::TimeoutError) {@scraper.send(:_data)}
         end
         
-        should "raise Scraper::Unavailable if BadResponseError and 503 status code" do
+        should "raise Scraper::WebsiteUnavailable if BadResponseError and 503 status code" do
           error_message = %Q{unexpected response: #<HTTP::Message::Headers:0x1055a7d90 @request_absolute_uri=nil, @is_request=false, @body_size=0, @http_version="1.1", @body_type=nil, @request_query=nil, @body_encoding=nil, @reason_phrase="Service Temporarily Unavailable", @dumped=false, @request_uri=nil, @chunked=false, @body_date=nil, @status_code=503, @header_item}
           @scraper.expects(:_http_get).raises(HTTPClient::BadResponseError, error_message)
           assert_raise(Scraper::WebsiteUnavailable) {@scraper.send(:_data)}

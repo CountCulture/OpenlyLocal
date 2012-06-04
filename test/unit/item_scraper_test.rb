@@ -135,6 +135,17 @@ class ItemScraperTest < ActiveSupport::TestCase
             assert !@scraper.reload.problematic?
           end
         end
+
+        context "and WebsiteUnavailable" do
+          setup do
+            @scraper.expects(:_data).raises(Scraper::WebsiteUnavailable, "Problem: The darned website is unavailable")
+          end
+          
+          should "not mark scraper as problematic if WebsiteUnavailable" do
+            @scraper.process
+            assert !@scraper.reload.problematic?
+          end
+        end
       end
 
       context "item_scraper with related_model" do
@@ -325,6 +336,18 @@ class ItemScraperTest < ActiveSupport::TestCase
             end
             
             should "not mark scraper as problematic" do
+              @scraper.process
+              assert !@scraper.reload.problematic?
+            end
+          end
+
+          context "and WebsiteUnavailable" do
+            setup do
+              @scraper.update_attribute(:url, nil)
+              @scraper.expects(:_data).with(@dummy_object_1.url).raises(Scraper::WebsiteUnavailable, "Problem: The darned website is unavailable")
+            end
+
+            should "not mark scraper as problematic if WebsiteUnavailable" do
               @scraper.process
               assert !@scraper.reload.problematic?
             end
