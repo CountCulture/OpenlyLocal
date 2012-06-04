@@ -33,12 +33,11 @@
 				<%= spend_by_month_graph(@spending_stat.spend_by_month) %>
 			</div>
 			<div id="payee_breakdown" class="graphed_datapoints">
-  				<%= basic_table :caption => 'Recipient breakdown', 
-  												:headings => ['Type', 'Value'], 
-  												:classes => ['name', 'value'],
-  												:data => @spending_stat.breakdown.collect{ |klass,val| [(klass || 'Unmatched'), "&pound;#{number_with_delimiter(val.to_i)}"] },
-  												:more_info_url => suppliers_path(:organisation_id => @council.id, :organisation_type => 'Council', :order => 'total_spend') %>
-  			</div>
+				<%= basic_table :caption => 'Recipient breakdown', 
+												:headings => ['Type', 'Value'], 
+												:classes => ['name', 'value'],
+												:data => @spending_stat.breakdown.collect{ |klass,val| [(klass || 'Unmatched'), "&pound;#{number_with_delimiter(val.to_i)}"] },
+												:more_info_url => suppliers_path(:organisation_id => @council.id, :organisation_type => 'Council', :order => 'total_spend') %>
 			</div>
 			<div id="suppliers" class="item_grouping">
 				<%= basic_table :caption => 'Biggest suppliers', 

@@ -255,7 +255,7 @@ class MeetingsControllerTest < ActionController::TestCase
       should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
-        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
         assert_match /rdf:RDF.+ xmlns:vcal/m, @response.body

@@ -91,7 +91,7 @@ class CharitiesControllerTest < ActionController::TestCase
       should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
-        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
@@ -185,7 +185,7 @@ class CharitiesControllerTest < ActionController::TestCase
       should_change("The charity website", :to => "http://new.name.com") { @charity.reload.website }
       should assign_to :charity
       should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
-      should_set_the_flash_to "Successfully updated charity"
+      should set_the_flash.to("Successfully updated charity")
       
       should "not set the manually_updated flag for the charity" do
         assert_in_delta @charity.reload.manually_updated, Time.now, 2
@@ -215,7 +215,7 @@ class CharitiesControllerTest < ActionController::TestCase
     
       should assign_to :charity
       should redirect_to( "the show page for charity") { charity_path(assigns(:charity)) }
-      should_set_the_flash_to "Queued charity for updating"
+      should set_the_flash.to("Queued charity for updating")
       
       should "add to delayed job queue" do
         Charity.any_instance.expects(:delay => stub(:update_from_charity_register => nil))

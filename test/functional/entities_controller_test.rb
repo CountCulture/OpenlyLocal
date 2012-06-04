@@ -129,7 +129,7 @@ class EntitiesControllerTest < ActionController::TestCase
       should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
-        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
@@ -274,7 +274,7 @@ class EntitiesControllerTest < ActionController::TestCase
       should_change("The entity website", :to => "http://new.name.com") { @entity.reload.website }
       should assign_to :entity
       should redirect_to( "the show page for entity") { entity_path(assigns(:entity)) }
-      should_set_the_flash_to "Successfully updated entity"
+      should set_the_flash.to("Successfully updated entity")
     
     end
     

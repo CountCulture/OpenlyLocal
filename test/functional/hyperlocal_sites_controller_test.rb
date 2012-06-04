@@ -472,7 +472,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     
       should_change("The number of Hyperlocal Sites", :by => 1) {HyperlocalSite.count}
       should assign_to :hyperlocal_site
-      should_redirect_to( "the hyperlocal_sites index page") { hyperlocal_sites_url }
+      should redirect_to( "the hyperlocal_sites index page") { hyperlocal_sites_url }
       should set_the_flash.to(/Successfully submitted/i)
        
       should "set approved flag to false by default" do
@@ -558,7 +558,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
 
       should assign_to :hyperlocal_site
-      should_redirect_to( "the show page for hyperlocal_site") { hyperlocal_site_url(@hyperlocal_site.reload) }
+      should redirect_to( "the show page for hyperlocal_site") { hyperlocal_site_url(@hyperlocal_site.reload) }
       should set_the_flash.to( /Successfully updated/)
 
       should "update hyperlocal_site" do
@@ -611,7 +611,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
     should "destroy hyperlocal_site" do
       assert_nil HyperlocalSite.find_by_id(@hyperlocal_site.id)
     end
-    should_redirect_to ( "the admin page") { admin_hyperlocal_sites_url }
+    should redirect_to( "the admin page") { admin_hyperlocal_sites_url }
     should set_the_flash.to( /Successfully destroyed/)
   end
     
@@ -627,18 +627,10 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       assert_nil HyperlocalSite.find_by_id(@another_hyperlocal_site.id)
     end
     
-    should_redirect_to ( "the admin page") { admin_hyperlocal_sites_url }
+    should redirect_to( "the admin page") { admin_hyperlocal_sites_url }
     should set_the_flash.to( /successfully destroyed 2 hyperlocal sites/i)
   end
   
-  context "on get to :edit a hyperlocal site without auth" do
-    setup do
-      get :edit, :id => @hyperlocal_site.id
-    end
-
-    should respond_with 401
-  end
-
   # admin tests
   context "on get to :admin hyperlocal_sites without auth" do
     setup do
