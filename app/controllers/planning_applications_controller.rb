@@ -23,7 +23,7 @@ class PlanningApplicationsController < ApplicationController
       page = params[:page] || 1
       @planning_applications = @council.planning_applications.with_details.paginate(:order => order, :page => page.to_i )
       @page_title = "Latest Planning Applications"
-      @title = "Latest Planning Applications in #{@council.title}"
+      @title = "Latest Planning Applications"
     elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
       distance = if %w(0.2 0.8).include? params[:distance]
         params[:distance].to_f
