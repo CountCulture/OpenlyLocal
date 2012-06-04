@@ -11,12 +11,11 @@ config/initializers/authentication_details.rb
 config/initializers/hoptoad.rb
 config/initializers/geokit_config.rb
 config/database.yml
+config/newrelic.yml
+config/resque.yml
 config/smtp_gmail.yml
 config/twitter.yml
-config/newrelic.yml
 config/nginx_production.conf
-config/deploy
-Capfile
 public/cache
 *~
 .bundle
