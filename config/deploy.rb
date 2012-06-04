@@ -158,18 +158,19 @@ namespace :deploy do
   task :update_symlinks, :roles => [:app, :backgrounder] do
     run <<-EOF
       cd #{release_path} && 
-      ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
       ln -s #{shared_path}/config/initializers/authentication_details.rb #{release_path}/config/initializers/authentication_details.rb &&
-      ln -s #{shared_path}/config/smtp_gmail.yml #{release_path}/config/smtp_gmail.yml &&
+      ln -s #{shared_path}/config/initializers/geokit_config.rb #{release_path}/config/initializers/geokit_config.rb &&
+      ln -s #{shared_path}/config/initializers/hoptoad.rb #{release_path}/config/initializers/hoptoad.rb &&
+      ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
       ln -s #{shared_path}/config/newrelic.yml #{release_path}/config/newrelic.yml &&
+      ln -s #{shared_path}/config/resque.yml #{release_path}/config/resque.yml &&
+      ln -s #{shared_path}/config/smtp_gmail.yml #{release_path}/config/smtp_gmail.yml &&
       ln -s #{shared_path}/config/twitter.yml #{release_path}/config/twitter.yml &&
       ln -s #{shared_path}/cache #{release_path}/tmp/cache &&
       ln -s #{shared_path}/data #{release_path}/db/data &&
       mkdir #{release_path}/public/councils &&
       ln -s #{shared_path}/data/downloads/spending.csv.zip #{release_path}/public/councils/spending.csv.zip &&
-      ln -s #{shared_path}/data/downloads/planning_applications.zip #{release_path}/public/councils/planning_applications.zip &&
-      ln -s #{shared_path}/config/initializers/hoptoad.rb #{release_path}/config/initializers/hoptoad.rb &&
-      ln -s #{shared_path}/config/initializers/geokit_config.rb #{release_path}/config/initializers/geokit_config.rb
+      ln -s #{shared_path}/data/downloads/planning_applications.zip #{release_path}/public/councils/planning_applications.zip
     EOF
   end
 
