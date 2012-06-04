@@ -104,8 +104,8 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
      
        should_change( "The number of Hyperlocal groups", :by => 1) { HyperlocalGroup.count }
        should assign_to :hyperlocal_group
-       should_redirect_to( "the show page for hyperlocal_group") { hyperlocal_group_url(assigns(:hyperlocal_group)) }
-       should_set_the_flash_to /Successfully created/
+       should redirect_to( "the show page for hyperlocal_group") { hyperlocal_group_url(assigns(:hyperlocal_group)) }
+       should set_the_flash.to(/Successfully created/)
      
      end
      
@@ -166,8 +166,8 @@ class HyperlocalGroupsControllerTest < ActionController::TestCase
     end
 
     should assign_to :hyperlocal_group
-    should_redirect_to( "the show page for hyperlocal_group") { hyperlocal_group_url(@hyperlocal_group.reload) }
-    should_set_the_flash_to /Successfully updated/
+    should redirect_to( "the show page for hyperlocal_group") { hyperlocal_group_url(@hyperlocal_group.reload) }
+    should set_the_flash.to(/Successfully updated/)
 
     should "update hyperlocal_group" do
       assert_equal "New title", @hyperlocal_group.reload.title

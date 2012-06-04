@@ -179,7 +179,7 @@ class CouncilsControllerTest < ActionController::TestCase
       end
     end
     
-    context "when showing open_status and no open data councils" do
+    context "when showing 1010_status and no open data councils" do
       setup do
         @council.update_attributes(:region => "North-West")
         
@@ -308,7 +308,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
-        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
@@ -543,7 +543,7 @@ class CouncilsControllerTest < ActionController::TestCase
       should respond_with_content_type 'application/rdf+xml'
      
       should "show rdf headers" do
-        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
@@ -650,7 +650,7 @@ class CouncilsControllerTest < ActionController::TestCase
      
       should "show rdf headers" do
         get :show, :id => @council.id, :format => "rdf"
-        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end

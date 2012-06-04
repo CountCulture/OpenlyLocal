@@ -155,7 +155,7 @@ class PoliceForcesControllerTest < ActionController::TestCase
     should respond_with_content_type 'application/rdf+xml'
    
     should "show rdf headers" do
-      assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+      assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
       assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
       assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
     end
@@ -261,8 +261,8 @@ class PoliceForcesControllerTest < ActionController::TestCase
      
        should_change("The number of police_forces", :by => 1) { PoliceForce.count }
        should assign_to :police_force
-       should_redirect_to( "the show page for police_force") { police_force_path(assigns(:police_force)) }
-       should_set_the_flash_to "Successfully created police force"
+       should redirect_to( "the show page for police_force") { police_force_path(assigns(:police_force)) }
+       should set_the_flash.to("Successfully created police force")
      
      end
      
@@ -324,8 +324,8 @@ class PoliceForcesControllerTest < ActionController::TestCase
       should_change("The police_force name", :to => "New Name") { @police_force.reload.name }
       should_change("The police_force url", :to => "http://new.name.com") { @police_force.reload.url }
       should assign_to :police_force
-      should_redirect_to( "the show page for police force") { police_force_path(assigns(:police_force)) }
-      should_set_the_flash_to "Successfully updated police force"
+      should redirect_to( "the show page for police force") { police_force_path(assigns(:police_force)) }
+      should set_the_flash.to("Successfully updated police force")
     
     end
     

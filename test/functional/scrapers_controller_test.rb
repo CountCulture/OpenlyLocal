@@ -116,7 +116,7 @@ class ScrapersControllerTest < ActionController::TestCase
     should respond_with 401
   end
   
-  context "on GET to :new without correct auth" do
+  context "on GET to :show without correct auth" do
     setup do
       stub_authentication_with_user_auth_level(:hyperlocal_sites)
       @scraper = Factory(:scraper)
@@ -125,7 +125,7 @@ class ScrapersControllerTest < ActionController::TestCase
     should respond_with 401
   end
 
-  context "on GET to :new with correct auth" do
+  context "on GET to :show with correct auth" do
     setup do
       stub_authentication_with_user_auth_level(:planning_applications)
       @scraper = Factory(:scraper)
@@ -134,7 +134,7 @@ class ScrapersControllerTest < ActionController::TestCase
     should respond_with 200
   end
 
-  context "on GET to :new with admin auth" do
+  context "on GET to :show with admin auth" do
     setup do
       stub_authentication_with_user_auth_level(:admin)
       @scraper = Factory(:scraper)

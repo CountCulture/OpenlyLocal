@@ -1,4 +1,5 @@
 <script type="text/javascript" charset="utf-8">
+//<![CDATA[
   var EARTH_RADIUS = 6378.137; //in kilometres
   var circle;
   var sites = <%= @hyperlocal_sites.to_json %>;
@@ -32,6 +33,7 @@
     infoCaption += "<a href='/hyperlocal_sites/" + site.id + "'>more info</a></p></div>";
     return infoCaption;
   }
+//]]>
 </script>
 <p class="breadcrumbs"><%= link_to (params[:independent]||params[:region]||params[:country] ? "Show all sites" : "Restrict to independent sites"), hyperlocal_sites_url(:independent => !params[:independent]) %></p>
 <h1><%= h @title %></h1>

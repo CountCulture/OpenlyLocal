@@ -695,7 +695,7 @@ class WardsControllerTest < ActionController::TestCase
       should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
-        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
@@ -751,7 +751,7 @@ class WardsControllerTest < ActionController::TestCase
       should respond_with_content_type 'application/rdf+xml'
 
       should "show rdf headers" do
-        assert_match /rdf:RDF.+ xmlns:foaf/m, @response.body
+        assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
@@ -875,7 +875,7 @@ class WardsControllerTest < ActionController::TestCase
      should "destroy ward" do
        assert_nil Ward.find_by_id(@ward.id)
      end
-     should redirect_to ( "the council page") { council_url(@council) }
+     should redirect_to( "the council page") { council_url(@council) }
      should set_the_flash.to "Successfully destroyed ward"
    end
    

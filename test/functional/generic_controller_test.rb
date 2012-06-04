@@ -114,7 +114,7 @@ class GenericControllerTest < ActionController::TestCase
     end
 
     should respond_with 303
-    should_redirect_to("the given page without redirect_from_resource but with other params") {{:action => "show", :council_id => @council.id, :foo => "bar"}}
+    should redirect_to("the given page without redirect_from_resource but with other params") {{:action => "show", :council_id => @council.id, :foo => "bar"}}
   end
   
   context "on GET to :show and no id passed in params" do

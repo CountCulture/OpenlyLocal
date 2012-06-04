@@ -41,9 +41,9 @@ class RelatedArticlesControllerTest < ActionController::TestCase
       
       should_change_record_count_of :related_article, 1, 'create'
 
-      should_redirect_to('the new page') { new_related_article_url }
+      should redirect_to('the new page') { new_related_article_url }
     
-      should_set_the_flash_to /added link to related article/i
+      should set_the_flash.to(/added link to related article/i)
     
       before_should 'instantiate pingback using source_uri and target_uri' do
         Pingback.expects(:new).with('http://foo.com', 'http://bar.com').returns(@dummy_pingback)
@@ -70,9 +70,9 @@ class RelatedArticlesControllerTest < ActionController::TestCase
       
       should_not_change("related article count") {RelatedArticle.count}
 
-      should_redirect_to('the new page') { new_related_article_url }
+      should redirect_to('the new page') { new_related_article_url }
     
-      should_set_the_flash_to /could not add/i
+      should set_the_flash.to(/could not add/i)
           
     end
     
@@ -84,9 +84,9 @@ class RelatedArticlesControllerTest < ActionController::TestCase
       
       should_not_change("related article count") {RelatedArticle.count}
 
-      should_redirect_to('the new page') { new_related_article_url }
+      should redirect_to('the new page') { new_related_article_url }
     
-      should_set_the_flash_to /could not add/i
+      should set_the_flash.to(/could not add/i)
           
     end
   end

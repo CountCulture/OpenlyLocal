@@ -118,8 +118,8 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
 
        should_change("The number of DatasetTopicGroupings", :by => 1) { DatasetTopicGrouping.count }
        should assign_to :dataset_topic_grouping
-       should_redirect_to( "the show page for dataset_topic_grouping") { dataset_topic_grouping_url(assigns(:dataset_topic_grouping)) }
-       should_set_the_flash_to /Successfully created/
+       should redirect_to( "the show page for dataset_topic_grouping") { dataset_topic_grouping_url(assigns(:dataset_topic_grouping)) }
+       should set_the_flash.to(/Successfully created/)
 
      end
 
@@ -180,8 +180,8 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
     end
 
     should assign_to :dataset_topic_grouping
-    should_redirect_to( "the show page for dataset_topic_grouping") { dataset_topic_grouping_url(@dataset_topic_grouping.reload) }
-    should_set_the_flash_to /Successfully updated/
+    should redirect_to( "the show page for dataset_topic_grouping") { dataset_topic_grouping_url(@dataset_topic_grouping.reload) }
+    should set_the_flash.to(/Successfully updated/)
 
     should "update dataset_topic_grouping" do
       assert_equal "New title", @dataset_topic_grouping.reload.title
@@ -207,7 +207,7 @@ class DatasetTopicGroupingsControllerTest < ActionController::TestCase
     should "destroy dataset_topic_grouping" do
       assert_nil DatasetTopicGrouping.find_by_id(@dataset_topic_grouping.id)
     end
-    should_redirect_to ( "the dataset_topic_groupings index page") { dataset_topic_groupings_url }
-    should_set_the_flash_to /Successfully destroyed/
+    should redirect_to( "the dataset_topic_groupings index page") { dataset_topic_groupings_url }
+    should set_the_flash.to(/Successfully destroyed/)
   end
 end
