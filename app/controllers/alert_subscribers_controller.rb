@@ -2,7 +2,7 @@ class AlertSubscribersController < ApplicationController
   
   def new
     @title = "Subscribe to planning application alerts"
-    @alert_subscriber = AlertSubscriber.new
+    @alert_subscriber = AlertSubscriber.new(:postcode_text => params[:postcode], :distance => params[:distance])
   end
   
   def confirm
@@ -11,7 +11,7 @@ class AlertSubscribersController < ApplicationController
   end
   
   def create
-    @alert_subscriber = AlertSubscriber.new({:distance => 0.2}.merge(params[:alert_subscriber]))
+    @alert_subscriber = AlertSubscriber.new({'distance' => 0.2}.merge(params[:alert_subscriber]))
     if @alert_subscriber.save
       render :template => 'alert_subscribers/subscribed'
     else
