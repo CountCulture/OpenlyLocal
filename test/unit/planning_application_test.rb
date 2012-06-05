@@ -540,6 +540,11 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         @planning_application.address = "123 foo st\nbar town\nfooshire\nFOO1 2BA"
         assert_equal "123 foo st, bar town, fooshire, FOO1 2BA", @planning_application.formatted_address
       end
+      
+      should 'strip trailing line breaks when not cleaned up' do
+        @planning_application[:address] = "123 foo st\nbar town\nfooshire\nFOO1 2BA\n"        
+        assert_equal "123 foo st, bar town, fooshire, FOO1 2BA", @planning_application.formatted_address
+      end
     end
     
     context "when queueing for sending alerts" do
