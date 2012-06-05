@@ -400,7 +400,7 @@ Factory.define :planning_application do |f|
 end
 
 Factory.define :planning_application_with_postcode, :parent => :planning_application do |f|
-  f.sequence( :postcode) {|n| "AB#{n} {n}CD"}
+  f.sequence( :postcode) {|n| "AB#{n} #{n}CD"}
 end
 
 Factory.define :planning_application_with_lat_long, :parent => :planning_application do |f|
@@ -415,7 +415,7 @@ end
 
 Factory.define :alert_subscriber do |f|
   f.sequence( :email) {|n| "email#{n}@test.com"}
-  f.postcode_text "AB1 2BC"
+  f.postcode_text { Factory(:postcode).code }
   f.distance 0.2
 end
 
