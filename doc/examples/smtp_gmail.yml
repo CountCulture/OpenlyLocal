@@ -1,13 +1,16 @@
 --- 
 default: 
   user_name: admin@openlylocal.com
+  password: REPLACE_WITH_YOUR_GMAIL_PASSWORD
   address: smtp.gmail.com
   port: 587
   authentication: :plain
   enable_starttls_auto: true
+  domain: mail.openlylocal.com
 alerts:
-  user_name: alerts@openlylocal.com
-  address: smtp.gmail.com
-  port: 587
-  authentication: :plain
-  enable_starttls_auto: true
+  user_name: REPLACE_WITH_YOUR_AUTHSMTP_USERNAME
+  password: REPLACE_WITH_YOUR_AUTHSMTP_PASSWORD
+  address: mail.authsmtp.com
+  port: 2525
+  authentication: :cram_md5
+  domain: mail.openlylocal.com
