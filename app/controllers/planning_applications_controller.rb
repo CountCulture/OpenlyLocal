@@ -32,11 +32,13 @@ class PlanningApplicationsController < ApplicationController
       end
       # bounds=Geokit::Bounds.from_point_and_radius(@postcode, distance)
       # @planning_applications = PlanningApplication.find(:all, :bounds => bounds)
-      
+
+      # @todo after switch to PostGIS, paginate and sort, like when searching by council ID
       @planning_applications = PlanningApplication.find(:all, :origin => [@postcode.lat, @postcode.lng], 
                                                               :within => distance)
       @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
     end
+
     if @planning_applications.blank?
       @message = if @postcode.blank? && params[:postcode]
         "Sorry. Postcode not found."
@@ -64,11 +66,11 @@ class PlanningApplicationsController < ApplicationController
       format.rss { render :layout => false }
     end
   end
-  
+
   def overview
     @title = 'UK Planning Applications'
   end
-  
+
   def show
     @council = @planning_application.council
     @title = @planning_application.title
@@ -78,8 +80,9 @@ class PlanningApplicationsController < ApplicationController
       format.json { render :as_json => @planning_application.to_detailed_xml }
     end
   end
-  
+
   protected
+
   def find_planning_application
     @planning_application = PlanningApplication.find(params[:id])
   end

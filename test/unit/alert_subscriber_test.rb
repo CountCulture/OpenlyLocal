@@ -8,10 +8,10 @@ class AlertSubscriberTest < ActiveSupport::TestCase
       @alert_subscriber = Factory(:alert_subscriber)
     end
   
-    should validate_presence_of :email
+    [:email, :postcode_text, :distance].each do |attribute|
+      should validate_presence_of(attribute)
+    end
     should validate_uniqueness_of :email
-    should validate_presence_of :postcode_text
-    should validate_presence_of :distance
     [0.2, 0.8].each do |value|
       should allow_value(value).for :distance
     end
@@ -61,23 +61,35 @@ class AlertSubscriberTest < ActiveSupport::TestCase
         assert @alert_subscriber.reload.confirmation_code
       end
       
-      should "get postcode from postcode_text" do
-        Postcode.expects(:find_from_messy_code).with(@alert_subscriber.postcode_text)
-        @alert_subscriber.save!
-      end
-      
       should "set postcode from postcode_text" do
-        Postcode.stubs(:find_from_messy_code).returns(@postcode)
+        Postcode.stubs(:find_from_messy_code).with(@alert_subscriber.postcode_text).returns(@postcode)
         @alert_subscriber.save!
         assert_equal @postcode, @alert_subscriber.reload.postcode
       end
-      
-      should "not fail if no postcode from postcode_text" do
-        Postcode.stubs(:find_from_messy_code) # => nil
-        @alert_subscriber.save!
-        assert_nil @alert_subscriber.reload.postcode
+
+      context 'with empty postcode' do
+        setup do
+          @alert_subscriber.postcode_text = nil
+        end
+
+        should 'fail to save subscriber' do
+          assert @alert_subscriber.invalid?
+          assert_match /can't be blank/, @alert_subscriber.errors.on(:postcode_id)
+        end
       end
-      
+
+      context 'with no matching postcode' do
+        setup do
+          @alert_subscriber.postcode_text = 'XXX'
+        end
+
+        should 'fail to save subscriber' do
+          assert @alert_subscriber.invalid?
+          assert_match /can't be blank/, @alert_subscriber.errors.on(:postcode_id)
+        end
+      end
+
+
       should "set lat lng bounds from postcode and distance" do
         bounding_box = Geokit::Bounds.from_point_and_radius([12.3456, 54.321], 0.25)
         Postcode.stubs(:find_from_messy_code).returns(@postcode)

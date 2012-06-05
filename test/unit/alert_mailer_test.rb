@@ -29,6 +29,16 @@ class AlertMailerTest < ActionMailer::TestCase
     should "include description and details in body" do
       assert_match /#{@planning_application.description}/, @report.body
     end
+
+    should 'include "Unsubscribe" link' do
+      assert_match @alert_subscriber.unsubscribe_token, @report.body
+      assert_match CGI.escape(@alert_subscriber.email), @report.body
+    end
+
+    should 'include "Subscribe Me" link' do
+      assert_match CGI.escape(@alert_subscriber.postcode_text), @report.body
+      assert_match @alert_subscriber.distance.to_s, @report.body
+    end
   end
   
   context "A AlertMailer confirmation email" do

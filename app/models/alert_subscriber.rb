@@ -2,9 +2,10 @@ class AlertSubscriber < ActiveRecord::Base
   attr_accessible :email, :postcode_text, :distance
 
   belongs_to :postcode
-  validates_presence_of :email, :postcode_text, :distance
+  validates_presence_of :email, :postcode_text, :distance, :postcode_id
   validates_uniqueness_of :email
   validates_inclusion_of :distance, :in => [0.2, 0.8]
+  before_validation :set_postcode_from_text
   before_create :set_confirmation_code, :set_geo_data_from_postcode_text
   after_create :send_confirmation_email
 
@@ -52,12 +53,15 @@ class AlertSubscriber < ActiveRecord::Base
   end
   
   private
+  def set_postcode_from_text
+    self.postcode = Postcode.find_from_messy_code(postcode_text)
+  end
+
   def set_confirmation_code
     self[:confirmation_code] = SecureRandom.hex(32)
   end
   
   def set_geo_data_from_postcode_text
-    self.postcode = Postcode.find_from_messy_code(postcode_text)
     if bounding_box = self.class.bounding_box_from_postcode_and_distance(postcode, distance)
       self.bottom_left_lat = bounding_box.sw.lat
       self.bottom_left_lng = bounding_box.sw.lng
