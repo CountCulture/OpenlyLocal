@@ -1,0 +1,8 @@
+development:
+  username:
+test:
+  username:
+production:
+  username:
+staging:
+  username:
