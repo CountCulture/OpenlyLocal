@@ -40,7 +40,33 @@ class AlertMailerTest < ActionMailer::TestCase
       assert_match @alert_subscriber.distance.to_s, @report.body
     end
   end
-  
+
+  context 'An AlertMailer unsubscribe_confirmation email' do
+    setup do
+      Resque.stubs(:enqueue_to)
+      @alert_subscriber = Factory(:alert_subscriber)
+      @report = AlertMailer.create_unsubscribe_confirmation(@alert_subscriber)
+    end
+
+    should "be sent from alerts@openlylocal.com" do
+      assert_equal "alerts@openlylocal.com", @report.from[0]
+    end
+
+    should "be sent to alert_subscriber email address" do
+      assert_equal @alert_subscriber.email, @report.to[0]
+    end
+
+    should "include appropriate subject" do
+      assert_match /unsubscribe/, @report.subject
+    end
+
+    should 'include "Subscribe Me" link' do
+      assert_match CGI.escape(@alert_subscriber.email), @report.body
+      assert_match CGI.escape(@alert_subscriber.postcode_text), @report.body
+      assert_match @alert_subscriber.distance.to_s, @report.body
+    end
+  end
+
   context "A AlertMailer confirmation email" do
     setup do
       Resque.stubs(:enqueue_to)

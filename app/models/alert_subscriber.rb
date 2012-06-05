@@ -8,6 +8,7 @@ class AlertSubscriber < ActiveRecord::Base
   before_validation :set_postcode_from_text
   before_create :set_confirmation_code, :set_geo_data_from_postcode_text
   after_create :send_confirmation_email
+  after_destroy :send_unsubscribe_confirmation_email
 
   named_scope :confirmed, :conditions => {:confirmed => true}
   named_scope :geocoded, :conditions => 'bottom_left_lat IS NOT NULL'
@@ -36,7 +37,7 @@ class AlertSubscriber < ActiveRecord::Base
   def self.unsubscribe_user_from_email_and_token(email, given_unsubscribe_token)
     if unsubscribe_token(email) == given_unsubscribe_token
       subscriber = find_by_email(email)
-      subscriber&&subscriber.destroy
+      subscriber && subscriber.destroy
     end
   end
   
@@ -73,5 +74,8 @@ class AlertSubscriber < ActiveRecord::Base
   def send_confirmation_email
     AlertMailer.deliver_confirmation!(self)
   end
-    
+
+  def send_unsubscribe_confirmation_email
+    AlertMailer.deliver_unsubscribe_confirmation!(self)
+  end
 end
