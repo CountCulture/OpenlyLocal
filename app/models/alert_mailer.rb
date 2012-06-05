@@ -5,7 +5,16 @@ class AlertMailer < ActionMailer::Base
   def confirmation(subscriber)
     @recipients   = subscriber.email
     @from         = 'alerts@openlylocal.com'
-    @subject      = "OpenlyLocal Alert :: Please confirm your Planning Application subscription"
+    @subject      = "Please confirm your OpenlyLocal Planning Alerts subscription"
+    @sent_on      = Time.now
+    @body[:subscriber] = subscriber
+    @headers      = {}
+  end
+
+  def unsubscribe_confirmation(subscriber)
+    @recipients   = subscriber.email
+    @from         = 'alerts@openlylocal.com'
+    @subject      = "You've been unsubscribed from OpenlyLocal Planning Alerts"
     @sent_on      = Time.now
     @body[:subscriber] = subscriber
     @headers      = {}

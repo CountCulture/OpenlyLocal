@@ -48,7 +48,19 @@ class AlertSubscriberTest < ActiveSupport::TestCase
         end
       end
     end
-    
+
+    context 'on destruction' do
+      setup do
+        @alert_subscriber = Factory.build(:alert_subscriber)
+      end
+
+      should 'send unsubscribe confirmation email' do
+        stub_email = stub 'unsubscribe_confirmation_email'
+        AlertMailer.expects(:deliver_unsubscribe_confirmation!).with(@alert_subscriber)
+        @alert_subscriber.destroy
+      end
+    end
+
     context "on creation" do
       setup do
         @postcode = Factory(:postcode)
