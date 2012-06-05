@@ -30,7 +30,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
     #   assert_select "#api_info"
     # end
   end
-  
+
   context "on GET to :index" do
     setup do
       @postcode = Factory(:postcode, :code => 'AB12CD')
@@ -164,21 +164,20 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
     #     assert_select ".warning", :text => /postcode not found/i
     #   end
     # end
-    
+
     context "and postcode given" do
-      
       should "find within 0.2km of lat long of postcode" do
         PlanningApplication.expects(:find).with(:all, has_entries(:origin => [@postcode.lat, @postcode.lng], :within => 0.2))
         get :index, :postcode => 'AB1 2CD'
       end
-    
+
       context "and planning applications found" do
         setup do
           PlanningApplication.stubs(:find).returns([@matching_application])
           
           get :index, :postcode => 'AB1 2CD'
         end
-    
+
         should assign_to(:planning_applications) { [@matching_application] }
         should respond_with :success
         should render_template :index
@@ -199,32 +198,100 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
           assert_select "title", /AB1 2CD/i
         end
       end
-      
+
       context "and no postcode found" do
-        setup do
-          get :index, :postcode => 'XX1 2XX'
+        context "with HTML requested" do
+          setup do
+            get :index, :postcode => 'XX1 2XX'
+          end
+
+          should "return message" do
+            assert_select ".warning", :text => /postcode not found/i
+          end
         end
-    
-        should "return message" do
-          assert_select ".warning", :text => /postcode not found/i
+
+        context "with XML requested" do
+          def setup
+            get :index, :postcode => 'XX1 2XX', :format => 'xml'
+          end
+
+          should_not assign_to(:planning_applications)
+          # @note using +should respond_with_content_type 'application/xml'+ raises:
+          #   NoMethodError: undefined method `content_type' for nil:NilClass
+
+          # @note using +should respond_with :unprocessable_entity+ raises:
+          #   NoMethodError: undefined method `response_code' for nil:NilClass
+          should 'response with 422' do
+            assert_response 422
+          end
+        end
+
+        context "with JSON requested" do
+          def setup
+            get :index, :postcode => 'XX1 2XX', :format => 'json'
+          end
+
+          should_not assign_to(:planning_applications)
+          # @note using +should respond_with_content_type 'application/xml'+ raises:
+          #   NoMethodError: undefined method `content_type' for nil:NilClass
+
+          # @note using +should respond_with :unprocessable_entity+ raises:
+          #   NoMethodError: undefined method `response_code' for nil:NilClass
+          should 'response with 422' do
+            assert_response 422
+          end
         end
       end
-      
+
       context "and no planning applications found" do
-        setup do
-          Factory(:postcode, :code => 'XX12XX')
-          get :index, :postcode => 'XX1 2XX'
+        context "with HTML requested" do
+          setup do
+            get :index, :postcode => 'AB1 2CD'
+          end
+
+          should respond_with :success
+
+          should "return message" do
+            assert_select ".warning", :text => /no matching planning applications/i
+          end
         end
-    
-        should respond_with :success
-    
-        should "return message" do
-          assert_select ".warning", :text => /no matching planning applications/i
+
+        context "with XML requested" do
+          def setup
+            get :index, :postcode => 'AB1 2CD', :format => 'xml'
+          end
+
+          should_not assign_to(:planning_applications)
+          # @note using +should respond_with_content_type 'application/xml'+ raises:
+          #   NoMethodError: undefined method `content_type' for nil:NilClass
+
+          # @note using +should respond_with :unprocessable_entity+ raises:
+          #   NoMethodError: undefined method `response_code' for nil:NilClass
+          should 'response with 422' do
+            assert_response 422
+          end
+        end
+
+        context "with JSON requested" do
+          def setup
+            get :index, :postcode => 'AB1 2CD', :format => 'json'
+          end
+
+          should_not assign_to(:planning_applications)
+          # @note using +should respond_with_content_type 'application/xml'+ raises:
+          #   NoMethodError: undefined method `content_type' for nil:NilClass
+
+          # @note using +should respond_with :unprocessable_entity+ raises:
+          #   NoMethodError: undefined method `response_code' for nil:NilClass
+          should 'response with 422' do
+            assert_response 422
+          end
         end
       end
-      
+
       context "with xml request" do
         setup do
+          PlanningApplication.stubs(:find).returns([@matching_application])
           get :index, :postcode => 'AB1 2CD', :format => "xml"
         end
     
@@ -233,9 +300,10 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
         should_not render_with_layout
         should respond_with_content_type 'application/xml'
       end
-    
+
       context "with json requested" do
         setup do
+          PlanningApplication.stubs(:find).returns([@matching_application])
           get :index, :postcode => 'AB1 2CD', :format => "json"
         end
     
@@ -353,5 +421,4 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
     should_not set_the_flash
 
   end
-    
 end
