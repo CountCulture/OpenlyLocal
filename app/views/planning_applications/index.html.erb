@@ -32,7 +32,7 @@
   }
   
 </script>
-<h1><%= @title %></h1>
+<h1><%= @council && "#{basic_link_for(@council)} ::" %> <%= @title %></h1>
 <%- unless @lat_lon_pas.blank? -%>
 <div id="planning_applications_map" class="map_outer">
   <div id="map_canvas"></div>
