@@ -35,6 +35,16 @@ class AlertSubscribersControllerTest < ActionController::TestCase
       should_not set_the_flash
     end
 
+    context "when default email provided" do
+      setup do
+        get :new, :email => 'example@example.com'
+      end
+
+      should "set default email" do
+        assert_select '#alert_subscriber_email[value=?]', 'example@example.com'
+      end
+    end
+
     context "when default postcode provided" do
       setup do
         get :new, :postcode => 'foo'
