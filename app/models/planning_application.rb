@@ -131,7 +131,7 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def formatted_address
-    address.blank? ? nil : address.gsub(/\n+/, ', ')
+    address.blank? ? nil : address.strip.gsub(/\n+/, ', ')
   end
   
   def google_map_magnification
