@@ -1126,11 +1126,37 @@ clear: both;}
 	width: 950px;
 	margin: 0 auto;
 }
+#value-proposition {
+	font-size: 1.25em;
+}
+#new_alert_subscriber .row {
+	font-size: 1.5em;
+}
+#new_alert_subscriber .span-1 {
+	font-size: 2em;
+	line-height: 1em;
+}
+#new_alert_subscriber .span-11 label {
+	width: auto;
+}
+#new_alert_subscriber .span-11 input {
+	font-size: 1.25em;
+}
+#new_alert_subscriber #alert_subscriber_submit {
+	margin-top: 1em;
+	font-size: 1.5em;
+}
 #planning-alerts-preview h2 {
 	border: none;
 }
-.radio .fieldWithErrors {
+.radio-question {
+	margin: 0;
+}
+.radio-answer .fieldWithErrors {
 	display: inline;
+}
+.row {
+	clear: left;
 }
 .notes {
 	color: #999;

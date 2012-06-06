@@ -1,30 +1,48 @@
 <div class="blueprint-container">
   <div class="span-24">
-    <p>Find out for free what is being built and knocked down in your area and receive email alerts when something new is planned.</p>
   </div>
   <div class="span-12">
     <%= error_messages_for :alert_subscriber %>
     <%- form_for @alert_subscriber do |f| %>
-      <p class="required">
-        <%= f.label :postcode, 'Enter a postcode' %>
-        <%= f.text_field :postcode_text %>
-      </p>
-      <p class="required">
-        <%= f.label :email, 'Enter your email address' %>
-        <%= f.text_field :email %>
-      </p>
-      <p>What size area would you like to receive alerts for?</p>
-      <div class="radio">
-        <%= f.radio_button :distance, 0.2 %>
-        <%= f.label 'distance_02', 'My street (about 200 m)', :class => 'radio' %>
+      <p id="value-proposition">Find out for free what is being built and knocked down in your area and receive email alerts when something new is planned.</p>
+      <div class="row">
+        <div class="span-1">1</div>
+        <div class="span-11 last">
+          <p class="required">
+            <%= f.label :postcode, 'Enter a postcode:' %>
+            <%= f.text_field :postcode_text %>
+          </p>
+        </div>
       </div>
-      <div class="radio">
-        <%= f.radio_button :distance, 0.8 %>
-        <%= f.label 'distance_08', 'My neighborhood (about 800 m)', :class => 'radio' %>
+      <div class="row">
+        <div class="span-1">2</div>
+        <div class="span-11 last">
+          <p class="required">
+            <%= f.label :email, 'Enter your email address:' %>
+            <%= f.text_field :email %>
+          </p>
+        </div>
       </div>
-      <p>
-        <%= f.submit 'Create alert' %>
-      </p>
+      <div class="row">
+        <div class="span-1">3</div>
+        <div class="span-11 last">
+          <p class="radio-question">What size area would you like to receive alerts for?</p>
+          <div class="radio-answer">
+            <%= f.radio_button :distance, 0.2 %>
+            <%= f.label 'distance_02', 'My street (about 200 m)', :class => 'radio' %>
+          </div>
+          <div class="radio-answer">
+            <%= f.radio_button :distance, 0.8 %>
+            <%= f.label 'distance_08', 'My neighborhood (about 800 m)', :class => 'radio' %>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span-1">&nbsp;</div>
+        <div class="span-11 last">
+          <p><%= f.submit 'Create alert' %></p>
+        </div>
+      </div>
     <%- end -%>
   </div>
   <div class="span-12 last" id="planning-alerts-preview">

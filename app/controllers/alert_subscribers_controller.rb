@@ -1,7 +1,7 @@
 class AlertSubscribersController < ApplicationController
   
   def new
-    @title = "Subscribe to planning application alerts"
+    @title = "OpenlyLocal Planning Alerts"
     @alert_subscriber = AlertSubscriber.new(:email => params[:email], :postcode_text => params[:postcode], :distance => params[:distance])
   end
   
