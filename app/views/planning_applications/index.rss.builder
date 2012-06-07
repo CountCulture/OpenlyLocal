@@ -1,8 +1,8 @@
 xml.instruct! :xml, :version => "1.0" 
 xml.rss :version => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/", "xmlns:georss" => "http://www.georss.org/georss" do
   xml.channel do
-    xml.title @title
-    xml.description "#{@title} from OpenlyLocal"
+    xml.title @page_title || @title
+    xml.description "#{@page_title || @title} from OpenlyLocal"
     xml.link hyperlocal_sites_url(:format => :rss)
     
     @planning_applications.select{ |pa| pa.lat && pa.lng  }.each do |planning_app|

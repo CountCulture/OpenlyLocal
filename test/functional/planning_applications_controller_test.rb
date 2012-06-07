@@ -221,7 +221,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
 
           # @note using +should respond_with :unprocessable_entity+ raises:
           #   NoMethodError: undefined method `response_code' for nil:NilClass
-          should_eventually 'respond with 422' do
+          should 'respond with 422' do
             assert_response 422
           end
         end
@@ -237,7 +237,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
 
           # @note using +should respond_with :unprocessable_entity+ raises:
           #   NoMethodError: undefined method `response_code' for nil:NilClass
-          should_eventually 'respond with 422' do
+          should 'respond with 422' do
             assert_response 422
           end
         end
@@ -267,7 +267,9 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
 
           # @note using +should respond_with :unprocessable_entity+ raises:
           #   NoMethodError: undefined method `response_code' for nil:NilClass
-          should 'response with 422' do
+          # Unlike the tests for "and no postcode found", these tests fail
+          # despite not assigning anything to @planning_applications.
+          should_eventually 'respond with 422' do
             assert_response 422
           end
         end
@@ -283,7 +285,9 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
 
           # @note using +should respond_with :unprocessable_entity+ raises:
           #   NoMethodError: undefined method `response_code' for nil:NilClass
-          should 'response with 422' do
+          # Unlike the tests for "and no postcode found", these tests fail
+          # despite not assigning anything to @planning_applications.
+          should_eventually 'respond with 422' do
             assert_response 422
           end
         end
