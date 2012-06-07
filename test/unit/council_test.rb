@@ -439,7 +439,7 @@ class CouncilTest < ActiveSupport::TestCase
         end
 
         should "include sum of payee_breakdown as total_spend" do
-          assert_equal (123.4 + 193.1 + 456.2), @spending_data[:total_spend]
+          assert_in_delta (123.4 + 193.1 + 456.2), @spending_data[:total_spend], 1.0e-12
         end
 
         should "include company_count" do
