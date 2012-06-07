@@ -34,20 +34,20 @@ EOF
       end
       
       should "not convert relative urls to absolute ones" do
-        assert_match /with <a href=\"councillor22/, @sanitized_document
+        assert_match /with <a( class=\"external\")? href=\"councillor22/, @sanitized_document
       end
 
       should "not change urls of absolute links" do
-        assert_match /an <a href=\"http:\/\/external\.com\/dummy\"/, @sanitized_document
+        assert_match /an <a( class=\"external\")? href=\"http:\/\/external\.com\/dummy\"/, @sanitized_document
       end
       
       should "not change urls of mailto links" do
-        assert_match /a <a href=\"mailto:foo@test\.com/, @sanitized_document
+        assert_match /a <a( class=\"external\")? href=\"mailto:foo@test\.com/, @sanitized_document
       end
 
       should "add external class to all links" do
-        assert_match /councillor22\" class=\"external/, @sanitized_document
-        assert_match /dummy\" class=\"external/, @sanitized_document
+        assert_match /councillor22\" class=\"external|class=\"external\" href=\"councillor22/, @sanitized_document
+        assert_match /dummy\" class=\"external|class=\"external\" href=\"http:\/\/external\.com\/dummy\"/, @sanitized_document
       end
 
       should "remove images" do
@@ -74,15 +74,15 @@ EOF
         end
 
         should "convert relative urls to absolute ones based on url" do
-          assert_match /with <a href=\"http:\/\/www\.council\.gov\.uk\/document\/councillor22/, @sanitized_document
+          assert_match /with <a( class=\"external\")? href=\"http:\/\/www\.council\.gov\.uk\/document\/councillor22/, @sanitized_document
         end
 
         should "not change urls of absolute links" do
-          assert_match /an <a href=\"http:\/\/external\.com\/dummy\"/, @sanitized_document
+          assert_match /an <a( class=\"external\")? href=\"http:\/\/external\.com\/dummy\"/, @sanitized_document
         end
         
         should "not change urls of mailto links" do
-          assert_match /a <a href=\"mailto:foo@test\.com/, @sanitized_document
+          assert_match /a <a( class=\"external\")? href=\"mailto:foo@test\.com/, @sanitized_document
         end
       end
     end
