@@ -196,7 +196,6 @@ class PlanningApplication < ActiveRecord::Base
   
   private
   def queue_for_sending_alerts_if_relevant
-    p "*****************#{self.changes.inspect}" if self.description == 'foo bar'
     queue_for_sending_alerts unless self.changes["lat"].blank? && self.changes["lng"].blank?
   end
   
