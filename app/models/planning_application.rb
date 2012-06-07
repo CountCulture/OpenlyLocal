@@ -63,11 +63,11 @@ class PlanningApplication < ActiveRecord::Base
 
   named_scope :with_clear_bitwise_flag, lambda { |bitwise_number| { :conditions => ["bitwise_flag & ? = 0", bitwise_number]}}
 
-  def self.perform(pa_id, method = nil)
-    find(pa_id).update_info
+  def self.perform(pa_id, method = 'update_info')
+    find(pa_id).send(method)
   rescue Scraper::ScraperError => e
     logger.error "Exception (#{e.inspect}) updating info for PlanningApplication with id #{pa_id}"
-    Resque.enqueue_to(:planning_application_exceptions, PlanningApplication, pa_id)
+    Resque.enqueue_to(:planning_application_exceptions, PlanningApplication, pa_id, method)
   end
   
   def address=(raw_address)
@@ -196,6 +196,7 @@ class PlanningApplication < ActiveRecord::Base
   
   private
   def queue_for_sending_alerts_if_relevant
+    p "*****************#{self.changes.inspect}" if self.description == 'foo bar'
     queue_for_sending_alerts unless self.changes["lat"].blank? && self.changes["lng"].blank?
   end
   
