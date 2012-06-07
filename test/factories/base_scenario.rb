@@ -422,14 +422,3 @@ end
 Factory.define :alert_subscriber_with_confirmation, :parent => :alert_subscriber do |f|
   f.confirmed true
 end
-
-Factory.define :alert_subscriber_with_lat_long, :parent => :alert_subscriber do |f|
-  f.bottom_left_lat 0
-  f.bottom_left_lng 0
-  f.sequence( :top_right_lat) {|n| 0.1*n}
-  f.sequence( :top_right_lng) {|n| 0.2*n}
-end
-
-Factory.define :alert_subscriber_with_confirmation_and_lat_long, :parent => :alert_subscriber_with_lat_long do |f|
-  f.confirmed true
-end

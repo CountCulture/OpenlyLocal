@@ -661,19 +661,17 @@ class PlanningApplicationTest < ActiveSupport::TestCase
 
     context "when returning matching subscribers" do
       setup do
-        planning_application = Factory(:planning_application_with_lat_long, :lat => 0.1, :lng => 0.1)
+        postcode = Factory(:postcode)
+        planning_application = Factory(:planning_application_with_lat_long, :lat => postcode.lat, :lng => postcode.lng)
 
-        @without_lat_lng = Factory(:alert_subscriber_with_confirmation)
-        @without_confirmation = Factory(:alert_subscriber_with_lat_long)
+        @without_confirmation = Factory(:alert_subscriber)
+        # These will match.
         5.times do
-          Factory(:alert_subscriber_with_confirmation_and_lat_long)
+          Factory(:alert_subscriber_with_confirmation, :postcode_text => postcode.code)
         end
+        # These will not match.
         5.times do
-          Factory(:alert_subscriber_with_confirmation_and_lat_long,
-            :bottom_left_lat => -1,
-            :bottom_left_lng => -1,
-            :top_right_lat => 0,
-            :top_right_lng => 0)
+          Factory(:alert_subscriber_with_confirmation)
         end
 
         @matching_subscribers = planning_application.matching_subscribers
@@ -681,10 +679,6 @@ class PlanningApplicationTest < ActiveSupport::TestCase
 
       should "find only confirmed subscribers" do
         assert !@matching_subscribers.include?(@without_confirmation)
-      end
-
-      should "find only geocoded subscribers" do
-        assert !@matching_subscribers.include?(@without_lat_lng)
       end
 
       should "find subscribers where planning application latlng is within bounding box" do
