@@ -172,20 +172,52 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       setup do
         PlanningApplication.stubs(:find).with(@planning_application.id).returns(@planning_application)
       end
-
-      should "update_info for planning_application with given id" do
-        @planning_application.expects(:update_info)
-        PlanningApplication.perform(@planning_application.id)
-      end
       
-      context "and problem updating info" do
-        setup do
-          @planning_application.expects(:update_info).raises(Scraper::RequestError)
+      context "by default" do
+        should "update_info for planning_application with given id" do
+          @planning_application.expects(:update_info)
+          PlanningApplication.perform(@planning_application.id)
         end
 
-        should "put back on queue" do
-          Resque.expects(:enqueue_to).with(:planning_application_exceptions, PlanningApplication, @planning_application.id)
-          PlanningApplication.perform(@planning_application.id)
+        context "and problem updating info" do
+          setup do
+            @planning_application.expects(:update_info).raises(Scraper::RequestError)
+          end
+
+          should "put back on queue" do
+            Resque.expects(:enqueue_to).with(:planning_application_exceptions, PlanningApplication, @planning_application.id, 'update_info')
+            PlanningApplication.perform(@planning_application.id)
+          end
+        end
+      end
+      
+      context "when given method" do
+
+        should "perform method for planning_application with given id" do
+          @planning_application.expects(:foo)
+          PlanningApplication.perform(@planning_application.id, 'foo')
+        end
+        
+        context "and Scraper::ScraperError problem performing method" do
+          setup do
+            @planning_application.expects(:foo).raises(Scraper::RequestError)
+          end
+
+          should "put back on queue" do
+            Resque.expects(:enqueue_to).with(:planning_application_exceptions, PlanningApplication, @planning_application.id, 'foo')
+            PlanningApplication.perform(@planning_application.id, 'foo')
+          end
+        end
+        
+        context "and other error performing method" do
+          # setup do
+          #   @planning_application.expects(:foo).raises
+          # end
+
+          should "raise exception" do
+            # Resque.expects(:enqueue_to).with(:planning_application_exceptions, PlanningApplication, @planning_application.id, 'foo')
+            assert_raise { PlanningApplication.perform(@planning_application.id, 'foo') }
+          end
         end
       end
     end
@@ -293,8 +325,6 @@ class PlanningApplicationTest < ActiveSupport::TestCase
           end
 
           should "not queue for sending alerts" do
-            # @todo This test will only pass if we save a second time before
-            # running the test, although changes is empty after just one save.
             assert_blank @planning_application.changes
             @planning_application.expects(:queue_for_sending_alerts).never
             @planning_application.save!
@@ -701,7 +731,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
           assert_nil PlanningApplication.new(:applicant_name => 'Bob Ajob').company_name
         end
         
-        should "return applicant_name if it is company-like" do
+        should_eventually "return applicant_name if it is company-like" do
           assert_equal 'Tesco PLC', PlanningApplication.new(:applicant_name => 'Tesco PLC').company_name
         end
       end

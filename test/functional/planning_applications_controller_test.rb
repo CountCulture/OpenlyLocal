@@ -211,7 +211,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
         end
 
         context "with XML requested" do
-          def setup
+          setup do
             get :index, :postcode => 'XX1 2XX', :format => 'xml'
           end
 
@@ -227,7 +227,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
         end
 
         context "with JSON requested" do
-          def setup
+          setup do
             get :index, :postcode => 'XX1 2XX', :format => 'json'
           end
 
