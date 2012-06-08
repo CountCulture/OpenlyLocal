@@ -216,14 +216,8 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
           end
 
           should_not assign_to(:planning_applications)
-          # @note using +should respond_with_content_type 'application/xml'+ raises:
-          #   NoMethodError: undefined method `content_type' for nil:NilClass
-
-          # @note using +should respond_with :unprocessable_entity+ raises:
-          #   NoMethodError: undefined method `response_code' for nil:NilClass
-          should 'response with 422' do
-            assert_response 422
-          end
+          should respond_with_content_type 'application/xml'
+          should respond_with :unprocessable_entity
         end
 
         context "with JSON requested" do
@@ -232,14 +226,8 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
           end
 
           should_not assign_to(:planning_applications)
-          # @note using +should respond_with_content_type 'application/xml'+ raises:
-          #   NoMethodError: undefined method `content_type' for nil:NilClass
-
-          # @note using +should respond_with :unprocessable_entity+ raises:
-          #   NoMethodError: undefined method `response_code' for nil:NilClass
-          should 'response with 422' do
-            assert_response 422
-          end
+          should respond_with_content_type 'application/json'
+          should respond_with :unprocessable_entity
         end
       end
 
@@ -257,35 +245,23 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
         end
 
         context "with XML requested" do
-          def setup
+          setup do
             get :index, :postcode => 'AB1 2CD', :format => 'xml'
           end
 
-          should_not assign_to(:planning_applications)
-          # @note using +should respond_with_content_type 'application/xml'+ raises:
-          #   NoMethodError: undefined method `content_type' for nil:NilClass
-
-          # @note using +should respond_with :unprocessable_entity+ raises:
-          #   NoMethodError: undefined method `response_code' for nil:NilClass
-          should 'response with 422' do
-            assert_response 422
-          end
+          should assign_to(:planning_applications) {[]}
+          should respond_with_content_type 'application/xml'
+          should respond_with :unprocessable_entity
         end
 
         context "with JSON requested" do
-          def setup
+          setup do
             get :index, :postcode => 'AB1 2CD', :format => 'json'
           end
 
-          should_not assign_to(:planning_applications)
-          # @note using +should respond_with_content_type 'application/xml'+ raises:
-          #   NoMethodError: undefined method `content_type' for nil:NilClass
-
-          # @note using +should respond_with :unprocessable_entity+ raises:
-          #   NoMethodError: undefined method `response_code' for nil:NilClass
-          should 'response with 422' do
-            assert_response 422
-          end
+          should assign_to(:planning_applications) {[]}
+          should respond_with_content_type 'application/json'
+          should respond_with :unprocessable_entity
         end
       end
 
