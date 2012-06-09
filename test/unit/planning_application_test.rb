@@ -11,7 +11,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     
     should validate_presence_of :council_id
     should validate_presence_of :uid
-    should validate_presence_of :address
+    # should validate_presence_of :address
     should validate_uniqueness_of(:uid).scoped_to :council_id
     [ :council_id, :applicant_name, :applicant_address, :address, :postcode,
       :description, :url, :comment_url, :uid, :retrieved_at, :start_date,
