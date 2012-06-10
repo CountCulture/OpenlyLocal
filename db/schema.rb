@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120506131921) do
+ActiveRecord::Schema.define(:version => 20120609120053) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -58,7 +58,6 @@ ActiveRecord::Schema.define(:version => 20120506131921) do
   end
 
   add_index "alert_subscribers", ["bottom_left_lat", "top_right_lat", "bottom_left_lng", "top_right_lng"], :name => "bounding_box_index"
-  add_index "alert_subscribers", ["bottom_left_lng", "top_right_lng", "bottom_left_lat", "top_right_lat"], :name => "bottom_left_lng"
   add_index "alert_subscribers", ["created_at"], :name => "index_alert_subscribers_on_created_at"
   add_index "alert_subscribers", ["email"], :name => "index_alert_subscribers_on_email"
 
@@ -806,7 +805,7 @@ ActiveRecord::Schema.define(:version => 20120506131921) do
 
   create_table "planning_applications", :force => true do |t|
     t.string   "uid",               :limit => 50,                       :null => false
-    t.text     "address",                                               :null => false
+    t.text     "address"
     t.string   "postcode",          :limit => 10,       :default => ""
     t.text     "description"
     t.string   "url",               :limit => 1024

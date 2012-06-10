@@ -11,3 +11,10 @@ set :rails_env, 'production'
 
 after 'deploy:symlink', 'deploy:update_crontab'
 
+after "deploy:stop",    "resque:stop"
+after "deploy:start",   "resque:start"
+
+after "deploy:restart", "resque:stop", "resque:start"
+
+
+
