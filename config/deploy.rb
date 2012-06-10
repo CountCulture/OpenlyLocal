@@ -197,26 +197,15 @@ namespace :sitemap do
   
 end
 
-# namespace :db do
-#   desc "Copy the remote production database to the local development machine" 
-#   task :backup, :roles => :db, :only => { :primary => true } do
-#     filename = "#{application}_#{Time.now.strftime("%Y%m%d_%H%M%S")}.sql.bz2" 
-#     backupfile = "#{deploy_to}/backups/#{filename}" 
-#     data = capture "cat #{shared_path}/config/database.yml"
-#     config = YAML::load(data)['production']
-#     on_rollback { run "rm #{filename}" }
-#     run "mysqldump -u #{config['username']} -p -h #{config['host']} #{config['database']} | bzip2 -c > #{backupfile}" do |ch, stream, out|
-#       ch.send_data "#{config['password']}\n" if out =~ /^Enter password:/
-#     end
-#     'mkdir -p #{File.dirname(__FILE__)}/../backups/'
-#     # get backupfile, "backups/#{stage.to_s}/#{filename}" 
-#     # get backupfile, "~/Sites/backups/#{application}/#{stage.to_s}/#{filename}" 
-#     # run "rm #{backupfile}" 
-#   end
-# end
+namespace :resque do 
+  desc "Stop the resque daemon" 
+  task :stop, :roles => :backgrounder do 
+    run "cd #{current_path} && RAILS_ENV=production rake resque:stop_daemons; true" 
+  end 
+  desc "Start the resque daemon" 
+  task :start, :roles => :backgrounder do 
+    run "cd #{current_path} && RAILS_ENV=production rake resque:start_daemons" 
+  end 
+end
 
-# Dir[File.join(File.dirname(__FILE__), '..', 'vendor', 'gems', 'hoptoad_notifier-*')].each do |vendored_notifier|
-#   $: << File.join(vendored_notifier, 'lib')
-# end
 
-# require 'hoptoad_notifier/capistrano'
