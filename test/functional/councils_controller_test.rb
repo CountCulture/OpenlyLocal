@@ -14,6 +14,8 @@ class CouncilsControllerTest < ActionController::TestCase
     @meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 2.days.from_now)
     @ward = Factory(:ward, :council => @council)
     @document = Factory(:document, :document_owner => @meeting)
+    @planning_application = Factory(:planning_application, :council => @council, :start_date => Date.today)
+    @planning_application_without_address = Factory(:planning_application, :council => @council, :start_date => Date.today, :address => nil)
     Document.record_timestamps = false # update timestamp without triggering callbacks
     @past_document = Factory(:document, :document_owner => @past_meeting, :created_at => 2.days.ago)
     Document.record_timestamps = true
@@ -437,6 +439,11 @@ class CouncilsControllerTest < ActionController::TestCase
       
       should "not show party breakdown" do
         assert_select "#party_breakdown", false
+      end
+      
+      should "list recent planning applications" do
+        assert_equal [@planning_application_without_address, @planning_application], assigns(:recent_planning_applications) #most recently created first
+        assert_select "#planning_applications li .date", @planning_application_without_address.start_date.to_s
       end
       
     end
