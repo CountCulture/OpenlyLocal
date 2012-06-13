@@ -1,8 +1,10 @@
 <li>
 <%= status_flash(list_item.application_status, :class => list_item.normalised_application_status) %>
   <span class='date'><%= list_item.start_date %></span>
-  <strong class='description'><%= truncate(list_item.description, :length => 100) %></strong> 
-  <%= link_for list_item, list_options.merge(:text => "#{list_item.address[0..30]}...") %>
+  <strong class='description'><%= link_for list_item, list_options.merge(:text => truncate(list_item.description, :length => 100)) %></strong> 
+<%- if list_item.address -%>
+  <%= "#{list_item.address[0..30]}..." %>
+<%- end -%>
   <%= council_page_for(list_item) %>
     
 </li>
