@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120609120053) do
+ActiveRecord::Schema.define(:version => 20120613143818) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -996,7 +996,7 @@ ActiveRecord::Schema.define(:version => 20120609120053) do
     t.boolean  "problematic",                                    :default => false
     t.text     "notes",                      :limit => 16777215
     t.string   "referrer_url"
-    t.string   "cookie_url"
+    t.text     "cookie_url"
     t.boolean  "use_post",                                       :default => false
     t.string   "parsing_library",            :limit => 1,        :default => "H"
     t.string   "base_url"
