@@ -1,15 +1,18 @@
-A new planning application has been found within your alert area:
-================================
+A new planning application in your area was received on <%= @planning_application.start_date.strftime('%A, %B %e, %Y').squeeze(' ') %> for the address: <%= @planning_application.formatted_address %>.
 
-Address: <%= @planning_application.formatted_address %>
-Description: <%= simple_format(@planning_application.description) %>
-More details (including map): <%= @planning_application.openlylocal_url %>
-Council: <%= @planning_application.council.title %>, <%= @planning_application.council.openlylocal_url %>
+<%= @planning_application.description %>
+
+For more details (including a map), visit <%= @planning_application.openlylocal_url %>
+
+Received by <%= @planning_application.council.title %>: <%= @planning_application.council.openlylocal_url %>
 <%- if @planning_application.url? -%>
-Council page for application: <%= @planning_application.url %>
+
+You may visit the original planning application on the council's website: <%= @planning_application.url %>
 <%- end -%>
-Date received: <%= @planning_application.start_date %>
-Status: <%= @planning_application.status %>
+<%- if @planning_application.status -%>
+
+The planning application's status: <%= @planning_application.status %>
+<%- end -%>
 
 ================================
 Did someone else forward this email to you? Subscribe to receive your own alerts of new planning applications: <%= new_alert_subscriber_url(:postcode => @subscriber.postcode_text, :distance => @subscriber.distance) %>
