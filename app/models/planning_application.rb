@@ -144,7 +144,7 @@ class PlanningApplication < ActiveRecord::Base
   end
   
   def matching_subscribers
-    if lat.nil? or lng.nil?
+    if lat.nil? || lng.nil?
       []
     else
       AlertSubscriber.confirmed.geocoded.contains(lat, lng)
