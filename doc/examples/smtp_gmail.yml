@@ -6,11 +6,11 @@ default:
   port: 587
   authentication: :plain
   enable_starttls_auto: true
-  domain: mail.openlylocal.com
+  domain: openlylocal.com
 alerts:
   user_name: REPLACE_WITH_YOUR_AUTHSMTP_USERNAME
   password: REPLACE_WITH_YOUR_AUTHSMTP_PASSWORD
   address: mail.authsmtp.com
   port: 2525
   authentication: :cram_md5
-  domain: mail.openlylocal.com
+  domain: openlylocal.com
