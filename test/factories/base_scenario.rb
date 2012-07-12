@@ -404,6 +404,7 @@ Factory.define :planning_application_with_postcode, :parent => :planning_applica
 end
 
 Factory.define :planning_application_with_lat_long, :parent => :planning_application do |f|
+  f.start_date Date.today
   f.sequence( :lat) {|n| 0.1*n}
   f.sequence( :lng) {|n| 0.2*n}
 end
