@@ -258,7 +258,7 @@ class MeetingsControllerTest < ActionController::TestCase
         assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
-        assert_match /rdf:RDF.+ xmlns:vcal/m, @response.body
+        assert_match /rdf:RDF.* xmlns:vcal/m, @response.body
       end
 
       should "show basic rdf info for meeting" do
