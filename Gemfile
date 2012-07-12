@@ -27,6 +27,9 @@ gem 'acts-as-taggable-on' # FeedEntry
 gem 'feedzirra' # FeedEntry
 gem 'twitter', '~> 0.9' # Tweeter
 
+# Mailers
+gem 'dkim'
+
 # Scrapers
 gem 'hpricot'
 gem 'httpclient'
