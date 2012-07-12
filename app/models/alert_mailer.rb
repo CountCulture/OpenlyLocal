@@ -3,31 +3,30 @@ class AlertMailer < ActionMailer::Base
   cattr_accessor :auth_smtp_settings
 
   def confirmation(subscriber)
-    @recipients   = subscriber.email
-    @from         = 'OpenlyLocal Alerts <alerts@openlylocal.com>'
-    @subject      = "Please confirm your OpenlyLocal Planning Alerts subscription"
-    @sent_on      = Time.now
-    @body[:subscriber] = subscriber
-    @headers      = {}
+    recipients subscriber.email
+    from       'OpenlyLocal Alerts <alerts@openlylocal.com>'
+    subject    "Please confirm your OpenlyLocal Planning Alerts subscription"
+    sent_on    Time.now
+    body       :subscriber => subscriber
   end
 
   def unsubscribe_confirmation(subscriber)
-    @recipients   = subscriber.email
-    @from         = 'OpenlyLocal Alerts <alerts@openlylocal.com>'
-    @subject      = "You've been unsubscribed from OpenlyLocal Planning Alerts"
-    @sent_on      = Time.now
-    @body[:subscriber] = subscriber
-    @headers      = {}
+    recipients subscriber.email
+    from       'OpenlyLocal Alerts <alerts@openlylocal.com>'
+    subject    "You've been unsubscribed from OpenlyLocal Planning Alerts"
+    sent_on    Time.now
+    body       :subscriber => subscriber
   end
   
   def planning_alert(params={})
-    @recipients   = params[:subscriber].email
-    @from         = 'OpenlyLocal Alerts <alerts@openlylocal.com>'
-    @subject      = "New Planning Application: #{params[:planning_application].address}"
-    @sent_on      = Time.now
-    @body[:planning_application] = params[:planning_application]
-    @body[:subscriber] = params[:subscriber]
-    @headers      = {}
+    unsubscribe_url = unsubscribe_alert_subscribers_url(:email => params[:subscriber].email, :token => params[:subscriber].unsubscribe_token)
+
+    recipients params[:subscriber].email
+    from       'OpenlyLocal Alerts <alerts@openlylocal.com>'
+    subject    "New Planning Application: #{params[:planning_application].address}"
+    sent_on    Time.now
+    body       :planning_application => params[:planning_application], :subscriber => params[:subscriber], :unsubscribe_url => unsubscribe_url
+    headers    'List-Unsubscribe' => "<#{unsubscribe_url}>"
   end
   
   private
