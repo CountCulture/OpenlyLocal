@@ -1,38 +1,52 @@
 source :rubygems
 
 gem 'rails', '2.3.14'
-gem 'mysql'
-# gem 'mysql2', '0.2.7' # Note geokit requires mysql, not support yet for mysql2
-gem 'spatial_adapter'
-gem 'geokit'
-gem 'georuby'
-gem 'nokogiri', '~>1.4.1'
-gem "hpricot"
-gem 'whenever', :require => false
-gem 'fastercsv'
-gem 'googlecharts', :require => "gchart"
-gem "newrelic_rpm"
-gem "companies-house"
-gem "twitter", '~> 0.9'
-gem "httpclient"
-gem 'crack'
-gem "feedzirra"#, :lib => "feedzirra", :source => 'http://gems.github.com'
-gem 'will_paginate', '~> 2.3.11'#, :source => 'http://gemcutter.org'
-gem "acts-as-taggable-on"#, :source => 'http://gemcutter.org'
-gem 'airbrake'
+
+gem 'fastercsv' # Ruby 1.8.7 optimization
+gem 'json'
+gem 'rubyzip', :require => false
 gem 'sitemap_generator', :require => false
+gem 'SystemTimer' # not sure what gem needs this
+
+# Database/Spatial
+gem 'mysql'
+gem 'spatial_adapter'
+gem 'geokit' # geokit requires mysql, no support yet for mysql2 gem
+gem 'georuby'
+
+# Background jobs
+gem 'daemons', '1.0.10' # used by delayed_job
+gem 'delayed_job', '2.0.4'
+gem 'resque', :require => 'resque/server'
+gem 'resque-lock'
+gem 'resque-lock-timeout'
+gem 'whenever', :require => false
+
+# Models
+gem 'acts-as-taggable-on' # FeedEntry
+gem 'feedzirra' # FeedEntry
+gem 'twitter', '~> 0.9' # Tweeter
+
+# Scrapers
+gem 'hpricot'
+gem 'httpclient'
+gem 'nokogiri', '~>1.4.1'
+
+# Utilities
+gem 'companies-house' # CompanyUtilities
+gem 'crack' # NpiaUtilities
+gem 'rdf', :require => false # RdfUtilities
+gem 'rdf-rdfxml', :require => false # RdfUtilities
+
+# Views/Helpers
+gem 'googlecharts', :require => 'gchart'
+gem 'will_paginate', '~> 2.3.11'
+
+# Production
+gem 'airbrake'
 gem 'capistrano'
 gem 'capistrano-ext'
-gem 'rdf', :require => false
-gem 'rdf-rdfxml', :require => false
-gem 'json'
-gem 'daemons', '1.0.10'
-gem 'delayed_job', '2.0.4'
-gem 'SystemTimer'
-gem 'resque', :require => "resque/server"
-gem "resque-lock"
-gem "resque-lock-timeout"
-gem 'rubyzip', :require => false
+gem 'newrelic_rpm'
 
 group :test do
   gem 'guard'
