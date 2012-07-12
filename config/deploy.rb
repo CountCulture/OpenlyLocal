@@ -166,6 +166,7 @@ namespace :deploy do
       ln -s #{shared_path}/config/resque.yml #{release_path}/config/resque.yml &&
       ln -s #{shared_path}/config/smtp_gmail.yml #{release_path}/config/smtp_gmail.yml &&
       ln -s #{shared_path}/config/twitter.yml #{release_path}/config/twitter.yml &&
+      ln -s #{shared_path}/config/openlylocal.com.priv #{release_path}/config/openlylocal.com.priv &&
       ln -s #{shared_path}/cache #{release_path}/tmp/cache &&
       ln -s #{shared_path}/data #{release_path}/db/data &&
       mkdir #{release_path}/public/councils &&

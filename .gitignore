@@ -15,6 +15,8 @@ config/newrelic.yml
 config/resque.yml
 config/smtp_gmail.yml
 config/twitter.yml
+config/openlylocal.com.priv
+config/openlylocal.com.pub
 public/cache
 *~
 .bundle

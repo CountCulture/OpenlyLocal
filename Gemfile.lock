@@ -38,6 +38,7 @@ GEM
     daemons (1.0.10)
     delayed_job (2.0.4)
       daemons
+    dkim (0.2.0)
     factory_girl (2.3.2)
       activesupport
     fastercsv (1.5.4)
@@ -153,6 +154,7 @@ DEPENDENCIES
   crack
   daemons (= 1.0.10)
   delayed_job (= 2.0.4)
+  dkim
   factory_girl
   fastercsv
   feedzirra
