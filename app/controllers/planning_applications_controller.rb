@@ -25,7 +25,7 @@ class PlanningApplicationsController < ApplicationController
       @page_title = "Latest Planning Applications in #{@council.title}"
       @title = "Latest Planning Applications"
     elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
-      distance = if %w(0.2 0.8).include? params[:distance]
+      distance = if %w(0.2 0.8 2).include? params[:distance]
         params[:distance].to_f
       else
         0.2

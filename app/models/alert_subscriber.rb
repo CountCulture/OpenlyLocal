@@ -4,7 +4,7 @@ class AlertSubscriber < ActiveRecord::Base
   belongs_to :postcode
   validates_presence_of :email, :postcode_text, :distance, :postcode_id
   validates_uniqueness_of :email
-  validates_inclusion_of :distance, :in => [0.2, 0.8]
+  validates_inclusion_of :distance, :in => [0.2, 0.8, 2]
   before_validation :set_postcode_from_text
   before_create :set_confirmation_code, :set_geo_data_from_postcode_text
   after_create :send_confirmation_email

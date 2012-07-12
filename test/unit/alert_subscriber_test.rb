@@ -12,7 +12,7 @@ class AlertSubscriberTest < ActiveSupport::TestCase
       should validate_presence_of(attribute)
     end
     should validate_uniqueness_of :email
-    [0.2, 0.8].each do |value|
+    [0.2, 0.8, 2].each do |value|
       should allow_value(value).for :distance
     end
     [0.0, 1.0].each do |value|

@@ -29,3 +29,7 @@ Dkim::signable_headers = Dkim::DefaultHeaders - %w(Message-ID Date Return-Path B
 
 # For mail sent through Google Apps, see:
 # @see http://support.google.com/a/bin/answer.py?hl=en&answer=174124
+
+# Handy testing tools:
+# * send an email to check-auth@verifier.port25.com and get a report in reply
+# * http://www.brandonchecketts.com/emailtest.php
