@@ -26,3 +26,6 @@ Dkim::signable_headers = Dkim::DefaultHeaders - %w(Message-ID Date Return-Path B
 #
 # @see http://www.ietf.org/rfc/rfc4870.txt
 # @see http://domainkeys.sourceforge.net/policycheck.html
+
+# For mail sent through Google Apps, see:
+# @see http://support.google.com/a/bin/answer.py?hl=en&answer=174124
