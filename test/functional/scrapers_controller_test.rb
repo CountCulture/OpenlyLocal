@@ -127,7 +127,7 @@ class ScrapersControllerTest < ActionController::TestCase
 
   context "on GET to :show with correct auth" do
     setup do
-      stub_authentication_with_user_auth_level(:planning_applications)
+      stub_authentication_with_user_auth_level(:test_scraped_models)
       @scraper = Factory(:scraper)
       get :show, :id => @scraper.id
     end
