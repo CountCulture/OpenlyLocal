@@ -661,6 +661,8 @@ class PlanningApplicationTest < ActiveSupport::TestCase
 
     context "when returning matching subscribers" do
       setup do
+        Resque.stubs(:enqueue_to).with(:planning_application_alerts, anything, anything, :send_alerts)
+
         postcode = Factory(:postcode)
         planning_application = Factory(:planning_application_with_lat_long, :lat => postcode.lat, :lng => postcode.lng)
 
