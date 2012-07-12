@@ -303,7 +303,7 @@ class PollsControllerTest < ActionController::TestCase
       should "show rdf headers" do
         assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
         assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
-        assert_match /rdf:RDF.+ xmlns:openelection/m, @response.body
+        assert_match /rdf:RDF.* xmlns:openelection/m, @response.body
         assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
       end
       
