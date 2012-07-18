@@ -63,7 +63,13 @@ class PlanningApplicationsController < ApplicationController
           render :as_json => @planning_applications.to_xml
         end
       end
-      format.rss { render :layout => false }
+      format.rss do
+        if @planning_applications.blank?
+          @planning_applications = []
+        else
+          render :layout => false
+        end
+      end
     end
   end
 
