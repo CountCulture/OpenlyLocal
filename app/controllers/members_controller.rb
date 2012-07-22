@@ -43,9 +43,9 @@ class MembersController < ApplicationController
     @member = Member.find(params[:id])
     @council = @member.council
     @committees = @member.committees
-    @forthcoming_meetings = @member.forthcoming_meetings
+    @forthcoming_meetings = @member.committees.forthcoming_meetings
     @title = @member.full_name
-    api_options = {:except => [:ward_id], :include => [:ward, :committees, :forthcoming_meetings]}
+    api_options = {:except => [:ward_id], :include => [:ward, :committees], :methods => :forthcoming_meetings}
     respond_to do |format|
       format.html
       format.rdf

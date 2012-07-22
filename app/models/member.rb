@@ -7,18 +7,23 @@ class Member < ActiveRecord::Base
   validates_presence_of :url, :unless => :ex_member?
   validates_uniqueness_of :uid, :scope => :council_id # uid is unique id number assigned by council. It's possible that some councils may not assign them (e.g. GLA), but cross that bridge...
   has_many :memberships, :primary_key => :id
-  has_many :committees, :through => :memberships
-  has_many :potential_meetings, 
-           :class_name => 'Meeting',
-           :finder_sql => 'SELECT meetings.* from meetings, memberships WHERE 
-                           meetings.committee_id=memberships.committee_id 
-                           AND memberships.member_id=#{id} ORDER BY meetings.date_held'
+  has_many :committees, :through => :memberships do
+    def potential_meetings
+      reduce([]) do |memo,committee|
+        memo += committee.meetings
+      end.sort_by do |meeting|
+        meeting.date_held
+      end
+    end
 
-  has_many :forthcoming_meetings, 
-           :class_name => 'Meeting',
-           :finder_sql => 'SELECT meetings.* from meetings, memberships WHERE 
-                           meetings.committee_id=memberships.committee_id 
-                           AND memberships.member_id=#{id} AND meetings.date_held > \'#{Time.now.to_s(:db)}\' ORDER BY meetings.date_held'
+    def forthcoming_meetings
+      reduce([]) do |memo,committee|
+        memo += committee.meetings.all(:conditions => ['date_held > ?', Time.now])
+      end.sort_by do |meeting|
+        meeting.date_held
+      end
+    end
+  end
 
   has_many :candidacies
   has_many :related_articles, :as => :subject
@@ -30,6 +35,14 @@ class Member < ActiveRecord::Base
   named_scope :except_vacancies, :conditions => 'last_name NOT LIKE "vacan%" AND first_name NOT LIKE "vacan%"'
   alias_attribute :title, :full_name
   after_create :tweet_about_it
+
+  def potential_meetings
+    committees.potential_meetings
+  end
+
+  def forthcoming_meetings
+    committees.forthcoming_meetings
+  end
   
   def full_name=(full_name)
     names_hash = NameParser.parse(full_name)

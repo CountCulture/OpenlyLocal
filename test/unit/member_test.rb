@@ -294,7 +294,7 @@ class MemberTest < ActiveSupport::TestCase
     end
     
     should "have no potential_meetings" do
-      assert_equal [], @member.potential_meetings
+      assert_equal [], @member.committees.potential_meetings
     end
     
     context "when creating first member for council" do
@@ -504,11 +504,11 @@ class MemberTest < ActiveSupport::TestCase
         end
 
         should "have many potential_meetings" do
-          assert_equal [@another_committee_meeting, @member_meeting_2, @member_meeting], @member.potential_meetings
+          assert_equal [@another_committee_meeting, @member_meeting_2, @member_meeting], @member.committees.potential_meetings
         end
 
         should "have many forthcoming_meetings" do
-          assert_equal [@member_meeting_2, @member_meeting], @member.forthcoming_meetings
+          assert_equal [@member_meeting_2, @member_meeting], @member.committees.forthcoming_meetings
         end
       end
       
