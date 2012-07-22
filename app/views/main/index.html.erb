@@ -19,7 +19,7 @@
   <div id="other_data_count" class="item_grouping">
     <ul>
       <li><%= link_to "#{HyperlocalSite.approved.size} hyperlocal sites", hyperlocal_sites_path %></li>
-      <li><%= number_with_delimiter(Document.quick_count) %> documents</li>
+      <li><%= number_with_delimiter(Document.count) %> documents</li>
       <li>Over <%= number_with_delimiter(Datapoint.count) %> pieces of data</li>
       <li><%= link_to "#{number_with_delimiter(FinancialTransaction.full_table_count)} financial transactions", :controller => 'councils', :action => 'spending' %></li>
     </ul>
