@@ -516,8 +516,7 @@ end
 task :remove_duplicate_planning_applications => :environment do
   Council.all.each do |council|
     next if council.planning_applications.count == 0
-    sql= "SELECT `planning_applications`.uid, count(id) AS uid_count FROM `planning_applications` WHERE (`planning_applications`.`council_id` = #{council.id}) GROUP BY uid HAVING uid_count > 1"
-    dup_uids = PlanningApplication.connection.select_rows(sql).collect{|row| row.first}
+    dup_uids = PlanningApplication.count(:select => :uid, :conditions => {:council_id => council.id}, :group => :uid, :having => 'count_uid > 1').keys
     destroy_count = 0
     dup_uids.each do |uid|
       destroy_count += PlanningApplication.find_all_by_council_id_and_uid(council.id, uid)[1..-1].each(&:destroy).size
@@ -526,6 +525,7 @@ task :remove_duplicate_planning_applications => :environment do
   end
 end
 
+# @todo PostGIS update this code
 task :convert_old_confirmed_planning_alert_subscribers => :environment do
   sql= "SELECT COUNT(*) FROM planning_alert_subscribers WHERE confirmed = 1 LIMIT 10"
   connection = AlertSubscriber.connection

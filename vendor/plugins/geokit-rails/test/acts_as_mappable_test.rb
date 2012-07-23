@@ -412,7 +412,7 @@ class ActsAsMappableTest < GeokitTestCase
   end
   
   def test_find_within_bounds_ordered_by_distance
-    locations = Location.find_within_bounds([@sw,@ne], :origin=>@bounds_center, :order=>'distance asc')
+    locations = Location.find_within_bounds([@sw,@ne], :origin=>@bounds_center, :order=>'distance ASC')
     assert_equal locations[0], locations(:d)
     assert_equal locations[1], locations(:a)
   end

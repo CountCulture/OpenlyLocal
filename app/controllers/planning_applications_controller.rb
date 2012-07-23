@@ -33,7 +33,7 @@ class PlanningApplicationsController < ApplicationController
       # bounds=Geokit::Bounds.from_point_and_radius(@postcode, distance)
       # @planning_applications = PlanningApplication.find(:all, :bounds => bounds)
 
-      # @todo after switch to PostGIS, paginate and sort, like when searching by council ID
+      # @todo PostGIS: after switch, paginate and sort like when searching by council ID
       @planning_applications = PlanningApplication.find(:all, :origin => [@postcode.lat, @postcode.lng], 
                                                               :within => distance)
       @title = "Planning Applications within #{distance} km of #{params[:postcode]}"

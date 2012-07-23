@@ -91,7 +91,7 @@ class SpendingStat < ActiveRecord::Base
   def calculated_earliest_transaction_date
     return unless organisation.respond_to?(:payments)
     return @calculated_earliest_transaction_date if @calculated_earliest_transaction_date
-    # extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'}
+    # extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'} # @note PostgreSQL-incompatible
     extra_params={}
     return unless first_transaction = organisation.payments.earliest.first(extra_params)
     @calculated_earliest_transaction_date = first_transaction.date - first_transaction.date_fuzziness.to_i.days
@@ -100,7 +100,7 @@ class SpendingStat < ActiveRecord::Base
   def calculated_latest_transaction_date
     return unless organisation.respond_to?(:payments)
     return @calculated_latest_transaction_date if @calculated_latest_transaction_date
-    # extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'}
+    # extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'} # @note PostgreSQL-incompatible
     extra_params={}
     return unless last_transaction = organisation.payments.latest.first(extra_params)
     @calculated_latest_transaction_date = last_transaction.date + last_transaction.date_fuzziness.to_i.days

@@ -85,10 +85,6 @@ class FinancialTransaction < ActiveRecord::Base
     # FileUtils.chmod_R 0644, "#{csv_file}.zip"
   end
   
-  def self.full_table_count
-    count(:from =>"financial_transactions USE INDEX(index_financial_transactions_on_supplier_id)")
-  end
-  
   def averaged_date_and_value
     return [[date, value]] unless date_fuzziness?
     first_date, last_date = (date - date_fuzziness), (date + date_fuzziness)
