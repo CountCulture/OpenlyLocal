@@ -60,7 +60,7 @@ class SpendingStat < ActiveRecord::Base
       "DATE_TRUNC('month', date)"
     end
     ft_sums = organisation.payments.sum(:value, :conditions => {:date_fuzziness => nil}, :group => group_by).to_a
-    fuzzy_sums = organisation.payments.all(:conditions => "date_fuzziness IS NOT NULL", :select=>'sum(VALUE) AS value, DATE AS date, date_fuzziness', :group=>'date, date_fuzziness')
+    fuzzy_sums = organisation.payments.all(:select => 'SUM(value) AS value, date, date_fuzziness', :conditions => "date_fuzziness IS NOT NULL", :group => 'date, date_fuzziness')
 
     fuzzy_sums.each{ |fs| ft_sums += fs.averaged_date_and_value }
 

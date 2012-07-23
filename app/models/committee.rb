@@ -18,14 +18,14 @@ class Committee < ActiveRecord::Base
               :select => "committees.*, COUNT(meetings.id) AS meeting_count",
               :conditions => ['meetings.date_held > ?', 1.year.ago],
               :joins => [:meetings],
-              :group => "committees.id",
+              :group => "committees.id, committees.title, committees.created_at, committees.updated_at, committees.url, committees.council_id, committees.uid, committees.description, committees.ward_id, committees.normalised_title",
               :order => "committees.title",
               :include => [:next_meeting] } }
   
   named_scope :with_activity_status, lambda { {
               :select => "committees.*, (COUNT(meetings.id) > 0) AS active",
               :joins => "LEFT JOIN meetings ON meetings.committee_id = committees.id AND meetings.date_held > '#{1.year.ago.to_s(:db)}'",
-              :group => "committees.id",
+              :group => "committees.id, committees.title, committees.created_at, committees.updated_at, committees.url, committees.council_id, committees.uid, committees.description, committees.ward_id, committees.normalised_title",
               :order => "committees.title" }}
   
   # overload #normalise_title included from ScrapedModel module so 'committee' & aliases are removed
