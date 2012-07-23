@@ -20,7 +20,7 @@ class Council < ActiveRecord::Base
   has_many :memberships, :through => :members
   has_many :scrapers
   has_many :meetings
-  has_many :held_meetings, :class_name => "Meeting", :conditions => 'date_held <= \'#{Time.now.to_s(:db)}\''
+  has_many :held_meetings, :class_name => "Meeting", :conditions => %q(#{self.class.send(:sanitize_sql_array, ['date_held <= ?', Time.now])})
   has_many :wards, :conditions => {:defunkt => false}, :order => 'wards.name'
   has_many :officers
   has_one  :chief_executive, :class_name => "Officer", :conditions => {:position => "Chief Executive"}
@@ -62,12 +62,12 @@ class Council < ActiveRecord::Base
   
   def self.calculated_spending_data
     res = {}
-    res[:payee_breakdown] = FinancialTransaction.sum(:value, :joins => :supplier, :group => 'suppliers.payee_type', :conditions => 'suppliers.organisation_type = "Council"')
+    res[:payee_breakdown] = FinancialTransaction.sum(:value, :joins => :supplier, :group => 'suppliers.payee_type', :conditions => ['suppliers.organisation_type = ?', 'Council'])
     res[:total_spend] = res[:payee_breakdown].sum{ |type, val| val }
-    res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
-    res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
+    res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => ['suppliers.organisation_type = ?', 'Council'])
+    res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id", :conditions => ['suppliers.organisation_type = ?', 'Council'])
     res[:supplier_count] = Supplier.count(:conditions => {:organisation_type => 'Council'})
-    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'").collect(&:id)
+    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id", :conditions => ['suppliers.organisation_type = ?', 'Council']).collect(&:id)
 
     res[:largest_companies] = SpendingStat.all(:select => :organisation_id, :conditions => {:organisation_type => 'Company'}, :order => 'total_received_from_councils DESC', :limit => 20).map(&:organisation_id)
     res[:largest_charities] = SpendingStat.all(:select => :organisation_id, :conditions => {:organisation_type => 'Charity'}, :order => 'total_received_from_councils DESC', :limit => 20).map(&:organisation_id)
@@ -82,13 +82,13 @@ class Council < ActiveRecord::Base
   
   def self.find_by_params(params={})
     country, region, term, show_open_status, show_1010_status = params.delete(:country), params.delete(:region), params.delete(:term), params.delete(:show_open_status), params.delete(:show_1010_status)
-    conditions = term ? ["councils.name LIKE ?", "%#{term}%"] : nil
+    conditions = term ? ['councils.name LIKE ?', "%#{term}%"] : nil
     conditions ||= {:country => country, :region => region}.delete_if{ |k,v| v.blank?  }
     parsed(:include_unparsed => params.delete(:include_unparsed)||show_open_status||show_1010_status).all({:conditions => conditions, :include => [:twitter_account]}.merge(params))
   end
   
   def self.with_stale_services
-    all(:joins => "LEFT JOIN services ON services.council_id=councils.id", :conditions => ["((services.id IS NULL) OR (services.updated_at < ?)) AND (councils.ldg_id IS NOT NULL)", 7.days.ago], :group => "councils.id")
+    all(:joins => "LEFT JOIN services ON services.council_id=councils.id", :conditions => ['(services.id IS NULL OR services.updated_at < ?) AND (councils.ldg_id IS NOT NULL)', 7.days.ago], :group => "councils.id")
   end
   
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising council titles
@@ -141,7 +141,7 @@ class Council < ActiveRecord::Base
   # Returns true if council has any active committees, i.e. if council 
   # has any meetings in past year (as meetings must be associated with committees)
   def active_committees?
-    meetings.count(:conditions => ["meetings.date_held > ?", 1.year.ago]) > 0
+    meetings.count(:conditions => ['meetings.date_held > ?', 1.year.ago]) > 0
   end
   
   def average_membership_count
@@ -215,11 +215,11 @@ class Council < ActiveRecord::Base
   end
     
   def recent_activity
-    conditions = ["updated_at > ?", 7.days.ago]
+    conditions = ['updated_at > ?', 7.days.ago]
     { :members => members.all(:conditions => conditions),
       :committees => committees.all(:conditions => conditions),
       :meetings => meetings.all(:conditions => conditions),
-      :documents => meeting_documents.all(:conditions => ["documents.updated_at > ?", 7.days.ago])}
+      :documents => meeting_documents.all(:conditions => ['documents.updated_at > ?', 7.days.ago])}
   end
   
   # returns related councils, i.e. those of same authority type
@@ -230,8 +230,8 @@ class Council < ActiveRecord::Base
   def potential_services(options={})
     return [] if ldg_id.blank?
     authority_level = (authority_type =~ /Metropolitan|London/ ? "Unitary" : authority_type)
-    conditions = ["authority_level LIKE ? OR authority_level = 'all'", "%#{authority_level}%"]
-    LdgService.all(:conditions => conditions, :order => "lgsl") 
+    conditions = ['authority_level LIKE ? OR authority_level = ?', "%#{authority_level}%", 'all']
+    LdgService.all(:conditions => conditions, :order => :lgsl)
   end
   
   def resource_uri

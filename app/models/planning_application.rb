@@ -61,7 +61,7 @@ class PlanningApplication < ActiveRecord::Base
                                   :order => 'start_date DESC' } }
   
 
-  named_scope :with_clear_bitwise_flag, lambda { |bitwise_number| { :conditions => ["bitwise_flag & ? = 0", bitwise_number]}}
+  named_scope :with_clear_bitwise_flag, lambda { |bitwise_number| { :conditions => ['bitwise_flag & ? = 0', bitwise_number]}}
 
   def self.perform(pa_id, method = 'update_info')
     find(pa_id).send(method)

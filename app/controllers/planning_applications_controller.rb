@@ -11,7 +11,7 @@ class PlanningApplicationsController < ApplicationController
   def admin
     @councils = Council.find(:all, :include => { :scrapers => { :parser => :portal_system, :council => {} } }, 
                                    :order => "councils.name", 
-                                   :conditions=> 'parsers.result_model = "PlanningApplication"')
+                                   :conditions=> ['parsers.result_model = ?', 'PlanningApplication'])
     @councils_with_problem_scrapers, @councils_with_good_scrapers = @councils.partition{ |c| c.scrapers.any?{ |s| s.problematic? } }
     @planning_parsers = @councils.collect{ |c| c.scrapers.collect(&:parser).select{ |p| p.portal_system_id } }.flatten.uniq
     @latest_alert_subscribers = AlertSubscriber.all(:limit => 5, :order => 'created_at DESC')

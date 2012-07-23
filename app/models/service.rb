@@ -2,8 +2,8 @@ class Service < ActiveRecord::Base
   belongs_to :council
   belongs_to :ldg_service
   default_scope :order => "title"
-  named_scope :matching_term, lambda { |term| { :conditions => ["title LIKE ?", "%#{term}%"] } }
-  named_scope :stale, lambda { { :conditions => ["updated_at < ?", 7.days.ago] } }
+  named_scope :matching_term, lambda { |term| { :conditions => ['title LIKE ?', "%#{term}%"] } }
+  named_scope :stale, lambda { { :conditions => ['updated_at < ?', 7.days.ago] } }
   validates_presence_of :council_id, :title, :url, :category, :ldg_service_id
   validates_uniqueness_of :ldg_service_id, :scope => :council_id
   

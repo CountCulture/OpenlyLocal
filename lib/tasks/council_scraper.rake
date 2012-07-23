@@ -25,7 +25,7 @@ task :scrape_egr_for_councils => :environment do
     end
     values = detailed_data.search("#main tr")
     full_name = values.at("td[text()*='Full Name']").next_sibling.inner_text.strip
-    council = Council.find(:first, :conditions => ["BINARY name = ? OR BINARY name LIKE ?", full_name, "#{short_title} %"]) || Council.new
+    council = Council.find(:first, :conditions => ['BINARY name = ? OR BINARY name LIKE ?', full_name, "#{short_title} %"]) || Council.new
     council.attributes = default_hash
     puts (council.new_record? ? "CREATED NEW COUNCIL " : "Found EXISTING council " ) + full_name
     council.authority_type ||= values.at("td[text()*='Type']").next_sibling.inner_text.strip
@@ -58,7 +58,7 @@ task :scrape_wdtk_for_names => :environment do
   url = "http://www.whatdotheyknow.com/body/list/local_council"
   doc = Hpricot(open(url))
   wdtk_councils = doc.search("#content .body_listing span.head")
-  Council.find(:all, :conditions => 'wdtk_name IS NULL').each do |council|
+  Council.find(:all, :conditions => {:wdtk_name => nil}).each do |council|
     wdtk_council = wdtk_councils.at("a[text()*='#{council.short_name}']")
     if wdtk_council
       wdtk_name = wdtk_council[:href].gsub('/body/', '')
@@ -75,7 +75,7 @@ desc "Scraper council urls to get feed_url from auto discovery tag"
 task :scrape_councils_for_feeds => :environment do
   require 'hpricot'
   require 'open-uri'
-  Council.find(:all, :conditions => 'feed_url IS NULL').each do |council|
+  Council.find(:all, :conditions => {:feed_url => nil}).each do |council|
     next if council.url.blank?
     puts "=======================\nChecking #{council.title} (#{council.url})"
     begin
@@ -170,7 +170,7 @@ end
 desc "Enter missing Council LDG ids"
 task :enter_missing_ldg_ids => :environment do
 
-  Council.all(nil, :conditions => "ldg_id IS NULL AND (country='England' OR country='Wales')").each do |council|
+  Council.all(nil, :conditions => "ldg_id IS NULL AND (country = 'England' OR country = 'Wales')").each do |council|
     puts "\n====================\n#{council.name} (#{council.authority_type})\n"
     puts "Please enter LDG id (type q to quit n to skip this council): "
     response = $stdin.gets.chomp
@@ -238,7 +238,7 @@ task :add_council_twitter_ids => :environment do
         m_url = URI.parse(member.url.strip).host
 
         m_id = member.screen_name
-        if council = Council.find(:first, :conditions => ["url LIKE ?", "%#{m_url}%"])
+        if council = Council.find(:first, :conditions => ['url LIKE ?', "%#{m_url}%"])
           if m_id == council.twitter_account_name
             puts "Twitter account for #{council.name} unchanged"
           else
@@ -530,7 +530,7 @@ desc "Import WDTK ids"
 task :import_wdtk_ids => :environment do
   require 'hpricot'
   require 'open-uri'
-  bodies = %w(PoliceForce Council PoliceAuthority PensionFund).collect{|body_klass| body_klass.constantize.all(:conditions => 'wdtk_name IS NOT NULL AND wdtk_name !="" AND wdtk_id IS NULL')}.flatten.each do |body|
+  bodies = %w(PoliceForce Council PoliceAuthority PensionFund).collect{|body_klass| body_klass.constantize.all(:conditions => "wdtk_name IS NOT NULL AND wdtk_name <> '' AND wdtk_id IS NULL")}.flatten.each do |body|
     wdtk_id = Hpricot(open("http://www.whatdotheyknow.com/body/#{body.wdtk_name}")).at('#stepwise_make_request a')[:href].scan(/\d+$/).to_s
     body.update_attribute(:wdtk_id, wdtk_id)
     puts "Updated #{body.title} with What Do They Know id: #{wdtk_id}"

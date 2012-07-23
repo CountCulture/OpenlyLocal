@@ -2,7 +2,7 @@ class FeedEntry < ActiveRecord::Base
   belongs_to :feed_owner, :polymorphic => true
   acts_as_taggable
   validates_presence_of :guid, :url, :title
-  named_scope :for_blog, :conditions => "feed_owner_type IS NULL AND feed_owner_id IS NULL"
+  named_scope :for_blog, :conditions => {:feed_owner_type => nil, :feed_owner_id => nil}
   named_scope :restrict_to, lambda { |restricted_type| restricted_type ?  { :conditions => {:feed_owner_type => restricted_type.classify} } : { } }
   default_scope :order => "published_at DESC"
   
@@ -15,8 +15,8 @@ class FeedEntry < ActiveRecord::Base
   end
   
   def self.perform
-    items = Council.all(:conditions => "feed_url IS NOT NULL AND feed_url !=''")
-    items += HyperlocalSite.all(:conditions => "feed_url IS NOT NULL AND feed_url !=''")
+    items = Council.all(:conditions => "feed_url IS NOT NULL AND feed_url <> ''")
+    items += HyperlocalSite.all(:conditions => "feed_url IS NOT NULL AND feed_url <> ''")
     items << BlogFeedUrl
     errors = []
     items.each do |item|

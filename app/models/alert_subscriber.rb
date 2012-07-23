@@ -11,7 +11,7 @@ class AlertSubscriber < ActiveRecord::Base
   after_destroy :send_unsubscribe_confirmation_email
 
   named_scope :confirmed, :conditions => {:confirmed => true}
-  named_scope :geocoded, :conditions => 'bottom_left_lat IS NOT NULL'
+  named_scope :geocoded, :conditions => "bottom_left_lat IS NOT NULL"
   named_scope :contains, lambda { |lat,lng|
     {
       :conditions => [

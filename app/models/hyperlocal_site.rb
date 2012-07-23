@@ -24,7 +24,7 @@ class HyperlocalSite < ActiveRecord::Base
   
   def self.find_from_article_url(article_url)
     return unless host = URI.parse(article_url).host rescue nil
-    approved.first(:conditions => ["url LIKE ?", "%#{host}%"])
+    approved.first(:conditions => ['url LIKE ?', "%#{host}%"])
   end
   
   def to_param

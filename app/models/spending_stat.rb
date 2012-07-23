@@ -59,8 +59,8 @@ class SpendingStat < ActiveRecord::Base
       # https://github.com/django/django/blob/master/django/db/backends/postgresql_psycopg2/operations.py#L35
       "DATE_TRUNC('month', date)"
     end
-    ft_sums = organisation.payments.sum(:value, :conditions => 'date_fuzziness IS NULL', :group => group_by).to_a
-    fuzzy_sums = organisation.payments.all(:conditions => 'date_fuzziness IS NOT NULL', :select=>'sum(VALUE) AS value, DATE AS date, date_fuzziness', :group=>'date, date_fuzziness')
+    ft_sums = organisation.payments.sum(:value, :conditions => {:date_fuzziness => nil}, :group => group_by).to_a
+    fuzzy_sums = organisation.payments.all(:conditions => "date_fuzziness IS NOT NULL", :select=>'sum(VALUE) AS value, DATE AS date, date_fuzziness', :group=>'date, date_fuzziness')
 
     fuzzy_sums.each{ |fs| ft_sums += fs.averaged_date_and_value }
 

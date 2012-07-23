@@ -382,7 +382,7 @@ class CouncilTest < ActiveSupport::TestCase
     context "when calculating spending_data" do
 
       should "calculate total council transaction count" do
-        FinancialTransaction.expects(:count).with(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council'")
+        FinancialTransaction.expects(:count).with(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id", :conditions => ['suppliers.organisation_type = ?', 'Council'])
         Council.calculated_spending_data
       end
       
@@ -392,12 +392,12 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "calculate total council companies count" do
-        Company.expects(:count).with(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
+        Company.expects(:count).with(:joins => :supplying_relationships, :conditions => ['suppliers.organisation_type = ?', 'Council'])
         Council.calculated_spending_data
       end
       
       should "calculate total value of council payments grouped by supplier type" do
-        FinancialTransaction.expects(:sum).with(:value, :joins => :supplier, :group => 'suppliers.payee_type', :conditions => 'suppliers.organisation_type = "Council"').returns({"Entity" => 123.4})
+        FinancialTransaction.expects(:sum).with(:value, :joins => :supplier, :group => 'suppliers.payee_type', :conditions => ['suppliers.organisation_type = ?', 'Council']).returns({"Entity" => 123.4})
         Council.calculated_spending_data
       end
       

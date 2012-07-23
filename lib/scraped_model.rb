@@ -123,7 +123,7 @@ module ScrapedModel
       # returns all info scrapers connected with given model, i.e. those that get info on it and populate details.
       # Usually this is only a signle scraper, but sometimes (e.g. with some planning applications) it can be multiple scrapers
       def info_scrapers
-        council.scrapers.all(:conditions => ['scrapers.type = "InfoScraper" AND parsers.result_model = ?', self.class.to_s], :joins => :parser)
+        council.scrapers.all(:conditions => ['scrapers.type = ? AND parsers.result_model = ?', 'InfoScraper', self.class.to_s], :joins => :parser)
       end
       
       # override this in individual classes to define whether params from scraper parser are the same

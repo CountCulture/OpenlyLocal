@@ -547,7 +547,7 @@ end
 task :convert_caps_urls_to_idox_urls => :environment do
   puts "Please enter name of Council:"
   break unless council = Council.find_by_normalised_title(Council.normalise_title($stdin.gets.chomp))
-  base_url = council.scrapers.first(:conditions => 'scrapers.type = "ItemScraper" AND parsers.result_model = "PlanningApplication"', 
+  base_url = council.scrapers.first(:conditions => ['scrapers.type = ? AND parsers.result_model = ?', 'ItemScraper', 'PlanningApplication'],
                                     :joins => :parser).base_url
   
   puts "About to rework old CAPS urls to new Idox ones for #{council.title} and base_url #{base_url}"

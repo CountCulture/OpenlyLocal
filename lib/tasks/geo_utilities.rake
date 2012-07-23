@@ -1,6 +1,6 @@
 desc "Get bounding boxes for wards"
 task :get_bounding_boxes_for_wards => :environment do
-  Ward.find_each(:conditions => 'ness_id IS NOT NULL') do |ward|
+  Ward.find_each(:conditions => "ness_id IS NOT NULL") do |ward|
     begin
       client = NessUtilities::RestClient.new(:get_area_detail, :area_id => ward.ness_id)
       northings_eastings = client.response["AreaDetail"]["Envelope"].split(":")

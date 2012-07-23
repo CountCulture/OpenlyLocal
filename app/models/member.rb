@@ -31,8 +31,8 @@ class Member < ActiveRecord::Base
   belongs_to :ward
   allow_access_to :committees, :via => [:uid, :normalised_title]
   allow_access_to :ward, :via => [:uid, :name]
-  named_scope :current, :conditions => "date_left IS NULL", :include => [:twitter_account] # we nearly always want these
-  named_scope :except_vacancies, :conditions => 'last_name NOT LIKE "vacan%" AND first_name NOT LIKE "vacan%"'
+  named_scope :current, :conditions => {:date_left => nil}, :include => [:twitter_account] # we nearly always want these
+  named_scope :except_vacancies, :conditions => ['last_name NOT LIKE ? AND first_name NOT LIKE ?', 'vacan%', 'vacan%']
   alias_attribute :title, :full_name
   after_create :tweet_about_it
 
@@ -64,7 +64,7 @@ class Member < ActiveRecord::Base
   end
   
   def latest_succesful_candidacy
-    candidacies.first(:conditions => "votes IS NOT NULL AND elected='1'", :include => :poll, :order => 'polls.date_held DESC')
+    candidacies.first(:conditions => "votes IS NOT NULL AND elected = '1'", :include => :poll, :order => 'polls.date_held DESC')
   end
   
   # overrides stub method from TwitterAccountMethods

@@ -21,7 +21,7 @@ end
 
 desc "Populate Police Teams from NPIA api"
 task :populate_police_teams => :environment do
-  police_forces = PoliceForce.all(:conditions => 'npia_id IS NOT NULL')
+  police_forces = PoliceForce.all(:conditions => "npia_id IS NOT NULL")
   police_forces.each do |force|
     teams = NpiaUtilities::Client.new(:teams, :force => force.npia_id).response
     teams["team"].collect{|t| {:name => t["name"], :uid => t["id"]}}.each do |team|
@@ -93,9 +93,9 @@ task :connect_police_force_to_la => :environment do
   rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/police_LA_table.csv")).to_a
   rows.each do |row| # group by council SNAC id
     council_name, area, force_name = row
-    if council = Council.find(:first, :conditions => ["name LIKE ?", "%#{council_name.sub(/UA/,'').strip}%"])
+    if council = Council.find(:first, :conditions => ['name LIKE ?', "%#{council_name.sub(/UA/,'').strip}%"])
       puts "Found match for #{council_name}: #{council.name}"
-      if force = PoliceForce.find(:first, :conditions => ["name LIKE ?", "%#{force_name}%"])
+      if force = PoliceForce.find(:first, :conditions => ['name LIKE ?', "%#{force_name}%"])
         council.update_attribute(:police_force_id, force.id)
         puts "Updated #{council.name} with force: #{force.name}"
       else
@@ -113,7 +113,7 @@ task :connect_police_force_to_la => :environment do
   all_forces = PoliceForce.all
   Council.find_all_by_police_force_id(nil, :order => "name ASC").each do |eic|
     puts eic.name
-    if poss_force = PoliceForce.find(:first, :conditions => ["name LIKE ?", "%#{eic.short_name.sub(/county/i,'').strip}%"])
+    if poss_force = PoliceForce.find(:first, :conditions => ['name LIKE ?', "%#{eic.short_name.sub(/county/i,'').strip}%"])
       puts "Possible force: #{poss_force.name}. Is this correct? (y/n)"
       response = $stdin.gets.chomp
       eic.update_attribute(:police_force_id, poss_force.id) && next if response == "y"
@@ -182,7 +182,7 @@ task :get_police_authority_info => :environment do
       telephone = el.pop.scan(/[\d\s]+$/).to_s.strip
       postcode = el.last.slice!(/\w*\d*\s\w*\d*$/)
       address = el.join(', ').titleize
-      force = PoliceForce.first(:conditions => ["name LIKE ?", "%#{title.gsub(/Police|Authority/,'').strip}%"])
+      force = PoliceForce.first(:conditions => ['name LIKE ?', "%#{title.gsub(/Police|Authority/,'').strip}%"])
       puts title, url, address.titleize, postcode, telephone, force, "===="
       PoliceAuthority.create!(:title => title, :telephone => telephone, :police_force => force, :url => url, :address => [address, postcode].join(" "))
     rescue Exception => e
@@ -260,7 +260,7 @@ end
 
 desc "Connect postcode and crime areas"
 task :connect_postcodes_and_crime_areas => :environment do
-  Postcode.find_each(:conditions => "crime_area_id IS NULL AND country ='064'") do |postcode|
+  Postcode.find_each(:conditions => {:crime_area_id => nil, :country => '064'}) do |postcode|
     response = NpiaUtilities::Client.new(:geocode_crime_area, :q => postcode.code).response rescue nil
     begin
       next unless response && response['areas']['area']
