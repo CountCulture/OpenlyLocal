@@ -12,7 +12,7 @@ class DatasetTopicsController < ApplicationController
       @table_caption = "Comparison against other " + (@area.is_a?(Ward) ? "wards in #{@council.name}" : "#{@area.authority_type} Councils")
       @selected_datapoint = @datapoints.detect{ |dp| dp.area_id == @area.id }
     else
-      @datapoints = @dataset_topic.datapoints.all(:conditions => {"area_type" => "Council"}, :include => [:area], :order => "(datapoints.value + 0) DESC")
+      @datapoints = @dataset_topic.datapoints.all(:conditions => {:area_type => 'Council'}, :include => [:area], :order => 'datapoints.value DESC')
       @title = @dataset_topic.title
     end
   end
