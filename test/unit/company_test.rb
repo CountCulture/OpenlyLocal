@@ -408,7 +408,7 @@ class CompanyTest < ActiveSupport::TestCase
       
       should "calculate breakdown of company types" do
         Company.stubs(:count)
-        Company.expects(:count).with(:group => 'company_type', :conditions=>'company_number IS NOT NULL AND suppliers.organisation_type = "Council"', :joins => :supplying_relationships)
+        Company.expects(:count).with(:group => :company_type, :conditions=>'company_number IS NOT NULL AND suppliers.organisation_type = "Council"', :joins => :supplying_relationships)
         Company.calculated_spending_data
       end
       

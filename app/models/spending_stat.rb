@@ -51,7 +51,15 @@ class SpendingStat < ActiveRecord::Base
   def calculated_spend_by_month
     return if !organisation.respond_to?(:payments) || organisation.payments.count == 0
     res_hsh = {}
-    ft_sums = organisation.payments.sum(:value, :group => 'last_day(date)', :conditions => 'date_fuzziness IS NULL', :order => 'date').to_a
+    group_by = case ActiveRecord::Base.connection.adapter_name
+    when 'MySQL'
+      # https://github.com/django/django/blob/master/django/db/backends/mysql/base.py#L207
+      "CAST(DATE_FORMAT(date, '%Y-%m-01 00:00:00') AS DATETIME)"
+    else # PostgreSQL
+      # https://github.com/django/django/blob/master/django/db/backends/postgresql_psycopg2/operations.py#L35
+      "DATE_TRUNC('month', date)"
+    end
+    ft_sums = organisation.payments.sum(:value, :conditions => 'date_fuzziness IS NULL', :group => group_by).to_a
     fuzzy_sums = organisation.payments.all(:conditions => 'date_fuzziness IS NOT NULL', :select=>'sum(VALUE) AS value, DATE AS date, date_fuzziness', :group=>'date, date_fuzziness')
 
     fuzzy_sums.each{ |fs| ft_sums += fs.averaged_date_and_value }
