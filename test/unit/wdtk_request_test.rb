@@ -29,7 +29,7 @@ class WdtkRequestTest < ActiveSupport::TestCase
     context "should have stale named scope which" do
       setup do
         @stale_wdtk_req = Factory(:wdtk_request)
-        WdtkRequest.update_all(["updated_at = ?", 28.hours.ago], :id => @stale_wdtk_req.id)
+        WdtkRequest.update_all({:updated_at => 28.hours.ago}, :id => @stale_wdtk_req.id)
       end
 
       should "should return requests older last updated 24 hours ago or more" do

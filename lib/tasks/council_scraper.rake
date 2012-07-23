@@ -351,8 +351,8 @@ task :import_1010_councils => :environment do
     row[1] #snac_ids
   end
   puts "Updating #{snac_ids.size} records"
-  Council.update_all("signed_up_for_1010='0'") #flush existing records
-  Council.update_all("signed_up_for_1010='1'", :snac_id => snac_ids)
+  Council.update_all(:signed_up_for_1010 => false) #flush existing records
+  Council.update_all({:signed_up_for_1010 => true}, :snac_id => snac_ids)
 end
 
 desc "Populate pension funds"
