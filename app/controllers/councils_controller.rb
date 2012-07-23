@@ -79,7 +79,7 @@ class CouncilsController < ApplicationController
   end
   
   def spending
-    @councils = Council.all(:group => "councils.id", :include => :spending_stat).select{ |c| !c.spending_stat.blank? && c.spending_stat.total_spend.to_i > 0 }
+    @councils = Council.all(:include => :spending_stat).select{ |c| !c.spending_stat.blank? && c.spending_stat.total_spend.to_i > 0 }
     @spending_data = Council.cached_spending_data
     @title = "Council Spending Dashboard"
   end
