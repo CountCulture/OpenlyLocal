@@ -391,7 +391,7 @@ class CompanyTest < ActiveSupport::TestCase
     context "when calculating spending_data" do
 
       should "calculate total number of council payments to companies" do
-        FinancialTransaction.expects(:count).with(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'")
+        FinancialTransaction.expects(:count).with(:joins => :suppliers, :conditions => ['suppliers.organisation_type = ? AND suppliers.payee_type = ?', 'Council', 'Company'])
         Company.calculated_spending_data
       end
       
@@ -413,7 +413,7 @@ class CompanyTest < ActiveSupport::TestCase
       end
       
       should "find 20 largest payments" do
-        FinancialTransaction.expects(:all).with(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id", :conditions => ['suppliers.organisation_type = ? AND suppliers.payee_type = ?', 'Council', 'Company']).returns([])
+        FinancialTransaction.expects(:all).with(:order => 'value DESC', :limit => 20, :joins => :suppliers, :conditions => ['suppliers.organisation_type = ? AND suppliers.payee_type = ?', 'Council', 'Company']).returns([])
         Company.calculated_spending_data
       end
       

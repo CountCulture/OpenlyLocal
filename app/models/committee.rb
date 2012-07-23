@@ -17,7 +17,7 @@ class Committee < ActiveRecord::Base
   named_scope :active, lambda { {
               :select => "committees.*, COUNT(meetings.id) AS meeting_count",
               :conditions => ['meetings.date_held > ?', 1.year.ago],
-              :joins => [:meetings],
+              :joins => :meetings,
               :group => "committees.id, committees.title, committees.created_at, committees.updated_at, committees.url, committees.council_id, committees.uid, committees.description, committees.ward_id, committees.normalised_title",
               :order => "committees.title",
               :include => [:next_meeting] } }

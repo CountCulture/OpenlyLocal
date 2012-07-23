@@ -44,7 +44,7 @@ class Council < ActiveRecord::Base
   validates_uniqueness_of :name
   named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? 
                       { :select => 'councils.*, COUNT(members.id) AS member_count',
-                        :joins =>'LEFT JOIN members ON members.council_id = councils.id',
+                        :joins => 'LEFT JOIN members ON members.council_id = councils.id',
                         :group => "councils.id, councils.name, councils.url, councils.created_at, councils.updated_at, councils.base_url, councils.telephone, councils.address, councils.authority_type, councils.portal_system_id, councils.notes, councils.wikipedia_url, councils.ons_url, councils.egr_id, councils.wdtk_name, councils.feed_url, councils.data_source_url, councils.data_source_name, councils.snac_id, councils.country, councils.population, councils.ldg_id, councils.os_id, councils.parent_authority_id, councils.police_force_url, councils.police_force_id, councils.ness_id, councils.lat, councils.lng, councils.cipfa_code, councils.region, councils.signed_up_for_1010, councils.pension_fund_id, councils.gss_code, councils.annual_audit_letter, councils.output_area_classification_id, councils.defunkt, councils.open_data_url, councils.open_data_licence, councils.normalised_title, councils.wdtk_id, councils.vat_number, councils.planning_email",
                       } :
                       { :select => 'councils.*, COUNT(members.id) AS member_count',
@@ -64,12 +64,12 @@ class Council < ActiveRecord::Base
   
   def self.calculated_spending_data
     res = {}
-    res[:payee_breakdown] = FinancialTransaction.sum(:value, :joins => :supplier, :group => 'suppliers.payee_type', :conditions => ['suppliers.organisation_type = ?', 'Council'])
+    res[:payee_breakdown] = FinancialTransaction.sum(:value, :joins => :supplier, :conditions => ['suppliers.organisation_type = ?', 'Council'], :group => 'suppliers.payee_type')
     res[:total_spend] = res[:payee_breakdown].sum{ |type, val| val }
     res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => ['suppliers.organisation_type = ?', 'Council'])
-    res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id", :conditions => ['suppliers.organisation_type = ?', 'Council'])
+    res[:transaction_count] = FinancialTransaction.count(:joins => :suppliers, :conditions => ['suppliers.organisation_type = ?', 'Council'])
     res[:supplier_count] = Supplier.count(:conditions => {:organisation_type => 'Council'})
-    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id", :conditions => ['suppliers.organisation_type = ?', 'Council']).collect(&:id)
+    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => :suppliers, :conditions => ['suppliers.organisation_type = ?', 'Council']).collect(&:id)
 
     res[:largest_companies] = SpendingStat.all(:select => :organisation_id, :conditions => {:organisation_type => 'Company'}, :order => 'total_received_from_councils DESC', :limit => 20).map(&:organisation_id)
     res[:largest_charities] = SpendingStat.all(:select => :organisation_id, :conditions => {:organisation_type => 'Charity'}, :order => 'total_received_from_councils DESC', :limit => 20).map(&:organisation_id)
@@ -91,7 +91,7 @@ class Council < ActiveRecord::Base
   
   def self.with_stale_services
     all(
-      :joins => 'LEFT JOIN services ON services.council_id = councils.id', # :joins seems to be faster than :include
+      :joins => 'LEFT JOIN services ON services.council_id = councils.id',
       :conditions => ['(services.id IS NULL OR services.updated_at < ?) AND councils.ldg_id IS NOT NULL', 7.days.ago],
       :group => 'councils.id, councils.name, councils.url, councils.created_at, councils.updated_at, councils.base_url, councils.telephone, councils.address, councils.authority_type, councils.portal_system_id, councils.notes, councils.wikipedia_url, councils.ons_url, councils.egr_id, councils.wdtk_name, councils.feed_url, councils.data_source_url, councils.data_source_name, councils.snac_id, councils.country, councils.population, councils.ldg_id, councils.os_id, councils.parent_authority_id, councils.police_force_url, councils.police_force_id, councils.ness_id, councils.lat, councils.lng, councils.cipfa_code, councils.region, councils.signed_up_for_1010, councils.pension_fund_id, councils.gss_code, councils.annual_audit_letter, councils.output_area_classification_id, councils.defunkt, councils.open_data_url, councils.open_data_licence, councils.normalised_title, councils.wdtk_id, councils.vat_number, councils.planning_email'
     )
@@ -127,7 +127,7 @@ class Council < ActiveRecord::Base
   
   # quick n diirty to return councils without wards (which need to be added). Can prob be removed ultimately
   def self.without_wards
-    all(:joins => "LEFT JOIN wards on wards.council_id = councils.id WHERE (wards.id IS NULL)")
+    all(:joins => 'LEFT JOIN wards on wards.council_id = councils.id', :conditions => "wards.id IS NULL")
   end
   
   # instance methods
