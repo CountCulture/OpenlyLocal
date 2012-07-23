@@ -56,13 +56,6 @@ class MeetingTest < ActiveSupport::TestCase
         @future_cancelled_meeting = Factory(:meeting, :committee => @committee, :council => @council, :date_held => 6.days.from_now, :status => "cancelled")
       end
       
-      should "fetch only meetings in the future" do
-        expected_options = {:conditions => ["date_held >= ? AND (status IS NULL OR status NOT LIKE 'cancelled')", Time.now], :order => "date_held" }
-        assert_equal expected_options[:order], Meeting.forthcoming.proxy_options[:order]
-        assert_equal expected_options[:conditions].first, Meeting.forthcoming.proxy_options[:conditions].first
-        assert_in_delta expected_options[:conditions].last, Meeting.forthcoming.proxy_options[:conditions].last, 2
-      end
-      
       should "not return meetings in the past" do
         assert !Meeting.forthcoming.include?(@meeting)
       end
