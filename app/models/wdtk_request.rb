@@ -4,7 +4,7 @@ class WdtkRequest < ActiveRecord::Base
   belongs_to :related_object, :polymorphic => true
   validates_presence_of :organisation_type, :organisation_id, :request_name#, :uid
   validates_uniqueness_of :request_name
-  named_scope :stale, lambda { { :conditions => ["updated_at < ?", 24.hours.ago] } }
+  named_scope :stale, lambda { { :conditions => ['updated_at < ?', 24.hours.ago] } }
   named_scope :problematic, { :conditions => { :problematic => true } }
   default_scope :order => "updated_at DESC"
   

@@ -51,8 +51,16 @@ class SpendingStat < ActiveRecord::Base
   def calculated_spend_by_month
     return if !organisation.respond_to?(:payments) || organisation.payments.count == 0
     res_hsh = {}
-    ft_sums = organisation.payments.sum(:value, :group => 'last_day(date)', :conditions => 'date_fuzziness IS NULL', :order => 'date').to_a
-    fuzzy_sums = organisation.payments.all(:conditions => 'date_fuzziness IS NOT NULL', :select=>'sum(VALUE) AS value, DATE AS date, date_fuzziness', :group=>'date, date_fuzziness')
+    group_by = case ActiveRecord::Base.connection.adapter_name
+    when 'MySQL'
+      # https://github.com/django/django/blob/master/django/db/backends/mysql/base.py#L207
+      "CAST(DATE_FORMAT(date, '%Y-%m-01 00:00:00') AS DATETIME)"
+    else # PostgreSQL
+      # https://github.com/django/django/blob/master/django/db/backends/postgresql_psycopg2/operations.py#L35
+      "DATE_TRUNC('month', date)"
+    end
+    ft_sums = organisation.payments.sum(:value, :conditions => {:date_fuzziness => nil}, :group => group_by).to_a
+    fuzzy_sums = organisation.payments.all(:select => 'SUM(value) AS value, date, date_fuzziness', :conditions => "date_fuzziness IS NOT NULL", :group => 'date, date_fuzziness')
 
     fuzzy_sums.each{ |fs| ft_sums += fs.averaged_date_and_value }
 
@@ -91,7 +99,7 @@ class SpendingStat < ActiveRecord::Base
   def calculated_earliest_transaction_date
     return unless organisation.respond_to?(:payments)
     return @calculated_earliest_transaction_date if @calculated_earliest_transaction_date
-    # extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'}
+    # extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'} # @note PostgreSQL-incompatible
     extra_params={}
     return unless first_transaction = organisation.payments.earliest.first(extra_params)
     @calculated_earliest_transaction_date = first_transaction.date - first_transaction.date_fuzziness.to_i.days
@@ -100,7 +108,7 @@ class SpendingStat < ActiveRecord::Base
   def calculated_latest_transaction_date
     return unless organisation.respond_to?(:payments)
     return @calculated_latest_transaction_date if @calculated_latest_transaction_date
-    # extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'}
+    # extra_params = organisation.is_a?(Supplier) ? {} : {:from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_date)'} # @note PostgreSQL-incompatible
     extra_params={}
     return unless last_transaction = organisation.payments.latest.first(extra_params)
     @calculated_latest_transaction_date = last_transaction.date + last_transaction.date_fuzziness.to_i.days

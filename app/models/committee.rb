@@ -10,22 +10,22 @@ class Committee < ActiveRecord::Base
   has_many :memberships, :primary_key => :uid
   has_many :members, :through => :memberships
   has_many :related_articles, :as => :subject
-  has_one :next_meeting, :class_name => "Meeting", :conditions => 'date_held > \'#{Time.now.to_s(:db)}\'', :order => 'date_held'
+  has_one :next_meeting, :class_name => "Meeting", :conditions => %q(#{self.class.send(:sanitize_sql_array, ['date_held > ?', Time.now])}), :order => :date_held
   allow_access_to :members, :via => :uid
   before_save :normalise_title
 
   named_scope :active, lambda { {
               :select => "committees.*, COUNT(meetings.id) AS meeting_count",
-              :conditions => ["meetings.date_held > ?", 1.year.ago],
-              :joins => [:meetings],
-              :group => "committees.id",
+              :conditions => ['meetings.date_held > ?', 1.year.ago],
+              :joins => :meetings,
+              :group => "committees.id, committees.title, committees.created_at, committees.updated_at, committees.url, committees.council_id, committees.uid, committees.description, committees.ward_id, committees.normalised_title",
               :order => "committees.title",
               :include => [:next_meeting] } }
   
   named_scope :with_activity_status, lambda { {
               :select => "committees.*, (COUNT(meetings.id) > 0) AS active",
               :joins => "LEFT JOIN meetings ON meetings.committee_id = committees.id AND meetings.date_held > '#{1.year.ago.to_s(:db)}'",
-              :group => "committees.id",
+              :group => "committees.id, committees.title, committees.created_at, committees.updated_at, committees.url, committees.council_id, committees.uid, committees.description, committees.ward_id, committees.normalised_title",
               :order => "committees.title" }}
   
   # overload #normalise_title included from ScrapedModel module so 'committee' & aliases are removed

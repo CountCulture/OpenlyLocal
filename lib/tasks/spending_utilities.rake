@@ -98,7 +98,7 @@ end
 
 desc "Move supplier info to company model"
 task :move_supplier_info_to_company => :environment do
-  Supplier.all(:conditions => "company_number IS NOT NULL AND company_number != '-1'").each do |supplier|
+  Supplier.all(:conditions => "company_number IS NOT NULL AND company_number <> '-1'").each do |supplier|
     company = Company.find_or_create_by_company_number(:company_number => supplier.company_number, :title => supplier.name, :url => supplier.url)
     supplier.update_attribute(:company, company)
   end
@@ -940,7 +940,7 @@ end
 
 desc "Import GLA Supppliers"
 task :import_gla_suppliers => :environment do
-  gla = Council.first(:conditions => "name = 'Greater London Authority'")
+  gla = Council.first(:conditions => {:name => 'Greater London Authority'})
   FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/gla/gla-suppliers-list-2010.csv"), :headers => true) do |row|
     if s = gla.suppliers.find_by_uid(row['Vendor Number'])
       puts "Matched GLA supplier #{s.title} with #{row['Vendor Name']}"

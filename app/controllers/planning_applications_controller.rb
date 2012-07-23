@@ -11,7 +11,7 @@ class PlanningApplicationsController < ApplicationController
   def admin
     @councils = Council.find(:all, :include => { :scrapers => { :parser => :portal_system, :council => {} } }, 
                                    :order => "councils.name", 
-                                   :conditions=> 'parsers.result_model = "PlanningApplication"')
+                                   :conditions=> ['parsers.result_model = ?', 'PlanningApplication'])
     @councils_with_problem_scrapers, @councils_with_good_scrapers = @councils.partition{ |c| c.scrapers.any?{ |s| s.problematic? } }
     @planning_parsers = @councils.collect{ |c| c.scrapers.collect(&:parser).select{ |p| p.portal_system_id } }.flatten.uniq
     @latest_alert_subscribers = AlertSubscriber.all(:limit => 5, :order => 'created_at DESC')
@@ -33,7 +33,11 @@ class PlanningApplicationsController < ApplicationController
       # bounds=Geokit::Bounds.from_point_and_radius(@postcode, distance)
       # @planning_applications = PlanningApplication.find(:all, :bounds => bounds)
 
+<<<<<<< HEAD
       # @todo after switch to PostGIS, paginate and sort, like when searching by council ID
+=======
+      # @todo PostGIS: after switch, paginate and sort like when searching by council ID
+>>>>>>> 94a15c72b8eb26149fdd3c80eef30b2f46b29931
       @planning_applications = PlanningApplication.find(:all, :origin => [@postcode.lat, @postcode.lng], 
                                                               :within => distance)
       @title = "Planning Applications within #{distance} km of #{params[:postcode]}"

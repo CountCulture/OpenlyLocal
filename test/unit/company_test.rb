@@ -391,29 +391,29 @@ class CompanyTest < ActiveSupport::TestCase
     context "when calculating spending_data" do
 
       should "calculate total number of council payments to companies" do
-        FinancialTransaction.expects(:count).with(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'")
+        FinancialTransaction.expects(:count).with(:joins => :suppliers, :conditions => ['suppliers.organisation_type = ? AND suppliers.payee_type = ?', 'Council', 'Company'])
         Company.calculated_spending_data
       end
       
       should "calculate total number of companies supplying to councils" do
         Company.stubs(:count)
-        Company.expects(:count).with(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
+        Company.expects(:count).with(:joins => :supplying_relationships, :conditions => ['suppliers.organisation_type = ?', 'Council'])
         Company.calculated_spending_data
       end
       
       should "calculate total value of council payments to companies" do
-        SpendingStat.expects(:sum).with(:total_received_from_councils, :conditions => "spending_stats.organisation_type = 'Company'")
+        SpendingStat.expects(:sum).with(:total_received_from_councils, :conditions => ['spending_stats.organisation_type = ?', 'Company'])
         Company.calculated_spending_data
       end
       
       should "calculate breakdown of company types" do
         Company.stubs(:count)
-        Company.expects(:count).with(:group => 'company_type', :conditions=>'company_number IS NOT NULL AND suppliers.organisation_type = "Council"', :joins => :supplying_relationships)
+        Company.expects(:count).with(:group => :company_type, :conditions => ['company_number IS NOT NULL AND suppliers.organisation_type = ?', 'Council'], :joins => :supplying_relationships)
         Company.calculated_spending_data
       end
       
       should "find 20 largest payments" do
-        FinancialTransaction.expects(:all).with(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'").returns([])
+        FinancialTransaction.expects(:all).with(:order => 'value DESC', :limit => 20, :joins => :suppliers, :conditions => ['suppliers.organisation_type = ? AND suppliers.payee_type = ?', 'Council', 'Company']).returns([])
         Company.calculated_spending_data
       end
       

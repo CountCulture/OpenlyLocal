@@ -161,6 +161,7 @@ namespace :deploy do
       ln -s #{shared_path}/config/initializers/authentication_details.rb #{release_path}/config/initializers/authentication_details.rb &&
       ln -s #{shared_path}/config/initializers/geokit_config.rb #{release_path}/config/initializers/geokit_config.rb &&
       ln -s #{shared_path}/config/initializers/hoptoad.rb #{release_path}/config/initializers/hoptoad.rb &&
+      ln -s #{shared_path}/config/initializers/resque.rb #{release_path}/config/initializers/resque.rb &&
       ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
       ln -s #{shared_path}/config/newrelic.yml #{release_path}/config/newrelic.yml &&
       ln -s #{shared_path}/config/resque.yml #{release_path}/config/resque.yml &&

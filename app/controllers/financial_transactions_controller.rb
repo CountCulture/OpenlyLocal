@@ -5,7 +5,7 @@ class FinancialTransactionsController < ApplicationController
     @organisation = params[:organisation_type].constantize.find(params[:organisation_id]) if params[:organisation_type] && params[:organisation_id]
     @title = (@organisation ? "#{@organisation.title} " : "") + "Transactions :: Spending Data :: Page #{page}"
     @financial_transactions = @organisation ? @organisation.payments.paginate(:page => page, :order => 'value DESC') : 
-                                              FinancialTransaction.paginate(:page => page, :order => 'value DESC', :total_entries => FinancialTransaction.full_table_count)
+                                              FinancialTransaction.paginate(:page => page, :order => 'value DESC', :total_entries => FinancialTransaction.count(:id))
     respond_to do |format|
       format.html
       format.xml do

@@ -1,6 +1,6 @@
 desc "Create precis from document bodies"
 task :create_document_precis => :environment do
-  Document.delete_all('document_owner_id IS NULL AND document_owner_type is NULL')
+  Document.delete_all(:document_owner_id => nil, :document_owner_type => nil)
   Document.find_each(:conditions => {:precis => nil}, :batch_size => 10) do |document|
     if document.document_owner
     document.update_attribute(:precis, document.calculated_precis)
@@ -516,8 +516,7 @@ end
 task :remove_duplicate_planning_applications => :environment do
   Council.all.each do |council|
     next if council.planning_applications.count == 0
-    sql= "SELECT `planning_applications`.uid, count(id) AS uid_count FROM `planning_applications` WHERE (`planning_applications`.`council_id` = #{council.id}) GROUP BY uid HAVING uid_count > 1"
-    dup_uids = PlanningApplication.connection.select_rows(sql).collect{|row| row.first}
+    dup_uids = PlanningApplication.count(:select => :uid, :conditions => {:council_id => council.id}, :group => :uid, :having => 'COUNT(uid) > 1').keys
     destroy_count = 0
     dup_uids.each do |uid|
       destroy_count += PlanningApplication.find_all_by_council_id_and_uid(council.id, uid)[1..-1].each(&:destroy).size
@@ -526,6 +525,7 @@ task :remove_duplicate_planning_applications => :environment do
   end
 end
 
+# @todo PostGIS update this code
 task :convert_old_confirmed_planning_alert_subscribers => :environment do
   sql= "SELECT COUNT(*) FROM planning_alert_subscribers WHERE confirmed = 1 LIMIT 10"
   connection = AlertSubscriber.connection
@@ -547,7 +547,7 @@ end
 task :convert_caps_urls_to_idox_urls => :environment do
   puts "Please enter name of Council:"
   break unless council = Council.find_by_normalised_title(Council.normalise_title($stdin.gets.chomp))
-  base_url = council.scrapers.first(:conditions => 'scrapers.type = "ItemScraper" AND parsers.result_model = "PlanningApplication"', 
+  base_url = council.scrapers.first(:conditions => ['scrapers.type = ? AND parsers.result_model = ?', 'ItemScraper', 'PlanningApplication'],
                                     :joins => :parser).base_url
   
   puts "About to rework old CAPS urls to new Idox ones for #{council.title} and base_url #{base_url}"

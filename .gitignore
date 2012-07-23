@@ -8,8 +8,9 @@ doc/app
 db/*.sqlite3
 db/data
 config/initializers/authentication_details.rb
-config/initializers/hoptoad.rb
 config/initializers/geokit_config.rb
+config/initializers/hoptoad.rb
+config/initializers/resque.rb
 config/database.yml
 config/newrelic.yml
 config/resque.yml

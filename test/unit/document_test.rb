@@ -57,16 +57,6 @@ class DocumentTest < ActiveSupport::TestCase
       end
     end
     
-    context "when returning quick_count" do
-      setup do
-        10.times {Factory(:document, :document_owner => @doc_owner)}
-      end
-
-      should "return count of documents" do
-        assert_equal Document.count, Document.quick_count
-      end
-    end
-    
   end
   
   context "A Document instance" do

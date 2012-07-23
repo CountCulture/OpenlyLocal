@@ -59,10 +59,7 @@ class EntitiesController < ApplicationController
                                         :order => 'spending_stats.total_spend DESC', 
                                         :include => :spending_stat, 
                                         :limit => 10)
-    @financial_transactions = @entity.payments.all( :from => 'financial_transactions FORCE INDEX(index_financial_transactions_on_value)',
-                                                    :include => :supplier, 
-                                                    :order => 'value DESC', 
-                                                    :limit => 10)
+    @financial_transactions = @entity.payments.all(:include => :supplier, :order => 'value DESC', :limit => 10)
     @title = "Spending Dashboard :: #{@entity.title}"
   end
   

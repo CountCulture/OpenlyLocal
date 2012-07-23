@@ -19,12 +19,12 @@ class Company < ActiveRecord::Base
   
   def self.calculated_spending_data
     res = {}
-    res[:total_received_from_councils] = SpendingStat.sum(:total_received_from_councils, :conditions => "spending_stats.organisation_type = 'Company'")
-    res[:transaction_count] = FinancialTransaction.count(:joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'")
-    res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => 'suppliers.organisation_type = "Council"')
-    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => "INNER JOIN suppliers ON financial_transactions.supplier_id = suppliers.id WHERE suppliers.organisation_type = 'Council' AND suppliers.payee_type = 'Company'").collect(&:id)
-    res[:largest_companies] = Company.all(:joins => :spending_stat, :order => 'total_received_from_councils DESC', :limit => 20).collect(&:id)
-    res[:company_type_breakdown] = Company.count(:group => 'company_type', :conditions=>'company_number IS NOT NULL AND suppliers.organisation_type = "Council"', :joins => :supplying_relationships)
+    res[:total_received_from_councils] = SpendingStat.sum(:total_received_from_councils, :conditions => ['spending_stats.organisation_type = ?', 'Company'])
+    res[:transaction_count] = FinancialTransaction.count(:joins => :suppliers, :conditions => ['suppliers.organisation_type = ? AND suppliers.payee_type = ?', 'Council', 'Company'])
+    res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => ['suppliers.organisation_type = ?', 'Council'])
+    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => :suppliers, :conditions => ['suppliers.organisation_type = ? AND suppliers.payee_type = ?', 'Council', 'Company']).collect(&:id)
+    res[:largest_companies] = Company.all(:joins => :spending_stat, :order => 'spending_stats.total_received_from_councils DESC', :limit => 20).collect(&:id)
+    res[:company_type_breakdown] = Company.count(:joins => :supplying_relationships, :conditions => ['company_number IS NOT NULL AND suppliers.organisation_type = ?', 'Council'], :group => :company_type)
     res
   end
   

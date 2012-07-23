@@ -42,14 +42,6 @@ class ScraperTest < ActiveSupport::TestCase
       assert_equal Scraper::ScraperError, Scraper::ParsingError.superclass
     end
     
-    should "have stale named_scope" do
-      expected_options = { :conditions => ["priority > 0 AND (next_due IS NULL OR next_due < ?)", Time.now], :order => "priority, next_due" }
-      actual_options = Scraper.stale.proxy_options
-      assert_equal expected_options[:conditions].first, actual_options[:conditions].first
-      assert_in_delta expected_options[:conditions].last, actual_options[:conditions].last, 2
-      assert_equal expected_options[:order], actual_options[:order]
-    end
-    
     context "and when returning stale" do
       setup do
         

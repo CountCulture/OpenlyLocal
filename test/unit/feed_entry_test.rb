@@ -206,12 +206,12 @@ class FeedEntryTest < ActiveSupport::TestCase
       end
       
       should "get Council with feed_urls" do
-        Council.expects(:all).with(has_entry(:conditions => "feed_url IS NOT NULL AND feed_url !=''")).returns([])
+        Council.expects(:all).with(has_entry(:conditions => "feed_url IS NOT NULL AND feed_url <> ''")).returns([])
         FeedEntry.perform
       end
       
       should "get hyperlocal_sites with feed_urls" do
-        HyperlocalSite.expects(:all).with(has_entry(:conditions => "feed_url IS NOT NULL AND feed_url !=''")).returns([])
+        HyperlocalSite.expects(:all).with(has_entry(:conditions => "feed_url IS NOT NULL AND feed_url <> ''")).returns([])
         FeedEntry.perform
       end
       

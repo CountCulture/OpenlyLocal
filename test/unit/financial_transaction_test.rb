@@ -341,16 +341,6 @@ class FinancialTransactionTest < ActiveSupport::TestCase
         @financial_transaction.destroy
       end
     end
-    
-    context "when returning full_table_count" do
-      setup do
-        3.times {Factory(:financial_transaction)}
-      end
-
-      should "return count of all records" do
-        assert_equal FinancialTransaction.count, FinancialTransaction.full_table_count
-      end
-    end
   end
   
   context 'an instance of the FinancialTransaction class' do
