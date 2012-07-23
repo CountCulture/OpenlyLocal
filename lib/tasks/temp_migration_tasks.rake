@@ -516,7 +516,7 @@ end
 task :remove_duplicate_planning_applications => :environment do
   Council.all.each do |council|
     next if council.planning_applications.count == 0
-    dup_uids = PlanningApplication.count(:select => :uid, :conditions => {:council_id => council.id}, :group => :uid, :having => 'count_uid > 1').keys
+    dup_uids = PlanningApplication.count(:select => :uid, :conditions => {:council_id => council.id}, :group => :uid, :having => 'COUNT(uid) > 1').keys
     destroy_count = 0
     dup_uids.each do |uid|
       destroy_count += PlanningApplication.find_all_by_council_id_and_uid(council.id, uid)[1..-1].each(&:destroy).size
