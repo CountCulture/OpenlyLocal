@@ -90,7 +90,11 @@ class Council < ActiveRecord::Base
   end
   
   def self.with_stale_services
-    all(:joins => "LEFT JOIN services ON services.council_id=councils.id", :conditions => ['(services.id IS NULL OR services.updated_at < ?) AND (councils.ldg_id IS NOT NULL)', 7.days.ago], :group => "councils.id")
+    all(
+      :joins => 'LEFT JOIN services ON services.council_id = councils.id', # :joins seems to be faster than :include
+      :conditions => ['(services.id IS NULL OR services.updated_at < ?) AND councils.ldg_id IS NOT NULL', 7.days.ago],
+      :group => 'councils.id, councils.name, councils.url, councils.created_at, councils.updated_at, councils.base_url, councils.telephone, councils.address, councils.authority_type, councils.portal_system_id, councils.notes, councils.wikipedia_url, councils.ons_url, councils.egr_id, councils.wdtk_name, councils.feed_url, councils.data_source_url, councils.data_source_name, councils.snac_id, councils.country, councils.population, councils.ldg_id, councils.os_id, councils.parent_authority_id, councils.police_force_url, councils.police_force_id, councils.ness_id, councils.lat, councils.lng, councils.cipfa_code, councils.region, councils.signed_up_for_1010, councils.pension_fund_id, councils.gss_code, councils.annual_audit_letter, councils.output_area_classification_id, councils.defunkt, councils.open_data_url, councils.open_data_licence, councils.normalised_title, councils.wdtk_id, councils.vat_number, councils.planning_email'
+    )
   end
   
   # ScrapedModel module isn't mixed but in any case we need to do a bit more when normalising council titles
