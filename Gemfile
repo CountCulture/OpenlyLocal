@@ -9,9 +9,10 @@ gem 'sitemap_generator', :require => false
 gem 'SystemTimer' # not sure what gem needs this
 
 # Database/Spatial
+# gem 'pg'
 gem 'mysql'
 gem 'spatial_adapter' # switch to rgeo in Rails 3
-gem 'geokit' # geokit requires mysql, no support yet for mysql2 gem
+gem 'geokit'
 gem 'georuby'
 
 # Background jobs

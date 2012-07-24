@@ -34,8 +34,7 @@ class PlanningApplicationsController < ApplicationController
       # @planning_applications = PlanningApplication.find(:all, :bounds => bounds)
 
       # @todo PostGIS: after switch, paginate and sort like when searching by council ID
-      @planning_applications = PlanningApplication.find(:all, :origin => [@postcode.lat, @postcode.lng], 
-                                                              :within => distance)
+      @planning_applications = PlanningApplication.find(:all, :origin => [@postcode.lat, @postcode.lng], :within => distance)
       @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
     end
 
