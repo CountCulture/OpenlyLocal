@@ -65,7 +65,7 @@ class PlanningApplication < ActiveRecord::Base
 
   def self.perform(pa_id, method = 'update_info')
     find(pa_id).send(method)
-  rescue Scraper::ScraperError => e
+  rescue ActiveRecord::RecordNotFound, Scraper::ScraperError => e
     logger.error "Exception (#{e.inspect}) updating info for PlanningApplication with id #{pa_id}"
     Resque.enqueue_to(:planning_application_exceptions, PlanningApplication, pa_id, method)
   end
