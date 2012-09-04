@@ -1,10 +1,12 @@
 # https://github.com/jhawthorn/dkim
 Dkim::domain      = 'openlylocal.com'
 Dkim::selector    = 'mail'
-Dkim::private_key = File.read(File.join(Rails.root, 'config', 'openlylocal.com.priv'))
 # @see http://docs.amazonwebservices.com/ses/latest/DeveloperGuide/DKIM.html
 # @see https://github.com/jhawthorn/dkim/blob/master/lib/dkim.rb
 Dkim::signable_headers = Dkim::DefaultHeaders - %w(Message-ID Date Return-Path Bounces-To)
+
+private_key = File.join(Rails.root, 'config', 'openlylocal.com.priv')
+Dkim::private_key = File.read(private_key) if File.exist?(private_key)
 
 # The selector record:
 #
