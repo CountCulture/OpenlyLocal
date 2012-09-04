@@ -13,7 +13,7 @@ gem 'SystemTimer' # not sure what gem needs this
 gem 'mysql'
 gem 'spatial_adapter' # switch to rgeo in Rails 3
 gem 'geokit'
-gem 'dbf'
+gem 'dbf', '1.2.9'
 gem 'georuby'
 
 # Background jobs
