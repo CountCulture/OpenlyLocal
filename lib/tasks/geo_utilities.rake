@@ -47,7 +47,7 @@ end
 
 desc "Import Ward Boundaries"
 task :import_ward_boundaries => :environment do
-  require 'geo_ruby'
+  require 'geo_ruby/shp4r/shp'
   shpfile = File.join(RAILS_ROOT, "db/data/boundary_line/district_borough_unitary_ward_region")
   i=0
   GeoRuby::Shp4r::ShpFile.open(shpfile) do |shp|
