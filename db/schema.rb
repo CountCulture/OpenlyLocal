@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   end
 
   create_table "addresses", :force => true do |t|
-    t.text     "street_address", :limit => 2147483647
+    t.text     "street_address"
     t.string   "locality"
     t.string   "postal_code"
     t.string   "country"
@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   add_index "alert_subscribers", ["created_at"], :name => "index_alert_subscribers_on_created_at"
   add_index "alert_subscribers", ["email"], :name => "index_alert_subscribers_on_email"
 
-  create_table "authority", :primary_key => "authority_id", :options=>'ENGINE=MyISAM', :force => true do |t|
+  create_table "authority", :primary_key => "authority_id", :force => true do |t|
     t.string  "full_name",      :limit => 200, :null => false
     t.string  "short_name",     :limit => 100, :null => false
     t.string  "planning_email", :limit => 100, :null => false
@@ -95,7 +95,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.integer  "votes"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "basic_address",      :limit => 2147483647
+    t.text     "basic_address"
     t.integer  "political_party_id"
     t.integer  "member_id"
   end
@@ -106,7 +106,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
 
   create_table "charities", :force => true do |t|
     t.string   "title"
-    t.text     "activities",                 :limit => 2147483647
+    t.text     "activities"
     t.string   "charity_number"
     t.string   "website"
     t.string   "email"
@@ -122,16 +122,16 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.date     "date_removed"
     t.string   "normalised_title"
     t.integer  "employees"
-    t.text     "accounts",                   :limit => 2147483647
-    t.text     "financial_breakdown",        :limit => 2147483647
-    t.text     "trustees",                   :limit => 2147483647
+    t.text     "accounts"
+    t.text     "financial_breakdown"
+    t.text     "trustees"
     t.text     "other_names"
     t.integer  "volunteers"
     t.datetime "last_checked"
     t.string   "facebook_account_name"
     t.string   "youtube_account_name"
     t.string   "feed_url"
-    t.text     "governing_document",         :limit => 2147483647
+    t.text     "governing_document"
     t.string   "company_number"
     t.string   "housing_association_number"
     t.string   "fax"
@@ -214,7 +214,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   create_table "classifications", :force => true do |t|
     t.string   "grouping"
     t.string   "title"
-    t.text     "extended_title", :limit => 2147483647
+    t.text     "extended_title"
     t.string   "uid"
     t.integer  "parent_id"
     t.datetime "created_at"
@@ -228,7 +228,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "url"
     t.integer  "council_id"
     t.string   "uid"
-    t.text     "description",      :limit => 2147483647
+    t.text     "description"
     t.integer  "ward_id"
     t.string   "normalised_title"
   end
@@ -249,14 +249,14 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "wikipedia_url"
     t.string   "status"
     t.string   "vat_number"
-    t.text     "previous_names",     :limit => 2147483647
-    t.text     "sic_codes",          :limit => 2147483647
+    t.text     "previous_names"
+    t.text     "sic_codes"
     t.string   "country"
   end
 
   create_table "contracts", :force => true do |t|
     t.string   "title"
-    t.text     "description",            :limit => 2147483647
+    t.text     "description"
     t.string   "uid"
     t.string   "source_url"
     t.string   "url"
@@ -268,7 +268,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.integer  "total_value"
     t.integer  "annual_value"
     t.string   "supplier_name"
-    t.text     "supplier_address",       :limit => 2147483647
+    t.text     "supplier_address"
     t.string   "supplier_uid"
     t.string   "department_responsible"
     t.string   "person_responsible"
@@ -299,10 +299,10 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "updated_at"
     t.string   "base_url"
     t.string   "telephone"
-    t.text     "address",                       :limit => 2147483647
+    t.text     "address"
     t.string   "authority_type"
     t.integer  "portal_system_id"
-    t.text     "notes",                         :limit => 2147483647
+    t.text     "notes"
     t.string   "wikipedia_url"
     t.string   "ons_url"
     t.integer  "egr_id"
@@ -354,8 +354,8 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "crime_mapper_url"
     t.string   "feed_url"
     t.string   "crime_level_cf_national"
-    t.text     "crime_rates",             :limit => 2147483647
-    t.text     "total_crimes",            :limit => 2147483647
+    t.text     "crime_rates"
+    t.text     "total_crimes"
   end
 
   add_index "crime_areas", ["police_force_id"], :name => "index_crime_areas_on_police_force_id"
@@ -426,7 +426,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "muid"
-    t.text     "description",               :limit => 2147483647
+    t.text     "description"
     t.date     "data_date"
     t.string   "short_title"
     t.integer  "dataset_topic_grouping_id"
@@ -437,14 +437,14 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
 
   create_table "datasets", :force => true do |t|
     t.string   "title"
-    t.text     "description",               :limit => 2147483647
+    t.text     "description"
     t.string   "url"
     t.string   "originator"
     t.string   "originator_url"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "dataset_topic_grouping_id"
-    t.text     "notes",                     :limit => 2147483647
+    t.text     "notes"
     t.string   "licence"
   end
 
@@ -453,8 +453,8 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",                         :default => 0
     t.integer  "attempts",                         :default => 0
-    t.text     "handler",    :limit => 2147483647
-    t.text     "last_error", :limit => 2147483647
+    t.text     "handler"
+    t.text     "last_error"
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
@@ -467,15 +467,15 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
 
   create_table "documents", :force => true do |t|
     t.string   "title"
-    t.text     "body",                :limit => 2147483647
+    t.text     "body"
     t.string   "url"
     t.integer  "document_owner_id"
     t.string   "document_owner_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "raw_body",            :limit => 2147483647
+    t.text     "raw_body"
     t.string   "document_type"
-    t.text     "precis",              :limit => 2147483647
+    t.text     "precis"
   end
 
   add_index "documents", ["document_owner_id", "document_owner_type"], :name => "index_documents_on_document_owner_id_and_document_owner_type"
@@ -489,7 +489,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "wikipedia_url"
     t.string   "sponsoring_organisation"
     t.string   "wdtk_name"
-    t.text     "previous_names",          :limit => 2147483647
+    t.text     "previous_names"
     t.date     "setup_on"
     t.date     "disbanded_on"
     t.datetime "created_at"
@@ -497,14 +497,14 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "vat_number"
     t.string   "cpid_code"
     t.string   "normalised_title"
-    t.text     "other_attributes",        :limit => 2147483647
+    t.text     "other_attributes"
     t.string   "external_resource_uri"
     t.string   "telephone"
   end
 
   create_table "feed_entries", :force => true do |t|
     t.string   "title"
-    t.text     "summary",         :limit => 2147483647
+    t.text     "summary"
     t.string   "url"
     t.datetime "published_at"
     t.string   "guid"
@@ -521,14 +521,14 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   add_index "feed_entries", ["published_at"], :name => "index_feed_entries_on_published_at"
 
   create_table "financial_transactions", :force => true do |t|
-    t.text     "description",       :limit => 2147483647
+    t.text     "description"
     t.string   "uid"
     t.integer  "supplier_id"
     t.date     "date"
     t.string   "department_name"
     t.string   "service"
     t.string   "cost_centre"
-    t.text     "source_url",        :limit => 2147483647
+    t.text     "source_url"
     t.float    "value"
     t.string   "transaction_type"
     t.integer  "date_fuzziness"
@@ -564,7 +564,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "updated_at"
     t.integer  "hyperlocal_group_id"
     t.string   "platform"
-    t.text     "description",         :limit => 2147483647
+    t.text     "description"
     t.string   "area_covered"
     t.integer  "council_id"
     t.string   "country"
@@ -588,15 +588,15 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "uid"
     t.string   "url"
     t.string   "related_organisation_name"
-    t.text     "raw_html",                  :limit => 2147483647
+    t.text     "raw_html"
     t.string   "standards_body"
     t.string   "title"
     t.string   "subjects"
     t.date     "date_received"
     t.date     "date_completed"
-    t.text     "description",               :limit => 2147483647
-    t.text     "result",                    :limit => 2147483647
-    t.text     "case_details",              :limit => 2147483647
+    t.text     "description"
+    t.text     "result"
+    t.text     "case_details"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "full_report_url"
@@ -625,7 +625,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "uid"
     t.integer  "council_id"
     t.string   "url"
-    t.text     "venue",        :limit => 2147483647
+    t.text     "venue"
     t.string   "status"
   end
 
@@ -648,7 +648,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "name_title"
     t.string   "qualifications"
     t.string   "register_of_interests"
-    t.text     "address",                :limit => 2147483647
+    t.text     "address"
     t.integer  "ward_id"
     t.string   "blog_url"
     t.string   "facebook_account_name"
@@ -741,17 +741,17 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
 
   create_table "parsers", :force => true do |t|
     t.string   "description"
-    t.text     "item_parser",       :limit => 2147483647
+    t.text     "item_parser"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "attribute_parser",  :limit => 2147483647
+    t.text     "attribute_parser"
     t.integer  "portal_system_id"
     t.string   "result_model"
     t.string   "related_model"
     t.string   "scraper_type"
     t.string   "path"
     t.string   "type"
-    t.text     "attribute_mapping", :limit => 2147483647
+    t.text     "attribute_mapping"
     t.integer  "skip_rows"
     t.string   "cookie_path"
   end
@@ -765,7 +765,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "telephone"
     t.string   "email"
     t.string   "fax"
-    t.text     "address",    :limit => 2147483647
+    t.text     "address"
     t.string   "wdtk_name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -789,7 +789,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
 
   add_index "planning_alert_subscribers", ["bottom_left_x", "top_right_x", "bottom_left_y", "top_right_y"], :name => "bottom_left_x"
 
-  create_table "planning_alert_subscribers_copy", :id => false, :options=>'ENGINE=MyISAM', :force => true do |t|
+  create_table "planning_alert_subscribers_copy", :id => false, :force => true do |t|
     t.integer  "id",                             :default => 0,     :null => false
     t.string   "email",           :limit => 120,                    :null => false
     t.string   "postcode",        :limit => 10,                     :null => false
@@ -820,7 +820,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.text     "applicant_address"
     t.string   "status",            :limit => 64
     t.string   "decision",          :limit => 64
-    t.text     "other_attributes",  :limit => 2147483647
+    t.text     "other_attributes"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.point    "geom",              :limit => nil
@@ -836,7 +836,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   create_table "police_authorities", :force => true do |t|
     t.string   "name"
     t.string   "url"
-    t.text     "address",             :limit => 2147483647
+    t.text     "address"
     t.string   "telephone"
     t.string   "wdtk_name"
     t.string   "wikipedia_url"
@@ -857,7 +857,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "updated_at"
     t.string   "wikipedia_url"
     t.string   "telephone"
-    t.text     "address",               :limit => 2147483647
+    t.text     "address"
     t.string   "wdtk_name"
     t.string   "npia_id"
     t.string   "youtube_account_name"
@@ -870,7 +870,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   create_table "police_officers", :force => true do |t|
     t.string   "name"
     t.string   "rank"
-    t.text     "biography",      :limit => 2147483647
+    t.text     "biography"
     t.integer  "police_team_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -882,7 +882,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   create_table "police_teams", :force => true do |t|
     t.string   "name"
     t.string   "uid"
-    t.text     "description",     :limit => 2147483647
+    t.text     "description"
     t.string   "url"
     t.integer  "police_force_id"
     t.datetime "created_at"
@@ -900,7 +900,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "url"
     t.string   "wikipedia_name"
     t.string   "colour"
-    t.text     "alternative_names",        :limit => 2147483647
+    t.text     "alternative_names"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -929,7 +929,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   create_table "portal_systems", :force => true do |t|
     t.string   "name"
     t.string   "url"
-    t.text     "notes",      :limit => 2147483647
+    t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -973,7 +973,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "url"
     t.string   "subject_type"
     t.integer  "subject_id"
-    t.text     "extract",            :limit => 2147483647
+    t.text     "extract"
     t.integer  "hyperlocal_site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -990,12 +990,12 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "updated_at"
     t.string   "expected_result_class"
     t.integer  "expected_result_size"
-    t.text     "expected_result_attributes", :limit => 2147483647
+    t.text     "expected_result_attributes"
     t.string   "type"
     t.string   "related_model"
     t.datetime "last_scraped"
     t.boolean  "problematic",                                      :default => false
-    t.text     "notes",                      :limit => 2147483647
+    t.text     "notes"
     t.string   "referrer_url"
     t.text     "cookie_url"
     t.boolean  "use_post",                                         :default => false
@@ -1023,7 +1023,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
 
   create_table "services", :force => true do |t|
     t.string   "title"
-    t.text     "url",            :limit => 2147483647
+    t.text     "url"
     t.string   "category"
     t.integer  "council_id"
     t.integer  "ldg_service_id"
@@ -1042,8 +1042,8 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.float    "total_spend"
     t.float    "average_monthly_spend"
     t.float    "average_transaction_value"
-    t.text     "spend_by_month",               :limit => 2147483647
-    t.text     "breakdown",                    :limit => 2147483647
+    t.text     "spend_by_month"
+    t.text     "breakdown"
     t.date     "earliest_transaction"
     t.date     "latest_transaction"
     t.integer  "transaction_count",            :limit => 8
@@ -1055,7 +1055,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   add_index "spending_stats", ["organisation_id", "organisation_type"], :name => "index_spending_stats_on_organisation"
   add_index "spending_stats", ["organisation_type", "total_spend"], :name => "index_spending_stats_on_organisation_type_and_total_spend"
 
-  create_table "stats", :primary_key => "key", :options=>'ENGINE=MyISAM', :force => true do |t|
+  create_table "stats", :primary_key => "key", :force => true do |t|
     t.integer "value", :null => false
   end
 
@@ -1099,7 +1099,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.integer  "twitter_id"
     t.integer  "follower_count"
     t.integer  "following_count"
-    t.text     "last_tweet",      :limit => 2147483647
+    t.text     "last_tweet"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1117,10 +1117,10 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "approved",                                     :default => false
-    t.text     "submission_details",     :limit => 2147483647
+    t.text     "submission_details"
     t.string   "item_type"
     t.string   "ip_address"
-    t.text     "notes",                  :limit => 2147483647
+    t.text     "notes"
   end
 
   add_index "user_submissions", ["item_id", "item_type"], :name => "index_user_submissions_on_item_id_and_item_type"
@@ -1152,7 +1152,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   create_table "wdtk_requests", :force => true do |t|
     t.string   "title"
     t.string   "status"
-    t.text     "description",         :limit => 2147483647
+    t.text     "description"
     t.integer  "organisation_id"
     t.datetime "created_at"
     t.datetime "updated_at"
