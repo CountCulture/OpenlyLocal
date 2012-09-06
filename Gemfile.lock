@@ -36,6 +36,9 @@ GEM
     crack (0.3.1)
     curb (0.7.16)
     daemons (1.0.10)
+    dbf (1.2.9)
+      activesupport (>= 2.3.5)
+      fastercsv (>= 1.4.0)
     delayed_job (2.0.4)
       daemons
     dkim (0.2.0)
@@ -153,6 +156,7 @@ DEPENDENCIES
   companies-house
   crack
   daemons (= 1.0.10)
+  dbf (= 1.2.9)
   delayed_job (= 2.0.4)
   dkim
   factory_girl
