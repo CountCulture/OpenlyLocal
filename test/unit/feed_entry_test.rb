@@ -164,7 +164,7 @@ class FeedEntryTest < ActiveSupport::TestCase
           FeedEntry.update_from_feed("foo.com")
         end
         new_entry = FeedEntry.find_by_guid("entry_1")
-        assert_equal ["foo", "bar"], new_entry.tag_list
+        assert_equal ["bar", "foo"], new_entry.tag_list.sort
       end
       
       should "not have errors when no content" do

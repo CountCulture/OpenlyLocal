@@ -6,7 +6,7 @@ class SuppliersControllerTest < ActionController::TestCase
     @organisation = @supplier.organisation
     @another_supplier = Factory(:supplier, :name => 'another supplier')
     @another_supplier_same_org = Factory(:supplier, :name => 'Another supplier', :organisation => @organisation)
-    @financial_transaction = Factory(:financial_transaction, :supplier => @supplier, :value => 42)
+    @financial_transaction = Factory(:financial_transaction, :supplier => @supplier, :value => 42, :date => 3.day.ago)
     @big_financial_transaction = Factory(:financial_transaction, :supplier => @supplier, :value => 10000, :date => 2.days.ago)
     [@supplier, @another_supplier, @another_supplier_same_org].each{ |s| s.update_attribute(:spending_stat, SpendingStat.new); s.spending_stat.perform }#can't sort without sppending_stat
   end
@@ -31,7 +31,7 @@ class SuppliersControllerTest < ActionController::TestCase
       end
       
       should 'order by name' do
-        assert_equal @another_supplier, assigns(:suppliers).first
+        assert_equal @another_supplier_same_org, assigns(:suppliers).first
       end
       
       should 'show link to sort by total_spend' do
@@ -69,7 +69,7 @@ class SuppliersControllerTest < ActionController::TestCase
       
       
       should 'return only those matching filter' do
-        assert assigns(:suppliers).include?(@another_supplier)
+        assert assigns(:suppliers).include?(@another_supplier_same_org)
         assert !assigns(:suppliers).include?(@supplier)
       end
                         

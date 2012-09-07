@@ -45,7 +45,7 @@ class DatapointTest < ActiveSupport::TestCase
       end
       
       should "return only those datapoints with topics in topic grouping" do
-        assert_equal [@datapoint, @datapoint_2, @datapoint_3], Datapoint.with_topic_grouping
+        assert_equal [@datapoint, @datapoint_2, @datapoint_3], Datapoint.with_topic_grouping.sort_by(&:value)
       end
 
     end

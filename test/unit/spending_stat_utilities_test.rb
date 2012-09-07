@@ -306,7 +306,7 @@ class SpendingStatUtilitiesTest < ActiveSupport::TestCase
 
         should "have supplying_relationships keyed to :elements" do
           srs = [@supplying_relationship_1, @supplying_relationship_1a, @supplying_relationship_1b]
-          assert_equal srs, @test_model_with_spending_stat_payee.data_for_payer_breakdown.assoc(@org_1)[1][:elements]
+          assert_equal srs, @test_model_with_spending_stat_payee.data_for_payer_breakdown.assoc(@org_1)[1][:elements].sort_by(&:created_at)
         end
         
         should "have subtotal array keyed to :subtotal with organisation as first element" do

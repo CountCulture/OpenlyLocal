@@ -382,7 +382,7 @@ class CouncilTest < ActiveSupport::TestCase
     context "when calculating spending_data" do
 
       should "calculate total council transaction count" do
-        FinancialTransaction.expects(:count).with(:joins => :suppliers, :conditions => ['suppliers.organisation_type = ?', 'Council'])
+        FinancialTransaction.expects(:count).with(:joins => :supplier, :conditions => ['suppliers.organisation_type = ?', 'Council'])
         Council.calculated_spending_data
       end
       
@@ -402,7 +402,7 @@ class CouncilTest < ActiveSupport::TestCase
       end
       
       should "find 20 largest payments" do
-        FinancialTransaction.expects(:all).with(:order => 'value DESC', :limit => 20, :joins => :suppliers, :conditions => ['suppliers.organisation_type = ?', 'Council']).returns([])
+        FinancialTransaction.expects(:all).with(:order => 'value DESC', :limit => 20, :joins => :supplier, :conditions => ['suppliers.organisation_type = ?', 'Council']).returns([])
         Council.calculated_spending_data
       end
       

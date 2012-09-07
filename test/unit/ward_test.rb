@@ -324,7 +324,7 @@ class WardTest < ActiveSupport::TestCase
 
       should "return datapoints for ward with given topic ids" do
         dps = @ward.datapoints_for_topics([@ward_dp.dataset_topic.id, @another_ward_dp.dataset_topic.id])
-        assert_equal [@ward_dp, @another_ward_dp], dps
+        assert_equal [@ward_dp, @another_ward_dp], dps.sort_by(&:created_at)
       end
 
       should "return empty array if no given topic ids" do

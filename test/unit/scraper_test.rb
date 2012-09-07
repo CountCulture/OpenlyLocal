@@ -54,7 +54,7 @@ class ScraperTest < ActiveSupport::TestCase
         never_run_scraper = Factory(:info_scraper)
         high_priority_scraper = Factory(:item_scraper, :next_due => 2.hours.ago, :priority => 2, :council => Factory(:generic_council))
         more_stale_high_priority_scraper = Factory(:item_scraper, :next_due => 1.day.ago, :priority => 2, :council => Factory(:generic_council))
-        assert_equal [more_stale_high_priority_scraper, high_priority_scraper, never_run_scraper, stale_scraper], Scraper.stale
+        assert_equal [more_stale_high_priority_scraper, high_priority_scraper, stale_scraper, never_run_scraper], Scraper.stale
       end
       
       should "not include CsvScrapers in stale scrapers" do
@@ -223,7 +223,7 @@ class ScraperTest < ActiveSupport::TestCase
     should "return sibling_scrapers" do
       sibling1 = Factory(:info_scraper, :council => @scraper.council)
       sibling2 = Factory(:scraper, :council => @scraper.council, :parser => Factory(:parser, :result_model => "Committee"))
-      assert_equal [sibling1, sibling2], @scraper.sibling_scrapers
+      assert_equal [sibling1, sibling2], @scraper.sibling_scrapers.sort_by(&:created_at)
     end
     
     should "delegate result_model to parser" do
