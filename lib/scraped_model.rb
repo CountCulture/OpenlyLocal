@@ -33,6 +33,7 @@ module ScrapedModel
           define_method "#{relationship.to_s.singularize}_#{attrib_meth_name}=" do |attrib_array|
             # extend normalising to other attributes in the future? 
             attrib_array = attrib_array.collect{|i| TitleNormaliser.normalise_title(i)} if attrib.to_s.match(/^normalised_title/) 
+            attrib_array = Array === attrib_array ? attrib_array.map(&:to_s) : attrib_array.to_s
             assoc_klass = relationship.to_s.classify.constantize
             assoc_members = belong_to_rel ? assoc_klass.first(:conditions => {:council_id => self.council_id, attrib => attrib_array}) :
                                             assoc_klass.all(:conditions => {:council_id => self.council_id, attrib => attrib_array})

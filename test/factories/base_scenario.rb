@@ -335,7 +335,7 @@ end
 
 Factory.define :company do |f|
   f.sequence(:title) { |n| "Company #{n}" }
-  f.sequence(:company_number) {|n| 100+n }
+  f.sequence(:company_number) {|n| (100 + n).to_s }
 end
 
 Factory.define :vat_no_company, :class => :company do |f|
