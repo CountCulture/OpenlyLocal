@@ -43,7 +43,7 @@ class ParsersController < ApplicationController
     case 
     when @parser
       @parser.result_model.underscore.pluralize
-    when result_model = params[:result_model] || params[:parser][:result_model]
+    when result_model = params[:result_model] || params[:parser] && params[:parser][:result_model]
       result_model.underscore.pluralize
     else
       'parsers'

@@ -23,8 +23,16 @@ class Ward < ActiveRecord::Base
       errors.add(:name, 'already exists for this council') if Ward.exists?(['council_id = ? AND name LIKE ?', council_id, "%#{name}%"])
     else
       condition_string = "(council_id = :council_id AND name LIKE :name AND snac_id = :snac_id) OR (council_id = :council_id AND name LIKE :name AND (snac_id IS NULL OR snac_id = ''))"
-      condition_string += "OR (council_id = :council_id AND name LIKE :name AND defunkt = 0)" unless self.defunkt 
-      errors.add(:name, 'already exists for this council') if Ward.first( :conditions => [ condition_string, { :council_id => council_id, :name => "#{name}%", :snac_id => snac_id, :defunkt => defunkt }])
+      unless self.defunkt
+        condition_string += "OR (council_id = :council_id AND name LIKE :name AND defunkt = :defunkt)"
+      end
+      if Ward.first(:conditions => [condition_string, {
+        :council_id => council_id,
+        :name => "#{name}%",
+        :snac_id => snac_id,
+        :defunkt => false}])
+        errors.add(:name, 'already exists for this council')
+      end
     end
   end
   

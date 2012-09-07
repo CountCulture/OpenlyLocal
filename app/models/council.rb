@@ -20,7 +20,7 @@ class Council < ActiveRecord::Base
   has_many :memberships, :through => :members
   has_many :scrapers
   has_many :meetings
-  has_many :held_meetings, :class_name => "Meeting", :conditions => %q(#{self.class.send(:sanitize_sql_array, ['date_held <= ?', Time.now])})
+  has_many :held_meetings, :class_name => "Meeting", :conditions => "date_held <= '#{Time.now.to_s(:db)}'"
   has_many :wards, :conditions => {:defunkt => false}, :order => 'wards.name'
   has_many :officers
   has_one  :chief_executive, :class_name => "Officer", :conditions => {:position => "Chief Executive"}
@@ -67,9 +67,9 @@ class Council < ActiveRecord::Base
     res[:payee_breakdown] = FinancialTransaction.sum(:value, :joins => :supplier, :conditions => ['suppliers.organisation_type = ?', 'Council'], :group => 'suppliers.payee_type')
     res[:total_spend] = res[:payee_breakdown].sum{ |type, val| val }
     res[:company_count] = Company.count(:joins => :supplying_relationships, :conditions => ['suppliers.organisation_type = ?', 'Council'])
-    res[:transaction_count] = FinancialTransaction.count(:joins => :suppliers, :conditions => ['suppliers.organisation_type = ?', 'Council'])
+    res[:transaction_count] = FinancialTransaction.count(:joins => :supplier, :conditions => ['suppliers.organisation_type = ?', 'Council'])
     res[:supplier_count] = Supplier.count(:conditions => {:organisation_type => 'Council'})
-    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => :suppliers, :conditions => ['suppliers.organisation_type = ?', 'Council']).collect(&:id)
+    res[:largest_transactions] = FinancialTransaction.all(:order => 'value DESC', :limit => 20, :joins => :supplier, :conditions => ['suppliers.organisation_type = ?', 'Council']).collect(&:id)
 
     res[:largest_companies] = SpendingStat.all(:select => :organisation_id, :conditions => {:organisation_type => 'Company'}, :order => 'total_received_from_councils DESC', :limit => 20).map(&:organisation_id)
     res[:largest_charities] = SpendingStat.all(:select => :organisation_id, :conditions => {:organisation_type => 'Charity'}, :order => 'total_received_from_councils DESC', :limit => 20).map(&:organisation_id)
@@ -236,7 +236,7 @@ class Council < ActiveRecord::Base
   def potential_services(options={})
     return [] if ldg_id.blank?
     authority_level = (authority_type =~ /Metropolitan|London/ ? "Unitary" : authority_type)
-    conditions = ['authority_level LIKE ? OR authority_level = ?', "%#{authority_level}%", 'all']
+    conditions = ['UPPER(authority_level) LIKE ? OR authority_level = ?', "%#{authority_level.upcase}%", 'all']
     LdgService.all(:conditions => conditions, :order => :lgsl)
   end
   

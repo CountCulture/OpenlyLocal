@@ -8,15 +8,15 @@ class Datapoint < ActiveRecord::Base
 #  default_scope :include => {:dataset_topic => :dataset_family}
 
   named_scope :with_topic_uids, lambda { |ons_uids| { :conditions => ['dataset_topics.ons_uid IN (?)', ons_uids],
-                                                      :joins => :dataset_topics,
+                                                      :joins => :dataset_topic,
                                                       :group => 'datapoints.id, datapoints.value, datapoints.dataset_topic_id, datapoints.area_id, datapoints.created_at, datapoints.updated_at, datapoints.area_type, datapoints.data_period_id'} }
 
   named_scope :with_topic_grouping, { :conditions => "dataset_topics.dataset_topic_grouping_id IS NOT NULL",
-                                      :joins => :dataset_topics,
+                                      :joins => :dataset_topic,
                                       :group => 'datapoints.id, datapoints.value, datapoints.dataset_topic_id, datapoints.area_id, datapoints.created_at, datapoints.updated_at, datapoints.area_type, datapoints.data_period_id'}
 
   named_scope :in_dataset, lambda { |dataset| { :conditions => ['dataset_topics.dataset_family_id IN (?)', dataset.dataset_families.collect(&:id)],
-                                                :joins => :dataset_topics,
+                                                :joins => :dataset_topic,
                                                 :group => 'datapoints.id, datapoints.value, datapoints.dataset_topic_id, datapoints.area_id, datapoints.created_at, datapoints.updated_at, datapoints.area_type, datapoints.data_period_id' } }
 
   delegate :muid_format, :muid_type, :ons_uid, :short_title, :to => :dataset_topic

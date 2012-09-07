@@ -10,7 +10,7 @@ class Committee < ActiveRecord::Base
   has_many :memberships, :primary_key => :uid
   has_many :members, :through => :memberships
   has_many :related_articles, :as => :subject
-  has_one :next_meeting, :class_name => "Meeting", :conditions => %q(#{self.class.send(:sanitize_sql_array, ['date_held > ?', Time.now])}), :order => :date_held
+  has_one :next_meeting, :class_name => "Meeting", :conditions => "date_held > '#{Time.now.to_s(:db)}'", :order => :date_held
   allow_access_to :members, :via => :uid
   before_save :normalise_title
 

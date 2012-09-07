@@ -34,8 +34,8 @@ module ScrapedModel
             # extend normalising to other attributes in the future? 
             attrib_array = attrib_array.collect{|i| TitleNormaliser.normalise_title(i)} if attrib.to_s.match(/^normalised_title/) 
             assoc_klass = relationship.to_s.classify.constantize
-            assoc_members = belong_to_rel ? assoc_klass.send("find_by_council_id_and_#{attrib}", self.council_id, attrib_array) : 
-                                            assoc_klass.send("find_all_by_council_id_and_#{attrib}", self.council_id, attrib_array)
+            assoc_members = belong_to_rel ? assoc_klass.first(:conditions => {:council_id => self.council_id, attrib => attrib_array}) :
+                                            assoc_klass.all(:conditions => {:council_id => self.council_id, attrib => attrib_array})
             self.send("#{relationship}=", assoc_members)
             self.save
           end

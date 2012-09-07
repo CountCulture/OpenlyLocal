@@ -2,7 +2,7 @@ class Service < ActiveRecord::Base
   belongs_to :council
   belongs_to :ldg_service
   default_scope :order => "title"
-  named_scope :matching_term, lambda { |term| { :conditions => ['title LIKE ?', "%#{term}%"] } }
+  named_scope :matching_term, lambda { |term| { :conditions => ['UPPER(title) LIKE ?', "%#{term.to_s.upcase}%"] } }
   named_scope :stale, lambda { { :conditions => ['updated_at < ?', 7.days.ago] } }
   validates_presence_of :council_id, :title, :url, :category, :ldg_service_id
   validates_uniqueness_of :ldg_service_id, :scope => :council_id
@@ -40,7 +40,7 @@ class Service < ActiveRecord::Base
   
   def self.spending_data_services_for_councils
     sds = for_lgsl_id(LdgService::SPEND_OVER_500_LGSL)
-    councils_with_imported_spending_data = Council.all(:joins => :suppliers, :select => 'councils.id', :group => 'councils.id').collect(&:id) #if don't group by returns a council for each service the council has, with huge memory issues, 
+    councils_with_imported_spending_data = Council.all(:joins => :suppliers, :select => 'councils.id, councils.name', :group => 'councils.id, councils.name').collect(&:id) #if don't group by returns a council for each service the council has, with huge memory issues, 
     sds.delete_if{ |service| councils_with_imported_spending_data.include?(service.council_id) }
     sds.sort_by{ |s| s.council.title }
   end
