@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120613143818) do
+ActiveRecord::Schema.define(:version => 20120907201454) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "region"
-    t.boolean  "former",                               :default => false
+    t.boolean  "former",         :default => false
     t.float    "lat"
     t.float    "lng"
     t.text     "raw_address"
@@ -58,30 +58,16 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   end
 
   add_index "alert_subscribers", ["bottom_left_lat", "top_right_lat", "bottom_left_lng", "top_right_lng"], :name => "bounding_box_index"
-  add_index "alert_subscribers", ["bottom_left_lng", "top_right_lng", "bottom_left_lat", "top_right_lat"], :name => "bottom_left_lng"
   add_index "alert_subscribers", ["created_at"], :name => "index_alert_subscribers_on_created_at"
   add_index "alert_subscribers", ["email"], :name => "index_alert_subscribers_on_email"
 
-  create_table "authority", :primary_key => "authority_id", :force => true do |t|
-    t.string  "full_name",      :limit => 200, :null => false
-    t.string  "short_name",     :limit => 100, :null => false
-    t.string  "planning_email", :limit => 100, :null => false
-    t.string  "feed_url"
-    t.boolean "external"
-    t.boolean "disabled"
-    t.text    "notes"
-  end
-
-  add_index "authority", ["short_name", "authority_id", "full_name"], :name => "search"
-  add_index "authority", ["short_name"], :name => "short_name"
-
   create_table "boundaries", :force => true do |t|
-    t.string        "area_type"
-    t.integer       "area_id"
-    t.datetime      "created_at"
-    t.datetime      "updated_at"
-    t.multi_polygon "boundary_line", :limit => nil
-    t.float         "hectares"
+    t.string   "area_type"
+    t.integer  "area_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "hectares"
+    t.polygon  "boundary_line", :limit => nil, :srid => 0
   end
 
   add_index "boundaries", ["area_id", "area_type"], :name => "index_boundaries_on_area_id_and_area_type"
@@ -137,12 +123,13 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "fax"
     t.integer  "subsidiary_number"
     t.string   "area_of_benefit"
-    t.boolean  "signed_up_for_1010",                               :default => false
+    t.boolean  "signed_up_for_1010",         :default => false
     t.string   "corrected_company_number"
     t.datetime "manually_updated"
   end
 
   add_index "charities", ["charity_number"], :name => "index_charities_on_charity_number", :unique => true
+  add_index "charities", ["company_number"], :name => "index_charities_on_company_number"
   add_index "charities", ["corrected_company_number"], :name => "index_charities_on_normalised_company_number"
   add_index "charities", ["date_registered"], :name => "index_charities_on_date_registered"
   add_index "charities", ["income"], :name => "index_charities_on_income"
@@ -221,6 +208,8 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "updated_at"
   end
 
+  add_index "classifications", ["grouping"], :name => "index_classifications_on_grouping"
+
   create_table "committees", :force => true do |t|
     t.string   "title"
     t.datetime "created_at"
@@ -253,6 +242,8 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.text     "sic_codes"
     t.string   "country"
   end
+
+  add_index "companies", ["company_number"], :name => "index_companies_on_company_number"
 
   create_table "contracts", :force => true do |t|
     t.string   "title"
@@ -323,12 +314,12 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.float    "lng"
     t.string   "cipfa_code"
     t.string   "region"
-    t.boolean  "signed_up_for_1010",                                  :default => false
+    t.boolean  "signed_up_for_1010",            :default => false
     t.integer  "pension_fund_id"
     t.string   "gss_code"
     t.string   "annual_audit_letter"
     t.integer  "output_area_classification_id"
-    t.boolean  "defunkt",                                             :default => false
+    t.boolean  "defunkt",                       :default => false
     t.string   "open_data_url"
     t.string   "open_data_licence"
     t.string   "normalised_title"
@@ -337,11 +328,17 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "planning_email"
   end
 
+  add_index "councils", ["authority_type"], :name => "index_councils_on_authority_type"
+  add_index "councils", ["cipfa_code"], :name => "index_councils_on_cipfa_code"
+  add_index "councils", ["normalised_title"], :name => "index_councils_on_normalised_title"
+  add_index "councils", ["os_id"], :name => "index_councils_on_os_id"
   add_index "councils", ["output_area_classification_id"], :name => "index_councils_on_output_area_classification_id"
   add_index "councils", ["parent_authority_id"], :name => "index_councils_on_parent_authority_id"
   add_index "councils", ["pension_fund_id"], :name => "index_councils_on_pension_fund_id"
   add_index "councils", ["police_force_id"], :name => "index_councils_on_police_force_id"
   add_index "councils", ["portal_system_id"], :name => "index_councils_on_portal_system_id"
+  add_index "councils", ["snac_id"], :name => "index_councils_on_snac_id"
+  add_index "councils", ["wdtk_name"], :name => "index_councils_on_wdtk_name"
 
   create_table "crime_areas", :force => true do |t|
     t.string   "uid"
@@ -434,6 +431,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
 
   add_index "dataset_topics", ["dataset_family_id"], :name => "index_ons_dataset_topics_on_ons_dataset_family_id"
   add_index "dataset_topics", ["dataset_topic_grouping_id"], :name => "index_dataset_topics_on_dataset_topic_grouping_id"
+  add_index "dataset_topics", ["ons_uid"], :name => "index_dataset_topics_on_ons_uid"
 
   create_table "datasets", :force => true do |t|
     t.string   "title"
@@ -451,8 +449,8 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   add_index "datasets", ["dataset_topic_grouping_id"], :name => "index_datasets_on_dataset_topic_grouping_id"
 
   create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",                         :default => 0
-    t.integer  "attempts",                         :default => 0
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
     t.text     "handler"
     t.text     "last_error"
     t.datetime "run_at"
@@ -479,7 +477,6 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   end
 
   add_index "documents", ["document_owner_id", "document_owner_type"], :name => "index_documents_on_document_owner_id_and_document_owner_type"
-  add_index "documents", ["url"], :name => "index_documents_on_url"
 
   create_table "entities", :force => true do |t|
     t.string   "title"
@@ -501,6 +498,9 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "external_resource_uri"
     t.string   "telephone"
   end
+
+  add_index "entities", ["title"], :name => "index_entities_on_title"
+  add_index "entities", ["wdtk_name"], :name => "index_entities_on_wdtk_name"
 
   create_table "feed_entries", :force => true do |t|
     t.string   "title"
@@ -568,10 +568,11 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "area_covered"
     t.integer  "council_id"
     t.string   "country"
-    t.boolean  "approved",                                  :default => false
+    t.boolean  "approved",            :default => false
     t.string   "party_affiliation"
   end
 
+  add_index "hyperlocal_sites", ["approved"], :name => "index_hyperlocal_sites_on_approved"
   add_index "hyperlocal_sites", ["council_id"], :name => "index_hyperlocal_sites_on_council_id"
   add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"
 
@@ -616,6 +617,8 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "ldg_services", ["lgsl"], :name => "index_ldg_services_on_lgsl"
 
   create_table "meetings", :force => true do |t|
     t.datetime "date_held"
@@ -737,7 +740,6 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
 
   add_index "parish_councils", ["council_id"], :name => "index_parish_councils_on_council_id"
   add_index "parish_councils", ["os_id"], :name => "index_parish_councils_on_os_id"
-  add_index "parish_councils", ["title"], :name => "index_parish_councils_on_title"
 
   create_table "parsers", :force => true do |t|
     t.string   "description"
@@ -772,42 +774,12 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.integer  "wdtk_id"
   end
 
-  create_table "planning_alert_subscribers", :id => false, :force => true do |t|
-    t.integer  "id",                             :default => 0,     :null => false
-    t.string   "email",           :limit => 120,                    :null => false
-    t.string   "postcode",        :limit => 10,                     :null => false
-    t.boolean  "digest_mode",                    :default => false, :null => false
-    t.datetime "last_sent"
-    t.integer  "bottom_left_x"
-    t.integer  "bottom_left_y"
-    t.integer  "top_right_x"
-    t.integer  "top_right_y"
-    t.string   "confirm_id",      :limit => 20
-    t.boolean  "confirmed"
-    t.string   "alert_area_size", :limit => 1
-  end
-
-  add_index "planning_alert_subscribers", ["bottom_left_x", "top_right_x", "bottom_left_y", "top_right_y"], :name => "bottom_left_x"
-
-  create_table "planning_alert_subscribers_copy", :id => false, :force => true do |t|
-    t.integer  "id",                             :default => 0,     :null => false
-    t.string   "email",           :limit => 120,                    :null => false
-    t.string   "postcode",        :limit => 10,                     :null => false
-    t.boolean  "digest_mode",                    :default => false, :null => false
-    t.datetime "last_sent"
-    t.integer  "bottom_left_x"
-    t.integer  "bottom_left_y"
-    t.integer  "top_right_x"
-    t.integer  "top_right_y"
-    t.string   "confirm_id",      :limit => 20
-    t.boolean  "confirmed"
-    t.string   "alert_area_size", :limit => 1
-  end
+  add_index "pension_funds", ["name"], :name => "index_pension_funds_on_name"
 
   create_table "planning_applications", :force => true do |t|
-    t.string   "uid",               :limit => 50,                         :null => false
+    t.string   "uid",               :limit => 50,                  :null => false
     t.text     "address"
-    t.string   "postcode",          :limit => 10,         :default => ""
+    t.string   "postcode",          :limit => 10
     t.text     "description"
     t.string   "url",               :limit => 1024
     t.string   "comment_url",       :limit => 1024
@@ -818,14 +790,13 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.integer  "council_id"
     t.string   "applicant_name"
     t.text     "applicant_address"
-    t.string   "status",            :limit => 64
     t.string   "decision",          :limit => 64
     t.text     "other_attributes"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.point    "geom",              :limit => nil
     t.string   "application_type",  :limit => 64
-    t.integer  "bitwise_flag",      :limit => 1
+    t.integer  "bitwise_flag",                      :default => 0
+    t.string   "status"
   end
 
   add_index "planning_applications", ["council_id", "start_date"], :name => "index_planning_applications_on_council_id_and_date_received"
@@ -848,6 +819,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.integer  "wdtk_id"
   end
 
+  add_index "police_authorities", ["name"], :name => "index_police_authorities_on_name"
   add_index "police_authorities", ["police_force_id"], :name => "index_police_authorities_on_police_force_id"
 
   create_table "police_forces", :force => true do |t|
@@ -867,6 +839,8 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.integer  "wdtk_id"
   end
 
+  add_index "police_forces", ["npia_id"], :name => "index_police_forces_on_npia_id"
+
   create_table "police_officers", :force => true do |t|
     t.string   "name"
     t.string   "rank"
@@ -874,7 +848,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.integer  "police_team_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",                               :default => true
+    t.boolean  "active",         :default => true
   end
 
   add_index "police_officers", ["police_team_id"], :name => "index_police_officers_on_police_team_id"
@@ -889,10 +863,11 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "updated_at"
     t.float    "lat"
     t.float    "lng"
-    t.boolean  "defunkt",                               :default => false
+    t.boolean  "defunkt",         :default => false
   end
 
   add_index "police_teams", ["police_force_id"], :name => "index_police_teams_on_police_force_id"
+  add_index "police_teams", ["uid"], :name => "index_police_teams_on_uid"
 
   create_table "political_parties", :force => true do |t|
     t.string   "name"
@@ -904,6 +879,9 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "political_parties", ["electoral_commission_uid"], :name => "index_political_parties_on_electoral_commission_uid"
+  add_index "political_parties", ["wikipedia_name"], :name => "index_political_parties_on_wikipedia_name"
 
   create_table "polls", :force => true do |t|
     t.integer  "area_id"
@@ -925,6 +903,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   end
 
   add_index "polls", ["area_id", "area_type"], :name => "index_polls_on_area_id_and_area_type"
+  add_index "polls", ["date_held"], :name => "index_polls_on_date_held"
 
   create_table "portal_systems", :force => true do |t|
     t.string   "name"
@@ -933,6 +912,8 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "portal_systems", ["name"], :name => "index_portal_systems_on_name"
 
   create_table "postcodes", :force => true do |t|
     t.string  "code"
@@ -994,16 +975,16 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "type"
     t.string   "related_model"
     t.datetime "last_scraped"
-    t.boolean  "problematic",                                      :default => false
+    t.boolean  "problematic",                             :default => false
     t.text     "notes"
     t.string   "referrer_url"
     t.text     "cookie_url"
-    t.boolean  "use_post",                                         :default => false
-    t.string   "parsing_library",            :limit => 1,          :default => "H"
+    t.boolean  "use_post",                                :default => false
+    t.string   "parsing_library",            :limit => 1, :default => "H"
     t.string   "base_url"
     t.datetime "next_due"
-    t.integer  "frequency",                  :limit => 1,          :default => 7
-    t.integer  "priority",                   :limit => 1,          :default => 4
+    t.integer  "frequency",                               :default => 7
+    t.integer  "priority",                                :default => 4
   end
 
   add_index "scrapers", ["council_id"], :name => "index_scrapers_on_council_id"
@@ -1055,10 +1036,6 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   add_index "spending_stats", ["organisation_id", "organisation_type"], :name => "index_spending_stats_on_organisation"
   add_index "spending_stats", ["organisation_type", "total_spend"], :name => "index_spending_stats_on_organisation_type_and_total_spend"
 
-  create_table "stats", :primary_key => "key", :force => true do |t|
-    t.integer "value", :null => false
-  end
-
   create_table "suppliers", :force => true do |t|
     t.string   "name"
     t.string   "uid"
@@ -1072,8 +1049,10 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "payee_type"
   end
 
+  add_index "suppliers", ["name"], :name => "index_suppliers_on_name"
   add_index "suppliers", ["organisation_id", "organisation_type"], :name => "index_suppliers_on_organisation_id_and_organisation_type"
   add_index "suppliers", ["payee_id", "payee_type"], :name => "index_suppliers_on_payee_id_and_payee_type"
+  add_index "suppliers", ["uid"], :name => "index_suppliers_on_uid"
 
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id"
@@ -1116,7 +1095,7 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
     t.string   "linked_in_account_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "approved",                                     :default => false
+    t.boolean  "approved",               :default => false
     t.text     "submission_details"
     t.string   "item_type"
     t.string   "ip_address"
@@ -1146,8 +1125,10 @@ ActiveRecord::Schema.define(:version => 20120613143818) do
   end
 
   add_index "wards", ["council_id"], :name => "index_wards_on_council_id"
+  add_index "wards", ["os_id"], :name => "index_wards_on_os_id"
   add_index "wards", ["output_area_classification_id"], :name => "index_wards_on_output_area_classification_id"
   add_index "wards", ["police_team_id"], :name => "index_wards_on_police_team_id"
+  add_index "wards", ["snac_id"], :name => "index_wards_on_snac_id"
 
   create_table "wdtk_requests", :force => true do |t|
     t.string   "title"

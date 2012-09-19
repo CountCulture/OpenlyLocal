@@ -9,8 +9,7 @@ gem 'sitemap_generator', :require => false
 gem 'SystemTimer' # not sure what gem needs this
 
 # Database/Spatial
-# gem 'pg'
-gem 'mysql'
+gem 'pg'
 gem 'spatial_adapter' # switch to rgeo in Rails 3
 gem 'geokit'
 gem 'dbf', '1.2.9'
