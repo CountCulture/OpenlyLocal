@@ -30,13 +30,14 @@ set :branch, "head"
 #   # run "/home/frankg/s3sync/download.sh && /home/frankg/s3sync/download_db.sh"
 #   # run "gunzip < ~/sites/backups/carstuff_production_A.sql.tar.gz | mysql -u root -p#{PRODUCTION_MYSQL_PASSWORD} carstuff_production"
 # end
-# 
-task :sync_with_production_db, :roles => [:app] do
-  run <<-EOF
-    /home/frankg/s3sync/download_db.sh && 
-    gunzip < ~/sites/backups/twfy_local_production_A.sql.gz | mysql -u twfyl_user -p#{STAGING_MYSQL_PASSWORD} twfy_local_staging
-  EOF
-end
+
+# @todo This task needs to be updated for PostgreSQL.
+# task :sync_with_production_db, :roles => [:app] do
+#   run <<-EOF
+#     /home/frankg/s3sync/download_db.sh && 
+#     gunzip < ~/sites/backups/twfy_local_production_A.sql.gz | mysql -u twfyl_user -p#{STAGING_MYSQL_PASSWORD} twfy_local_staging
+#   EOF
+# end
 
 # Override standard sitemap so doesn't ping search engines
 namespace :sitemap do
