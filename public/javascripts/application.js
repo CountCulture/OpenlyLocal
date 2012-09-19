@@ -4,131 +4,131 @@ var circle;
 // With help from http://blog.schuager.com/2008/09/jquery-autocomplete-json-apsnet-mvc.html and http://1300grams.com/2009/08/17/jquery-autocomplete-with-json-jsonp-support-and-overriding-the-default-search-parameter-q/
 $(document).ready( function() {
   $('.live_search').autocomplete("/services.json", {
-      dataType: 'json',
-      parse: function(data) {
-          var rows = new Array();
-          for(var i=0; i<data.length; i++){
-              rows[i] = { data:data[i].service, value:data[i].service.title, result:data[i].service.title };
-          }
-          return rows;
-      },
-      formatItem: function(row, i, n) {
-          return '<a href="'+ row.url + '" class="external">' + row.title + '</a>';
-      },
-      width: 300,
-			cacheLength: 400,
-			minChars: 2,
-			extraParams: {
-				council_id: function() { return $("#council_id").val(); },
-				q: '',
-				term: function() { return $("#term").val();}
-			},
-      mustMatch: true
-  }).result(function(event, item) {
-			  location.href = item.url;
-			});
-
-		$('a.toggle_visibility').click(function(event){
-			  $(this).closest('div').children('.toggle').toggle();
-				event.preventDefault();					
-		});
-
-		$('a.add_new_scraper').click(function(event){
-			var resultModels = ['Committee', 'Member', 'Meeting', 'Ward', 'PlanningApplication'];
-			var scraperList = '';
-			var cDiv = $(this).parents('div.council')[0];
-			var cId = cDiv.id.replace('council_','');
-			for (var i=0; i < resultModels.length; i++) {
-				scraperList += '<li><a href="/scrapers/new?type=ItemScraper&result_model=' + resultModels[i]+ '&council_id='+ cId + '">Add ' + resultModels[i] + ' ItemScraper for this council</a></li>';
-				scraperList += '<li><a href="/scrapers/new?type=InfoScraper&result_model=' + resultModels[i]+ '&council_id='+ cId + '">Add ' + resultModels[i] + ' InfoScraper for this council</a></li>';
-			};
-			scraperList += '<li><a href="/scrapers/new?type=CsvScraper&council_id='+ cId + '">Add CsvScraper for this council</a></li>';
-			$(cDiv).find('ul').append(scraperList);
-		  event.preventDefault();					
-		});
-		
-		$('a.delete_parent_div').live("click", function(event){
-			  $(this).parents('div:first').remove();
-				event.preventDefault();					
-		});
-		
-		$('a.add_more_attributes').click(function(event){
-				$('.item_attribute:last').clone().appendTo("#parser_attribute_parser");
-				event.preventDefault();					
-		});
-		
-		$('table#payer_breakdown').click(function(event){
-			$(this).find('tr.element').toggle();
-			$(this).find('td span.description').toggle();
-		});
-		
-		$('.graphed_datapoints img').click(function(event){
-				$(this).parents('div.graph').hide();
-				$(this).parents('.graphed_datapoints').removeClass('graphed_datapoints');
-				event.preventDefault();					
-		});
-		
-		$('dd.company_number a').getCompanyData();
-		
-		$('a.process_scraper.button').click(function(event){
-		  var link = $(this);
-		  $.post(this.href, function(data) {
-		    var parent = link.parent();
-        link.replaceWith("<span class='alert button'>queued for processing</span>")
-        parent.children('.alert.button').fadeOut(5000);
-      });
-			event.preventDefault();					
-		});
-		$('input.process_scraper').parents('form').submit(function() {
-		  event.preventDefault();
-		  form = $( this );
-		  $.post(form.attr('action') + '/scrape', function(data) {
-       form.html("<span class='alert button'>queued for processing</span>")
-       form.fadeOut(5000);
-      });
-    });
-
-    /* Planning alerts */
-    /*
-    // @todo PostGIS: uncomment after switch
-    $('#alert_subscriber_postcode_text,#new_alert_subscriber input:radio').change(function (event) {
-      var $header = $('#planning-alerts-preview h2'),
-          $list = $('#planning_applications'),
-          postcode = $('#alert_subscriber_postcode_text').val(),
-          distance = $('#new_alert_subscriber input:radio:checked').val();
-
-      $header.empty();
-      $list.empty();
-
-      if (postcode) {
-        if (distance === undefined) {
-          distance = 0.2;
+    dataType: 'json',
+    parse: function(data) {
+        var rows = new Array();
+        for(var i=0; i<data.length; i++){
+            rows[i] = { data:data[i].service, value:data[i].service.title, result:data[i].service.title };
         }
+        return rows;
+    },
+    formatItem: function(row, i, n) {
+        return '<a href="'+ row.url + '" class="external">' + row.title + '</a>';
+    },
+    width: 300,
+    cacheLength: 400,
+    minChars: 2,
+    extraParams: {
+      council_id: function() { return $("#council_id").val(); },
+      q: '',
+      term: function() { return $("#term").val();}
+    },
+    mustMatch: true
+  }).result(function(event, item) {
+    location.href = item.url;
+  });
 
-        $.ajax({
-          url: '/planning_applications.json?postcode=' + encodeURIComponent(postcode) + '&distance=' + distance,
-          dataType: 'json',
-          success: function (data) {
-            $header.text('Recent applications within ' + (distance * 1000) + ' m of ' + postcode);
-            $.each(data.planning_applications, function (i, x) {
-              $list.append(
-                '<div class="planning_application">' +
-                  '<strong class="description">' +
-                    '<a href="' + x.openlylocal_url + '" class="planning_application_link">' + x.description + '</a>' +
-                  '</strong> ' +
-                  '<span class="address">' + x.address + '</span> ' +
-                  '<a href="' + x.url + '" class="official_page external url">official page</a>' +
-                '</div>'
-              );
-            });
-          },
-          error: function (jqXHR) {
-            $header.text(jqXHR.responseText);
-          }
-        });
-      }
+  $('a.toggle_visibility').click(function(event){
+      $(this).closest('div').children('.toggle').toggle();
+      event.preventDefault();          
+  });
+
+  $('a.add_new_scraper').click(function(event){
+    var resultModels = ['Committee', 'Member', 'Meeting', 'Ward', 'PlanningApplication'];
+    var scraperList = '';
+    var cDiv = $(this).parents('div.council')[0];
+    var cId = cDiv.id.replace('council_','');
+    for (var i=0; i < resultModels.length; i++) {
+      scraperList += '<li><a href="/scrapers/new?type=ItemScraper&result_model=' + resultModels[i]+ '&council_id='+ cId + '">Add ' + resultModels[i] + ' ItemScraper for this council</a></li>';
+      scraperList += '<li><a href="/scrapers/new?type=InfoScraper&result_model=' + resultModels[i]+ '&council_id='+ cId + '">Add ' + resultModels[i] + ' InfoScraper for this council</a></li>';
+    };
+    scraperList += '<li><a href="/scrapers/new?type=CsvScraper&council_id='+ cId + '">Add CsvScraper for this council</a></li>';
+    $(cDiv).find('ul').append(scraperList);
+    event.preventDefault();          
+  });
+  
+  $('a.delete_parent_div').live("click", function(event){
+      $(this).parents('div:first').remove();
+      event.preventDefault();          
+  });
+  
+  $('a.add_more_attributes').click(function(event){
+      $('.item_attribute:last').clone().appendTo("#parser_attribute_parser");
+      event.preventDefault();          
+  });
+  
+  $('table#payer_breakdown').click(function(event){
+    $(this).find('tr.element').toggle();
+    $(this).find('td span.description').toggle();
+  });
+  
+  $('.graphed_datapoints img').click(function(event){
+      $(this).parents('div.graph').hide();
+      $(this).parents('.graphed_datapoints').removeClass('graphed_datapoints');
+      event.preventDefault();          
+  });
+  
+  $('dd.company_number a').getCompanyData();
+  
+  $('a.process_scraper.button').click(function(event){
+    var link = $(this);
+    $.post(this.href, function(data) {
+      var parent = link.parent();
+      link.replaceWith("<span class='alert button'>queued for processing</span>")
+      parent.children('.alert.button').fadeOut(5000);
     });
-    */
+    event.preventDefault();          
+  });
+  $('input.process_scraper').parents('form').submit(function() {
+    event.preventDefault();
+    form = $( this );
+    $.post(form.attr('action') + '/scrape', function(data) {
+     form.html("<span class='alert button'>queued for processing</span>")
+     form.fadeOut(5000);
+    });
+  });
+
+  /* Planning alerts */
+  /*
+  // @todo PostGIS: uncomment after switch
+  $('#alert_subscriber_postcode_text,#new_alert_subscriber input:radio').change(function (event) {
+    var $header = $('#planning-alerts-preview h2'),
+        $list = $('#planning_applications'),
+        postcode = $('#alert_subscriber_postcode_text').val(),
+        distance = $('#new_alert_subscriber input:radio:checked').val();
+
+    $header.empty();
+    $list.empty();
+
+    if (postcode) {
+      if (distance === undefined) {
+        distance = 0.2;
+      }
+
+      $.ajax({
+        url: '/planning_applications.json?postcode=' + encodeURIComponent(postcode) + '&distance=' + distance,
+        dataType: 'json',
+        success: function (data) {
+          $header.text('Recent applications within ' + (distance * 1000) + ' m of ' + postcode);
+          $.each(data.planning_applications, function (i, x) {
+            $list.append(
+              '<div class="planning_application">' +
+                '<strong class="description">' +
+                  '<a href="' + x.openlylocal_url + '" class="planning_application_link">' + x.description + '</a>' +
+                '</strong> ' +
+                '<span class="address">' + x.address + '</span> ' +
+                '<a href="' + x.url + '" class="official_page external url">official page</a>' +
+              '</div>'
+            );
+          });
+        },
+        error: function (jqXHR) {
+          $header.text(jqXHR.responseText);
+        }
+      });
+    }
+  });
+  */
 });
 
 // Map Geography Utility functions - see http://www.movable-type.co.uk/scripts/latlong.html#destPoint  
@@ -239,8 +239,8 @@ function linkTo(txt,url) {
 jQuery.fn.getCompanyData = function () {
   var el = $(this)[0];
   if (el) {
-	  $('dl.attributes').before("<div class='ajax_fetcher'>Fetching data from OpenCorporates</div>");
-	  var oc_url = $(this)[0]['href'] + '.json?callback=?';
+    $('dl.attributes').before("<div class='ajax_fetcher'>Fetching data from OpenCorporates</div>");
+    var oc_url = $(this)[0]['href'] + '.json?callback=?';
     $.getJSON(oc_url, function(data) { populateCompanyData(data) });
   };
 }
