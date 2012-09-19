@@ -9,9 +9,9 @@ module GenericEntityMatcher
       when entity_klass.respond_to?(:possible_matches)
         entity_klass.possible_matches(params)
       when entity_klass.new.respond_to?(:normalised_title)
-        entity_klass.all(:conditions => ['normalised_title LIKE ?', "#{entity_klass.normalise_title(params[:title]).split.first}%"], :order => title_field)
+        entity_klass.all(:conditions => ['UPPER(normalised_title) LIKE ?', "#{entity_klass.normalise_title(params[:title]).split.first.upcase}%"], :order => title_field)
       else
-        entity_klass.all(:conditions => ["#{title_field} LIKE ?", "#{params[:title].split.first}%"], :order => title_field )
+        entity_klass.all(:conditions => ["UPPER(#{title_field}) LIKE ?", "#{params[:title].split.first.upcase}%"], :order => title_field )
       end 
                                                             
     results.collect! do |res|

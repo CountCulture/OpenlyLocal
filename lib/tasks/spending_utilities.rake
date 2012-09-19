@@ -4,7 +4,7 @@ require 'httpclient'
 
 desc "Import Windsor & Maidenhead Supplier Payments"
 task :import_windsor_and_maidenhead_supplier_payments => :environment do
-  wandm = Council.first(:conditions => "name LIKE '%Windsor%'")
+  wandm = Council.first(:conditions => "UPPER(name) LIKE '%WINDSOR%'")
   suppliers = wandm.suppliers
   periods = %w(2009_q1 2009_q2 2009_q3 2009_q4 2010_q1)
   periods.each do |period|
@@ -69,7 +69,7 @@ end
 
 desc "Match suppliers to companies"
 task :match_suppliers_to_companies => :environment do
-  unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (name LIKE '%Ltd%' OR name LIKE '%Limited%' OR name LIKE '%PLC%')", :limit => 200)
+  unmatched_suppliers = Supplier.all(:conditions => "company_number IS NULL AND (UPPER(name) LIKE '%LTD%' OR UPPER(name) LIKE '%LIMITED%' OR UPPER(name) LIKE '%PLC%')", :limit => 200)
   unmatched_suppliers.each do |supplier|
     normalised_name = supplier.name.sub(/\bT\/A\b.+/i, '').gsub(/\(.+\)/,'').squish
     client = HTTPClient.new
@@ -106,7 +106,7 @@ end
 
 desc "Import LB Richmond Supplier Payments"
 task :import_richmond_supplier_payments => :environment do
-  richmond = Council.first(:conditions => "name LIKE '%Richmond%'")
+  richmond = Council.first(:conditions => "UPPER(name) LIKE '%RICHMOND%'")
   suppliers = richmond.suppliers
   periods = %w(06_2010)
   periods.each do |period|
@@ -147,7 +147,7 @@ end
 
 desc "Import Surrey CC Supplier Payments"
 task :import_surrey_supplier_payments => :environment do
-  surrey = Council.first(:conditions => "name LIKE '%Surrey%'")
+  surrey = Council.first(:conditions => "UPPER(name) LIKE '%SURREY%'")
   date = "30-04-2010".to_date
   puts "Adding transactions for Sutton"
   FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/surrey_cc/surrey_cc_spending_april_may_2010.csv"), :headers => true) do |row|
@@ -167,7 +167,7 @@ end
 
 desc "Import Uttlesford Supplier Payments"
 task :import_uttlesford_supplier_payments => :environment do
-  uttlesford = Council.first(:conditions => "name LIKE '%Uttlesford%'")
+  uttlesford = Council.first(:conditions => "UPPER(name) LIKE '%UTTLESFORD%'")
   puts "Adding transactions for Uttlesford"
   supplier, transactions = nil, []
   FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/uttlesford/june_2010.csv"), :headers => true) do |row|
@@ -194,7 +194,7 @@ end
 
 desc "Import King's Lynn & West Norfolk Payments"
 task :import_kl_and_wn_payments => :environment do
-  klandwn = Council.first(:conditions => "name LIKE '%West Norfolk%'")
+  klandwn = Council.first(:conditions => "UPPER(name) LIKE '%WEST NORFOLK%'")
   # periods = ['April 2010', 'May 2010']
   periods = ['June 2010']
   puts "Adding transactions for King's Lynn & West Norfolk"
@@ -223,7 +223,7 @@ end
 # Service Area,Expenditure Type,Vendor Name,Entry Date,Ref.Doc., Expenditure
 desc "Import Barnet Payments"
 task :import_barnet_payments => :environment do
-  barnet = Council.first(:conditions => "name LIKE '%Barnet%'")
+  barnet = Council.first(:conditions => "UPPER(name) LIKE '%BARNET%'")
   puts "Adding transactions for Barnet"
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_barnet/expenditure_by_supplier_apr_to_jun_10.csv"), :headers => true) do |csv_file|
     csv_file.each do |row|
@@ -281,7 +281,7 @@ end
 
 desc "Import Islington Payments"
 task :import_islington_payments => :environment do
-  islington = Council.first(:conditions => "name LIKE '%Islington%'")
+  islington = Council.first(:conditions => "UPPER(name) LIKE '%ISLINGTON%'")
   periods = ['04_2010', '05_2010']
   puts "Adding transactions for Islington"
   periods.each do |period|
@@ -307,7 +307,7 @@ end
 
 desc "Import Bedford Payments"
 task :import_bedford_payments => :environment do
-  bedford = Council.first(:conditions => "name LIKE '%Bedford Borough%'")
+  bedford = Council.first(:conditions => "UPPER(name) LIKE '%BEDFORD BOROUGH%'")
   periods = ['04_2010', '05_2010', '06_2010', '07_2010']
   puts "Adding transactions for Barnet"
   periods.each do |period|
@@ -334,7 +334,7 @@ end
 
 desc "Import Bromley Payments"
 task :import_bromley_payments => :environment do
-  bromley = Council.first(:conditions => "name LIKE '%Bromley%'")
+  bromley = Council.first(:conditions => "UPPER(name) LIKE '%BROMLEY%'")
   puts "Adding transactions for Bromley"
   date = "14-06-2010"
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_bromley/PaymentstosuppliersJun10Invoices.csv"), :headers => true) do |csv_file|
@@ -361,7 +361,7 @@ end
 
 desc "Import Kensington & Chelsea Payments"
 task :import_kandc_payments => :environment do
-  kandc = Council.first(:conditions => "name LIKE '%Chelsea%'")
+  kandc = Council.first(:conditions => "UPPER(name) LIKE '%CHELSEA%'")
   puts "Adding transactions for Kensington & Chelsea"
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_kandc/PaymentsSchedule010410-300610.csv"), :headers => true) do |csv_file|
     csv_file.each do |row|
@@ -413,7 +413,7 @@ end
 
 desc "Import Devon County Council Payments"
 task :import_devon_cc_payments => :environment do
-  devon = Council.first(:conditions => "name LIKE '%Devon %'")
+  devon = Council.first(:conditions => "UPPER(name) LIKE '%DEVON %'")
   puts "Adding transactions for Devon County Council"
   periods = %w(may10 june10 july10)
   periods.each do |period|
@@ -438,7 +438,7 @@ end
 
 desc "Import Lewes Payments"
 task :import_lewes_payments => :environment do
-  lewes = Council.first(:conditions => "name LIKE '%Lewes%'")
+  lewes = Council.first(:conditions => "UPPER(name) LIKE '%LEWES%'")
   puts "Adding transactions for Lewes"
   date = "14-06-2010"
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lewes/1011_Payments.csv"), :headers => true) do |csv_file|
@@ -461,7 +461,7 @@ end
 
 desc "Import Wigan Payments"
 task :import_wigan_payments => :environment do
-  wigan = Council.first(:conditions => "name LIKE '%Wigan%'")
+  wigan = Council.first(:conditions => "UPPER(name) LIKE '%WIGAN%'")
   puts "Adding transactions for Wigan"
   date = "14-06-2010"
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/wigan/SupplierPuchases-April-June2010.csv"), :headers => true) do |csv_file|
@@ -485,7 +485,7 @@ end
 
 # desc "Import Walsall Payments"
 # task :import_walsall_payments => :environment do
-#   walsall = Council.first(:conditions => "name LIKE '%Walsall%'")
+#   walsall = Council.first(:conditions => "UPPER(name) LIKE '%WALSALL%'")
 #   puts "Adding transactions for Wigan"
 #   date = "14-06-2010"
 #   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/walsall/SupplierPuchases-April-June2010.csv"), :headers => true) do |csv_file|
@@ -508,7 +508,7 @@ end
 # end
 desc "Import Wandsworth Supplier Payments"
 task :import_wandsworth_supplier_payments => :environment do
-  wandsworth = Council.first(:conditions => "name LIKE '%Wandsworth%'")
+  wandsworth = Council.first(:conditions => "UPPER(name) LIKE '%WANDSWORTH%'")
   date = "14-07-2010".to_date
   puts "Adding transactions for Wandsworth"
   FasterCSV.foreach(File.join(RAILS_ROOT, "db/data/spending/lb_wandsworth/july20100811.csv"), :headers => true) do |row|
@@ -527,7 +527,7 @@ end
 
 desc "Import Corby Payments"
 task :import_corby_payments => :environment do
-  corby = Council.first(:conditions => "name LIKE '%Corby %'")
+  corby = Council.first(:conditions => "UPPER(name) LIKE '%CORBY %'")
   puts "Adding transactions for Corby Council"
   periods = %w(June July)
   periods.each do |period|
@@ -586,7 +586,7 @@ end
 
 desc "Import South Glocs Payments"
 task :import_south_glocs_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%South Gloucester%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%SOUTH GLOUCESTER%'")
   puts "Adding transactions for South Glocs "
   date = "15-05-2010"
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/south_glos/apr_jun_2010.csv"), :headers => true) do |csv_file|
@@ -613,7 +613,7 @@ end
 
 desc "Import Hillingdon Payments"
 task :import_hillingdon_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%Hillingdon%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%HILLINGDON%'")
   puts "Adding transactions for #{council.title}"
   Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'lb_hillingdon')).select{ |f| f.scan(/(\d+)\.csv/).to_s.to_i > 6 }.each do |file_name|
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_hillingdon/#{file_name}"), :headers => true) do |csv_file|
@@ -638,7 +638,7 @@ end
 
 desc "Import Broxbourne Payments"
 task :import_broxbourne_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%Broxbourne%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%BROXBOURNE%'")
   puts "Adding transactions for #{council.title}"
   Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'broxbourne')).select{ |f| f.match('csv') }.each do |file_name|
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/broxbourne/#{file_name}"), :headers => true) do |csv_file|
@@ -664,7 +664,7 @@ end
 
 desc "Import West Dorset Payments"
 task :import_west_dorset_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%West Dorset%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%WEST DORSET%'")
   puts "Adding transactions for #{council.title}"
   Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'west_dorset')).select{ |f| f.match('csv') }.each do |file_name|
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/west_dorset/#{file_name}"), :headers => true) do |csv_file|
@@ -688,7 +688,7 @@ end
 
 desc "Import Waltham Forest Payments"
 task :import_waltham_forest_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%Waltham Forest%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%WALTHAM FOREST%'")
   puts "Adding transactions for #{council.title}"
   Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'lb_waltham_forest')).select{ |f| f.match('csv') }.each do |file_name|
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/lb_waltham_forest/#{file_name}"), :headers => true) do |csv_file|
@@ -713,7 +713,7 @@ end
 
 desc "Import North Somerset Payments"
 task :import_north_somerset_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%North Somerset%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%NORTH SOMERSET%'")
   puts "Adding transactions for #{council.title}"
   Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'north_somerset')).select{ |f| f.match('csv') }.each do |file_name|
     puts "Importing data from #{file_name}"
@@ -742,7 +742,7 @@ end
 
 desc "Import Harlow Payments"
 task :import_harlow_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%Harlow%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%HARLOW%'")
   puts "Adding transactions for #{council.title}"
   date = '14-05-2010'.to_date
   Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'harlow')).select{ |f| f.match('csv') }.each do |file_name|
@@ -767,7 +767,7 @@ end
 
 desc "Import Cambridgeshire County Council Payments"
 task :import_cambridgeshire_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%Cambridgeshire%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%CAMBRIDGESHIRE%'")
   puts "Adding transactions for #{council.title}"
   Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'cambridgeshire_cc')).select{ |f| f.match('csv') }.each do |file_name|
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/cambridgeshire_cc/#{file_name}"), :headers => true) do |csv_file|
@@ -833,7 +833,7 @@ end
 
 desc "Import Trafford Council Payments"
 task :import_trafford_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%Trafford%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%TRAFFORD%'")
   puts "Adding transactions for #{council.title}"
   Dir.entries(File.join(RAILS_ROOT, 'db', 'data', 'spending', 'trafford')).select{ |f| f.match('csv') }.each do |file_name|
     FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/trafford/#{file_name}"), :headers => true) do |csv_file|
@@ -861,7 +861,7 @@ end
 
 desc "Import Birmingham Payments"
 task :import_birmingham_payments => :environment do
-  council = Council.first(:conditions => "name LIKE '%Birmingham%'")
+  council = Council.first(:conditions => "UPPER(name) LIKE '%BIRMINGHAM%'")
   puts "Adding transactions for #{council.title}"
   FasterCSV.open(File.join(RAILS_ROOT, "db/data/spending/birmingham/2010-08.csv"), :headers => true) do |csv_file|
     csv_file.each do |row|

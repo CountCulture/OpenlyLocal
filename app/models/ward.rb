@@ -20,15 +20,15 @@ class Ward < ActiveRecord::Base
   
   def validate_on_create
     if snac_id.blank?
-      errors.add(:name, 'already exists for this council') if Ward.exists?(['council_id = ? AND name LIKE ?', council_id, "%#{name}%"])
+      errors.add(:name, 'already exists for this council') if Ward.exists?(['council_id = ? AND UPPER(name) LIKE ?', council_id, "%#{name.upcase}%"])
     else
-      condition_string = "(council_id = :council_id AND name LIKE :name AND snac_id = :snac_id) OR (council_id = :council_id AND name LIKE :name AND (snac_id IS NULL OR snac_id = ''))"
+      condition_string = "(council_id = :council_id AND UPPER(name) LIKE :name AND snac_id = :snac_id) OR (council_id = :council_id AND UPPER(name) LIKE :name AND (snac_id IS NULL OR snac_id = ''))"
       unless self.defunkt
-        condition_string += "OR (council_id = :council_id AND name LIKE :name AND defunkt = :defunkt)"
+        condition_string += "OR (council_id = :council_id AND UPPER(name) LIKE :name AND defunkt = :defunkt)"
       end
       if Ward.first(:conditions => [condition_string, {
         :council_id => council_id,
-        :name => "#{name}%",
+        :name => "#{name.upcase}%",
         :snac_id => snac_id,
         :defunkt => false}])
         errors.add(:name, 'already exists for this council')

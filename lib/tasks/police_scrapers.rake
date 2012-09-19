@@ -38,7 +38,7 @@ task :populate_npia_ids => :environment do
     force_url = force_info["url_force"]
     engagement_method_urls = [force_info["engagement_methods"]["method"]].flatten.collect{ |m| m["url"] }
     social_sites = SocialNetworkingUtilities::IdExtractor.extract_from(engagement_method_urls)
-    if police_force = PoliceForce.first(:conditions => "url LIKE '%#{URI.parse(force_url).host||force_url}%'")
+    if police_force = PoliceForce.first(:conditions => "UPPER(url) LIKE '%#{(URI.parse(force_url).host || force_url).upcase}%'")
       police_force.attributes = social_sites.merge(:npia_id => force_info["id"], :crime_map => force_info["url_crimemapper"])
       police_force.save!
       puts "Updated force matching #{force_info["name"]}: #{police_force.name} (id = #{force_info['id']}, social media sites = #{social_sites.inspect})"
@@ -93,9 +93,9 @@ task :connect_police_force_to_la => :environment do
   rows = FasterCSV.read(File.join(RAILS_ROOT, "db/csv_data/police_LA_table.csv")).to_a
   rows.each do |row| # group by council SNAC id
     council_name, area, force_name = row
-    if council = Council.find(:first, :conditions => ['name LIKE ?', "%#{council_name.sub(/UA/,'').strip}%"])
+    if council = Council.find(:first, :conditions => ['UPPER(name) LIKE ?', "%#{council_name.sub(/UA/,'').strip.upcase}%"])
       puts "Found match for #{council_name}: #{council.name}"
-      if force = PoliceForce.find(:first, :conditions => ['name LIKE ?', "%#{force_name}%"])
+      if force = PoliceForce.find(:first, :conditions => ['UPPER(name) LIKE ?', "%#{force_name.upcase}%"])
         council.update_attribute(:police_force_id, force.id)
         puts "Updated #{council.name} with force: #{force.name}"
       else
@@ -113,7 +113,7 @@ task :connect_police_force_to_la => :environment do
   all_forces = PoliceForce.all
   Council.find_all_by_police_force_id(nil, :order => "name ASC").each do |eic|
     puts eic.name
-    if poss_force = PoliceForce.find(:first, :conditions => ['name LIKE ?', "%#{eic.short_name.sub(/county/i,'').strip}%"])
+    if poss_force = PoliceForce.find(:first, :conditions => ['UPPER(name) LIKE ?', "%#{eic.short_name.sub(/county/i,'').strip.upcase}%"])
       puts "Possible force: #{poss_force.name}. Is this correct? (y/n)"
       response = $stdin.gets.chomp
       eic.update_attribute(:police_force_id, poss_force.id) && next if response == "y"
@@ -130,7 +130,7 @@ end
 
 desc "Get wikipedia info for Police Forces" 
 task :get_police_force_wikipedia_info => :environment do
-  PoliceForce.first(:conditions => "name LIKE 'Dyfed%'").update_attribute(:name, "Dyfed-Powys Police")
+  PoliceForce.first(:conditions => "UPPER(name) LIKE 'DYFED%'").update_attribute(:name, "Dyfed-Powys Police")
   require 'hpricot'
   require 'httpclient'
   client = HTTPClient.new
@@ -182,7 +182,7 @@ task :get_police_authority_info => :environment do
       telephone = el.pop.scan(/[\d\s]+$/).to_s.strip
       postcode = el.last.slice!(/\w*\d*\s\w*\d*$/)
       address = el.join(', ').titleize
-      force = PoliceForce.first(:conditions => ['name LIKE ?', "%#{title.gsub(/Police|Authority/,'').strip}%"])
+      force = PoliceForce.first(:conditions => ['UPPER(name) LIKE ?', "%#{title.gsub(/Police|Authority/,'').strip.upcase}%"])
       puts title, url, address.titleize, postcode, telephone, force, "===="
       PoliceAuthority.create!(:title => title, :telephone => telephone, :police_force => force, :url => url, :address => [address, postcode].join(" "))
     rescue Exception => e

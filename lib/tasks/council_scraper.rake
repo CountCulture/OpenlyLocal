@@ -238,7 +238,7 @@ task :add_council_twitter_ids => :environment do
         m_url = URI.parse(member.url.strip).host
 
         m_id = member.screen_name
-        if council = Council.find(:first, :conditions => ['url LIKE ?', "%#{m_url}%"])
+        if council = Council.find(:first, :conditions => ['UPPER(url) LIKE ?', "%#{m_url.upcase}%"])
           if m_id == council.twitter_account_name
             puts "Twitter account for #{council.name} unchanged"
           else
@@ -395,7 +395,7 @@ task :associate_pension_funds => :environment do
       puts "========\nFound match for #{council.name} (#{council.short_name}): #{row.first}"
       fund_short_name = row.last.gsub(/Pension|Fund|Council|Authority|Scheme/i, '').squish
       
-      if fund = PensionFund.first(:conditions => "name LIKE '%#{fund_short_name}%'")
+      if fund = PensionFund.first(:conditions => "UPPER(name) LIKE '%#{fund_short_name.upcase}%'")
         council.update_attribute(:pension_fund, fund)
         unmatched_councils.delete(council)
         puts "Updated #{council.name} with pension fund: #{fund.name}"
