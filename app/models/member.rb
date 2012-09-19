@@ -11,13 +11,17 @@ class Member < ActiveRecord::Base
     def potential_meetings
       reduce([]) do |memo,committee|
         memo += committee.meetings
-      end.sort_by(&:date_held)
+      end.sort_by do |meeting|
+        meeting.date_held.to_datetime
+      end
     end
 
     def forthcoming_meetings
       reduce([]) do |memo,committee|
         memo += committee.meetings.all(:conditions => ['date_held > ?', Time.now])
-      end.sort_by(&:date_held)
+      end.sort_by do |meeting|
+        meeting.date_held.to_datetime
+      end
     end
   end
 
