@@ -80,6 +80,7 @@ GEM
     morph (0.3.2)
       activesupport (>= 2.0.2)
     multi_json (1.1.0)
+    mysql (2.8.1)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -171,6 +172,7 @@ DEPENDENCIES
   httpclient
   json
   mocha
+  mysql
   newrelic_rpm
   nokogiri (~> 1.4.1)
   pg
