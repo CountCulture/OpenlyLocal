@@ -12,9 +12,14 @@ class AddGeomToPlanningApplications < ActiveRecord::Migration
     add_index :planning_applications, :geom, :spatial => true
 
     # Run separately:
+    #
     # PlanningApplication.all.each do |record|
     #   record.update_attribute :geom, Point.from_x_y(record.lng, record.lat, 4326)
     # end
+    #
+    # Or:
+    #
+    # UPDATE planning_applications SET geom = ST_SetSRID(ST_MakePoint(lng, lat), 4326);
   end
 
   def self.down

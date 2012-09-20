@@ -14,7 +14,6 @@ gem 'spatial_adapter' # switch to rgeo in Rails 3
 gem 'geokit'
 gem 'dbf', '1.2.9'
 gem 'georuby'
-gem 'mysql' # resque seems to require it?
 
 # Background jobs
 gem 'daemons', '1.0.10' # used by delayed_job

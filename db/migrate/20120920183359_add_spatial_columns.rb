@@ -7,12 +7,18 @@ class AddSpatialColumns < ActiveRecord::Migration
     add_index :hyperlocal_sites, :geom, :spatial => true
 
     # Run separately:
+    #
     # Postcode.all.each do |record|
     #   record.update_attribute :geom, Point.from_x_y(record.lng, record.lat, 4326)
     # end
     # HyperlocalSite.all.each do |record|
     #   record.update_attribute :geom, Point.from_x_y(record.lng, record.lat, 4326)
     # end
+    #
+    # Or:
+    #
+    # UPDATE postcodes SET geom = ST_SetSRID(ST_MakePoint(lng, lat), 4326);
+    # UPDATE hyperlocal_sites SET geom = ST_SetSRID(ST_MakePoint(lng, lat), 4326);
 
     # addresses seems to not use its lat/lng.
     # councils seems to use its lat/lng only for tweets.
