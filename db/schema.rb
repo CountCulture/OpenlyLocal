@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120920183359) do
+ActiveRecord::Schema.define(:version => 20120920202605) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -48,18 +48,15 @@ ActiveRecord::Schema.define(:version => 20120920183359) do
     t.boolean  "confirmed"
     t.string   "confirmation_code"
     t.float    "distance"
-    t.float    "bottom_left_lat"
-    t.float    "bottom_left_lng"
-    t.float    "top_right_lat"
-    t.float    "top_right_lng"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "postcode_id"
+    t.point    "geom",              :limit => nil, :srid => 4326
   end
 
-  add_index "alert_subscribers", ["bottom_left_lat", "top_right_lat", "bottom_left_lng", "top_right_lng"], :name => "bounding_box_index"
   add_index "alert_subscribers", ["created_at"], :name => "index_alert_subscribers_on_created_at"
   add_index "alert_subscribers", ["email"], :name => "index_alert_subscribers_on_email"
+  add_index "alert_subscribers", ["geom"], :name => "index_alert_subscribers_on_geom", :spatial => true
 
   create_table "boundaries", :force => true do |t|
     t.string   "area_type"
@@ -799,11 +796,13 @@ ActiveRecord::Schema.define(:version => 20120920183359) do
     t.string   "application_type",  :limit => 64
     t.integer  "bitwise_flag",                      :default => 0
     t.string   "status"
+    t.point    "geom",              :limit => nil,                                 :srid => 4326
   end
 
   add_index "planning_applications", ["council_id", "start_date"], :name => "index_planning_applications_on_council_id_and_date_received"
   add_index "planning_applications", ["council_id", "uid"], :name => "index_planning_applications_on_council_id_and_uid", :unique => true
   add_index "planning_applications", ["council_id", "updated_at"], :name => "index_planning_applications_on_council_id_and_updated_at"
+  add_index "planning_applications", ["geom"], :name => "index_planning_applications_on_geom", :spatial => true
   add_index "planning_applications", ["lat", "lng"], :name => "index_planning_applications_on_lat_and_lng"
 
   create_table "police_authorities", :force => true do |t|

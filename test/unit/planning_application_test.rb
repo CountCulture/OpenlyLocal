@@ -116,7 +116,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
     context "with_data named scope" do
       setup do
         @no_details_application = Factory(:planning_application) #retrieved_at is nil
-        @with_details_application = Factory(:planning_application, :retrieved_at => 2.months.ago) 
+        @with_details_application = Factory(:planning_application, :start_date => 1.month.ago, :retrieved_at => 2.months.ago) 
         @with_details_applications = PlanningApplication.with_details
       end
 

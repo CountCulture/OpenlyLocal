@@ -11,15 +11,7 @@ class AlertSubscriber < ActiveRecord::Base
   after_destroy :send_unsubscribe_confirmation_email
 
   named_scope :confirmed, :conditions => {:confirmed => true}
-  named_scope :geocoded, :conditions => "bottom_left_lat IS NOT NULL"
-  named_scope :contains, lambda { |lat,lng|
-    {
-      :conditions => [
-        'bottom_left_lat <= ? AND bottom_left_lng <= ? AND top_right_lat >= ? AND top_right_lng >= ?',
-        lat, lng, lat, lng,
-      ],
-    }
-  }
+  named_scope :geocoded, :conditions => 'geom IS NOT NULL'
 
   def self.confirm_from_email_and_code(email_address, conf_code)
     if subscriber = find_by_email_and_confirmation_code(email_address, conf_code)
@@ -29,10 +21,6 @@ class AlertSubscriber < ActiveRecord::Base
       logger.info "User with email #{email_address} failed to confirm using confirmation_code #{conf_code}"
       false
     end
-  end
-  
-  def self.bounding_box_from_postcode_and_distance(postcode, distance)
-    Geokit::Bounds.from_point_and_radius(postcode, distance) if postcode
   end
   
   def self.unsubscribe_user_from_email_and_token(email, given_unsubscribe_token)
@@ -62,16 +50,11 @@ class AlertSubscriber < ActiveRecord::Base
   def set_confirmation_code
     self[:confirmation_code] = SecureRandom.hex(32)
   end
-  
+
   def set_geo_data_from_postcode_text
-    if bounding_box = self.class.bounding_box_from_postcode_and_distance(postcode, distance)
-      self.bottom_left_lat = bounding_box.sw.lat
-      self.bottom_left_lng = bounding_box.sw.lng
-      self.top_right_lat   = bounding_box.ne.lat
-      self.top_right_lng   = bounding_box.ne.lng
-    end
+    self.geom = postcode.geom if postcode && !geom?
   end
-  
+
   def send_confirmation_email
     AlertMailer.deliver_confirmation!(self)
   end

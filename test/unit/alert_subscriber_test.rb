@@ -19,8 +19,7 @@ class AlertSubscriberTest < ActiveSupport::TestCase
       should_not allow_value(value).for :distance
     end
     should belong_to :postcode
-    %w(last_sent confirmed confirmation_code bottom_left_lat bottom_left_lng
-      top_right_lat top_right_lng created_at updated_at postcode_id).each do |attribute|
+    %w(last_sent confirmed confirmation_code created_at updated_at postcode_id).each do |attribute|
       should_not allow_mass_assignment_of attribute
     end
     
@@ -101,18 +100,6 @@ class AlertSubscriberTest < ActiveSupport::TestCase
         end
       end
 
-
-      should "set lat lng bounds from postcode and distance" do
-        bounding_box = Geokit::Bounds.from_point_and_radius([12.3456, 54.321], 0.25)
-        Postcode.stubs(:find_from_messy_code).returns(@postcode)
-        AlertSubscriber.expects(:bounding_box_from_postcode_and_distance).with(@postcode, @alert_subscriber.distance).returns(bounding_box)
-        @alert_subscriber.save!
-        assert_equal bounding_box.sw.lat, @alert_subscriber.bottom_left_lat
-        assert_equal bounding_box.sw.lng, @alert_subscriber.bottom_left_lng
-        assert_equal bounding_box.ne.lat, @alert_subscriber.top_right_lat
-        assert_equal bounding_box.ne.lng, @alert_subscriber.top_right_lng
-      end
-      
       should "send confirmation email" do
         stub_email= stub("confirmation_email")
         AlertMailer.expects(:deliver_confirmation!).with(@alert_subscriber)
@@ -173,22 +160,6 @@ class AlertSubscriberTest < ActiveSupport::TestCase
         assert_equal expected_token, AlertSubscriber.unsubscribe_token('foo@test.com')
       end
     end
-    
-    context "when calculating bounding box from postcode and distance" do
-      setup do
-        @postcode = Factory(:postcode, :lat => 12.3456, :lng => 54.321)
-      end
-
-      should "return nil if postcode is nil" do
-        assert_nil AlertSubscriber.bounding_box_from_postcode_and_distance(nil, 0.2)
-      end
-      
-      should "return bounding box for given distance from postcode's lat/lng" do
-        expected_bounding_box = Geokit::Bounds.from_point_and_radius([12.3456, 54.321], 0.25)
-        assert_equal expected_bounding_box, AlertSubscriber.bounding_box_from_postcode_and_distance(@postcode, 0.25)
-      end
-    end
-    
   end
   
   context "an instance of the AlertSubscriber class" do
