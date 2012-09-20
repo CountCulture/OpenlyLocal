@@ -55,7 +55,7 @@ class PlanningApplication < ActiveRecord::Base
                                  :limit => 100, 
                                  :order => 'retrieved_at' } }
   
-  named_scope :with_details, { :conditions => "retrieved_at IS NOT NULL" } 
+  named_scope :with_details, { :conditions => "retrieved_at IS NOT NULL AND start_date IS NOT NULL" } 
   named_scope :recent, lambda { { :conditions => [ "start_date > ?", 2.weeks.ago],
                                   :limit => 5, 
                                   :order => 'start_date DESC' } }

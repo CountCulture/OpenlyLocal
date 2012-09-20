@@ -76,15 +76,12 @@ class AlertSubscribersControllerTest < ActionController::TestCase
         get :confirm, :email => @subscriber.email, :confirmation_code => @subscriber.confirmation_code
       end
 
-      should respond_with :success
-      should render_template :confirmed
-      should_not set_the_flash
+      should respond_with :redirect
+      should redirect_to("the search page for the postcode"){{:controller => 'areas', :action => 'search', :postcode => @subscriber.postcode.code}}
+      should set_the_flash.to(/subscription is active/)
 
       should "confirm subscriber" do
         assert @subscriber.reload.confirmed?
-      end
-      should "return success message" do
-        assert_select '.alert', /success/i
       end
     end
     
@@ -95,13 +92,14 @@ class AlertSubscribersControllerTest < ActionController::TestCase
 
       should respond_with :success
       should render_template :confirmed
+      should_not set_the_flash
 
       should "not confirm subscriber" do
         assert !@subscriber.reload.confirmed?
       end
       
       should "return failure message" do
-        assert_select '.alert', /fail/i
+        assert_select '.alert', /unable to activate/i
       end
     end
     

@@ -5,7 +5,7 @@ class AlertMailer < ActionMailer::Base
   def confirmation(subscriber)
     recipients subscriber.email
     from       'OpenlyLocal Alerts <alerts@openlylocal.com>'
-    subject    "Please confirm your OpenlyLocal Planning Alerts subscription"
+    subject    "Activate your OpenlyLocal Planning Alerts subscription"
     sent_on    Time.now
     body       :subscriber => subscriber
   end

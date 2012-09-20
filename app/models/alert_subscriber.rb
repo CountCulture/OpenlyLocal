@@ -24,6 +24,7 @@ class AlertSubscriber < ActiveRecord::Base
   def self.confirm_from_email_and_code(email_address, conf_code)
     if subscriber = find_by_email_and_confirmation_code(email_address, conf_code)
       subscriber.update_attribute(:confirmed, true)
+      subscriber
     else
       logger.info "User with email #{email_address} failed to confirm using confirmation_code #{conf_code}"
       false

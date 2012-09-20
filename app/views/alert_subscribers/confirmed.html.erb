@@ -1,10 +1,5 @@
-<h1>Planning Application alerts</h1>
+<h1>OpenlyLocal Planning Alerts</h1>
  
 <p class="alert">
-  <%- if @confirmed -%>
-    Your alert subscription has been successfully confirmed
-  <%- else -%>
-    Your alert subscription confirmation has failed. If you think this is our error, please forward the confirmation email to 
-    <%= mail_to 'planning@openlylocal.com', 'planning@openlylocal.com', :encode => :javascript %>
-  <%- end -%>
+  We were unable to activate your OpenlyLocal Planning Alerts subscription. If you think this is our error, please forward the confirmation email to <%= mail_to 'planning@openlylocal.com', 'planning@openlylocal.com', :encode => :javascript %>.
 </p>
