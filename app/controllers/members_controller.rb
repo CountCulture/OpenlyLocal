@@ -5,7 +5,7 @@ class MembersController < ApplicationController
   
   def index
     @title = params[:include_ex_members] ? "Current and former members" : "Current members"
-    if @council = Council.find_by_id(params[:council_id])
+    if @council = Council.find_by_id(params[:council_id].to_i)
       @members = params[:include_ex_members] ? @council.members.all(:include => [:ward, :twitter_account]) : @council.members.current.all(:include => [:ward, :twitter_account])
     else
       @members = Member.except_vacancies.current.paginate(:page => params[:page], :order => "last_name", :include => [:council, :ward, :twitter_account])
