@@ -1,6 +1,7 @@
 <%- div_for @planning_application, :class => 'vcard' do -%>
   <div class="breadcrumbs"><%= link_to "#{@council.name} planning applications", { :action => 'index', :council_id => @council.id } %></div>
   <h1><%= @title %></h1>
+  <%= render :partial => 'shared/planning_alerts_alert' %>
   <%= render :partial => 'shared/map_object', :object => @planning_application if @planning_application.lat? %>
 
   <div id='description'><%= simple_format(@planning_application.description) %></div>
