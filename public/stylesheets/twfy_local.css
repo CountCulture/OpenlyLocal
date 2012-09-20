@@ -1158,6 +1158,16 @@ clear: both;}
 .radio-answer .fieldWithErrors {
 	display: inline;
 }
+.fieldWithErrors input,
+.fieldWithErrors textarea {
+	border-color: #f00;
+	margin-bottom: 0;
+}
+.validation-error {
+	margin-bottom: 1em;
+	color: #f00;
+	font-weight: bold;
+}
 .row {
 	clear: left;
 }
