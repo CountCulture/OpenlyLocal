@@ -25,16 +25,8 @@ class PlanningApplicationsController < ApplicationController
       @page_title = "Latest Planning Applications in #{@council.title}"
       @title = "Latest Planning Applications"
     elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
-      distance = if %w(0.2 0.8 2).include? params[:distance]
-        params[:distance].to_f
-      else
-        0.2
-      end
-      # bounds=Geokit::Bounds.from_point_and_radius(@postcode, distance)
-      # @planning_applications = PlanningApplication.find(:all, :bounds => bounds)
-
-      # @todo PostGIS: after switch, paginate and sort like when searching by council ID
-      @planning_applications = PlanningApplication.find(:all, :origin => [@postcode.lat, @postcode.lng], :within => distance)
+      distance = %w(0.2 0.8 2).include?(params[:distance]) ? params[:distance].to_f : 0.2
+      @planning_applications = PlanningApplication.all(:conditions => ["ST_DWithin(ST_Transform(geom, 27700), ST_Transform(?, 27700), ?)", @postcode.geom, distance * 1000])
       @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
     end
 

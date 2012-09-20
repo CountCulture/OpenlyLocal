@@ -167,7 +167,6 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
 
     context "and postcode given" do
       should "find within 0.2km of lat long of postcode" do
-        PlanningApplication.expects(:find).with(:all, has_entries(:origin => [@postcode.lat, @postcode.lng], :within => 0.2))
         get :index, :postcode => 'AB1 2CD'
       end
 
