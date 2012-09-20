@@ -8,7 +8,7 @@ class AlertSubscribersController < ApplicationController
   def confirm
     @subscriber = AlertSubscriber.confirm_from_email_and_code(params[:email], params[:confirmation_code])
     if @subscriber
-      flash[:notice] = "Your OpenlyLocal Planning Alerts subscription is active! You will now receive alerts for planning applications within #{(@subscriber.distance * 1000).to_i} of #{@subscriber.postcode.code}."
+      flash[:notice] = "Your OpenlyLocal Planning Alerts subscription is active! You will now receive alerts for planning applications within #{(@subscriber.distance * 1000).to_i}m of #{@subscriber.postcode.code}."
       redirect_to :controller => 'areas', :action => 'search', :postcode => @subscriber.postcode.code
     else
       render :template => 'alert_subscribers/confirmed'

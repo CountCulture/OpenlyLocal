@@ -1,4 +1,4 @@
-CLICK THE LINK BELOW to start receiving alerts for planning applications within <%= number_with_precision @subscriber.distance * 1000, :precision => 0, :delimiter => ',' %> of <%= @subscriber.postcode.code %>:
+CLICK THE LINK BELOW to start receiving alerts for planning applications within <%= number_with_precision @subscriber.distance * 1000, :precision => 0, :delimiter => ',' %>m of <%= @subscriber.postcode.code %>:
 
 <%= confirm_alert_subscribers_url(:email => @subscriber.email, :confirmation_code => @subscriber.confirmation_code) %>
 
