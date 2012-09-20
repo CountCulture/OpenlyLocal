@@ -1,6 +1,8 @@
 var EARTH_RADIUS = 3963.19; //in miles
 var circle;
 
+function initMap(){}
+
 // With help from http://blog.schuager.com/2008/09/jquery-autocomplete-json-apsnet-mvc.html and http://1300grams.com/2009/08/17/jquery-autocomplete-with-json-jsonp-support-and-overriding-the-default-search-parameter-q/
 $(document).ready( function() {
   $('.live_search').autocomplete("/services.json", {
@@ -89,6 +91,50 @@ $(document).ready( function() {
   });
 
   /* Planning alerts */
+  if (GBrowserIsCompatible() && $('#planning-alerts-map-preview').length) {
+    var map_radius = new GMap2(document.getElementById('planning-alerts-map-preview')),
+        polygon;
+
+    map_radius.setCenter(new GLatLng(54.3, -3), 6);
+    map_radius.addControl(new GSmallZoomControl());
+
+    var draw_alert_radius = function (event) {
+      var postcode = $('#alert_subscriber_postcode_text').val(),
+          distance = $('#new_alert_subscriber input:radio:checked').val(),
+          vertices = 72; // every 5 degrees
+
+      if (postcode && distance) {
+        $.ajax({
+          url: '/postcodes/' + encodeURIComponent(postcode) + '.json',
+          dataType: 'json',
+          success: function (data) {
+            if (data) {
+              if (polygon) {
+                map_radius.removeOverlay(polygon);
+              }
+
+              var lat_delta = distance / 6378.137 * 180 / Math.PI,
+                  lng_delta = lat_delta / Math.cos(data.postcode.lat * Math.PI / 180),
+                  points = [];
+              for (var i = 0; i < vertices + 1; i++) {
+                var theta = i * 2 * Math.PI / vertices,
+                    latlng = new GLatLng(data.postcode.lat + lat_delta * Math.cos(theta), data.postcode.lng + lng_delta * Math.sin(theta));
+                points.push(latlng); 
+              }
+
+              polygon = new GPolygon(points, '#0033ff', 5, 0.5, '#0033ff', 0.2);
+              map_radius.setCenter(new GLatLng(data.postcode.lat, data.postcode.lng), 13);
+              map_radius.addOverlay(polygon);
+            }
+          }
+        });
+      }
+    }
+
+    $('#alert_subscriber_postcode_text,#new_alert_subscriber input:radio').change(draw_alert_radius);
+    draw_alert_radius();
+  }
+
   /*
   // @todo PostGIS: uncomment after switch
   $('#alert_subscriber_postcode_text,#new_alert_subscriber input:radio').change(function (event) {

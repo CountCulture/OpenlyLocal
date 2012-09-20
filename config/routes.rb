@@ -12,7 +12,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :companies, :collection => { :spending => :get }
 
   map.resources :suppliers
-
+  map.resources :postcodes, :only => :show
 
   map.resources :scrapers, :member => { :scrape => :post }
   map.resources :item_scrapers, :controller => "scrapers", :member => { :scrape => :post }

@@ -1122,6 +1122,9 @@ clear: both;}
 }
 
 /* Planning alerts */
+#planning-alerts-map-preview {
+	height: 470px;
+}
 .blueprint-container {
 	width: 950px;
 	margin: 0 auto;
