@@ -11,9 +11,10 @@ class AddGeomToPlanningApplications < ActiveRecord::Migration
     add_index :alert_subscribers, :geom, :spatial => true
     add_index :planning_applications, :geom, :spatial => true
 
-    PlanningApplication.all.each do |record|
-      record.update_attribute :geom, Point.from_x_y(record.lng, record.lat, 4326)
-    end
+    # Run separately:
+    # PlanningApplication.all.each do |record|
+    #   record.update_attribute :geom, Point.from_x_y(record.lng, record.lat, 4326)
+    # end
   end
 
   def self.down
