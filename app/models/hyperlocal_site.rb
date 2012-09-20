@@ -20,6 +20,7 @@ class HyperlocalSite < ActiveRecord::Base
   acts_as_mappable
   default_scope :order => "title"
   delegate :region, :to => :council, :allow_nil => true
+  before_create :set_geom
   after_save :tweet_about_it
   
   def self.find_from_article_url(article_url)
@@ -43,7 +44,8 @@ class HyperlocalSite < ActiveRecord::Base
     self[:url] = TitleNormaliser.normalise_url(raw_url)
   end
   
-  private
+private
+
   def tweet_about_it
     if approved && !approved_was
       message = (twitter_account_name ? "@#{twitter_account_name}" : title) + " has been added to OpenlyLocal #hyperlocal directory"
@@ -51,5 +53,11 @@ class HyperlocalSite < ActiveRecord::Base
       Tweeter.new(message, {:url => "http://openlylocal.com/hyperlocal_sites/#{self.to_param}", :lat => lat, :long => lng}).delay.perform
     end
     true
+  end
+
+  def set_geom
+    if lat? && lng? && !geom?
+      self.geom = Point.from_x_y(lng, lat, 4326)
+    end
   end
 end

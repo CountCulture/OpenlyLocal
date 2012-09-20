@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120907201454) do
+ActiveRecord::Schema.define(:version => 20120920183359) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -568,12 +568,14 @@ ActiveRecord::Schema.define(:version => 20120907201454) do
     t.string   "area_covered"
     t.integer  "council_id"
     t.string   "country"
-    t.boolean  "approved",            :default => false
+    t.boolean  "approved",                           :default => false
     t.string   "party_affiliation"
+    t.point    "geom",                :limit => nil,                    :srid => 4326
   end
 
   add_index "hyperlocal_sites", ["approved"], :name => "index_hyperlocal_sites_on_approved"
   add_index "hyperlocal_sites", ["council_id"], :name => "index_hyperlocal_sites_on_council_id"
+  add_index "hyperlocal_sites", ["geom"], :name => "index_hyperlocal_sites_on_geom", :spatial => true
   add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"
 
   create_table "investigation_subject_connections", :force => true do |t|
@@ -927,11 +929,13 @@ ActiveRecord::Schema.define(:version => 20120907201454) do
     t.float   "lat"
     t.float   "lng"
     t.integer "crime_area_id"
+    t.point   "geom",                 :limit => nil, :srid => 4326
   end
 
   add_index "postcodes", ["code"], :name => "index_postcodes_on_code"
   add_index "postcodes", ["council_id"], :name => "index_postcodes_on_council_id"
   add_index "postcodes", ["county_id"], :name => "index_postcodes_on_county_id"
+  add_index "postcodes", ["geom"], :name => "index_postcodes_on_geom", :spatial => true
   add_index "postcodes", ["ward_id"], :name => "index_postcodes_on_ward_id"
 
   create_table "quangos", :force => true do |t|
