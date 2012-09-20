@@ -18,7 +18,7 @@ class PlanningApplicationsController < ApplicationController
   end
   
   def index
-    if @council = params[:council_id] && Council.find_by_id(params[:council_id])
+    if @council = params[:council_id] && Council.find_by_id(params[:council_id].to_i)
       order = params[:order]||(params[:format].to_s == 'rss') ? 'updated_at DESC' : 'start_date DESC'
       page = params[:page] || 1
       @planning_applications = @council.planning_applications.with_details.paginate(:order => order, :page => page.to_i )
