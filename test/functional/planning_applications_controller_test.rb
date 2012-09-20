@@ -161,7 +161,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
     #   end
     # 
     #   should "return message" do
-    #     assert_select ".warning", :text => /postcode not found/i
+    #     assert_select ".alert", :text => /postcode not found/i
     #   end
     # end
 
@@ -206,7 +206,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
           end
 
           should "return message" do
-            assert_select ".warning", :text => /postcode not found/i
+            assert_select ".alert", :text => /postcode not found/i
           end
         end
 
@@ -240,7 +240,7 @@ class PlanningApplicationsControllerTest < ActionController::TestCase
           should respond_with :success
 
           should "return message" do
-            assert_select ".warning", :text => /no matching planning applications/i
+            assert_select ".alert", :text => /no matching planning applications/i
           end
         end
 

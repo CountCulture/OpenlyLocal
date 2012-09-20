@@ -174,7 +174,7 @@ class HyperlocalSitesControllerTest < ActionController::TestCase
       end
       
       should 'show message' do
-        assert_select ".warning", /couldn't find location/i
+        assert_select ".alert", /couldn't find location/i
       end
 
     end
