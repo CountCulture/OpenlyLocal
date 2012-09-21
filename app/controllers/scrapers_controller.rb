@@ -35,9 +35,12 @@ class ScrapersController < ApplicationController
   end
   
   def create
-    @scraper.save!
-    flash[:notice] = "Successfully created scraper"
-    redirect_to scraper_url(@scraper)
+    if @scraper.save
+      flash[:notice] = "Successfully created scraper"
+      redirect_to scraper_url(@scraper)
+    else
+      render :action => 'new'
+    end
   end
   
   def edit

@@ -932,10 +932,24 @@ class ScrapersControllerTest < ActionController::TestCase
     context "with bad scraper type" do
       should "raise exception" do
         stub_authentication
-        assert_raise(ArgumentError) { get :create, { :type  => "Member", :scraper => @scraper_params } }
+        assert_raise(ArgumentError) { post :create, { :type  => "Member", :scraper => @scraper_params } }
       end
     end
-    
+
+    context "with invalid attributes" do
+      setup do
+        stub_authentication
+        post :create, { :type  => "InfoScraper" }
+      end
+
+      should render_template :new
+      should_not set_the_flash
+
+      should "show errors" do
+        assert_select "div.errorExplanation"
+      end
+    end
+
     context "with scraper type" do
       
       context "and new parser" do
@@ -944,16 +958,16 @@ class ScrapersControllerTest < ActionController::TestCase
           post :create, { :type => "InfoScraper", :scraper => @scraper_params }
         end
       
-        should_change('The number of scrapers', :by => 1) { Scraper.count }
         should assign_to :scraper
         should redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
         should set_the_flash.to "Successfully created scraper"
       
+        should_change('The number of scrapers', :by => 1) { Scraper.count }
+        should_change('The number of parsers', :by => 1) { Parser.count }
+
         should "save as given scraper type" do
           assert_kind_of InfoScraper, assigns(:scraper)
         end
-      
-        should_change('The number of parsers', :by => 1) { Parser.count }
       
         should "save parser description" do
           assert_equal "new parser", assigns(:scraper).parser.description
