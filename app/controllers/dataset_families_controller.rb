@@ -7,7 +7,7 @@ class DatasetFamiliesController < ApplicationController
 
   def show
     @dataset_family = DatasetFamily.find(params[:id])
-    @area = params[:area_type].constantize.find(params[:area_id]) if params[:area_type]&&params[:area_id]
+    @area = params[:area_type].camelize.constantize.find(params[:area_id]) if params[:area_type]&&params[:area_id]
     @title = @area ? "#{@dataset_family.title} :: #{@area.title}" : @dataset_family.title
     if @area
       @datapoints = @dataset_family.datapoints.all(:conditions => {:area_type => params[:area_type], :area_id => params[:area_id].to_i }).sort_by{ |d| d.dataset_topic.title }

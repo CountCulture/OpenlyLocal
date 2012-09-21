@@ -5,7 +5,7 @@ class DatasetTopicsController < ApplicationController
 
   def show
     if params[:area_type]&&params[:area_id]
-      @area = params[:area_type].constantize.find(params[:area_id])
+      @area = params[:area_type].camelize.constantize.find(params[:area_id])
       @council = @area.council if @area.is_a?(Ward)
       @datapoints = @dataset_topic.datapoints.all(:conditions => {:area_type => @area.class.to_s, :area_id => @area.related.collect(&:id)}).sort_by{ |dp| dp.area.title }
       @title = "#{@area.title} :: #{@dataset_topic.title}"

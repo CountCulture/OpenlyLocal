@@ -9,7 +9,7 @@ class DatasetsController < ApplicationController
   end
   
   def show
-    @area = params[:area_type].constantize.find(params[:area_id]) if params[:area_type]&&params[:area_id]
+    @area = params[:area_type].camelize.constantize.find(params[:area_id]) if params[:area_type]&&params[:area_id]
     @title = @area ? "#{@area.title} :: #{@dataset.title}" : @dataset.title
     if @area
       @datapoints = @dataset.calculated_datapoints_for(@area)

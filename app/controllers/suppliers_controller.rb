@@ -5,7 +5,7 @@ class SuppliersController < ApplicationController
     search_filter = params[:name_filter]
     page = valid_page
     page = 50 if page > 50
-    @organisation = params[:organisation_type].constantize.find(params[:organisation_id]) if params[:organisation_type] && params[:organisation_id]
+    @organisation = params[:organisation_type].camelize.constantize.find(params[:organisation_id]) if params[:organisation_type] && params[:organisation_id]
     @title = @organisation ? "Suppliers to #{@organisation.title}" : 'Suppliers to Local Authorities'
     sort_order = params[:order] == 'total_spend' ? 'spending_stats.total_spend DESC' : 'name'
     @suppliers = @organisation ? @organisation.suppliers.paginate(:joins => :spending_stat, :page => page, :order => sort_order) : 

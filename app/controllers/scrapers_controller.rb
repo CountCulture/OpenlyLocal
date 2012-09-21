@@ -20,7 +20,7 @@ class ScrapersController < ApplicationController
   def new
     raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type])
     @council = Council.find(params[:council_id]) if params[:council_id]
-    @scraper = params[:type].constantize.new(:council_id => params[:council_id])
+    @scraper = params[:type].camelize.constantize.new(:council_id => params[:council_id])
     parser_type = @scraper.is_a?(CsvScraper) ? 'CsvParser' : 'Parser'
     parser = 
       case 
@@ -88,7 +88,7 @@ class ScrapersController < ApplicationController
   # This creates an unsaved scraper, as needed by :create (and helps us to have more granular authentication)
   def create_stub_scraper
     raise ArgumentError unless Scraper::SCRAPER_TYPES.include?(params[:type])
-    @scraper = params[:type].constantize.new(params[:scraper])
+    @scraper = params[:type].camelize.constantize.new(params[:scraper])
   end
   
   def find_scraper
