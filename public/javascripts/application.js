@@ -136,7 +136,7 @@ $(document).ready( function() {
   }
 
   /*
-  // @todo PostGIS: uncomment after switch
+  // @todo uncomment if performance is better?
   $('#alert_subscriber_postcode_text,#new_alert_subscriber input:radio').change(function (event) {
     var $header = $('#planning-alerts-preview h2'),
         $list = $('#planning_applications'),

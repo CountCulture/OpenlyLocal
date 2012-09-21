@@ -4,7 +4,14 @@ class UserSubmissionsControllerTest < ActionController::TestCase
   
   # new test
   context "on GET to :new" do
-    
+    context "with no submission" do
+      setup do
+        get :new, :user_submission => {}
+      end
+
+      should respond_with :success
+    end
+
     context "in general" do
       setup do
         @item = Factory(:council)
