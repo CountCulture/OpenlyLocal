@@ -19,14 +19,13 @@ class PlanningApplicationsController < ApplicationController
   
   def index
     order = params[:order] || params[:format].to_s == 'rss' ? 'updated_at DESC' : 'start_date DESC'
-    page = params[:page] || 1
     if @council = params[:council_id] && Council.find_by_id(params[:council_id].to_i)
-      @planning_applications = @council.planning_applications.with_details.paginate(:order => order, :page => page.to_i)
+      @planning_applications = @council.planning_applications.with_details.paginate(:order => order, :page => valid_page)
       @page_title = "Latest Planning Applications in #{@council.title}"
       @title = "Latest Planning Applications"
     elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
       distance = %w(0.2 0.8 2).include?(params[:distance]) ? params[:distance].to_f : 0.2
-      @planning_applications = PlanningApplication.paginate(:conditions => ["ST_DWithin(ST_Transform(geom, 27700), ST_Transform(?, 27700), ?)", @postcode.geom, distance * 1000], :order => order, :page => page.to_i)
+      @planning_applications = PlanningApplication.paginate(:conditions => ["ST_DWithin(ST_Transform(geom, 27700), ST_Transform(?, 27700), ?)", @postcode.geom, distance * 1000], :order => order, :page => valid_page)
       @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
     end
 

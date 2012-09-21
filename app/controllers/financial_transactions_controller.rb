@@ -1,6 +1,6 @@
 class FinancialTransactionsController < ApplicationController
   def index
-    page = (params[:page]||1).to_i
+    page = valid_page
     page = 50 if page > 50
     @organisation = params[:organisation_type].constantize.find(params[:organisation_id]) if params[:organisation_type] && params[:organisation_id]
     @title = (@organisation ? "#{@organisation.title} " : "") + "Transactions :: Spending Data :: Page #{page}"

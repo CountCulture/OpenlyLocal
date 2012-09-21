@@ -88,4 +88,12 @@ class ApplicationController < ActionController::Base
     @show_rss_link = true
   end
 
+  def valid_page
+    page = params[:page].to_i
+    if page > 0
+      page
+    else
+      1
+    end
+  end
 end

@@ -11,9 +11,9 @@ class WardsController < ApplicationController
   def index
     @council = Council.find(params[:council_id]) if params[:council_id]
     @output_area_classification = OutputAreaClassification.find(params[:output_area_classification_id]) if params[:output_area_classification_id]
-    @wards = @council ? @council.wards.current : Ward.restrict_to_oac(params).current.paginate(:page => params[:page], :include => :council)
+    @wards = @council ? @council.wards.current : Ward.restrict_to_oac(params).current.paginate(:page => valid_page, :include => :council)
     @title = @output_area_classification ? "#{@output_area_classification.title} Wards" : "Current Wards"
-    @title += " :: Page #{(params[:page]||1).to_i}" unless @council
+    @title += " :: Page #{valid_page}" unless @council
     options = {:include => [:council, :output_area_classification]}
     respond_to do |format|
       format.html
@@ -24,7 +24,7 @@ class WardsController < ApplicationController
          render :xml => @wards.to_xml(options) { |xml|
                     xml.tag! 'total-entries', @wards.total_entries
                     xml.tag! 'per-page', @wards.per_page
-                    xml.tag! 'page', (params[:page]||1).to_i
+                    xml.tag! 'page', valid_page
                   }
         end
         
@@ -33,7 +33,7 @@ class WardsController < ApplicationController
         if @council 
           render :json => @wards.to_json
         else
-          render :json => { :page => (params[:page]||1).to_i,
+          render :json => { :page => valid_page,
                             :per_page => @wards.per_page,
                             :total_entries => @wards.total_entries,
                             :wards => @wards.to_json(options)

@@ -8,8 +8,8 @@ class MembersController < ApplicationController
     if @council = Council.find_by_id(params[:council_id].to_i)
       @members = params[:include_ex_members] ? @council.members.all(:include => [:ward, :twitter_account]) : @council.members.current.all(:include => [:ward, :twitter_account])
     else
-      @members = Member.except_vacancies.current.paginate(:page => params[:page], :order => "last_name", :include => [:council, :ward, :twitter_account])
-      @title += " :: Page #{(params[:page]||1).to_i}"
+      @members = Member.except_vacancies.current.paginate(:page => valid_page, :order => "last_name", :include => [:council, :ward, :twitter_account])
+      @title += " :: Page #{valid_page}"
     end
     respond_to do |format|
       format.html
@@ -20,7 +20,7 @@ class MembersController < ApplicationController
          render :xml => @members.to_xml(:include => [:council, :ward, :twitter_account]) { |xml|
                     xml.tag! 'total-entries', @members.total_entries
                     xml.tag! 'per-page', @members.per_page
-                    xml.tag! 'page', (params[:page]||1).to_i
+                    xml.tag! 'page', valid_page
                   }
         end
       end
@@ -28,7 +28,7 @@ class MembersController < ApplicationController
         if @council 
           render :json => @members.to_json(:include => [:council, :ward, :twitter_account])
         else
-          render :json => { :page => (params[:page]||1).to_i,
+          render :json => { :page => valid_page,
                             :per_page => @members.per_page,
                             :total_entries => @members.total_entries,
                             :members => @members.to_json(:include => [:council, :ward, :twitter_account])

@@ -3,7 +3,7 @@ class SuppliersController < ApplicationController
   
   def index
     search_filter = params[:name_filter]
-    page = (params[:page]||1).to_i
+    page = valid_page
     page = 50 if page > 50
     @organisation = params[:organisation_type].constantize.find(params[:organisation_id]) if params[:organisation_type] && params[:organisation_id]
     @title = @organisation ? "Suppliers to #{@organisation.title}" : 'Suppliers to Local Authorities'
