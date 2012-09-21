@@ -9,7 +9,8 @@ class CouncilsController < ApplicationController
   caches_page :show_spending
   
   def index
-    @councils = Council.find_by_params(params.except(:controller, :action, :format, :callback, :_))
+    # Improperly encoded URLs will put &amp; instead of &.
+    @councils = Council.find_by_params(params.except(:controller, :action, :format, :callback, :_, :amp))
     @title = 
       case 
       when params[:show_open_status]
