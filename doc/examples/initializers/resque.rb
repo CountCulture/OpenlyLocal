@@ -17,3 +17,6 @@ rails_env = ENV['RAILS_ENV'] || 'development'
 resque_config = YAML.load_file(Rails.root + 'config/resque.yml')[rails_env].symbolize_keys
 Resque.redis = Redis.new(resque_config)
 Resque.redis.namespace = "resque:OpenlyLocal"
+
+# http://stackoverflow.com/questions/9961044/postgres-error-on-heroku-with-resque
+Resque.after_fork = Proc.new { ActiveRecord::Base.establish_connection }
