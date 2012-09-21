@@ -525,25 +525,6 @@ task :remove_duplicate_planning_applications => :environment do
   end
 end
 
-# @todo PostGIS update this code
-task :convert_old_confirmed_planning_alert_subscribers => :environment do
-  sql= "SELECT COUNT(*) FROM planning_alert_subscribers WHERE confirmed = 1 LIMIT 10"
-  connection = AlertSubscriber.connection
-  total_count = connection.select_rows(sql).flatten.first.to_i
-  dump_file = Rails.root.join('db','data','old_confirmed_alert_subscribers.csv')
-  headers = connection.columns('planning_alert_subscribers').collect(&:name)
-  FasterCSV.open(dump_file, "w") do |csv|
-    csv << headers
-    (total_count/1000 + 1).each do |page|
-      sql = "SELECT planning_alert_subscribers.* FROM planning_alert_subscribers WHERE confirmed = 1 LIMIT 1000 OFFSET #{page*1000}"
-      rows = connection.select_rows(sql)
-      rows.each do |row|
-        csv << row_converted_to_lat_lng(row, headers)
-      end
-    end
-  end
-end
-
 task :convert_caps_urls_to_idox_urls => :environment do
   puts "Please enter name of Council:"
   break unless council = Council.find_by_normalised_title(Council.normalise_title($stdin.gets.chomp))
@@ -569,13 +550,4 @@ task :convert_caps_urls_to_idox_urls => :environment do
     pa.update_attribute(:url, new_url)
     puts "Updated planning application with new url #{new_url} (was #{old_url})"
   end
-end
-
-def row_converted_to_lat_lng(row, headers)
-  row_hash = [headers,row].transpose.inject({}){ |hsh,a| hsh[a.first] = a.last; hsh }
-  sw_lat_lng = OsCoordsUtilities.convert_os_to_wgs84(row_hash.delete('bottom_left_x'), row_hash.delete('bottom_left_y'))
-  ne_lat_lng = OsCoordsUtilities.convert_os_to_wgs84(row_hash.delete('top_right_x'), row_hash.delete('top_right_y'))
-  row_hash['bottom_left_lat'], row_hash['bottom_left_lng'] = sw_lat_lng
-  row_hash['top_right_lat'], row_hash['top_right_lng']     = ne_lat_lng
-  row_hash
 end
