@@ -7,7 +7,7 @@ class FeedEntriesController < ApplicationController
     @title  = 'Latest news stories'
     @title += " from #{params[:restrict_to].humanize}" if params[:restrict_to]
     @title += " tagged with '#{params[:tagged_with]}'" if params[:tagged_with]
-    @title += " :: Page #{(valid_page}"
+    @title += " :: Page #{valid_page}"
     respond_to do |format|
       format.html
       format.xml do
