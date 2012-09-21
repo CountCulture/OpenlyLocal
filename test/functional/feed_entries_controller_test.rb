@@ -12,7 +12,15 @@ class FeedEntriesControllerTest < ActionController::TestCase
       @council_feed_entry = Factory(:feed_entry, :feed_owner => @council)
       @tagged_council_feed_entry = Factory(:feed_entry, :feed_owner => @council, :tag_list => 'foo,baz')
     end
-    
+
+    context "with no restriction" do
+      setup do
+        get :index, :restrict_to => 'hyperlocal_sites'
+      end
+
+      should respond_with :success
+    end
+
     context "with basic request" do
       setup do
         get :index, :restrict_to => 'hyperlocal_sites'
