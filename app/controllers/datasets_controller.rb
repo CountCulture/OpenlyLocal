@@ -26,9 +26,12 @@ class DatasetsController < ApplicationController
   end
   
   def update
-    @dataset.update_attributes!(params[:dataset])
-    flash[:notice] = "Successfully updated dataset (#{@dataset.title})"
-    redirect_to dataset_url(@dataset)
+    if @dataset.update_attributes(params[:dataset])
+      flash[:notice] = "Successfully updated dataset (#{@dataset.title})"
+      redirect_to dataset_url(@dataset)
+    else
+      render :action => 'edit'
+    end
   end
   
   private

@@ -20,11 +20,12 @@ class PensionFundsController < ApplicationController
   end
   
   def update
-    @pension_fund.update_attributes!(params[:pension_fund])
-    flash[:notice] = "Successfully updated pension fund"
-    redirect_to pension_fund_url(@pension_fund)
-  rescue
-    render :action => "edit"
+    if @pension_fund.update_attributes(params[:pension_fund])
+      flash[:notice] = "Successfully updated pension fund"
+      redirect_to pension_fund_url(@pension_fund)
+    else
+      render :action => 'edit'
+    end
   end
 
   private

@@ -64,9 +64,12 @@ class MembersController < ApplicationController
   
   def update
     @member = Member.find(params[:id])
-    @member.update_attributes!(params[:member])
-    flash[:notice] = "Successfully updated member"
-    redirect_to member_url(@member)
+    if @member.update_attributes(params[:member])
+      flash[:notice] = "Successfully updated member"
+      redirect_to member_url(@member)
+    else
+      render :action => 'edit'
+    end
   end
   
   def destroy

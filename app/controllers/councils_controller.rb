@@ -54,23 +54,24 @@ class CouncilsController < ApplicationController
   
   def create
     @council = Council.new(params[:council])
-    @council.save!
-    flash[:notice] = "Successfully created council"
-    redirect_to council_path(@council)
-  rescue
-    render :action => "new"
+    if @council.save
+      flash[:notice] = "Successfully created council"
+      redirect_to council_path(@council)
+    else
+      render :action => "new"
+    end
   end
   
   def edit
   end
   
   def update
-    @council.update_attributes!(params[:council])
-    flash[:notice] = "Successfully updated council"
-    redirect_to council_path(@council)
-  rescue Exception => e
-    logger.error "Problem saving council: #{e.inspect}\n"
-    render :action => "edit"
+    if @council.update_attributes(params[:council])
+      flash[:notice] = "Successfully updated council"
+      redirect_to council_path(@council)
+    else
+      render :action => 'edit'
+    end
   end
   
   def accounts

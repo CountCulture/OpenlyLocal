@@ -28,11 +28,12 @@ class PoliceAuthoritiesController < ApplicationController
   end
   
   def update
-    @police_authority.update_attributes!(params[:police_authority])
-    flash[:notice] = "Successfully updated police authority"
-    redirect_to police_authority_url(@police_authority)
-  rescue
-    render :action => "edit"
+    if @police_authority.update_attributes(params[:police_authority])
+      flash[:notice] = "Successfully updated police authority"
+      redirect_to police_authority_url(@police_authority)
+    else
+      render :action => 'edit'
+    end
   end
   
   private

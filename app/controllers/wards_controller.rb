@@ -64,9 +64,12 @@ class WardsController < ApplicationController
   end
   
   def update
-    @ward.update_attributes!(params[:ward])
-    flash[:notice] = "Successfully updated ward"
-    redirect_to ward_url(@ward)
+    if @ward.update_attributes(params[:ward])
+      flash[:notice] = "Successfully updated ward"
+      redirect_to ward_url(@ward)
+    else
+      render :action => 'edit'
+    end
   end
   
   def destroy

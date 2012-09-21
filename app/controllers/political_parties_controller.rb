@@ -11,11 +11,12 @@ class PoliticalPartiesController < ApplicationController
   end
   
   def update
-    @political_party.update_attributes!(params[:political_party])
-    flash[:notice] = "Successfully updated political party"
-    redirect_to political_parties_url
-  rescue
-    render :action => "edit"
+    if @political_party.update_attributes(params[:political_party])
+      flash[:notice] = "Successfully updated political party"
+      redirect_to political_parties_url
+    else
+      render :action => 'edit'
+    end
   end
   
   private

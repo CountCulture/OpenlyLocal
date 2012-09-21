@@ -30,22 +30,24 @@ class EntitiesController < ApplicationController
   
   def create
     @entity = Entity.new(params[:entity])
-    @entity.save!
-    flash[:notice] = "Successfully created entity"
-    redirect_to entity_url(@entity)
-  rescue
-    render :action => "new"
+    if @entity.save
+      flash[:notice] = "Successfully created entity"
+      redirect_to entity_url(@entity)
+    else
+      render :action => 'new'
+    end
   end
   
   def edit
   end
   
   def update
-    @entity.update_attributes!(params[:entity])
-    flash[:notice] = "Successfully updated entity"
-    redirect_to entity_url(@entity)
-  rescue
-    render :action => "edit"
+    if @entity.update_attributes(params[:entity])
+      flash[:notice] = "Successfully updated entity"
+      redirect_to entity_url(@entity)
+    else
+      render :action => 'edit'
+    end
   end
   
   def destroy

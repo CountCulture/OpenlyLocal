@@ -30,22 +30,24 @@ class PoliceForcesController < ApplicationController
   
   def create
     @police_force = PoliceForce.new(params[:police_force])
-    @police_force.save!
-    flash[:notice] = "Successfully created police force"
-    redirect_to police_force_url(@police_force)
-  rescue
-    render :action => "new"
+    if @police_force.save
+      flash[:notice] = "Successfully created police force"
+      redirect_to police_force_url(@police_force)
+    else
+      render :action => 'new'
+    end
   end
   
   def edit
   end
   
   def update
-    @police_force.update_attributes!(params[:police_force])
-    flash[:notice] = "Successfully updated police force"
-    redirect_to police_force_url(@police_force)
-  rescue
-    render :action => "edit"
+    if @police_force.update_attributes(params[:police_force])
+      flash[:notice] = "Successfully updated police force"
+      redirect_to police_force_url(@police_force)
+    else
+      render :action => 'edit'
+    end
   end
   
   private

@@ -20,21 +20,21 @@ class ParsersController < ApplicationController
   
   def create
     @parser = params[:parser] ? Parser.new(params[:parser]) : CsvParser.new(params[:csv_parser])
-    @parser.save!
-    flash[:notice] = "Successfully created parser"
-    redirect_to parser_path(@parser)
-  rescue
-    render :action => "new"
+    if @parser.save
+      flash[:notice] = "Successfully created parser"
+      redirect_to parser_path(@parser)
+    else
+      render :action => 'new'
+    end
   end
   
   def update
-    @parser.update_attributes!(@parser.is_a?(CsvParser) ? params[:csv_parser] : params[:parser])
-    flash[:notice] = "Successfully updated parser"
-    redirect_to parser_url(@parser)
-  rescue Exception => e
-    flash[:notice] = "Problem updating parser"
-    logger.debug { "Problem updating parser: #{e.inspect}\n #{e.backtrace}" }
-    render :action => "edit"
+    if @parser.update_attributes(@parser.is_a?(CsvParser) ? params[:csv_parser] : params[:parser])
+      flash[:notice] = "Successfully updated parser"
+      redirect_to parser_url(@parser)
+    else
+      render :action => 'edit'
+    end
   end
   
   private

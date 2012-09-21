@@ -47,9 +47,12 @@ class ScrapersController < ApplicationController
   end
   
   def update
-    @scraper.update_attributes(params[:scraper])
-    flash[:notice] = "Successfully updated scraper"
-    redirect_to scraper_url(@scraper)
+    if @scraper.update_attributes(params[:scraper])
+      flash[:notice] = "Successfully updated scraper"
+      redirect_to scraper_url(@scraper)
+    else
+      render :action => 'edit'
+    end
   end
   
   def destroy

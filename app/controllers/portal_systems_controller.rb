@@ -18,11 +18,12 @@ class PortalSystemsController < ApplicationController
   
   def create
     @portal_system = PortalSystem.new(params[:portal_system])
-    @portal_system.save!
-    flash[:notice] = "Successfully created portal system"
-    redirect_to portal_system_path(@portal_system)
-  rescue
-    render :action => "new"
+    if @portal_system.save
+      flash[:notice] = "Successfully created portal system"
+      redirect_to portal_system_path(@portal_system)
+    else
+      render :action => 'new'
+    end
   end
   
   def edit
@@ -31,11 +32,12 @@ class PortalSystemsController < ApplicationController
   
   def update
     @portal_system = PortalSystem.find(params[:id])
-    @portal_system.update_attributes!(params[:portal_system])
-    flash[:notice] = "Successfully updated portal system"
-    redirect_to portal_system_path(@portal_system)
-  rescue
-    render :action => "edit"
+    if @portal_system.update_attributes(params[:portal_system])
+      flash[:notice] = "Successfully updated portal system"
+      redirect_to portal_system_path(@portal_system)
+    else
+      render :action => 'edit'
+    end
   end
   
 end

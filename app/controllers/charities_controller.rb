@@ -34,11 +34,12 @@ class CharitiesController < ApplicationController
   
   def update
     @charity = Charity.find(params[:id])
-    @charity.update_attributes!(params[:charity])
-    @charity.update_attribute(:manually_updated, Time.now)
-    flash[:notice] = "Successfully updated charity"
-    redirect_to charity_url(@charity)
-  rescue
-    render :action => "edit"
+    if @charity.update_attributes(params[:charity])
+      @charity.update_attribute(:manually_updated, Time.now)
+      flash[:notice] = "Successfully updated charity"
+      redirect_to charity_url(@charity)
+    else
+      render :action => 'edit'
+    end
   end
 end

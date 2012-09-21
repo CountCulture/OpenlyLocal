@@ -17,11 +17,12 @@ class HyperlocalGroupsController < ApplicationController
   
   def create
     @hyperlocal_group = HyperlocalGroup.new(params[:hyperlocal_group])
-    @hyperlocal_group.save!
-    flash[:notice] = "Successfully created hyperlocal group"
-    redirect_to hyperlocal_group_url(@hyperlocal_group)
-  rescue
-    render :action => "new"
+    if @hyperlocal_group.save
+      flash[:notice] = "Successfully created hyperlocal group"
+      redirect_to hyperlocal_group_url(@hyperlocal_group)
+    else
+      render :action => 'new'
+    end
   end
   
   def edit
@@ -29,9 +30,12 @@ class HyperlocalGroupsController < ApplicationController
   end
   
   def update
-    @hyperlocal_group.update_attributes!(params[:hyperlocal_group])
-    flash[:notice] = "Successfully updated hyperlocal group"
-    redirect_to hyperlocal_group_url(@hyperlocal_group)
+    if @hyperlocal_group.update_attributes(params[:hyperlocal_group])
+      flash[:notice] = "Successfully updated hyperlocal group"
+      redirect_to hyperlocal_group_url(@hyperlocal_group)
+    else
+      render :action => 'edit'
+    end
   end
   
   private
