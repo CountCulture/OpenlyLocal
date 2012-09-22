@@ -124,7 +124,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'planning', :controller => "planning_applications", :action => "overview"
   
-  map.confirm_alert_subscribers 'alert_subscribers/confirm', :controller => 'alert_subscribers', :action => 'confirm', :conditions => { :method => :get }#, :method => :get
+  map.confirm_alert_subscribers 'alert_subscribers/confirm', :controller => 'alert_subscribers', :action => 'confirm', :conditions => { :method => :get }
   map.unsubscribe_alert_subscribers 'alert_subscribers/unsubscribe', :controller => 'alert_subscribers', :action => 'unsubscribe', :conditions => { :method => :get }
   map.new_alert_subscriber 'alert_subscribers/new', :controller => 'alert_subscribers', :action => 'new', :conditions => { :method => :get }
   map.alert_subscribers 'alert_subscribers', :controller => 'alert_subscribers', :action => 'create', :conditions => { :method => :post }
@@ -142,7 +142,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.admin 'admin', :controller => 'admin', :action => 'index'
 
-  map.connect 'pingback/xml', :controller => 'pingback', :action => 'xml', :method => :post
+  map.connect 'pingback/xml', :controller => 'pingback', :action => 'xml', :conditions => { :method => :post }
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   map.resources :products
 
