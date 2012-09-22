@@ -17,7 +17,7 @@ class UserSubmission < ActiveRecord::Base
   # end
 
   def validate
-    errors.add_to_base("Missing required info") unless submission_details&&submission_details.valid?
+    errors.add_to_base("Missing required info") unless submission_details && submission_details.valid?
   end
   
   # Get submission_details object to run approve method, and then update approved flag with result
@@ -26,7 +26,8 @@ class UserSubmission < ActiveRecord::Base
     update_attribute(:approved, res)
     res
   end
-  
+
+  # @note Overrides default method created by ActiveRecord.
   def submission_details=(attribs)
     self[:submission_details] = if attribs && @submission_type
       class_name = @submission_type.camelize
@@ -39,11 +40,13 @@ class UserSubmission < ActiveRecord::Base
       attribs
     end
   end
-  
+
   def submission_type
-    @submission_type ||= self[:submission_details]&&self[:submission_details].class.to_s.underscore
+    @submission_type ||= self[:submission_details] && self[:submission_details].class.to_s.underscore
   end
   
+  # Expects the params hash, which is used to initialize the user submission, to
+  # have a "submission_type" key.
   def submission_type=(sub_type)
     @submission_type = sub_type
     class_name = @submission_type.camelize

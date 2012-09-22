@@ -9,7 +9,8 @@ class UserSubmissionsControllerTest < ActionController::TestCase
         get :new, :user_submission => {}
       end
 
-      should respond_with :success
+      should respond_with :redirect
+      should set_the_flash.to(/Sorry/)
     end
 
     context "in general" do

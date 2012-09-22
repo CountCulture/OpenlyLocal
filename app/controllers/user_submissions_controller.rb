@@ -2,13 +2,18 @@ class UserSubmissionsController < ApplicationController
   before_filter :authenticate, :except => [:new, :create]
   
   def new
-    @user_submission = UserSubmission.new(params[:user_submission])
-    @item = @user_submission.item
-    # @possible_entities = @user_submission.submission_details.entity_type.constantize.all if @user_submission.submission_details.entity_type
-    @possible_entities = GenericEntityMatcher.possible_matches(:title => @item.title, :type => @user_submission.submission_details.entity_type)[:result] if @user_submission.submission_details.entity_type
+    if Hash === params[:user_submission] && params[:user_submission][:submission_type]
+      @user_submission = UserSubmission.new(params[:user_submission])
+      @item = @user_submission.item
+      # @possible_entities = @user_submission.submission_details.entity_type.constantize.all if @user_submission.submission_details.entity_type
+      @possible_entities = GenericEntityMatcher.possible_matches(:title => @item.title, :type => @user_submission.submission_details.entity_type)[:result] if @user_submission.submission_details.entity_type
 
-    @form_params = ((@user_submission.submission_type == 'supplier_details') && !@possible_entities) ? {:url => new_user_submission_path, :html => {:method => :get}} : {}
-    @title = "New #{@user_submission.submission_type.titleize}"
+      @form_params = ((@user_submission.submission_type == 'supplier_details') && !@possible_entities) ? {:url => new_user_submission_path, :html => {:method => :get}} : {}
+      @title = "New #{@user_submission.submission_type.titleize}"
+    else
+      flash[:notice] = "Sorry, we couldn't render the user submission form."
+      redirect_to request.env['HTTP_REFERER'] ? :back : root_path
+    end
   end
   
   def create
