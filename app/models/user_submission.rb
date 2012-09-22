@@ -28,7 +28,16 @@ class UserSubmission < ActiveRecord::Base
   end
   
   def submission_details=(attribs)
-    self[:submission_details] = attribs.nil? ? nil : (@submission_type ? @submission_type.camelize.constantize.new(attribs) : attribs )
+    self[:submission_details] = if attribs && @submission_type
+      class_name = @submission_type.camelize
+      if Object.const_defined? class_name
+        class_name.constantize.new(attribs)
+      else
+        attribs
+      end
+    else
+      attribs
+    end
   end
   
   def submission_type
@@ -37,10 +46,14 @@ class UserSubmission < ActiveRecord::Base
   
   def submission_type=(sub_type)
     @submission_type = sub_type
-    self[:submission_details] = 
-              (self[:submission_details].is_a?(Hash) ? 
-                  @submission_type.camelize.constantize.new(self[:submission_details]) : 
-                  (self[:submission_details]||@submission_type.camelize.constantize.new) )
+    class_name = @submission_type.camelize
+    if Object.const_defined? class_name
+      if self[:submission_details].is_a? Hash
+        self[:submission_details] = class_name.constantize.new(self[:submission_details])
+      elsif !self[:submission_details]
+        self[:submission_details] = class_name.constantize.new
+      end
+    end
   end
   
   def title
