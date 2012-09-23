@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120920202605) do
+ActiveRecord::Schema.define(:version => 20120923010456) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -778,7 +778,7 @@ ActiveRecord::Schema.define(:version => 20120920202605) do
   create_table "planning_applications", :force => true do |t|
     t.string   "uid",               :limit => 50,                  :null => false
     t.text     "address"
-    t.string   "postcode",          :limit => 10
+    t.string   "postcode"
     t.text     "description"
     t.string   "url",               :limit => 1024
     t.string   "comment_url",       :limit => 1024
@@ -787,13 +787,13 @@ ActiveRecord::Schema.define(:version => 20120920202605) do
     t.float    "lat"
     t.float    "lng"
     t.integer  "council_id"
-    t.string   "applicant_name"
+    t.string   "applicant_name",    :limit => 1024
     t.text     "applicant_address"
-    t.string   "decision",          :limit => 64
+    t.string   "decision",          :limit => 1024
     t.text     "other_attributes"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "application_type",  :limit => 64
+    t.string   "application_type"
     t.integer  "bitwise_flag",                      :default => 0
     t.string   "status"
     t.point    "geom",              :limit => nil,                                 :srid => 4326
