@@ -17,7 +17,11 @@ class UserSubmission < ActiveRecord::Base
   # end
 
   def validate
-    errors.add_to_base("Missing required info") unless submission_details && submission_details.valid?
+    if submission_details
+      if submission_details.is_a?(Hash) || !submission_details.valid?
+        errors.add_to_base("Missing required info")
+      end
+    end
   end
   
   # Get submission_details object to run approve method, and then update approved flag with result
