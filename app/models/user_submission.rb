@@ -31,9 +31,13 @@ class UserSubmission < ActiveRecord::Base
   def submission_details=(attribs)
     self[:submission_details] = if attribs && @submission_type
       class_name = @submission_type.camelize
-      if Object.const_defined? class_name
-        class_name.constantize.new(attribs)
-      else
+      begin
+        if Object.const_defined? class_name
+          class_name.constantize.new(attribs)
+        else
+          attribs
+        end
+      rescue NameError # if class_name doesn't start with a letter
         attribs
       end
     else
@@ -50,12 +54,16 @@ class UserSubmission < ActiveRecord::Base
   def submission_type=(sub_type)
     @submission_type = sub_type
     class_name = @submission_type.camelize
-    if Object.const_defined? class_name
-      if self[:submission_details].is_a? Hash
-        self[:submission_details] = class_name.constantize.new(self[:submission_details])
-      elsif !self[:submission_details]
-        self[:submission_details] = class_name.constantize.new
+    begin
+      if Object.const_defined? class_name
+        if self[:submission_details].is_a? Hash
+          self[:submission_details] = class_name.constantize.new(self[:submission_details])
+        elsif !self[:submission_details]
+          self[:submission_details] = class_name.constantize.new
+        end
       end
+    rescue NameError
+      # Do nothing.
     end
   end
   
