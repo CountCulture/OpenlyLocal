@@ -56,7 +56,7 @@ task :import_ward_boundaries => :environment do
       if !att_data['CODE'].blank?
         ward = Ward.find_by_snac_id(att_data['CODE'])
         if ward
-          if ward.boundary?
+          if ward.boundary
             puts "Already imported boundary for #{ward.name}"
           else
             geom = shape.geometry
