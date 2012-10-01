@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(:version => 20120923010456) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "hectares"
-    t.polygon  "boundary_line", :limit => nil, :srid => 0
+    t.polygon  "boundary_line", :limit => nil, :srid => 4326
   end
 
   add_index "boundaries", ["area_id", "area_type"], :name => "index_boundaries_on_area_id_and_area_type"
