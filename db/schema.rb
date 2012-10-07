@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120923010456) do
+ActiveRecord::Schema.define(:version => 20121001004945) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(:version => 20120923010456) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "hectares"
-    t.polygon  "boundary_line", :limit => nil, :srid => 4326
+    t.polygon  "boundary_line", :limit => nil, :srid => 0
   end
 
   add_index "boundaries", ["area_id", "area_type"], :name => "index_boundaries_on_area_id_and_area_type"
@@ -789,7 +789,7 @@ ActiveRecord::Schema.define(:version => 20120923010456) do
     t.integer  "council_id"
     t.string   "applicant_name",    :limit => 1024
     t.text     "applicant_address"
-    t.string   "decision",          :limit => 1024
+    t.text     "decision"
     t.text     "other_attributes"
     t.datetime "created_at"
     t.datetime "updated_at"
