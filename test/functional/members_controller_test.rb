@@ -293,7 +293,7 @@ class MembersControllerTest < ActionController::TestCase
        end
 
        should "include meetings" do
-         assert_select "member>forthcoming-meetings>forthcoming-meeting"
+         assert_select "member>forthcoming-meetings"
        end
 
        should "include ward info" do
@@ -346,8 +346,8 @@ class MembersControllerTest < ActionController::TestCase
 
          should "show rdf headers" do
            assert_match /rdf:RDF.* xmlns:foaf/m, @response.body
-           assert_match /rdf:RDF.+ xmlns:openlylocal/m, @response.body
-           assert_match /rdf:RDF.+ xmlns:administrative-geography/m, @response.body
+           assert_match /rdf:RDF.* xmlns:openlylocal/m, @response.body
+           assert_match /rdf:RDF.* xmlns:administrative-geography/m, @response.body
          end
 
          should "show member as primary resource" do

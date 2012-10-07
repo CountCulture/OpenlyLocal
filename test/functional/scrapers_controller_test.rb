@@ -1054,7 +1054,6 @@ class ScrapersControllerTest < ActionController::TestCase
         end
       
         should_change('The number of scrapers', :by => 1) { Scraper.count }
-        should_change('The number of parsers', :by => 1) { Parser.count }
         should assign_to :scraper
         should redirect_to( "the show page for scraper") { scraper_path(assigns(:scraper)) }
         should set_the_flash.to "Successfully created scraper"
@@ -1062,8 +1061,9 @@ class ScrapersControllerTest < ActionController::TestCase
         should "save parser description from new details" do
           assert_equal "new parser", assigns(:scraper).parser.description
         end
+
+        should_change('The number of parsers', :by => 1) { Parser.count }
       end
-            
     end
     
   end

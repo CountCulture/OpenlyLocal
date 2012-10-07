@@ -33,6 +33,7 @@ class ParsersController < ApplicationController
       flash[:notice] = "Successfully updated parser"
       redirect_to parser_url(@parser)
     else
+      flash[:notice] = "Problem updating parser"
       render :action => 'edit'
     end
   end
