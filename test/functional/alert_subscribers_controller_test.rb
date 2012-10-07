@@ -218,7 +218,7 @@ class AlertSubscribersControllerTest < ActionController::TestCase
       should render_template :new
 
       should "show errors" do
-        assert_select "div.errorExplanation"
+        assert_select "div.fieldWithErrors"
       end
     end
 
@@ -237,7 +237,7 @@ class AlertSubscribersControllerTest < ActionController::TestCase
       should render_template :new
       
       should "show errors" do
-        assert_select "div.errorExplanation"
+        assert_select "div.fieldWithErrors"
       end
     end
 

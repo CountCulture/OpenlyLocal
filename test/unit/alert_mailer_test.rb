@@ -83,7 +83,7 @@ class AlertMailerTest < ActionMailer::TestCase
     end
     
     should "include appropriate subject" do
-      assert_match /confirm/, @report.subject
+      assert_match /Activate/, @report.subject
     end
     
     should "include confirmation_link in body" do
