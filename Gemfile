@@ -34,7 +34,7 @@ gem 'dkim'
 # Scrapers
 gem 'hpricot'
 gem 'httpclient'
-gem 'nokogiri', '~>1.4.1'
+gem 'nokogiri'
 
 # Utilities
 gem 'companies-house' # CompanyUtilities
