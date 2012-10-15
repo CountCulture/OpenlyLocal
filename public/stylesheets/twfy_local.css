@@ -180,6 +180,15 @@ color:#fff;
 .alert.button {
   padding: 1px 4px;
 }
+.alert-info {
+	margin-bottom: 1em;
+	padding: 0.5em;
+	border: 1pt solid #390;
+	background-color: #efc;
+	color: #390;
+	font-size: 120%;
+	font-weight: bold;
+}
 img.icon {
 	margin: 0 .25em;}
 body.councils li a.unparsed, body.committees li a.inactive, body.members a.ex_member, a.vacancy {

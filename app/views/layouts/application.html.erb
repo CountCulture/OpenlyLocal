@@ -5,9 +5,11 @@
   <div class="container">
     <%= render :partial => 'shared/header' %>
     <div id="content">
-      <div id="message_area">
-        <p class="alert"><%= flash[:notice]||@message %><%= flash[:now] %></p>  
-      </div>
+      <% if flash[:notice] || flash[:now] || @message -%>
+        <div id="message_area">
+          <p class="alert"><%= flash[:notice] || @message %><%= flash[:now] %></p>
+        </div>
+      <% end -%>
       <%= yield %>
       <%= render :partial => 'shared/share_block' if @share_this %>
     </div>

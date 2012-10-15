@@ -60,6 +60,8 @@
 <%= content_tag(:h3, link_to("See spending data for #{@council.title}", {:controller => 'councils', :action => 'show_spending', :id => @council.to_param}), :class => 'spending alert') if !@council.spending_stat.blank? && @council.spending_stat.total_spend.to_i > 0 %>
 
 <div id="relationships">
+  <%= render :partial => 'shared/planning_alerts_alert' %>
+
   <div id="members" class="item_grouping">
     <h3><%= link_to "Current councillors", members_path(:council_id => @council.id) %></h3>
     <%= list_all @members %>
