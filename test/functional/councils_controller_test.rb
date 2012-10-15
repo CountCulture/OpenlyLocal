@@ -3,6 +3,7 @@ require File.expand_path('../../test_helper', __FILE__)
 class CouncilsControllerTest < ActionController::TestCase
 
   def setup
+    Resque.stubs(:enqueue_to)
     @council = Factory(:council, :authority_type => "London Borough", :snac_id => "snac_1", :country => "England", :region => "London")
     @member = Factory(:member, :council => @council)
     @old_member = Factory(:member, :council => @council)
