@@ -167,6 +167,10 @@ class PlanningApplication < ActiveRecord::Base
     matching_subscribers.each{ |subscriber| subscriber.send_planning_alert(self) }
   end
   
+  def status=(raw_status)
+    self[:status] = raw_status&&raw_status[0..254]
+  end
+  
   def title
     "Planning Application #{uid}" + (address.blank? ? '' : ", #{address[0..30]}...")
   end
