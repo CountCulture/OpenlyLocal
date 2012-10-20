@@ -61,4 +61,5 @@ group :test do
   gem 'shoulda'
   gem 'mocha', :require => false
   gem 'factory_girl'
+  gem 'ruby-debug'
 end
