@@ -319,13 +319,12 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         
         context "and did previously have lat long" do
           setup do
-            assert_present @planning_application.changes
-            @planning_application.expects(:queue_for_sending_alerts)
+            @planning_application.stubs(:queue_for_sending_alerts)
             @planning_application.save!
           end
 
           should "not queue for sending alerts" do
-            assert_blank @planning_application.changes
+            @planning_application.description = 'new description'
             @planning_application.expects(:queue_for_sending_alerts).never
             @planning_application.save!
           end
