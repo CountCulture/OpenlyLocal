@@ -152,10 +152,21 @@ class PlanningApplication < ActiveRecord::Base
     end
   end
   
-  # cleean up so we can get consistency across councils
+  # clean up so we can get consistency across councils
   def normalised_application_status
     return if application_status.blank?
     STATUS_TYPES_AND_ALIASES.detect{ |s_and_a| s_and_a.any?{ |matcher| application_status.match(Regexp.new(matcher, true)) } }.try(:first)
+  end
+  
+  # we override this as this may be set by different scrapers, setting different attributes within the field,
+  # and this would normally blow out existing attributes
+  def other_attributes=(other_attribs)
+    return if other_attribs.blank?
+    if self[:other_attributes].is_a?(Hash)
+      self[:other_attributes] = self[:other_attributes].merge(other_attribs)
+    else
+      self[:other_attributes] = other_attribs
+    end
   end
   
   def queue_for_sending_alerts
