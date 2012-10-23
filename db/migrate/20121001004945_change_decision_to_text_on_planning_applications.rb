@@ -4,6 +4,6 @@ class ChangeDecisionToTextOnPlanningApplications < ActiveRecord::Migration
   end
 
   def self.down
-    change_column :planning_applications, :decision, :strong, :limit => 1024
+    change_column :planning_applications, :decision, :string, :limit => 1024
   end
 end
