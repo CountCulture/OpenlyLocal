@@ -56,9 +56,9 @@ class AlertSubscriber < ActiveRecord::Base
       unless geom?
         self.geom = postcode.geom
       end
-      unless metres?
-        self.metres = Point.from_x_y(postcode.lng, postcode.lat, 27700)
-      end
+      #unless metres?
+      #  self.metres = Point.from_x_y(postcode.lng, postcode.lat, 27700)
+      #end
     end
   end
 

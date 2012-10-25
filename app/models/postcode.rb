@@ -36,9 +36,9 @@ private
       unless geom?
         self.geom = Point.from_x_y(lng, lat, 4326)
       end
-      unless metres?
-        self.metres = Point.from_x_y(lng, lat, 27700)
-      end
+      #unless metres?
+      #  self.metres = Point.from_x_y(lng, lat, 27700)
+      #end
     end
   end
 end
