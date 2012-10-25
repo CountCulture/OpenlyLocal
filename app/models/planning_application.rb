@@ -148,7 +148,7 @@ class PlanningApplication < ActiveRecord::Base
     if lat.nil? || lng.nil?
       []
     else
-      AlertSubscriber.confirmed.geocoded.all(:conditions => ["ST_DWithin(ST_Transform(geom, 27700), ST_Transform(?, 27700), distance * 1000)", geom])
+      AlertSubscriber.confirmed.geocoded.all(:conditions => ["ST_DWithin(metres, ?, distance * 1000)", metres])
     end
   end
   
@@ -226,8 +226,13 @@ private
   end
 
   def set_geom
-    if lat? && lng? && !geom?
-      self.geom = Point.from_x_y(lng, lat, 4326)
+    if lat? && lng?
+      unless geom?
+        self.geom = Point.from_x_y(lng, lat, 4326)
+      end
+      unless metres?
+        self.metres = Point.from_x_y(lng, lat, 27700)
+      end
     end
   end
 end

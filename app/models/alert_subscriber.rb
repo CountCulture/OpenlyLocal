@@ -52,7 +52,14 @@ class AlertSubscriber < ActiveRecord::Base
   end
 
   def set_geo_data_from_postcode_text
-    self.geom = postcode.geom if postcode && !geom?
+    if postcode
+      unless geom?
+        self.geom = postcode.geom
+      end
+      unless metres?
+        self.metres = Point.from_x_y(postcode.lng, postcode.lat, 27700)
+      end
+    end
   end
 
   def send_confirmation_email
