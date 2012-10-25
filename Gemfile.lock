@@ -116,6 +116,7 @@ GEM
     resque-lock (1.0.0)
     resque-lock-timeout (0.3.3)
       resque (>= 1.8.0)
+    rgeo (0.3.19)
     ruby-prof (0.10.8)
     rubyzip (0.9.4)
     sax-machine (0.1.0)
@@ -180,6 +181,7 @@ DEPENDENCIES
   resque
   resque-lock
   resque-lock-timeout
+  rgeo
   ruby-prof
   rubyzip
   shoulda

@@ -10,10 +10,11 @@ gem 'SystemTimer' # not sure what gem needs this
 
 # Database/Spatial
 gem 'pg'
-gem 'spatial_adapter' # switch to rgeo in Rails 3
+gem 'rgeo'
+gem 'spatial_adapter' # switch to activerecord-postgis-adapter in Rails 3
 gem 'geokit'
 gem 'dbf', '1.2.9'
-gem 'georuby'
+gem 'georuby' # remove after switching from spatial_adapter in Rails 3
 
 # Background jobs
 gem 'daemons', '1.0.10' # used by delayed_job
