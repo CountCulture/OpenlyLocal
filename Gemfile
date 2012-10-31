@@ -20,7 +20,6 @@ gem 'georuby' # remove after switching from spatial_adapter in Rails 3
 gem 'daemons', '1.0.10' # used by delayed_job
 gem 'delayed_job', '2.0.4'
 gem 'resque', :require => 'resque/server'
-gem 'resque-lock'
 gem 'resque-lock-timeout'
 gem 'whenever', :require => false
 
