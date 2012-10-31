@@ -19,4 +19,4 @@ Resque.redis = Redis.new(resque_config)
 Resque.redis.namespace = "resque:OpenlyLocal"
 
 # http://stackoverflow.com/questions/9961044/postgres-error-on-heroku-with-resque
-Resque.after_fork = Proc.new { ActiveRecord::Base.establish_connection }
+Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }
