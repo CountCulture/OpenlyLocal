@@ -1,0 +1,32 @@
+<div class="blueprint-container">
+  <%- form_for AlertSubscriber.new do |f| %>
+    <div class="required">
+      <%= f.label :postcode_text, 'Enter a postcode:' %>
+      <%= f.text_field :postcode_text %>
+    </div>
+    <div class="required">
+      <%= f.label :email, 'Enter your email address:' %>
+      <%= f.text_field :email %>
+    </div>
+    <div class="required">
+      <p class="radio-question">What size area would you like to receive alerts for?</p>
+      <div class="radio-answer">
+        <%= f.radio_button :distance, 0.2 %>
+        <%= f.label 'distance_02', 'My street (about 200 m)', :class => 'radio' %>
+      </div>
+      <div class="radio-answer">
+        <%= f.radio_button :distance, 0.8 %>
+        <%= f.label 'distance_08', 'My neighbourhood (about 800 m)', :class => 'radio' %>
+      </div>
+      <div class="radio-answer">
+        <%= f.radio_button :distance, 2 %>
+        <%= f.label 'distance_2', 'Wider area (about 2000 m)', :class => 'radio' %>
+      </div>
+      <p><%= f.submit 'Create alert' %></p>
+    </div>
+  <%- end -%>
+</div>
+<div class="notes">
+  <p>Our <strong>Privacy Policy</strong> is very simple: We will not sell or distribute any personal information you share with us - at all, ever.</p>
+  <p>It's early days for this service so your local authority may not be included yet. Sign up anyway and you'll receive alerts as soon as they're available.</p>
+</div>

@@ -3,7 +3,7 @@
   <div class="span-24">
   </div>
   <div class="span-12">
-    <%- form_for @alert_subscriber do |f| %>
+    <%- form_for (@alert_subscriber||AlertSubscriber.new) do |f| %>
       <p id="value-proposition">Find out for free what is being built and knocked down in your area and receive email alerts when something new is planned.</p>
       <div class="row">
         <div class="span-1">1</div>
