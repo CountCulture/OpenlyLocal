@@ -262,6 +262,11 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         Resque.stubs(:enqueue_to)
       end
 
+      should "set geom" do
+        @planning_application.expects(:set_geom)
+        @planning_application.save!
+      end
+
       should "get inferred_lat_lng" do
         @planning_application.expects(:inferred_lat_lng)
         @planning_application.save!
@@ -290,7 +295,7 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         assert_equal 22.2, @planning_application.lat
         assert_equal 33.3, @planning_application.lng
       end
-      
+            
       should "not queue for planning_applications_after_create" do
         Resque.expects(:enqueue_to).with(:planning_applications_after_create, anything, anything).never
         @planning_application.save!

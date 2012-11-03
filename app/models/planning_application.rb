@@ -10,7 +10,7 @@ class PlanningApplication < ActiveRecord::Base
   before_save :update_lat_lng
   before_save :update_start_date
   after_save :queue_for_sending_alerts_if_relevant
-  before_create :set_geom
+  before_save :set_geom
   before_create :set_default_value_for_bitwise_flag
   after_create :queue_for_updating_info
   alias_method :old_to_xml, :to_xml
