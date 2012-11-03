@@ -427,6 +427,42 @@ class PlanningApplicationTest < ActiveSupport::TestCase
       end
     end
     
+    context "when assigning other_attributes" do
+	    setup do
+	      @basic_other_attribs = {:foo => 'bar', :foo1 => 'bar1'}
+	    end
+	  
+	    should "set to given hash" do
+	      @planning_application.other_attributes = @basic_other_attribs
+	      assert_equal @basic_other_attribs, @planning_application.other_attributes
+	    end
+	    
+	    context "and other_attributes are already set" do
+	      setup do
+	        @planning_application.other_attributes = @basic_other_attribs
+	        @planning_application.other_attributes = {:foo => 'baz', :bar => 'foo'}
+	      end
+	  
+	      should "update other attributes" do
+	        assert_equal 'baz', @planning_application.other_attributes[:foo]
+	      end
+	  
+	      should "keep unchanged other attributes" do
+	        assert_equal 'bar1', @planning_application.other_attributes[:foo1]
+	      end
+	  
+	      should "assign new other attributes" do
+	        assert_equal 'foo', @planning_application.other_attributes[:bar]
+	      end
+	  
+	      should "not blank when assigning blank" do
+	        @planning_application.other_attributes = nil
+	        assert_not_nil @planning_application.other_attributes[:foo]
+	        @planning_application.other_attributes = ''
+	        assert_not_nil @planning_application.other_attributes[:foo]
+	      end
+	    end
+	  end
     context "when setting bitwise flag" do
 
       should "do nothing if if nil given" do
