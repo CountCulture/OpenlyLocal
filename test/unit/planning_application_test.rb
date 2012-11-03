@@ -432,19 +432,15 @@ class PlanningApplicationTest < ActiveSupport::TestCase
         @planning_application.save!
         assert_equal 'foo status', @planning_application[:status]
       end
-      
+
       context "and status is very long" do
         setup do
           @overlong_status = 'A ' + ('very, ' * 100) + 'long status'
           @planning_application.status = @overlong_status
         end
-      
+
         should "not raise exception on save" do
           assert_nothing_raised(Exception) { @planning_application.save! }
-        end
-
-        should "truncate status" do
-          assert_equal @overlong_status[0..254], @planning_application[:status]
         end
       end
     end
