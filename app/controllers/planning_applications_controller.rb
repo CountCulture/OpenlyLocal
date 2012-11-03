@@ -26,7 +26,7 @@ class PlanningApplicationsController < ApplicationController
     elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
       distance = %w(0.2 0.8 2).include?(params[:distance]) ? params[:distance].to_f : 0.2
       @planning_applications = PlanningApplication.paginate(:conditions => ["ST_DWithin(ST_Transform(geom, 27700), ST_Transform(?, 27700), ?)", @postcode.geom, distance * 1000], :order => order, :page => valid_page)
-      @title = "Planning Applications within #{distance} km of #{params[:postcode]}"
+      @title = "Planning Applications within #{distance} km of #{@postcode.pretty_code}"
     end
 
     if @planning_applications.blank?
