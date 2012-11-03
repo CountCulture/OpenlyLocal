@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121001004945) do
+ActiveRecord::Schema.define(:version => 20121023203129) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -52,11 +52,13 @@ ActiveRecord::Schema.define(:version => 20121001004945) do
     t.datetime "updated_at"
     t.integer  "postcode_id"
     t.point    "geom",              :limit => nil, :srid => 4326
+    t.point    "metres",            :limit => nil, :srid => 27700
   end
 
   add_index "alert_subscribers", ["created_at"], :name => "index_alert_subscribers_on_created_at"
   add_index "alert_subscribers", ["email"], :name => "index_alert_subscribers_on_email"
   add_index "alert_subscribers", ["geom"], :name => "index_alert_subscribers_on_geom", :spatial => true
+  add_index "alert_subscribers", ["metres"], :name => "index_alert_subscribers_on_metres", :spatial => true
 
   create_table "boundaries", :force => true do |t|
     t.string   "area_type"
@@ -568,12 +570,14 @@ ActiveRecord::Schema.define(:version => 20121001004945) do
     t.boolean  "approved",                           :default => false
     t.string   "party_affiliation"
     t.point    "geom",                :limit => nil,                    :srid => 4326
+    t.point    "metres",              :limit => nil,                    :srid => 27700
   end
 
   add_index "hyperlocal_sites", ["approved"], :name => "index_hyperlocal_sites_on_approved"
   add_index "hyperlocal_sites", ["council_id"], :name => "index_hyperlocal_sites_on_council_id"
   add_index "hyperlocal_sites", ["geom"], :name => "index_hyperlocal_sites_on_geom", :spatial => true
   add_index "hyperlocal_sites", ["hyperlocal_group_id"], :name => "index_hyperlocal_sites_on_hyperlocal_group_id"
+  add_index "hyperlocal_sites", ["metres"], :name => "index_hyperlocal_sites_on_metres", :spatial => true
 
   create_table "investigation_subject_connections", :force => true do |t|
     t.integer "investigation_id"
@@ -787,7 +791,7 @@ ActiveRecord::Schema.define(:version => 20121001004945) do
     t.float    "lat"
     t.float    "lng"
     t.integer  "council_id"
-    t.string   "applicant_name",    :limit => 1024
+    t.text     "applicant_name"
     t.text     "applicant_address"
     t.text     "decision"
     t.text     "other_attributes"
@@ -795,8 +799,9 @@ ActiveRecord::Schema.define(:version => 20121001004945) do
     t.datetime "updated_at"
     t.string   "application_type"
     t.integer  "bitwise_flag",                      :default => 0
-    t.string   "status"
+    t.text     "status"
     t.point    "geom",              :limit => nil,                                 :srid => 4326
+    t.point    "metres",            :limit => nil,                                 :srid => 27700
   end
 
   add_index "planning_applications", ["council_id", "start_date"], :name => "index_planning_applications_on_council_id_and_date_received"
@@ -804,6 +809,7 @@ ActiveRecord::Schema.define(:version => 20121001004945) do
   add_index "planning_applications", ["council_id", "updated_at"], :name => "index_planning_applications_on_council_id_and_updated_at"
   add_index "planning_applications", ["geom"], :name => "index_planning_applications_on_geom", :spatial => true
   add_index "planning_applications", ["lat", "lng"], :name => "index_planning_applications_on_lat_and_lng"
+  add_index "planning_applications", ["metres"], :name => "index_planning_applications_on_metres", :spatial => true
 
   create_table "police_authorities", :force => true do |t|
     t.string   "name"
@@ -929,12 +935,14 @@ ActiveRecord::Schema.define(:version => 20121001004945) do
     t.float   "lng"
     t.integer "crime_area_id"
     t.point   "geom",                 :limit => nil, :srid => 4326
+    t.point   "metres",               :limit => nil, :srid => 27700
   end
 
   add_index "postcodes", ["code"], :name => "index_postcodes_on_code"
   add_index "postcodes", ["council_id"], :name => "index_postcodes_on_council_id"
   add_index "postcodes", ["county_id"], :name => "index_postcodes_on_county_id"
   add_index "postcodes", ["geom"], :name => "index_postcodes_on_geom", :spatial => true
+  add_index "postcodes", ["metres"], :name => "index_postcodes_on_metres", :spatial => true
   add_index "postcodes", ["ward_id"], :name => "index_postcodes_on_ward_id"
 
   create_table "quangos", :force => true do |t|

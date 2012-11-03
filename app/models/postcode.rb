@@ -20,7 +20,7 @@ class Postcode < ActiveRecord::Base
   #
   # @see http://spatialreference.org/ref/epsg/27700/
   def hyperlocal_sites
-    HyperlocalSite.approved.all(:conditions => ['ST_DWithin(ST_Transform(geom, 27700), ST_Transform(?, 27700), 32186.9)', geom], :limit => 5, :order => "ST_Distance(geom, ST_GeomFromText('POINT(#{lng} #{lat})', 4326))")
+    HyperlocalSite.approved.all(:conditions => ['ST_DWithin(metres, ?, 32186.9)', metres], :limit => 5, :order => "ST_Distance(geom, ST_GeomFromText('POINT(#{lng} #{lat})', 4326))")
   end
   
   def pretty_code
@@ -32,8 +32,13 @@ class Postcode < ActiveRecord::Base
 private
 
   def set_geom
-    if lat? && lng? && !geom?
-      self.geom = Point.from_x_y(lng, lat, 4326)
+    if lat? && lng?
+      unless geom?
+        self.geom = Point.from_x_y(lng, lat, 4326)
+      end
+      unless metres?
+        self.metres = Projection.point(lng, lat)
+      end
     end
   end
 end
