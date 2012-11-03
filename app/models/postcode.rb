@@ -26,7 +26,7 @@ class Postcode < ActiveRecord::Base
   def pretty_code
     pc = code.dup
     pc[-3, 0] = ' '
-    pc
+    pc.upcase
   end
 
 private

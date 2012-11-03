@@ -75,6 +75,7 @@ class PostcodeTest < ActiveSupport::TestCase
   context 'an instance of the Postcode class' do
     should 'return pretty code' do
       assert_equal 'AB1D 3DL', Postcode.new(:code => 'AB1D3DL').pretty_code
+      assert_equal 'AB1D 3DL', Postcode.new(:code => 'ab1d3dl').pretty_code
     end
   end
 end
