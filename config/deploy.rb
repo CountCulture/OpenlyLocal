@@ -41,11 +41,8 @@ set :delayed_job_server_role, :backgrounder
 after "deploy:update_code", "deploy:update_symlinks"
 
 after :deploy, 'sitemap:copy_sitemap'
-# after "deploy:stop", "delayed_job:stop"
-# after "deploy:start", "delayed_job:start"
-# after "deploy:restart", "delayed_job:restart"
+
 namespace :deploy do
-  
   task :check_path, :roles => [:app, :backgrounder] do
     run "echo $PATH" # allows us to check if there's a prob with the path
   end
@@ -123,8 +120,7 @@ namespace :deploy do
       end
     end
   end
-  
-  
+
   # custom disable_web task to use maintenance template
   namespace :web do
     desc <<-DESC
@@ -175,7 +171,6 @@ namespace :deploy do
       ln -s #{shared_path}/data/downloads/planning_applications.zip #{release_path}/public/councils/planning_applications.zip
     EOF
   end
-
 end
 
 desc "Runs stale scrapers" 
@@ -209,5 +204,3 @@ namespace :resque do
     run "cd #{current_path} && RAILS_ENV=production rake resque:start_daemons" 
   end 
 end
-
-
