@@ -46,3 +46,31 @@ task :convert_caps_applications_to_idox => :environment do
     print '.'
   end
 end
+
+desc "Import last four years planning applications for Idox scrapers"
+task :import_old_planning_applications => :environment do
+  resp = 'N'
+  while resp != 'Y' do
+    puts "Please enter name of Portal System:"
+    portal_system_name = $stdin.gets.chomp
+    portal_system = PortalSystem.find_by_name(portal_system_name)
+    puts "Portal system: #{portal_system_name}. Is this correct?"
+    resp = $stdin.gets.chomp
+  end
+  portal_parser = PortalSystem.find_by_name(portal_system_name).parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
+  puts "How many weeks do you wish to go back [4]?"
+  weeks_to_import = $stdin.gets.chomp
+  weeks_to_import = 4 if weeks_to_import.blank?
+  scrapers = portal_parser.scrapers.all(:limit => 2)
+  scrapers.each do |scraper|
+    puts "About to get past planning applications for #{scraper.council.name}"
+    weeks_to_import.to_i.times do |i|
+      start_date, end_date = (7*i + 21).days.ago.strftime("%d/%m/%Y"), (7*i + 14).days.ago.strftime("%d/%m/%Y") 
+      cookie_url = scraper.cookie_url.sub(/\#\{[^{]+\}/, start_date) # replace start date
+      cookie_url = cookie_url.sub(/\#\{[^{]+\}/, end_date) # replace end date
+      puts "About to process scraper from #{start_date} to #{end_date} (from #{cookie_url})"
+      scraper.process(:cookie_url => cookie_url, :save_results => true)
+    end
+  end
+end
+

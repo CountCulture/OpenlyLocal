@@ -474,45 +474,6 @@ task :date_formats => :environment do
   end
 end
 
-desc "Import last four years planning applications for Idox scrapers"
-task :import_last_four_years_planning_applications => :environment do
-  puts "Please enter name of Portal System:"
-  portal_system_name = $stdin.gets.chomp
-  idox_parser = PortalSystem.find_by_name(portal_system_name).parsers.first(:conditions=>{:scraper_type => 'ItemScraper'})
-  scrapers = idox_parser.scrapers.all(:limit => 1)
-  scrapers.each do |scraper|
-    puts "About to get past planning applications for #{scraper.council.name}"
-    204.times do |i|
-      start_date, end_date = (7*i + 21).days.ago.strftime("%d/%m/%Y"), (7*i + 14).days.ago.strftime("%d/%m/%Y") 
-      cookie_url = scraper.cookie_url.sub(/\#\{[^{]+\}/, start_date) # replace start date
-      cookie_url = cookie_url.sub(/\#\{[^{]+\}/, end_date) # replace end date
-      puts "About to process scraper from #{start_date} to #{end_date} (from #{cookie_url})"
-      scraper.process(:cookie_url => cookie_url, :save_results => true)
-    end
-  end
-end
-
-# task :import_last_four_years_pas_for_lichfield => :environment do
-#   c = Council.find(156)
-#   1000.times.do |i|
-#     date_query = i.days.ago.strftime("day=%d&month=%m&year=%Y")
-#     puts "Getting applications for #{i.days.ago} from http://www2.lichfielddc.gov.uk/planning/alerts.php?#{date_query}"
-#     doc = Nokogiri.XML(open "http://www2.lichfielddc.gov.uk/planning/alerts.php?#{date_query}")
-#     doc.search('applications>application').each do |application|
-#       print '.'
-#       pa = PlanningApplication.find_or_initialize_by_council_id_and_uid(c.id, application.at('council_reference').inner_text.strip)
-#       pa.update_attributes( :url => application.at('info_url').inner_text.strip,
-#                             :comment_url => application.at('comment_url').inner_text.strip,
-#                             :address => application.at('address').inner_text.strip,
-#                             :postcode => application.at('postcode').inner_text.strip,
-#                             :description => application.at('description>').inner_text.strip,
-#                             :date_received => application.at('date_recieved>').inner_text.strip,
-#                             :postcode => application.at('postcode').inner_text.strip
-#                           )
-#     end
-#   end
-# end
-# 
 task :remove_duplicate_planning_applications => :environment do
   Council.all.each do |council|
     next if council.planning_applications.count == 0
