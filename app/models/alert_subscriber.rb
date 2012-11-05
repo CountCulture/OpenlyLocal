@@ -11,7 +11,7 @@ class AlertSubscriber < ActiveRecord::Base
   after_destroy :send_unsubscribe_confirmation_email
 
   named_scope :confirmed, :conditions => {:confirmed => true}
-  named_scope :geocoded, :conditions => 'geom IS NOT NULL'
+  named_scope :geocoded, :conditions => 'metres IS NOT NULL'
 
   def self.confirm_from_email_and_code(email_address, conf_code)
     if subscriber = find_by_email_and_confirmation_code(email_address, conf_code)
@@ -53,9 +53,6 @@ class AlertSubscriber < ActiveRecord::Base
 
   def set_geo_data_from_postcode_text
     if postcode
-      unless geom?
-        self.geom = postcode.geom
-      end
       unless metres?
         self.metres = Projection.point(postcode.lng, postcode.lat)
       end

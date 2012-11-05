@@ -238,9 +238,6 @@ private
 
   def set_geom
     if lat? && lng?
-      unless geom?
-        self.geom = Point.from_x_y(lng, lat, 4326)
-      end
       unless metres?
         self.metres = Projection.point(lng, lat)
       end
