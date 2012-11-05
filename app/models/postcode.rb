@@ -20,7 +20,7 @@ class Postcode < ActiveRecord::Base
   #
   # @see http://spatialreference.org/ref/epsg/27700/
   def hyperlocal_sites
-    HyperlocalSite.approved.all(:conditions => ['ST_DWithin(metres, ?, 32186.9)', metres], :limit => 5, :order => "ST_Distance(geom, ST_GeomFromText('POINT(#{lng} #{lat})', 4326))")
+    HyperlocalSite.approved.all(:conditions => ['ST_DWithin(metres, ?, 32186.9)', metres], :limit => 5, :order => "ST_Distance(metres, ST_Transform(ST_GeomFromText('POINT(#{lng} #{lat})', 4326), 27700))")
   end
   
   def pretty_code
