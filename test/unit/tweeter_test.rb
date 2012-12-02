@@ -10,8 +10,8 @@ class TweeterTest < ActiveSupport::TestCase
       @dummy_client = stub_everything
       @dummy_yaml_hash = {'test' => {'OpenlyLocal' => {'auth_token' => 'footoken', 'auth_secret' => 'foosecret'},
                                      'BarUser'     => {'auth_token' => 'bartoken', 'auth_secret' => 'barsecret'}}}
-      Twitter::Base.stubs(:new).returns @dummy_client
-      Twitter::OAuth.stubs(:new).returns(@dummy_oauth_object)
+      Twitter::Client.stubs(:new).returns @dummy_client
+      # Twitter::OAuth.stubs(:new).returns(@dummy_oauth_object)
       YAML.stubs(:load_file).returns(@dummy_yaml_hash)
       UrlSquasher.any_instance.stubs(:result) # => returns nil
     end
@@ -39,8 +39,8 @@ class TweeterTest < ActiveSupport::TestCase
         @dummy_client = stub_everything
         @dummy_yaml_hash = {'test' => {'OpenlyLocal' => {'auth_token' => 'footoken', 'auth_secret' => 'foosecret'},
                                        'BarUser'     => {'auth_token' => 'bartoken', 'auth_secret' => 'barsecret'}}}
-        Twitter::Base.stubs(:new).returns @dummy_client
-        Twitter::OAuth.stubs(:new).returns(@dummy_oauth_object)
+        Twitter::Client.stubs(:new).returns @dummy_client
+        # Twitter::OAuth.stubs(:new).returns(@dummy_oauth_object)
         YAML.stubs(:load_file).returns(@dummy_yaml_hash)
       end
 
@@ -49,31 +49,39 @@ class TweeterTest < ActiveSupport::TestCase
         @tweeter.client
       end
       
-      should "create oauth with app consumer token and secret" do
-        Twitter::OAuth.expects(:new).with(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET).returns(@dummy_client)
+      should "create twitter client with app consumer token and secret" do
+        Twitter::Client.expects(:new).with(has_entries(:consumer_key => TWITTER_CONSUMER_KEY,
+                                                       :consumer_secret => TWITTER_CONSUMER_SECRET)).
+                                      returns(@dummy_client)
         @tweeter.client
       end
       
-      should "authorize oauth object using OpenlyLocal access token and secret  by default" do
-        @dummy_oauth_object.expects(:authorize_from_access).with('footoken', 'foosecret')
+      should "create twitter client using OpenlyLocal access token and secret  by default" do
+        Twitter::Client.expects(:new).with(has_entries(:oauth_token => "footoken",
+                                                       :oauth_token_secret => "foosecret")).
+                                      returns(@dummy_client)
+        # @dummy_oauth_object.expects(:authorize_from_access).with('footoken', 'foosecret')
         @tweeter.client
       end
       
-      should "authorize oauth object with given user token and secret" do
-        @dummy_oauth_object.expects(:authorize_from_access).with('bartoken', 'barsecret')
+      should "create twitter client with given user token and secret" do
+        Twitter::Client.expects(:new).with(has_entries(:oauth_token => "bartoken",
+                                                       :oauth_token_secret => "barsecret")).
+                                      returns(@dummy_client)
+        # @dummy_oauth_object.expects(:authorize_from_access).with('bartoken', 'barsecret')
         @tweeter.client('BarUser')
       end
       
-      should "create twitter client using oauth details" do
-        Twitter::Base.expects(:new).with(@dummy_oauth_object)
-        @tweeter.client
-      end
-      
-      should "not create new client if client already exists" do
-        @tweeter.client
-        Twitter::OAuth.expects(:new).never
-        @tweeter.client
-      end
+      # should "create twitter client using oauth details" do
+      #   Twitter::Client.expects(:new).with(@dummy_oauth_object)
+      #   @tweeter.client
+      # end
+      # 
+      # should "not create new client if client already exists" do
+      #   @tweeter.client
+      #   Twitter::OAuth.expects(:new).never
+      #   @tweeter.client
+      # end
     end
     
     context "when adding user to list" do

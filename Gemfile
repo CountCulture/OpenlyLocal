@@ -27,7 +27,7 @@ gem 'whenever', :require => false
 # Models
 gem 'acts-as-taggable-on' # FeedEntry
 gem 'feedzirra' # FeedEntry
-gem 'twitter', '~> 0.9' # Tweeter
+gem 'twitter'#, '~> 0.9' # Tweeter
 # gem 'twitter'#, '0.9.12', :path => 'vendor/gems/twitter-0.9.12' # Tweeter
 
 # Mailers
