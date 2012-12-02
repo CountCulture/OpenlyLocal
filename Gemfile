@@ -21,12 +21,14 @@ gem 'daemons', '1.0.10' # used by delayed_job
 gem 'delayed_job', '2.0.4'
 gem 'resque', :require => 'resque/server'
 gem 'resque-lock-timeout'
+# gem 'resque-loner'
 gem 'whenever', :require => false
 
 # Models
 gem 'acts-as-taggable-on' # FeedEntry
 gem 'feedzirra' # FeedEntry
 gem 'twitter', '~> 0.9' # Tweeter
+# gem 'twitter'#, '0.9.12', :path => 'vendor/gems/twitter-0.9.12' # Tweeter
 
 # Mailers
 gem 'dkim'
