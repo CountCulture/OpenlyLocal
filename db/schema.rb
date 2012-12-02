@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121105160142) do
+ActiveRecord::Schema.define(:version => 20121202200544) do
 
   create_table "account_lines", :force => true do |t|
     t.integer  "value"
@@ -798,6 +798,7 @@ ActiveRecord::Schema.define(:version => 20121105160142) do
   end
 
   add_index "planning_applications", ["council_id", "start_date"], :name => "index_planning_applications_on_council_id_and_date_received"
+  add_index "planning_applications", ["council_id", "start_date"], :name => "index_planning_applications_on_council_id_and_start_date"
   add_index "planning_applications", ["council_id", "uid"], :name => "index_planning_applications_on_council_id_and_uid", :unique => true
   add_index "planning_applications", ["council_id", "updated_at"], :name => "index_planning_applications_on_council_id_and_updated_at"
   add_index "planning_applications", ["lat", "lng"], :name => "index_planning_applications_on_lat_and_lng"
