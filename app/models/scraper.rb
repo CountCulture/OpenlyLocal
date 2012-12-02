@@ -15,6 +15,7 @@ class Scraper < ActiveRecord::Base
                         'H' => 'Hpricot'
                       }
   extend Resque::Plugins::LockTimeout
+  # include Resque::Plugins::UniqueJob
   belongs_to :parser, :inverse_of  => :scrapers
   belongs_to :council
   has_many :scrapes
@@ -29,7 +30,8 @@ class Scraper < ActiveRecord::Base
   delegate :related_model, :to => :parser, :allow_nil => true
   delegate :portal_system, :to => :council, :allow_nil => true
   @queue = :scrapers
-  @lock_timeout = 600
+  @lock_timeout = 1200
+  @loner = true
   
   def validate
     errors.add(:parser, "can't be blank") unless parser
@@ -63,6 +65,11 @@ class Scraper < ActiveRecord::Base
   
   def self.redis_lock_key(scraper_id)
     "perform_lock:scraper:council_#{Scraper.find(scraper_id).council_id}"
+  end
+  
+  # Override as the default is based on the redis_lock_key, which uses the council_id
+  def self.redis_loner_lock_key(scraper_id)
+    "loner_lock:scraper:#{scraper_id}"
   end
   
   def title
