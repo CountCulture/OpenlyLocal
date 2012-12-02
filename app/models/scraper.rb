@@ -30,7 +30,7 @@ class Scraper < ActiveRecord::Base
   delegate :related_model, :to => :parser, :allow_nil => true
   delegate :portal_system, :to => :council, :allow_nil => true
   @queue = :scrapers
-  @lock_timeout = 1200
+  @lock_timeout = 3600
   @loner = true
   
   def validate
