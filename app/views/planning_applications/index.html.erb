@@ -42,7 +42,7 @@
   <%= render :partial => "planning_application", :collection => @planning_applications %>
 </div>
 
-<%= will_paginate @planning_applications, :page_links => false if @planning_applications.respond_to?(:total_pages) %>
+<%= will_paginate @planning_applications, :page_links => false, :renderer => OpenlylocalLinkRenderer if @planning_applications.respond_to?(:total_pages) %>
 
 
 <%= render :partial => '/shared/api_info' %>

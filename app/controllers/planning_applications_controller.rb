@@ -21,13 +21,11 @@ class PlanningApplicationsController < ApplicationController
     order = params[:order] || params[:format].to_s == 'rss' ? 'updated_at DESC' : 'start_date DESC'
     if @council = params[:council_id] && Council.find_by_id(params[:council_id].to_i)
       @planning_applications = find_or_paginate_applications_with_details(params)
-      # @planning_applications = @council.planning_applications.with_details.paginate(:order => order, :page => valid_page, :total_entries => 1)
       @page_title = "Latest Planning Applications in #{@council.title}"
       @title = "Latest Planning Applications"
     elsif @postcode = Postcode.find_from_messy_code(params[:postcode])
       @distance = %w(0.2 0.4).include?(params[:distance]) ? params[:distance].to_f : 0.2
       @planning_applications = find_or_paginate_applications_close_to(params)
-      # @planning_applications = PlanningApplication.paginate(:conditions => ["ST_DWithin(metres, ?, ?)", @postcode.metres, distance * 1000], :order => order, :page => valid_page)
       @title = "Planning Applications within #{@distance} km of #{@postcode.pretty_code}"
     end
 
@@ -88,7 +86,7 @@ class PlanningApplicationsController < ApplicationController
   def find_or_paginate_applications_with_details(params)
     order = params[:order] || params[:format].to_s == 'rss' ? 'updated_at DESC' : 'start_date DESC'
     if params[:format].to_s == 'rss'
-      @council.planning_applications.with_details.paginate(:order => order, :page => valid_page, :total_entries => 1)
+      @council.planning_applications.with_details.paginate(:order => order, :page => valid_page, :total_entries => 31)
     else
       @council.planning_applications.with_details.find(:all, :order => order, :limit => 30)
     end
@@ -97,8 +95,7 @@ class PlanningApplicationsController < ApplicationController
   def find_or_paginate_applications_close_to(params)
     order = params[:order] || params[:format].to_s == 'rss' ? 'updated_at DESC' : 'start_date DESC'
     if params[:format].to_s == 'rss'
-      PlanningApplication.paginate(:conditions => ["ST_DWithin(metres, ?, ?)", @postcode.metres, @distance * 1000], :order => order, :page => valid_page)
-      # @council.planning_applications.with_details.paginate(:order => order, :page => valid_page, :total_entries => 1)
+      PlanningApplication.paginate(:conditions => ["ST_DWithin(metres, ?, ?)", @postcode.metres, @distance * 1000], :order => order, :page => valid_page, :total_entries => 31)
     else
       PlanningApplication.find(:all, :conditions => ["ST_DWithin(metres, ?, ?)", @postcode.metres, @distance * 1000], :order => order)
     end
