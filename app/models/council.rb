@@ -45,11 +45,11 @@ class Council < ActiveRecord::Base
   named_scope :parsed, lambda { |options| options ||= {}; options[:include_unparsed] ? 
                       { :select => 'councils.*, COUNT(members.id) AS member_count',
                         :joins => 'LEFT JOIN members ON members.council_id = councils.id',
-                        :group => "councils.id, councils.name, councils.url, councils.created_at, councils.updated_at, councils.base_url, councils.telephone, councils.address, councils.authority_type, councils.portal_system_id, councils.notes, councils.wikipedia_url, councils.ons_url, councils.egr_id, councils.wdtk_name, councils.feed_url, councils.data_source_url, councils.data_source_name, councils.snac_id, councils.country, councils.population, councils.ldg_id, councils.os_id, councils.parent_authority_id, councils.police_force_url, councils.police_force_id, councils.ness_id, councils.lat, councils.lng, councils.cipfa_code, councils.region, councils.signed_up_for_1010, councils.pension_fund_id, councils.gss_code, councils.annual_audit_letter, councils.output_area_classification_id, councils.defunkt, councils.open_data_url, councils.open_data_licence, councils.normalised_title, councils.wdtk_id, councils.vat_number, councils.planning_email",
+                        :group => "councils.id"
                       } :
                       { :select => 'councils.*, COUNT(members.id) AS member_count',
                         :joins => :members,
-                        :group => "councils.id, councils.name, councils.url, councils.created_at, councils.updated_at, councils.base_url, councils.telephone, councils.address, councils.authority_type, councils.portal_system_id, councils.notes, councils.wikipedia_url, councils.ons_url, councils.egr_id, councils.wdtk_name, councils.feed_url, councils.data_source_url, councils.data_source_name, councils.snac_id, councils.country, councils.population, councils.ldg_id, councils.os_id, councils.parent_authority_id, councils.police_force_url, councils.police_force_id, councils.ness_id, councils.lat, councils.lng, councils.cipfa_code, councils.region, councils.signed_up_for_1010, councils.pension_fund_id, councils.gss_code, councils.annual_audit_letter, councils.output_area_classification_id, councils.defunkt, councils.open_data_url, councils.open_data_licence, councils.normalised_title, councils.wdtk_id, councils.vat_number, councils.planning_email",
+                        :group => "councils.id"
                       } }
   default_scope :order => 'councils.name' # fully specify councils.name, in case clashes with another model we're including
   before_save :normalise_title
