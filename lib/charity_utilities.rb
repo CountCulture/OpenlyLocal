@@ -1,16 +1,16 @@
 module CharityUtilities
-  
+
   class Client
-    BaseUrl = 'http://www.charitycommission.gov.uk/SHOWCHARITY/RegisterOfCharities/'
-    CharityCommissionUrl = 'http://www.charitycommission.gov.uk'
+    BaseUrl = 'http://apps.charitycommission.gov.uk/Showcharity/RegisterOfCharities/'
+    CharityCommissionUrl = 'http://apps.charitycommission.gov.uk'
     require 'nokogiri'
-    
+
     attr_reader :charity_number
-    
+
     def initialize(args={})
       @charity_number = args[:charity_number]
     end
-    
+
     def company_number_for(charity)
       url = "http://opencorporates.com/reconcile/gb?query=#{URI.escape(charity.title)}"
       RAILS_DEFAULT_LOGGER.debug "reconciling company number from url: #{url}"
@@ -20,7 +20,7 @@ module CharityUtilities
       return unless first_result
       first_result['score'] >= 0.6 ? first_result['id'].scan(/\d+$/).to_s : nil
     end
-    
+
     def get_details
       main_page = Nokogiri.HTML(_http_get(BaseUrl + "SearchResultHandler.aspx?RegisteredCharityNumber=#{charity_number}&SubsidiaryNumber=0"))
 
@@ -33,7 +33,7 @@ module CharityUtilities
       framework_data = framework_link ? frameworks_data_from(BaseUrl+framework_link[:href]) : frameworks_data_from(main_page)
       detailed_info_from_front_page(main_page).merge(:accounts => financials_data).merge(framework_data).merge(contacts_data)
     end
-        
+
     def finance_data_from(url)
       doc = Hpricot(_http_get(url))
       extract_finance_data(doc)
@@ -41,25 +41,24 @@ module CharityUtilities
       RAILS_DEFAULT_LOGGER.debug "Problem getting finance data from #{url}:\n#{e.inspect}"
       nil
     end
-    
+
     def get_recent_charities(start_date=nil, end_date=nil)
+      # debugger
       start_date ||= 4.days.ago
       end_date ||= start_date + 4.days
       # new_charities = []
-      url = CharityCommissionUrl + "/SHOWCHARITY/RegisterOfCharities/AdvancedSearch.aspx"
+      url = CharityCommissionUrl + "/Showcharity/RegisterOfCharities/AdvancedSearch.aspx"
 
       client = HTTPClient.new
       search_page =  Nokogiri.HTML(client.get_content(url)) #pick up cookie, viewstates etc
       viewstate = search_page.at('#__VIEWSTATE')[:value]
       eventvalidation = search_page.at('#__EVENTVALIDATION')[:value]
-      
+
       post_url = CharityCommissionUrl + '/ShowCharity/RegisterOfCharities/AdvancedSearch.aspx'
-      
+
       post_params = {
-        "ctl00$CorporateHeader1$Header$Text2" => "",
-        "ctl00$CorporateHeader1$Header$BasicSearch$radio" => "rdName",
-        "ctl00$CorporateHeader1$Header$BasicSearch$textBoxSearch" => "",
         "ctl00$MainContent$searchforControl$SearchForRadioButtons" => "radioButtonOnlyRegistered",
+        "ctl00$MainContent$searchforControl$ddlTypeOfCharity" => 'ALL',
         "ctl00$MainContent$keywordSearchControlInstance$keywordsSubControl$textBoxKeywords" => "",
         "ctl00$MainContent$keywordSearchControlInstance$keywordsSubControl$keywordControl" => "radioButtonAll",
         "ctl00$MainContent$keywordSearchControlInstance$searchinSubControl$checkBoxCharityName" => "on",
@@ -78,20 +77,16 @@ module CharityUtilities
         "ctl00$MainContent$searchdatesRemoved$searchdatesSearchdateTo$DropDownListYear" => "0",
         "ctl00$MainContent$incomeRangeControl$dropDownListIncomeRange" => "0",
         "ctl00$MainContent$buttonSearch" => "Search",
-        "client" => "my_frontend",
-        "output" => "xml_no_dtd",
-        "proxystylesheet" => "my_frontend",
-        "site" => "default_collection",
         "__EVENTTARGET" => "",
         "__EVENTARGUMENT" => "",
-        "__EVENTVALIDATION" => eventvalidation, 
+        "__EVENTVALIDATION" => eventvalidation,
         "__VIEWSTATE" => viewstate
       }
-      
+
       # Get first page
-      RAILS_DEFAULT_LOGGER.debug("About to get info from #{post_url} with params:\n#{post_params.inspect}")
+      # RAILS_DEFAULT_LOGGER.debug("About to get info from #{post_url} with params:\n#{post_params.inspect}")
       if resp = client.post(post_url, post_params)
-        resp = client.get_content(CharityCommissionUrl + resp.header['Location'].first)
+        resp = client.get_content(CharityCommissionUrl+resp.header['Location'].first)
         results_page = Nokogiri.HTML(resp)
         new_charities = extract_charities_from_search_page(results_page)
         additional_pages = (results_page.search('input.PageNumbers')[-2][:value].to_i - 1) rescue nil
@@ -100,17 +95,11 @@ module CharityUtilities
         additional_pages.times do |i|
           viewstate = results_page.at('input#__VIEWSTATE')[:value]
           eventvalidation = results_page.at('input#__EVENTVALIDATION')[:value]
-          results_page = Nokogiri.HTML(client.post_content(post_url, 
-                                                                      "__EVENTVALIDATION" => eventvalidation, 
+          results_page = Nokogiri.HTML(client.post_content(post_url,
+                                                                      "__EVENTVALIDATION" => eventvalidation,
                                                                       "__VIEWSTATE" => viewstate,
-                                                                      "ctl00$CorporateHeader1$Header$BasicSearch$radio" => "rdName",
-                                                                      "ctl00$CorporateHeader1$Header$BasicSearch$textBoxSearch" => "Enter name or number",
-                                                                      "ctl00$CorporateHeader1$Header$Text2" => "",
-                                                                      "ctl00$MainContent$gridView$ctl28$ctl#{'%02d' % (i>0 ? i+2 : i+1)}" => i+2,
-                                                                      "client" => "my_frontend",
-                                                                      "output" => "xml_no_dtd",
-                                                                      "proxystylesheet" => "my_frontend",
-                                                                      "site" => "default_collection"
+                                                                      "ctl00$ctl00$txtSearchTerm" => "Enter name or number",
+                                                                      "ctl00$MainContent$gridView$ctl28$ctl#{'%02d' % (i>0 ? i+2 : i+1)}" => i+2#,
                                                                       ))
           additional_charities = extract_charities_from_search_page(results_page)
           new_charities += additional_charities
@@ -118,7 +107,7 @@ module CharityUtilities
       end
       new_charities
     end
-    
+
     def contact_data_from(url)
       contact_page = Nokogiri.HTML(_http_get(url)) # use Nokogiri as Hpricot has probs with this website
       res = {}
@@ -130,7 +119,7 @@ module CharityUtilities
       trustees = contact_page.search('#ctl00_CentrePanelContent .ScrollingSelectionLeftColumn a').collect{ |t| { :full_name => t.inner_text, :uid =>  t[:href].scan(/TID=(\d+)/).to_s } }
       res.merge(:trustees => trustees)
     end
-    
+
     def frameworks_data_from(url_or_doc)
       frameworks_page = url_or_doc.is_a?(String) ? Nokogiri.HTML(_http_get(url_or_doc)) : url_or_doc # use Nokogiri as Hpricot has probs with this website
       res = {}
@@ -143,14 +132,14 @@ module CharityUtilities
       res[:other_names] = other_names == 'None' ? nil : other_names
       res
     end
-    
+
     protected
     def _http_get(url)
       return if RAILS_ENV=='test'
       RAILS_DEFAULT_LOGGER.debug "About to fetch info from CharityCommission website: #{url}"
       open(url).read
     end
-    
+
     def detailed_info_from_front_page(page)
       res = {}
       res[:title] = page.at("#ctl00_charityStatus_spnCharityName").inner_text.squish
@@ -172,7 +161,7 @@ module CharityUtilities
       res[:financial_breakdown] = { :income => income_res, :spending => spending_res, :assets => asset_res }.delete_if{ |k,v| v.blank? }
       res
     end
-    
+
     def extract_finance_data(page)
       return if (rows = page.search('#ctl00_MainContent_ucFinancialComplianceTable_gdvFinancialAndComplianceHistory tr')).blank?
       rows[1..-1].collect do |row|
@@ -199,7 +188,7 @@ module CharityUtilities
       page.search('//table/tr[count(td)>2]').collect{ |row| {:charity_number => row.at('a').inner_text, :title => row.search('a')[1].inner_text.squish } }
 
     end
-    
+
     def reg_or_rem_date(type, doc)
       doc.at("//table[@class='RegHistoryTable']//td[@class='DateColumn' and following-sibling::td[@class='DescriptionColumn' and contains(text(), '#{type}')]]").inner_text.squish rescue nil
     end
